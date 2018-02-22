@@ -12,7 +12,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -199,28 +199,28 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("combatDefenseEffect",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCombatDefenseEffect,
                 this::setCombatDefenseEffect,
                 this::getCombatDefenseEffect,
                 this::resetCombatDefenseEffect))
         .put("combatOffenseEffect",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCombatOffenseEffect,
                 this::setCombatOffenseEffect,
                 this::getCombatOffenseEffect,
                 this::resetCombatOffenseEffect))
         .put("noBlitz",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setNoBlitz,
                 this::setNoBlitz,
                 this::getNoBlitz,
                 this::resetNoBlitz))
         .put("unitsNotAllowed",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUnitsNotAllowed,
                 this::setUnitsNotAllowed,
                 this::getUnitsNotAllowed,

@@ -13,7 +13,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -596,89 +596,89 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .put("vps", ModifiableProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .put("vps", MutableProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
         .put("captureVps",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCaptureVps,
                 this::setCaptureVps,
                 this::getCaptureVps,
                 this::resetCaptureVps))
         .put("retainCapitalNumber",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRetainCapitalNumber,
                 this::setRetainCapitalNumber,
                 this::getRetainCapitalNumber,
                 this::resetRetainCapitalNumber))
         .put("retainCapitalProduceNumber",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRetainCapitalProduceNumber,
                 this::setRetainCapitalProduceNumber,
                 this::getRetainCapitalProduceNumber,
                 this::resetRetainCapitalProduceNumber))
         .put("giveUnitControl",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setGiveUnitControl,
                 this::setGiveUnitControl,
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
         .put("captureUnitOnEnteringBy",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("shareTechnology",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setShareTechnology,
                 this::setShareTechnology,
                 this::getShareTechnology,
                 this::resetShareTechnology))
         .put("helpPayTechCost",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setHelpPayTechCost,
                 this::setHelpPayTechCost,
                 this::getHelpPayTechCost,
                 this::resetHelpPayTechCost))
         .put("destroysPUs",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDestroysPUs,
                 this::setDestroysPUs,
                 this::getDestroysPUs,
                 this::resetDestroysPUs))
         .put("immuneToBlockade",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setImmuneToBlockade,
                 this::setImmuneToBlockade,
                 this::getImmuneToBlockade,
                 this::resetImmuneToBlockade))
         .put("suicideAttackResources",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setSuicideAttackResources,
                 this::setSuicideAttackResources,
                 this::getSuicideAttackResources,
                 this::resetSuicideAttackResources))
         .put("suicideAttackTargets",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setSuicideAttackTargets,
                 this::setSuicideAttackTargets,
                 this::getSuicideAttackTargets,
                 this::resetSuicideAttackTargets))
         .put("placementLimit",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
         .put("movementLimit",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put("attackingLimit",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAttackingLimit,
                 this::setAttackingLimit,
                 this::getAttackingLimit,

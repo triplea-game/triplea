@@ -14,7 +14,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -1350,148 +1350,148 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("attackBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAttackBonus,
                 this::setAttackBonus,
                 this::getAttackBonus,
                 this::resetAttackBonus))
         .put("defenseBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDefenseBonus,
                 this::setDefenseBonus,
                 this::getDefenseBonus,
                 this::resetDefenseBonus))
         .put("movementBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setMovementBonus,
                 this::setMovementBonus,
                 this::getMovementBonus,
                 this::resetMovementBonus))
         .put("radarBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRadarBonus,
                 this::setRadarBonus,
                 this::getRadarBonus,
                 this::resetRadarBonus))
         .put("airAttackBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirAttackBonus,
                 this::setAirAttackBonus,
                 this::getAirAttackBonus,
                 this::resetAirAttackBonus))
         .put("airDefenseBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirDefenseBonus,
                 this::setAirDefenseBonus,
                 this::getAirDefenseBonus,
                 this::resetAirDefenseBonus))
         .put("productionBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setProductionBonus,
                 this::setProductionBonus,
                 this::getProductionBonus,
                 this::resetProductionBonus))
         .put("minimumTerritoryValueForProductionBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::getMinimumTerritoryValueForProductionBonus,
                 this::resetMinimumTerritoryValueForProductionBonus))
         .put("repairDiscount",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRepairDiscount,
                 this::setRepairDiscount,
                 this::getRepairDiscount,
                 this::resetRepairDiscount))
         .put("warBondDiceSides",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setWarBondDiceSides,
                 this::setWarBondDiceSides,
                 this::getWarBondDiceSides,
                 this::resetWarBondDiceSides))
         .put("warBondDiceNumber",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setWarBondDiceNumber,
                 this::setWarBondDiceNumber,
                 this::getWarBondDiceNumber,
                 this::resetWarBondDiceNumber))
         .put("rocketDiceNumber",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRocketDiceNumber,
                 this::setRocketDiceNumber,
                 this::getRocketDiceNumber,
                 this::resetRocketDiceNumber))
         .put("rocketDistance",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRocketDistance,
                 this::setRocketDistance,
                 this::getRocketDistance,
                 this::resetRocketDistance))
         .put("rocketNumberPerTerritory",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRocketNumberPerTerritory,
                 this::setRocketNumberPerTerritory,
                 this::getRocketNumberPerTerritory,
                 this::resetRocketNumberPerTerritory))
         .put("unitAbilitiesGained",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUnitAbilitiesGained,
                 this::setUnitAbilitiesGained,
                 this::getUnitAbilitiesGained,
                 this::resetUnitAbilitiesGained))
         .put("airborneForces",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirborneForces,
                 this::setAirborneForces,
                 this::getAirborneForces,
                 this::resetAirborneForces))
         .put("airborneCapacity",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirborneCapacity,
                 this::setAirborneCapacity,
                 this::getAirborneCapacity,
                 this::resetAirborneCapacity))
         .put("airborneTypes",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirborneTypes,
                 this::setAirborneTypes,
                 this::getAirborneTypes,
                 this::resetAirborneTypes))
         .put("airborneDistance",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirborneDistance,
                 this::setAirborneDistance,
                 this::getAirborneDistance,
                 this::resetAirborneDistance))
         .put("airborneBases",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirborneBases,
                 this::setAirborneBases,
                 this::getAirborneBases,
                 this::resetAirborneBases))
         .put("airborneTargettedByAA",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirborneTargettedByAA,
                 this::setAirborneTargettedByAA,
                 this::getAirborneTargettedByAA,
                 this::resetAirborneTargettedByAA))
         .put("attackRollsBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAttackRollsBonus,
                 this::setAttackRollsBonus,
                 this::getAttackRollsBonus,
                 this::resetAttackRollsBonus))
         .put("defenseRollsBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDefenseRollsBonus,
                 this::setDefenseRollsBonus,
                 this::getDefenseRollsBonus,
                 this::resetDefenseRollsBonus))
         .put("bombingBonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,

@@ -11,7 +11,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -170,17 +170,17 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .put("canalName", ModifiableProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .put("canalName", MutableProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setLandTerritories,
                 this::setLandTerritories,
                 this::getLandTerritories,
                 this::resetLandTerritories))
         .put("excludedUnits",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setExcludedUnits,
                 this::setExcludedUnits,
                 this::getExcludedUnits,

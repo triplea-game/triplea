@@ -15,7 +15,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -823,22 +823,22 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("capital",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCapital,
                 this::setCapital,
                 this::getCapital,
                 this::resetCapital))
         .put("originalFactory",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setOriginalFactory,
                 this::setOriginalFactory,
                 this::getOriginalFactory,
                 this::resetOriginalFactory))
         .put("production",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setProduction,
                 this::setProduction,
                 this::getProduction,
@@ -847,91 +847,91 @@ public class TerritoryAttachment extends DefaultAttachment {
             ModifiableProperty.ofWriteOnlyString(
                 this::setProductionOnly))
         .put("victoryCity",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setVictoryCity,
                 this::setVictoryCity,
                 this::getVictoryCity,
                 this::resetVictoryCity))
         .put("isImpassable",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setIsImpassable,
                 this::setIsImpassable,
                 this::getIsImpassable,
                 this::resetIsImpassable))
         .put("originalOwner",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setOriginalOwner,
                 this::setOriginalOwner,
                 this::getOriginalOwner,
                 this::resetOriginalOwner))
         .put("convoyRoute",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setConvoyRoute,
                 this::setConvoyRoute,
                 this::getConvoyRoute,
                 this::resetConvoyRoute))
         .put("convoyAttached",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setConvoyAttached,
                 this::setConvoyAttached,
                 this::getConvoyAttached,
                 this::resetConvoyAttached))
         .put("changeUnitOwners",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setChangeUnitOwners,
                 this::setChangeUnitOwners,
                 this::getChangeUnitOwners,
                 this::resetChangeUnitOwners))
         .put("captureUnitOnEnteringBy",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("navalBase",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setNavalBase,
                 this::setNavalBase,
                 this::getNavalBase,
                 this::resetNavalBase))
         .put("airBase",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAirBase,
                 this::setAirBase,
                 this::getAirBase,
                 this::resetAirBase))
         .put("kamikazeZone",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setKamikazeZone,
                 this::setKamikazeZone,
                 this::getKamikazeZone,
                 this::resetKamikazeZone))
         .put("unitProduction",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUnitProduction,
                 this::setUnitProduction,
                 this::getUnitProduction,
                 this::resetUnitProduction))
         .put("blockadeZone",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setBlockadeZone,
                 this::setBlockadeZone,
                 this::getBlockadeZone,
                 this::resetBlockadeZone))
         .put("territoryEffect",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setTerritoryEffect,
                 this::setTerritoryEffect,
                 this::getTerritoryEffect,
                 this::resetTerritoryEffect))
         .put("whenCapturedByGoesTo",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setWhenCapturedByGoesTo,
                 this::setWhenCapturedByGoesTo,
                 this::getWhenCapturedByGoesTo,
                 this::resetWhenCapturedByGoesTo))
         .put("resources",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setResources,
                 this::setResources,
                 this::getResources,

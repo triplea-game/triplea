@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
@@ -56,9 +56,9 @@ public class TestAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .put("value", ModifiableProperty.of(this::setValue, this::getValue, this::resetValue))
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .put("value", MutableProperty.of(this::setValue, this::getValue, this::resetValue))
         .build();
   }
 }

@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -335,77 +335,77 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("movementRestrictionType",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setMovementRestrictionType,
                 this::setMovementRestrictionType,
                 this::getMovementRestrictionType,
                 this::resetMovementRestrictionType))
         .put("movementRestrictionTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setMovementRestrictionTerritories,
                 this::setMovementRestrictionTerritories,
                 this::getMovementRestrictionTerritories,
                 this::resetMovementRestrictionTerritories))
         .put("placementAnyTerritory",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlacementAnyTerritory,
                 this::setPlacementAnyTerritory,
                 this::getPlacementAnyTerritory,
                 this::resetPlacementAnyTerritory))
         .put("placementAnySeaZone",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlacementAnySeaZone,
                 this::setPlacementAnySeaZone,
                 this::getPlacementAnySeaZone,
                 this::resetPlacementAnySeaZone))
         .put("placementCapturedTerritory",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlacementCapturedTerritory,
                 this::setPlacementCapturedTerritory,
                 this::getPlacementCapturedTerritory,
                 this::resetPlacementCapturedTerritory))
         .put("unlimitedProduction",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUnlimitedProduction,
                 this::setUnlimitedProduction,
                 this::getUnlimitedProduction,
                 this::resetUnlimitedProduction))
         .put("placementInCapitalRestricted",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlacementInCapitalRestricted,
                 this::setPlacementInCapitalRestricted,
                 this::getPlacementInCapitalRestricted,
                 this::resetPlacementInCapitalRestricted))
         .put("dominatingFirstRoundAttack",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDominatingFirstRoundAttack,
                 this::setDominatingFirstRoundAttack,
                 this::getDominatingFirstRoundAttack,
                 this::resetDominatingFirstRoundAttack))
         .put("negateDominatingFirstRoundAttack",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setNegateDominatingFirstRoundAttack,
                 this::setNegateDominatingFirstRoundAttack,
                 this::getNegateDominatingFirstRoundAttack,
                 this::resetNegateDominatingFirstRoundAttack))
         .put("productionPerXTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setProductionPerXTerritories,
                 this::setProductionPerXTerritories,
                 this::getProductionPerXTerritories,
                 this::resetProductionPerXTerritories))
         .put("placementPerTerritory",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlacementPerTerritory,
                 this::setPlacementPerTerritory,
                 this::getPlacementPerTerritory,
                 this::resetPlacementPerTerritory))
         .put("maxPlacePerTerritory",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setMaxPlacePerTerritory,
                 this::setMaxPlacePerTerritory,
                 this::getMaxPlacePerTerritory,

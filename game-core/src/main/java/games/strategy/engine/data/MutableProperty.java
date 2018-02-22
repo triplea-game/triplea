@@ -7,14 +7,14 @@ import java.util.function.Supplier;
  *
  * @param <T> The type of the field to set, get and reset.
  */
-public interface ModifiableProperty<T> {
+public interface MutableProperty<T> {
 
   void setValue(String string) throws Exception;
 
   void setValue(T value) throws Exception;
 
   /**
-   * Calls the appropriate {@link ModifiableProperty#setValue} method.
+   * Calls the appropriate {@link MutableProperty#setValue} method.
    */
   @SuppressWarnings("unchecked")
   default void setObjectValue(final Object o) {
@@ -36,12 +36,12 @@ public interface ModifiableProperty<T> {
   /**
    * Convenience method to create an instance of this interface.
    */
-  static <T> ModifiableProperty<T> of(
+  static <T> MutableProperty<T> of(
       final ExceptionConsumer<T> setter,
       final ExceptionConsumer<String> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    return new ModifiableProperty<T>() {
+    return new MutableProperty<T>() {
 
       @Override
       public void setValue(String string) throws Exception {
@@ -68,7 +68,7 @@ public interface ModifiableProperty<T> {
   /**
    * Convenience method to create an instance of this interface with no resetter.
    */
-  static <T> ModifiableProperty<T> of(
+  static <T> MutableProperty<T> of(
       final ExceptionConsumer<T> setter,
       final ExceptionConsumer<String> stringSetter,
       final Supplier<T> getter) {
@@ -78,7 +78,7 @@ public interface ModifiableProperty<T> {
   /**
    * Convenience method to create a generic String instance of this interface.
    */
-  static ModifiableProperty<String> of(
+  static MutableProperty<String> of(
       final ExceptionConsumer<String> setter,
       final Supplier<String> getter,
       final Runnable resetter) {
@@ -88,7 +88,7 @@ public interface ModifiableProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only gets.
    */
-  static <T> ModifiableProperty<T> of(final Supplier<T> getter) {
+  static <T> MutableProperty<T> of(final Supplier<T> getter) {
     return of(
         t -> throwIllegalStateException("No Setter"),
         t -> throwIllegalStateException("No String Setter"),
@@ -99,7 +99,7 @@ public interface ModifiableProperty<T> {
   /**
    * Convenience method to create an instance of this interface that only sets, but doesn't reset.
    */
-  static <T> ModifiableProperty<T> of(
+  static <T> MutableProperty<T> of(
       final ExceptionConsumer<T> setter,
       final ExceptionConsumer<String> stringSetter) {
     return of(
@@ -114,7 +114,7 @@ public interface ModifiableProperty<T> {
    * Convenience method to create an instance of this interface that just contains a direct
    * setter and getter. And no support for Strings as secondary setter.
    */
-  static <T> ModifiableProperty<T> ofSimple(
+  static <T> MutableProperty<T> ofSimple(
       final ExceptionConsumer<T> setter,
       final Supplier<T> getter) {
     return of(setter,
@@ -128,7 +128,7 @@ public interface ModifiableProperty<T> {
    * Convenience method to create an instance of this interface that just contains a
    * getter. And no support for setters of any kind.
    */
-  static <T> ModifiableProperty<T> ofSimple(final Supplier<T> getter) {
+  static <T> MutableProperty<T> ofSimple(final Supplier<T> getter) {
     return ofSimple(e -> throwIllegalStateException("No Setter"), getter);
   }
 

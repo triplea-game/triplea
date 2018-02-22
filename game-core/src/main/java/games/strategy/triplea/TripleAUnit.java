@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -518,87 +518,87 @@ public class TripleAUnit extends Unit {
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("transportedBy",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setTransportedBy,
                 this::getTransportedBy))
         .put("unloaded",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setUnloaded,
                 this::getUnloaded))
         .put("wasLoadedThisTurn",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setWasLoadedThisTurn,
                 this::getWasLoadedThisTurn))
         .put("unloadedTo",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setUnloadedTo,
                 this::getUnloadedTo))
         .put("wasUnloadedInCombatPhase",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setWasUnloadedInCombatPhase,
                 this::getWasUnloadedInCombatPhase))
         .put("alreadyMoved",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setAlreadyMoved,
                 this::getAlreadyMoved))
         .put("bonusMovement",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setBonusMovement,
                 this::getBonusMovement))
         .put("unitDamage",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setUnitDamage,
                 this::getUnitDamage))
         .put("submerged",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setSubmerged,
                 this::getSubmerged))
         .put("originalOwner",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setOriginalOwner,
                 this::getOriginalOwner))
         .put("wasInCombat",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setWasInCombat,
                 this::getWasInCombat))
         .put("wasLoadedAfterCombat",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setWasLoadedAfterCombat,
                 this::getWasLoadedAfterCombat))
         .put("wasAmphibious",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setWasAmphibious,
                 this::getWasAmphibious))
         .put("originatedFrom",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setOriginatedFrom,
                 this::getOriginatedFrom))
         .put("wasScrambled",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setWasScrambled,
                 this::getWasScrambled))
         .put("maxScrambleCount",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount))
         .put("wasInAirBattle",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setWasInAirBattle,
                 this::getWasInAirBattle))
         .put("disabled",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setDisabled,
                 this::getDisabled))
         .put("launched",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setLaunched,
                 this::getLaunched))
         .put("airborne",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setAirborne,
                 this::getAirborne))
         .build();

@@ -8,7 +8,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -411,76 +411,76 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("archeType",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setArcheType,
                 this::setArcheType,
                 this::getArcheType,
                 this::resetArcheType))
         .put("canMoveLandUnitsOverOwnedLand",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCanMoveLandUnitsOverOwnedLand,
                 this::setCanMoveLandUnitsOverOwnedLand,
                 this::getCanMoveLandUnitsOverOwnedLand,
                 this::resetCanMoveLandUnitsOverOwnedLand))
         .put("canMoveAirUnitsOverOwnedLand",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCanMoveAirUnitsOverOwnedLand,
                 this::setCanMoveAirUnitsOverOwnedLand,
                 this::getCanMoveAirUnitsOverOwnedLand,
                 this::resetCanMoveAirUnitsOverOwnedLand))
         .put("alliancesCanChainTogether",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAlliancesCanChainTogether,
                 this::setAlliancesCanChainTogether,
                 this::getAlliancesCanChainTogether,
                 this::resetAlliancesCanChainTogether))
         .put("isDefaultWarPosition",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setIsDefaultWarPosition,
                 this::setIsDefaultWarPosition,
                 this::getIsDefaultWarPosition,
                 this::resetIsDefaultWarPosition))
         .put("upkeepCost",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUpkeepCost,
                 this::setUpkeepCost,
                 this::getUpkeepCost,
                 this::resetUpkeepCost))
         .put("canLandAirUnitsOnOwnedLand",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCanLandAirUnitsOnOwnedLand,
                 this::setCanLandAirUnitsOnOwnedLand,
                 this::getCanLandAirUnitsOnOwnedLand,
                 this::resetCanLandAirUnitsOnOwnedLand))
         .put("canTakeOverOwnedTerritory",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCanTakeOverOwnedTerritory,
                 this::setCanTakeOverOwnedTerritory,
                 this::getCanTakeOverOwnedTerritory,
                 this::resetCanTakeOverOwnedTerritory))
         .put("givesBackOriginalTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setGivesBackOriginalTerritories,
                 this::setGivesBackOriginalTerritories,
                 this::getGivesBackOriginalTerritories,
                 this::resetGivesBackOriginalTerritories))
         .put("canMoveIntoDuringCombatMove",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCanMoveIntoDuringCombatMove,
                 this::setCanMoveIntoDuringCombatMove,
                 this::getCanMoveIntoDuringCombatMove,
                 this::resetCanMoveIntoDuringCombatMove))
         .put("canMoveThroughCanals",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setCanMoveThroughCanals,
                 this::setCanMoveThroughCanals,
                 this::getCanMoveThroughCanals,
                 this::resetCanMoveThroughCanals))
         .put("rocketsCanFlyOver",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRocketsCanFlyOver,
                 this::setRocketsCanFlyOver,
                 this::getRocketsCanFlyOver,

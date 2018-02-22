@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -422,94 +422,94 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("techCost",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setTechCost,
                 this::setTechCost,
                 this::getTechCost,
                 this::resetTechCost))
         .put("heavyBomber",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setHeavyBomber,
                 this::setHeavyBomber,
                 this::getHeavyBomber,
                 this::resetHeavyBomber))
         .put("longRangeAir",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setLongRangeAir,
                 this::setLongRangeAir,
                 this::getLongRangeAir,
                 this::resetLongRangeAir))
         .put("jetPower",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setJetPower,
                 this::setJetPower,
                 this::getJetPower,
                 this::resetJetPower))
         .put("rocket",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRocket,
                 this::setRocket,
                 this::getRocket,
                 this::resetRocket))
         .put("industrialTechnology",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setIndustrialTechnology,
                 this::setIndustrialTechnology,
                 this::getIndustrialTechnology,
                 this::resetIndustrialTechnology))
         .put("superSub",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setSuperSub,
                 this::setSuperSub,
                 this::getSuperSub,
                 this::resetSuperSub))
         .put("destroyerBombard",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDestroyerBombard,
                 this::setDestroyerBombard,
                 this::getDestroyerBombard,
                 this::resetDestroyerBombard))
         .put("improvedArtillerySupport",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setImprovedArtillerySupport,
                 this::setImprovedArtillerySupport,
                 this::getImprovedArtillerySupport,
                 this::resetImprovedArtillerySupport))
         .put("paratroopers",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setParatroopers,
                 this::setParatroopers,
                 this::getParatroopers,
                 this::resetParatroopers))
         .put("increasedFactoryProduction",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setIncreasedFactoryProduction,
                 this::setIncreasedFactoryProduction,
                 this::getIncreasedFactoryProduction,
                 this::resetIncreasedFactoryProduction))
         .put("warBonds",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setWarBonds,
                 this::setWarBonds,
                 this::getWarBonds,
                 this::resetWarBonds))
         .put("mechanizedInfantry",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setMechanizedInfantry,
                 this::setMechanizedInfantry,
                 this::getMechanizedInfantry,
                 this::resetMechanizedInfantry))
         .put("aARadar",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAARadar,
                 this::setAARadar,
                 this::getAARadar,
                 this::resetAARadar))
         .put("shipyards",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setShipyards,
                 this::setShipyards,
                 this::getShipyards,

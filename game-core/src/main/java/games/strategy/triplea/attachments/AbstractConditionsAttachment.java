@@ -14,7 +14,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -397,40 +397,40 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("conditions",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setConditions,
                 this::setConditions,
                 this::getConditions,
                 this::resetConditions))
         .put("conditionType",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setConditionType,
                 this::setConditionType,
                 this::getConditionType,
                 this::resetConditionType))
         .put("invert",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setInvert,
                 this::setInvert,
                 this::getInvert,
                 this::resetInvert))
         .put("chance",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setChance,
                 this::setChance,
                 this::getChance,
                 this::resetChance))
         .put("chanceIncrementOnFailure",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setChanceIncrementOnFailure,
                 this::setChanceIncrementOnFailure,
                 this::getChanceIncrementOnFailure,
                 this::resetChanceIncrementOnFailure))
         .put("chanceDecrementOnSuccess",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setChanceDecrementOnSuccess,
                 this::setChanceDecrementOnSuccess,
                 this::getChanceDecrementOnSuccess,

@@ -15,7 +15,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
@@ -435,48 +435,48 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("countEach", ModifiableProperty.of(this::getCountEach))
-        .put("eachMultiple", ModifiableProperty.of(this::getEachMultiple))
+        .put("countEach", MutableProperty.of(this::getCountEach))
+        .put("eachMultiple", MutableProperty.of(this::getEachMultiple))
         .put("players",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("objectiveValue",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setObjectiveValue,
                 this::setObjectiveValue,
                 this::getObjectiveValue,
                 this::resetObjectiveValue))
         .put("uses",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("turns",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setTurns,
                 this::setTurns,
                 this::getTurns,
                 this::resetTurns))
         .put("switch",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setSwitch,
                 this::setSwitch,
                 this::getSwitch,
                 this::resetSwitch))
         .put("gameProperty",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setGameProperty,
                 this::setGameProperty,
                 this::getGameProperty,
                 this::resetGameProperty))
-        .put("rounds", ModifiableProperty.of(this::setRounds, this::setRounds))
+        .put("rounds", MutableProperty.of(this::setRounds, this::setRounds))
         .build();
   }
 }

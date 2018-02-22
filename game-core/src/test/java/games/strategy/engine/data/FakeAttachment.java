@@ -79,9 +79,9 @@ public final class FakeAttachment implements IAttachment {
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
-        .put("name", ModifiableProperty.of(this::setName, this::getName, () -> {
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .put("name", MutableProperty.of(this::setName, this::getName, () -> {
         }))
         .build();
   }

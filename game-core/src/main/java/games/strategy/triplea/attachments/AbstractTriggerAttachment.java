@@ -12,7 +12,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -310,35 +310,35 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("uses",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("usedThisRound",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,
                 this::resetUsedThisRound))
         .put("notification",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setNotification,
                 this::setNotification,
                 this::getNotification,
                 this::resetNotification))
         .put("when",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setWhen,
                 this::setWhen,
                 this::getWhen,
                 this::resetWhen))
         .put("trigger",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");
                 },

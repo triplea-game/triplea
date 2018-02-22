@@ -20,7 +20,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
@@ -1165,99 +1165,99 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("techs",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setTechs,
                 this::setTechs,
                 this::getTechs,
                 this::resetTechs))
         .put("techCount",
-            ModifiableProperty.of(this::getTechCount))
+            MutableProperty.of(this::getTechCount))
         .put("relationship",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setRelationship,
                 this::setRelationship,
                 this::getRelationship,
                 this::resetRelationship))
         .put("atWarPlayers",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAtWarPlayers,
                 this::setAtWarPlayers,
                 this::getAtWarPlayers,
                 this::resetAtWarPlayers))
         .put("atWarCount",
-            ModifiableProperty.of(this::getAtWarCount))
+            MutableProperty.of(this::getAtWarCount))
         .put("destroyedTUV",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDestroyedTUV,
                 this::setDestroyedTUV,
                 this::getDestroyedTUV,
                 this::resetDestroyedTUV))
         .put("battle",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setBattle,
                 this::setBattle,
                 this::getBattle,
                 this::resetBattle))
         .put("alliedOwnershipTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAlliedOwnershipTerritories,
                 this::setAlliedOwnershipTerritories,
                 this::getAlliedOwnershipTerritories,
                 this::resetAlliedOwnershipTerritories))
         .put("directOwnershipTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDirectOwnershipTerritories,
                 this::setDirectOwnershipTerritories,
                 this::getDirectOwnershipTerritories,
                 this::resetDirectOwnershipTerritories))
         .put("alliedExclusionTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAlliedExclusionTerritories,
                 this::setAlliedExclusionTerritories,
                 this::getAlliedExclusionTerritories,
                 this::resetAlliedExclusionTerritories))
         .put("directExclusionTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDirectExclusionTerritories,
                 this::setDirectExclusionTerritories,
                 this::getDirectExclusionTerritories,
                 this::resetDirectExclusionTerritories))
         .put("enemyExclusionTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setEnemyExclusionTerritories,
                 this::setEnemyExclusionTerritories,
                 this::getEnemyExclusionTerritories,
                 this::resetEnemyExclusionTerritories))
         .put("enemySurfaceExclusionTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setEnemySurfaceExclusionTerritories,
                 this::setEnemySurfaceExclusionTerritories,
                 this::getEnemySurfaceExclusionTerritories,
                 this::resetEnemySurfaceExclusionTerritories))
         .put("directPresenceTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDirectPresenceTerritories,
                 this::setDirectPresenceTerritories,
                 this::getDirectPresenceTerritories,
                 this::resetDirectPresenceTerritories))
         .put("alliedPresenceTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setAlliedPresenceTerritories,
                 this::setAlliedPresenceTerritories,
                 this::getAlliedPresenceTerritories,
                 this::resetAlliedPresenceTerritories))
         .put("enemyPresenceTerritories",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setEnemyPresenceTerritories,
                 this::setEnemyPresenceTerritories,
                 this::getEnemyPresenceTerritories,
                 this::resetEnemyPresenceTerritories))
         .put("unitPresence",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUnitPresence,
                 this::setUnitPresence,
                 this::getUnitPresence,

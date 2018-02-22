@@ -16,7 +16,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ModifiableProperty;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -421,62 +421,62 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("unitType",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
-        .put("offence", ModifiableProperty.of(this::getOffence))
-        .put("defence", ModifiableProperty.of(this::getDefence))
-        .put("roll", ModifiableProperty.of(this::getRoll))
-        .put("strength", ModifiableProperty.of(this::getStrength))
+        .put("offence", MutableProperty.of(this::getOffence))
+        .put("defence", MutableProperty.of(this::getDefence))
+        .put("roll", MutableProperty.of(this::getRoll))
+        .put("strength", MutableProperty.of(this::getStrength))
         .put("bonus",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setBonus,
                 this::setBonus,
                 this::getBonus,
                 this::resetBonus))
         .put("number",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setNumber,
                 this::setNumber,
                 this::getNumber,
                 this::resetNumber))
-        .put("allied", ModifiableProperty.of(this::getAllied))
-        .put("enemy", ModifiableProperty.of(this::getEnemy))
+        .put("allied", MutableProperty.of(this::getAllied))
+        .put("enemy", MutableProperty.of(this::getEnemy))
         .put("bonusType",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setBonusType,
                 this::setBonusType,
                 this::getBonusType,
                 this::resetBonusType))
         .put("players",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("impArtTech",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setImpArtTech,
                 this::setImpArtTech,
                 this::getImpArtTech,
                 this::resetImpArtTech))
         .put("dice",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setDice,
                 this::getDice,
                 this::resetDice))
         .put("side",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setSide,
                 this::getSide,
                 this::resetSide))
         .put("faction",
-            ModifiableProperty.of(
+            MutableProperty.of(
                 this::setFaction,
                 this::getFaction,
                 this::resetFaction))

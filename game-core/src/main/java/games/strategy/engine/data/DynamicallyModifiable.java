@@ -9,12 +9,12 @@ import java.util.Optional;
  */
 interface DynamicallyModifiable {
 
-  Map<String, ModifiableProperty<?>> getPropertyMap();
+  Map<String, MutableProperty<?>> getPropertyMap();
 
   /**
    * A fail-fast convenience method for {@code object.getPropertyMap().get(property)}.
    */
-  default ModifiableProperty<?> getOrError(final String property) {
+  default MutableProperty<?> getOrError(final String property) {
     return Optional.ofNullable(getPropertyMap().get(property))
         .orElseThrow(() -> new IllegalStateException("Missing property definition for option: " + property));
   }

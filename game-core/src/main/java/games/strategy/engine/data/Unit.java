@@ -146,18 +146,18 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   @Override
-  public Map<String, ModifiableProperty<?>> getPropertyMap() {
-    return ImmutableMap.<String, ModifiableProperty<?>>builder()
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("owner",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setOwner,
                 this::getOwner))
-        .put("uid", ModifiableProperty.ofSimple(this::getId))
+        .put("uid", MutableProperty.ofSimple(this::getId))
         .put("hits",
-            ModifiableProperty.ofSimple(
+            MutableProperty.ofSimple(
                 this::setHits,
                 this::getHits))
-        .put("type", ModifiableProperty.ofSimple(this::getType))
+        .put("type", MutableProperty.ofSimple(this::getType))
         .build();
   }
 }
