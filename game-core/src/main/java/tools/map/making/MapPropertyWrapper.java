@@ -205,7 +205,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
    *
    * @throws IllegalStateException If no backing field for the specified property exists.
    */
-  public static Field getPropertyField(final String propertyName, final Class<?> type) {
+  private static Field getPropertyField(final String propertyName, final Class<?> type) {
     checkNotNull(propertyName);
     checkNotNull(type);
 
