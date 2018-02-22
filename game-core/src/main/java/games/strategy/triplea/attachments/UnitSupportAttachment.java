@@ -5,11 +5,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -23,6 +27,7 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
+
   private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
   // Do Not Export
@@ -95,7 +100,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitType(final HashSet<UnitType> value) {
+  public void setUnitType(final Set<UnitType> value) {
     m_unitType = value;
   }
 
@@ -252,7 +257,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayers(final ArrayList<PlayerID> value) {
+  public void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
 
@@ -414,4 +419,72 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("unitType",
+            AttachmentProperty.of(
+                this::setUnitType,
+                this::setUnitType,
+                this::getUnitType,
+                this::resetUnitType))
+        .put("offence", AttachmentProperty.of(this::getOffence))
+        .put("defence", AttachmentProperty.of(this::getDefence))
+        .put("roll", AttachmentProperty.of(this::getRoll))
+        .put("strength", AttachmentProperty.of(this::getStrength))
+        .put("bonus",
+            AttachmentProperty.of(
+                this::setBonus,
+                this::setBonus,
+                this::getBonus,
+                this::resetBonus))
+        .put("number",
+            AttachmentProperty.of(
+                this::setNumber,
+                this::setNumber,
+                this::getNumber,
+                this::resetNumber))
+        .put("allied", AttachmentProperty.of(this::getAllied))
+        .put("enemy", AttachmentProperty.of(this::getEnemy))
+        .put("bonusType",
+            AttachmentProperty.of(
+                this::setBonusType,
+                this::setBonusType,
+                this::getBonusType,
+                this::resetBonusType))
+        .put("players",
+            AttachmentProperty.of(
+                this::setPlayers,
+                this::setPlayers,
+                this::getPlayers,
+                this::resetPlayers))
+        .put("impArtTech",
+            AttachmentProperty.of(
+                this::setImpArtTech,
+                this::setImpArtTech,
+                this::getImpArtTech,
+                this::resetImpArtTech))
+        .put("dice",
+            AttachmentProperty.of(
+                this::setDice,
+                this::getDice,
+                this::resetDice))
+        .put("side",
+            AttachmentProperty.of(
+                this::setSide,
+                this::getSide,
+                this::resetSide))
+        .put("faction",
+            AttachmentProperty.of(
+                this::setFaction,
+                this::getFaction,
+                this::resetFaction))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

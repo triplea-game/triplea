@@ -5,10 +5,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -26,6 +30,9 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
+
+  // list of relationship changes to be performed if this action is performed sucessfully
+  private List<String> m_relationshipChange = new ArrayList<>();
 
   public PoliticalActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -67,9 +74,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     return paa;
   }
 
-  // list of relationship changes to be performed if this action is performed sucessfully
-  private List<String> m_relationshipChange = new ArrayList<>();
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -96,7 +100,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipChange(final ArrayList<String> value) {
+  public void setRelationshipChange(final List<String> value) {
     m_relationshipChange = value;
   }
 
@@ -145,5 +149,23 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     if (m_relationshipChange.isEmpty()) {
       throw new GameParseException("value: relationshipChange can't be empty" + thisErrorMsg());
     }
+  }
+
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
+        .put("relationshipChange",
+            AttachmentProperty.of(
+                this::setRelationshipChange,
+                this::setRelationshipChange,
+                this::getRelationshipChange,
+                this::resetRelationshipChange))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

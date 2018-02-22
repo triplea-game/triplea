@@ -1,6 +1,11 @@
 package games.strategy.triplea.attachments;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -12,6 +17,7 @@ import games.strategy.triplea.MapSupport;
 @MapSupport
 public class RelationshipTypeAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -4367286684249791984L;
+
   public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
   public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
   public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
@@ -20,6 +26,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
+
   private String m_archeType = ARCHETYPE_WAR;
   // private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
   private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
@@ -402,4 +409,86 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("archeType",
+            AttachmentProperty.of(
+                this::setArcheType,
+                this::setArcheType,
+                this::getArcheType,
+                this::resetArcheType))
+        .put("canMoveLandUnitsOverOwnedLand",
+            AttachmentProperty.of(
+                this::setCanMoveLandUnitsOverOwnedLand,
+                this::setCanMoveLandUnitsOverOwnedLand,
+                this::getCanMoveLandUnitsOverOwnedLand,
+                this::resetCanMoveLandUnitsOverOwnedLand))
+        .put("canMoveAirUnitsOverOwnedLand",
+            AttachmentProperty.of(
+                this::setCanMoveAirUnitsOverOwnedLand,
+                this::setCanMoveAirUnitsOverOwnedLand,
+                this::getCanMoveAirUnitsOverOwnedLand,
+                this::resetCanMoveAirUnitsOverOwnedLand))
+        .put("alliancesCanChainTogether",
+            AttachmentProperty.of(
+                this::setAlliancesCanChainTogether,
+                this::setAlliancesCanChainTogether,
+                this::getAlliancesCanChainTogether,
+                this::resetAlliancesCanChainTogether))
+        .put("isDefaultWarPosition",
+            AttachmentProperty.of(
+                this::setIsDefaultWarPosition,
+                this::setIsDefaultWarPosition,
+                this::getIsDefaultWarPosition,
+                this::resetIsDefaultWarPosition))
+        .put("upkeepCost",
+            AttachmentProperty.of(
+                this::setUpkeepCost,
+                this::setUpkeepCost,
+                this::getUpkeepCost,
+                this::resetUpkeepCost))
+        .put("canLandAirUnitsOnOwnedLand",
+            AttachmentProperty.of(
+                this::setCanLandAirUnitsOnOwnedLand,
+                this::setCanLandAirUnitsOnOwnedLand,
+                this::getCanLandAirUnitsOnOwnedLand,
+                this::resetCanLandAirUnitsOnOwnedLand))
+        .put("canTakeOverOwnedTerritory",
+            AttachmentProperty.of(
+                this::setCanTakeOverOwnedTerritory,
+                this::setCanTakeOverOwnedTerritory,
+                this::getCanTakeOverOwnedTerritory,
+                this::resetCanTakeOverOwnedTerritory))
+        .put("givesBackOriginalTerritories",
+            AttachmentProperty.of(
+                this::setGivesBackOriginalTerritories,
+                this::setGivesBackOriginalTerritories,
+                this::getGivesBackOriginalTerritories,
+                this::resetGivesBackOriginalTerritories))
+        .put("canMoveIntoDuringCombatMove",
+            AttachmentProperty.of(
+                this::setCanMoveIntoDuringCombatMove,
+                this::setCanMoveIntoDuringCombatMove,
+                this::getCanMoveIntoDuringCombatMove,
+                this::resetCanMoveIntoDuringCombatMove))
+        .put("canMoveThroughCanals",
+            AttachmentProperty.of(
+                this::setCanMoveThroughCanals,
+                this::setCanMoveThroughCanals,
+                this::getCanMoveThroughCanals,
+                this::resetCanMoveThroughCanals))
+        .put("rocketsCanFlyOver",
+            AttachmentProperty.of(
+                this::setRocketsCanFlyOver,
+                this::setRocketsCanFlyOver,
+                this::getRocketsCanFlyOver,
+                this::resetRocketsCanFlyOver))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

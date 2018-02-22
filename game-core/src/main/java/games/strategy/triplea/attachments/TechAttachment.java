@@ -3,7 +3,10 @@ package games.strategy.triplea.attachments;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -416,5 +419,106 @@ public class TechAttachment extends DefaultAttachment {
       return false;
     }
     return ta.getParatroopers();
+  }
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("techCost",
+            AttachmentProperty.of(
+                this::setTechCost,
+                this::setTechCost,
+                this::getTechCost,
+                this::resetTechCost))
+        .put("heavyBomber",
+            AttachmentProperty.of(
+                this::setHeavyBomber,
+                this::setHeavyBomber,
+                this::getHeavyBomber,
+                this::resetHeavyBomber))
+        .put("longRangeAir",
+            AttachmentProperty.of(
+                this::setLongRangeAir,
+                this::setLongRangeAir,
+                this::getLongRangeAir,
+                this::resetLongRangeAir))
+        .put("jetPower",
+            AttachmentProperty.of(
+                this::setJetPower,
+                this::setJetPower,
+                this::getJetPower,
+                this::resetJetPower))
+        .put("rocket",
+            AttachmentProperty.of(
+                this::setRocket,
+                this::setRocket,
+                this::getRocket,
+                this::resetRocket))
+        .put("industrialTechnology",
+            AttachmentProperty.of(
+                this::setIndustrialTechnology,
+                this::setIndustrialTechnology,
+                this::getIndustrialTechnology,
+                this::resetIndustrialTechnology))
+        .put("superSub",
+            AttachmentProperty.of(
+                this::setSuperSub,
+                this::setSuperSub,
+                this::getSuperSub,
+                this::resetSuperSub))
+        .put("destroyerBombard",
+            AttachmentProperty.of(
+                this::setDestroyerBombard,
+                this::setDestroyerBombard,
+                this::getDestroyerBombard,
+                this::resetDestroyerBombard))
+        .put("improvedArtillerySupport",
+            AttachmentProperty.of(
+                this::setImprovedArtillerySupport,
+                this::setImprovedArtillerySupport,
+                this::getImprovedArtillerySupport,
+                this::resetImprovedArtillerySupport))
+        .put("paratroopers",
+            AttachmentProperty.of(
+                this::setParatroopers,
+                this::setParatroopers,
+                this::getParatroopers,
+                this::resetParatroopers))
+        .put("increasedFactoryProduction",
+            AttachmentProperty.of(
+                this::setIncreasedFactoryProduction,
+                this::setIncreasedFactoryProduction,
+                this::getIncreasedFactoryProduction,
+                this::resetIncreasedFactoryProduction))
+        .put("warBonds",
+            AttachmentProperty.of(
+                this::setWarBonds,
+                this::setWarBonds,
+                this::getWarBonds,
+                this::resetWarBonds))
+        .put("mechanizedInfantry",
+            AttachmentProperty.of(
+                this::setMechanizedInfantry,
+                this::setMechanizedInfantry,
+                this::getMechanizedInfantry,
+                this::resetMechanizedInfantry))
+        .put("aARadar",
+            AttachmentProperty.of(
+                this::setAARadar,
+                this::setAARadar,
+                this::getAARadar,
+                this::resetAARadar))
+        .put("shipyards",
+            AttachmentProperty.of(
+                this::setShipyards,
+                this::setShipyards,
+                this::getShipyards,
+                this::resetShipyards))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

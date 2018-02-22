@@ -8074,7 +8074,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="4"/>
       <option name="defense" value="5"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -8087,7 +8087,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="7"/>
       <option name="defense" value="8"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -8581,7 +8581,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="4"/>
       <option name="defense" value="5"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -8594,7 +8594,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="7"/>
       <option name="defense" value="8"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -9087,7 +9087,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="4"/>
       <option name="defense" value="5"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -9100,7 +9100,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="7"/>
       <option name="defense" value="8"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -9593,7 +9593,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="4"/>
       <option name="defense" value="5"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -9606,7 +9606,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="7"/>
       <option name="defense" value="8"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -10114,7 +10114,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="4"/>
       <option name="defense" value="5"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -10127,7 +10127,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="7"/>
       <option name="defense" value="8"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -10714,7 +10714,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="4"/>
       <option name="defense" value="5"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>
@@ -10728,7 +10728,7 @@
       <option name="movement" value="2"/>
       <option name="attack" value="7"/>
       <option name="defense" value="8"/>
-      <option name="CarrierCost" value="1"/>
+      <option name="carrierCost" value="1"/>
       <option name="isAir" value="true"/>
       <option name="canScramble" value="true"/>
       <option name="maxScrambleDistance" value="1"/>

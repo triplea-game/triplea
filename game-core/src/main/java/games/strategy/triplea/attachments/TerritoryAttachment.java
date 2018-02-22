@@ -5,10 +5,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -26,6 +30,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 @MapSupport
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
+
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
     final List<Territory> capitalsListOriginal = new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
@@ -264,7 +269,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setIsImpassable(final String value) {
-    m_isImpassable = getBool(value);
+    setIsImpassable(getBool(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setIsImpassable(final boolean value) {
+    m_isImpassable = value;
   }
 
   public boolean getIsImpassable() {
@@ -302,7 +312,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setVictoryCity(final String value) {
-    m_victoryCity = getInt(value);
+    setVictoryCity(getInt(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setVictoryCity(final int value) {
+    m_victoryCity = value;
   }
 
   public int getVictoryCity() {
@@ -315,7 +330,12 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setOriginalFactory(final String value) {
-    m_originalFactory = getBool(value);
+    setOriginalFactory(getBool(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setOriginalFactory(final boolean value) {
+    m_originalFactory = value;
   }
 
   public boolean getOriginalFactory() {
@@ -369,7 +389,13 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUnitProduction(final String value) {
-    m_unitProduction = Integer.parseInt(value);
+    setUnitProduction(getInt(value));
+  }
+
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setUnitProduction(final int value) {
+    m_unitProduction = value;
   }
 
   public void resetUnitProduction() {
@@ -795,4 +821,123 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("capital",
+            AttachmentProperty.of(
+                this::setCapital,
+                this::setCapital,
+                this::getCapital,
+                this::resetCapital))
+        .put("originalFactory",
+            AttachmentProperty.of(
+                this::setOriginalFactory,
+                this::setOriginalFactory,
+                this::getOriginalFactory,
+                this::resetOriginalFactory))
+        .put("production",
+            AttachmentProperty.of(
+                this::setProduction,
+                this::setProduction,
+                this::getProduction,
+                this::resetProduction))
+        .put("victoryCity",
+            AttachmentProperty.of(
+                this::setVictoryCity,
+                this::setVictoryCity,
+                this::getVictoryCity,
+                this::resetVictoryCity))
+        .put("isImpassable",
+            AttachmentProperty.of(
+                this::setIsImpassable,
+                this::setIsImpassable,
+                this::getIsImpassable,
+                this::resetIsImpassable))
+        .put("originalOwner",
+            AttachmentProperty.of(
+                this::setOriginalOwner,
+                this::setOriginalOwner,
+                this::getOriginalOwner,
+                this::resetOriginalOwner))
+        .put("convoyRoute",
+            AttachmentProperty.of(
+                this::setConvoyRoute,
+                this::setConvoyRoute,
+                this::getConvoyRoute,
+                this::resetConvoyRoute))
+        .put("convoyAttached",
+            AttachmentProperty.of(
+                this::setConvoyAttached,
+                this::setConvoyAttached,
+                this::getConvoyAttached,
+                this::resetConvoyAttached))
+        .put("changeUnitOwners",
+            AttachmentProperty.of(
+                this::setChangeUnitOwners,
+                this::setChangeUnitOwners,
+                this::getChangeUnitOwners,
+                this::resetChangeUnitOwners))
+        .put("captureUnitOnEnteringBy",
+            AttachmentProperty.of(
+                this::setCaptureUnitOnEnteringBy,
+                this::setCaptureUnitOnEnteringBy,
+                this::getCaptureUnitOnEnteringBy,
+                this::resetCaptureUnitOnEnteringBy))
+        .put("navalBase",
+            AttachmentProperty.of(
+                this::setNavalBase,
+                this::setNavalBase,
+                this::getNavalBase,
+                this::resetNavalBase))
+        .put("airBase",
+            AttachmentProperty.of(
+                this::setAirBase,
+                this::setAirBase,
+                this::getAirBase,
+                this::resetAirBase))
+        .put("kamikazeZone",
+            AttachmentProperty.of(
+                this::setKamikazeZone,
+                this::setKamikazeZone,
+                this::getKamikazeZone,
+                this::resetKamikazeZone))
+        .put("unitProduction",
+            AttachmentProperty.of(
+                this::setUnitProduction,
+                this::setUnitProduction,
+                this::getUnitProduction,
+                this::resetUnitProduction))
+        .put("blockadeZone",
+            AttachmentProperty.of(
+                this::setBlockadeZone,
+                this::setBlockadeZone,
+                this::getBlockadeZone,
+                this::resetBlockadeZone))
+        .put("territoryEffect",
+            AttachmentProperty.of(
+                this::setTerritoryEffect,
+                this::setTerritoryEffect,
+                this::getTerritoryEffect,
+                this::resetTerritoryEffect))
+        .put("whenCapturedByGoesTo",
+            AttachmentProperty.of(
+                this::setWhenCapturedByGoesTo,
+                this::setWhenCapturedByGoesTo,
+                this::getWhenCapturedByGoesTo,
+                this::resetWhenCapturedByGoesTo))
+        .put("resources",
+            AttachmentProperty.of(
+                this::setResources,
+                this::setResources,
+                this::getResources,
+                this::resetResources))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

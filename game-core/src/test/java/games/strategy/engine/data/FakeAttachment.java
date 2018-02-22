@@ -2,11 +2,13 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
@@ -74,5 +76,17 @@ public final class FakeAttachment implements IAttachment {
   @Override
   public void validate(final GameData data) {
     throw new UnsupportedOperationException();
+  }
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("name", AttachmentProperty.of(this::setName, this::getName, () -> {
+        }))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

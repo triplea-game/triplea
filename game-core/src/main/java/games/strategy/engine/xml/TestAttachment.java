@@ -1,6 +1,11 @@
 package games.strategy.engine.xml;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -8,6 +13,7 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
 
 public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
+
   private String m_value;
 
   /** Creates new TestAttachment. */
@@ -48,4 +54,16 @@ public class TestAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("value", AttachmentProperty.of(this::setValue, this::getValue, this::resetValue))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

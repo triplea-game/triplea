@@ -3,9 +3,13 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -22,6 +26,7 @@ import games.strategy.util.Tuple;
 
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 5866039180681962697L;
+
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
@@ -151,7 +156,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhen(final ArrayList<Tuple<String, String>> value) {
+  public void setWhen(final List<Tuple<String, String>> value) {
     m_when = value;
   }
 
@@ -302,5 +307,44 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (m_conditions == null) {
       throw new GameParseException("must contain at least one condition: " + thisErrorMsg());
     }
+  }
+
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
+        .put("uses",
+            AttachmentProperty.of(
+                this::setUses,
+                this::setUses,
+                this::getUses,
+                this::resetUses))
+        .put("usedThisRound",
+            AttachmentProperty.of(
+                this::setUsedThisRound,
+                this::setUsedThisRound,
+                this::getUsedThisRound,
+                this::resetUsedThisRound))
+        .put("notification",
+            AttachmentProperty.of(
+                this::setNotification,
+                this::setNotification,
+                this::getNotification,
+                this::resetNotification))
+        .put("when",
+            AttachmentProperty.of(
+                this::setWhen,
+                this::setWhen,
+                this::getWhen,
+                this::resetWhen))
+        .put("trigger",
+            AttachmentProperty.of(
+                l -> {
+                  throw new IllegalStateException("Can't set trigger directly");
+                },
+                this::setTrigger,
+                this::getTrigger,
+                this::resetTrigger))
+        .build();
   }
 }

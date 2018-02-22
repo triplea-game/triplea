@@ -962,8 +962,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="9 Sea Zone"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="9 Sea Zone"/>
             <option name="navalBase" value="true"/>
             <option name="airBase" value="true"/>
         </attachment>
@@ -972,8 +972,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="1"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="13 Sea Zone"/>    
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="13 Sea Zone"/>    
             <option name="navalBase" value="true"/>       
         </attachment>
         
@@ -1030,8 +1030,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="1"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="39 Sea Zone"/>   
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="39 Sea Zone"/>   
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Ryukyu"
@@ -1045,8 +1045,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
-            <option name="ConvoyRoute" value="true"/>  
-            <option name="ConvoyAttached" value="38 Sea Zone"/> 
+            <option name="convoyRoute" value="true"/>  
+            <option name="convoyAttached" value="38 Sea Zone"/> 
             <option name="navalBase" value="true"/>
             <option name="airBase" value="true"/>
         </attachment>
@@ -1055,8 +1055,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="4"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="43 Sea Zone"/>  
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="43 Sea Zone"/>  
             <option name="navalBase" value="true"/>          
         </attachment>
         
@@ -1064,24 +1064,24 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="44 Sea Zone"/>            
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="44 Sea Zone"/>            
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Sumatra"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="47 Sea Zone"/>            
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="47 Sea Zone"/>            
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Malaya"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="4"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="46 Sea Zone"/>  
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="46 Sea Zone"/>  
             <option name="navalBase" value="true"/>          
         </attachment>
         
@@ -1095,8 +1095,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
-            <option name="ConvoyRoute" value="true"/>  
-            <option name="ConvoyAttached" value="45 Sea Zone"/>
+            <option name="convoyRoute" value="true"/>  
+            <option name="convoyAttached" value="45 Sea Zone"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="Burma"
@@ -1125,8 +1125,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="3"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="37 Sea Zone"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="37 Sea Zone"/>
             <option name="originalOwner" value="Chinese"/>
         </attachment>
         
@@ -1141,8 +1141,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="2"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="36 Sea Zone"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="36 Sea Zone"/>
             <option name="originalOwner" value="Chinese"/>
         </attachment>
         
@@ -1367,8 +1367,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Korea"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Korea"/>
             <option name="kamikazeZone" value="true"/>
         </attachment>        
         
@@ -1376,8 +1376,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Shantung"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Shantung"/>
             <option name="kamikazeZone" value="true"/>
         </attachment>        
         
@@ -1385,8 +1385,8 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="French Indo-China"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="French Indo-China"/>
         </attachment>
         
         <!-- Add Japanese Kamikaze Zone attachments -->        
@@ -1437,32 +1437,32 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Sumatra"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Sumatra"/>
         </attachment>      
           
         <attachment name="territoryAttachment" attachTo="43 Sea Zone"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Java"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Java"/>
         </attachment>        
         
         <attachment name="territoryAttachment" attachTo="39 Sea Zone"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Celebes"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Celebes"/>
         </attachment>       
          
         <attachment name="territoryAttachment" attachTo="13 Sea Zone"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="New Zealand"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="New Zealand"/>
         </attachment>
         
          <!-- Add British Convoy Route attachments -->         
@@ -1470,16 +1470,16 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Malaya"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Malaya"/>
         </attachment>        
         
         <attachment name="territoryAttachment" attachTo="44 Sea Zone"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Borneo"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Borneo"/>
         </attachment>
         
         <!-- Add American Convoy Route attachments -->         
@@ -1487,16 +1487,16 @@ Coded by Iron__Cross
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Philippines"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Philippines"/>
         </attachment>        
         
         <attachment name="territoryAttachment" attachTo="9 Sea Zone"
             javaClass="games.strategy.triplea.attachments.TerritoryAttachment"
             type="territory">
             <option name="production" value="0"/>
-            <option name="ConvoyRoute" value="true"/>
-            <option name="ConvoyAttached" value="Hawaiian"/>
+            <option name="convoyRoute" value="true"/>
+            <option name="convoyAttached" value="Hawaiian"/>
         </attachment>
         
         <attachment name="territoryAttachment" attachTo="30 Sea Zone"
