@@ -88,7 +88,7 @@ public interface AttachmentProperty<T> {
   static <T> AttachmentProperty<T> of(final Supplier<T> getter) {
     return of(
         t -> throwIllegalStateException("No Setter"),
-        t -> throwIllegalStateException("No Setter"),
+        t -> throwIllegalStateException("No String Setter"),
         getter,
         () -> throwIllegalStateException("No Resetter"));
   }
@@ -104,6 +104,28 @@ public interface AttachmentProperty<T> {
         stringSetter,
         () -> throwIllegalStateException("No Getter"),
         () -> throwIllegalStateException("No Resetter"));
+  }
+
+
+  /**
+   * Convenience method to create an instance of this interface that just contains a direct
+   * setter and getter. And no support for Strings as secondary setter.
+   */
+  static <T> AttachmentProperty<T> ofSimple(
+      final GameParsingConsumer<T> setter,
+      final Supplier<T> getter) {
+    return of(setter,
+        o -> throwIllegalStateException("No String Setter"),
+        getter,
+        () -> throwIllegalStateException("No Resetter"));
+  }
+
+
+  /**
+   * Convenience method to create an instance of this interface with no resetter.
+   */
+  static <T> AttachmentProperty<T> ofSimple(final Supplier<T> getter) {
+    return ofSimple(e -> throwIllegalStateException("No Setter"), getter);
   }
 
   /**

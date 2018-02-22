@@ -1,9 +1,8 @@
 package games.strategy.engine.data;
 
 import java.io.Serializable;
-import java.util.Map;
 
-public interface IAttachment extends Serializable {
+public interface IAttachment extends Serializable, DynamicallyModifiable {
   /** each implementing class NEEDS to have such an constructor, otherwise the parsing in GameParser won't work */
   Class<?>[] attachmentConstructorParameter = new Class<?>[] {String.class, Attachable.class, GameData.class};
 
@@ -24,6 +23,4 @@ public interface IAttachment extends Serializable {
   String getName();
 
   void setName(String name);
-
-  Map<String, AttachmentProperty<?>> getPropertyMap();
 }

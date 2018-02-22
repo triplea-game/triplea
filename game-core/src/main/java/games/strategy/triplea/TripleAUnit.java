@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
+import com.google.common.collect.ImmutableMap;
+
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -95,7 +99,7 @@ public class TripleAUnit extends Unit {
     super(type, owner, data);
   }
 
-  public Unit getTransportedBy() {
+  public TripleAUnit getTransportedBy() {
     return m_transportedBy;
   }
 
@@ -511,5 +515,92 @@ public class TripleAUnit extends Unit {
     }
     changes.add(ChangeFactory.bombingUnitDamage(damageMap));
     return changes;
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.getPropertyMap())
+        .put("transportedBy",
+            AttachmentProperty.ofSimple(
+                this::setTransportedBy,
+                this::getTransportedBy))
+        .put("unloaded",
+            AttachmentProperty.ofSimple(
+                this::setUnloaded,
+                this::getUnloaded))
+        .put("wasLoadedThisTurn",
+            AttachmentProperty.ofSimple(
+                this::setWasLoadedThisTurn,
+                this::getWasLoadedThisTurn))
+        .put("unloadedTo",
+            AttachmentProperty.ofSimple(
+                this::setUnloadedTo,
+                this::getUnloadedTo))
+        .put("wasUnloadedInCombatPhase",
+            AttachmentProperty.ofSimple(
+                this::setWasUnloadedInCombatPhase,
+                this::getWasUnloadedInCombatPhase))
+        .put("alreadyMoved",
+            AttachmentProperty.ofSimple(
+                this::setAlreadyMoved,
+                this::getAlreadyMoved))
+        .put("bonusMovement",
+            AttachmentProperty.ofSimple(
+                this::setBonusMovement,
+                this::getBonusMovement))
+        .put("unitDamage",
+            AttachmentProperty.ofSimple(
+                this::setUnitDamage,
+                this::getUnitDamage))
+        .put("submerged",
+            AttachmentProperty.ofSimple(
+                this::setSubmerged,
+                this::getSubmerged))
+        .put("originalOwner",
+            AttachmentProperty.ofSimple(
+                this::setOriginalOwner,
+                this::getOriginalOwner))
+        .put("wasInCombat",
+            AttachmentProperty.ofSimple(
+                this::setWasInCombat,
+                this::getWasInCombat))
+        .put("wasLoadedAfterCombat",
+            AttachmentProperty.ofSimple(
+                this::setWasLoadedAfterCombat,
+                this::getWasLoadedAfterCombat))
+        .put("wasAmphibious",
+            AttachmentProperty.ofSimple(
+                this::setWasAmphibious,
+                this::getWasAmphibious))
+        .put("originatedFrom",
+            AttachmentProperty.ofSimple(
+                this::setOriginatedFrom,
+                this::getOriginatedFrom))
+        .put("wasScrambled",
+            AttachmentProperty.ofSimple(
+                this::setWasScrambled,
+                this::getWasScrambled))
+        .put("maxScrambleCount",
+            AttachmentProperty.ofSimple(
+                this::setMaxScrambleCount,
+                this::getMaxScrambleCount))
+        .put("wasInAirBattle",
+            AttachmentProperty.ofSimple(
+                this::setWasInAirBattle,
+                this::getWasInAirBattle))
+        .put("disabled",
+            AttachmentProperty.ofSimple(
+                this::setDisabled,
+                this::getDisabled))
+        .put("launched",
+            AttachmentProperty.ofSimple(
+                this::setLaunched,
+                this::getLaunched))
+        .put("airborne",
+            AttachmentProperty.ofSimple(
+                this::setAirborne,
+                this::getAirborne))
+        .build();
   }
 }

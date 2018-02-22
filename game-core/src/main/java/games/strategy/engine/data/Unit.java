@@ -2,13 +2,16 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
 import java.util.Objects;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attachments.UnitAttachment;
 
-public class Unit extends GameDataComponent {
+public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
   private PlayerID m_owner;
   private final GUID m_uid;
@@ -140,5 +143,21 @@ public class Unit extends GameDataComponent {
         System.err.println(errorMessage);
       }
     }
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("owner",
+            AttachmentProperty.ofSimple(
+                this::setOwner,
+                this::getOwner))
+        .put("uid", AttachmentProperty.ofSimple(this::getId))
+        .put("hits",
+            AttachmentProperty.ofSimple(
+                this::setHits,
+                this::getHits))
+        .put("type", AttachmentProperty.ofSimple(this::getType))
+        .build();
   }
 }
