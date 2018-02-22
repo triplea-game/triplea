@@ -662,13 +662,11 @@ public class HeadlessGameServer {
   /**
    * Launches a bot server. Most properties are passed via command line-like arguments.
    */
-  /*
-   * TODO: get properties from a configuration file instead of CLI.
-   */
   public static void main(final String[] args) {
     ClientSetting.initialize();
 
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
+    // TODO: get properties from a configuration file instead of CLI.
     if (!new ArgParser(getProperties()).handleCommandLineArgs(args)) {
       usage();
       return;
