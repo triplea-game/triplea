@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -106,7 +108,7 @@ final class ExportMenu extends JMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
+    try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(xmlFile);
     } catch (final IOException e1) {
       ClientLogger.logQuietly("Failed to write XML: " + chooser.getSelectedFile().getAbsolutePath(), e1);
@@ -368,7 +370,7 @@ final class ExportMenu extends JMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
+    try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(text.toString());
     } catch (final IOException e1) {
       ClientLogger.logQuietly("Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
@@ -387,7 +389,7 @@ final class ExportMenu extends JMenu {
       if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
         return;
       }
-      try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
+      try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
         writer.write(
             HelpMenu.getUnitStatsTable(gameData, uiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
                 .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));

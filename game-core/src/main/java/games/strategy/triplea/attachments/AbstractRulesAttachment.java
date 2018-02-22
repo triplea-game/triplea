@@ -248,6 +248,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setTurns(final String turns) throws GameParseException {
+    setRounds(turns);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTurns(final HashMap<Integer, Integer> value) {
     m_turns = value;
   }

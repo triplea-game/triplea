@@ -69,13 +69,7 @@ public class ThreadPoolTest {
       threads.add(t);
       t.start();
     }
-    for (final Thread thread : threads) {
-      try {
-        thread.join();
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
+    threads.forEach(Interruptibles::join);
   }
 
   private static void threadTestBlock() {

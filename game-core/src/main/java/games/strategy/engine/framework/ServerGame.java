@@ -50,6 +50,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.util.Interruptibles;
 
 /**
  * Represents a running game.
@@ -255,13 +256,9 @@ public class ServerGame extends AbstractGame {
       while (!isGameOver) {
         if (delegateExecutionStopped) {
           // the delegate has told us to stop stepping through game steps
-          try {
-            // dont let this method return, as this method returning signals
-            // that the game is over.
-            delegateExecutionStoppedLatch.await();
-          } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
+          // dont let this method return, as this method returning signals
+          // that the game is over.
+          Interruptibles.await(delegateExecutionStoppedLatch);
         } else {
           runStep(false);
         }

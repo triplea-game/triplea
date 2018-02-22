@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -328,7 +329,7 @@ public class MapPropertiesMaker extends JFrame {
       }
       final String stringToWrite = getOutPutString();
       try (OutputStream sink = new FileOutputStream(fileName);
-          Writer out = new OutputStreamWriter(sink)) {
+          Writer out = new OutputStreamWriter(sink, StandardCharsets.UTF_8)) {
         out.write(stringToWrite);
       }
       ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());

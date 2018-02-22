@@ -290,22 +290,18 @@ public class GameRunner {
   }
 
   private static void loadGame() {
-    try {
-      newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
-        gameSelectorModel.loadDefaultGameSameThread();
-        final String fileName = System.getProperty(TRIPLEA_GAME, "");
-        if (fileName.length() > 0) {
-          gameSelectorModel.load(new File(fileName), mainFrame);
-        }
+    Interruptibles.await(() -> newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
+      gameSelectorModel.loadDefaultGameSameThread();
+      final String fileName = System.getProperty(TRIPLEA_GAME, "");
+      if (fileName.length() > 0) {
+        gameSelectorModel.load(new File(fileName), mainFrame);
+      }
 
-        final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
-        if (!downloadableMap.isEmpty()) {
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
-        }
-      });
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+      final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
+      if (!downloadableMap.isEmpty()) {
+        SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+      }
+    }));
   }
 
   private static void checkLocalSystem() {
