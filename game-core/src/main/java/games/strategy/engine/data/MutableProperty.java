@@ -152,11 +152,7 @@ public class MutableProperty<T> {
    * Convenience method to create an instance of this interface that only sets via the string value.
    */
   public static <T> MutableProperty<T> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(
-        t -> throwIllegalStateException("No Setter"),
-        stringSetter,
-        () -> throwIllegalStateException("No Getter"),
-        () -> throwIllegalStateException("No Resetter"));
+    return of(noSetter(), stringSetter, noGetter(), noResetter());
   }
 
   /**
