@@ -22,7 +22,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -46,16 +45,12 @@ public class TabbedProductionPanel extends ProductionPanel {
   protected void initLayout() {
     this.removeAll();
     this.setLayout(new GridBagLayout());
-    add(
-        new JLabel(String.format(
-            "<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "
-                + "(Total Resources: %s)</html>",
-            ResourceCollectionUtils.getProductionResources(getResources()))),
+    add(new JLabel("Attack/Defense/Movement"),
         new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
             new Insets(8, 8, 8, 0), 0, 0));
     final JTabbedPane tabs = new JTabbedPane();
     add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-        new Insets(8, 8, 8, 0), 0, 0));
+        new Insets(8, 8, 8, 8), 0, 0));
     final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(id, rules);
     final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
     calculateRowsAndColumns(properties, largestList(ruleLists));
@@ -64,10 +59,13 @@ public class TabbedProductionPanel extends ProductionPanel {
         tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
       }
     }
-    add(left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    final JPanel totals = new JPanel();
+    totals.add(left);
+    totals.add(remainingResources);
+    add(totals, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(8, 8, 0, 12), 0, 0));
     done = new JButton(doneAction);
-    add(done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    add(done, new GridBagConstraints(0, 3, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(0, 0, 8, 0), 0, 0));
     tabs.validate();
     this.validate();
