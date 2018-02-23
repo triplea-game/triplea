@@ -232,7 +232,7 @@ public abstract class TechAdvance extends NamedAttachable {
    */
   public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player) {
     final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
-    if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
+    if ((technologyFrontier != null) && !technologyFrontier.isEmpty()) {
       return (player != null) ? player.getTechnologyFrontierList().getAdvances() : technologyFrontier.getTechs();
     }
     // the game has no techs, just return empty list
@@ -251,11 +251,11 @@ public abstract class TechAdvance extends NamedAttachable {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof TechAdvance)) {
+    if ((o == null) || !(o instanceof TechAdvance)) {
       return false;
     }
     final TechAdvance other = (TechAdvance) o;
-    if (other.getName() == null || getName() == null) {
+    if ((other.getName() == null) || (getName() == null)) {
       return false;
     }
     return getName().equals(other.getName());

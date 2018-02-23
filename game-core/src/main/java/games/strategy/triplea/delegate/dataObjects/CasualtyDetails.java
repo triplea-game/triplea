@@ -24,7 +24,8 @@ public class CasualtyDetails extends CasualtyList {
   }
 
   public CasualtyDetails(final CasualtyList casualties, final boolean autoCalculated) {
-    super((casualties == null ? null : casualties.getKilled()), (casualties == null ? null : casualties.getDamaged()));
+    super(((casualties == null) ? null : casualties.getKilled()),
+        ((casualties == null) ? null : casualties.getDamaged()));
     m_autoCalculated = autoCalculated;
   }
 

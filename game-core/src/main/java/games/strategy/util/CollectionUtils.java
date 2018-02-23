@@ -71,7 +71,7 @@ public final class CollectionUtils {
    * always returns a new collection.
    */
   public static <T> List<T> intersection(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c2 == null) {
+    if ((c1 == null) || (c2 == null)) {
       return new ArrayList<>();
     }
     return c1.stream().filter(c2::contains).collect(Collectors.toList());
@@ -91,10 +91,10 @@ public final class CollectionUtils {
    * Always returns a new collection.
    */
   public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c1.size() == 0) {
+    if ((c1 == null) || (c1.size() == 0)) {
       return new ArrayList<>(0);
     }
-    if (c2 == null || c2.size() == 0) {
+    if ((c2 == null) || (c2.size() == 0)) {
       return new ArrayList<>(c1);
     }
     return c1.stream().filter(Util.not(c2::contains)).collect(Collectors.toList());
@@ -107,6 +107,6 @@ public final class CollectionUtils {
    * Note that (a,a,b) (a,b,b) are equal.
    */
   public static <T> boolean equals(final Collection<T> c1, final Collection<T> c2) {
-    return Objects.equals(c1, c2) || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
+    return Objects.equals(c1, c2) || ((c1.size() == c2.size()) && c2.containsAll(c1) && c1.containsAll(c2));
   }
 }

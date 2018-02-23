@@ -40,7 +40,7 @@ public class JButtonBuilder {
    */
   public JButton build() {
     Preconditions.checkNotNull(title);
-    Preconditions.checkState(!enabled || actionListener != null,
+    Preconditions.checkState(!enabled || (actionListener != null),
         "Was enabled? " + enabled + ", action listener == null? " + (actionListener == null));
 
     final JButton button = new JButton(title);

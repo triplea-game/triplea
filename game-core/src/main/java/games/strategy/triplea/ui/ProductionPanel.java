@@ -152,12 +152,16 @@ public class ProductionPanel extends JPanel {
     scroll
         .setPreferredSize(
             new Dimension(
-                (scroll.getPreferredSize().width > availWidthRules
-                    ? availWidthRules
-                    : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 25 : 0)),
-                (scroll.getPreferredSize().height > availHeightRules ? availHeightRules
-                    : scroll.getPreferredSize().height
-                        + (scroll.getPreferredSize().width > availWidthRules ? 25 : 0))));
+                ((scroll.getPreferredSize().width > availWidthRules)
+                    ?
+                    availWidthRules
+                    :
+                    (scroll.getPreferredSize().width + ((scroll.getPreferredSize().height > availHeightRules)
+                        ? 25
+                        : 0))),
+                ((scroll.getPreferredSize().height > availHeightRules) ? availHeightRules
+                    : (scroll.getPreferredSize().height
+                    + ((scroll.getPreferredSize().width > availWidthRules) ? 25 : 0)))));
     this.add(scroll, new GridBagConstraints(0, 1, 30, 1, 100, 100, GridBagConstraints.WEST, GridBagConstraints.BOTH,
         new Insets(8, 8, 8, 4), 0, 0));
     // final int startY = m_rules.size() / rows;
@@ -212,7 +216,7 @@ public class ProductionPanel extends JPanel {
       return bidCollection;
     }
 
-    return (id == null || id.isNull()) ? new ResourceCollection(data) : id.getResources();
+    return ((id == null) || id.isNull()) ? new ResourceCollection(data) : id.getResources();
   }
 
   class Rule {
@@ -246,9 +250,9 @@ public class ProductionPanel extends JPanel {
           info.setText(attack + "/" + defense + "/" + movement);
           tooltip.append(type.getName()).append(": ").append(type.getTooltip(id));
           name.setText(type.getName());
-          if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
+          if ((attach.getConsumesUnits() != null) && (attach.getConsumesUnits().totalValues() == 1)) {
             name.setForeground(Color.CYAN);
-          } else if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() > 1) {
+          } else if ((attach.getConsumesUnits() != null) && (attach.getConsumesUnits().totalValues() > 1)) {
             name.setForeground(Color.BLUE);
           } else {
             name.setForeground(defaultForegroundLabelColor);

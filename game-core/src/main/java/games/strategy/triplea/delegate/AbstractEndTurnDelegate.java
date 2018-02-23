@@ -139,7 +139,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final Change change = ChangeFactory.changeResourcesChange(player, pus, toAdd);
       bridge.addChange(change);
 
-      if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null) {
+      if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && (pa != null)) {
         final Change changeVp = (ChangeFactory.attachmentPropertyChange(pa,
             (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
         final Change changeCaptureVp = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
@@ -160,7 +160,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       int relationshipUpkeepCostPercentage = 0;
       for (final Relationship r : data.getRelationshipTracker().getRelationships(player)) {
         final String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
-        if (upkeep.length == 1 || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT)) {
+        if ((upkeep.length == 1) || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT)) {
           relationshipUpkeepCostFlat += Integer.parseInt(upkeep[0]);
         } else if (upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_PERCENTAGE)) {
           relationshipUpkeepCostPercentage += Integer.parseInt(upkeep[0]);
@@ -169,8 +169,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       relationshipUpkeepCostPercentage = Math.min(100, relationshipUpkeepCostPercentage);
       int relationshipUpkeepTotalCost = 0;
       if (relationshipUpkeepCostPercentage != 0) {
-        final float gainedPus = Math.max(0, currentPUs - leftOverPUs);
-        relationshipUpkeepTotalCost += Math.round(gainedPus * (relationshipUpkeepCostPercentage) / 100f);
+        relationshipUpkeepTotalCost += Math.round((gainedPus * (relationshipUpkeepCostPercentage)) / 100f);
       }
       if (relationshipUpkeepCostFlat != 0) {
         relationshipUpkeepTotalCost += relationshipUpkeepCostFlat;
@@ -193,7 +192,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (GameStepPropertiesHelper.isRepairUnits(data)) {
       MoveDelegate.repairMultipleHitPointUnits(bridge, bridge.getPlayerId());
     }
-    if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null
+    if (isGiveUnitsByTerritory() && (pa != null) && (pa.getGiveUnitControl() != null)
         && !pa.getGiveUnitControl().isEmpty()) {
       changeUnitOwnership(bridge);
     }
@@ -202,7 +201,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   protected void showEndTurnReport(final String endTurnReport) {
-    if (endTurnReport != null && endTurnReport.trim().length() > 6 && !player.isAi()) {
+    if ((endTurnReport != null) && (endTurnReport.trim().length() > 6) && !player.isAi()) {
       final ITripleAPlayer currentPlayer = getRemotePlayer(player);
       final String playerName = player.getName();
       currentPlayer.reportMessage("<html><b style=\"font-size:120%\" >" + END_TURN_REPORT_STRING + playerName
@@ -244,11 +243,12 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private int rollWarBonds(final IDelegateBridge delegateBridge, final PlayerID player, final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
-    if (sides <= 0 || count <= 0) {
+    if ((sides <= 0) || (count <= 0)) {
       return 0;
     }
     final String annotation = player.getName() + " rolling to resolve War Bonds: ";
-    final DiceRoll dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
+    final DiceRoll dice;
+    dice = DiceRoll.rollNDice(delegateBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
     int total = 0;
     for (int i = 0; i < dice.size(); i++) {
       total += dice.getDie(i).getValue() + 1;
@@ -261,7 +261,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
-    if (sides <= 0 || count <= 0) {
+    if ((sides <= 0) || (count <= 0)) {
       return "";
     }
     // basically, if we are sharing our technology with someone, and we have warbonds but they do not, then we roll our
@@ -272,7 +272,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return "";
     }
     final Collection<PlayerID> shareWith = playerattachment.getShareTechnology();
-    if (shareWith == null || shareWith.isEmpty()) {
+    if ((shareWith == null) || shareWith.isEmpty()) {
       return "";
     }
     // take first one
@@ -280,7 +280,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     for (final PlayerID p : shareWith) {
       final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
       final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
-      if (diceSides <= 0 && diceCount <= 0) {
+      if ((diceSides <= 0) && (diceCount <= 0)) {
         // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing
         // all tech (because
         // they cannot have this tech)
@@ -324,7 +324,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     for (final Territory currTerritory : territories) {
       final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory);
       // if ownership should change in this territory
-      if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty()) {
+      if ((ta != null) && (ta.getChangeUnitOwners() != null) && !ta.getChangeUnitOwners().isEmpty()) {
         final Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();
         for (final PlayerID terrNewOwner : terrNewOwners) {
           if (possibleNewOwners.contains(terrNewOwner)) {
@@ -382,7 +382,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private int getBlockadeProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge bridge,
       final StringBuilder endTurnReport) {
     final PlayerAttachment playerRules = PlayerAttachment.get(player);
-    if (playerRules != null && playerRules.getImmuneToBlockade()) {
+    if ((playerRules != null) && playerRules.getImmuneToBlockade()) {
       return 0;
     }
     final GameMap map = data.getMap();
@@ -433,7 +433,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
           for (final int d : dice) {
             // we are zero based
             final int roll = d + 1;
-            loss += (roll <= 3 ? roll : 0);
+            loss += ((roll <= 3) ? roll : 0);
           }
         }
       } else {
@@ -448,7 +448,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       damagePerBlockadeZone.put(b, Tuple.of(lossForBlockade, viableNeighbors));
       totalLoss += lossForBlockade;
     }
-    if (totalLoss <= 0 && !rolledDice) {
+    if ((totalLoss <= 0) && !rolledDice) {
       return 0;
     }
     // now we need to make sure that we didn't deal more damage than the territories are worth, in the case of having
@@ -465,7 +465,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       Collections.sort(terrsLosingIncome,
           getSingleNeighborBlockadesThenHighestToLowestProduction(blockadeZonesSorted, map));
       final Iterator<Territory> iter = terrsLosingIncome.iterator();
-      while (damageForZone > 0 && iter.hasNext()) {
+      while ((damageForZone > 0) && iter.hasNext()) {
         final Territory t = iter.next();
         final int maxProductionLessPreviousDamage = TerritoryAttachment.getProduction(t) - totalDamageTracker.getInt(t);
         final int damageToTerr = Math.min(damageForZone, maxProductionLessPreviousDamage);
@@ -474,7 +474,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
     }
     final int realTotalLoss = Math.max(0, totalDamageTracker.totalValues());
-    if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || (rolledDice && !transcripts.isEmpty()))) {
+    if (rollDiceForBlockadeDamage && ((realTotalLoss > 0) || (rolledDice && !transcripts.isEmpty()))) {
       final String mainline = "Total Cost from Convoy Blockades: " + realTotalLoss;
       bridge.getHistoryWriter().startEvent(mainline);
       endTurnReport.append(mainline).append("<br />");
@@ -521,7 +521,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(
       final Collection<Territory> blockadeZones, final GameMap map) {
     return (t1, t2) -> {
-      if (t1 == t2 || (t1 == null && t2 == null)) {
+      if ((t1 == t2) || ((t1 == null) && (t2 == null))) {
         return 0;
       }
       if (t1 == null) {
@@ -540,15 +540,15 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final Collection<Territory> neighborBlockades2 = new ArrayList<>(map.getNeighbors(t2));
       neighborBlockades2.retainAll(blockadeZones);
       final int n2 = neighborBlockades2.size();
-      if (n1 == 1 && n2 != 1) {
+      if ((n1 == 1) && (n2 != 1)) {
         return -1;
       }
-      if (n2 == 1 && n1 != 1) {
+      if ((n2 == 1) && (n1 != 1)) {
         return 1;
       }
       final TerritoryAttachment ta1 = TerritoryAttachment.get(t1);
       final TerritoryAttachment ta2 = TerritoryAttachment.get(t2);
-      if (ta1 == null && ta2 == null) {
+      if ((ta1 == null) && (ta2 == null)) {
         return 0;
       }
       if (ta1 == null) {
@@ -572,7 +572,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private static Comparator<Territory> getSingleBlockadeThenHighestToLowestBlockadeDamage(
       final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone) {
     return (t1, t2) -> {
-      if (t1 == t2 || (t1 == null && t2 == null)) {
+      if ((t1 == t2) || ((t1 == null) && (t2 == null))) {
         return 0;
       }
       if (t1 == null) {
@@ -588,10 +588,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final Tuple<Integer, List<Territory>> tuple2 = damagePerBlockadeZone.get(t2);
       final int num1 = tuple1.getSecond().size();
       final int num2 = tuple2.getSecond().size();
-      if (num1 == 1 && num2 != 1) {
+      if ((num1 == 1) && (num2 != 1)) {
         return -1;
       }
-      if (num2 == 1 && num1 != 1) {
+      if ((num2 == 1) && (num1 != 1)) {
         return 1;
       }
       final int d1 = tuple1.getFirst();

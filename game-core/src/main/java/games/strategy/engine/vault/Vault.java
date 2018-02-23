@@ -299,7 +299,7 @@ public class Vault {
       throw new IllegalArgumentException("Must suppply positive timeout argument");
     }
     final long endTime = timeoutMs + System.currentTimeMillis();
-    while (System.currentTimeMillis() < endTime && !knowsAbout(id)) {
+    while ((System.currentTimeMillis() < endTime) && !knowsAbout(id)) {
       synchronized (waitForLock) {
         if (knowsAbout(id)) {
           return;
@@ -325,7 +325,7 @@ public class Vault {
     }
     final long startTime = System.currentTimeMillis();
     long leftToWait = timeout;
-    while (leftToWait > 0 && !isUnlocked(id)) {
+    while ((leftToWait > 0) && !isUnlocked(id)) {
       synchronized (waitForLock) {
         if (isUnlocked(id)) {
           return;
@@ -335,7 +335,7 @@ public class Vault {
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
         }
-        leftToWait = startTime + timeout - System.currentTimeMillis();
+        leftToWait = (startTime + timeout) - System.currentTimeMillis();
       }
     }
   }

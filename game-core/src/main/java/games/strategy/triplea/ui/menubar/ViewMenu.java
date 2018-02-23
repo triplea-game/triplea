@@ -357,21 +357,21 @@ final class ViewMenu extends JMenu {
     });
     noneButton.addActionListener(e -> {
       if (noneButton.isSelected()
-          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.LOW) {
+          && (uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.LOW)) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.LOW);
         frame.getMapPanel().resetMap();
       }
     });
     mediumButton.addActionListener(e -> {
       if (mediumButton.isSelected()
-          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.MEDIUM) {
+          && (uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.MEDIUM)) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.MEDIUM);
         frame.getMapPanel().resetMap();
       }
     });
     highButton.addActionListener(e -> {
       if (highButton.isSelected()
-          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.HIGH) {
+          && (uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.HIGH)) {
         uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.HIGH);
         frame.getMapPanel().resetMap();
       }

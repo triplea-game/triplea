@@ -386,7 +386,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   private boolean actionRollSucceeds(final PoliticalActionAttachment paa) {
     final int hitTarget = paa.getChanceToHit();
     final int diceSides = paa.getChanceDiceSides();
-    if (diceSides <= 0 || hitTarget >= diceSides) {
+    if ((diceSides <= 0) || (hitTarget >= diceSides)) {
       paa.changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, true, true);
       return true;
     } else if (hitTarget <= 0) {

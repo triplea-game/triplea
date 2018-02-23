@@ -23,7 +23,7 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final File file = GameSelectorPanel.selectGameFile();
-    if (file == null || !file.exists()) {
+    if ((file == null) || !file.exists()) {
       return;
     }
     clientMessenger.changeToGameSave(file, file.getName());

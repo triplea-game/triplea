@@ -97,7 +97,7 @@ public class ProTerritoryValueUtils {
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaTerritories) {
           final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyEnemySeaTerritory,
               ProMatches.territoryCanMoveSeaUnits(player, data, true));
-          if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+          if ((route == null) || (MoveValidator.validateCanal(route, null, player, data) != null)) {
             continue;
           }
           final int distance = route.numberOfSteps();
@@ -114,7 +114,7 @@ public class ProTerritoryValueUtils {
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaUnitTerritories) {
           final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyEnemySeaTerritory,
               ProMatches.territoryCanMoveSeaUnits(player, data, true));
-          if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+          if ((route == null) || (MoveValidator.validateCanal(route, null, player, data) != null)) {
             continue;
           }
           final int distance = route.numberOfSteps();
@@ -126,7 +126,7 @@ public class ProTerritoryValueUtils {
         }
 
         // Set final values
-        final double value = 100 * nearbySeaProductionValue + nearbyEnemySeaUnitValue;
+        final double value = (100 * nearbySeaProductionValue) + nearbyEnemySeaUnitValue;
         territoryValueMap.put(t, value);
       } else if (t.isWater()) {
         territoryValueMap.put(t, 0.0);
@@ -165,7 +165,7 @@ public class ProTerritoryValueUtils {
             player, ProUtils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
     final int numPotentialEnemyTerritories = CollectionUtils.countMatches(allTerritories,
         Matches.isTerritoryOwnedBy(ProUtils.getPotentialEnemyPlayers(player)));
-    if (enemyCapitalsAndFactories.size() * 2 >= numPotentialEnemyTerritories) {
+    if ((enemyCapitalsAndFactories.size() * 2) >= numPotentialEnemyTerritories) {
       enemyCapitalsAndFactories.clear();
     }
     enemyCapitalsAndFactories.addAll(ProUtils.getLiveEnemyCapitals(data, player));
@@ -184,7 +184,7 @@ public class ProTerritoryValueUtils {
       // Get player production if capital
       double playerProduction = 0;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta != null && ta.isCapital()) {
+      if ((ta != null) && ta.isCapital()) {
         playerProduction = ProUtils.getPlayerProduction(t.getOwner(), data);
       }
 
@@ -192,8 +192,8 @@ public class ProTerritoryValueUtils {
       final int isNeutral = t.getOwner().isNull() ? 1 : 0;
       final int landMassSize = 1 + data.getMap()
           .getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)).size();
-      final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32 / (1 + 3 * isNeutral)
-          * landMassSize / maxLandMassSize;
+      final double value = (((Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32) / (1 + (3 * isNeutral)))
+          * landMassSize) / maxLandMassSize;
       enemyCapitalsAndFactoriesMap.put(t, value);
     }
 
@@ -250,7 +250,7 @@ public class ProTerritoryValueUtils {
     }
     final int landMassSize = 1
         + data.getMap().getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)).size();
-    double value = nearbyEnemyValue * landMassSize / maxLandMassSize + capitalOrFactoryValue;
+    double value = ((nearbyEnemyValue * landMassSize) / maxLandMassSize) + capitalOrFactoryValue;
     if (ProMatches.territoryHasInfraFactoryAndIsLand().test(t)) {
       value *= 1.1; // prefer territories with factories
     }
@@ -274,7 +274,7 @@ public class ProTerritoryValueUtils {
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final Route route = data.getMap().getRoute_IgnoreEnd(t, enemyCapitalOrFactory,
           ProMatches.territoryCanMoveSeaUnits(player, data, true));
-      if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+      if ((route == null) || (MoveValidator.validateCanal(route, null, player, data) != null)) {
         continue;
       }
       final int distance = route.numberOfSteps();
@@ -297,11 +297,11 @@ public class ProTerritoryValueUtils {
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       final Route route = data.getMap().getRoute_IgnoreEnd(t, nearbyLandTerritory,
           ProMatches.territoryCanMoveSeaUnits(player, data, true));
-      if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+      if ((route == null) || (MoveValidator.validateCanal(route, null, player, data) != null)) {
         continue;
       }
       final int distance = route.numberOfSteps();
-      if (distance > 0 && distance <= 3) {
+      if ((distance > 0) && (distance <= 3)) {
         if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld)
             .test(nearbyLandTerritory)) {
           double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
@@ -318,7 +318,7 @@ public class ProTerritoryValueUtils {
         nearbyLandValue += territoryValueMap.get(nearbyLandTerritory);
       }
     }
-    final double value = capitalOrFactoryValue / 100 + nearbyLandValue / 10;
+    final double value = (capitalOrFactoryValue / 100) + (nearbyLandValue / 10);
 
     return value;
   }

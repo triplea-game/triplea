@@ -110,7 +110,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
         // ignore
       }
     }
-    if (conversation.getErrorMessage() != null || connectionRefusedError != null) {
+    if ((conversation.getErrorMessage() != null) || (connectionRefusedError != null)) {
       // our socket channel should already be closed
       nioSocket.shutDown();
       if (conversation.getErrorMessage() != null) {
@@ -184,7 +184,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
-    if (msg.getFor() != null && !msg.getFor().equals(node)) {
+    if ((msg.getFor() != null) && !msg.getFor().equals(node)) {
       throw new IllegalStateException("msg not for me:" + msg);
     }
     for (final IMessageListener listener : listeners) {
@@ -282,14 +282,14 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public void changeToGameSave(final File saveGame, final String fileName) {
     final byte[] bytes = getBytesFromFile(saveGame);
-    if (bytes == null || bytes.length == 0) {
+    if ((bytes == null) || (bytes.length == 0)) {
       return;
     }
     changeToGameSave(bytes, fileName);
   }
 
   private static byte[] getBytesFromFile(final File file) {
-    if (file == null || !file.exists()) {
+    if ((file == null) || !file.exists()) {
       return null;
     }
     // Get the size of the file

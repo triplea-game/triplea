@@ -55,7 +55,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
       return "You dont own " + to.getName();
     } else if (!to.getOwner().equals(player)) {
       final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
-      if (pa != null && pa.getGiveUnitControl() != null && pa.getGiveUnitControl().contains(player)) {
+      if ((pa != null) && (pa.getGiveUnitControl() != null) && pa.getGiveUnitControl().contains(player)) {
         return null;
       } else if (to.getUnits().anyMatch(Matches.unitIsOwnedBy(player))) {
         return null;

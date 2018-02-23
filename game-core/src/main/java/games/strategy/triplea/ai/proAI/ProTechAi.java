@@ -43,22 +43,22 @@ final class ProTechAi {
     }
     final Territory myCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
-    float myStrength = (myCapitol == null || myCapitol.getUnits() == null) ? 0.0F
+    float myStrength = ((myCapitol == null) || (myCapitol.getUnits() == null)) ? 0.0F
         : strength(myCapitol.getUnits().getUnits(), false, false, false);
     final List<Territory> areaStrength = getNeighboringLandTerritories(data, player, myCapitol);
     for (final Territory areaTerr : areaStrength) {
       myStrength += strength(areaTerr.getUnits().getUnits(), false, false, false) * 0.75F;
     }
-    final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
+    final boolean capDanger = myStrength < ((enemyStrength * 1.25F) + 3.0F);
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
     final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
     final int techTokensQuantity = player.getResources().getQuantity(techtokens);
     int tokensToBuy = 0;
-    if (!capDanger && techTokensQuantity < 3 && pusRemaining > Math.random() * 160) {
+    if (!capDanger && (techTokensQuantity < 3) && (pusRemaining > (Math.random() * 160))) {
       tokensToBuy = 1;
     }
-    if (techTokensQuantity > 0 || tokensToBuy > 0) {
+    if ((techTokensQuantity > 0) || (tokensToBuy > 0)) {
       final List<TechnologyFrontier> cats = TechAdvance.getPlayerTechCategories(player);
       // retaining 65% chance of choosing land advances using basic ww2v3 model.
       if (data.getTechnologyFrontier().isEmpty()) {
@@ -188,7 +188,7 @@ final class ProTechAi {
             }
             if (!t4.equals(waterCheck)) {
               final Route seaRoute = getMaxSeaRoute(data, t4, waterCheck, enemyPlayer, maxTransportDistance);
-              if (seaRoute == null || seaRoute.getEnd() == null || seaRoute.getEnd() != waterCheck) {
+              if ((seaRoute == null) || (seaRoute.getEnd() == null) || (seaRoute.getEnd() != waterCheck)) {
                 continue;
               }
             }
@@ -225,12 +225,12 @@ final class ProTechAi {
               transUnits.removeAll(alreadyLoaded);
               final List<Unit> availTransUnits = sortTransportUnits(transUnits);
               for (final Unit transUnit : availTransUnits) {
-                if (availInf > 0 && Matches.unitIsLandTransportable().test(transUnit)) {
+                if ((availInf > 0) && Matches.unitIsLandTransportable().test(transUnit)) {
                   availInf--;
                   loadedUnits.add(transUnit);
                   alreadyLoaded.add(transUnit);
                 }
-                if (availInf > 0 && availOther > 0 && Matches.unitIsNotLandTransportable().test(transUnit)) {
+                if ((availInf > 0) && (availOther > 0) && Matches.unitIsNotLandTransportable().test(transUnit)) {
                   availInf--;
                   availOther--;
                   loadedUnits.add(transUnit);
@@ -289,8 +289,8 @@ final class ProTechAi {
     if (units.isEmpty()) {
       return strength;
     }
-    if (attacking && units.stream().noneMatch(Matches.unitHasAttackValueOfAtLeast(1)) || !attacking && units.stream()
-        .noneMatch(Matches.unitHasDefendValueOfAtLeast(1))) {
+    if ((attacking && units.stream().noneMatch(Matches.unitHasAttackValueOfAtLeast(1))) || (!attacking && units.stream()
+        .noneMatch(Matches.unitHasDefendValueOfAtLeast(1)))) {
       return strength;
     }
     for (final Unit u : units) {
@@ -312,7 +312,7 @@ final class ProTechAi {
             strength -= 0.50F;
           }
         }
-        if (unitAttack == 0 && unitAttachment.getTransportCapacity() > 0 && !transportsFirst) {
+        if ((unitAttack == 0) && (unitAttachment.getTransportCapacity() > 0) && !transportsFirst) {
           // only allow transport to have 0.35 on defense; none on attack
           strength -= 0.50F;
         }
@@ -470,18 +470,18 @@ final class ProTechAi {
         if (!distance.keySet().contains(neighbor)) {
           q.add(neighbor);
           distance.put(neighbor, distance.getInt(current) + 1);
-          if (lz == null && Matches.isTerritoryAllied(player, data).test(neighbor) && !neighbor.isWater()) {
+          if ((lz == null) && Matches.isTerritoryAllied(player, data).test(neighbor) && !neighbor.isWater()) {
             lz = neighbor;
           }
           if (checked.contains(neighbor)) {
             for (final Unit u : neighbor.getUnits()) {
-              if (ac == null && enemyCarrier.test(u)) {
+              if ((ac == null) && enemyCarrier.test(u)) {
                 ac = neighbor;
               }
             }
           } else {
             for (final Unit u : neighbor.getUnits()) {
-              if (ac == null && enemyCarrier.test(u)) {
+              if ((ac == null) && enemyCarrier.test(u)) {
                 ac = neighbor;
               }
               if (enemyPlane.test(u)) {
@@ -493,9 +493,9 @@ final class ProTechAi {
       }
     }
     for (final Unit u : unitDistance.keySet()) {
-      if (lz != null && Matches.unitHasEnoughMovementForRoute(checked).test(u) || ac != null && Matches
+      if (((lz != null) && Matches.unitHasEnoughMovementForRoute(checked).test(u)) || ((ac != null) && Matches
           .unitCanLandOnCarrier().test(u)
-          && Matches.unitHasEnoughMovementForRoute(checked).test(u)) {
+          && Matches.unitHasEnoughMovementForRoute(checked).test(u))) {
         units.add(u);
       }
     }
@@ -520,7 +520,7 @@ final class ProTechAi {
       final PlayerID player, final int maxDistance) {
     // note this does not care if subs are submerged or not
     // should it? does submerging affect movement of enemies?
-    if (start == null || destination == null || !start.isWater() || !destination.isWater()) {
+    if ((start == null) || (destination == null) || !start.isWater() || !destination.isWater()) {
       return null;
     }
     final Predicate<Unit> sub = Matches.unitIsSub().negate();
@@ -534,7 +534,7 @@ final class ProTechAi {
         .and(Matches.territoryIsWater());
     final Predicate<Territory> routeCondition = Matches.territoryIs(destination).or(routeCond);
     Route r = data.getMap().getRoute(start, destination, routeCondition);
-    if (r == null || r.getEnd() == null) {
+    if ((r == null) || (r.getEnd() == null)) {
       return null;
     }
     // cheating because can't do stepwise calculation with canals
@@ -544,7 +544,7 @@ final class ProTechAi {
       r = data.getMap().getRoute(start, destination, routeCondition
           .and(Matches.territoryHasNonAllowedCanal(player, null, data).negate()));
     }
-    if (r == null || r.getEnd() == null) {
+    if ((r == null) || (r.getEnd() == null)) {
       return null;
     }
     final int routeDistance = r.numberOfSteps();
@@ -612,7 +612,7 @@ final class ProTechAi {
     visited.put(start, 0);
     for (final Territory t : q) {
       visited.put(t, 1);
-      if (1 == distance && endCondition.test(t)) {
+      if ((1 == distance) && endCondition.test(t)) {
         frontier.add(t);
       }
     }
@@ -627,7 +627,7 @@ final class ProTechAi {
           q.add(neighbor);
           final int dist = visited.getInt(current) + 1;
           visited.put(neighbor, dist);
-          if (dist == distance && endCondition.test(neighbor)) {
+          if ((dist == distance) && endCondition.test(neighbor)) {
             frontier.add(neighbor);
           }
         }

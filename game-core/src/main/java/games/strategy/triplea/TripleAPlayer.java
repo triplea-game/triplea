@@ -374,7 +374,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       soundPlayedAlreadyPurchase = true;
     }
     // Check if any factories need to be repaired
-    if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null
+    if ((id.getRepairFrontier() != null) && (id.getRepairFrontier().getRules() != null)
         && !id.getRepairFrontier().getRules().isEmpty()) {
       final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
@@ -722,7 +722,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   @Override
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
-    if (territoryChoices == null || territoryChoices.isEmpty() || unitsPerPick < 1) {
+    if ((territoryChoices == null) || territoryChoices.isEmpty() || (unitsPerPick < 1)) {
       return Tuple.of(null, new HashSet<>());
     }
     return ui.pickTerritoryAndUnits(this.getPlayerId(), territoryChoices, unitChoices, unitsPerPick);

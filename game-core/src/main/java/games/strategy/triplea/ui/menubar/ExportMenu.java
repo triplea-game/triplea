@@ -209,7 +209,7 @@ final class ExportMenu extends JMenu {
       text.append("\n");
       text.append("Winners: ,");
       final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegateList().getDelegate("endRound");
-      if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
+      if ((delegateEndRound != null) && (delegateEndRound.getWinners() != null)) {
         for (final PlayerID p : delegateEndRound.getWinners()) {
           text.append(p.getName()).append(",");
         }
@@ -304,7 +304,7 @@ final class ExportMenu extends JMenu {
           continue;
         }
         final Step step = (Step) element;
-        if (step.getPlayerId() == null || step.getPlayerId().isNull()) {
+        if ((step.getPlayerId() == null) || step.getPlayerId().isNull()) {
           continue;
         }
         // this is to stop from having multiple entries for each players turn.
@@ -315,7 +315,7 @@ final class ExportMenu extends JMenu {
         }
         currentPlayer = step.getPlayerId();
         clone.getHistory().gotoNode(element);
-        final String playerName = step.getPlayerId() == null ? "" : step.getPlayerId().getName() + ": ";
+        final String playerName = (step.getPlayerId() == null) ? "" : (step.getPlayerId().getName() + ": ");
         String stepName = step.getStepName();
         // copied directly from TripleAPlayer, will probably have to be updated in the future if more delegates are made
         if (stepName.endsWith("Bid")) {

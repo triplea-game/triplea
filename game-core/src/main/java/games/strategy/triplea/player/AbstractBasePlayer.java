@@ -70,8 +70,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
 
   @Override
   public String toString() {
-    return (playerId == null || playerId.getName() == null || !playerId.getName().equals(name))
-        ? (type + ":" + name + ":" + (playerId == null ? "NullID" : playerId.getName()))
+    return ((playerId == null) || (playerId.getName() == null) || !playerId.getName().equals(name))
+        ? (type + ":" + name + ":" + ((playerId == null) ? "NullID" : playerId.getName()))
         : (type + ":" + name);
   }
 
@@ -89,7 +89,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
       while (!stepName.equals(bridgeStep)) {
         Interruptibles.sleep(100);
         i++;
-        if (i > 30 && !shownErrorMessage) {
+        if ((i > 30) && !shownErrorMessage) {
           System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
               + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerId().getName()
               + ", Game: " + getGameData().getGameName()

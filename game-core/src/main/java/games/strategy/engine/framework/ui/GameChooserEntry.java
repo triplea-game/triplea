@@ -87,7 +87,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
   // equals/hashcode below
   private String getMapNameProperty() {
     final String mapName = (String) gameData.getProperties().get(Constants.MAP_NAME);
-    if (mapName == null || mapName.trim().length() == 0) {
+    if ((mapName == null) || (mapName.trim().length() == 0)) {
       throw new IllegalStateException("Map name property not set on game");
     }
     return mapName;
@@ -136,7 +136,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
       return false;
     }
     final GameChooserEntry other = (GameChooserEntry) obj;
-    if (gameData == null && other.gameData != null) {
+    if ((gameData == null) && (other.gameData != null)) {
       return false;
     }
     if (other.gameData == null) {

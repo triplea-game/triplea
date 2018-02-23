@@ -25,7 +25,7 @@ public final class HashedPassword {
   }
 
   public boolean isBcrypted() {
-    return value.matches("^\\$2a\\$.{56}$");
+    return (value != null) && value.matches("^\\$2a\\$.{56}$");
   }
 
   public boolean isMd5Crypted() {

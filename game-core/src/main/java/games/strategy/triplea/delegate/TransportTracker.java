@@ -205,7 +205,7 @@ public class TransportTracker {
   public static int getAvailableCapacity(final Unit unit) {
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     // Check if there are transports available, also check for destroyer capacity (Tokyo Express)
-    if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false)
+    if ((ua.getTransportCapacity() == -1) || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false)
         && ua.getIsDestroyer() && !unit.getOwner().getName().equals(Constants.PLAYER_NAME_JAPANESE))) {
       return 0;
     }
@@ -227,7 +227,7 @@ public class TransportTracker {
       // then we must have been transported on our own transport
       final TripleAUnit taUnit = (TripleAUnit) u;
       // an allied transport if the owner of the transport is not the owner of the unit
-      if (taUnit.getWasLoadedThisTurn() && taUnit.getTransportedBy() != null
+      if (taUnit.getWasLoadedThisTurn() && (taUnit.getTransportedBy() != null)
           && !taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner())) {
         loadedUnits.add(u);
       }

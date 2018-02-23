@@ -46,7 +46,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     } else {
       final StringBuilder sb = new StringBuilder(((INode) value).getName());
       final Set<String> players = playerMap.get(value.toString());
-      if (players != null && !players.isEmpty()) {
+      if ((players != null) && !players.isEmpty()) {
         sb.append(" (");
         sb.append(Joiner.on(", ").join(players));
         sb.append(")");
@@ -71,7 +71,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       if (players.size() > 0) {
         final List<Icon> icons = new ArrayList<>(players.size());
         for (final String player : players) {
-          if (uiContext != null && uiContext.getFlagImageFactory() != null) {
+          if ((uiContext != null) && (uiContext.getFlagImageFactory() != null)) {
             icons.add(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerId(player))));
           }
         }

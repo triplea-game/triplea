@@ -299,7 +299,7 @@ public class HistoryPanel extends JPanel {
    */
   private void collapseUpFromLastParent(final TreePath newPath) {
     TreePath currentParent = lastParent;
-    while (currentParent != null && !currentParent.isDescendant(newPath)
+    while ((currentParent != null) && !currentParent.isDescendant(newPath)
         && !stayExpandedContainsDescendantOf(currentParent)) {
       tree.collapsePath(currentParent);
       currentParent = currentParent.getParentPath();
@@ -340,7 +340,7 @@ public class HistoryPanel extends JPanel {
       while (expandedDescendants.hasMoreElements()) {
         final TreePath currentDescendant = expandedDescendants.nextElement();
         if (!currentDescendant.isDescendant(newPath)
-            && (selectedPath == null || !currentDescendant.isDescendant(selectedPath))) {
+            && ((selectedPath == null) || !currentDescendant.isDescendant(selectedPath))) {
           collapsePaths.add(currentDescendant);
         }
       }

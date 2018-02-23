@@ -189,11 +189,11 @@ final class SelectionComponentFactory {
       }
 
       private int toValidIntValue(final String value) {
-        return value.isEmpty() && allowUnset ? lo - 1 : Integer.parseInt(value);
+        return (value.isEmpty() && allowUnset) ? (lo - 1) : Integer.parseInt(value);
       }
 
       private String toValidStringValue(final int value) {
-        return allowUnset && value == lo - 1 ? "" : String.valueOf(value);
+        return (allowUnset && (value == (lo - 1))) ? "" : String.valueOf(value);
       }
 
       @Override

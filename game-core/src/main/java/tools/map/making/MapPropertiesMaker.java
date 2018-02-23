@@ -394,7 +394,7 @@ public class MapPropertiesMaker extends JFrame {
     }
     // now account for anything set by -D
     final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
-    if (folderString != null && folderString.length() > 0) {
+    if ((folderString != null) && (folderString.length() > 0)) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
@@ -403,7 +403,7 @@ public class MapPropertiesMaker extends JFrame {
       }
     }
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
-    if (zoomString != null && zoomString.length() > 0) {
+    if ((zoomString != null) && (zoomString.length() > 0)) {
       try {
         mapProperties.setUnitsScale(Double.parseDouble(zoomString));
         ToolLogger.info("Unit Zoom Percent to use: " + zoomString);
@@ -412,7 +412,7 @@ public class MapPropertiesMaker extends JFrame {
       }
     }
     final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
+    if ((widthString != null) && (widthString.length() > 0)) {
       try {
         final int unitWidth = Integer.parseInt(widthString);
         mapProperties.setUnitsWidth(unitWidth);
@@ -423,7 +423,7 @@ public class MapPropertiesMaker extends JFrame {
       }
     }
     final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
+    if ((heightString != null) && (heightString.length() > 0)) {
       try {
         final int unitHeight = Integer.parseInt(heightString);
         mapProperties.setUnitsHeight(unitHeight);

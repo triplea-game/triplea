@@ -384,7 +384,7 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public boolean equals(final Object other) {
-    return other != null && getClass().equals(other.getClass());
+    return (other != null) && getClass().equals(other.getClass());
   }
 
   @Override

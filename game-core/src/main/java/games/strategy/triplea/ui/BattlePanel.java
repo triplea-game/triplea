@@ -195,7 +195,7 @@ public class BattlePanel extends ActionPanel {
     }
     GUID displayed = currentBattleDisplayed;
     int count = 0;
-    while (displayed == null || !battleId.equals(displayed)) {
+    while ((displayed == null) || !battleId.equals(displayed)) {
       count++;
       Interruptibles.sleep(count);
       // something is wrong, we shouldnt have to wait this long
@@ -246,8 +246,8 @@ public class BattlePanel extends ActionPanel {
         PbemDiceRoller.setFocusWindow(battleFrame);
         boolean foundHumanInBattle = false;
         for (final IGamePlayer gamePlayer : getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
-          if ((gamePlayer.getPlayerId().equals(attacker) && gamePlayer instanceof TripleAPlayer)
-              || (gamePlayer.getPlayerId().equals(defender) && gamePlayer instanceof TripleAPlayer)) {
+          if ((gamePlayer.getPlayerId().equals(attacker) && (gamePlayer instanceof TripleAPlayer))
+              || (gamePlayer.getPlayerId().equals(defender) && (gamePlayer instanceof TripleAPlayer))) {
             foundHumanInBattle = true;
             break;
           }

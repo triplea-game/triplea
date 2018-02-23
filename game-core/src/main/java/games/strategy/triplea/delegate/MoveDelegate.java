@@ -175,7 +175,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     if (Properties.getUnitsMayGiveBonusMovement(getData())) {
       changeBonus = giveBonusMovement(bridge, player);
     }
-    if (changeBonus != null && !changeBonus.isEmpty()) {
+    if ((changeBonus != null) && !changeBonus.isEmpty()) {
       if (!addedHistoryEvent) {
         bridge.getHistoryWriter().startEvent("Resetting and Giving Bonus Movement to Units");
       }
@@ -387,7 +387,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             bonusMovement = tempBonus;
           }
         }
-        if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0) {
+        if ((bonusMovement != Integer.MIN_VALUE) && (bonusMovement != 0)) {
           bonusMovement = Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
           change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
         }
@@ -552,8 +552,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
         newDependents, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo, data);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
-    final String numErrorsMsg =
-        numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
+    final String numErrorsMsg = (numProblems > 0)
+        ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown")
+        : "";
     if (result.hasError()) {
       return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
     }
@@ -567,7 +568,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || units.stream().anyMatch(Matches.unitIsKamikaze())) {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
-      if (kamikazeUnits.size() > 0 && getRemotePlayer().confirmMoveKamikaze()) {
+      if ((kamikazeUnits.size() > 0) && getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
           if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
             result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);

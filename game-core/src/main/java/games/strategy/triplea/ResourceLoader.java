@@ -55,7 +55,7 @@ public class ResourceLoader implements Closeable {
     }
 
     final List<String> dirs = getPaths(mapName);
-    if (mapName != null && dirs.isEmpty()) {
+    if ((mapName != null) && dirs.isEmpty()) {
       SwingComponents.promptUser("Download Map?",
           "Map missing: " + mapName + ", could not join game.\nWould you like to download the map now?"
               + "\nOnce the download completes, you may reconnect to this game.",
@@ -102,7 +102,7 @@ public class ResourceLoader implements Closeable {
 
     for (final char c : spacesReplaced.toCharArray()) {
       // break up camel casing
-      if (lastChar != null && Character.isLowerCase(lastChar) && Character.isUpperCase(c)) {
+      if ((lastChar != null) && Character.isLowerCase(lastChar) && Character.isUpperCase(c)) {
         sb.append("_");
       }
       sb.append(Character.toLowerCase(c));

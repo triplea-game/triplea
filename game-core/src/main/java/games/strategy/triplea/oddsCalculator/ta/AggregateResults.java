@@ -56,13 +56,13 @@ public class AggregateResults implements Serializable {
   public List<Unit> getAverageAttackingUnitsRemaining() {
     // can be null!
     final BattleResults results = getBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<>() : results.getRemainingAttackingUnits();
+    return (results == null) ? new ArrayList<>() : results.getRemainingAttackingUnits();
   }
 
   public List<Unit> getAverageDefendingUnitsRemaining() {
     // can be null!
     final BattleResults results = getBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<>() : results.getRemainingDefendingUnits();
+    return (results == null) ? new ArrayList<>() : results.getRemainingDefendingUnits();
   }
 
   double getAverageAttackingUnitsLeft() {

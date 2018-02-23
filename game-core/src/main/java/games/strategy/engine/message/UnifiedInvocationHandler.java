@@ -36,7 +36,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
     }
     if (args != null) {
       for (final Object o : args) {
-        if (o != null && !(o instanceof Serializable)) {
+        if ((o != null) && !(o instanceof Serializable)) {
           throw new IllegalArgumentException(
               o + " is not serializable, all remote method args must be serializable.  method:" + method);
         }
@@ -64,7 +64,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
             new Exception(throwable.getMessage() + " exception in response from other system");
         // Thread.currentThread().getStackTrace();
         final StackTraceElement[] ourTrace = ourException.getStackTrace();
-        if (exceptionTrace != null && ourTrace != null) {
+        if ((exceptionTrace != null) && (ourTrace != null)) {
           final StackTraceElement[] combinedTrace = new StackTraceElement[(exceptionTrace.length + ourTrace.length)];
           int i = 0;
           for (final StackTraceElement element : exceptionTrace) {

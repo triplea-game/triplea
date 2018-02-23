@@ -30,7 +30,7 @@ class PlayerOrder {
   void saveToFile(final PrintGenerationData printData) throws IOException {
     final GameData gameData = printData.getData();
     for (final GameStep currentStep : gameData.getSequence()) {
-      if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null) {
+      if ((currentStep.getDelegate() != null) && (currentStep.getDelegate().getClass() != null)) {
         final String delegateClassName = currentStep.getDelegate().getClass().getName();
         if (delegateClassName.equals(InitializationDelegate.class.getName())
             || delegateClassName.equals(BidPurchaseDelegate.class.getName())
@@ -38,12 +38,12 @@ class PlayerOrder {
             || delegateClassName.equals(EndRoundDelegate.class.getName())) {
           continue;
         }
-      } else if (currentStep.getName() != null
+      } else if ((currentStep.getName() != null)
           && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
       final PlayerID currentPlayerId = currentStep.getPlayerId();
-      if (currentPlayerId != null && !currentPlayerId.isNull()) {
+      if ((currentPlayerId != null) && !currentPlayerId.isNull()) {
         playerSet.add(currentPlayerId);
       }
     }

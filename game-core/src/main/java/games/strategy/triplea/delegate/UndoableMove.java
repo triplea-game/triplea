@@ -51,7 +51,7 @@ public class UndoableMove extends AbstractUndoableMove {
   }
 
   public boolean getcanUndo() {
-    return m_reasonCantUndo == null && m_dependOnMe.isEmpty();
+    return (m_reasonCantUndo == null) && m_dependOnMe.isEmpty();
   }
 
   String getReasonCantUndo() {
@@ -101,7 +101,7 @@ public class UndoableMove extends AbstractUndoableMove {
     // if we are moving out of a battle zone, mark it
     // this can happen for air units moving out of a battle zone
     for (final IBattle battle : battleTracker.getPendingBattles(m_route.getStart(), null)) {
-      if (battle == null || battle.isOver()) {
+      if ((battle == null) || battle.isOver()) {
         continue;
       }
       for (final Unit unit : m_units) {
@@ -120,7 +120,7 @@ public class UndoableMove extends AbstractUndoableMove {
         } else {
           HashMap<Unit, HashSet<Unit>> targets = null;
           Unit target = null;
-          if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
+          if ((routeUnitUsedToMove != null) && (routeUnitUsedToMove.getEnd() != null)) {
             final Territory end = routeUnitUsedToMove.getEnd();
             final Collection<Unit> enemyTargetsTotal = end.getUnits().getMatches(
                 Matches.enemyUnit(bridge.getPlayerId(), data)
@@ -129,7 +129,7 @@ public class UndoableMove extends AbstractUndoableMove {
             final Collection<Unit> enemyTargets = CollectionUtils.getMatches(enemyTargetsTotal,
                 Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
                     CollectionUtils.getMatches(Collections.singleton(unit), Matches.unitIsStrategicBomber()), data)));
-            if (enemyTargets.size() > 1
+            if ((enemyTargets.size() > 1)
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                 && !Properties.getRaidsMayBePreceededByAirBattles(data)) {
               while (target == null) {

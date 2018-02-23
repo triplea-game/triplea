@@ -344,7 +344,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final List<Unit> units = CollectionUtils.getMatches(selectedUnits, Matches.unitHasMoreThanOneHitPointTotal());
-        if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
+        if ((units == null) || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
@@ -392,7 +392,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final List<Unit> units = CollectionUtils.getMatches(selectedUnits, Matches.unitCanBeDamaged());
-        if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
+        if ((units == null) || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
@@ -473,13 +473,13 @@ class EditPanel extends ActionPanel {
         final int availWidth = screenResolution.width - 40;
         scroll.setPreferredSize(
             new Dimension(
-                (scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
-                (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
+                ((scroll.getPreferredSize().width > availWidth) ? availWidth : scroll.getPreferredSize().width),
+                ((scroll.getPreferredSize().height > availHeight) ? availHeight : scroll.getPreferredSize().height)));
         final int option = JOptionPane.showConfirmDialog(EditPanel.this.frame, scroll, "Change Political Relationships",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (option == JOptionPane.OK_OPTION) {
           final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges = pui.getEditChanges();
-          if (relationshipChanges != null && !relationshipChanges.isEmpty()) {
+          if ((relationshipChanges != null) && !relationshipChanges.isEmpty()) {
             final String result =
                 EditPanel.this.frame.getEditDelegate().changePoliticalRelationships(relationshipChanges);
             if (result != null) {
@@ -568,15 +568,15 @@ class EditPanel extends ActionPanel {
       changePoliticalRelationships.setEnabled(false);
     } else {
       performMoveAction.setEnabled(currentAction == null);
-      addUnitsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
-      delUnitsAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
-      changeTerritoryOwnerAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
-      changePUsAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
-      addTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
-      removeTechAction.setEnabled(currentAction == null && selectedUnits.isEmpty());
-      changeUnitHitDamageAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
-      changeUnitBombingDamageAction.setEnabled(currentAction == null && !selectedUnits.isEmpty());
-      changePoliticalRelationships.setEnabled(currentAction == null && selectedUnits.isEmpty());
+      addUnitsAction.setEnabled((currentAction == null) && selectedUnits.isEmpty());
+      delUnitsAction.setEnabled((currentAction == null) && !selectedUnits.isEmpty());
+      changeTerritoryOwnerAction.setEnabled((currentAction == null) && selectedUnits.isEmpty());
+      changePUsAction.setEnabled((currentAction == null) && selectedUnits.isEmpty());
+      addTechAction.setEnabled((currentAction == null) && selectedUnits.isEmpty());
+      removeTechAction.setEnabled((currentAction == null) && selectedUnits.isEmpty());
+      changeUnitHitDamageAction.setEnabled((currentAction == null) && !selectedUnits.isEmpty());
+      changeUnitBombingDamageAction.setEnabled((currentAction == null) && !selectedUnits.isEmpty());
+      changePoliticalRelationships.setEnabled((currentAction == null) && selectedUnits.isEmpty());
     }
   }
 
@@ -647,7 +647,7 @@ class EditPanel extends ActionPanel {
     private void deselectUnits(final List<Unit> units, final Territory t, final MouseDetails md) {
       // no unit selected, deselect the most recent
       if (units.isEmpty()) {
-        if (md.isControlDown() || t != selectedTerritory || selectedUnits.isEmpty()) {
+        if (md.isControlDown() || (t != selectedTerritory) || selectedUnits.isEmpty()) {
           selectedUnits.clear();
         } else {
           // remove the last element
@@ -655,7 +655,7 @@ class EditPanel extends ActionPanel {
         }
       } else { // user has clicked on a specific unit
         // deselect all if control is down
-        if (md.isControlDown() || t != selectedTerritory) {
+        if (md.isControlDown() || (t != selectedTerritory)) {
           selectedUnits.removeAll(units);
         } else { // deselect one
           // remove those with the least movement first
@@ -802,12 +802,12 @@ class EditPanel extends ActionPanel {
         return;
       }
       if (territory != null) {
-        if (currentAction == null && selectedTerritory != null) {
+        if ((currentAction == null) && (selectedTerritory != null)) {
           mouseCurrentPoint = md.getMapPoint();
           getMap().setMouseShadowUnits(selectedUnits);
         }
         // highlight territory
-        if (currentAction == changeTerritoryOwnerAction || currentAction == addUnitsAction) {
+        if ((currentAction == changeTerritoryOwnerAction) || (currentAction == addUnitsAction)) {
           if (currentTerritory != territory) {
             if (currentTerritory != null) {
               getMap().clearTerritoryOverlay(currentTerritory);

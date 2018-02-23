@@ -106,8 +106,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final MoveValidationResult result = validateMove(units, route, player, data);
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
-    final String numErrorsMsg =
-        numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
+    final String numErrorsMsg = (numProblems > 0)
+        ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown")
+        : "";
     if (result.hasError()) {
       return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
     }
@@ -191,7 +192,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final int airborneDistance = TechAbilityAttachment.getAirborneDistance(player, data);
     final Set<UnitType> airborneBases = TechAbilityAttachment.getAirborneBases(player, data);
     final Set<UnitType> airborneTypes = TechAbilityAttachment.getAirborneTypes(player, data);
-    if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty()) {
+    if ((airborneDistance <= 0) || airborneBases.isEmpty() || airborneTypes.isEmpty()) {
       return result.setErrorReturnResult("Require Airborne Forces And Launch Capacity Tech");
     }
     if (route.numberOfSteps() > airborneDistance) {
@@ -323,7 +324,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final int airborneDistance = TechAbilityAttachment.getAirborneDistance(player, data);
     final Set<UnitType> airborneBases = TechAbilityAttachment.getAirborneBases(player, data);
     final Set<UnitType> airborneTypes = TechAbilityAttachment.getAirborneTypes(player, data);
-    if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty()) {
+    if ((airborneDistance <= 0) || airborneBases.isEmpty() || airborneTypes.isEmpty()) {
       return false;
     }
     final GameMap map = data.getMap();

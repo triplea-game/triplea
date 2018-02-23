@@ -37,6 +37,6 @@ public class GenericTechAdvance extends TechAdvance {
     }
     // this can be null!!!
     final Boolean has = ta.hasGenericTech(getName());
-    return (has == null ? false : has);
+    return ((has == null) ? false : has);
   }
 }

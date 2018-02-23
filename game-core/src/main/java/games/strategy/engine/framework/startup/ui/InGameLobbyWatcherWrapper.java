@@ -22,11 +22,11 @@ public class InGameLobbyWatcherWrapper {
   }
 
   public boolean isActive() {
-    return lobbyWatcher != null && lobbyWatcher.isActive();
+    return (lobbyWatcher != null) && lobbyWatcher.isActive();
   }
 
   public String getComments() {
-    return lobbyWatcher == null ? "" : lobbyWatcher.getComments();
+    return (lobbyWatcher == null) ? "" : lobbyWatcher.getComments();
   }
 
   public void setGameComments(final String comments) {

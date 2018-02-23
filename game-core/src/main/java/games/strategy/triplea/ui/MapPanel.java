@@ -139,12 +139,12 @@ public class MapPanel extends ImageScrollerLargeView {
         if (terr != null) {
           notifyTerritorySelected(terr, md);
         }
-        if (e.getButton() == 4 || e.getButton() == 5) {
+        if ((e.getButton() == 4) || (e.getButton() == 5)) {
           // the numbers 4 and 5 stand for the corresponding mouse button
-          lastActive = is4Pressed && is5Pressed ? (e.getButton() == 4 ? 5 : 4) : -1;
+          lastActive = (is4Pressed && is5Pressed) ? ((e.getButton() == 4) ? 5 : 4) : -1;
           // we only want to change the variables if the corresponding button was released
-          is4Pressed = e.getButton() != 4 && is4Pressed;
-          is5Pressed = e.getButton() != 5 && is5Pressed;
+          is4Pressed = (e.getButton() != 4) && is4Pressed;
+          is5Pressed = (e.getButton() != 5) && is5Pressed;
           // we want to return here, because otherwise a menu might be opened
           return;
         }
@@ -159,8 +159,8 @@ public class MapPanel extends ImageScrollerLargeView {
 
       @Override
       public void mousePressed(final MouseEvent e) {
-        is4Pressed = e.getButton() == 4 || is4Pressed;
-        is5Pressed = e.getButton() == 5 || is5Pressed;
+        is4Pressed = (e.getButton() == 4) || is4Pressed;
+        is5Pressed = (e.getButton() == 5) || is5Pressed;
         if (lastActive == -1) {
           new Thread(() -> {
             // Mouse Events are different than key events
@@ -265,7 +265,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public void centerOn(final Territory territory) {
-    if (territory == null || uiContext.getLockMap()) {
+    if ((territory == null) || uiContext.getLockMap()) {
       return;
     }
     final Point p = uiContext.getMapData().getCenter(territory);
@@ -288,7 +288,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final RouteDescription newRouteDescription = new RouteDescription(route, start, end, cursorImage);
-    if (routeDescription != null && routeDescription.equals(newRouteDescription)) {
+    if ((routeDescription != null) && routeDescription.equals(newRouteDescription)) {
       return;
     }
     routeDescription = newRouteDescription;
@@ -398,11 +398,11 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private boolean unitsChanged(final Tuple<Territory, List<Unit>> newUnits) {
-    return newUnits != currentUnits
-        && (newUnits == null
-            || currentUnits == null
-            || !newUnits.getFirst().equals(currentUnits.getFirst())
-            || !CollectionUtils.equals(newUnits.getSecond(), currentUnits.getSecond()));
+    return (newUnits != currentUnits)
+        && ((newUnits == null)
+        || (currentUnits == null)
+        || !newUnits.getFirst().equals(currentUnits.getFirst())
+        || !CollectionUtils.equals(newUnits.getSecond(), currentUnits.getSecond()));
   }
 
   public void updateCountries(final Collection<Territory> countries) {
@@ -533,15 +533,15 @@ public class MapPanel extends ImageScrollerLargeView {
     final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
     final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
     if (fitAxisX || fitAxisY) {
-      if (fitAxisX && x + (int) getScaledWidth() > model.getMaxWidth()) {
+      if (fitAxisX && ((x + (int) getScaledWidth()) > model.getMaxWidth())) {
         x -= model.getMaxWidth();
       }
-      if (fitAxisY && y + (int) getScaledHeight() > model.getMaxHeight()) {
+      if (fitAxisY && ((y + (int) getScaledHeight()) > model.getMaxHeight())) {
         y -= model.getMaxHeight();
       }
       // handle wrapping off the screen
-      if (fitAxisX && x < 0) {
-        if (fitAxisY && y < 0) {
+      if (fitAxisX && (x < 0)) {
+        if (fitAxisY && (y < 0)) {
           final Rectangle2D.Double leftUpperBounds =
               new Rectangle2D.Double(model.getMaxWidth() + x, model.getMaxHeight() + y, -x, -y);
           drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
@@ -550,7 +550,7 @@ public class MapPanel extends ImageScrollerLargeView {
             new Rectangle2D.Double(model.getMaxWidth() + x, y, -x, getScaledHeight());
         drawTiles(g2d, images, data, leftBounds, undrawnTiles);
       }
-      if (fitAxisY && y < 0) {
+      if (fitAxisY && (y < 0)) {
         final Rectangle2D.Double upperBounds =
             new Rectangle2D.Double(x, model.getMaxHeight() + y, getScaledWidth(), -y);
         drawTiles(g2d, images, data, upperBounds, undrawnTiles);
@@ -559,7 +559,7 @@ public class MapPanel extends ImageScrollerLargeView {
     // handle non overlap
     final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
     drawTiles(g2d, images, data, mainBounds, undrawnTiles);
-    if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
+    if ((routeDescription != null) && (mouseShadowImage != null) && (routeDescription.getEnd() != null)) {
       final AffineTransform t = new AffineTransform();
       t.translate(scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
           scale * normalizeY(routeDescription.getEnd().getY() - getYOffset()));
@@ -738,7 +738,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   void setMouseShadowUnits(final Collection<Unit> units) {
-    if (units == null || units.isEmpty()) {
+    if ((units == null) || units.isEmpty()) {
       movementLeftForCurrentUnits = "";
       mouseShadowImage = null;
       SwingUtilities.invokeLater(this::repaint);

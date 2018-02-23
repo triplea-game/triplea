@@ -88,7 +88,7 @@ public class TransportUtils {
       final int capacity = TransportTracker.getAvailableCapacity(currentTransport);
       final int remainingCost = getTransportCost(canBeTransported);
       if (remainingCost <= capacity) {
-        if (!finalTransport.isPresent() || capacity < TransportTracker.getAvailableCapacity(finalTransport.get())) {
+        if (!finalTransport.isPresent() || (capacity < TransportTracker.getAvailableCapacity(finalTransport.get()))) {
           finalTransport = Optional.of(currentTransport);
         }
         // Check all transports for the one with the least remaining capacity that can fit all units
@@ -125,7 +125,7 @@ public class TransportUtils {
       final Unit transport = TransportTracker.transportedBy(currentTransported);
 
       // Already being transported, make sure it is in transports
-      if (transport == null || !canTransport.contains(transport)) {
+      if ((transport == null) || !canTransport.contains(transport)) {
         continue;
       }
 
@@ -168,7 +168,7 @@ public class TransportUtils {
       final int transportCost = unitType.getTransportCost();
       for (final UnitCategory transportType : transportTypes) {
         final int transportCapacity = UnitAttachment.get(transportType.getType()).getTransportCapacity();
-        if (transportCost > 0 && transportCapacity >= transportCost) {
+        if ((transportCost > 0) && (transportCapacity >= transportCost)) {
           final int transportCount =
               CollectionUtils.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
           final int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity / transportCost);

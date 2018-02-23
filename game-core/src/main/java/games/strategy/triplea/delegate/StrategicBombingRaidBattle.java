@@ -486,8 +486,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     final CasualtyDetails casualties = BattleCalculator.getAaCasualties(false, validAttackingUnitsForThisRoll,
         m_attackingUnits, defendingAa, m_defendingUnits, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite,
         m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
-    final int totalExpectingHits =
-        dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits();
+    final int totalExpectingHits = (dice.getHits() > validAttackingUnitsForThisRoll.size())
+        ? validAttackingUnitsForThisRoll.size()
+        : dice.getHits();
     if (casualties.size() != totalExpectingHits) {
       throw new IllegalStateException(
           "Wrong number of casualties, expecting:" + totalExpectingHits + " but got:" + casualties.size());
@@ -641,7 +642,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
             // map, and zero for
             // the bonus.
-            if (maxDice < 0 || doNotUseBombingBonus) {
+            if ((maxDice < 0) || doNotUseBombingBonus) {
               maxDice = diceSides;
             }
             if (doNotUseBombingBonus) {
@@ -676,7 +677,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     private void addToTargetDiceMap(final Unit attackerUnit, final Die roll,
         final HashMap<Unit, List<Die>> targetToDiceMap) {
-      if (m_targets == null || m_targets.isEmpty()) {
+      if ((m_targets == null) || m_targets.isEmpty()) {
         return;
       }
       final Unit target = getTarget(attackerUnit);
@@ -705,14 +706,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final UnitAttachment ua = UnitAttachment.get(attacker.getType());
         final int rolls = BattleCalculator.getRolls(attacker, m_attacker, false, true, m_territoryEffects);
         int costThisUnit = 0;
-        if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
+        if ((rolls > 1) && (lhtrBombers || ua.getChooseBestRoll())) {
           // LHTR means we select the best Dice roll for the unit
           int max = 0;
           int maxIndex = index;
           int startIndex = index;
           for (int i = 0; i < rolls; i++) {
             // +1 since 0 based
-            if (m_dice[index] + 1 > max) {
+            if ((m_dice[index] + 1) > max) {
               max = m_dice[index] + 1;
               maxIndex = index;
             }

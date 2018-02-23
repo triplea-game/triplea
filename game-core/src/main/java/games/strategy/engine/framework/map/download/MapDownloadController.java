@@ -40,7 +40,7 @@ public class MapDownloadController {
       final String lastCheckTime = ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.value();
       if (!Strings.nullToEmpty(lastCheckTime).trim().isEmpty()) {
         final String[] yearMonth = lastCheckTime.split(":");
-        if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month) {
+        if ((Integer.parseInt(yearMonth[0]) >= year) && (Integer.parseInt(yearMonth[1]) >= month)) {
           return false;
         }
       }

@@ -39,7 +39,7 @@ class SoundProperties {
 
   static SoundProperties getInstance(final ResourceLoader loader) {
     // cache properties for 1 second
-    if (instance == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
+    if ((instance == null) || timestamp.plusSeconds(1).isBefore(Instant.now())) {
       instance = new SoundProperties(loader);
       timestamp = Instant.now();
     }

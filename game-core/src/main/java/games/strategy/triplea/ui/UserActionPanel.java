@@ -205,21 +205,21 @@ public class UserActionPanel extends ActionPanel {
     final int availableWidth = screenSize.width - 30;
 
     return new Dimension(
-        (scrollPane.getPreferredSize().width > availableWidth ? availableWidth
+        ((scrollPane.getPreferredSize().width > availableWidth) ? availableWidth
             : (scrollPane.getPreferredSize().width
-                + (scrollPane.getPreferredSize().height > availableHeight ? 25 : 0))),
-        (scrollPane.getPreferredSize().height > availableHeight ? availableHeight
-            : (scrollPane.getPreferredSize().height)
-                + (scrollPane.getPreferredSize().width > availableWidth ? 25 : 0)));
+            + ((scrollPane.getPreferredSize().height > availableHeight) ? 25 : 0))),
+        ((scrollPane.getPreferredSize().height > availableHeight) ? availableHeight
+            : ((scrollPane.getPreferredSize().height)
+            + ((scrollPane.getPreferredSize().width > availableWidth) ? 25 : 0))));
   }
 
   /**
    * This will stop the user action Phase.
    */
   private final Action dontBotherAction = SwingAction.of("Done", e -> {
-    if (!firstRun || JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
+    if (!firstRun || (JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
         "Are you sure you dont want to do anything?", "End Actions",
-        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)) {
       choice = null;
       release();
     }
@@ -242,13 +242,13 @@ public class UserActionPanel extends ActionPanel {
   }
 
   private static String getActionButtonText(final UserActionAttachment paa) {
-    final String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
+    final String costString = (paa.getCostPU() == 0) ? "" : ("[" + paa.getCostPU() + " PU] ");
     return costString + UserActionText.getInstance().getButtonText(paa.getText());
   }
 
   private static JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
-    final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? ""
-        : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
+    final String chanceString = (paa.getChanceToHit() >= paa.getChanceDiceSides()) ? ""
+        : ("[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ");
     return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
   }
 

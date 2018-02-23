@@ -55,7 +55,7 @@ public class TileImageReconstructor {
             + "</html>"));
     final FileSave baseTileLocationSelection = new FileSave("Where are the Tile Images?", null, mapFolderLocation);
     baseTileLocation = baseTileLocationSelection.getPathString();
-    if (mapFolderLocation == null && baseTileLocationSelection.getFile() != null) {
+    if ((mapFolderLocation == null) && (baseTileLocationSelection.getFile() != null)) {
       mapFolderLocation = baseTileLocationSelection.getFile().getParentFile();
     }
     if (baseTileLocation == null) {
@@ -102,7 +102,7 @@ public class TileImageReconstructor {
         // ignore malformed input
       }
     }
-    if (sizeX <= 0 || sizeY <= 0) {
+    if ((sizeX <= 0) || (sizeY <= 0)) {
       ToolLogger.info("Map dimensions must be greater than zero for this to work");
       ToolLogger.info("Shutting down");
       System.exit(0);
@@ -135,8 +135,8 @@ public class TileImageReconstructor {
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     final BufferedImage mapImage = localGraphicSystem.createCompatibleImage(sizeX, sizeY, Transparency.TRANSLUCENT);
     final Graphics graphics = mapImage.getGraphics();
-    for (int x = 0; (x) * TileManager.TILE_SIZE < sizeX; x++) {
-      for (int y = 0; (y) * TileManager.TILE_SIZE < sizeY; y++) {
+    for (int x = 0; ((x) * TileManager.TILE_SIZE) < sizeX; x++) {
+      for (int y = 0; ((y) * TileManager.TILE_SIZE) < sizeY; y++) {
         final String tileName = x + "_" + y + ".png";
         final File tileFile = new File(baseTileLocation, tileName);
         if (!tileFile.exists()) {
@@ -152,7 +152,7 @@ public class TileImageReconstructor {
         textOptionPane.appendNewLine("Drew " + tileName);
       }
     }
-    if (polygons != null && !polygons.isEmpty()) {
+    if ((polygons != null) && !polygons.isEmpty()) {
       graphics.setColor(Color.black);
       textOptionPane.appendNewLine("Drawing Polygons");
       for (final Entry<String, List<Polygon>> entry : polygons.entrySet()) {
@@ -202,9 +202,9 @@ public class TileImageReconstructor {
       ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
+    if ((mapFolderLocation == null) || (mapFolderLocation.length() < 1)) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
-      if (value != null && value.length() > 0) {
+      if ((value != null) && (value.length() > 0)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;

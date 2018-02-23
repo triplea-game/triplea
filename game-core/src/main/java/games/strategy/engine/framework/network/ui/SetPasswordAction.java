@@ -52,7 +52,7 @@ public class SetPasswordAction extends AbstractAction {
       validator.setGamePassword(null);
       passworded = false;
     }
-    if (lobbyWatcher != null && lobbyWatcher.isActive()) {
+    if ((lobbyWatcher != null) && lobbyWatcher.isActive()) {
       lobbyWatcher.setPassworded(passworded);
     }
   }

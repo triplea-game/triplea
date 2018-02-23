@@ -40,7 +40,7 @@ public abstract class AbstractLauncher implements ILauncher {
     if (!headless && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-    if (!headless && gameLoadingWindow != null) {
+    if (!headless && (gameLoadingWindow != null)) {
       gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
       gameLoadingWindow.setVisible(true);
       gameLoadingWindow.showWait();

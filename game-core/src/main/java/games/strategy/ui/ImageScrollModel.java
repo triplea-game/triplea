@@ -61,7 +61,7 @@ public class ImageScrollModel extends Observable {
       if (y < 0) {
         y = 0;
       }
-      if (y + boxHeight > maxHeight) {
+      if ((y + boxHeight) > maxHeight) {
         y = maxHeight - boxHeight;
       }
     } else {
@@ -83,7 +83,7 @@ public class ImageScrollModel extends Observable {
       if (x < 0) {
         x = 0;
       }
-      if (x + boxWidth > maxWidth) {
+      if ((x + boxWidth) > maxWidth) {
         x = maxWidth - boxWidth;
       }
     } else {

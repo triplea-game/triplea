@@ -132,7 +132,7 @@ public class TripleAUnit extends Unit {
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setUnloaded(final List<Unit> unloaded) {
-    if (unloaded == null || unloaded.isEmpty()) {
+    if ((unloaded == null) || unloaded.isEmpty()) {
       m_unloaded = Collections.emptyList();
     } else {
       m_unloaded = new ArrayList<>(unloaded);
@@ -201,7 +201,7 @@ public class TripleAUnit extends Unit {
   }
 
   public int getMovementLeft() {
-    return Math.max(0, UnitAttachment.get(getType()).getMovement(getOwner()) + m_bonusMovement - m_alreadyMoved);
+    return Math.max(0, (UnitAttachment.get(getType()).getMovement(getOwner()) + m_bonusMovement) - m_alreadyMoved);
   }
 
   public static Tuple<Integer, Integer> getMinAndMaxMovementLeft(final Collection<Unit> units) {
@@ -368,7 +368,7 @@ public class TripleAUnit extends Unit {
 
       if (Matches.unitCanProduceUnits().test(u)) {
         // can use "production" or "unitProduction"
-        return (ua.getCanProduceXUnits() < 0) ? territoryUnitProduction * ua.getMaxDamage() : ua.getMaxDamage();
+        return (ua.getCanProduceXUnits() < 0) ? (territoryUnitProduction * ua.getMaxDamage()) : ua.getMaxDamage();
       }
 
       return ua.getMaxDamage();
@@ -452,16 +452,16 @@ public class TripleAUnit extends Unit {
         }
       }
     } else {
-      if (ua.getCanProduceXUnits() < 0
+      if ((ua.getCanProduceXUnits() < 0)
           && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         productionCapacity = territoryProduction;
-      } else if (ua.getCanProduceXUnits() < 0
+      } else if ((ua.getCanProduceXUnits() < 0)
           && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         productionCapacity = territoryUnitProduction;
       } else {
         productionCapacity = ua.getCanProduceXUnits();
       }
-      if (productionCapacity < 1
+      if ((productionCapacity < 1)
           && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
         productionCapacity =
             (Properties.getWW2V2(data) || Properties.getWW2V3(data)) ? 0

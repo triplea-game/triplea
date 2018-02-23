@@ -93,7 +93,7 @@ public final class Version implements Serializable, Comparable<Version> {
    */
   public String getExactVersion() {
     // in case of deserialization, exactVersion may be null, in which case toString() it.
-    return exactVersion != null ? exactVersion : toString();
+    return (exactVersion != null) ? exactVersion : toString();
   }
 
   /**
@@ -126,7 +126,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
   @Override
   public boolean equals(final @Nullable Object o) {
-    return o instanceof Version && compareTo((Version) o) == 0;
+    return (o instanceof Version) && (compareTo((Version) o) == 0);
   }
 
   @Override
@@ -195,11 +195,11 @@ public final class Version implements Serializable, Comparable<Version> {
    * Creates a complete version string with '.' as separator, even if some version numbers are 0.
    */
   public String toStringFull() {
-    return Joiner.on('.').join(m_major, m_minor, m_point, m_micro == Integer.MAX_VALUE ? "dev" : m_micro);
+    return Joiner.on('.').join(m_major, m_minor, m_point, (m_micro == Integer.MAX_VALUE) ? "dev" : m_micro);
   }
 
   @Override
   public String toString() {
-    return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
+    return (m_micro != 0) ? toStringFull() : (m_major + "." + m_minor + ((m_point != 0) ? ("." + m_point) : ""));
   }
 }

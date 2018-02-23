@@ -106,6 +106,6 @@ final class DownloadFile {
   }
 
   boolean isDone() {
-    return state == DownloadState.CANCELLED || state == DownloadState.DONE;
+    return (state == DownloadState.CANCELLED) || (state == DownloadState.DONE);
   }
 }

@@ -39,7 +39,7 @@ public class TooltipProperties {
 
   public static TooltipProperties getInstance() {
     // cache properties for 5 seconds
-    if (ttp == null || timestamp.plusSeconds(5).isBefore(Instant.now())) {
+    if ((ttp == null) || timestamp.plusSeconds(5).isBefore(Instant.now())) {
       ttp = new TooltipProperties();
       timestamp = Instant.now();
     }
@@ -49,7 +49,7 @@ public class TooltipProperties {
   public String getToolTip(final UnitType ut, final PlayerID playerId) {
     final String tooltip = properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "."
         + (playerId == null ? PlayerID.NULL_PLAYERID.getName() : playerId.getName()), "");
-    return (tooltip == null || tooltip.isEmpty())
+    return ((tooltip == null) || tooltip.isEmpty())
         ? properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName(), "")
         : tooltip;
   }

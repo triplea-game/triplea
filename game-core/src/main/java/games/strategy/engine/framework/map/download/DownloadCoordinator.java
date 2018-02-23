@@ -57,7 +57,7 @@ public final class DownloadCoordinator {
   private void updateQueue() {
     assert Thread.holdsLock(lock);
 
-    if (activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS && !pendingDownloads.isEmpty()) {
+    if ((activeDownloads.size() < MAX_CONCURRENT_DOWNLOADS) && !pendingDownloads.isEmpty()) {
       final DownloadFile downloadFile = pendingDownloads.remove();
       downloadFile.startAsyncDownload();
       activeDownloads.add(downloadFile);

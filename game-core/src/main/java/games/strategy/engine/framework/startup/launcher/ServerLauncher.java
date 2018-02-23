@@ -90,16 +90,16 @@ public class ServerLauncher extends AbstractLauncher {
     if (abortLaunch) {
       return true;
     }
-    if (gameData == null || serverModel == null) {
+    if ((gameData == null) || (serverModel == null)) {
       return true;
     }
 
     final Map<String, String> players = serverModel.getPlayersToNodeListing();
-    if (players == null || players.isEmpty() || players.containsValue(null)) {
+    if ((players == null) || players.isEmpty() || players.containsValue(null)) {
       return true;
     }
 
-    if (serverGame != null && serverGame.getPlayerManager() != null) {
+    if ((serverGame != null) && (serverGame.getPlayerManager() != null)) {
       return serverGame.getPlayerManager().isEmpty();
     }
     return false;
@@ -343,7 +343,7 @@ public class ServerLauncher extends AbstractLauncher {
       serverGame.saveGame(f);
     } catch (final Exception e) {
       ClientLogger.logQuietly("Failed to save game: " + f.getAbsolutePath(), e);
-      if (headless && HeadlessGameServer.getInstance() != null) {
+      if (headless && (HeadlessGameServer.getInstance() != null)) {
         HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
         // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3,
         // need to see if it

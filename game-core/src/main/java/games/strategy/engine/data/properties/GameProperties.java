@@ -209,15 +209,15 @@ public class GameProperties extends GameDataComponent {
 
   private static void applyListToChangeProperties(final List<IEditableProperty> editableProperties,
       final GameProperties gamePropertiesToBeChanged) {
-    if (editableProperties == null || editableProperties.isEmpty()) {
+    if ((editableProperties == null) || editableProperties.isEmpty()) {
       return;
     }
     for (final IEditableProperty prop : editableProperties) {
-      if (prop == null || prop.getName() == null) {
+      if ((prop == null) || (prop.getName() == null)) {
         continue;
       }
       final IEditableProperty p = gamePropertiesToBeChanged.editableProperties.get(prop.getName());
-      if (p != null && prop.getName().equals(p.getName()) && p.validate(prop.getValue())) {
+      if ((p != null) && prop.getName().equals(p.getName()) && p.validate(prop.getValue())) {
         p.setValue(prop.getValue());
       }
     }

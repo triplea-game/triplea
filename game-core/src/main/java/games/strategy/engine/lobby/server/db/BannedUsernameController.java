@@ -23,7 +23,7 @@ public class BannedUsernameController extends TimedController implements BannedU
     checkNotNull(bannedUser);
     checkNotNull(moderator);
 
-    if (banTill != null && banTill.isBefore(now())) {
+    if ((banTill != null) && banTill.isBefore(now())) {
       removeBannedUsername(bannedUser.getUsername());
       return;
     }
@@ -43,7 +43,7 @@ public class BannedUsernameController extends TimedController implements BannedU
       ps.setString(1, bannedUser.getUsername());
       ps.setString(2, bannedUser.getInetAddress().getHostAddress());
       ps.setString(3, bannedUser.getHashedMacAddress());
-      ps.setTimestamp(4, banTill != null ? Timestamp.from(banTill) : null);
+      ps.setTimestamp(4, (banTill != null) ? Timestamp.from(banTill) : null);
       ps.setString(5, moderator.getUsername());
       ps.setString(6, moderator.getInetAddress().getHostAddress());
       ps.setString(7, moderator.getHashedMacAddress());
@@ -78,7 +78,7 @@ public class BannedUsernameController extends TimedController implements BannedU
         // If the ban has expired, allow the username
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.toInstant().isBefore(now())) {
+          if ((banTill != null) && banTill.toInstant().isBefore(now())) {
             removeBannedUsername(username);
             return Tuple.of(false, banTill);
           }

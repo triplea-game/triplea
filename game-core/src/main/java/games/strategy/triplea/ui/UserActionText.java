@@ -44,7 +44,7 @@ public class UserActionText {
 
   public static UserActionText getInstance() {
     // cache properties for 10 seconds
-    if (text == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
+    if ((text == null) || timestamp.plusSeconds(10).isBefore(Instant.now())) {
       text = new UserActionText();
       timestamp = Instant.now();
     }

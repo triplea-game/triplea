@@ -201,7 +201,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @Override
   public String fightBattle(final Territory territory, final boolean bombing, final BattleType type) {
     final IBattle battle = battleTracker.getPendingBattle(territory, bombing, type);
-    if (currentBattle != null && currentBattle != battle) {
+    if ((currentBattle != null) && (currentBattle != battle)) {
       return "Must finish " + getFightingWord(currentBattle) + " in " + currentBattle.getTerritory() + " first";
     }
     // does the battle exist
@@ -377,7 +377,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         for (final Unit u : paratroops) {
           final TripleAUnit taUnit = (TripleAUnit) u;
           final Unit transport = taUnit.getTransportedBy();
-          if (transport == null || !airTransports.contains(transport)) {
+          if ((transport == null) || !airTransports.contains(transport)) {
             continue;
           }
           change.add(TransportTracker.unloadAirTransportChange(taUnit, battleSite, false));
@@ -615,7 +615,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     int maxScrambleDistance = 0;
     for (final UnitType unitType : data.getUnitTypeList()) {
       final UnitAttachment ua = UnitAttachment.get(unitType);
-      if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
+      if (ua.getCanScramble() && (maxScrambleDistance < ua.getMaxScrambleDistance())) {
         maxScrambleDistance = ua.getMaxScrambleDistance();
       }
     }
@@ -661,7 +661,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final IBattle battle = battleTracker.getPendingBattle(battleTerr, false, BattleType.NORMAL);
       // do not forget we may already have the territory in the list, so we need to add to the collection, not overwrite
       // it.
-      if (battle != null && battle.isAmphibious() && battle instanceof DependentBattle) {
+      if ((battle != null) && battle.isAmphibious() && (battle instanceof DependentBattle)) {
         final Collection<Territory> amphibFromTerrs = ((DependentBattle) battle).getAmphibiousAttackTerritories();
         amphibFromTerrs.removeAll(territoriesWithBattlesWater);
         for (final Territory amphibFrom : amphibFromTerrs) {
@@ -682,6 +682,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (scrambleTerrs.isEmpty()) {
       return;
     }
+
     final Map<Tuple<Territory, PlayerID>, Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
         new HashMap<>();
     for (final Territory to : scrambleTerrs.keySet()) {
@@ -704,11 +705,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitWasScrambled().negate())
             .and(Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
-        if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
+        if ((maxCanScramble > 0) && !canScrambleAir.isEmpty()) {
           scramblers.put(from, Tuple.of(airbases, canScrambleAir));
         }
       }
-      if (defender == null || scramblers.isEmpty()) {
+      if ((defender == null) || scramblers.isEmpty()) {
         continue;
       }
       final Tuple<Territory, PlayerID> terrPlayer = Tuple.of(to, defender);
@@ -721,7 +722,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Tuple<Territory, PlayerID> terrPlayer : scramblersByTerritoryPlayer.keySet()) {
       final Territory to = terrPlayer.getFirst();
       final PlayerID defender = terrPlayer.getSecond();
-      if (defender == null || defender.isNull()) {
+      if ((defender == null) || defender.isNull()) {
         continue;
       }
       boolean scrambledHere = false;
@@ -760,7 +761,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final CompositeChange change = new CompositeChange();
         for (final Territory t : toScramble.keySet()) {
           final Collection<Unit> scrambling = toScramble.get(t);
-          if (scrambling == null || scrambling.isEmpty()) {
+          if ((scrambling == null) || scrambling.isEmpty()) {
             continue;
           }
           int numberScrambled = scrambling.size();
@@ -862,14 +863,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             for (final Territory territoryNeighborToNewBattle : neighborsLand) {
               final IBattle battleInTerritoryNeighborToNewBattle =
                   battleTracker.getPendingBattle(territoryNeighborToNewBattle, false, BattleType.NORMAL);
-              if (battleInTerritoryNeighborToNewBattle != null
-                  && battleInTerritoryNeighborToNewBattle instanceof MustFightBattle) {
+              if ((battleInTerritoryNeighborToNewBattle != null)
+                  && (battleInTerritoryNeighborToNewBattle instanceof MustFightBattle)) {
                 final MustFightBattle mfbattleInTerritoryNeighborToNewBattle =
                     (MustFightBattle) battleInTerritoryNeighborToNewBattle;
                 mfbattleInTerritoryNeighborToNewBattle
                     .addDependentUnits(dependencies.get(territoryNeighborToNewBattle));
-              } else if (battleInTerritoryNeighborToNewBattle != null
-                  && battleInTerritoryNeighborToNewBattle instanceof NonFightingBattle) {
+              } else if ((battleInTerritoryNeighborToNewBattle != null)
+                  && (battleInTerritoryNeighborToNewBattle instanceof NonFightingBattle)) {
                 final NonFightingBattle nfbattleInTerritoryNeighborToNewBattle =
                     (NonFightingBattle) battleInTerritoryNeighborToNewBattle;
                 nfbattleInTerritoryNeighborToNewBattle
@@ -955,7 +956,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           } else if (possible.size() == 1) {
             landingTerr = possible.iterator().next();
           }
-          if (landingTerr == null || landingTerr.equals(t)) {
+          if ((landingTerr == null) || landingTerr.equals(t)) {
             carrierCostOfCurrentTerr += AirMovementValidator.carrierCost(Collections.singletonList(u));
             historyText = "Scrambled unit stays in territory " + t.getName();
           } else {
@@ -1030,7 +1031,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Entry<Territory, Collection<Unit>> entry : defendingAirThatCanNotLand.entrySet()) {
       final Territory battleSite = entry.getKey();
       final Collection<Unit> defendingAir = entry.getValue();
-      if (defendingAir == null || defendingAir.isEmpty()) {
+      if ((defendingAir == null) || defendingAir.isEmpty()) {
         continue;
       }
       defendingAir.retainAll(battleSite.getUnits());
@@ -1062,13 +1063,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final int alliedCarrierCapacity = AirMovementValidator.carrierCapacity(alliedCarriers, currentTerritory);
         final int alliedPlaneCost = AirMovementValidator.carrierCost(alliedPlanes);
         // if there is free capacity, add the territory to landing possibilities
-        if (alliedCarrierCapacity - alliedPlaneCost >= 1) {
+        if ((alliedCarrierCapacity - alliedPlaneCost) >= 1) {
           canLandHere.add(currentTerritory);
         }
       }
       if (isWW2v2orIsSurvivingAirMoveToLand) {
         Territory territory;
-        while (canLandHere.size() > 1 && defendingAir.size() > 0) {
+        while ((canLandHere.size() > 1) && (defendingAir.size() > 0)) {
           territory = getRemotePlayer(defender).selectTerritoryForAirToLand(canLandHere, battleSite,
               "Select territory for air units to land. (Current territory is " + battleSite.getName() + "): "
                   + MyFormatter.unitsToText(defendingAir));
@@ -1087,7 +1088,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           canLandHere.remove(territory);
         }
         // Land in the last remaining territory
-        if (canLandHere.size() > 0 && defendingAir.size() > 0) {
+        if ((canLandHere.size() > 0) && (defendingAir.size() > 0)) {
           territory = canLandHere.iterator().next();
           if (territory.isWater()) {
             landPlanesOnCarriers(bridge, alliedDefendingAir, defendingAir, alliedCarrier, alliedPlane,
@@ -1186,7 +1187,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<PlayerID, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<>();
     for (final Territory t : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      if (ta == null || !ta.getKamikazeZone()) {
+      if ((ta == null) || !ta.getKamikazeZone()) {
         continue;
       }
       final PlayerID owner = !Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)
@@ -1212,16 +1213,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               if (battle == null) {
                 final Map<Territory, Collection<Unit>> whereFrom =
                     battleTracker.getFinishedBattlesUnitAttackFromMap().get(neighbor);
-                if (whereFrom != null && whereFrom.containsKey(t)) {
+                if ((whereFrom != null) && whereFrom.containsKey(t)) {
                   amphib = true;
                   break;
                 }
                 continue;
               }
-              if (battle.isAmphibious() && ((battle instanceof MustFightBattle
+              if (battle.isAmphibious() && (((battle instanceof MustFightBattle)
                   && ((MustFightBattle) battle).getAmphibiousAttackTerritories().contains(t))
-                  || (battle instanceof NonFightingBattle
-                      && ((NonFightingBattle) battle).getAmphibiousAttackTerritories().contains(t)))) {
+                  || ((battle instanceof NonFightingBattle)
+                  && ((NonFightingBattle) battle).getAmphibiousAttackTerritories().contains(t)))) {
                 amphib = true;
                 break;
               }
@@ -1277,14 +1278,14 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       final Map<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks =
           getRemotePlayer(currentEnemy).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
-      if (attacks == null || attacks.isEmpty()) {
+      if ((attacks == null) || attacks.isEmpty()) {
         continue;
       }
       // now validate that we have the resources and those units are valid targets
       for (final Entry<Territory, HashMap<Unit, IntegerMap<Resource>>> territoryEntry : attacks.entrySet()) {
         final Territory t = territoryEntry.getKey();
         final Collection<Unit> possibleUnits = possibleUnitsToAttack.get(t);
-        if (possibleUnits == null || !possibleUnits.containsAll(territoryEntry.getValue().keySet())) {
+        if ((possibleUnits == null) || !possibleUnits.containsAll(territoryEntry.getValue().keySet())) {
           throw new IllegalStateException("Player has chosen illegal units during Kamikaze Suicide Attacks");
         }
         for (final IntegerMap<Resource> resourceMap : territoryEntry.getValue().values()) {
@@ -1299,7 +1300,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         for (final Entry<Unit, IntegerMap<Resource>> unitEntry : territoryEntry.getValue().entrySet()) {
           final Unit unitUnderFire = unitEntry.getKey();
           final IntegerMap<Resource> numberOfAttacks = unitEntry.getValue();
-          if (numberOfAttacks != null && numberOfAttacks.size() > 0 && numberOfAttacks.totalValues() > 0) {
+          if ((numberOfAttacks != null) && (numberOfAttacks.size() > 0) && (numberOfAttacks.totalValues() > 0)) {
             fireKamikazeSuicideAttacks(unitUnderFire, numberOfAttacks, resourcesAndAttackValues, currentEnemy,
                 location);
           }
@@ -1371,7 +1372,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (hits > 0) {
       final UnitAttachment ua = UnitAttachment.get(unitUnderFire.getType());
       final int currentHits = unitUnderFire.getHits();
-      if (ua.getHitPoints() <= currentHits + hits) {
+      if (ua.getHitPoints() <= (currentHits + hits)) {
         // TODO: kill dependents
         change.add(ChangeFactory.removeUnits(location, Collections.singleton(unitUnderFire)));
       } else {
@@ -1432,7 +1433,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         maxDistance = UnitAttachment.get(ut).getMaxScrambleDistance();
       }
     }
-    if (maxDistance < 1 || strandedAir == null || strandedAir.isEmpty()) {
+    if ((maxDistance < 1) || (strandedAir == null) || strandedAir.isEmpty()) {
       return Collections.singletonList(currentTerr);
     }
     final boolean areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data)
@@ -1448,7 +1449,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       while (possibleIter.hasNext()) {
         final Route route = data.getMap().getRoute(currentTerr, possibleIter.next(),
             Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir));
-        if (route == null || route.getMovementCost(strandedAir.iterator().next()) > maxDistance) {
+        if ((route == null) || (route.getMovementCost(strandedAir.iterator().next()) > maxDistance)) {
           possibleIter.remove();
         }
       }

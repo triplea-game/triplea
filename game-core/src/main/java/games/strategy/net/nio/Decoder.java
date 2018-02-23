@@ -59,7 +59,7 @@ class Decoder {
     while (running) {
       try {
         final SocketReadData data = reader.take();
-        if (data == null || !running) {
+        if ((data == null) || !running) {
           continue;
         }
 
@@ -73,7 +73,7 @@ class Decoder {
           });
           // make sure we are still open
           final Socket s = data.getChannel().socket();
-          if (!running || s == null || s.isInputShutdown()) {
+          if (!running || (s == null) || s.isInputShutdown()) {
             continue;
           }
           final QuarantineConversation converstation = quarantine.get(data.getChannel());

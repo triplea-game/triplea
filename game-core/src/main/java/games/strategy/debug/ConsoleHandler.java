@@ -69,7 +69,7 @@ public final class ConsoleHandler extends Handler {
 
   @Override
   public boolean isLoggable(final LogRecord record) {
-    return record != null && super.isLoggable(record);
+    return (record != null) && super.isLoggable(record);
   }
 
   @Override
@@ -101,6 +101,6 @@ public final class ConsoleHandler extends Handler {
   }
 
   private PrintStream getStreamFor(final Level level) {
-    return level.intValue() >= Level.WARNING.intValue() ? errSupplier.get() : outSupplier.get();
+    return (level.intValue() >= Level.WARNING.intValue()) ? errSupplier.get() : outSupplier.get();
   }
 }

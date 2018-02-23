@@ -87,9 +87,9 @@ public class TileManager {
     final MapData mapData = uiContext.getMapData();
     final Dimension mapDimensions = mapData.getMapDimensions();
     final boolean testXshift =
-        (mapData.scrollWrapX() && (bounds.getMaxX() > mapDimensions.width || bounds.getMinX() < 0));
+        (mapData.scrollWrapX() && ((bounds.getMaxX() > mapDimensions.width) || (bounds.getMinX() < 0)));
     final boolean testYshift =
-        (mapData.scrollWrapY() && (bounds.getMaxY() > mapDimensions.height || bounds.getMinY() < 0));
+        (mapData.scrollWrapY() && ((bounds.getMaxY() > mapDimensions.height) || (bounds.getMinY() < 0)));
     Rectangle2D boundsXshift = null;
     if (testXshift) {
       if (bounds.getMinX() < 0) {
@@ -163,8 +163,8 @@ public class TileManager {
     try {
       // create our tiles
       tiles = new ArrayList<>();
-      for (int x = 0; (x) * TILE_SIZE < bounds.width; x++) {
-        for (int y = 0; (y) * TILE_SIZE < bounds.height; y++) {
+      for (int x = 0; ((x) * TILE_SIZE) < bounds.width; x++) {
+        for (int y = 0; ((y) * TILE_SIZE) < bounds.height; y++) {
           tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x, y,
               uiContext.getScale()));
         }
@@ -255,7 +255,7 @@ public class TileManager {
       return;
     }
     final Collection<IDrawable> drawables = territoryDrawables.get(territory.getName());
-    if (drawables == null || drawables.isEmpty()) {
+    if ((drawables == null) || drawables.isEmpty()) {
       return;
     }
     final Iterator<Tile> tiles = territoryTiles.get(territory.getName()).iterator();
@@ -308,11 +308,11 @@ public class TileManager {
       drawing.add(new OptionalExtraTerritoryBordersDrawable(territory.getName(), optionalBorderLevel));
     }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
-    if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
+    if ((ta != null) && ta.isCapital() && mapData.drawCapitolMarkers()) {
       final PlayerID capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
-    if (ta != null && (ta.getVictoryCity() != 0)) {
+    if ((ta != null) && (ta.getVictoryCity() != 0)) {
       drawing.add(new VcDrawable(territory));
     }
     // add to the relevant tiles
@@ -339,7 +339,7 @@ public class TileManager {
   private void drawUnits(final Territory territory, final MapData mapData, final Set<Tile> drawnOn,
       final Set<IDrawable> drawing) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
-    if (placementPoints == null || !placementPoints.hasNext()) {
+    if ((placementPoints == null) || !placementPoints.hasNext()) {
       throw new IllegalStateException("No where to place units:" + territory.getName());
     }
     Point lastPlace = null;
@@ -408,7 +408,7 @@ public class TileManager {
         if (bounds.x < 0) {
           bounds.x = 0;
         }
-        if (bounds.width + bounds.x > mapDataWidth) {
+        if ((bounds.width + bounds.x) > mapDataWidth) {
           bounds.x = mapDataWidth - bounds.width;
         }
       }
@@ -416,7 +416,7 @@ public class TileManager {
         if (bounds.y < 0) {
           bounds.y = 0;
         }
-        if (bounds.height + bounds.y > mapDataHeight) {
+        if ((bounds.height + bounds.y) > mapDataHeight) {
           bounds.y = mapDataHeight - bounds.height;
         }
       }
@@ -443,17 +443,17 @@ public class TileManager {
       }
       // start as a set to prevent duplicates
       drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
-      if (bounds.x + bounds.height > mapDataWidth) {
+      if ((bounds.x + bounds.height) > mapDataWidth) {
         bounds.x -= mapDataWidth;
         drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
-        if (bounds.y + bounds.width > mapDataHeight) {
+        if ((bounds.y + bounds.width) > mapDataHeight) {
           bounds.y -= mapDataHeight;
           drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
           bounds.y += mapDataHeight;
         }
         bounds.x += mapDataWidth;
       }
-      if (bounds.y + bounds.width > mapDataHeight) {
+      if ((bounds.y + bounds.width) > mapDataHeight) {
         bounds.y -= mapDataHeight;
         drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
         bounds.y += mapDataHeight;
@@ -550,8 +550,10 @@ public class TileManager {
       try {
         for (final UnitsDrawer drawer : allUnitDrawables) {
           final Point placementPoint = drawer.getPlacementPoint();
-          if (x > placementPoint.x && x < placementPoint.x + uiContext.getUnitImageFactory().getUnitImageWidth()) {
-            if (y > placementPoint.y && y < placementPoint.y + uiContext.getUnitImageFactory().getUnitImageHeight()) {
+          if ((x > placementPoint.x)
+              && (x < (placementPoint.x + uiContext.getUnitImageFactory().getUnitImageWidth()))) {
+            if ((y > placementPoint.y) && (y < (placementPoint.y + uiContext.getUnitImageFactory()
+                .getUnitImageHeight()))) {
               return drawer.getUnits(gameData);
             }
           }

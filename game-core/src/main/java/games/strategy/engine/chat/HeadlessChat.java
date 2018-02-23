@@ -151,8 +151,8 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
     final String message = Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
-    final String prefix = thirdperson ? (showTime ? "* " + time + " " + from : "* " + from)
-        : (showTime ? time + " " + from + ": " : from + ": ");
+    final String prefix = thirdperson ? (showTime ? ("* " + time + " " + from) : ("* " + from))
+        : (showTime ? (time + " " + from + ": ") : (from + ": "));
     final String fullMessage = prefix + " " + message + "\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {

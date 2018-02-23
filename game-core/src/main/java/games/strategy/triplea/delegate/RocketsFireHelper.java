@@ -171,7 +171,7 @@ public class RocketsFireHelper {
         .and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowed);
-      if (route != null && route.numberOfSteps() <= maxDistance) {
+      if ((route != null) && (route.numberOfSteps() <= maxDistance)) {
         if (current.getUnits().anyMatch(attackableUnits
             .and(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
           hasFactory.add(current);
@@ -205,9 +205,9 @@ public class RocketsFireHelper {
     } else {
       rockets = new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
     }
-    final int numberOfAttacks = (rockets == null ? 1
+    final int numberOfAttacks = ((rockets == null) ? 1
         : Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data),
-            TechAbilityAttachment.getRocketDiceNumber(rockets, data)));
+        TechAbilityAttachment.getRocketDiceNumber(rockets, data)));
     if (numberOfAttacks <= 0) {
       return;
     }
@@ -245,11 +245,11 @@ public class RocketsFireHelper {
       targets.add(target);
     }
     final boolean doNotUseBombingBonus =
-        !Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
+        !Properties.getUseBombingMaxDiceSidesAndBonus(data) || (rockets == null);
     int cost = 0;
     final String transcript;
     if (!Properties.getLowLuckDamageOnly(data)) {
-      if (doNotUseBombingBonus || rockets == null) {
+      if (doNotUseBombingBonus || (rockets == null)) {
         // no low luck, and no bonus, so just roll based on the map's dice sides
         final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING,
             "Rocket fired by " + player.getName() + " at " + attacked.getName());
@@ -298,7 +298,7 @@ public class RocketsFireHelper {
         }
       }
     } else {
-      if (doNotUseBombingBonus || rockets == null) {
+      if (doNotUseBombingBonus || (rockets == null)) {
         // no bonus, so just roll based on the map's dice sides, but modify for LL
         final int maxDice = (data.getDiceSides() + 1) / 3;
         final int bonus = (data.getDiceSides() + 1) / 3;
@@ -322,7 +322,7 @@ public class RocketsFireHelper {
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
           // map, and zero for the bonus.
-          if (maxDice < 0 || doNotUseBombingBonus) {
+          if ((maxDice < 0) || doNotUseBombingBonus) {
             maxDice = diceSides;
           }
           if (doNotUseBombingBonus) {
@@ -413,10 +413,10 @@ public class RocketsFireHelper {
       final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, pus, -cost);
       bridge.addChange(rocketCharge);
     }
-    bridge.getHistoryWriter().addChildToEvent(transcript, rockets == null ? null : new ArrayList<>(rockets));
+    bridge.getHistoryWriter().addChildToEvent(transcript, (rockets == null) ? null : new ArrayList<>(rockets));
     // this is null in WW2V1
     if (attackFrom != null) {
-      if (rockets != null && !rockets.isEmpty()) {
+      if ((rockets != null) && !rockets.isEmpty()) {
         // TODO: only a certain number fired...
         final Change change = ChangeFactory.markNoMovementChange(Collections.singleton(rockets.iterator().next()));
         bridge.addChange(change);

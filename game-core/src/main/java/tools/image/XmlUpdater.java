@@ -88,9 +88,9 @@ public class XmlUpdater {
       ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
+    if ((mapFolderLocation == null) || (mapFolderLocation.length() < 1)) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
-      if (value != null && value.length() > 0) {
+      if ((value != null) && (value.length() > 0)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;

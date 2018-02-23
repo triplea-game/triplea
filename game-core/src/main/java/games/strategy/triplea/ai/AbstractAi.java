@@ -281,7 +281,9 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
         final IntegerMap<Resource> resourceMap = new IntegerMap<>();
         final Resource resource = attackTokens.keySet().iterator().next();
         final int num = Math.min(attackTokens.getInt(resource),
-            (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
+            (UnitAttachment.get(u.getType()).getHitPoints() * ((Math.random() < .3)
+                ? 1
+                : ((Math.random() < .5) ? 2 : 3))));
         resourceMap.put(resource, num);
         final HashMap<Unit, IntegerMap<Resource>> attMap = kamikazeSuicideAttacks.getOrDefault(t, new HashMap<>());
         attMap.put(u, resourceMap);
@@ -302,7 +304,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     final GameData data = getGameData();
     final PlayerID me = getPlayerId();
     final Territory picked;
-    if (territoryChoices == null || territoryChoices.isEmpty()) {
+    if ((territoryChoices == null) || territoryChoices.isEmpty()) {
       picked = null;
     } else if (territoryChoices.size() == 1) {
       picked = territoryChoices.get(0);
@@ -407,15 +409,15 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       }
     }
     final Set<Unit> unitsToPlace = new HashSet<>();
-    if (unitChoices != null && !unitChoices.isEmpty() && unitsPerPick > 0) {
+    if ((unitChoices != null) && !unitChoices.isEmpty() && (unitsPerPick > 0)) {
       Collections.shuffle(unitChoices);
       final List<Unit> nonFactory = CollectionUtils.getMatches(unitChoices, Matches.unitCanProduceUnits().negate());
       if (nonFactory.isEmpty()) {
-        for (int i = 0; i < unitsPerPick && !unitChoices.isEmpty(); i++) {
+        for (int i = 0; (i < unitsPerPick) && !unitChoices.isEmpty(); i++) {
           unitsToPlace.add(unitChoices.get(0));
         }
       } else {
-        for (int i = 0; i < unitsPerPick && !nonFactory.isEmpty(); i++) {
+        for (int i = 0; (i < unitsPerPick) && !nonFactory.isEmpty(); i++) {
           unitsToPlace.add(nonFactory.get(0));
         }
       }
@@ -599,15 +601,16 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesTowardsWar =
           AiPoliticalUtils.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty()) {
+      if ((actionChoicesTowardsWar != null) && !actionChoicesTowardsWar.isEmpty()) {
         Collections.shuffle(actionChoicesTowardsWar);
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
-        int maxWarActionsPerTurn = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
+        int maxWarActionsPerTurn =
+            ((random < .5) ? 0 : ((random < .9) ? 1 : ((random < .99) ? 2 : ((int) numPlayers / 2))));
         if ((maxWarActionsPerTurn > 0)
-            && (CollectionUtils.countMatches(data.getRelationshipTracker().getRelationships(id),
-                Matches.relationshipIsAtWar())) / numPlayers < 0.4) {
+            && (((CollectionUtils.countMatches(data.getRelationshipTracker().getRelationships(id),
+            Matches.relationshipIsAtWar())) / numPlayers) < 0.4)) {
           if (Math.random() < .9) {
             maxWarActionsPerTurn = 0;
           } else {
@@ -615,7 +618,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
           }
         }
         final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
-        while (actionWarIter.hasNext() && maxWarActionsPerTurn > 0) {
+        while (actionWarIter.hasNext() && (maxWarActionsPerTurn > 0)) {
           final PoliticalActionAttachment action = actionWarIter.next();
           if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .test(action)) {
@@ -631,21 +634,21 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     } else {
       final List<PoliticalActionAttachment> actionChoicesOther =
           AiPoliticalUtils.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
+      if ((actionChoicesOther != null) && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         // should we use bridge's random source here?
         final double random = Math.random();
         final int maxOtherActionsPerTurn =
-            (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
+            ((random < .3) ? 0 : ((random < .6) ? 1 : ((random < .9) ? 2 : ((random < .99) ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
+        while (actionOtherIter.hasNext() && (maxOtherActionsPerTurn > 0)) {
           final PoliticalActionAttachment action = actionOtherIter.next();
           if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .test(action)) {
             continue;
           }
-          if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS)) {
+          if ((action.getCostPU() > 0) && (action.getCostPU() > id.getResources().getQuantity(Constants.PUS))) {
             continue;
           }
           i++;

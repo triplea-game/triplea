@@ -40,7 +40,7 @@ public class SetMapClientAction extends AbstractAction {
     for (final String game : availableGames) {
       model.addElement(game);
     }
-    if (serverNode == null || model.getSize() <= 1) {
+    if ((serverNode == null) || (model.getSize() <= 1)) {
       JOptionPane.showMessageDialog(parent, "No available games", "No available games", JOptionPane.ERROR_MESSAGE);
       return;
     }
@@ -50,7 +50,7 @@ public class SetMapClientAction extends AbstractAction {
       return;
     }
     final String name = (String) combo.getSelectedItem();
-    if (name == null || name.length() <= 1) {
+    if ((name == null) || (name.length() <= 1)) {
       return;
     }
     clientMessenger.changeServerGameTo(name);

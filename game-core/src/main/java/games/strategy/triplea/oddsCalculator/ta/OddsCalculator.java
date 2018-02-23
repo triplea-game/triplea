@@ -87,7 +87,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   }
 
   OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
-    gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+    gameData = (data == null) ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
     if (data != null) {
       isDataSet = true;
       notifyListenersGameDataIsSet();
@@ -101,7 +101,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     }
     isDataSet = false;
     isCalcSet = false;
-    gameData = (data == null ? null : GameDataUtils.cloneGameData(data, false));
+    gameData = ((data == null) ? null : GameDataUtils.cloneGameData(data, false));
     // reset old data
     attacker = null;
     defender = null;
@@ -131,10 +131,12 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     if (!isDataSet) {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
-    this.attacker =
-        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
-    this.defender =
-        gameData.getPlayerList().getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
+    this.attacker = gameData.getPlayerList().getPlayerId((attacker == null)
+        ? PlayerID.NULL_PLAYERID.getName()
+        : attacker.getName());
+    this.defender = gameData.getPlayerList().getPlayerId((defender == null)
+        ? PlayerID.NULL_PLAYERID.getName()
+        : defender.getName());
     this.location = gameData.getMap().getTerritory(location.getName());
     attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
@@ -178,7 +180,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         OddsCalculator.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
     final List<Unit> defenderOrderOfLosses =
         OddsCalculator.getUnitListByOrderOfLoss(this.defenderOrderOfLosses, defendingUnits, gameData);
-    for (int i = 0; i < count && !cancelled; i++) {
+    for (int i = 0; (i < count) && !cancelled; i++) {
       final CompositeChange allChanges = new CompositeChange();
       final DummyDelegateBridge bridge1 =
           new DummyDelegateBridge(attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
@@ -272,7 +274,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   }
 
   static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
-    if (orderOfLoss == null || orderOfLoss.trim().length() == 0) {
+    if ((orderOfLoss == null) || (orderOfLoss.trim().length() == 0)) {
       return true;
     }
     try {
@@ -317,7 +319,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
 
   private static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units,
       final GameData data) {
-    if (ool == null || ool.trim().length() == 0) {
+    if ((ool == null) || (ool.trim().length() == 0)) {
       return null;
     }
     final String[] sections;
@@ -593,7 +595,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
         final Predicate<Unit> planeNotDestroyer = Matches.unitIsAir().and(Matches.unitIsDestroyer().negate());
         final List<Unit> ourUnits = getOurUnits();
         final List<Unit> enemyUnits = getEnemyUnits();
-        if (ourUnits == null || enemyUnits == null) {
+        if ((ourUnits == null) || (enemyUnits == null)) {
           return null;
         }
         if (!enemyUnits.isEmpty() && enemyUnits.stream().allMatch(planeNotDestroyer) && !ourUnits.isEmpty()
@@ -607,10 +609,10 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       if (battle == null) {
         return null;
       }
-      if (retreatAfterRound > -1 && battle.getBattleRound() >= retreatAfterRound) {
+      if ((retreatAfterRound > -1) && (battle.getBattleRound() >= retreatAfterRound)) {
         return possibleTerritories.iterator().next();
       }
-      if (!retreatWhenOnlyAirLeft && retreatAfterXUnitsLeft <= -1) {
+      if (!retreatWhenOnlyAirLeft && (retreatAfterXUnitsLeft <= -1)) {
         return null;
       }
       final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
@@ -629,7 +631,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
           return possibleTerritories.iterator().next();
         }
       }
-      if (retreatAfterXUnitsLeft > -1 && retreatAfterXUnitsLeft >= unitsLeft.size()) {
+      if ((retreatAfterXUnitsLeft > -1) && (retreatAfterXUnitsLeft >= unitsLeft.size())) {
         return possibleTerritories.iterator().next();
       }
       return null;
@@ -660,13 +662,13 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
           killedUnits.add(notKilledAndNotLand.get(0));
         }
       }
-      if (orderOfLosses != null && !orderOfLosses.isEmpty() && !killedUnits.isEmpty()) {
+      if ((orderOfLosses != null) && !orderOfLosses.isEmpty() && !killedUnits.isEmpty()) {
         final List<Unit> orderOfLosses = new ArrayList<>(this.orderOfLosses);
         orderOfLosses.retainAll(selectFrom);
         if (!orderOfLosses.isEmpty()) {
           int killedSize = killedUnits.size();
           killedUnits.clear();
-          while (killedSize > 0 && !orderOfLosses.isEmpty()) {
+          while ((killedSize > 0) && !orderOfLosses.isEmpty()) {
             killedUnits.add(orderOfLosses.get(0));
             orderOfLosses.remove(0);
             killedSize--;

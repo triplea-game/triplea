@@ -177,7 +177,7 @@ public final class TimespanDialog extends JDialog {
   static void runAction(final Consumer<Date> action, final Optional<Timespan> timespan) {
     timespan.ifPresent(it -> {
       final @Nullable Instant instant = it.timeUnit.getInstant(it.duration);
-      action.accept(instant == null ? null : Date.from(instant));
+      action.accept((instant == null) ? null : Date.from(instant));
     });
   }
 }

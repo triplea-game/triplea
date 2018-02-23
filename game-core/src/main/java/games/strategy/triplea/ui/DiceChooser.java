@@ -54,7 +54,7 @@ class DiceChooser extends JPanel {
   }
 
   private void addDie(final int roll) {
-    final boolean hit = (roll == hitAt || (!hitOnlyIfEquals && (hitAt > 0) && roll > hitAt));
+    final boolean hit = ((roll == hitAt) || (!hitOnlyIfEquals && (hitAt > 0) && (roll > hitAt)));
     final DieType dieType = hit ? DieType.HIT : DieType.MISS;
     dicePanel.add(new JLabel(uiContext.getDiceImageFactory().getDieIcon(roll, dieType)));
     dicePanel.add(Box.createHorizontalStrut(2));
@@ -91,7 +91,7 @@ class DiceChooser extends JPanel {
     diceButtonPanel.setLayout(new BoxLayout(diceButtonPanel, BoxLayout.X_AXIS));
     diceButtonPanel.add(Box.createHorizontalStrut(40));
     for (int roll = 1; roll <= diceSides; roll++) {
-      final boolean hit = (roll == hitAt || (!hitOnlyIfEquals && (hitAt > 0) && roll > hitAt));
+      final boolean hit = ((roll == hitAt) || (!hitOnlyIfEquals && (hitAt > 0) && (roll > hitAt)));
       diceButtonPanel.add(Box.createHorizontalStrut(4));
       final int dieNum = roll;
       final DieType dieType = hit ? DieType.HIT : DieType.MISS;

@@ -79,7 +79,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
       final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
-      if (myCreators != null && !myCreators.isEmpty()) {
+      if ((myCreators != null) && !myCreators.isEmpty()) {
         final Collection<Unit> toAdd = new ArrayList<>();
         final Collection<Unit> toAddSea = new ArrayList<>();
         final Collection<Unit> toAddLand = new ArrayList<>();
@@ -109,7 +109,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         if (!toAddSea.isEmpty()) {
           final Predicate<Territory> myTerrs = Matches.territoryIsWater();
           final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
-          if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
+          if ((waterNeighbors != null) && !waterNeighbors.isEmpty()) {
             final Territory tw = getRandomTerritory(waterNeighbors, bridge);
             final String transcriptText =
                 player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddSea) + " in " + tw.getName();
@@ -122,7 +122,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         if (!toAddLand.isEmpty()) {
           final Predicate<Territory> myTerrs = Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
-          if (landNeighbors != null && !landNeighbors.isEmpty()) {
+          if ((landNeighbors != null) && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);
             final String transcriptText =
                 player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddLand) + " in " + tl.getName();
@@ -141,7 +141,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   }
 
   private static Territory getRandomTerritory(final Collection<Territory> territories, final IDelegateBridge bridge) {
-    if (territories == null || territories.isEmpty()) {
+    if ((territories == null) || territories.isEmpty()) {
       return null;
     }
     if (territories.size() == 1) {
@@ -225,7 +225,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     int pus = 0;
     for (final RulesAttachment rule : objectives) {
       final int uses = rule.getUses();
-      if (uses == 0 || !rule.isSatisfied(testedConditions)) {
+      if ((uses == 0) || !rule.isSatisfied(testedConditions)) {
         continue;
       }
       pus += (rule.getObjectiveValue() * rule.getEachMultiple() * Properties.getPuMultiplier(data));
@@ -259,7 +259,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // Execute national objectives
     for (final RulesAttachment rule : objectives) {
       int uses = rule.getUses();
-      if (uses == 0 || !rule.isSatisfied(testedConditions)) {
+      if ((uses == 0) || !rule.isSatisfied(testedConditions)) {
         continue;
       }
       int toAdd = rule.getObjectiveValue();

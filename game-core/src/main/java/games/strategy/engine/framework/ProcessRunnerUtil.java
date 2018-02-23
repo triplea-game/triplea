@@ -45,7 +45,7 @@ public class ProcessRunnerUtil {
     final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
     commands.add("-classpath");
-    if (classpath != null && classpath.length() > 0) {
+    if ((classpath != null) && (classpath.length() > 0)) {
       commands.add(classpath);
     } else {
       commands.add(SystemProperties.getJavaClassPath());

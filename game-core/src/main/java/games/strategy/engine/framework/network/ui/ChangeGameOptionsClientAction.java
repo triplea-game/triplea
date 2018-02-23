@@ -33,7 +33,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
   @Override
   public void actionPerformed(final ActionEvent e) {
     final byte[] oldBytes = serverRemote.getGameOptions();
-    if (oldBytes == null || oldBytes.length == 0) {
+    if ((oldBytes == null) || (oldBytes.length == 0)) {
       return;
     }
     try {
@@ -49,7 +49,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(parent), "Map Options");
       window.setVisible(true);
       final Object buttonPressed = pane.getValue();
-      if (buttonPressed != null && !buttonPressed.equals(cancel)) {
+      if ((buttonPressed != null) && !buttonPressed.equals(cancel)) {
         // ok was clicked. changing them in the ui changes the underlying properties,
         // but it doesn't change the hosts, so we need to send it back to the host.
         try {

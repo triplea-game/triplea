@@ -220,7 +220,7 @@ public final class MacFinder {
   }
 
   private static boolean isMacValid(final String mac) {
-    if (mac == null || mac.length() != 17 || !mac.contains(".") || !mac.matches("[0-9A-Fa-f.]+")) {
+    if ((mac == null) || (mac.length() != 17) || !mac.contains(".") || !mac.matches("[0-9A-Fa-f.]+")) {
       return false;
     }
     final char[] chars = mac.toCharArray();
@@ -228,31 +228,31 @@ public final class MacFinder {
     int nonZeroNumberCount = 0;
     int i = 1;
     for (final char ch : chars) {
-      if (ch == '.' && (i % 3 != 0)) {
+      if ((ch == '.') && ((i % 3) != 0)) {
         return false;
       }
       if (ch == '.') {
         periodCount++;
       }
-      if (ch != '.' && ch != '0') {
+      if ((ch != '.') && (ch != '0')) {
         nonZeroNumberCount++;
       }
       i++;
     }
-    return !(periodCount != 5 || mac.equals("00.00.00.00.00.E0") || nonZeroNumberCount == 0);
+    return !((periodCount != 5) || mac.equals("00.00.00.00.00.E0") || (nonZeroNumberCount == 0));
   }
 
   private static String tryToParseMacFromOutput(final String output, final List<String> possibleSeparators,
       final boolean allowAppendedZeroCheck) {
-    if (output == null || output.trim().length() < 6) {
+    if ((output == null) || (output.trim().length() < 6)) {
       return null;
     }
     for (final String separator : possibleSeparators) {
       String leftToSearch = output;
-      while (leftToSearch != null && leftToSearch.length() > 0 && leftToSearch.contains(separator)) {
+      while ((leftToSearch != null) && (leftToSearch.length() > 0) && leftToSearch.contains(separator)) {
         int macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 2);
         String rawMac = leftToSearch.substring(macStartIndex, Math.min(macStartIndex + 17, leftToSearch.length()));
-        if (rawMac != null && rawMac.length() > 0) {
+        if ((rawMac != null) && (rawMac.length() > 0)) {
           String mac = rawMac.replace(separator, ".");
           if (isMacValid(mac)) {
             return mac;

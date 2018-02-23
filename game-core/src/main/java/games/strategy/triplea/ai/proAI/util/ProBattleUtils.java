@@ -44,7 +44,7 @@ public class ProBattleUtils {
 
     // Check that defender has at least 1 power
     final double power = estimatePower(t, defendingUnits, attackingUnits, false);
-    if (power == 0 && !attackingUnits.isEmpty()) {
+    if ((power == 0) && !attackingUnits.isEmpty()) {
       return true;
     }
 
@@ -74,7 +74,7 @@ public class ProBattleUtils {
     }
     final double attackerStrength = estimateStrength(t, attackingUnits, actualDefenders, true);
     final double defenderStrength = estimateStrength(t, actualDefenders, attackingUnits, false);
-    return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
+    return ((((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85)) * 50) + 50);
   }
 
   public static double estimateStrength(final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits,
@@ -104,7 +104,7 @@ public class ProBattleUtils {
     Collections.reverse(sortedUnitsList);
     final int myPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
         enemyUnits, !attacking, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
-    return (myPower * 6.0 / data.getDiceSides());
+    return ((myPower * 6.0) / data.getDiceSides());
   }
 
   public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player) {
@@ -261,7 +261,7 @@ public class ProBattleUtils {
         + myUnits.size() + ", enemySize=" + enemyUnitsInSeaTerritories.size());
 
     // If I have naval attack/defense superiority then break
-    return (defenseStrengthDifference < 50 && attackStrengthDifference > 50);
+    return ((defenseStrengthDifference < 50) && (attackStrengthDifference > 50));
   }
 
 }

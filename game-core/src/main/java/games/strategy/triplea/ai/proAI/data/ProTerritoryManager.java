@@ -127,7 +127,8 @@ public class ProTerritoryManager {
       patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, patd.getMaxUnits(), defenders, new HashSet<>()));
 
       // Add in amphib units if I can't win without them
-      if (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage && !patd.getMaxAmphibUnits().isEmpty()) {
+      if ((patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage)
+          && !patd.getMaxAmphibUnits().isEmpty()) {
         final Set<Unit> combinedUnits = new HashSet<>(patd.getMaxUnits());
         combinedUnits.addAll(patd.getMaxAmphibUnits());
         patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, new ArrayList<>(combinedUnits), defenders,
@@ -139,11 +140,11 @@ public class ProTerritoryManager {
       boolean isEnemyCapitalOrFactory = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       if (!t.getOwner().isNull()
-          && ((ta != null && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))) {
+          && (((ta != null) && ta.isCapital()) || ProMatches.territoryHasInfraFactoryAndIsLand().test(t))) {
         isEnemyCapitalOrFactory = true;
       }
-      if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage && isEnemyCapitalOrFactory
-          && alliedAttackOptions.getMax(t) != null) {
+      if ((patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage) && isEnemyCapitalOrFactory
+          && (alliedAttackOptions.getMax(t) != null)) {
 
         // Check for allied attackers
         final ProTerritory alliedAttack = alliedAttackOptions.getMax(t);
@@ -154,7 +155,7 @@ public class ProTerritoryManager {
           // Make sure allies' capital isn't next to territory
           final PlayerID alliedPlayer = alliedUnits.iterator().next().getOwner();
           final Territory capital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(alliedPlayer, data);
-          if (capital != null && !data.getMap().getNeighbors(capital).contains(t)) {
+          if ((capital != null) && !data.getMap().getNeighbors(capital).contains(t)) {
 
             // Get max enemy defenders
             final Set<Unit> additionalEnemyDefenders = new HashSet<>();
@@ -200,9 +201,9 @@ public class ProTerritoryManager {
         }
       }
 
-      if (patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage
-          || (patd.isStrafing() && (patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage
-              || !patd.getMaxBattleResult().isHasLandUnitRemaining()))) {
+      if ((patd.getMaxBattleResult().getWinPercentage() < ProData.minWinPercentage)
+          || (patd.isStrafing() && ((patd.getMaxBattleResult().getWinPercentage() < ProData.winPercentage)
+          || !patd.getMaxBattleResult().isHasLandUnitRemaining()))) {
         territoriesToRemove.add(t);
       }
     }
@@ -345,7 +346,7 @@ public class ProTerritoryManager {
             .and(Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
 
         // Add max scramble units
-        if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
+        if ((maxCanScramble > 0) && !canScrambleAir.isEmpty()) {
           if (maxCanScramble < canScrambleAir.size()) {
             Collections.sort(canScrambleAir, (o1, o2) -> {
               final double strength1 =
@@ -806,7 +807,7 @@ public class ProTerritoryManager {
           }
 
           // Check if unit can land
-          if (isCombatMove && (remainingMoves < myRouteLength || myUnitTerritory.isWater())) {
+          if (isCombatMove && ((remainingMoves < myRouteLength) || myUnitTerritory.isWater())) {
             final Set<Territory> possibleLandingTerritories =
                 data.getMap().getNeighbors(potentialTerritory, remainingMoves, canFlyOverMatch);
             final List<Territory> landingTerritories = CollectionUtils.getMatches(possibleLandingTerritories,

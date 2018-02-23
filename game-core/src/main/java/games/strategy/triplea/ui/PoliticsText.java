@@ -46,7 +46,7 @@ public class PoliticsText {
 
   public static PoliticsText getInstance() {
     // cache properties for 10 seconds
-    if (pt == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
+    if ((pt == null) || timestamp.plusSeconds(10).isBefore(Instant.now())) {
       pt = new PoliticsText();
       timestamp = Instant.now();
     }

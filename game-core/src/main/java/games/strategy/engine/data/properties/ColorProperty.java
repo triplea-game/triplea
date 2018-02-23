@@ -28,7 +28,7 @@ public class ColorProperty extends AEditableProperty {
 
   public ColorProperty(final String name, final String description, final int def) {
     super(name, description);
-    if (def > MAX_COLOR || def < MIN_COLOR) {
+    if ((def > MAX_COLOR) || (def < MIN_COLOR)) {
       throw new IllegalArgumentException("Default value out of range");
     }
     color = new Color(def);
@@ -75,7 +75,7 @@ public class ColorProperty extends AEditableProperty {
         try {
           final Color colorSelected =
               JColorChooser.showDialog(label, "Choose color",
-                  (ColorProperty.this.color == null ? Color.black : ColorProperty.this.color));
+                  ((ColorProperty.this.color == null) ? Color.black : ColorProperty.this.color));
           if (colorSelected != null) {
             color = colorSelected;
             // Ask Swing to repaint this label when it's convenient

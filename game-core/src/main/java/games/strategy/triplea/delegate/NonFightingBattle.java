@@ -63,7 +63,7 @@ public class NonFightingBattle extends DependentBattle {
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     attackingFromMapUnits.addAll(units);
     // are we amphibious
-    if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
+    if (route.getStart().isWater() && (route.getEnd() != null) && !route.getEnd().isWater()
         && units.stream().anyMatch(Matches.unitIsLand())) {
       getAmphibiousAttackTerritories().add(route.getTerritoryBeforeEnd());
       m_amphibiousLandAttackers.addAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
@@ -124,7 +124,7 @@ public class NonFightingBattle extends DependentBattle {
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
-      if (route.getEnd() != null && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
+      if ((route.getEnd() != null) && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
         m_amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       }
       // if none of the units is a land unit, the attack from

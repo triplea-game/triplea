@@ -50,7 +50,7 @@ public class CollectionProperty<T> extends AEditableProperty {
 
   @Override
   public int getRowsNeeded() {
-    return (m_values == null ? 1 : Math.max(1, m_values.size()));
+    return ((m_values == null) ? 1 : Math.max(1, m_values.size()));
   }
 
   @Override

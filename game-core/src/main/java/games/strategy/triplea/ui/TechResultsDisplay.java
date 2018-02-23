@@ -41,10 +41,10 @@ public class TechResultsDisplay extends JPanel {
       final JLabel die;
       if (remainder > 0) {
         die = new JLabel(
-            uiContext.getDiceImageFactory().getDieIcon(roll, roll <= remainder ? Die.DieType.HIT : Die.DieType.MISS));
+            uiContext.getDiceImageFactory().getDieIcon(roll, (roll <= remainder) ? Die.DieType.HIT : Die.DieType.MISS));
       } else {
         die = new JLabel(uiContext.getDiceImageFactory().getDieIcon(roll,
-            roll == data.getDiceSides() ? Die.DieType.HIT : Die.DieType.MISS));
+            (roll == data.getDiceSides()) ? Die.DieType.HIT : Die.DieType.MISS));
       }
       dice.add(die);
       dice.add(Box.createHorizontalStrut(2));

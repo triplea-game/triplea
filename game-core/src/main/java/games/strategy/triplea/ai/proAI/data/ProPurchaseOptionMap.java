@@ -51,7 +51,7 @@ public class ProPurchaseOptionMap {
 
     // Add each production rule to appropriate list(s)
     final ProductionFrontier productionFrontier = player.getProductionFrontier();
-    if (productionFrontier == null || productionFrontier.getRules() == null) {
+    if ((productionFrontier == null) || (productionFrontier.getRules() == null)) {
       return;
     }
     for (final ProductionRule rule : productionFrontier.getRules()) {
@@ -64,7 +64,7 @@ public class ProPurchaseOptionMap {
       final UnitType unitType = (UnitType) resourceOrUnit;
 
       // Add rule to appropriate purchase option list
-      if ((UnitAttachment.get(unitType).getMovement(player) <= 0
+      if (((UnitAttachment.get(unitType).getMovement(player) <= 0)
           && !(UnitAttachment.get(unitType).getCanProduceUnits()))
           || Matches.unitTypeConsumesUnitsOnCreation().test(unitType) || UnitAttachment.get(unitType).getIsSuicide()
           || UnitAttachment.get(unitType).getIsSuicideOnHit()) {
@@ -83,10 +83,10 @@ public class ProPurchaseOptionMap {
       } else if (Matches.unitTypeIsLand().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         landFodderOptions.add(ppo);
-        if (ppo.getAttack() >= ppo.getDefense() || ppo.isAttackSupport() || ppo.getMovement() > 1) {
+        if ((ppo.getAttack() >= ppo.getDefense()) || ppo.isAttackSupport() || (ppo.getMovement() > 1)) {
           landAttackOptions.add(ppo);
         }
-        if (ppo.getDefense() >= ppo.getAttack() || ppo.isDefenseSupport() || ppo.getMovement() > 1) {
+        if ((ppo.getDefense() >= ppo.getAttack()) || ppo.isDefenseSupport() || (ppo.getMovement() > 1)) {
           landDefenseOptions.add(ppo);
         }
         ProLogger.debug("Land: " + ppo);

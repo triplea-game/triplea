@@ -46,7 +46,7 @@ public abstract class MapTileDrawable implements IDrawable {
     if (unscaled != null) {
       graphics.setTransform(unscaled);
     }
-    graphics.drawImage(img, x * TileManager.TILE_SIZE - bounds.x, y * TileManager.TILE_SIZE - bounds.y, null);
+    graphics.drawImage(img, (x * TileManager.TILE_SIZE) - bounds.x, (y * TileManager.TILE_SIZE) - bounds.y, null);
     if (unscaled != null) {
       graphics.setTransform(scaled);
     }

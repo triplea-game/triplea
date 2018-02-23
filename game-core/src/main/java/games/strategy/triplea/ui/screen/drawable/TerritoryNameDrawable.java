@@ -40,8 +40,8 @@ public class TerritoryNameDrawable implements IDrawable {
     String commentText = null;
     if (territory.isWater()) {
       // this is for special comments, like convoy zones, etc.
-      if (ta != null && showComments) {
-        if (ta.getConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null) {
+      if ((ta != null) && showComments) {
+        if (ta.getConvoyRoute() && (ta.getProduction() > 0) && (ta.getOriginalOwner() != null)) {
           drawComments = true;
           if (ta.getConvoyAttached().isEmpty()) {
             commentText = MyFormatter
@@ -59,7 +59,7 @@ public class TerritoryNameDrawable implements IDrawable {
           } else {
             commentText = MyFormatter.defaultNamedToTextList(ta.getConvoyAttached()) + " Convoy Route";
           }
-        } else if (ta.getProduction() > 0 && ta.getOriginalOwner() != null) {
+        } else if ((ta.getProduction() > 0) && (ta.getOriginalOwner() != null)) {
           drawComments = true;
           final PlayerID originalOwner = ta.getOriginalOwner();
           commentText = originalOwner.getName() + " Convoy Center";
@@ -83,12 +83,12 @@ public class TerritoryNameDrawable implements IDrawable {
       y = namePlace.get().y;
     } else {
       final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
-      x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
-      y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
+      x = (territoryBounds.x + ((int) territoryBounds.getWidth() / 2)) - (fm.stringWidth(territory.getName()) / 2);
+      y = territoryBounds.y + ((int) territoryBounds.getHeight() / 2) + (fm.getAscent() / 2);
     }
 
     // draw comments above names
-    if (showComments && drawComments && commentText != null) {
+    if (showComments && drawComments && (commentText != null)) {
       final Optional<Point> place = mapData.getCommentMarkerLocation(territory);
       if (place.isPresent()) {
         draw(bounds, graphics, place.get().x, place.get().y, null, commentText, drawFromTopLeft);
@@ -104,7 +104,7 @@ public class TerritoryNameDrawable implements IDrawable {
       }
     }
     // draw the PUs.
-    if (ta != null && ta.getProduction() > 0 && mapData.drawResources()) {
+    if ((ta != null) && (ta.getProduction() > 0) && mapData.drawResources()) {
       final Image img = uiContext.getPuImageFactory().getPuImage(ta.getProduction());
       final String prod = Integer.valueOf(ta.getProduction()).toString();
       final Optional<Point> place = mapData.getPuPlacementPoint(territory);
@@ -113,7 +113,7 @@ public class TerritoryNameDrawable implements IDrawable {
         draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);
       } else {
         // otherwise, draw under the territory name
-        draw(bounds, graphics, x + ((fm.stringWidth(territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1),
+        draw(bounds, graphics, (x + ((fm.stringWidth(territoryName)) >> 1)) - ((fm.stringWidth(prod)) >> 1),
             y + fm.getLeading() + fm.getAscent(), img, prod, drawFromTopLeft);
       }
     }
@@ -156,7 +156,7 @@ public class TerritoryNameDrawable implements IDrawable {
     Rectangle result = territoryBounds;
     final int maxX = territoryBounds.x + territoryBounds.width;
     final int maxY = territoryBounds.y + territoryBounds.height;
-    final int centerY = territoryBounds.y + territoryBounds.height / 2;
+    final int centerY = territoryBounds.y + (territoryBounds.height / 2);
     final int incrementX = (int) Math.ceil(territoryBounds.width / 20.0);
     final int incrementY = (int) Math.ceil(territoryBounds.height / 20.0);
     final int nameWidth = fontMetrics.stringWidth(territory.getName());
@@ -164,17 +164,17 @@ public class TerritoryNameDrawable implements IDrawable {
     int maxScore = 0;
 
     // Loop through the grid moving the starting point and determining max width at that point
-    for (int x = territoryBounds.x; x < maxX - nameWidth; x += incrementX) {
-      for (int y = territoryBounds.y; y < maxY - nameHeight; y += incrementY) {
+    for (int x = territoryBounds.x; x < (maxX - nameWidth); x += incrementX) {
+      for (int y = territoryBounds.y; y < (maxY - nameHeight); y += incrementY) {
         for (int endX = maxX; endX > x; endX -= incrementX) {
           final Rectangle rectangle = new Rectangle(x, y, endX - x, nameHeight);
 
           // Ranges from 0 when at very top or bottom of territory to height/2 when at vertical center
-          final int verticalDistanceFromEdge = territoryBounds.height / 2 - Math.abs(centerY - nameHeight - y);
+          final int verticalDistanceFromEdge = (territoryBounds.height / 2) - Math.abs(centerY - nameHeight - y);
 
           // Score rectangle based on how close to vertical center and territory width at location
           final int score = verticalDistanceFromEdge * rectangle.width;
-          if (rectangle.width > nameWidth && score > maxScore) {
+          if ((rectangle.width > nameWidth) && (score > maxScore)) {
 
             // Check to make sure rectangle is contained in the territory
             if (isRectangleContainedInTerritory(rectangle, territory, mapData)) {

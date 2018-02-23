@@ -49,7 +49,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
   public HashSet<Relationship> getRelationships(final PlayerID player1) {
     final HashSet<Relationship> relationships = new HashSet<>();
     for (final PlayerID player2 : getData().getPlayerList().getPlayers()) {
-      if (player2 == null || player2.equals(player1)) {
+      if ((player2 == null) || player2.equals(player1)) {
         continue;
       }
       relationships.add(getRelationship(player1, player2));

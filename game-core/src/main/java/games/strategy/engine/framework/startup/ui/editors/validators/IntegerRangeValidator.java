@@ -24,7 +24,7 @@ public class IntegerRangeValidator implements IValidator {
   public boolean isValid(final String text) {
     try {
       final int i = Integer.parseInt(text);
-      return min <= i && max >= i;
+      return (min <= i) && (max >= i);
     } catch (final NumberFormatException e) {
       return false;
     }

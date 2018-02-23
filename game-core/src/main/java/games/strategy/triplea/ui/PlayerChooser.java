@@ -68,7 +68,7 @@ public class PlayerChooser extends JOptionPane {
 
     final int maxSize = 700;
     final int suggestedSize = this.players.size() * 40;
-    final int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
+    final int actualSize = (suggestedSize > maxSize) ? maxSize : suggestedSize;
     setPreferredSize(new Dimension(300, actualSize));
   }
 
@@ -79,7 +79,7 @@ public class PlayerChooser extends JOptionPane {
    * @return the player or null
    */
   public PlayerID getSelected() {
-    if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
+    if ((getValue() != null) && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
     }
     return null;
@@ -97,7 +97,7 @@ public class PlayerChooser extends JOptionPane {
     public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
         final boolean isSelected, final boolean cellHasFocus) {
       super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
-      if (uiContext == null || value == PlayerID.NULL_PLAYERID) {
+      if ((uiContext == null) || (value == PlayerID.NULL_PLAYERID)) {
         setIcon(new ImageIcon(Util.createImage(32, 32, true)));
       } else {
         setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerID) value)));

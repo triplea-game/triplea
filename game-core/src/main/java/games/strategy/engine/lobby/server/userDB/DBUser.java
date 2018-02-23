@@ -38,7 +38,7 @@ public final class DBUser implements Serializable {
     }
 
     String validate() {
-      if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
+      if ((userName == null) || !userName.matches("[0-9a-zA-Z_-]+") || (userName.length() <= 2)) {
         return "Names must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
       }
       if (userName.toLowerCase().contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME.toLowerCase())) {
@@ -61,7 +61,7 @@ public final class DBUser implements Serializable {
     }
 
     String validate() {
-      if (userEmail == null || userEmail.isEmpty() || !Util.isMailValid(userEmail)) {
+      if ((userEmail == null) || userEmail.isEmpty() || !Util.isMailValid(userEmail)) {
         return "Invalid email address";
       }
       return null;
@@ -109,7 +109,7 @@ public final class DBUser implements Serializable {
    * Returns an error message String if there are validation errors, otherwise null.
    */
   public String getValidationErrorMessage() {
-    if (new UserName(m_name).validate() == null && new UserEmail(m_email).validate() == null) {
+    if ((new UserName(m_name).validate() == null) && (new UserEmail(m_email).validate() == null)) {
       return null;
     }
     return new UserName(m_name).validate() + " " + new UserEmail(m_email).validate();

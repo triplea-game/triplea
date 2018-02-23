@@ -85,7 +85,7 @@ public class PolygonGrabber extends JFrame {
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
+    if ((mapFolderLocation == null) && (mapSelection.getFile() != null)) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
@@ -128,16 +128,16 @@ public class PolygonGrabber extends JFrame {
     super("Polygon grabber");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     File file = null;
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+    if ((mapFolderLocation != null) && mapFolderLocation.exists()) {
       file = new File(mapFolderLocation, "centers.txt");
     }
-    if (file == null || !file.exists()) {
+    if ((file == null) || !file.exists()) {
       file = new File(new File(mapName).getParent() + File.separator + "centers.txt");
     }
-    if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
+    if (file.exists() && (JOptionPane.showConfirmDialog(new JPanel(),
         "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "names?",
-        "File Suggestion", 1) == 0) {
+        "File Suggestion", 1) == 0)) {
       try (InputStream is = new FileInputStream(file.getPath())) {
         ToolLogger.info("Centers : " + file.getPath());
         centers = PointFileReaderWriter.readOneToOne(is);
@@ -390,7 +390,7 @@ public class PolygonGrabber extends JFrame {
     if (p == null) {
       return;
     }
-    if (rightMouse && current != null) { // right click and list of polys is not empty
+    if (rightMouse && (current != null)) { // right click and list of polys is not empty
       doneCurrentGroup();
     } else if (pointInCurrentPolygon(point)) { // point clicked is already highlighted
       ToolLogger.info("rejecting");
@@ -507,11 +507,11 @@ public class PolygonGrabber extends JFrame {
    * Checks if the given x/y coordinate point is inbounds or not.
    */
   private boolean inBounds(final int x, final int y) {
-    return x >= 0 && x < bufferedImage.getWidth(null) && y >= 0 && y < bufferedImage.getHeight(null);
+    return (x >= 0) && (x < bufferedImage.getWidth(null)) && (y >= 0) && (y < bufferedImage.getHeight(null));
   }
 
   private static boolean inBounds(final int x, final int y, final Image image) {
-    return x >= 0 && x < image.getWidth(null) && y >= 0 && y < image.getHeight(null);
+    return (x >= 0) && (x < image.getWidth(null)) && (y >= 0) && (y < image.getHeight(null));
   }
 
   /**
@@ -527,17 +527,17 @@ public class PolygonGrabber extends JFrame {
    * 7 - North west
    */
   private static void move(final Point p, final int direction) {
-    if (direction < 0 || direction > 7) {
+    if ((direction < 0) || (direction > 7)) {
       throw new IllegalArgumentException("Not a direction :" + direction);
     }
-    if (direction == 1 || direction == 2 || direction == 3) {
+    if ((direction == 1) || (direction == 2) || (direction == 3)) {
       p.x++;
-    } else if (direction == 5 || direction == 6 || direction == 7) {
+    } else if ((direction == 5) || (direction == 6) || (direction == 7)) {
       p.x--;
     }
-    if (direction == 5 || direction == 4 || direction == 3) {
+    if ((direction == 5) || (direction == 4) || (direction == 3)) {
       p.y++;
-    } else if (direction == 7 || direction == 0 || direction == 1) {
+    } else if ((direction == 7) || (direction == 0) || (direction == 1)) {
       p.y--;
     }
   }
@@ -551,8 +551,8 @@ public class PolygonGrabber extends JFrame {
   private boolean isOnEdge(final int direction, final Point currentPoint) {
     testPoint.setLocation(currentPoint);
     move(testPoint, direction);
-    return testPoint.x == 0 || testPoint.y == 0 || testPoint.y == bufferedImage.getHeight(this)
-        || testPoint.x == bufferedImage.getWidth(this) || isBlack(testPoint);
+    return (testPoint.x == 0) || (testPoint.y == 0) || (testPoint.y == bufferedImage.getHeight(this))
+        || (testPoint.x == bufferedImage.getWidth(this)) || isBlack(testPoint);
   }
 
   private static boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy,
@@ -566,8 +566,8 @@ public class PolygonGrabber extends JFrame {
     imageCopyGraphics.setColor(Color.GREEN);
     imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
     final Rectangle rect = poly.getBounds();
-    for (int x = rect.x; x < rect.x + rect.width; x++) {
-      for (int y = rect.y; y < rect.y + rect.height; y++) {
+    for (int x = rect.x; x < (rect.x + rect.width); x++) {
+      for (int y = rect.y; y < (rect.y + rect.height); y++) {
         if (isBlack(x, y, imageCopy)) {
           if (poly.contains(new Point(x, y))) {
             imageCopyGraphics.setColor(Color.BLACK);
@@ -599,7 +599,7 @@ public class PolygonGrabber extends JFrame {
     int currentDirection = 2;
     Point currentPoint = new Point(startPoint);
     int iterCount = 0;
-    while (!currentPoint.equals(startPoint) || points.size() == 1) {
+    while (!currentPoint.equals(startPoint) || (points.size() == 1)) {
       iterCount++;
       if (iterCount > 100000) {
         JOptionPane.showMessageDialog(this,
@@ -663,9 +663,9 @@ public class PolygonGrabber extends JFrame {
       ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
+    if ((mapFolderLocation == null) || (mapFolderLocation.length() < 1)) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
-      if (value != null && value.length() > 0) {
+      if ((value != null) && (value.length() > 0)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;

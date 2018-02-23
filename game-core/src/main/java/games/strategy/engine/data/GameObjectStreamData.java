@@ -13,8 +13,8 @@ public class GameObjectStreamData implements Externalizable {
   }
 
   public static boolean canSerialize(final Named obj) {
-    return obj instanceof PlayerID || obj instanceof UnitType || obj instanceof Territory
-        || obj instanceof ProductionRule || obj instanceof IAttachment || obj instanceof ProductionFrontier;
+    return (obj instanceof PlayerID) || (obj instanceof UnitType) || (obj instanceof Territory)
+        || (obj instanceof ProductionRule) || (obj instanceof IAttachment) || (obj instanceof ProductionFrontier);
   }
 
   private String name;

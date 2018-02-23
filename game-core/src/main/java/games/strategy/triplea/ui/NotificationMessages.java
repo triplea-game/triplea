@@ -37,7 +37,7 @@ public class NotificationMessages {
 
   public static NotificationMessages getInstance() {
     // cache properties for 10 seconds
-    if (nm == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
+    if ((nm == null) || timestamp.plusSeconds(10).isBefore(Instant.now())) {
       nm = new NotificationMessages();
       timestamp = Instant.now();
     }

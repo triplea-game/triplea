@@ -26,7 +26,7 @@ class RemoveAttachmentChange extends Change {
     m_originalAttachable.removeAttachment(m_originalAttachmentName);
     m_attachment.setAttachedTo(m_attachable);
     m_attachment.setName(m_name);
-    if (m_attachable != null && m_name != null) {
+    if ((m_attachable != null) && (m_name != null)) {
       m_attachable.addAttachment(m_name, m_attachment);
     }
   }

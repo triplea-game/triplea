@@ -27,8 +27,9 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     boolean found = false;
     for (int i = 0; i < m_steps.size(); i++) {
       final GameStep step = m_steps.get(i);
-      if (step != null && step.getDisplayName().equalsIgnoreCase(stepDisplayName)) {
-        if ((player == null && step.getPlayerId() == null) || (player != null && player.equals(step.getPlayerId()))) {
+      if ((step != null) && step.getDisplayName().equalsIgnoreCase(stepDisplayName)) {
+        if (((player == null) && (step.getPlayerId() == null)) || ((player != null) && player
+            .equals(step.getPlayerId()))) {
           m_currentIndex = i;
           found = true;
           break;
@@ -107,7 +108,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Does not change any data or fields.
    */
   public synchronized boolean testWeAreOnLastStep() {
-    return m_currentIndex + 1 >= m_steps.size();
+    return (m_currentIndex + 1) >= m_steps.size();
   }
 
   public synchronized GameStep getStep() {

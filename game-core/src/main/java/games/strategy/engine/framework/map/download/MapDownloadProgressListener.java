@@ -71,7 +71,7 @@ final class MapDownloadProgressListener {
   }
 
   private static int percentComplete(final long currentLength, final long totalLength) {
-    return (int) (currentLength * MAX_PROGRESS_VALUE / totalLength);
+    return (int) ((currentLength * MAX_PROGRESS_VALUE) / totalLength);
   }
 
   void downloadCompleted() {

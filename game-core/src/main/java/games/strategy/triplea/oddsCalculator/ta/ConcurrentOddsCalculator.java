@@ -80,7 +80,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       cancel();
       isDataSet = false;
       isCalcSet = false;
-      if (data == null || isShutDown) {
+      if ((data == null) || isShutDown) {
         workers.clear();
         ++cancelCurrentOperation;
         // allow calcing and other stuff to go ahead
@@ -101,7 +101,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   // use both time and memory left to determine how many copies to make
   private static int getThreadsToUse(final long timeToCopyInMillis, final long memoryUsedBeforeCopy) {
-    if (timeToCopyInMillis > 20000 || MAX_THREADS == 1) {
+    if ((timeToCopyInMillis > 20000) || (MAX_THREADS == 1)) {
       // just use 1 thread if we took more than 20 seconds to copy
       return 1;
     }
@@ -127,7 +127,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   private void createWorkers(final GameData data) {
     workers.clear();
-    if (data != null && cancelCurrentOperation >= 0) {
+    if ((data != null) && (cancelCurrentOperation >= 0)) {
       // see how long 1 copy takes (some games can get REALLY big)
       final long startTime = System.currentTimeMillis();
       final long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -146,11 +146,11 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         newData.acquireReadLock();
         int i = 0;
         // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
-        if (currentThreads <= 2 || MAX_THREADS <= 2) {
+        if ((currentThreads <= 2) || (MAX_THREADS <= 2)) {
           // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most
           // only 1 more copy to
           // make)
-          while (cancelCurrentOperation >= 0 && i < currentThreads) {
+          while ((cancelCurrentOperation >= 0) && (i < currentThreads)) {
             // the last one will use our already copied data from above, without copying it again
             workers.add(new OddsCalculator(newData, (currentThreads == ++i)));
           }
@@ -173,7 +173,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         newData.releaseReadLock();
       }
     }
-    if (cancelCurrentOperation < 0 || data == null) {
+    if ((cancelCurrentOperation < 0) || (data == null)) {
       // we could have cancelled while setting data, so clear the workers again if so
       workers.clear();
       isDataSet = false;
@@ -225,10 +225,10 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           return;
         }
         worker.setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects,
-            (runCount <= 0 ? 0 : workerRunCount));
+            ((runCount <= 0) ? 0 : workerRunCount));
         runCount -= workerRunCount;
       }
-      if (!isDataSet || isShutDown || workerNum <= 0) {
+      if (!isDataSet || isShutDown || (workerNum <= 0)) {
         return;
       }
       isCalcSet = true;

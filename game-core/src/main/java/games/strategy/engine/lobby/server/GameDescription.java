@@ -54,7 +54,7 @@ public class GameDescription implements Externalizable, Cloneable {
   private String engineVersion;
   private String gameVersion;
   private String botSupportEmail =
-      HeadlessGameServer.getInstance() != null ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "";
+      (HeadlessGameServer.getInstance() != null) ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "";
 
   // if you add a field, add it to write/read object as well for Externalizable
   public GameDescription() {}

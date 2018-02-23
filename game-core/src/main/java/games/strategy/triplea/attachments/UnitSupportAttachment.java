@@ -394,7 +394,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @InternalDoNotExport
   static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttachedTo() == type) {
+      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && (rule.getAttachedTo() == type)) {
         rule.setNumber(count);
       }
     }

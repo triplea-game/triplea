@@ -61,7 +61,7 @@ public class ImageScrollerLargeView extends JComponent {
         insideCount = 0;
         return;
       }
-      if (inside && edge != NONE) {
+      if (inside && (edge != NONE)) {
         insideCount++;
         if (insideCount > 6) {
           // Scroll the map when the mouse has hovered inside the scroll zone for long enough
@@ -98,7 +98,7 @@ public class ImageScrollerLargeView extends JComponent {
         }
         // move left and right and test for wrap
         int newX = (this.model.getX() + dx);
-        if (newX > this.model.getMaxWidth() - getWidth()) {
+        if (newX > (this.model.getMaxWidth() - getWidth())) {
           newX -= this.model.getMaxWidth();
         }
         if (newX < -getWidth()) {
@@ -114,7 +114,7 @@ public class ImageScrollerLargeView extends JComponent {
         if (e.getUnitsToScroll() > 0) {
           positive = -1;
         }
-        if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
+        if (((positive > 0) && (value == 1)) || ((positive < 0) && (value <= .21))) {
           return;
         }
         if (positive > 0) {
@@ -308,12 +308,12 @@ public class ImageScrollerLargeView extends JComponent {
     int newEdge = NONE;
     if (x < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += LEFT;
-    } else if (width - x < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
+    } else if ((width - x) < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += RIGHT;
     }
     if (y < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += TOP;
-    } else if (height - y < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
+    } else if ((height - y) < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
       newEdge += BOTTOM;
     }
     return newEdge;

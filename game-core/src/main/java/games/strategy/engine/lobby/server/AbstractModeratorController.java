@@ -50,7 +50,7 @@ public abstract class AbstractModeratorController implements IModeratorControlle
     checkNotNull(node);
 
     final @Nullable String hashedMacAddress = serverMessenger.getPlayerMac(node.getName());
-    return hashedMacAddress != null ? hashedMacAddress : UNKNOWN_HASHED_MAC_ADDRESS;
+    return (hashedMacAddress != null) ? hashedMacAddress : UNKNOWN_HASHED_MAC_ADDRESS;
   }
 
   protected String getAliasesFor(final INode node) {

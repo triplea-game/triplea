@@ -119,7 +119,7 @@ public class MainPanel extends JPanel implements Observer {
     remove(chatSplit);
     chatPanelHolder.removeAll();
     final IChatPanel chat = gameTypePanelModel.getPanel().getChatPanel();
-    if (chat != null && !chat.isHeadless()) {
+    if ((chat != null) && !chat.isHeadless()) {
       chatPanelHolder = new JPanel();
       chatPanelHolder.setLayout(new BorderLayout());
       chatPanelHolder.setPreferredSize(new Dimension(chatPanelHolder.getPreferredSize().width, 62));
@@ -201,7 +201,7 @@ public class MainPanel extends JPanel implements Observer {
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(() -> {
       gameTypePanelModel.setWidgetActivation();
-      playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart());
+      playButton.setEnabled((gameSetupPanel != null) && gameSetupPanel.canGameStart());
     });
   }
 

@@ -78,7 +78,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return false;
     }
     return IntStream.range(0, coordinate.length)
-        .noneMatch(i -> coordinate[i] >= m_gridDimensions[i] || coordinate[i] < 0);
+        .noneMatch(i -> (coordinate[i] >= m_gridDimensions[i]) || (coordinate[i] < 0));
   }
 
   protected void addTerritory(final Territory t1) {
@@ -353,7 +353,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     final Set<Territory> newFrontier = frontier.stream()
         .map(m_connections::get)
         .flatMap(Collection::stream)
-        .filter(f -> cond == null || cond.test(f))
+        .filter(f -> (cond == null) || cond.test(f))
         .collect(Collectors.toSet());
     if (newFrontier.contains(target)) {
       return distance + 1;
@@ -368,7 +368,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   public IntegerMap<Territory> getDistance(final Territory target, final Collection<Territory> territories,
       final Predicate<Territory> condition) {
     final IntegerMap<Territory> distances = new IntegerMap<>();
-    if (target == null || territories == null || territories.isEmpty()) {
+    if ((target == null) || (territories == null) || territories.isEmpty()) {
       return distances;
     }
     for (final Territory t : territories) {

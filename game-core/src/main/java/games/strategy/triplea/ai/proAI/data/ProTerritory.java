@@ -261,7 +261,7 @@ public class ProTerritory {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else if (battleResult.getWinPercentage() >= ProData.winPercentage && battleResult.isHasLandUnitRemaining()) {
+    } else if ((battleResult.getWinPercentage() >= ProData.winPercentage) && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }
   }

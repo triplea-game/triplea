@@ -95,7 +95,7 @@ public class MapRouteDrawer {
   private void drawJoints(final Graphics2D graphics, final Point2D[] points) {
     final int jointsize = 10;
     // If the points array is bigger than 1 the last joint should not be drawn (draw an arrow instead)
-    final Point2D[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
+    final Point2D[] newPoints = (points.length > 1) ? Arrays.copyOf(points, points.length - 1) : points;
     for (final Point2D[] joints : routeCalculator.getAllPoints(newPoints)) {
       for (final Point2D p : joints) {
         final Ellipse2D circle = new Ellipse2D.Double(jointsize / -2, jointsize / -2, jointsize, jointsize);
@@ -197,7 +197,7 @@ public class MapRouteDrawer {
     if (routeDescription.getStart() != null) {
       points[0] = routeDescription.getStart();
     }
-    if (routeDescription.getEnd() != null && numTerritories > 1) {
+    if ((routeDescription.getEnd() != null) && (numTerritories > 1)) {
       points[numTerritories - 1] = routeDescription.getEnd();
     }
     return points;
@@ -251,14 +251,14 @@ public class MapRouteDrawer {
       final String maxMovement) {
     final Point2D cursorPos = points[points.length - 1];
     final String unitMovementLeft =
-        maxMovement == null || maxMovement.trim().length() == 0 ? ""
-            : "    /" + maxMovement;
+        ((maxMovement == null) || (maxMovement.trim().length() == 0)) ? ""
+            : ("    /" + maxMovement);
     final BufferedImage movementImage = new BufferedImage(50, 20, BufferedImage.TYPE_INT_ARGB);
     createMovementLeftImage(movementImage, String.valueOf(numTerritories - 1), unitMovementLeft);
 
     final int textXOffset = -movementImage.getWidth() / 2;
     final double deltaY = cursorPos.getY() - points[numTerritories - 2].getY();
-    final int textYOffset = deltaY > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
+    final int textYOffset = (deltaY > 0) ? movementImage.getHeight() : (movementImage.getHeight() * -2);
     for (final Point2D[] cursorPositions : routeCalculator.getAllPoints(cursorPos)) {
       final AffineTransform imageTransform = getDrawingTransform();
       imageTransform.translate(textXOffset, textYOffset);
@@ -327,7 +327,7 @@ public class MapRouteDrawer {
     final boolean distanceTooBig = maxMovement.isEmpty();
     textG2D.drawString(
         curMovement,
-        distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10,
+        distanceTooBig ? ((image.getWidth() / 2) - textThicknessOffset) : 10,
         image.getHeight());
     if (!distanceTooBig) {
       textG2D.setColor(new Color(33, 0, 127));

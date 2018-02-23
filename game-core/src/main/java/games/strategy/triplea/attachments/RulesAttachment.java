@@ -192,11 +192,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
     }
     final PlayerID attacker = getData().getPlayerList().getPlayerId(s[0]);
-    if (attacker == null && !s[0].equalsIgnoreCase("any")) {
+    if ((attacker == null) && !s[0].equalsIgnoreCase("any")) {
       throw new GameParseException("no player named: " + s[0] + thisErrorMsg());
     }
     final PlayerID defender = getData().getPlayerList().getPlayerId(s[1]);
-    if (defender == null && !s[1].equalsIgnoreCase("any")) {
+    if ((defender == null) && !s[1].equalsIgnoreCase("any")) {
       throw new GameParseException("no player named: " + s[1] + thisErrorMsg());
     }
     if (!s[2].equalsIgnoreCase("any")) {
@@ -249,7 +249,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRelationship(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length < 3 || s.length > 4) {
+    if ((s.length < 3) || (s.length > 4)) {
       throw new GameParseException(
           "relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\""
               + thisErrorMsg());
@@ -269,7 +269,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException(
           "relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
     }
-    if (s.length == 4 && Integer.parseInt(s[3]) < -1) {
+    if ((s.length == 4) && (Integer.parseInt(s[3]) < -1)) {
       throw new GameParseException("numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be "
           + "default value if you don't know what to put" + thisErrorMsg());
     }
@@ -521,7 +521,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String unitTypeToProduce = s[i];
       // validate that this unit exists in the xml
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-      if (ut == null && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
+      if ((ut == null) && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY"))) {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
@@ -571,11 +571,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     } catch (final Exception e) {
       m_atWarCount = 0;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if ((s.length < 1) || ((s.length == 1) && (count != -1))) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
     m_atWarPlayers = new HashSet<>();
-    for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
+    for (int i = (count == -1) ? 0 : 1; i < s.length; i++) {
       final PlayerID player = getData().getPlayerList().getPlayerId(s[i]);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
@@ -614,11 +614,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     } catch (final Exception e) {
       m_techCount = 0;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if ((s.length < 1) || ((s.length == 1) && (count != -1))) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
     m_techs = new ArrayList<>();
-    for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
+    for (int i = (count == -1) ? 0 : 1; i < s.length; i++) {
       TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
       if (ta == null) {
         ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
@@ -662,7 +662,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<PlayerID> players = getPlayers();
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
-    if (objectiveMet && m_conditions.size() > 0) {
+    if (objectiveMet && (m_conditions.size() > 0)) {
       if (testedConditions == null) {
         testedConditions = testAllConditionsRecursive(
             getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, delegateBridge);
@@ -674,64 +674,64 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet = m_switch;
     }
     // check turn limits
-    if (objectiveMet && m_turns != null) {
+    if (objectiveMet && (m_turns != null)) {
       objectiveMet = checkTurns(data);
     }
     // check custom game property options
-    if (objectiveMet && m_gameProperty != null) {
+    if (objectiveMet && (m_gameProperty != null)) {
       objectiveMet = this.getGamePropertyState(data);
     }
     // Check for unit presence (Veqryn)
-    if (objectiveMet && getDirectPresenceTerritories() != null) {
+    if (objectiveMet && (getDirectPresenceTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getDirectPresenceTerritories();
       objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "direct", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
-    if (objectiveMet && getAlliedPresenceTerritories() != null) {
+    if (objectiveMet && (getAlliedPresenceTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getAlliedPresenceTerritories();
       objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "allied", getTerritoryCount(), players, data);
     }
     // Check for unit presence (Veqryn)
-    if (objectiveMet && getEnemyPresenceTerritories() != null) {
+    if (objectiveMet && (getEnemyPresenceTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getEnemyPresenceTerritories();
       objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data), "enemy",
           getTerritoryCount(), players, data);
     }
     // Check for direct unit exclusions (veqryn)
-    if (objectiveMet && getDirectExclusionTerritories() != null) {
+    if (objectiveMet && (getDirectExclusionTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getDirectExclusionTerritories();
       objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "direct", getTerritoryCount(), players, data);
     }
     // Check for allied unit exclusions
-    if (objectiveMet && getAlliedExclusionTerritories() != null) {
+    if (objectiveMet && (getAlliedExclusionTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getAlliedExclusionTerritories();
       objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "allied", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (ANY UNITS)
-    if (objectiveMet && getEnemyExclusionTerritories() != null) {
+    if (objectiveMet && (getEnemyExclusionTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getEnemyExclusionTerritories();
       objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "enemy", getTerritoryCount(), players, data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
-    if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
+    if (objectiveMet && (getEnemySurfaceExclusionTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getEnemySurfaceExclusionTerritories();
       objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
           "enemy_surface", getTerritoryCount(), players, data);
     }
     // Check for Territory Ownership rules
-    if (objectiveMet && getAlliedOwnershipTerritories() != null) {
+    if (objectiveMet && (getAlliedOwnershipTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getAlliedOwnershipTerritories();
       final Set<Territory> listedTerritories;
@@ -769,7 +769,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       objectiveMet = checkAlliedOwnership(listedTerritories, getTerritoryCount(), players, data);
     }
     // Check for Direct Territory Ownership rules
-    if (objectiveMet && getDirectOwnershipTerritories() != null) {
+    if (objectiveMet && (getDirectOwnershipTerritories() != null)) {
       // Get the listed territories
       final String[] terrs = getDirectOwnershipTerritories();
       final Set<Territory> listedTerritories;
@@ -802,18 +802,18 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // get attached to player
     final PlayerID playerAttachedTo = (PlayerID) getAttachedTo();
-    if (objectiveMet && getAtWarPlayers() != null) {
+    if (objectiveMet && (getAtWarPlayers() != null)) {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
     }
-    if (objectiveMet && m_techs != null) {
+    if (objectiveMet && (m_techs != null)) {
       objectiveMet = checkTechs(playerAttachedTo, data);
     }
     // check for relationships
-    if (objectiveMet && m_relationship.size() > 0) {
+    if (objectiveMet && (m_relationship.size() > 0)) {
       objectiveMet = checkRelationships();
     }
     // check for battle stats
-    if (objectiveMet && m_destroyedTUV != null) {
+    if (objectiveMet && (m_destroyedTUV != null)) {
       final String[] s = m_destroyedTUV.split(":");
       final int requiredDestroyedTuv = getInt(s[0]);
       if (requiredDestroyedTuv >= 0) {
@@ -859,8 +859,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final int diceSides = getChanceDiceSides();
     final int incrementOnFailure = this.getChanceIncrementOnFailure();
     final int decrementOnSuccess = this.getChanceDecrementOnSuccess();
-    if (objectiveMet && (hitTarget != diceSides || incrementOnFailure != 0 || decrementOnSuccess != 0)) {
-      if (diceSides <= 0 || hitTarget >= diceSides) {
+    if (objectiveMet && ((hitTarget != diceSides) || (incrementOnFailure != 0) || (decrementOnSuccess != 0))) {
+      if ((diceSides <= 0) || (hitTarget >= diceSides)) {
         objectiveMet = true;
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, false);
       } else if (hitTarget <= 0) {
@@ -922,7 +922,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean relationShipExistsLongEnnough(final Relationship r, final int relationshipsExistance) {
     int roundCurrentRelationshipWasCreated = r.getRoundCreated();
     roundCurrentRelationshipWasCreated += Properties.getRelationshipsLastExtraRounds(getData());
-    return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated >= relationshipsExistance;
+    return (getData().getSequence().getRound() - roundCurrentRelationshipWasCreated) >= relationshipsExistance;
   }
 
   /**
@@ -931,7 +931,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkUnitPresence(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
     boolean useSpecific = false;
-    if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
+    if ((getUnitPresence() != null) && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
     boolean satisfied = false;
@@ -963,7 +963,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           boolean hasEnough = false;
           for (final String uc : unitCombos) {
             final int unitsNeeded = unitComboMap.getInt(uc);
-            if (uc == null || uc.equals("ANY") || uc.equals("any")) {
+            if ((uc == null) || uc.equals("ANY") || uc.equals("any")) {
               hasEnough = allUnits.size() >= unitsNeeded;
             } else {
               final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
@@ -999,7 +999,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkUnitExclusions(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
     boolean useSpecific = false;
-    if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
+    if ((getUnitPresence() != null) && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
     // Go through the owned territories and see if there are any units owned by allied/enemy based on exclType
@@ -1038,7 +1038,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         boolean hasLess = false;
         for (final String uc : unitCombos) {
           final int unitsMax = unitComboMap.getInt(uc);
-          if (uc == null || uc.equals("ANY") || uc.equals("any")) {
+          if ((uc == null) || uc.equals("ANY") || uc.equals("any")) {
             hasLess = allUnits.size() <= unitsMax;
           } else {
             final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));

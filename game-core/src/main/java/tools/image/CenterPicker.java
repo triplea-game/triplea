@@ -67,7 +67,7 @@ public class CenterPicker extends JFrame {
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
+    if ((mapFolderLocation == null) && (mapSelection.getFile() != null)) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
@@ -108,16 +108,16 @@ public class CenterPicker extends JFrame {
     super("Center Picker");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     File file = null;
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+    if ((mapFolderLocation != null) && mapFolderLocation.exists()) {
       file = new File(mapFolderLocation, "polygons.txt");
     }
-    if (file == null || !file.exists()) {
+    if ((file == null) || !file.exists()) {
       file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
     }
-    if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
+    if (file.exists() && (JOptionPane.showConfirmDialog(new JPanel(),
         "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "names?",
-        "File Suggestion", 1) == 0) {
+        "File Suggestion", 1) == 0)) {
       try (InputStream is = new FileInputStream(file.getPath())) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
       } catch (final IOException e) {
@@ -288,11 +288,11 @@ public class CenterPicker extends JFrame {
     if (!rightMouse) {
       String name = findTerritoryName(point);
       name = JOptionPane.showInputDialog(this, "Enter the territory name:", name);
-      if (name == null || name.trim().length() == 0) {
+      if ((name == null) || (name.trim().length() == 0)) {
         return;
       }
-      if (centers.containsKey(name) && JOptionPane.showConfirmDialog(this,
-          "Another center exists with the same name. Are you sure you want to replace it with this one?") != 0) {
+      if (centers.containsKey(name) && (JOptionPane.showConfirmDialog(this,
+          "Another center exists with the same name. Are you sure you want to replace it with this one?") != 0)) {
         return;
       }
       centers.put(name, point);
@@ -304,8 +304,8 @@ public class CenterPicker extends JFrame {
           centerClicked = cur.getKey();
         }
       }
-      if (centerClicked != null
-          && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?") == 0) {
+      if ((centerClicked != null)
+          && (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?") == 0)) {
         centers.remove(centerClicked);
       }
     }
@@ -339,9 +339,9 @@ public class CenterPicker extends JFrame {
       ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
+    if ((mapFolderLocation == null) || (mapFolderLocation.length() < 1)) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
-      if (value != null && value.length() > 0) {
+      if ((value != null) && (value.length() > 0)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;

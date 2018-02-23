@@ -87,7 +87,7 @@ public class ProPurchaseUtils {
       final ProPurchaseOption purchaseOption = it.next();
 
       // Check PU cost and production
-      if (!resourceTracker.hasEnough(purchaseOption) || purchaseOption.getQuantity() > remainingUnitProduction) {
+      if (!resourceTracker.hasEnough(purchaseOption) || (purchaseOption.getQuantity() > remainingUnitProduction)) {
         it.remove();
         continue;
       }
@@ -113,7 +113,7 @@ public class ProPurchaseUtils {
           }
         }
         final int allowedBuild = maxBuilt - currentlyBuilt;
-        if (allowedBuild - purchaseOption.getQuantity() < 0) {
+        if ((allowedBuild - purchaseOption.getQuantity()) < 0) {
           it.remove();
         }
       }
@@ -135,7 +135,7 @@ public class ProPurchaseUtils {
     final Map<ProPurchaseOption, Double> purchasePercentages = new LinkedHashMap<>();
     double upperBound = 0.0;
     for (final ProPurchaseOption ppo : purchaseEfficiencies.keySet()) {
-      final double chance = purchaseEfficiencies.get(ppo) / totalEfficiency * 100;
+      final double chance = (purchaseEfficiencies.get(ppo) / totalEfficiency) * 100;
       upperBound += chance;
       purchasePercentages.put(ppo, upperBound);
       ProLogger.trace(ppo.getUnitType().getName() + ", probability=" + chance + ", upperBound=" + upperBound);
@@ -164,7 +164,7 @@ public class ProPurchaseUtils {
     ProPurchaseOption bestDefenseOption = null;
     double maxDefenseEfficiency = 0;
     for (final ProPurchaseOption ppo : purchaseOptionsForTerritory) {
-      if (ppo.getDefenseEfficiency() > maxDefenseEfficiency && ppo.getCost() <= pusRemaining) {
+      if ((ppo.getDefenseEfficiency() > maxDefenseEfficiency) && (ppo.getCost() <= pusRemaining)) {
         bestDefenseOption = ppo;
         maxDefenseEfficiency = ppo.getDefenseEfficiency();
       }
@@ -179,8 +179,8 @@ public class ProPurchaseUtils {
       while (true) {
 
         // If out of PUs or production then break
-        if (bestDefenseOption.getCost() > (pusRemaining - pusSpent)
-            || remainingUnitProduction < bestDefenseOption.getQuantity()) {
+        if ((bestDefenseOption.getCost() > (pusRemaining - pusSpent))
+            || (remainingUnitProduction < bestDefenseOption.getQuantity())) {
           break;
         }
 
@@ -236,7 +236,7 @@ public class ProPurchaseUtils {
     // Find all territories that I can place units on
     final RulesAttachment ra = player.getRulesAttachment();
     List<Territory> ownedAndNotConqueredFactoryTerritories;
-    if (ra != null && ra.getPlacementAnyTerritory()) {
+    if ((ra != null) && ra.getPlacementAnyTerritory()) {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
     } else {
       ownedAndNotConqueredFactoryTerritories = CollectionUtils.getMatches(data.getMap().getTerritories(),
@@ -262,17 +262,17 @@ public class ProPurchaseUtils {
         .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).negate());
     final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    final boolean originalFactory = (ta != null && ta.getOriginalFactory());
+    final boolean originalFactory = ((ta != null) && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
-        factoryUnits.size() > 0 && player.equals(getOriginalFactoryOwner(territory, player));
+        (factoryUnits.size() > 0) && player.equals(getOriginalFactoryOwner(territory, player));
     final RulesAttachment ra = player.getRulesAttachment();
     if (originalFactory && playerIsOriginalOwner) {
-      if (ra != null && ra.getMaxPlacePerTerritory() != -1) {
+      if ((ra != null) && (ra.getMaxPlacePerTerritory() != -1)) {
         return Math.max(0, ra.getMaxPlacePerTerritory());
       }
       return Integer.MAX_VALUE;
     }
-    if (ra != null && ra.getPlacementAnyTerritory()) {
+    if ((ra != null) && ra.getPlacementAnyTerritory()) {
       return Integer.MAX_VALUE;
     }
     return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(),

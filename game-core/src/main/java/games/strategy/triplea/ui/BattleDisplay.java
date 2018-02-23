@@ -127,7 +127,7 @@ public class BattleDisplay extends JPanel {
     attackerModel.refresh();
     uiContext = mapPanel.getUiContext();
     casualties = new CasualtyNotificationPanel(data, this.mapPanel.getUiContext());
-    if (killedUnits != null && attackingWaitingToDie != null && defendingWaitingToDie != null) {
+    if ((killedUnits != null) && (attackingWaitingToDie != null) && (defendingWaitingToDie != null)) {
       final Collection<Unit> attackerUnitsKilled =
           CollectionUtils.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
       attackerUnitsKilled.addAll(attackingWaitingToDie);
@@ -298,7 +298,7 @@ public class BattleDisplay extends JPanel {
   }
 
   Territory getRetreat(final String message, final Collection<Territory> possible, final boolean submerge) {
-    return (!submerge || possible.size() > 1) ? getRetreatInternal(message, possible) : getSubmerge(message);
+    return (!submerge || (possible.size() > 1)) ? getRetreatInternal(message, possible) : getSubmerge(message);
   }
 
   private Territory getSubmerge(final String message) {
@@ -347,7 +347,7 @@ public class BattleDisplay extends JPanel {
     final Territory[] retreatTo = new Territory[1];
     final CountDownLatch latch = new CountDownLatch(1);
     final Action action = SwingAction.of("Retreat?", e -> {
-      final String yes = possible.size() == 1 ? "Retreat to " + possible.iterator().next().getName() : "Retreat";
+      final String yes = (possible.size() == 1) ? ("Retreat to " + possible.iterator().next().getName()) : "Retreat";
       final String no = "Remain";
       final String cancel = "Ask Me Later";
       final String[] options = {yes, no, cancel};
@@ -452,7 +452,7 @@ public class BattleDisplay extends JPanel {
         dicePanel.setDiceRoll(dice);
       }
       final boolean plural = isEditMode || (count > 1);
-      final String countStr = isEditMode ? "" : "" + count;
+      final String countStr = isEditMode ? "" : ("" + count);
       final String btnText =
           hit.getName() + " select " + countStr + (plural ? " casualties" : " casualty");
       actionButton.setAction(new AbstractAction(btnText) {
@@ -463,7 +463,7 @@ public class BattleDisplay extends JPanel {
         @Override
         public void actionPerformed(final ActionEvent e) {
           final String messageText = message + " " + btnText + ".";
-          if (chooser == null || chooserScrollPane == null) {
+          if ((chooser == null) || (chooserScrollPane == null)) {
             chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, allowMultipleHitsPerUnit,
                 mapPanel.getUiContext());
             chooser.setTitle(messageText);
@@ -479,7 +479,7 @@ public class BattleDisplay extends JPanel {
             chooserScrollPane.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
             final Dimension size = chooserScrollPane.getPreferredSize();
             chooserScrollPane.setPreferredSize(new Dimension(
-                Math.min(availWidth, size.width + (size.height > availHeight
+                Math.min(availWidth, size.width + ((size.height > availHeight)
                     ? chooserScrollPane.getVerticalScrollBar().getPreferredSize().width
                     : 0)),
                 Math.min(availHeight, size.height)));
@@ -494,7 +494,7 @@ public class BattleDisplay extends JPanel {
           }
           final List<Unit> killed = chooser.getSelected(false);
           final List<Unit> damaged = chooser.getSelectedDamagedMultipleHitPointUnits();
-          if (!isEditMode && (killed.size() + damaged.size() != count)) {
+          if (!isEditMode && ((killed.size() + damaged.size()) != count)) {
             JOptionPane.showMessageDialog(BattleDisplay.this, "Wrong number of casualties selected",
                 hit.getName() + " select casualties", JOptionPane.ERROR_MESSAGE);
           } else {

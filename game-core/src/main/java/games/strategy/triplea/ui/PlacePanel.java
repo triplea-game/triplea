@@ -96,10 +96,10 @@ public class PlacePanel extends AbstractMovePanel {
       final JScrollPane scroll = new JScrollPane(chooser);
       scroll.setBorder(BorderFactory.createEmptyBorder());
       scroll.setPreferredSize(new Dimension(
-          (scroll.getPreferredSize().width > availWidth ? availWidth
-              : (scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
-          (scroll.getPreferredSize().height > availHeight ? availHeight
-              : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
+          ((scroll.getPreferredSize().width > availWidth) ? availWidth
+              : (scroll.getPreferredSize().width + ((scroll.getPreferredSize().height > availHeight) ? 20 : 0))),
+          ((scroll.getPreferredSize().height > availHeight) ? availHeight
+              : (scroll.getPreferredSize().height + ((scroll.getPreferredSize().width > availWidth) ? 26 : 0)))));
       final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, messageText,
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if (option == JOptionPane.OK_OPTION) {
@@ -121,7 +121,8 @@ public class PlacePanel extends AbstractMovePanel {
       if (!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer())) {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
-          if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
+          if (((pa == null) || (pa.getGiveUnitControl() == null) || !pa.getGiveUnitControl()
+              .contains(getCurrentPlayer()))
               && !territory.getUnits().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return Collections.emptyList();
           }

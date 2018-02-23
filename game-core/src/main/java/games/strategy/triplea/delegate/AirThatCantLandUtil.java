@@ -40,7 +40,7 @@ public class AirThatCantLandUtil {
     for (final Territory current : data.getMap().getTerritories()) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.unitIsOwnedBy(player));
       final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
-      if (air.size() != 0 && !AirMovementValidator.canLand(air, current, player, data)) {
+      if ((air.size() != 0) && !AirMovementValidator.canLand(air, current, player, data)) {
         cantLand.add(current);
       }
     }
@@ -75,7 +75,7 @@ public class AirThatCantLandUtil {
       for (final Unit unit : airUnits) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());
         final int cost = ua.getCarrierCost();
-        if (cost == -1 || cost > capacity) {
+        if ((cost == -1) || (cost > capacity)) {
           toRemove.add(unit);
         } else {
           capacity -= cost;

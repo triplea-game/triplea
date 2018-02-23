@@ -33,10 +33,10 @@ public class RemoteMethodCall implements Externalizable {
     if (argTypes == null) {
       throw new IllegalArgumentException("ArgTypes are null");
     }
-    if (args == null && argTypes.length != 0) {
+    if ((args == null) && (argTypes.length != 0)) {
       throw new IllegalArgumentException("args but no types");
     }
-    if (args != null && args.length != argTypes.length) {
+    if ((args != null) && (args.length != argTypes.length)) {
       throw new IllegalArgumentException("Arg and arg type lengths dont match");
     }
     this.remoteName = remoteName;
@@ -120,7 +120,7 @@ public class RemoteMethodCall implements Externalizable {
     // case where the object is the same type as its arg
     final String[] string = new String[classes.length];
     for (int i = 0; i < classes.length; i++) {
-      if (args != null && args[i] != null && classes[i] == args[i].getClass()) {
+      if ((args != null) && (args[i] != null) && (classes[i] == args[i].getClass())) {
         string[i] = null;
       } else {
         string[i] = classes[i].getName();

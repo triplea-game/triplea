@@ -225,12 +225,12 @@ abstract class AbstractBattle implements IBattle {
    */
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof IBattle)) {
+    if ((o == null) || !(o instanceof IBattle)) {
       return false;
     }
     final IBattle other = (IBattle) o;
-    return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun()
-        && other.getBattleType() == this.getBattleType();
+    return other.getTerritory().equals(this.m_battleSite) && (other.isBombingRun() == this.isBombingRun())
+        && (other.getBattleType() == this.getBattleType());
   }
 
   @Override
@@ -247,14 +247,14 @@ abstract class AbstractBattle implements IBattle {
     if (!battleSite.isWater()) {
       defender = battleSite.getOwner();
     }
-    if (data == null || attacker == null) {
+    if ((data == null) || (attacker == null)) {
       // This is needed for many TESTs, so do not delete
       if (defender == null) {
         return PlayerID.NULL_PLAYERID;
       }
       return defender;
     }
-    if (defender == null || battleSite.isWater() || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
+    if ((defender == null) || battleSite.isWater() || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
       // if water find the defender based on who has the most units in the territory
       final IntegerMap<PlayerID> players = battleSite.getUnits().getPlayerUnitCounts();
       int max = -1;

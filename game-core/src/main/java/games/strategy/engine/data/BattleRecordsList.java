@@ -122,7 +122,7 @@ public class BattleRecordsList extends GameDataComponent {
       final int beginningRound, final int endRound, final boolean currentRoundOnly) {
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
-      if (brl != null && brl.getCurrentRoundCopy() != null) {
+      if ((brl != null) && (brl.getCurrentRoundCopy() != null)) {
         brs.add(brl.getCurrentRoundCopy());
       }
     } else {
@@ -137,7 +137,7 @@ public class BattleRecordsList extends GameDataComponent {
     // null for attacker means any attacker
     for (final BattleRecords br : brs) {
       if (BattleRecords.getWereThereBattlesInTerritoriesMatching(
-          (attacker == null ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerId(attacker, br)),
+          ((attacker == null) ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerId(attacker, br)),
           attacker, defender, battleType, anyOfTheseTerritories)) {
         return true;
       }

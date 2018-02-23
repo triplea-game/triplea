@@ -58,7 +58,7 @@ public class ProTransportUtils {
       for (final Unit u : units) {
         if (unitMoveMap.get(u) != null) {
           for (final Territory t : unitMoveMap.get(u)) {
-            if (moveMap.get(t) != null && moveMap.get(t).getValue() > value) {
+            if ((moveMap.get(t) != null) && (moveMap.get(t).getValue() > value)) {
               unitsToIgnoreOrHaveBetterLandMove.add(u);
               break;
             }
@@ -101,7 +101,7 @@ public class ProTransportUtils {
         final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
         int maxSupport1 = 0;
         for (final UnitSupportAttachment usa : supportAttachments1) {
-          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
+          if (usa.getAllied() && usa.getOffence() && (usa.getBonus() > maxSupport1)) {
             maxSupport1 = usa.getBonus();
           }
         }
@@ -109,7 +109,7 @@ public class ProTransportUtils {
         final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
         int maxSupport2 = 0;
         for (final UnitSupportAttachment usa : supportAttachments2) {
-          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
+          if (usa.getAllied() && usa.getOffence() && (usa.getBonus() > maxSupport2)) {
             maxSupport2 = usa.getBonus();
           }
         }
@@ -252,15 +252,15 @@ public class ProTransportUtils {
     for (int i = result.size() - 1; i >= 0; i--) {
       final Unit unit = result.get(i);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua.getCarrierCost() > 0 || i == 0) { // If this is a plane or last unit
+      if ((ua.getCarrierCost() > 0) || (i == 0)) { // If this is a plane or last unit
         // If we haven't ignored enough trailing planes and not last unit
-        if (processedPlaneCount < planesThatDontNeedToLand && i > 0) {
+        if ((processedPlaneCount < planesThatDontNeedToLand) && (i > 0)) {
           processedPlaneCount++; // Increase number of trailing planes ignored
           continue; // And skip any processing
         }
 
         // If this is the first carrier seek and not last unit
-        if (seekedCarrier == null && i > 0) {
+        if ((seekedCarrier == null) && (i > 0)) {
           final int seekedCarrierIndex = AiUtils.getIndexOfLastUnitMatching(result,
               Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
           if (seekedCarrierIndex == -1) {
@@ -275,7 +275,7 @@ public class ProTransportUtils {
         }
 
         // If the carrier has been filled or overflowed or last unit
-        if (indexToPlaceCarrierAt > 0 && (spaceLeftOnSeekedCarrier <= 0 || i == 0)) {
+        if ((indexToPlaceCarrierAt > 0) && ((spaceLeftOnSeekedCarrier <= 0) || (i == 0))) {
           if (spaceLeftOnSeekedCarrier < 0) {
             i++; // Increment current unit index, so we re-process this unit (since it can't fit on the current carrier)
           }

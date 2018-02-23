@@ -237,7 +237,7 @@ class AAInMoveUtil implements Serializable {
     }
 
     for (final Unit u : units) {
-      if (u != null && u.getOwner() != null) {
+      if ((u != null) && (u.getOwner() != null)) {
         return u.getOwner();
       }
     }
@@ -246,17 +246,17 @@ class AAInMoveUtil implements Serializable {
   }
 
   private static PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory) {
-    if (defendingUnits == null || defendingUnits.isEmpty()) {
-      if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()) {
+    if ((defendingUnits == null) || defendingUnits.isEmpty()) {
+      if ((territory != null) && (territory.getOwner() != null) && !territory.getOwner().isNull()) {
         return territory.getOwner();
       }
       return PlayerID.NULL_PLAYERID;
-    } else if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()
+    } else if ((territory != null) && (territory.getOwner() != null) && !territory.getOwner().isNull()
         && defendingUnits.stream().anyMatch(Matches.unitIsOwnedBy(territory.getOwner()))) {
       return territory.getOwner();
     }
     for (final Unit u : defendingUnits) {
-      if (u != null && u.getOwner() != null) {
+      if ((u != null) && (u.getOwner() != null)) {
         return u.getOwner();
       }
     }

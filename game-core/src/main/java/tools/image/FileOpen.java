@@ -42,7 +42,7 @@ public class FileOpen {
     if (selectedFile != null) {
       chooser.setSelectedFile(selectedFile);
     }
-    chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists())
+    chooser.setCurrentDirectory((((currentDirectory == null) || !currentDirectory.exists())
         ? new File(SystemProperties.getUserDir())
         : currentDirectory));
     /*

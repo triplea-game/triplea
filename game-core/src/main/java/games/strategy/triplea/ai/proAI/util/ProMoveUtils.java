@@ -54,7 +54,7 @@ public class ProMoveUtils {
 
         // Skip if unit is already in move to territory
         final Territory startTerritory = ProData.unitTerritoryMap.get(u);
-        if (startTerritory == null || startTerritory.equals(t)) {
+        if ((startTerritory == null) || startTerritory.equals(t)) {
           continue;
         }
 
@@ -150,8 +150,8 @@ public class ProMoveUtils {
           if (t.isWater()) {
             distanceFromEnd++;
           }
-          if (movesLeft > 0 && (distanceFromEnd > 1 || !remainingUnitsToLoad.isEmpty()
-              || (unloadTerritory != null && !unloadTerritory.equals(transportTerritory)))) {
+          if ((movesLeft > 0) && ((distanceFromEnd > 1) || !remainingUnitsToLoad.isEmpty()
+              || ((unloadTerritory != null) && !unloadTerritory.equals(transportTerritory)))) {
             final Set<Territory> neighbors = data.getMap().getNeighbors(transportTerritory,
                 ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
             Territory territoryToMoveTo = null;
@@ -179,11 +179,11 @@ public class ProMoveUtils {
                   maxUnitDistance = distance;
                 }
               }
-              if (neighborDistanceFromEnd <= movesLeft && maxUnitDistance <= minUnitDistance
-                  && distanceFromUnloadTerritory < movesLeft
-                  && (maxUnitDistance < minUnitDistance
-                      || (maxUnitDistance > 1 && neighborDistanceFromEnd > maxDistanceFromEnd)
-                      || (maxUnitDistance <= 1 && neighborDistanceFromEnd < maxDistanceFromEnd))) {
+              if ((neighborDistanceFromEnd <= movesLeft) && (maxUnitDistance <= minUnitDistance)
+                  && (distanceFromUnloadTerritory < movesLeft)
+                  && ((maxUnitDistance < minUnitDistance)
+                  || ((maxUnitDistance > 1) && (neighborDistanceFromEnd > maxDistanceFromEnd))
+                  || ((maxUnitDistance <= 1) && (neighborDistanceFromEnd < maxDistanceFromEnd)))) {
                 territoryToMoveTo = neighbor;
                 minUnitDistance = maxUnitDistance;
                 if (neighborDistanceFromEnd > maxDistanceFromEnd) {
@@ -272,7 +272,7 @@ public class ProMoveUtils {
 
         // Skip if unit is already in move to territory
         final Territory startTerritory = ProData.unitTerritoryMap.get(u);
-        if (startTerritory == null || startTerritory.equals(t)) {
+        if ((startTerritory == null) || startTerritory.equals(t)) {
           continue;
         }
 
@@ -324,13 +324,15 @@ public class ProMoveUtils {
       if (!ProData.isSimulation) {
         ProUtils.pause();
       }
-      if (moveRoutes.get(i) == null || moveRoutes.get(i).getEnd() == null || moveRoutes.get(i).getStart() == null) {
+      if ((moveRoutes.get(i) == null)
+          || (moveRoutes.get(i).getEnd() == null)
+          || (moveRoutes.get(i).getStart() == null)) {
         ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
             + ": route not valid " + moveRoutes.get(i) + " units: " + moveUnits.get(i));
         continue;
       }
       final String result;
-      if (transportsToLoad == null || transportsToLoad.get(i) == null) {
+      if ((transportsToLoad == null) || (transportsToLoad.get(i) == null)) {
         result = moveDel.move(moveUnits.get(i), moveRoutes.get(i));
       } else {
         result = moveDel.move(moveUnits.get(i), moveRoutes.get(i), transportsToLoad.get(i));

@@ -29,7 +29,7 @@ class EditValidator {
     // territory cannot be in an UndoableMove route
     final List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();
     for (final UndoableMove move : moves) {
-      if (move.getRoute().getStart() == territory || move.getRoute().getEnd() == territory) {
+      if ((move.getRoute().getStart() == territory) || (move.getRoute().getEnd() == territory)) {
         return "Territory is start or end of a pending move";
       }
     }
@@ -38,7 +38,7 @@ class EditValidator {
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
     if (Matches.territoryIsWater().test(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
-        && TerritoryAttachment.get(territory) == null) {
+        && (TerritoryAttachment.get(territory) == null)) {
       return "Territory is water and has no attachment";
     }
     return validateTerritoryBasic(data, territory);
@@ -121,7 +121,7 @@ class EditValidator {
     // if transported units selected, transport must be deleted too
     for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitCanBeTransported())) {
       final Unit transport = TransportTracker.transportedBy(unit);
-      if (transport != null && !units.contains(transport)) {
+      if ((transport != null) && !units.contains(transport)) {
         return "Can't remove transported units without removing transport";
       }
     }
@@ -185,7 +185,7 @@ class EditValidator {
 
   static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
-    if (unitDamageMap == null || unitDamageMap.isEmpty()) {
+    if ((unitDamageMap == null) || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
     final String result = validateTerritoryBasic(data, territory);
@@ -206,7 +206,7 @@ class EditValidator {
     }
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
-      if (dmg < 0 || dmg >= UnitAttachment.get(u.getType()).getHitPoints()) {
+      if ((dmg < 0) || (dmg >= UnitAttachment.get(u.getType()).getHitPoints())) {
         return "Damage cannot be less than zero or equal to or greater than unit hitpoints (if you want to kill the "
             + "unit, use remove unit)";
       }
@@ -216,7 +216,7 @@ class EditValidator {
 
   static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
       final Territory territory) {
-    if (unitDamageMap == null || unitDamageMap.isEmpty()) {
+    if ((unitDamageMap == null) || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
     final String result = validateTerritoryBasic(data, territory);
@@ -240,7 +240,7 @@ class EditValidator {
     }
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
-      if (dmg < 0 || dmg > ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, territory)) {
+      if ((dmg < 0) || (dmg > ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, territory))) {
         return "Damage cannot be less than zero or greater than the max damage of the unit";
       }
     }
@@ -250,11 +250,11 @@ class EditValidator {
   static String validateChangePoliticalRelationships(
       final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
     final String result = null;
-    if (relationshipChanges == null || relationshipChanges.isEmpty()) {
+    if ((relationshipChanges == null) || relationshipChanges.isEmpty()) {
       return "Relationship Changes are empty";
     }
     for (final Triple<PlayerID, PlayerID, RelationshipType> relationshipChange : relationshipChanges) {
-      if (relationshipChange.getFirst() == null || relationshipChange.getSecond() == null) {
+      if ((relationshipChange.getFirst() == null) || (relationshipChange.getSecond() == null)) {
         return "Players are null";
       }
       if (relationshipChange.getThird() == null) {

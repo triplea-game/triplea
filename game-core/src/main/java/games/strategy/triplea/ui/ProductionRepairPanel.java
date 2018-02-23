@@ -161,7 +161,7 @@ public class ProductionRepairPanel extends JPanel {
     add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(8, 8, 8, 0), 0, 0));
     for (int x = 0; x < rules.size(); x++) {
-      final boolean even = (x / 2) * 2 == x;
+      final boolean even = ((x / 2) * 2) == x;
       add(rules.get(x), new GridBagConstraints(x / 2, even ? 1 : 2, 1, 1, 1, 1, GridBagConstraints.EAST,
           GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
     }

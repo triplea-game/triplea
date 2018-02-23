@@ -55,7 +55,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     if (isPacificTheater()) {
       final PlayerID japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
       final PlayerAttachment pa = PlayerAttachment.get(japanese);
-      if (pa != null && pa.getVps() >= 22) {
+      if ((pa != null) && (pa.getVps() >= 22)) {
         victoryMessage = "Axis achieve VP victory";
         bridge.getHistoryWriter().startEvent(victoryMessage);
         final Collection<PlayerID> winners = data.getAllianceTracker()
@@ -129,8 +129,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     final PlayerID british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
     final PlayerID japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
     final PlayerID americans = playerList.getPlayerId(Constants.PLAYER_NAME_AMERICANS);
-    if (germans == null || russians == null || british == null || japanese == null || americans == null
-        || playerList.size() > 5) {
+    if ((germans == null) || (russians == null) || (british == null) || (japanese == null) || (americans == null)
+        || (playerList.size() > 5)) {
       return;
     }
     // Quick check to see who still owns their own capital
@@ -155,7 +155,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       count++;
     }
     victoryMessage = " achieve a military victory";
-    if (germany && japan && count >= 2) {
+    if (germany && japan && (count >= 2)) {
       bridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
       final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Axis");
       signalGameOver("Axis" + victoryMessage, winners, bridge);
@@ -261,7 +261,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       gameOver = true;
       this.winners = winners;
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
-          ((this.winners != null && !this.winners.isEmpty()) ? this.winners.iterator().next()
+          (((this.winners != null) && !this.winners.isEmpty()) ? this.winners.iterator().next()
               : PlayerID.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
       final String title = "Victory Achieved"

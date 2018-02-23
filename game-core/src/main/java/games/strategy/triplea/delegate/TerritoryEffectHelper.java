@@ -23,7 +23,7 @@ public class TerritoryEffectHelper {
 
   static int getTerritoryCombatBonus(final UnitType type, final Collection<TerritoryEffect> effects,
       final boolean defending) {
-    if (type == null || effects == null || effects.isEmpty()) {
+    if ((type == null) || (effects == null) || effects.isEmpty()) {
       return 0;
     }
     int combatBonus = 0;
@@ -34,7 +34,7 @@ public class TerritoryEffectHelper {
   }
 
   private static boolean unitTypeLoosesBlitz(final UnitType type, final Territory location) {
-    if (location == null || type == null) {
+    if ((location == null) || (type == null)) {
       throw new IllegalStateException("Location and UnitType cannot be null");
     }
     for (final TerritoryEffect effect : getEffects(location)) {

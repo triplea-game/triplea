@@ -24,7 +24,7 @@ class UnitInformation {
   private GameData data;
 
   private static String capitalizeFirst(final String s) {
-    return (s.length() > 0) ? Character.toUpperCase(s.charAt(0)) + s.substring(1) : s;
+    return (s.length() > 0) ? (Character.toUpperCase(s.charAt(0)) + s.substring(1)) : s;
   }
 
   void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {

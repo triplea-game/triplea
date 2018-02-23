@@ -162,7 +162,7 @@ public class ResourceCollection extends GameDataComponent {
    * @return will return 10000 if it can fit more times than 10000. will return Integer MaxValue if cost is zero.
    */
   public int fitsHowOften(final IntegerMap<Resource> cost) {
-    if (cost.size() == 0 || (cost.totalValues() <= 0 && cost.isPositive())) {
+    if ((cost.size() == 0) || ((cost.totalValues() <= 0) && cost.isPositive())) {
       return Integer.MAX_VALUE;
     }
     final ResourceCollection resources = new ResourceCollection(getData(), m_resources);
@@ -186,7 +186,7 @@ public class ResourceCollection extends GameDataComponent {
 
   private static String toString(final IntegerMap<Resource> resources, final GameData data,
       final String lineSeparator) {
-    if (resources == null || resources.isEmpty() || resources.allValuesEqual(0)) {
+    if ((resources == null) || resources.isEmpty() || resources.allValuesEqual(0)) {
       return "nothing";
     }
     final StringBuilder sb = new StringBuilder();

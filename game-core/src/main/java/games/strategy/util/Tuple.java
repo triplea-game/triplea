@@ -66,7 +66,7 @@ public class Tuple<T, S> implements Serializable {
       return true;
     }
 
-    if (obj == null || getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
 

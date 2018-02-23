@@ -82,7 +82,7 @@ public class UnitsDrawer implements IDrawable {
     if (overflow) {
       graphics.setColor(Color.BLACK);
       graphics.fillRect(placementPoint.x - bounds.x - 2,
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight(),
+          (placementPoint.y - bounds.y) + uiContext.getUnitImageFactory().getUnitImageHeight(),
           uiContext.getUnitImageFactory().getUnitImageWidth() + 2, 3);
     }
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
@@ -91,7 +91,7 @@ public class UnitsDrawer implements IDrawable {
     }
     final PlayerID owner = data.getPlayerList().getPlayerId(playerName);
     final Optional<Image> img =
-        uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
+        uiContext.getUnitImageFactory().getImage(type, owner, (damaged > 0) || (bombingUnitDamage > 0), disabled);
 
     if (!img.isPresent()) {
       ClientLogger.logError("MISSING IMAGE (this unit or image will be invisible): " + type);
@@ -104,8 +104,8 @@ public class UnitsDrawer implements IDrawable {
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
-            final int xoffset = img.get().getWidth(null) / 2 - flag.getWidth(null) / 2;// centered flag in the middle
-            final int yoffset = img.get().getHeight(null) / 2 - flag.getHeight(null) / 4
+            final int xoffset = (img.get().getWidth(null) / 2) - (flag.getWidth(null) / 2);// centered flag in the middle
+            final int yoffset = (img.get().getHeight(null) / 2) - (flag.getHeight(null) / 4)
                 - 5;// centered flag in the middle moved it 1/2 - 5 down
             graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset,
                 null);
@@ -141,9 +141,10 @@ public class UnitsDrawer implements IDrawable {
     if (count != 1) {
       final int stackSize = mapData.getDefaultUnitsStackSize();
       if (stackSize > 0) { // Display more units as a stack
-        for (int i = 1; i < count && i < stackSize; i++) {
+        for (int i = 1; (i < count) && (i < stackSize); i++) {
           if (img.isPresent()) {
-            graphics.drawImage(img.get(), placementPoint.x + 2 * i - bounds.x, placementPoint.y - 2 * i - bounds.y,
+            graphics.drawImage(img.get(), (placementPoint.x + (2 * i)) - bounds.x,
+                placementPoint.y - (2 * i) - bounds.y,
                 null);
           }
         }
@@ -153,10 +154,10 @@ public class UnitsDrawer implements IDrawable {
             graphics.setColor(MapImage.getPropertyUnitCountColor());
             graphics.setFont(font);
             graphics.drawString(String.valueOf(count), // draws how many units there are
-                placementPoint.x - bounds.x + 2 * stackSize
-                    + (uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10),
-                placementPoint.y - 2 * stackSize - bounds.y
-                    + uiContext.getUnitImageFactory().getUnitImageHeight() * 1 / 3);
+                (placementPoint.x - bounds.x) + (2 * stackSize)
+                    + ((uiContext.getUnitImageFactory().getUnitImageWidth() * 6) / 10),
+                (placementPoint.y - (2 * stackSize) - bounds.y)
+                    + ((uiContext.getUnitImageFactory().getUnitImageHeight() * 1) / 3));
           }
         }
       } else { // Display a white number at the bottom of the unit
@@ -165,8 +166,8 @@ public class UnitsDrawer implements IDrawable {
           graphics.setColor(MapImage.getPropertyUnitCountColor());
           graphics.setFont(font);
           graphics.drawString(String.valueOf(count), // draws how many units there are
-              placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()),
-              placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
+              (placementPoint.x - bounds.x) + (uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()),
+              (placementPoint.y - bounds.y) + uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
         }
       }
     }
@@ -179,12 +180,12 @@ public class UnitsDrawer implements IDrawable {
 
   private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
     final Font font = MapImage.getPropertyMapFont();
-    if (territoryName.length() != 0 && font.getSize() > 0 && bombingUnitDamage > 0) {
+    if ((territoryName.length() != 0) && (font.getSize() > 0) && (bombingUnitDamage > 0)) {
       graphics.setColor(MapImage.getPropertyUnitFactoryDamageColor());
       graphics.setFont(font);
       graphics.drawString("" + bombingUnitDamage,
-          placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
+          (placementPoint.x - bounds.x) + (uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
+          (placementPoint.y - bounds.y) + (uiContext.getUnitImageFactory().getUnitImageHeight() / 4));
     }
   }
 
@@ -197,12 +198,12 @@ public class UnitsDrawer implements IDrawable {
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
     final Font font = MapImage.getPropertyMapFont();
-    if (territoryName.length() != 0 && font.getSize() > 0 && damaged > 1) {
+    if ((territoryName.length() != 0) && (font.getSize() > 0) && (damaged > 1)) {
       graphics.setColor(MapImage.getPropertyUnitHitDamageColor());
       graphics.setFont(font);
       graphics.drawString("" + damaged,
-          placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4),
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
+          (placementPoint.x - bounds.x) + ((uiContext.getUnitImageFactory().getUnitImageWidth() * 3) / 4),
+          (placementPoint.y - bounds.y) + (uiContext.getUnitImageFactory().getUnitImageHeight() / 4));
     }
   }
 
@@ -214,10 +215,10 @@ public class UnitsDrawer implements IDrawable {
     final UnitType type = data.getUnitTypeList().getUnitType(unitType);
     final Predicate<Unit> selectedUnits = Matches.unitIsOfType(type)
         .and(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerId(playerName)))
-        .and(damaged > 0
+        .and((damaged > 0)
             ? Matches.unitHasTakenSomeDamage()
             : Matches.unitHasNotTakenAnyDamage())
-        .and(bombingUnitDamage > 0
+        .and((bombingUnitDamage > 0)
             ? Matches.unitHasTakenSomeBombingUnitDamage()
             : Matches.unitHasNotTakenAnyBombingUnitDamage());
     return Tuple.of(t, t.getUnits().getMatches(selectedUnits));

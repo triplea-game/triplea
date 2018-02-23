@@ -109,7 +109,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("attackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -157,7 +157,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("defenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -205,7 +205,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setMovementBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("movementBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -253,7 +253,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRadarBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("radarBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -301,7 +301,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirAttackBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("airAttackBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -349,7 +349,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirDefenseBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("airDefenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -397,7 +397,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setProductionBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("productionBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -442,7 +442,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMinimumTerritoryValueForProductionBonus(final String value) throws GameParseException {
     final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 10000)) {
+    if ((v != -1) && ((v < 0) || (v > 10000))) {
       throw new GameParseException(
           "minimumTerritoryValueForProductionBonus must be -1 (no effect), or be between 0 and 10000" + thisErrorMsg());
     }
@@ -466,7 +466,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
         final int min = taa.getMinimumTerritoryValueForProductionBonus();
         if (min == -1) {
           continue;
-        } else if (minimumTerritoryValueForProductionBonus == -1 || min < minimumTerritoryValueForProductionBonus) {
+        } else if ((minimumTerritoryValueForProductionBonus == -1) || (min < minimumTerritoryValueForProductionBonus)) {
           minimumTerritoryValueForProductionBonus = min;
         }
       }
@@ -481,7 +481,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRepairDiscount(final String value) throws GameParseException {
     final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 100)) {
+    if ((v != -1) && ((v < 0) || (v > 100))) {
       throw new GameParseException("m_repairDiscount must be -1 (no effect), or be between 0 and 100" + thisErrorMsg());
     }
     m_repairDiscount = v;
@@ -518,7 +518,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBondDiceSides(final String value) throws GameParseException {
     final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 200)) {
+    if ((v != -1) && ((v < 0) || (v > 200))) {
       throw new GameParseException("warBondDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
     }
     m_warBondDiceSides = v;
@@ -554,7 +554,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBondDiceNumber(final String value) throws GameParseException {
     final int v = getInt(value);
-    if (v < 0 || v > 100) {
+    if ((v < 0) || (v > 100)) {
       throw new GameParseException("warBondDiceNumber must be between 0 and 100" + thisErrorMsg());
     }
     m_warBondDiceNumber = v;
@@ -646,7 +646,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketDistance(final String value) throws GameParseException {
     final int v = getInt(value);
-    if (v < 0 || v > 100) {
+    if ((v < 0) || (v > 100)) {
       throw new GameParseException("rocketDistance must be between 0 and 100" + thisErrorMsg());
     }
     m_rocketDistance = v;
@@ -682,7 +682,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketNumberPerTerritory(final String value) throws GameParseException {
     final int v = getInt(value);
-    if (v < 0 || v > 200) {
+    if ((v < 0) || (v > 200)) {
       throw new GameParseException("rocketNumberPerTerritory must be between 0 and 200" + thisErrorMsg());
     }
     m_rocketNumberPerTerritory = v;
@@ -808,7 +808,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneCapacity(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("airborneCapacity cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -905,7 +905,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAirborneDistance(final String value) throws GameParseException {
     final int v = getInt(value);
-    if (v < 0 || v > 100) {
+    if ((v < 0) || (v > 100)) {
       throw new GameParseException("airborneDistance must be between 0 and 100" + thisErrorMsg());
     }
     m_airborneDistance = v;
@@ -1015,7 +1015,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
         final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAA();
-        if (mapAa != null && !mapAa.isEmpty()) {
+        if ((mapAa != null) && !mapAa.isEmpty()) {
           for (final Entry<String, Set<UnitType>> entry : mapAa.entrySet()) {
             HashSet<UnitType> current = airborneTargettedByAa.get(entry.getKey());
             if (current == null) {
@@ -1044,7 +1044,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackRollsBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("attackRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -1092,7 +1092,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseRollsBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("defenseRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];
@@ -1132,7 +1132,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setBombingBonus(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
+    if ((s.length <= 0) || (s.length > 2)) {
       throw new GameParseException("bombingBonus cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitType = s[1];

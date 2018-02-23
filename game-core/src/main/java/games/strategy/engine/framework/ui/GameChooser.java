@@ -118,7 +118,7 @@ public class GameChooser extends JDialog {
   }
 
   private void selectGame(final String gameName) {
-    if (gameName == null || gameName.equals("-")) {
+    if ((gameName == null) || gameName.equals("-")) {
       gameList.setSelectedIndex(0);
       return;
     }
@@ -138,7 +138,7 @@ public class GameChooser extends JDialog {
       appendListItem("Version", data.getGameVersion() + "", notes);
       notes.append("<p></p>");
       final String notesProperty = data.getProperties().get("notes", "");
-      if (notesProperty != null && notesProperty.trim().length() != 0) {
+      if ((notesProperty != null) && (notesProperty.trim().length() != 0)) {
         // AbstractUiContext resource loader should be null (or potentially is still the last game we played's loader),
         // so we send the map dir name so that our localizing of image links can get a new resource loader if needed
         notes.append(LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim(), null, mapNameDir));

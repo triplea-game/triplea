@@ -133,7 +133,7 @@ public class ClipPlayer {
 
   public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
-    if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
+    if ((clipPlayer == null) || (clipPlayer.resourceLoader != resourceLoader)) {
       // make a new clip player with our new resource loader
       clipPlayer = new ClipPlayer(resourceLoader);
     }
@@ -300,7 +300,7 @@ public class ClipPlayer {
       sounds.put(pathName, parseClipPaths(pathName));
     }
     final List<URL> availableSounds = sounds.get(pathName);
-    if (availableSounds == null || availableSounds.isEmpty()) {
+    if ((availableSounds == null) || availableSounds.isEmpty()) {
       return null;
     }
     // we want to pick a random sound from this folder, as users don't like hearing the same ones over
@@ -388,19 +388,19 @@ public class ClipPlayer {
       thisSoundFile = null;
     }
 
-    if (thisSoundFile == null || !thisSoundFile.exists()) {
+    if ((thisSoundFile == null) || !thisSoundFile.exists()) {
       // final long startTime = System.currentTimeMillis();
       // we are probably using zipped sounds. there might be a better way to do this...
       final String soundFilePath = thisSoundUrl.getPath();
-      if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.contains(".zip!")) {
+      if ((soundFilePath != null) && (soundFilePath.length() > 5) && soundFilePath.contains(".zip!")) {
         // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test
         // if it exists, if it
         // starts with that it doesn't exist
         final int index1 = Math.max(0, Math.min(soundFilePath.length(),
-            soundFilePath.contains("file:") ? soundFilePath.indexOf("file:") + 5 : 0));
+            soundFilePath.contains("file:") ? (soundFilePath.indexOf("file:") + 5) : 0));
         final String zipFilePath = soundFilePath.substring(index1,
             Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
-        if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
+        if ((zipFilePath.length() > 5) && zipFilePath.endsWith(".zip")) {
           String decoded;
           try {
             // the file path may have spaces, which in a URL are equal to %20, but if we make a file using that it will
@@ -469,7 +469,7 @@ public class ClipPlayer {
   }
 
   private static boolean isZippedMp3(final ZipEntry zipElement, final String resourceAndPathUrl) {
-    return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathUrl)
+    return (zipElement != null) && (zipElement.getName() != null) && zipElement.getName().contains(resourceAndPathUrl)
         && (zipElement.getName().endsWith(MP3_SUFFIX));
   }
 

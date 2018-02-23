@@ -126,7 +126,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsTransportButNotCombatTransport() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getTransportCapacity() != -1 && ua.getIsSea() && !ua.getIsCombatTransport();
+      return (ua.getTransportCapacity() != -1) && ua.getIsSea() && !ua.getIsCombatTransport();
     };
   }
 
@@ -151,7 +151,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsTransport() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getTransportCapacity() != -1 && ua.getIsSea();
+      return (ua.getTransportCapacity() != -1) && ua.getIsSea();
     };
   }
 
@@ -162,7 +162,7 @@ public final class Matches {
   static Predicate<Unit> unitIsTransportAndNotDestroyer() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return !unitIsDestroyer().test(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea();
+      return !unitIsDestroyer().test(unit) && (ua.getTransportCapacity() != -1) && ua.getIsSea();
     };
   }
 
@@ -353,7 +353,7 @@ public final class Matches {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
       final Set<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
-      return allowedTargets == null || allowedTargets.contains(unit.getType());
+      return (allowedTargets == null) || allowedTargets.contains(unit.getType());
     };
   }
 
@@ -430,10 +430,10 @@ public final class Matches {
     return ut -> {
       // if unit has attack or defense, return true
       final UnitAttachment ua = UnitAttachment.get(ut);
-      if (attack && ua.getAttack(player) > 0) {
+      if (attack && (ua.getAttack(player) > 0)) {
         return true;
       }
-      if (!attack && ua.getDefense(player) > 0) {
+      if (!attack && (ua.getDefense(player) > 0)) {
         return true;
       }
       // if unit can support other units, return true
@@ -516,7 +516,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsAlliedCarrier(final PlayerID player, final GameData data) {
-    return unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
+    return unit -> (UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1)
         && data.getRelationshipTracker().isAllied(player, unit.getOwner());
   }
 
@@ -629,7 +629,7 @@ public final class Matches {
   private static Predicate<UnitType> unitTypeIsAaThatCanFireOnRound(final int battleRoundNumber) {
     return obj -> {
       final int maxRoundsAa = UnitAttachment.get(obj).getMaxRoundsAA();
-      return maxRoundsAa < 0 || maxRoundsAa >= battleRoundNumber;
+      return (maxRoundsAa < 0) || (maxRoundsAa >= battleRoundNumber);
     };
   }
 
@@ -708,14 +708,14 @@ public final class Matches {
   static Predicate<Unit> unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      return ua.getAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+      return (ua.getAttackAA(obj.getOwner()) > 0) && (ua.getMaxAAattacks() != 0);
     };
   }
 
   static Predicate<Unit> unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      return ua.getOffensiveAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+      return (ua.getOffensiveAttackAA(obj.getOwner()) > 0) && (ua.getMaxAAattacks() != 0);
     };
   }
 
@@ -733,7 +733,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsAirTransportable() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
-      if (ta == null || !ta.getParatroopers()) {
+      if ((ta == null) || !ta.getParatroopers()) {
         return false;
       }
       final UnitType type = obj.getType();
@@ -749,7 +749,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsAirTransport() {
     return obj -> {
       final TechAttachment ta = TechAttachment.get(obj.getOwner());
-      if (ta == null || !ta.getParatroopers()) {
+      if ((ta == null) || !ta.getParatroopers()) {
         return false;
       }
       final UnitType type = obj.getType();
@@ -778,7 +778,7 @@ public final class Matches {
   public static Predicate<Territory> territoryIsIsland() {
     return t -> {
       final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
-      return neighbors.size() == 1 && territoryIsWater().test(neighbors.iterator().next());
+      return (neighbors.size() == 1) && territoryIsWater().test(neighbors.iterator().next());
     };
   }
 
@@ -818,7 +818,7 @@ public final class Matches {
       if (t.isWater()) {
         // if it's water, it is a Convoy Center
         // Can't get PUs for capturing a CC, only original owner can get them. (Except capturing null player CCs)
-        if (!(origOwner == null || origOwner == PlayerID.NULL_PLAYERID || origOwner == player)) {
+        if (!((origOwner == null) || (origOwner == PlayerID.NULL_PLAYERID) || (origOwner == player))) {
           return false;
         }
       }
@@ -891,7 +891,7 @@ public final class Matches {
         return false;
       }
       final BattleTracker bt = AbstractMoveDelegate.getBattleTracker(data);
-      return !(bt == null || bt.wasConquered(t));
+      return !((bt == null) || bt.wasConquered(t));
     };
   }
 
@@ -936,7 +936,7 @@ public final class Matches {
         return false;
       }
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && ta.getIsImpassable();
+      return (ta != null) && ta.getIsImpassable();
     };
   }
 
@@ -976,7 +976,7 @@ public final class Matches {
         return true;
       }
       final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-      if (ra == null || ra.getMovementRestrictionTerritories() == null) {
+      if ((ra == null) || (ra.getMovementRestrictionTerritories() == null)) {
         return true;
       }
       final String movementRestrictionType = ra.getMovementRestrictionType();
@@ -1022,7 +1022,7 @@ public final class Matches {
       if (Properties.getMovementByTerritoryRestricted(data)) {
         final RulesAttachment ra =
             (RulesAttachment) playerWhoOwnsAllTheUnitsMoving.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-        if (ra != null && ra.getMovementRestrictionTerritories() != null) {
+        if ((ra != null) && (ra.getMovementRestrictionTerritories() != null)) {
           final String movementRestrictionType = ra.getMovementRestrictionType();
           final Collection<Territory> listedTerritories =
               ra.getListedTerritories(ra.getMovementRestrictionTerritories(), true, true);
@@ -1090,10 +1090,10 @@ public final class Matches {
           taEnd = TerritoryAttachment.get(route.getEnd());
         }
         movementcost = route.getMovementCost(unit);
-        if (taStart != null && taStart.getAirBase()) {
+        if ((taStart != null) && taStart.getAirBase()) {
           left++;
         }
-        if (taEnd != null && taEnd.getAirBase()) {
+        if ((taEnd != null) && taEnd.getAirBase()) {
           left++;
         }
       }
@@ -1106,11 +1106,11 @@ public final class Matches {
         // (history to get route.getStart()
         for (final Territory terrNext : unit.getData().getMap().getNeighbors(route.getStart(), 1)) {
           final TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
-          if (taNeighbor != null && taNeighbor.getNavalBase()
+          if ((taNeighbor != null) && taNeighbor.getNavalBase()
               && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player)) {
             for (final Territory terrEnd : unit.getData().getMap().getNeighbors(route.getEnd(), 1)) {
               final TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
-              if (taEndNeighbor != null && taEndNeighbor.getNavalBase()
+              if ((taEndNeighbor != null) && taEndNeighbor.getNavalBase()
                   && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player)) {
                 left++;
                 break;
@@ -1119,7 +1119,7 @@ public final class Matches {
           }
         }
       }
-      return !(left < 0 || left < movementcost);
+      return !((left < 0) || (left < movementcost));
     };
   }
 
@@ -1157,7 +1157,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsTransporting() {
     return unit -> {
       final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
-      return !(transporting == null || transporting.isEmpty());
+      return !((transporting == null) || transporting.isEmpty());
     };
   }
 
@@ -1295,12 +1295,12 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryFreeNeutral(final GameData data) {
-    return t -> t.getOwner().equals(PlayerID.NULL_PLAYERID) && Properties.getNeutralCharge(data) <= 0;
+    return t -> t.getOwner().equals(PlayerID.NULL_PLAYERID) && (Properties.getNeutralCharge(data) <= 0);
   }
 
   public static Predicate<Territory> territoryDoesNotCostMoneyToEnter(final GameData data) {
     return t -> territoryIsLand().negate().test(t) || !t.getOwner().equals(PlayerID.NULL_PLAYERID)
-        || Properties.getNeutralCharge(data) <= 0;
+        || (Properties.getNeutralCharge(data) <= 0);
   }
 
   public static Predicate<Unit> enemyUnit(final PlayerID player, final GameData data) {
@@ -1395,7 +1395,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryIsNotUnownedWater() {
-    return t -> !(t.isWater() && TerritoryAttachment.get(t) == null && t.getOwner().isNull());
+    return t -> !(t.isWater() && (TerritoryAttachment.get(t) == null) && t.getOwner().isNull());
   }
 
   /**
@@ -1464,7 +1464,7 @@ public final class Matches {
     return dependent -> {
       // transported on a sea transport
       final Unit transportedBy = ((TripleAUnit) dependent).getTransportedBy();
-      if (transportedBy != null && units.contains(transportedBy)) {
+      if ((transportedBy != null) && units.contains(transportedBy)) {
         return true;
       }
       // cargo on a carrier
@@ -1506,7 +1506,7 @@ public final class Matches {
 
   public static Predicate<Unit> unitIsOfTypes(final Set<UnitType> types) {
     return unit -> {
-      if (types == null || types.isEmpty()) {
+      if ((types == null) || types.isEmpty()) {
         return false;
       }
       return types.contains(unit.getType());
@@ -1587,7 +1587,7 @@ public final class Matches {
         }
       }
       final UnitAttachment ua = UnitAttachment.get(unitCanRepair.getType());
-      return ua.getRepairsUnits() != null && ua.getRepairsUnits().keySet().contains(damagedUnit.getType());
+      return (ua.getRepairsUnits() != null) && ua.getRepairsUnits().keySet().contains(damagedUnit.getType());
     };
   }
 
@@ -1646,7 +1646,7 @@ public final class Matches {
   private static Predicate<Unit> unitCanGiveBonusMovement() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getGivesMovement().size() > 0 && unitIsBeingTransported().negate().test(unit);
+      return (ua != null) && (ua.getGivesMovement().size() > 0) && unitIsBeingTransported().negate().test(unit);
     };
   }
 
@@ -1659,7 +1659,7 @@ public final class Matches {
       final UnitAttachment ua = UnitAttachment.get(type);
       // TODO: make sure the unit is operational
       return unitCanGiveBonusMovement().test(unitWhichCanGiveBonusMovement)
-          && ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0;
+          && (ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0);
     };
   }
 
@@ -1698,28 +1698,28 @@ public final class Matches {
   static Predicate<Unit> unitCreatesUnits() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0;
+      return (ua != null) && (ua.getCreatesUnitsList() != null) && (ua.getCreatesUnitsList().size() > 0);
     };
   }
 
   static Predicate<Unit> unitCreatesResources() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0;
+      return (ua != null) && (ua.getCreatesResourcesList() != null) && (ua.getCreatesResourcesList().size() > 0);
     };
   }
 
   public static Predicate<UnitType> unitTypeConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit);
-      return ua != null && ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+      return (ua != null) && (ua.getConsumesUnits() != null) && (ua.getConsumesUnits().size() > 0);
     };
   }
 
   static Predicate<Unit> unitConsumesUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0;
+      return (ua != null) && (ua.getConsumesUnits() != null) && (ua.getConsumesUnits().size() > 0);
     };
   }
 
@@ -1755,7 +1755,7 @@ public final class Matches {
   public static Predicate<Unit> unitRequiresUnitsOnCreation() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua != null && ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0;
+      return (ua != null) && (ua.getRequiresUnits() != null) && (ua.getRequiresUnits().size() > 0);
     };
   }
 
@@ -1806,7 +1806,7 @@ public final class Matches {
     return unit -> {
 
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua == null || ua.getRequiresUnitsToMove() == null || ua.getRequiresUnitsToMove().isEmpty()) {
+      if ((ua == null) || (ua.getRequiresUnitsToMove() == null) || ua.getRequiresUnitsToMove().isEmpty()) {
         return true;
       }
 
@@ -1832,14 +1832,14 @@ public final class Matches {
   static Predicate<Territory> territoryIsBlockadeZone() {
     return t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && ta.getBlockadeZone();
+      return (ta != null) && ta.getBlockadeZone();
     };
   }
 
   public static Predicate<UnitType> unitTypeIsConstruction() {
     return type -> {
       final UnitAttachment ua = UnitAttachment.get(type);
-      return ua != null && ua.getIsConstruction();
+      return (ua != null) && ua.getIsConstruction();
     };
   }
 
@@ -2023,7 +2023,7 @@ public final class Matches {
         }
         final int damagedFrom = key.getFirst().getFirst();
         final int damagedTo = key.getFirst().getSecond();
-        if (currentDamage >= damagedFrom && currentDamage <= damagedTo) {
+        if ((currentDamage >= damagedFrom) && (currentDamage <= damagedTo)) {
           return true;
         }
       }
@@ -2064,7 +2064,7 @@ public final class Matches {
 
   public static Predicate<PoliticalActionAttachment> politicalActionHasCostBetween(final int greaterThanEqualTo,
       final int lessThanEqualTo) {
-    return paa -> paa.getCostPU() >= greaterThanEqualTo && paa.getCostPU() <= lessThanEqualTo;
+    return paa -> (paa.getCostPU() >= greaterThanEqualTo) && (paa.getCostPU() <= lessThanEqualTo);
   }
 
   static Predicate<Unit> unitCanOnlyPlaceInOriginalTerritories() {
@@ -2132,7 +2132,7 @@ public final class Matches {
         final String[] relationshipChange = relationshipChangeString.split(":");
         final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
         final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
-        if (player != null && !(p1.equals(player) || p2.equals(player))) {
+        if ((player != null) && !(p1.equals(player) || p2.equals(player))) {
           continue;
         }
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
@@ -2178,7 +2178,7 @@ public final class Matches {
         return false;
       }
       final PlayerID owner = t.getOwner();
-      if (owner == null || owner.isNull()) {
+      if ((owner == null) || owner.isNull()) {
         return false;
       }
       final RelationshipTracker rt = data.getRelationshipTracker();
@@ -2192,7 +2192,7 @@ public final class Matches {
         return true;
       }
       final PlayerID owner = t.getOwner();
-      if (owner == null || owner.isNull()) {
+      if ((owner == null) || owner.isNull()) {
         return true;
       }
       final RelationshipTracker rt = data.getRelationshipTracker();

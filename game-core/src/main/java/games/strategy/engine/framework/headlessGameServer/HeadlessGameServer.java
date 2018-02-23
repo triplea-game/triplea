@@ -134,7 +134,7 @@ public class HeadlessGameServer {
 
   public synchronized void setGameMapTo(final String gameName) {
     // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
+    if ((setupPanelModel.getPanel() != null) && (game == null)) {
       if (!availableGames.getGameNames().contains(gameName)) {
         return;
       }
@@ -145,8 +145,8 @@ public class HeadlessGameServer {
 
   public synchronized void loadGameSave(final File file) {
     // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (file == null || !file.exists()) {
+    if ((setupPanelModel.getPanel() != null) && (game == null)) {
+      if ((file == null) || !file.exists()) {
         return;
       }
       gameSelectorModel.load(file, null);
@@ -156,8 +156,8 @@ public class HeadlessGameServer {
 
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
     // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (input == null || fileName == null) {
+    if ((setupPanelModel.getPanel() != null) && (game == null)) {
+      if ((input == null) || (fileName == null)) {
         return;
       }
       final GameData data = gameSelectorModel.getGameData(input);
@@ -181,8 +181,8 @@ public class HeadlessGameServer {
 
   public synchronized void loadGameOptions(final byte[] bytes) {
     // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (bytes == null || bytes.length == 0) {
+    if ((setupPanelModel.getPanel() != null) && (game == null)) {
+      if ((bytes == null) || (bytes.length == 0)) {
         return;
       }
       final GameData data = gameSelectorModel.getGameData();
@@ -298,7 +298,7 @@ public class HeadlessGameServer {
     final String encryptedPassword = md5Crypt(localPassword, salt);
     if (encryptedPassword.equals(hashedPassword)) {
       final IChatPanel chat = getServerModel().getChatPanel();
-      if (chat == null || chat.getAllText() == null) {
+      if ((chat == null) || (chat.getAllText() == null)) {
         return "Empty or null chat";
       }
       return chat.getAllText();
@@ -526,7 +526,7 @@ public class HeadlessGameServer {
         + "\n\nDump finished.\n");
   }
 
-  synchronized void shutdown() {
+  private synchronized void shutdown() {
     shutDown = true;
     try {
       if (lobbyWatcherResetupThread != null) {
@@ -545,7 +545,7 @@ public class HeadlessGameServer {
     try {
       if (setupPanelModel != null) {
         final ISetupPanel setup = setupPanelModel.getPanel();
-        if (setup != null && setup instanceof HeadlessServerSetup) {
+        if ((setup != null) && (setup instanceof HeadlessServerSetup)) {
           setup.shutDown();
         }
       }
@@ -553,7 +553,7 @@ public class HeadlessGameServer {
       logger.log(Level.SEVERE, "Failed to shutdown setup panel", e);
     }
     try {
-      if (gameSelectorModel != null && gameSelectorModel.getGameData() != null) {
+      if ((gameSelectorModel != null) && (gameSelectorModel.getGameData() != null)) {
         gameSelectorModel.getGameData().clearAllListeners();
       }
     } catch (final Exception e) {
@@ -574,7 +574,8 @@ public class HeadlessGameServer {
           shutDown = true;
           break;
         }
-        if (setupPanelModel != null && setupPanelModel.getPanel() != null
+        if ((setupPanelModel != null)
+            && (setupPanelModel.getPanel() != null)
             && setupPanelModel.getPanel().canGameStart()) {
           final boolean started = startHeadlessGame(setupPanelModel);
           if (!started) {
@@ -590,7 +591,8 @@ public class HeadlessGameServer {
 
   private static synchronized boolean startHeadlessGame(final SetupPanelModel setupPanelModel) {
     try {
-      if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
+      if ((setupPanelModel != null) && (setupPanelModel.getPanel() != null) && setupPanelModel.getPanel()
+          .canGameStart()) {
         System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
             + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
         setupPanelModel.getPanel().preStartGame();
@@ -662,11 +664,13 @@ public class HeadlessGameServer {
   /**
    * Launches a bot server. Most properties are passed via command line-like arguments.
    */
+  /*
+   * TODO: get properties from a configuration file instead of CLI.
+   */
   public static void main(final String[] args) {
     ClientSetting.initialize();
 
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    // TODO: get properties from a configuration file instead of CLI.
     if (!new ArgParser(getProperties()).handleCommandLineArgs(args)) {
       usage();
       return;
@@ -718,7 +722,7 @@ public class HeadlessGameServer {
     boolean printUsage = false;
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
     final String hostName = System.getProperty(LOBBY_GAME_HOSTED_BY, "");
-    if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
+    if ((playerName.length() < 7) || (hostName.length() < 7) || !hostName.equals(playerName)
         || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
       System.out.println(
           "Invalid argument: " + TRIPLEA_NAME + " and " + LOBBY_GAME_HOSTED_BY
@@ -734,7 +738,7 @@ public class HeadlessGameServer {
     }
 
     final String email = System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "");
-    if (email.length() < 3 || !Util.isMailValid(email)) {
+    if ((email.length() < 3) || !Util.isMailValid(email)) {
       System.out.println(
           "Invalid argument: " + LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
       printUsage = true;

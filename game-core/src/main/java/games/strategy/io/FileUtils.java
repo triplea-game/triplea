@@ -29,6 +29,6 @@ public final class FileUtils {
     checkNotNull(directory);
 
     final @Nullable File[] files = directory.listFiles();
-    return files != null ? Collections.unmodifiableList(Arrays.asList(files)) : Collections.emptyList();
+    return (files != null) ? Collections.unmodifiableList(Arrays.asList(files)) : Collections.emptyList();
   }
 }

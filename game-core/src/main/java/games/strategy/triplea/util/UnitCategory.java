@@ -61,7 +61,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   }
 
   public boolean hasDamageOrBombingUnitDamage() {
-    return damaged > 0 || bombingDamage > 0;
+    return (damaged > 0) || (bombingDamage > 0);
   }
 
   public boolean getDisabled() {
@@ -91,12 +91,12 @@ public class UnitCategory implements Comparable<UnitCategory> {
     // equality of categories does not compare the number
     // of units in the category, so don't compare on units
     final boolean equalsIgnoreDamaged = equalsIgnoreDamagedAndBombingDamageAndDisabled(other);
-    return equalsIgnoreDamaged && other.damaged == this.damaged && other.bombingDamage == this.bombingDamage
-        && other.disabled == this.disabled;
+    return equalsIgnoreDamaged && (other.damaged == this.damaged) && (other.bombingDamage == this.bombingDamage)
+        && (other.disabled == this.disabled);
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
-    final boolean equalsIgnoreDamaged = other.type.equals(this.type) && other.movement == this.movement
+    final boolean equalsIgnoreDamaged = other.type.equals(this.type) && (other.movement == this.movement)
         && other.owner.equals(this.owner) && CollectionUtils.equals(this.dependents, other.dependents);
     return equalsIgnoreDamaged;
   }

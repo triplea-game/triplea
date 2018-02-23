@@ -111,8 +111,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if ((player.getProductionFrontier() == null || player.getProductionFrontier().getRules().isEmpty())
-        && (player.getRepairFrontier() == null || player.getRepairFrontier().getRules().isEmpty())) {
+    if (((player.getProductionFrontier() == null) || player.getProductionFrontier().getRules().isEmpty())
+        && ((player.getRepairFrontier() == null) || player.getRepairFrontier().getRules().isEmpty())) {
       return false;
     }
     if (!canWePurchaseOrRepair()) {
@@ -123,14 +123,14 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   protected boolean canWePurchaseOrRepair() {
-    if (player.getProductionFrontier() != null && player.getProductionFrontier().getRules() != null) {
+    if ((player.getProductionFrontier() != null) && (player.getProductionFrontier().getRules() != null)) {
       for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
         if (player.getResources().has(rule.getCosts())) {
           return true;
         }
       }
     }
-    if (player.getRepairFrontier() != null && player.getRepairFrontier().getRules() != null) {
+    if ((player.getRepairFrontier() != null) && (player.getRepairFrontier().getRules() != null)) {
       for (final RepairRule rule : player.getRepairFrontier().getRules()) {
         if (player.getResources().has(rule.getCosts())) {
           return true;
@@ -174,7 +174,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           }
 
           final int allowedBuild = maxBuilt - currentlyBuilt;
-          if (allowedBuild - quantity < 0) {
+          if ((allowedBuild - quantity) < 0) {
             return "May only build " + allowedBuild + " of " + type.getName() + " this turn, may only build " + maxBuilt
                 + " total";
           }

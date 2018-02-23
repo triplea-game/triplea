@@ -146,7 +146,7 @@ class OddsCalculatorPanel extends JPanel {
       try {
         landBattleCheckBox.setSelected(!location.isWater());
         // default to the current player
-        if (data.getSequence().getStep().getPlayerId() != null
+        if ((data.getSequence().getStep().getPlayerId() != null)
             && !data.getSequence().getStep().getPlayerId().isNull()) {
           attackerCombo.setSelectedItem(data.getSequence().getStep().getPlayerId());
         }
@@ -155,7 +155,7 @@ class OddsCalculatorPanel extends JPanel {
         } else {
           // we need to find out the defender for sea zones
           for (final PlayerID player : location.getUnits().getPlayersWithUnits()) {
-            if (player != getAttacker() && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
+            if ((player != getAttacker()) && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
               defenderCombo.setSelectedItem(player);
               break;
             }
@@ -362,7 +362,7 @@ class OddsCalculatorPanel extends JPanel {
       try {
         // find a territory to fight in
         Territory location = null;
-        if (this.location == null || this.location.isWater() == isLand()) {
+        if ((this.location == null) || (this.location.isWater() == isLand())) {
           for (final Territory t : data.getMap()) {
             if (t.isWater() == !isLand()) {
               location = t;
@@ -656,7 +656,7 @@ class OddsCalculatorPanel extends JPanel {
       defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       swapSidesCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
-      if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
+      if ((allTerritoryEffects == null) || allTerritoryEffects.isEmpty()) {
         territoryEffectsJList = null;
       } else {
         final List<String> effectNames = new ArrayList<>();
@@ -1017,7 +1017,7 @@ class OddsCalculatorPanel extends JPanel {
       final List<Unit> units = category.getType().create(textField.getValue(), category.getOwner(), true);
       if (!units.isEmpty()) {
         // creating the unit just makes it, we want to make sure it is damaged if the category says it is damaged
-        if (category.getHitPoints() > 1 && category.getDamaged() > 0) {
+        if ((category.getHitPoints() > 1) && (category.getDamaged() > 0)) {
           // we do not need to use bridge and change factory here because this is not sent over the network. these are
           // just some temporary
           // units for the battle calc.
@@ -1072,7 +1072,7 @@ class OddsCalculatorPanel extends JPanel {
       this.land = land;
       this.attackerCategories = attackerCategories;
       this.defenderCategories = defenderCategories;
-      attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
+      attackerTextField = new JTextField((attackerOrder == null) ? "" : attackerOrder);
       attackerTextField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(final DocumentEvent e) {
@@ -1101,7 +1101,7 @@ class OddsCalculatorPanel extends JPanel {
           }
         }
       });
-      defenderTextField = new JTextField(defenderOrder == null ? "" : defenderOrder);
+      defenderTextField = new JTextField((defenderOrder == null) ? "" : defenderOrder);
       defenderTextField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(final DocumentEvent e) {

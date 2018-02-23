@@ -196,7 +196,7 @@ public class ClientModel implements IMessengerErrorListener {
     ClientSetting.PLAYER_NAME.save(name);
     ClientSetting.flush();
     final int port = props.getPort();
-    if (port >= 65536 || port <= 0) {
+    if ((port >= 65536) || (port <= 0)) {
       EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
       return false;
     }

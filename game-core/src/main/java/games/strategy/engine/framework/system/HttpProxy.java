@@ -64,7 +64,7 @@ public class HttpProxy {
         final String anyUrlThatShouldAvailable = "http://sourceforge.net/";
         final List<Proxy> proxyList = def.select(new URI(anyUrlThatShouldAvailable));
         ProxySelector.setDefault(null);
-        if (proxyList != null && !proxyList.isEmpty()) {
+        if ((proxyList != null) && !proxyList.isEmpty()) {
           final Proxy proxy = proxyList.get(0);
           final InetSocketAddress address = (InetSocketAddress) proxy.address();
           return Optional.ofNullable(address);
@@ -85,7 +85,7 @@ public class HttpProxy {
     final String host = ClientSetting.PROXY_HOST.value();
     final String port = ClientSetting.PROXY_PORT.value();
 
-    if (Strings.emptyToNull(host) != null && Strings.emptyToNull(port) != null) {
+    if ((Strings.emptyToNull(host) != null) && (Strings.emptyToNull(port) != null)) {
       request.setConfig(RequestConfig
           .copy(request.getConfig())
           .setProxy(new HttpHost(host, Integer.parseInt(port)))

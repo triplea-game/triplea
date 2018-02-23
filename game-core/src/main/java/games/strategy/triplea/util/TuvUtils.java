@@ -140,11 +140,11 @@ public class TuvUtils {
   private static int getTotalTuv(final UnitType unitType, final IntegerMap<UnitType> costs,
       final Set<UnitType> alreadyAdded) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
-    if (ua != null && ua.getTuv() > 0) {
+    if ((ua != null) && (ua.getTuv() > 0)) {
       return ua.getTuv();
     }
     int tuv = costs.getInt(unitType);
-    if (ua == null || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
+    if ((ua == null) || ua.getConsumesUnits().isEmpty() || alreadyAdded.contains(unitType)) {
       return tuv;
     }
     alreadyAdded.add(unitType);
@@ -183,7 +183,7 @@ public class TuvUtils {
         result.put(p, current);
       }
       for (final ProductionRule rule : frontier.getRules()) {
-        if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
+        if ((rule == null) || (rule.getResults() == null) || rule.getResults().isEmpty() || (rule.getCosts() == null)
             || rule.getCosts().isEmpty()) {
           continue;
         }
@@ -244,7 +244,7 @@ public class TuvUtils {
     final Map<UnitType, List<ResourceCollection>> backups = new HashMap<>();
     final Map<UnitType, ResourceCollection> backupAveraged = new HashMap<>();
     for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
-      if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
+      if ((rule == null) || (rule.getResults() == null) || rule.getResults().isEmpty() || (rule.getCosts() == null)
           || rule.getCosts().isEmpty()) {
         continue;
       }

@@ -23,8 +23,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
 
   private static int getBidAmount(final GameData data, final PlayerID currentPlayer) {
     final String propertyName = currentPlayer.getName() + " bid";
-    final int bid = data.getProperties().get(propertyName, 0);
-    return bid;
+    return data.getProperties().get(propertyName, 0);
   }
 
   public static boolean doesPlayerHaveBid(final GameData data, final PlayerID player) {
@@ -36,8 +35,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (!doesPlayerHaveBid(getData(), player)) {
       return false;
     }
-    if ((player.getProductionFrontier() == null || player.getProductionFrontier().getRules().isEmpty())
-        && (player.getRepairFrontier() == null || player.getRepairFrontier().getRules().isEmpty())) {
+    if (((player.getProductionFrontier() == null) || player.getProductionFrontier().getRules().isEmpty())
+        && ((player.getRepairFrontier() == null) || player.getRepairFrontier().getRules().isEmpty())) {
       return false;
     }
     return canWePurchaseOrRepair();
@@ -48,14 +47,14 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
     // TODO: allow bids to have more than just PUs
     bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), bid);
-    if (player.getProductionFrontier() != null && player.getProductionFrontier().getRules() != null) {
+    if ((player.getProductionFrontier() != null) && (player.getProductionFrontier().getRules() != null)) {
       for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
         if (bidCollection.has(rule.getCosts())) {
           return true;
         }
       }
     }
-    if (player.getRepairFrontier() != null && player.getRepairFrontier().getRules() != null) {
+    if ((player.getRepairFrontier() != null) && (player.getRepairFrontier().getRules() != null)) {
       for (final RepairRule rule : player.getRepairFrontier().getRules()) {
         if (bidCollection.has(rule.getCosts())) {
           return true;

@@ -263,11 +263,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public boolean canGameStart() {
-    if (gameSelectorModel.getGameData() == null || model == null) {
+    if ((gameSelectorModel.getGameData() == null) || (model == null)) {
       return false;
     }
     final Map<String, String> players = model.getPlayersToNodeListing();
-    if (players == null || players.isEmpty()) {
+    if ((players == null) || players.isEmpty()) {
       return false;
     }
     for (final String player : players.keySet()) {
@@ -470,7 +470,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     actions.add(new MutePlayerAction(this, model.getMessenger()));
     actions.add(
         new SetPasswordAction(this, lobbyWatcher, (ClientLoginValidator) model.getMessenger().getLoginValidator()));
-    if (lobbyWatcher != null && lobbyWatcher.isActive()) {
+    if ((lobbyWatcher != null) && lobbyWatcher.isActive()) {
       actions.add(new EditGameCommentAction(lobbyWatcher, ServerSetupPanel.this));
       actions.add(new RemoveGameFromLobbyAction(lobbyWatcher));
     }

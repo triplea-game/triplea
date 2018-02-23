@@ -277,7 +277,7 @@ public class ProAi extends AbstractAi {
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
     // If battle is null or amphibious then don't retreat
-    if (battle == null || battleTerritory == null || battle.isAmphibious()) {
+    if ((battle == null) || (battleTerritory == null) || battle.isAmphibious()) {
       return null;
     }
 
@@ -290,7 +290,7 @@ public class ProAi extends AbstractAi {
     ProLogger.info(player.getName() + " checking retreat from territory " + battleTerritory + ", attackers="
         + attackers.size() + ", defenders=" + defenders.size() + ", submerge=" + submerge + ", attacker=" + isAttacker
         + ", isStrafing=" + isStrafing);
-    if ((isStrafing || (isAttacker && strengthDifference > 50))
+    if ((isStrafing || (isAttacker && (strengthDifference > 50)))
         && (battleTerritory.isWater() || attackers.stream().anyMatch(Matches.unitIsLand()))) {
       return null;
     }
@@ -361,12 +361,12 @@ public class ProAi extends AbstractAi {
       // Use bubble sort to save expensive units
       while (needToCheck) {
         needToCheck = false;
-        for (int i = 0; i < selectFromSorted.size() - 1; i++) {
+        for (int i = 0; i < (selectFromSorted.size() - 1); i++) {
           final Unit unit1 = selectFromSorted.get(i);
           final Unit unit2 = selectFromSorted.get(i + 1);
           final double unitCost1 = ProPurchaseUtils.getCost(unit1);
           final double unitCost2 = ProPurchaseUtils.getCost(unit2);
-          if (unitCost1 > 1.5 * unitCost2) {
+          if (unitCost1 > (1.5 * unitCost2)) {
             selectFromSorted.set(i, unit2);
             selectFromSorted.set(i + 1, unit1);
             needToCheck = true;

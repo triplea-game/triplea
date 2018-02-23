@@ -46,7 +46,7 @@ public class ProLogUi {
     if (settingsWindow == null) {
       return;
     }
-    if (round != currentRound || !name.equals(currentName)) {
+    if ((round != currentRound) || !name.equals(currentName)) {
       currentRound = round;
       currentName = name;
       settingsWindow.notifyNewRound(round, name);

@@ -97,7 +97,7 @@ public class IndividualUnitPanel extends JPanel {
     for (final Entry<Unit, Triple<Integer, Integer, Integer>> entry : unitsAndTheirMaxMinAndCurrent.entrySet()) {
       final int unitMax = entry.getValue().getFirst();
       final int thisMax;
-      if (this.max < 0 && unitMax < 0) {
+      if ((this.max < 0) && (unitMax < 0)) {
         thisMax = -1;
       } else if (unitMax < 0) {
         thisMax = this.max;
@@ -251,7 +251,7 @@ public class IndividualUnitPanel extends JPanel {
       setCount(currentValue);
       setLayout(new GridBagLayout());
 
-      final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
+      final boolean isDamaged = (taUnit.getUnitDamage() > 0) || (taUnit.getHits() > 0);
       final JLabel label = uiContext.createUnitImageJLabel(this.unit.getType(), this.unit.getOwner(),
           isDamaged ? UiContext.UnitDamage.DAMAGED : UiContext.UnitDamage.NOT_DAMAGED,
           taUnit.getDisabled() ? UiContext.UnitEnable.DISABLED : UiContext.UnitEnable.ENABLED);

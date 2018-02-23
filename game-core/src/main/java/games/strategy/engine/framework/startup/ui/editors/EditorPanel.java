@@ -122,9 +122,9 @@ public abstract class EditorPanel extends JPanel {
     final Component[] components = getComponents();
     for (final Component component : components) {
       // label in first column
-      if (component instanceof JLabel
-          && layout.getConstraints(component).gridx == 0
-          && component.getPreferredSize().width > width) {
+      if ((component instanceof JLabel)
+          && (layout.getConstraints(component).gridx == 0)
+          && (component.getPreferredSize().width > width)) {
         width = component.getPreferredSize().width;
       }
     }
@@ -142,7 +142,7 @@ public abstract class EditorPanel extends JPanel {
     final Component[] components = getComponents();
     for (final Component component : components) {
       // label in first column
-      if (component instanceof JLabel && layout.getConstraints(component).gridx == 0) {
+      if ((component instanceof JLabel) && (layout.getConstraints(component).gridx == 0)) {
         final int height = component.getPreferredSize().height;
         final Dimension dimension = new Dimension(width, height);
         component.setPreferredSize(dimension);

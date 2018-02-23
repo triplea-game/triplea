@@ -118,7 +118,7 @@ public class StatPanel extends AbstractStatPanel {
    */
   protected ImageIcon getIcon(final PlayerID player) {
     ImageIcon icon = mapPlayerImage.get(player);
-    if (icon == null && uiContext != null) {
+    if ((icon == null) && (uiContext != null)) {
       final Image img = uiContext.getFlagImageFactory().getSmallFlag(player);
       icon = new ImageIcon(img);
       icon.setDescription(player.getName());

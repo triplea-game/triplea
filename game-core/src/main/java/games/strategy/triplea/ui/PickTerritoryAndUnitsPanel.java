@@ -119,7 +119,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     public void actionPerformed(final ActionEvent event) {
       currentAction = doneAction;
       setWidgetActivation();
-      if (pickedTerritory == null || !territoryChoices.contains(pickedTerritory)) {
+      if ((pickedTerritory == null) || !territoryChoices.contains(pickedTerritory)) {
         EventThreadJOptionPane.showMessageDialog(parent, "Must Pick An Unowned Territory",
             "Must Pick An Unowned Territory", JOptionPane.WARNING_MESSAGE);
         currentAction = null;

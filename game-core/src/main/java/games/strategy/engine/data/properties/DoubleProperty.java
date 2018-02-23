@@ -23,7 +23,7 @@ public class DoubleProperty extends AEditableProperty {
     if (max < min) {
       throw new IllegalThreadStateException("Max must be greater than min");
     }
-    if (def > max || def < min) {
+    if ((def > max) || (def < min)) {
       throw new IllegalThreadStateException("Default value out of range");
     }
     m_max = max;
@@ -79,7 +79,7 @@ public class DoubleProperty extends AEditableProperty {
       } catch (final Exception e) {
         return false;
       }
-      return d <= m_max && d >= m_min;
+      return (d <= m_max) && (d >= m_min);
     }
     return false;
   }

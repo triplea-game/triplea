@@ -34,8 +34,8 @@ public class ScriptedRandomSource implements IRandomSource {
    * Should we use a scripted random sourcce.
    */
   public static boolean useScriptedRandom() {
-    return System.getProperty(SCRIPTED_RANDOM_PROPERTY) != null
-        && System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0;
+    return (System.getProperty(SCRIPTED_RANDOM_PROPERTY) != null)
+        && (System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0);
   }
 
   /**

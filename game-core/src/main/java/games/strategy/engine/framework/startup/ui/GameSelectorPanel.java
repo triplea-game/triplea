@@ -84,7 +84,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       versionText.setText(model.getGameVersion());
       roundText.setText(model.getGameRound());
       String fileName = model.getFileName();
-      if (fileName != null && fileName.length() > 1) {
+      if ((fileName != null) && (fileName.length() > 1)) {
         try {
           fileName = URLDecoder.decode(fileName, "UTF-8");
         } catch (final IllegalArgumentException | UnsupportedEncodingException e) { // ignore
@@ -286,7 +286,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Map Options");
     window.setVisible(true);
     final Object buttonPressed = pane.getValue();
-    if (buttonPressed == null || buttonPressed.equals(cancel)) {
+    if ((buttonPressed == null) || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
       for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
         property.setValue(currentPropertiesMap.get(property.getName()));
@@ -313,21 +313,19 @@ public class GameSelectorPanel extends JPanel implements Observer {
       loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
       loadNewGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
       // Disable game options if there are none.
-      if (canChangeHostBotGameData || (canSelectGameData && model.getGameData() != null
-          && model.getGameData().getProperties().getEditableProperties().size() > 0)) {
-        gameOptions.setEnabled(true);
-      } else {
-        gameOptions.setEnabled(false);
-      }
+
+      gameOptions.setEnabled(canChangeHostBotGameData || (canSelectGameData
+          && (model.getGameData() != null)
+          && (model.getGameData().getProperties().getEditableProperties().size() > 0)));
     });
   }
 
   private boolean canSelectLocalGameData() {
-    return model != null && model.canSelect();
+    return (model != null) && model.canSelect();
   }
 
   private boolean canChangeHostBotGameData() {
-    return model != null && model.isHostHeadlessBot();
+    return (model != null) && model.isHostHeadlessBot();
   }
 
   @Override
@@ -357,7 +355,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // is to use an AWT FileDialog instead of a Swing JDialog
     if (saved) {
       final File file = selectGameFile();
-      if (file == null || !file.exists()) {
+      if ((file == null) || !file.exists()) {
         return;
       }
 

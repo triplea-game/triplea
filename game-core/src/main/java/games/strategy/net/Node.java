@@ -65,7 +65,7 @@ public class Node implements INode, Externalizable {
       return false;
     }
     final Node other = (Node) obj;
-    return other.port == this.port && other.address.equals(this.address);
+    return (other.port == this.port) && other.address.equals(this.address);
   }
 
   @Override

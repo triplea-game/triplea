@@ -22,7 +22,8 @@ public class WrappedInvocationHandler implements InvocationHandler {
     if (other == this) {
       return true;
     }
-    if (Proxy.isProxyClass(other.getClass()) && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler) {
+    if (Proxy.isProxyClass(other.getClass())
+        && (Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler)) {
       final WrappedInvocationHandler otherWrapped = (WrappedInvocationHandler) Proxy.getInvocationHandler(other);
       return otherWrapped.delegate.equals(delegate);
     }
@@ -30,19 +31,19 @@ public class WrappedInvocationHandler implements InvocationHandler {
   }
 
   protected boolean shouldHandle(final Method method, final Object[] args) {
-    if (method.getName().equals("equals") && args != null && args.length == 1
-        || method.getName().equals("hashCode") && args == null) {
+    if ((method.getName().equals("equals") && (args != null) && (args.length == 1))
+        || (method.getName().equals("hashCode") && (args == null))) {
       return true;
     }
-    return method.getName().equals("toString") && args == null;
+    return method.getName().equals("toString") && (args == null);
   }
 
   protected Object handle(final Method method, final Object[] args) {
-    if (method.getName().equals("equals") && args != null && args.length == 1) {
+    if (method.getName().equals("equals") && (args != null) && (args.length == 1)) {
       return wrappedEquals(args[0]);
-    } else if (method.getName().equals("hashCode") && args == null) {
+    } else if (method.getName().equals("hashCode") && (args == null)) {
       return delegate.hashCode();
-    } else if (method.getName().equals("toString") && args == null) {
+    } else if (method.getName().equals("toString") && (args == null)) {
       return delegate.toString();
     } else {
       throw new IllegalStateException("how did we get here");

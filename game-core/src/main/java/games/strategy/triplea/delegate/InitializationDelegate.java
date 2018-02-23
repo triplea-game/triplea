@@ -118,7 +118,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
         continue;
       }
       final Collection<Unit> units = current.getUnits().getUnits();
-      if (units.size() == 0 || !units.stream().anyMatch(Matches.unitIsLand())) {
+      if ((units.size() == 0) || !units.stream().anyMatch(Matches.unitIsLand())) {
         continue;
       }
       // map transports, try to fill
@@ -207,7 +207,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     // must be notified (and have its ui) updated for each step,
     // so remove the bid steps that arent used
     for (final GameStep step : data.getSequence()) {
-      if (step.getDelegate() instanceof BidPlaceDelegate || step.getDelegate() instanceof BidPurchaseDelegate) {
+      if ((step.getDelegate() instanceof BidPlaceDelegate) || (step.getDelegate() instanceof BidPurchaseDelegate)) {
         if (!BidPurchaseDelegate.doesPlayerHaveBid(data, step.getPlayerId())) {
           step.setMaxRunCount(0);
         }
@@ -236,10 +236,10 @@ public class InitializationDelegate extends BaseTripleADelegate {
       final ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
       final ProductionRule destroyer = data.getProductionRuleList().getProductionRule("buyDestroyer");
       final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier("production");
-      if (artillery != null && !frontier.getRules().contains(artillery)) {
+      if ((artillery != null) && !frontier.getRules().contains(artillery)) {
         change.add(ChangeFactory.addProductionRule(artillery, frontier));
       }
-      if (destroyer != null && !frontier.getRules().contains(destroyer)) {
+      if ((destroyer != null) && !frontier.getRules().contains(destroyer)) {
         change.add(ChangeFactory.addProductionRule(destroyer, frontier));
       }
       final ProductionRule artilleryIndustrialTechnology =
@@ -248,11 +248,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
           data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
       final ProductionFrontier frontierIndustrialTechnology =
           data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
-      if (artilleryIndustrialTechnology != null
+      if ((artilleryIndustrialTechnology != null)
           && !frontierIndustrialTechnology.getRules().contains(artilleryIndustrialTechnology)) {
         change.add(ChangeFactory.addProductionRule(artilleryIndustrialTechnology, frontierIndustrialTechnology));
       }
-      if (destroyerIndustrialTechnology != null
+      if ((destroyerIndustrialTechnology != null)
           && !frontierIndustrialTechnology.getRules().contains(destroyerIndustrialTechnology)) {
         change.add(ChangeFactory.addProductionRule(destroyerIndustrialTechnology, frontierIndustrialTechnology));
       }
@@ -323,7 +323,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
         if (territoryAttachment == null) {
           throw new IllegalStateException("No territory attachment for " + current);
         }
-        if (territoryAttachment.getOriginalOwner() == null && current.getOwner() != null) {
+        if ((territoryAttachment.getOriginalOwner() == null) && (current.getOwner() != null)) {
           changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
         }
         final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.unitIsInfrastructure());

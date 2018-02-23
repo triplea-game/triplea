@@ -51,7 +51,7 @@ public class ImageScrollerSmallView extends JComponent {
       public void mouseDragged(final MouseEvent e) {
         final long now = System.currentTimeMillis();
         final long minUpdateDelay = 30;
-        if (now < lastUpdate + minUpdateDelay) {
+        if (now < (lastUpdate + minUpdateDelay)) {
           return;
         }
         lastUpdate = now;
@@ -103,7 +103,7 @@ public class ImageScrollerSmallView extends JComponent {
   }
 
   private void drawViewBox(final Graphics2D g) {
-    if (model.getBoxWidth() > model.getMaxWidth() && model.getBoxHeight() > model.getMaxHeight()) {
+    if ((model.getBoxWidth() > model.getMaxWidth()) && (model.getBoxHeight() > model.getMaxHeight())) {
       return;
     }
     final double ratioX = getRatioX();

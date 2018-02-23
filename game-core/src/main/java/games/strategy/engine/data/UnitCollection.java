@@ -72,7 +72,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   @Override
   public boolean containsAll(final Collection<?> units) {
     // much faster for large sets
-    if (m_units.size() > 500 && units.size() > 500) {
+    if ((m_units.size() > 500) && (units.size() > 500)) {
       return new HashSet<>(m_units).containsAll(units);
     }
     return m_units.containsAll(units);
