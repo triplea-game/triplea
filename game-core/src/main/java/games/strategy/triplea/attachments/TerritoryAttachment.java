@@ -843,6 +843,9 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::setProduction,
                 this::getProduction,
                 this::resetProduction))
+        .put("productionOnly",
+            AttachmentProperty.ofWriteOnlyString(
+                this::setProductionOnly))
         .put("victoryCity",
             AttachmentProperty.of(
                 this::setVictoryCity,
