@@ -89,22 +89,11 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
       return false;
     }
     final Map<String, String> players = model.getPlayersToNodeListing();
-    if (players == null || players.isEmpty()) {
+    if (players == null || players.isEmpty() || players.values().contains(null)) {
       return false;
     }
-    for (final String player : players.keySet()) {
-      if (players.get(player) == null) {
-        return false;
-      }
-    }
     // make sure at least 1 player is enabled
-    final Map<String, Boolean> someoneEnabled = model.getPlayersEnabledListing();
-    for (final boolean bool : someoneEnabled.values()) {
-      if (bool) {
-        return true;
-      }
-    }
-    return false;
+    return model.getPlayersEnabledListing().values().contains(Boolean.TRUE);
   }
 
   @Override

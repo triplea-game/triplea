@@ -415,8 +415,8 @@ public class MovePerformer implements Serializable {
       // if there are multiple units on a single transport, the transport will be in units list multiple times
       if (transporting.isEmpty()) {
         units.addAll(dependentAirTransportableUnits.keySet());
-        for (final Unit airTransport : dependentAirTransportableUnits.keySet()) {
-          units.addAll(dependentAirTransportableUnits.get(airTransport));
+        for (final Collection<Unit> airTransport : dependentAirTransportableUnits.values()) {
+          units.addAll(airTransport);
         }
       }
       // any pending battles in the unloading zone?

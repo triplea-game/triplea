@@ -848,8 +848,8 @@ public class MovePanel extends AbstractMovePanel {
           final Collection<Unit> unitsToLoad =
               CollectionUtils.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatch);
           unitsToLoad.removeAll(selectedUnits);
-          for (final Unit u : dependentUnits.keySet()) {
-            unitsToLoad.removeAll(dependentUnits.get(u));
+          for (final Collection<Unit> units2 : dependentUnits.values()) {
+            unitsToLoad.removeAll(units2);
           }
           // Get the potential air transports to load
           final Predicate<Unit> candidateAirTransportsMatch = Matches.unitIsAirTransport()

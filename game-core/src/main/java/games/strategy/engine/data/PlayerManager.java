@@ -59,13 +59,10 @@ public class PlayerManager {
   }
 
   public Set<String> getPlayedBy(final INode playerNode) {
-    final Set<String> players = new HashSet<>();
-    for (final String player : playerMapping.keySet()) {
-      if (playerMapping.get(player).equals(playerNode)) {
-        players.add(player);
-      }
-    }
-    return players;
+    return playerMapping.entrySet().stream()
+        .filter(e -> e.getValue().equals(playerNode))
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -80,21 +77,21 @@ public class PlayerManager {
    */
   public PlayerID getRemoteOpponent(final INode localNode, final GameData data) {
     // find a local player
-    PlayerID local = null;
-    for (final String player : playerMapping.keySet()) {
-      if (playerMapping.get(player).equals(localNode)) {
-        local = data.getPlayerList().getPlayerId(player);
-        break;
-      }
-    }
+    final PlayerID local = playerMapping.entrySet().stream()
+        .filter(e -> e.getValue().equals(localNode))
+        .map(Map.Entry::getKey)
+        .map(data.getPlayerList()::getPlayerId)
+        .findAny()
+        .orElse(null);
     // we arent playing anyone, return any
     if (local == null) {
       final String remote = playerMapping.keySet().iterator().next();
       return data.getPlayerList().getPlayerId(remote);
     }
     String any = null;
-    for (final String player : playerMapping.keySet()) {
-      if (!playerMapping.get(player).equals(localNode)) {
+    for (final Map.Entry<String, INode> entry : playerMapping.entrySet()) {
+      final String player = entry.getKey();
+      if (!entry.getValue().equals(localNode)) {
         any = player;
         final PlayerID remotePlayerId = data.getPlayerList().getPlayerId(player);
         if (!data.getRelationshipTracker().isAllied(local, remotePlayerId)) {

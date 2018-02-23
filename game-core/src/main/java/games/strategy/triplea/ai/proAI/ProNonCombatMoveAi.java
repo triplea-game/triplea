@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -578,11 +579,11 @@ class ProNonCombatMoveAi {
     while (true) {
 
       // Reset lists
-      for (final Territory t : moveMap.keySet()) {
-        moveMap.get(t).getTempUnits().clear();
-        moveMap.get(t).getTempAmphibAttackMap().clear();
-        moveMap.get(t).getTransportTerritoryMap().clear();
-        moveMap.get(t).setBattleResult(null);
+      for (final ProTerritory t : moveMap.values()) {
+        t.getTempUnits().clear();
+        t.getTempAmphibAttackMap().clear();
+        t.getTransportTerritoryMap().clear();
+        t.setBattleResult(null);
       }
 
       // Determine number of territories to defend
@@ -802,9 +803,9 @@ class ProNonCombatMoveAi {
 
             // Get all units that have already moved
             final List<Unit> alreadyMovedUnits = new ArrayList<>();
-            for (final Territory t2 : moveMap.keySet()) {
-              alreadyMovedUnits.addAll(moveMap.get(t2).getUnits());
-              alreadyMovedUnits.addAll(moveMap.get(t2).getTempUnits());
+            for (final ProTerritory t2 : moveMap.values()) {
+              alreadyMovedUnits.addAll(t2.getUnits());
+              alreadyMovedUnits.addAll(t2.getTempUnits());
             }
 
             // Find units that haven't moved and can be transported
@@ -982,18 +983,18 @@ class ProNonCombatMoveAi {
     }
 
     // Add temp units to move lists
-    for (final Territory t : moveMap.keySet()) {
+    for (final ProTerritory t : moveMap.values()) {
 
       // Handle allied units such as fighters on carriers
       final List<Unit> alliedUnits =
-          CollectionUtils.getMatches(moveMap.get(t).getTempUnits(), Matches.unitIsOwnedBy(player).negate());
+          CollectionUtils.getMatches(t.getTempUnits(), Matches.unitIsOwnedBy(player).negate());
       for (final Unit alliedUnit : alliedUnits) {
-        moveMap.get(t).addCantMoveUnit(alliedUnit);
-        moveMap.get(t).getTempUnits().remove(alliedUnit);
+        t.addCantMoveUnit(alliedUnit);
+        t.getTempUnits().remove(alliedUnit);
       }
-      moveMap.get(t).addUnits(moveMap.get(t).getTempUnits());
-      moveMap.get(t).putAllAmphibAttackMap(moveMap.get(t).getTempAmphibAttackMap());
-      for (final Unit u : moveMap.get(t).getTempUnits()) {
+      t.addUnits(t.getTempUnits());
+      t.putAllAmphibAttackMap(t.getTempAmphibAttackMap());
+      for (final Unit u : t.getTempUnits()) {
         if (Matches.unitIsTransport().test(u)) {
           transportMoveMap.remove(u);
           for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
@@ -1005,7 +1006,7 @@ class ProNonCombatMoveAi {
           unitMoveMap.remove(u);
         }
       }
-      for (final Unit u : moveMap.get(t).getTempAmphibAttackMap().keySet()) {
+      for (final Unit u : t.getTempAmphibAttackMap().keySet()) {
         transportMoveMap.remove(u);
         for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
           if (it.next().getTransport().equals(u)) {
@@ -1013,8 +1014,8 @@ class ProNonCombatMoveAi {
           }
         }
       }
-      moveMap.get(t).getTempUnits().clear();
-      moveMap.get(t).getTempAmphibAttackMap().clear();
+      t.getTempUnits().clear();
+      t.getTempAmphibAttackMap().clear();
     }
     ProLogger.debug("Final number of territories: " + (numToDefend - 1));
   }
@@ -1034,13 +1035,13 @@ class ProNonCombatMoveAi {
       final List<ProTransport> currentTransportMapList = new ArrayList<>(transportMapList);
 
       // Reset lists
-      for (final Territory t : moveMap.keySet()) {
-        moveMap.get(t).getTempUnits().clear();
-        for (final Unit transport : moveMap.get(t).getTempAmphibAttackMap().keySet()) {
-          moveMap.get(t).getTransportTerritoryMap().remove(transport);
+      for (final ProTerritory t : moveMap.values()) {
+        t.getTempUnits().clear();
+        for (final Unit transport : t.getTempAmphibAttackMap().keySet()) {
+          t.getTransportTerritoryMap().remove(transport);
         }
-        moveMap.get(t).getTempAmphibAttackMap().clear();
-        moveMap.get(t).setBattleResult(null);
+        t.getTempAmphibAttackMap().clear();
+        t.setBattleResult(null);
       }
       ProLogger.debug("Move amphib units");
 
@@ -1051,9 +1052,9 @@ class ProNonCombatMoveAi {
 
         // Get all units that have already moved
         final List<Unit> alreadyMovedUnits = new ArrayList<>();
-        for (final Territory t : moveMap.keySet()) {
-          alreadyMovedUnits.addAll(moveMap.get(t).getUnits());
-          alreadyMovedUnits.addAll(moveMap.get(t).getTempUnits());
+        for (final ProTerritory t : moveMap.values()) {
+          alreadyMovedUnits.addAll(t.getUnits());
+          alreadyMovedUnits.addAll(t.getTempUnits());
         }
 
         // Transport amphib units to best land territory
@@ -1257,8 +1258,8 @@ class ProNonCombatMoveAi {
 
         // Get all units that have already moved
         final List<Unit> alreadyMovedUnits = new ArrayList<>();
-        for (final Territory t : moveMap.keySet()) {
-          alreadyMovedUnits.addAll(moveMap.get(t).getUnits());
+        for (final ProTerritory t : moveMap.values()) {
+          alreadyMovedUnits.addAll(t.getUnits());
         }
 
         // Find safest territory
@@ -1332,10 +1333,11 @@ class ProNonCombatMoveAi {
       // Get all transport final territories
       ProMoveUtils.calculateAmphibRoutes(player, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), moveMap,
           false);
-      for (final Territory t : moveMap.keySet()) {
-        for (final Unit u : moveMap.get(t).getTransportTerritoryMap().keySet()) {
-          if (moveMap.get(moveMap.get(t).getTransportTerritoryMap().get(u)) != null) {
-            moveMap.get(moveMap.get(t).getTransportTerritoryMap().get(u)).addTempUnit(u);
+      for (final ProTerritory t : moveMap.values()) {
+        for (final Map.Entry<Unit, Territory> entry : t.getTransportTerritoryMap().entrySet()) {
+          final ProTerritory territory = moveMap.get(entry.getValue());
+          if (territory != null) {
+            territory.addTempUnit(entry.getKey());
           }
         }
       }
@@ -1455,8 +1457,8 @@ class ProNonCombatMoveAi {
 
             // Get all units that have already moved
             final List<Unit> alreadyMovedUnits = new ArrayList<>();
-            for (final Territory t : moveMap.keySet()) {
-              alreadyMovedUnits.addAll(moveMap.get(t).getUnits());
+            for (final ProTerritory t : moveMap.values()) {
+              alreadyMovedUnits.addAll(t.getUnits());
             }
 
             // Find safest territory
@@ -1544,18 +1546,18 @@ class ProNonCombatMoveAi {
     }
 
     // Add temp units to move lists
-    for (final Territory t : moveMap.keySet()) {
+    for (final ProTerritory t : moveMap.values()) {
 
       // Handle allied units such as fighters on carriers
       final List<Unit> alliedUnits =
-          CollectionUtils.getMatches(moveMap.get(t).getTempUnits(), Matches.unitIsOwnedBy(player).negate());
+          CollectionUtils.getMatches(t.getTempUnits(), Matches.unitIsOwnedBy(player).negate());
       for (final Unit alliedUnit : alliedUnits) {
-        moveMap.get(t).addCantMoveUnit(alliedUnit);
-        moveMap.get(t).getTempUnits().remove(alliedUnit);
+        t.addCantMoveUnit(alliedUnit);
+        t.getTempUnits().remove(alliedUnit);
       }
-      moveMap.get(t).addUnits(moveMap.get(t).getTempUnits());
-      moveMap.get(t).putAllAmphibAttackMap(moveMap.get(t).getTempAmphibAttackMap());
-      for (final Unit u : moveMap.get(t).getTempUnits()) {
+      t.addUnits(t.getTempUnits());
+      t.putAllAmphibAttackMap(t.getTempAmphibAttackMap());
+      for (final Unit u : t.getTempUnits()) {
         if (Matches.unitIsTransport().test(u)) {
           transportMoveMap.remove(u);
           for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
@@ -1567,7 +1569,7 @@ class ProNonCombatMoveAi {
           unitMoveMap.remove(u);
         }
       }
-      for (final Unit u : moveMap.get(t).getTempAmphibAttackMap().keySet()) {
+      for (final Unit u : t.getTempAmphibAttackMap().keySet()) {
         transportMoveMap.remove(u);
         for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
           if (it.next().getTransport().equals(u)) {
@@ -1575,8 +1577,8 @@ class ProNonCombatMoveAi {
           }
         }
       }
-      moveMap.get(t).getTempUnits().clear();
-      moveMap.get(t).getTempAmphibAttackMap().clear();
+      t.getTempUnits().clear();
+      t.getTempAmphibAttackMap().clear();
     }
     ProLogger.info("Move land units");
 
@@ -1696,10 +1698,10 @@ class ProNonCombatMoveAi {
       if (Matches.unitIsLand().test(u)) {
 
         // Get all units that have already moved
-        final List<Unit> alreadyMovedUnits = new ArrayList<>();
-        for (final Territory t : moveMap.keySet()) {
-          alreadyMovedUnits.addAll(moveMap.get(t).getUnits());
-        }
+        final List<Unit> alreadyMovedUnits = moveMap.values().stream()
+            .map(ProTerritory::getUnits)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
 
         // Find safest territory
         double minStrengthDifference = Double.POSITIVE_INFINITY;
@@ -1726,12 +1728,10 @@ class ProNonCombatMoveAi {
     ProLogger.info("Move air units");
 
     // Get list of territories that can't be held
-    final List<Territory> territoriesThatCantBeHeld = new ArrayList<>();
-    for (final Territory t : moveMap.keySet()) {
-      if (!moveMap.get(t).isCanHold()) {
-        territoriesThatCantBeHeld.add(t);
-      }
-    }
+    final List<Territory> territoriesThatCantBeHeld = moveMap.entrySet().stream()
+        .filter(e -> !e.getValue().isCanHold())
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
 
     // Move air units to safe territory with most attack options
     for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {

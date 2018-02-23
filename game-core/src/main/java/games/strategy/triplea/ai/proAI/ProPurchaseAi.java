@@ -165,8 +165,8 @@ class ProPurchaseAi {
       ProLogger.info("Find strategic value for place territories");
       final Map<Territory, Double> territoryValueMap =
           ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), new ArrayList<>());
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+      for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+        for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
           ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
           ProLogger.debug(ppt.getTerritory() + ", strategicValue=" + territoryValueMap.get(ppt.getTerritory()));
         }
@@ -193,10 +193,12 @@ class ProPurchaseAi {
       upgradeUnitsWithRemainingPUs(purchaseTerritories, purchaseOptions);
 
       // Check if no remaining PUs or no unit built this iteration
-      int numUnits = 0;
-      for (final Territory t : purchaseTerritories.keySet()) {
-        numUnits += purchaseTerritories.get(t).getCanPlaceTerritories().get(0).getPlaceUnits().size();
-      }
+      final int numUnits = purchaseTerritories.values().stream()
+          .map(ProPurchaseTerritory::getCanPlaceTerritories)
+          .map(t -> t.get(0))
+          .map(ProPlaceTerritory::getPlaceUnits)
+          .mapToInt(List::size)
+          .sum();
       if (resourceTracker.isEmpty() || numUnits == previousNumUnits) {
         break;
       }
@@ -321,13 +323,12 @@ class ProPurchaseAi {
     if (purchaseTerritories != null) {
 
       // Place all units calculated during purchase phase (land then sea to reduce failed placements)
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+      for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+        for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
           if (!ppt.getTerritory().isWater()) {
-            final Collection<Unit> myUnits = player.getUnits().getUnits();
             final List<Unit> unitsToPlace = new ArrayList<>();
             for (final Unit placeUnit : ppt.getPlaceUnits()) {
-              for (final Unit myUnit : myUnits) {
+              for (final Unit myUnit : player.getUnits()) {
                 if (myUnit.getType().equals(placeUnit.getType()) && !unitsToPlace.contains(myUnit)) {
                   unitsToPlace.add(myUnit);
                   break;
@@ -339,13 +340,12 @@ class ProPurchaseAi {
           }
         }
       }
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+      for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+        for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
           if (ppt.getTerritory().isWater()) {
-            final Collection<Unit> myUnits = player.getUnits().getUnits();
             final List<Unit> unitsToPlace = new ArrayList<>();
             for (final Unit placeUnit : ppt.getPlaceUnits()) {
-              for (final Unit myUnit : myUnits) {
+              for (final Unit myUnit : player.getUnits()) {
                 if (myUnit.getType().equals(placeUnit.getType()) && !unitsToPlace.contains(myUnit)) {
                   unitsToPlace.add(myUnit);
                   break;
@@ -383,8 +383,8 @@ class ProPurchaseAi {
     ProLogger.info("Find strategic value for place territories");
     final Map<Territory, Double> territoryValueMap =
         ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), new ArrayList<>());
-    for (final Territory t : placeNonConstructionTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : placeNonConstructionTerritories.get(t).getCanPlaceTerritories()) {
+    for (final ProPurchaseTerritory t : placeNonConstructionTerritories.values()) {
+      for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         ppt.setStrategicValue(territoryValueMap.get(ppt.getTerritory()));
         ProLogger.debug(ppt.getTerritory() + ", strategicValue=" + territoryValueMap.get(ppt.getTerritory()));
       }
@@ -1787,16 +1787,14 @@ class ProPurchaseAi {
     final List<Unit> unplacedUnits = player.getUnits().getMatches(Matches.unitIsNotSea());
     final IntegerMap<ProductionRule> purchaseMap = new IntegerMap<>();
     for (final ProPurchaseOption ppo : purchaseOptions.getAllOptions()) {
-      int numUnits = 0;
-      for (final Territory t : purchaseTerritories.keySet()) {
-        for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
-          for (final Unit u : ppt.getPlaceUnits()) {
-            if (u.getType().equals(ppo.getUnitType()) && !unplacedUnits.contains(u)) {
-              numUnits++;
-            }
-          }
-        }
-      }
+      final int numUnits = (int) purchaseTerritories.values().stream()
+          .map(ProPurchaseTerritory::getCanPlaceTerritories)
+          .flatMap(Collection::stream)
+          .map(ProPlaceTerritory::getPlaceUnits)
+          .flatMap(Collection::stream)
+          .filter(u -> u.getType().equals(ppo.getUnitType()))
+          .filter(u -> !unplacedUnits.contains(u))
+          .count();
       if (numUnits > 0) {
         final int numProductionRule = numUnits / ppo.getQuantity();
         purchaseMap.put(ppo.getProductionRule(), numProductionRule);
@@ -1917,15 +1915,14 @@ class ProPurchaseAi {
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     // Add units to place territory
-    for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+    for (final ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
+      for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
 
         // If place territory is equal to the current place territory and has remaining production
-        if (placeTerritory.equals(ppt) && purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction() > 0) {
+        if (placeTerritory.equals(ppt) && purchaseTerritory.getRemainingUnitProduction() > 0) {
 
           // Place max number of units
-          final int numUnits =
-              Math.min(purchaseTerritories.get(purchaseTerritory).getRemainingUnitProduction(), unitsToPlace.size());
+          final int numUnits = Math.min(purchaseTerritory.getRemainingUnitProduction(), unitsToPlace.size());
           final List<Unit> units = unitsToPlace.subList(0, numUnits);
           ppt.getPlaceUnits().addAll(units);
           units.clear();
@@ -1952,10 +1949,10 @@ class ProPurchaseAi {
   private static List<ProPurchaseTerritory> getPurchaseTerritories(final ProPlaceTerritory placeTerritory,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
     final List<ProPurchaseTerritory> territories = new ArrayList<>();
-    for (final Territory t : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+    for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+      for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         if (placeTerritory.equals(ppt)) {
-          territories.add(purchaseTerritories.get(t));
+          territories.add(t);
         }
       }
     }
@@ -1964,9 +1961,8 @@ class ProPurchaseAi {
 
   private static void doPlace(final Territory t, final Collection<Unit> toPlace, final IAbstractPlaceDelegate del) {
     for (final Unit unit : toPlace) {
-      final List<Unit> unitList = new ArrayList<>();
-      unitList.add(unit);
-      final String message = del.placeUnits(unitList, t, IAbstractPlaceDelegate.BidMode.NOT_BID);
+      final String message =
+          del.placeUnits(new ArrayList<>(Collections.singletonList(unit)), t, IAbstractPlaceDelegate.BidMode.NOT_BID);
       if (message != null) {
         ProLogger.warn(message);
         ProLogger.warn("Attempt was at: " + t + " with: " + unit);

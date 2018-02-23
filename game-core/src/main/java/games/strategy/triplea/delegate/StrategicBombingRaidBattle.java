@@ -134,12 +134,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private Unit getTarget(final Unit attacker) {
-    for (final Unit target : m_targets.keySet()) {
-      if (m_targets.get(target).contains(attacker)) {
-        return target;
-      }
-    }
-    throw new IllegalStateException("Unit " + attacker.getType().getName() + " has no target");
+    return m_targets.entrySet().stream()
+        .filter(e -> e.getValue().contains(attacker))
+        .map(Entry::getKey)
+        .findAny()
+        .orElseThrow(() -> new IllegalStateException("Unit " + attacker.getType().getName() + " has no target"));
   }
 
   @Override

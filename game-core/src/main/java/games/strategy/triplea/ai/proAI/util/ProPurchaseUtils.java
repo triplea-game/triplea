@@ -107,8 +107,8 @@ public class ProPurchaseUtils {
           currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
         }
         currentlyBuilt += CollectionUtils.countMatches(unitsToPlace, unitTypeOwnedBy);
-        for (final Territory t : purchaseTerritories.keySet()) {
-          for (final ProPlaceTerritory placeTerritory : purchaseTerritories.get(t).getCanPlaceTerritories()) {
+        for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+          for (final ProPlaceTerritory placeTerritory : t.getCanPlaceTerritories()) {
             currentlyBuilt += CollectionUtils.countMatches(placeTerritory.getPlaceUnits(), unitTypeOwnedBy);
           }
         }
@@ -349,8 +349,8 @@ public class ProPurchaseUtils {
     if (purchaseTerritories == null) {
       return placeUnits;
     }
-    for (final Territory purchaseTerritory : purchaseTerritories.keySet()) {
-      for (final ProPlaceTerritory ppt : purchaseTerritories.get(purchaseTerritory).getCanPlaceTerritories()) {
+    for (final ProPurchaseTerritory purchaseTerritory : purchaseTerritories.values()) {
+      for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
         if (t.equals(ppt.getTerritory())) {
           placeUnits.addAll(ppt.getPlaceUnits());
         }

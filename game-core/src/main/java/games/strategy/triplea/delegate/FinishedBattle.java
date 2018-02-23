@@ -119,8 +119,7 @@ public class FinishedBattle extends AbstractBattle {
         m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
       }
     }
-    for (final Unit dependence : m_dependentUnits.keySet()) {
-      final Collection<Unit> dependent = m_dependentUnits.get(dependence);
+    for (final Collection<Unit> dependent : m_dependentUnits.values()) {
       dependent.removeAll(units);
     }
   }

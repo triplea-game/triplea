@@ -3,10 +3,11 @@ package games.strategy.triplea.ai.proAI.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -33,13 +34,12 @@ public class ProMoveUtils {
     final GameData data = ProData.getData();
 
     // Find all amphib units
-    final Set<Unit> amphibUnits = new HashSet<>();
-    for (final Territory t : attackMap.keySet()) {
-      amphibUnits.addAll(attackMap.get(t).getAmphibAttackMap().keySet());
-      for (final Unit transport : attackMap.get(t).getAmphibAttackMap().keySet()) {
-        amphibUnits.addAll(attackMap.get(t).getAmphibAttackMap().get(transport));
-      }
-    }
+    final Set<Unit> amphibUnits = attackMap.values().stream()
+        .map(ProTerritory::getAmphibAttackMap)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .flatMap(e -> Stream.concat(Stream.of(e.getKey()), e.getValue().stream()))
+        .collect(Collectors.toSet());
 
     // Loop through all territories to attack
     for (final Territory t : attackMap.keySet()) {
@@ -229,11 +229,11 @@ public class ProMoveUtils {
     final GameData data = ProData.getData();
 
     // Loop through all territories to attack
-    for (final Territory t : attackMap.keySet()) {
+    for (final ProTerritory t : attackMap.values()) {
 
       // Loop through each unit that is attacking the current territory
-      for (final Unit u : attackMap.get(t).getBombardTerritoryMap().keySet()) {
-        final Territory bombardFromTerritory = attackMap.get(t).getBombardTerritoryMap().get(u);
+      for (final Unit u : t.getBombardTerritoryMap().keySet()) {
+        final Territory bombardFromTerritory = t.getBombardTerritoryMap().get(u);
 
         // Skip if unit is already in move to territory
         final Territory startTerritory = ProData.unitTerritoryMap.get(u);
