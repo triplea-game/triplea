@@ -3,7 +3,7 @@ package games.strategy.ui;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -24,6 +24,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
 import com.example.mockito.MockitoExtension;
+
+import games.strategy.util.Interruptibles;
 
 @ExtendWith(MockitoExtension.class)
 public class SwingActionTest {
@@ -65,12 +67,7 @@ public class SwingActionTest {
   public void testInvokeAndWaitWithRunnable_ShouldInvokeActionWhenCalledOnEdt(@Mock final Runnable action)
       throws Exception {
     SwingUtilities.invokeAndWait(() -> {
-      try {
-        SwingAction.invokeAndWait(action);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-        fail("unexpected interruption");
-      }
+      assertTrue(Interruptibles.await(() -> SwingAction.invokeAndWait(action)), "should not be interrupted");
     });
 
     verify(action).run();
@@ -96,12 +93,9 @@ public class SwingActionTest {
   @Test
   public void testInvokeAndWaitWithSupplier_ShouldReturnActionResultWhenCalledOnEdt() throws Exception {
     SwingUtilities.invokeAndWait(() -> {
-      try {
-        assertEquals(VALUE, SwingAction.invokeAndWait(() -> VALUE));
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-        fail("unexpected interruption");
-      }
+      assertTrue(
+          Interruptibles.await(() -> assertEquals(VALUE, SwingAction.invokeAndWait(() -> VALUE))),
+          "should not be interrupted");
     });
   }
 

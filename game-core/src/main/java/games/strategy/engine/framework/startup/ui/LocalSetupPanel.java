@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -73,8 +74,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
-  public ILauncher getLauncher() {
-    return LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes);
+  public Optional<ILauncher> getLauncher() {
+    return Optional.of(LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes));
   }
 
 }

@@ -30,9 +30,8 @@ public class WrappedInvocationHandler implements InvocationHandler {
   }
 
   protected boolean shouldHandle(final Method method, final Object[] args) {
-    if (method.getName().equals("equals") && args != null && args.length == 1) {
-      return true;
-    } else if (method.getName().equals("hashCode") && args == null) {
+    if (method.getName().equals("equals") && args != null && args.length == 1
+        || method.getName().equals("hashCode") && args == null) {
       return true;
     }
     return method.getName().equals("toString") && args == null;

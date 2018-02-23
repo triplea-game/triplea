@@ -387,14 +387,6 @@ public class ServerLauncher extends AbstractLauncher {
       }
     }
 
-    public void await() {
-      try {
-        latch.await();
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
-
     public boolean await(final long timeout, final TimeUnit timeUnit) {
       boolean didNotTimeOut = false;
       try {

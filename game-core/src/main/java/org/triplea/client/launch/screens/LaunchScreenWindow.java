@@ -18,8 +18,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.mc.ServerConnectionProps;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.ui.GameChooserEntry;
@@ -125,13 +123,12 @@ public enum LaunchScreenWindow {
     final ChatSupport chatSupport = new ChatSupport((ChatPanel) serverModel.getChatPanel());
     final Consumer<GameData> launchAction = gameData -> {
       GameRunner.getGameSelectorModel().load(gameData, "");
-      final ILauncher launcher = serverModel.getLauncher();
-
-      launcher.launch(null);
-      // TODO: new player mapping hardcoded!
-      ((ServerLauncher) serverModel.getLauncher()).signalGameStart(gameData.toBytes());
+      serverModel.getLauncher().ifPresent(launcher -> {
+        launcher.launch(null);
+        // TODO: new player mapping hardcoded!
+        launcher.signalGameStart(gameData.toBytes());
+      });
     };
-
 
     replaceContents(stagingScreen.buildScreen(stagingScreen.previousScreen, data, chatSupport, launchAction,
         serverModel, null));

@@ -1,10 +1,14 @@
 package games.strategy.triplea.attachments;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -19,6 +23,7 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
+
   private String m_canalName = null;
   private Set<Territory> m_landTerritories = null;
   private Set<UnitType> m_excludedUnits = null;
@@ -93,7 +98,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setLandTerritories(final HashSet<Territory> value) {
+  public void setLandTerritories(final Set<Territory> value) {
     m_landTerritories = value;
   }
 
@@ -134,7 +139,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setExcludedUnits(final HashSet<UnitType> value) {
+  public void setExcludedUnits(final Set<UnitType> value) {
     m_excludedUnits = value;
   }
 
@@ -162,5 +167,28 @@ public class CanalAttachment extends DefaultAttachment {
     if (m_landTerritories == null || m_landTerritories.size() == 0) {
       throw new GameParseException("Canal named " + m_canalName + " must have landTerritories set!" + thisErrorMsg());
     }
+  }
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("canalName", AttachmentProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
+        .put("landTerritories",
+            AttachmentProperty.of(
+                this::setLandTerritories,
+                this::setLandTerritories,
+                this::getLandTerritories,
+                this::resetLandTerritories))
+        .put("excludedUnits",
+            AttachmentProperty.of(
+                this::setExcludedUnits,
+                this::setExcludedUnits,
+                this::getExcludedUnits,
+                this::resetExcludedUnits))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

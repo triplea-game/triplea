@@ -6,8 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -24,13 +28,14 @@ import games.strategy.triplea.formatter.MyFormatter;
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
   private static final long serialVersionUID = -9008441256118867078L;
-  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
-  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
   protected static final String AND = "AND";
   protected static final String OR = "OR";
   protected static final String XOR = "XOR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
+  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
+  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
+
   // list of conditions that this condition can
   protected List<RulesAttachment> m_conditions = new ArrayList<>();
   // contain
@@ -76,7 +81,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setConditions(final ArrayList<RulesAttachment> value) {
+  public void setConditions(final List<RulesAttachment> value) {
     m_conditions = value;
   }
 
@@ -98,7 +103,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   @Override
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setInvert(final String s) {
-    m_invert = getBool(s);
+    setInvert(getBool(s));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setInvert(final boolean s) {
+    m_invert = s;
   }
 
   @Override
@@ -313,7 +323,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChanceIncrementOnFailure(final String value) {
-    m_chanceIncrementOnFailure = getInt(value);
+    setChanceIncrementOnFailure(getInt(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setChanceIncrementOnFailure(final int value) {
+    m_chanceIncrementOnFailure = value;
   }
 
   public int getChanceIncrementOnFailure() {
@@ -326,7 +341,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setChanceDecrementOnSuccess(final String value) {
-    m_chanceDecrementOnSuccess = getInt(value);
+    setChanceDecrementOnSuccess(getInt(value));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setChanceDecrementOnSuccess(final int value) {
+    m_chanceDecrementOnSuccess = value;
   }
 
   public int getChanceDecrementOnSuccess() {
@@ -374,5 +394,46 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       }
       delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
     }
+  }
+
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("conditions",
+            AttachmentProperty.of(
+                this::setConditions,
+                this::setConditions,
+                this::getConditions,
+                this::resetConditions))
+        .put("conditionType",
+            AttachmentProperty.of(
+                this::setConditionType,
+                this::setConditionType,
+                this::getConditionType,
+                this::resetConditionType))
+        .put("invert",
+            AttachmentProperty.of(
+                this::setInvert,
+                this::setInvert,
+                this::getInvert,
+                this::resetInvert))
+        .put("chance",
+            AttachmentProperty.of(
+                this::setChance,
+                this::setChance,
+                this::getChance,
+                this::resetChance))
+        .put("chanceIncrementOnFailure",
+            AttachmentProperty.of(
+                this::setChanceIncrementOnFailure,
+                this::setChanceIncrementOnFailure,
+                this::getChanceIncrementOnFailure,
+                this::resetChanceIncrementOnFailure))
+        .put("chanceDecrementOnSuccess",
+            AttachmentProperty.of(
+                this::setChanceDecrementOnSuccess,
+                this::setChanceDecrementOnSuccess,
+                this::getChanceDecrementOnSuccess,
+                this::resetChanceDecrementOnSuccess))
+        .build();
   }
 }

@@ -537,31 +537,16 @@ public class DiceRoll implements Externalizable {
         totalRolls += unitRolls;
       } else {
         final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
-        if (lowLuck) {
-          if (lhtrBombers || ua.getChooseBestRoll()) {
-            // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add
-            // +1 onto the power to
-            // simulate the gains of having the best die picked.
-            unitStrength += extraRollBonus * (unitRolls - 1);
-            totalPower += Math.min(unitStrength, diceSides);
-            totalRolls += unitRolls;
-          } else {
-            totalPower += unitRolls * unitStrength;
-            totalRolls += unitRolls;
-          }
+        if (lhtrBombers || ua.getChooseBestRoll()) {
+          // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add
+          // +1 onto the power to
+          // simulate the gains of having the best die picked.
+          unitStrength += extraRollBonus * (unitRolls - 1);
+          totalPower += Math.min(unitStrength, diceSides);
+          totalRolls += unitRolls;
         } else {
-          if (lhtrBombers || ua.getChooseBestRoll()) {
-            // Even though we are DICE, we still have to wait for actual dice to be thrown before we can pick the best
-            // die. So actually for
-            // dice this totalPower method is basically useless, so lets just use the approximation of adding on +1 to
-            // power for now.
-            unitStrength += extraRollBonus * (unitRolls - 1);
-            totalPower += Math.min(unitStrength, diceSides);
-            totalRolls += unitRolls;
-          } else {
-            totalPower += unitRolls * unitStrength;
-            totalRolls += unitRolls;
-          }
+          totalPower += unitRolls * unitStrength;
+          totalRolls += unitRolls;
         }
       }
     }

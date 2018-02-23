@@ -1,7 +1,6 @@
 package games.strategy.engine.data.annotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
@@ -39,66 +38,6 @@ public class ValidateAttachmentsTest extends AbstractClientSettingTestCase {
   public void testExample() {
     final String errors = validateAttachment(ExampleAttachment.class);
     assertEquals(0, errors.length());
-  }
-
-  /**
-   * Tests that the algorithm finds invalidly named field.
-   */
-  @Test
-  public void testInvalidField() {
-    final String errors = validateAttachment(InvalidFieldNameExample.class);
-    assertTrue(errors.length() > 0);
-    assertTrue(errors.contains("missing field for setter"));
-  }
-
-  /**
-   * tests that the algorithm will find invalid annotation on a getters.
-   */
-  @Test
-  public void testAnnotationOnGetter() {
-    final String errors = validateAttachment(InvalidGetterExample.class);
-    assertTrue(errors.length() > 0);
-    assertTrue(errors.contains("begins with 'set' so must have either InternalDoNotExport or GameProperty annotation"));
-  }
-
-  /**
-   * Tests that the algorithm will find invalid return types.
-   */
-  @Test
-  public void testInvalidReturnType() {
-    final String errors = validateAttachment(InvalidReturnTypeExample.class);
-    assertTrue(errors.length() > 0);
-    assertTrue(errors.contains("property field is type"));
-  }
-
-  /**
-   * Tests that the algorithm will find invalid clear method.
-   */
-  @Test
-  public void testInvalidClearMethod() {
-    final String errors = validateAttachment(InvalidClearExample.class);
-    assertTrue(errors.length() > 0);
-    assertTrue(errors.contains("doesn't have a clear method"));
-  }
-
-  /**
-   * Tests that the algorithm will find invalid clear method.
-   */
-  @Test
-  public void testInvalidResetMethod() {
-    final String errors = validateAttachment(InvalidResetExample.class);
-    assertTrue(errors.length() > 0);
-    assertTrue(errors.contains("doesn't have a resetter method"));
-  }
-
-  /**
-   * Tests that the algorithm will find adders that doesn't have type IntegerMap.
-   */
-  @Test
-  public void testInvalidFieldType() {
-    final String errors = validateAttachment(InvalidFieldTypeExample.class);
-    assertTrue(errors.length() > 0);
-    assertTrue(errors.contains("is not a Collection or Map or IntegerMap"));
   }
 
   private static List<Class<? extends IAttachment>> getKnownAttachmentClasses() {

@@ -121,7 +121,7 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void showPlayByForumMenu() {}
-  
+
   @FXML
   private void showPlayByEmailMenu() {}
 

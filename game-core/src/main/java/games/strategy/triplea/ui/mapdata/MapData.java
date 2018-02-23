@@ -238,11 +238,10 @@ public class MapData implements Closeable {
   }
 
   private Optional<Image> loadTerritoryNameImage(final String imageName) {
-    Optional<Image> img;
     try {
       // try first file names that have underscores instead of spaces
       final String normalizedName = imageName.replace(' ', '_');
-      img = loadImage(constructTerritoryNameImagePath(normalizedName));
+      Optional<Image> img = loadImage(constructTerritoryNameImagePath(normalizedName));
       if (!img.isPresent()) {
         img = loadImage(constructTerritoryNameImagePath(imageName));
       }
@@ -266,6 +265,13 @@ public class MapData implements Closeable {
       loadImage("misc/" + name).ifPresent(img -> decorations.put(img, points.get(name)));
     }
     return decorations;
+  }
+
+  /**
+   * returns the named property, or null.
+   */
+  public String getProperty(final String propertiesKey) {
+    return mapProperties.getProperty(propertiesKey);
   }
 
   private <T> T getProperty(
@@ -364,10 +370,6 @@ public class MapData implements Closeable {
         Math.min(256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
   }
 
-  public boolean getHasMapBlends() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDS, "false"));
-  }
-
   public String getMapBlendMode() {
     return String.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal"));
   }
@@ -411,10 +413,10 @@ public class MapData implements Closeable {
   private void initializeContains() {
     contains = new HashMap<>();
     for (final String seaTerritory : getTerritories()) {
-      final List<String> contained = new ArrayList<>();
       if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
       }
+      final List<String> contained = new ArrayList<>();
       for (final String landTerritory : getTerritories()) {
         if (Util.isTerritoryNameIndicatingWater(landTerritory)) {
           continue;
@@ -436,9 +438,8 @@ public class MapData implements Closeable {
   }
 
   public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
-    final String colorString;
     if (mapProperties.getProperty(propertiesKey) != null) {
-      colorString = mapProperties.getProperty(propertiesKey);
+      final String colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
         throw new IllegalStateException("Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
       }
@@ -457,9 +458,9 @@ public class MapData implements Closeable {
       return playerColors.get(playerName);
     }
     // look in map.properties
-    final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
     Color color;
     try {
+      final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
       color = getColorProperty(propertiesKey);
     } catch (final Exception e) {
       throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
@@ -471,13 +472,6 @@ public class MapData implements Closeable {
     }
     playerColors.put(playerName, color);
     return color;
-  }
-
-  /**
-   * returns the named property, or null.
-   */
-  public String getProperty(final String propertiesKey) {
-    return mapProperties.getProperty(propertiesKey);
   }
 
   /**
@@ -731,14 +725,6 @@ public class MapData implements Closeable {
 
   public Optional<Image> getWarningImage() {
     return loadImage("misc/warning.gif");
-  }
-
-  public Optional<Image> getInfoImage() {
-    return loadImage("misc/information.gif");
-  }
-
-  public Optional<Image> getHelpImage() {
-    return loadImage("misc/help.gif");
   }
 
   private Optional<Image> loadImage(final String imageName) {

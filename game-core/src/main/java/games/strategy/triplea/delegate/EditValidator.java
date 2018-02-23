@@ -26,20 +26,6 @@ import games.strategy.util.Triple;
  */
 class EditValidator {
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
-    final String result = null;
-    /*
-     * // territory cannot contain enemy units
-     * if (!Matches.territoryIsEmptyOfCombatUnits(data, player).test(territory))
-     * return "Territory contains enemy units";
-     */
-    /*
-     * // territory cannot be in a pending battle
-     * BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-     * if (battleTracker.getPendingBattle(territory, true) != null)
-     * return "Territory contains a pending SBR battle";
-     * if (battleTracker.getPendingBattle(territory, false) != null)
-     * return "Territory contains a pending battle";
-     */
     // territory cannot be in an UndoableMove route
     final List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();
     for (final UndoableMove move : moves) {
@@ -47,7 +33,7 @@ class EditValidator {
         return "Territory is start or end of a pending move";
       }
     }
-    return result;
+    return null;
   }
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {

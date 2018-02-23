@@ -1,6 +1,11 @@
 package games.strategy.triplea.attachments;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -327,5 +332,84 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   @Override
   public void validate(final GameData data) {
     validateNames(m_movementRestrictionTerritories);
+  }
+
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
+        .put("movementRestrictionType",
+            AttachmentProperty.of(
+                this::setMovementRestrictionType,
+                this::setMovementRestrictionType,
+                this::getMovementRestrictionType,
+                this::resetMovementRestrictionType))
+        .put("movementRestrictionTerritories",
+            AttachmentProperty.of(
+                this::setMovementRestrictionTerritories,
+                this::setMovementRestrictionTerritories,
+                this::getMovementRestrictionTerritories,
+                this::resetMovementRestrictionTerritories))
+        .put("placementAnyTerritory",
+            AttachmentProperty.of(
+                this::setPlacementAnyTerritory,
+                this::setPlacementAnyTerritory,
+                this::getPlacementAnyTerritory,
+                this::resetPlacementAnyTerritory))
+        .put("placementAnySeaZone",
+            AttachmentProperty.of(
+                this::setPlacementAnySeaZone,
+                this::setPlacementAnySeaZone,
+                this::getPlacementAnySeaZone,
+                this::resetPlacementAnySeaZone))
+        .put("placementCapturedTerritory",
+            AttachmentProperty.of(
+                this::setPlacementCapturedTerritory,
+                this::setPlacementCapturedTerritory,
+                this::getPlacementCapturedTerritory,
+                this::resetPlacementCapturedTerritory))
+        .put("unlimitedProduction",
+            AttachmentProperty.of(
+                this::setUnlimitedProduction,
+                this::setUnlimitedProduction,
+                this::getUnlimitedProduction,
+                this::resetUnlimitedProduction))
+        .put("placementInCapitalRestricted",
+            AttachmentProperty.of(
+                this::setPlacementInCapitalRestricted,
+                this::setPlacementInCapitalRestricted,
+                this::getPlacementInCapitalRestricted,
+                this::resetPlacementInCapitalRestricted))
+        .put("dominatingFirstRoundAttack",
+            AttachmentProperty.of(
+                this::setDominatingFirstRoundAttack,
+                this::setDominatingFirstRoundAttack,
+                this::getDominatingFirstRoundAttack,
+                this::resetDominatingFirstRoundAttack))
+        .put("negateDominatingFirstRoundAttack",
+            AttachmentProperty.of(
+                this::setNegateDominatingFirstRoundAttack,
+                this::setNegateDominatingFirstRoundAttack,
+                this::getNegateDominatingFirstRoundAttack,
+                this::resetNegateDominatingFirstRoundAttack))
+        .put("productionPerXTerritories",
+            AttachmentProperty.of(
+                this::setProductionPerXTerritories,
+                this::setProductionPerXTerritories,
+                this::getProductionPerXTerritories,
+                this::resetProductionPerXTerritories))
+        .put("placementPerTerritory",
+            AttachmentProperty.of(
+                this::setPlacementPerTerritory,
+                this::setPlacementPerTerritory,
+                this::getPlacementPerTerritory,
+                this::resetPlacementPerTerritory))
+        .put("maxPlacePerTerritory",
+            AttachmentProperty.of(
+                this::setMaxPlacePerTerritory,
+                this::setMaxPlacePerTerritory,
+                this::getMaxPlacePerTerritory,
+                this::resetMaxPlacePerTerritory))
+        .build();
   }
 }

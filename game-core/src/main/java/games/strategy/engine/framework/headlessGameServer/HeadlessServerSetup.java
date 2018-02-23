@@ -3,6 +3,7 @@ package games.strategy.engine.framework.headlessGameServer;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Action;
@@ -11,7 +12,6 @@ import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
@@ -135,13 +135,12 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   @Override
-  public synchronized ILauncher getLauncher() {
-    final ServerLauncher launcher = (ServerLauncher) model.getLauncher();
-    if (launcher == null) {
-      return null;
-    }
-    launcher.setInGameLobbyWatcher(lobbyWatcher);
-    return launcher;
+  public synchronized Optional<ILauncher> getLauncher() {
+    return model.getLauncher()
+        .map(launcher -> {
+          launcher.setInGameLobbyWatcher(lobbyWatcher);
+          return launcher;
+        });
   }
 
   @Override

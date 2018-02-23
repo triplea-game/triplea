@@ -130,8 +130,6 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
         String body = EntityUtils.toString(response.getEntity());
         if (status == 200) {
           final String numReplies;
-          final String seqNum;
-          final String sc;
           Matcher m = NUM_REPLIES_PATTERN.matcher(body);
           if (m.matches()) {
             numReplies = m.group(1);
@@ -139,12 +137,14 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             throw new Exception("Hidden field 'num_replies' not found on page");
           }
           m = SEQ_NUM_PATTERN.matcher(body);
+          final String seqNum;
           if (m.matches()) {
             seqNum = m.group(1);
           } else {
             throw new Exception("Hidden field 'seqnum' not found on page");
           }
           m = SC_PATTERN.matcher(body);
+          final String sc;
           if (m.matches()) {
             sc = m.group(1);
           } else {

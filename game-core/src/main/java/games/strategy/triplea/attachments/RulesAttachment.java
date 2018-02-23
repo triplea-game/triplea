@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -44,6 +47,7 @@ import games.strategy.util.Tuple;
 @MapSupport
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
+
   // condition for having techs
   private List<TechAdvance> m_techs = null;
   @InternalDoNotExport
@@ -273,7 +277,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationship(final ArrayList<String> value) {
+  public void setRelationship(final List<String> value) {
     m_relationship = value;
   }
 
@@ -557,10 +561,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       return;
     }
     final String[] s = players.split(":");
-    int count = -1;
     if (s.length < 1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
+    int count = -1;
     try {
       count = getInt(s[0]);
       m_atWarCount = count;
@@ -581,7 +585,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAtWarPlayers(final HashSet<PlayerID> value) {
+  public void setAtWarPlayers(final Set<PlayerID> value) {
     m_atWarPlayers = value;
   }
 
@@ -600,10 +604,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       return;
     }
     final String[] s = newTechs.split(":");
-    int count = -1;
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
+    int count = -1;
     try {
       count = getInt(s[0]);
       m_techCount = count;
@@ -627,7 +631,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTechs(final ArrayList<TechAdvance> value) {
+  public void setTechs(final List<TechAdvance> value) {
     m_techs = value;
   }
 
@@ -926,12 +930,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    */
   private boolean checkUnitPresence(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
-    int numberMet = 0;
-    boolean satisfied = false;
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
+    boolean satisfied = false;
+    int numberMet = 0;
     for (final Territory terr : territories) {
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       if (exclType.equals("direct")) {
@@ -994,13 +998,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    */
   private boolean checkUnitExclusions(final Collection<Territory> territories, final String exclType,
       final int numberNeeded, final List<PlayerID> players, final GameData data) {
-    int numberMet = 0;
-    boolean satisfied = false;
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
     // Go through the owned territories and see if there are any units owned by allied/enemy based on exclType
+    boolean satisfied = false;
+    int numberMet = 0;
     for (final Territory terr : territories) {
       // get all the units in the territory
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
@@ -1123,7 +1127,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     if (count == 0) {
-      return count == found;
+      return found == 0;
     }
     if (getCountEach()) {
       m_eachMultiple = found;
@@ -1158,5 +1162,111 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_directPresenceTerritories);
     validateNames(m_alliedPresenceTerritories);
     validateNames(m_enemyPresenceTerritories);
+  }
+
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
+        .put("techs",
+            AttachmentProperty.of(
+                this::setTechs,
+                this::setTechs,
+                this::getTechs,
+                this::resetTechs))
+        .put("techCount",
+            AttachmentProperty.of(this::getTechCount))
+        .put("relationship",
+            AttachmentProperty.of(
+                this::setRelationship,
+                this::setRelationship,
+                this::getRelationship,
+                this::resetRelationship))
+        .put("atWarPlayers",
+            AttachmentProperty.of(
+                this::setAtWarPlayers,
+                this::setAtWarPlayers,
+                this::getAtWarPlayers,
+                this::resetAtWarPlayers))
+        .put("atWarCount",
+            AttachmentProperty.of(this::getAtWarCount))
+        .put("destroyedTUV",
+            AttachmentProperty.of(
+                this::setDestroyedTUV,
+                this::setDestroyedTUV,
+                this::getDestroyedTUV,
+                this::resetDestroyedTUV))
+        .put("battle",
+            AttachmentProperty.of(
+                this::setBattle,
+                this::setBattle,
+                this::getBattle,
+                this::resetBattle))
+        .put("alliedOwnershipTerritories",
+            AttachmentProperty.of(
+                this::setAlliedOwnershipTerritories,
+                this::setAlliedOwnershipTerritories,
+                this::getAlliedOwnershipTerritories,
+                this::resetAlliedOwnershipTerritories))
+        .put("directOwnershipTerritories",
+            AttachmentProperty.of(
+                this::setDirectOwnershipTerritories,
+                this::setDirectOwnershipTerritories,
+                this::getDirectOwnershipTerritories,
+                this::resetDirectOwnershipTerritories))
+        .put("alliedExclusionTerritories",
+            AttachmentProperty.of(
+                this::setAlliedExclusionTerritories,
+                this::setAlliedExclusionTerritories,
+                this::getAlliedExclusionTerritories,
+                this::resetAlliedExclusionTerritories))
+        .put("directExclusionTerritories",
+            AttachmentProperty.of(
+                this::setDirectExclusionTerritories,
+                this::setDirectExclusionTerritories,
+                this::getDirectExclusionTerritories,
+                this::resetDirectExclusionTerritories))
+        .put("enemyExclusionTerritories",
+            AttachmentProperty.of(
+                this::setEnemyExclusionTerritories,
+                this::setEnemyExclusionTerritories,
+                this::getEnemyExclusionTerritories,
+                this::resetEnemyExclusionTerritories))
+        .put("enemySurfaceExclusionTerritories",
+            AttachmentProperty.of(
+                this::setEnemySurfaceExclusionTerritories,
+                this::setEnemySurfaceExclusionTerritories,
+                this::getEnemySurfaceExclusionTerritories,
+                this::resetEnemySurfaceExclusionTerritories))
+        .put("directPresenceTerritories",
+            AttachmentProperty.of(
+                this::setDirectPresenceTerritories,
+                this::setDirectPresenceTerritories,
+                this::getDirectPresenceTerritories,
+                this::resetDirectPresenceTerritories))
+        .put("alliedPresenceTerritories",
+            AttachmentProperty.of(
+                this::setAlliedPresenceTerritories,
+                this::setAlliedPresenceTerritories,
+                this::getAlliedPresenceTerritories,
+                this::resetAlliedPresenceTerritories))
+        .put("enemyPresenceTerritories",
+            AttachmentProperty.of(
+                this::setEnemyPresenceTerritories,
+                this::setEnemyPresenceTerritories,
+                this::getEnemyPresenceTerritories,
+                this::resetEnemyPresenceTerritories))
+        .put("unitPresence",
+            AttachmentProperty.of(
+                this::setUnitPresence,
+                this::setUnitPresence,
+                this::getUnitPresence,
+                this::resetUnitPresence))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
   }
 }

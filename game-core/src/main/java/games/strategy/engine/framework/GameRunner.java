@@ -290,22 +290,18 @@ public class GameRunner {
   }
 
   private static void loadGame() {
-    try {
-      newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
-        gameSelectorModel.loadDefaultGameSameThread();
-        final String fileName = System.getProperty(TRIPLEA_GAME, "");
-        if (fileName.length() > 0) {
-          gameSelectorModel.load(new File(fileName), mainFrame);
-        }
+    Interruptibles.await(() -> newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
+      gameSelectorModel.loadDefaultGameSameThread();
+      final String fileName = System.getProperty(TRIPLEA_GAME, "");
+      if (fileName.length() > 0) {
+        gameSelectorModel.load(new File(fileName), mainFrame);
+      }
 
-        final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
-        if (!downloadableMap.isEmpty()) {
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
-        }
-      });
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
+      final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
+      if (!downloadableMap.isEmpty()) {
+        SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+      }
+    }));
   }
 
   private static void checkLocalSystem() {
@@ -483,7 +479,7 @@ public class GameRunner {
 
   public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
     final GameDescription.GameStatus status = description.getStatus();
-    if (GameDescription.GameStatus.LAUNCHING.equals(status)) {
+    if (GameDescription.GameStatus.LAUNCHING == status) {
       return;
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
@@ -532,13 +528,9 @@ public class GameRunner {
    */
   public static Optional<Chat> getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    if (model instanceof ServerSetupPanel) {
-      return Optional.ofNullable(model.getChatPanel().getChat());
-    } else if (model instanceof ClientSetupPanel) {
-      return Optional.ofNullable(model.getChatPanel().getChat());
-    } else {
-      return Optional.empty();
-    }
+    return ((model instanceof ServerSetupPanel) || (model instanceof ClientSetupPanel))
+      ? Optional.ofNullable(model.getChatPanel().getChat())
+      : Optional.empty();
   }
 
   /**

@@ -144,7 +144,7 @@ public abstract class AbstractGame implements IGame {
 
   @Override
   public void addDisplay(final IDisplay display) {
-    display.initialize(new DefaultDisplayBridge(gameData));
+    new DefaultDisplayBridge(gameData);
     channelMessenger.registerChannelSubscriber(display, getDisplayChannel(getData()));
   }
 

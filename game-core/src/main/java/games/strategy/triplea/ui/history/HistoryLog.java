@@ -81,14 +81,12 @@ public class HistoryLog extends JFrame {
 
   public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
-    Step stepNode = null;
-    Step turnStartNode = null;
-    final PlayerID curPlayer;
     final Collection<PlayerID> players = new HashSet<>();
     if (playersAllowed != null) {
       players.addAll(playersAllowed);
     }
     // find Step node, if exists in this path
+    Step stepNode = null;
     while (curNode != null) {
       if (curNode instanceof Step) {
         stepNode = (Step) curNode;
@@ -97,11 +95,12 @@ public class HistoryLog extends JFrame {
       curNode = (HistoryNode) curNode.getPreviousNode();
     }
     if (stepNode != null) {
-      curPlayer = stepNode.getPlayerId();
+      final PlayerID curPlayer = stepNode.getPlayerId();
       if (players.isEmpty()) {
         players.add(curPlayer);
       }
       // get first step for this turn
+      Step turnStartNode = null;
       while (true) {
         turnStartNode = stepNode;
         stepNode = (Step) stepNode.getPreviousSibling();
@@ -189,7 +188,7 @@ public class HistoryLog extends JFrame {
     final Map<String, Double> hitDifferentialMap = new HashMap<>();
     do {
       // keep track of conquered territory during combat
-      String conquerStr = "";
+      StringBuilder conquerStr = new StringBuilder();
       final Enumeration<?> nodeEnum = curNode.preorderEnumeration();
       while (nodeEnum.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
@@ -214,7 +213,7 @@ public class HistoryLog extends JFrame {
               continue;
             }
             final String diceMsg1 = title.substring(0, title.indexOf(':') + 1);
-            if (diceMsg1.equals("")) {
+            if (diceMsg1.isEmpty()) {
               // tech roll
               logWriter.println(indent + moreIndent + title);
             } else {
@@ -259,18 +258,11 @@ public class HistoryLog extends JFrame {
                 final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
                 // purchase/place units - don't need details
                 Unit unit = (Unit) obj;
-                if (title.matches("\\w+ buy .*")) {
+                if (title.matches("\\w+ buy .*") || title.matches("\\w+ attack with .*") || title
+                    .matches("\\w+ defend with .*")) {
                   logWriter.println(indent + title);
-                } else if (title.matches("\\w+ attack with .*")) {
-                  logWriter.println(indent + title);
-                } else if (title.matches("\\w+ defend with .*")) {
-                  logWriter.println(indent + title);
-                } else if (title.matches("\\d+ \\w+ owned by the .*? lost .*")) {
-                  if (!verbose) {
-                    continue;
-                  }
-                  logWriter.println(indent + moreIndent + title);
-                } else if (title.matches("\\d+ \\w+ owned by the .*? lost")) {
+                } else if (title.matches("\\d+ \\w+ owned by the .*? lost .*") || title
+                    .matches("\\d+ \\w+ owned by the .*? lost")) {
                   if (!verbose) {
                     continue;
                   }
@@ -278,8 +270,9 @@ public class HistoryLog extends JFrame {
                 } else if (title.startsWith("Battle casualty summary:")) {
                   // logWriter.println(indent+"CAS1: "+title);
                   logWriter.println(
-                      indent + conquerStr + ". Battle score " + title.substring(title.indexOf("for attacker is")));
-                  conquerStr = "";
+                      indent + conquerStr.toString() + ". Battle score "
+                          + title.substring(title.indexOf("for attacker is")));
+                  conquerStr = new StringBuilder();
                   // separate units by player and show casualty summary
                   final IntegerMap<PlayerID> unitCount = new IntegerMap<>();
                   unitCount.add(unit.getOwner(), 1);
@@ -291,13 +284,11 @@ public class HistoryLog extends JFrame {
                     logWriter.println(indent + "Casualties for " + player.getName() + ": "
                         + MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player));
                   }
-                } else if (title.matches(".*? placed in .*")) {
-                  logWriter.println(indent + title);
-                } else if (title.matches(".* owned by the \\w+ retreated to .*")) {
+                } else if (title.matches(".*? placed in .*") || title.matches(".* owned by the \\w+ retreated to .*")) {
                   logWriter.println(indent + title);
                 } else if (title.matches("\\w+ win")) {
-                  conquerStr =
-                      title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining";
+                  conquerStr = new StringBuilder(
+                      title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining");
                 } else {
                   logWriter.println(indent + title);
                 }
@@ -308,7 +299,7 @@ public class HistoryLog extends JFrame {
             } else {
               // empty collection of something
               if (title.matches("\\w+ win")) {
-                conquerStr = title + conquerStr + " with no units remaining";
+                conquerStr = new StringBuilder(title + conquerStr + " with no units remaining");
               } else {
                 // empty collection of unhandled objects
                 logWriter.println(indent + title);
@@ -318,23 +309,20 @@ public class HistoryLog extends JFrame {
             // territory details
             logWriter.println(indent + title);
           } else if (details == null) {
-            if (title.equals("Adding original owners")) {
-              // do nothing
-            } else if (title.equals(MoveDelegate.CLEANING_UP_DURING_MOVEMENT_PHASE)) {
-              // do nothing
-            } else if (title.equals("Game Loaded")) {
-              // do nothing
-            } else if (title.contains("now being played by")) {
-              // do nothing
-            } else if (title.contains("Turn Summary") || title.contains("Move Summary")) {
-              // do nothing
-            } else if (title.contains("Setting uses for triggers used")) {
-              // do nothing
-            } else if (title.equals("Resetting and Giving Bonus Movement to Units")) {
-              // do nothing
-            } else if (title.equals("Recording Battle Statistics")) {
-              // do nothing
-            } else if (title.equals("Preparing Airbases for Possible Scrambling")) {
+            if (title.equals("Adding original owners") || title.equals(MoveDelegate.CLEANING_UP_DURING_MOVEMENT_PHASE)
+                || title.equals("Game Loaded")
+                || title.contains("now being played by") || title
+                    .contains("Turn Summary")
+                || title
+                    .contains("Move Summary")
+                || title
+                    .contains("Setting uses for triggers used")
+                || title
+                    .equals("Resetting and Giving Bonus Movement to Units")
+                || title
+                    .equals("Recording Battle Statistics")
+                || title
+                    .equals("Preparing Airbases for Possible Scrambling")) {
               // do nothing
             } else if (title.matches("\\w+ collect \\d+ PUs?.*")) {
               logWriter.println(indent + title);
@@ -344,18 +332,13 @@ public class HistoryLog extends JFrame {
                 final String str = moveList.remove(moveList.size() - 1);
                 moveList.add(str + "\n  " + indent + title.replaceAll(" takes ", " take "));
               } else {
-                conquerStr += title.replaceAll("^\\w+ takes ", ", taking ");
+                conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
               }
             } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
               logWriter.println(indent + title);
             } else if (title.startsWith("Rolls to resolve tech hits:")) {
               // do nothing
-            } else if (title.matches("\\w+ discover .*")) {
-              logWriter.println(indent + title);
-            } else if (title.matches("AA raid costs .*")) {
-              logWriter.println(indent + title);
             } else {
-              // unhandled message with null details
               logWriter.println(indent + title);
             }
           } else {
@@ -377,10 +360,7 @@ public class HistoryLog extends JFrame {
         } else if (node instanceof Round) {
           logWriter.println();
           logWriter.println(indent + title);
-        } else if (title.equals("Game History")) {
-          logWriter.println(indent + title);
         } else {
-          // unknown node type
           logWriter.println(indent + title);
         }
       } // while (nodeEnum.hasMoreElements())
@@ -527,10 +507,9 @@ public class HistoryLog extends JFrame {
     for (final Territory place : data.getMap().getTerritories()) {
       boolean isConvoyOrLand = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
-      if (!place.isWater()) {
-        isConvoyOrLand = true;
-      } else if (place.isWater() && ta != null && OriginalOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID
-          && OriginalOwnerTracker.getOriginalOwner(place) == player && place.getOwner().equals(player)) {
+      if (!place.isWater()
+          || place.isWater() && ta != null && OriginalOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID
+              && OriginalOwnerTracker.getOriginalOwner(place) == player && place.getOwner().equals(player)) {
         isConvoyOrLand = true;
       }
       if (place.getOwner().equals(player) && isConvoyOrLand) {

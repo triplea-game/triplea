@@ -46,7 +46,6 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
@@ -73,7 +72,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
   void createServerLauncher() {
-    setServerLauncher((ServerLauncher) getLauncher());
+    setServerLauncher(getLauncher().orElse(null));
   }
 
   public enum InteractionMode {
@@ -201,7 +200,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private Optional<ServerConnectionProps> getServerProps(final Component ui) {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
-        && System.getProperty(TRIPLEA_STARTED, "").equals("")) {
+        && System.getProperty(TRIPLEA_STARTED, "").isEmpty()) {
       final ServerConnectionProps props = new ServerConnectionProps();
       props.setName(System.getProperty(TRIPLEA_NAME));
       props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT)));
@@ -650,7 +649,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     return localPlayerMappings;
   }
 
-  public ILauncher getLauncher() {
+  public Optional<ServerLauncher> getLauncher() {
     synchronized (this) {
       disallowRemoveConnections();
       // -1 since we dont count outselves
@@ -659,7 +658,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       for (final String player : playersToNodeListing.keySet()) {
         final String playedBy = playersToNodeListing.get(player);
         if (playedBy == null) {
-          return null;
+          return Optional.empty();
         }
         if (!playedBy.equals(serverMessenger.getLocalNode().getName())) {
           final Set<INode> nodes = serverMessenger.getNodes();
@@ -671,9 +670,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           }
         }
       }
-      final ServerLauncher launcher = new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
-          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, headless);
-      return launcher;
+      return Optional.of(new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
+          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, headless));
     }
   }
 

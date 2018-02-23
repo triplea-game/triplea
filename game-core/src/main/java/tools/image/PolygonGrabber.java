@@ -50,9 +50,7 @@ import games.strategy.util.PointFileReaderWriter;
 import tools.util.ToolLogger;
 
 /**
- * old comments
  * Utility to break a map into polygons.
- * Not pretty, meant only for one time use.
  * Inputs - a map with 1 pixel wide borders
  * - a list of centers - this is used to guess the territory name and to verify the
  * - territory name entered
@@ -76,7 +74,6 @@ public class PolygonGrabber extends JFrame {
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
   /**
-   * main(java.lang.String[])
    * Main program begins here.
    * Asks the user to select the map then runs the
    * the actual polygon grabber program.
@@ -117,7 +114,7 @@ public class PolygonGrabber extends JFrame {
       ToolLogger.info("No Image Map Selected. Shutting down.");
       System.exit(0);
     }
-  } // end main
+  }
 
   /**
    * Constructor PolygonGrabber(java.lang.String)
@@ -293,7 +290,6 @@ public class PolygonGrabber extends JFrame {
   } // end constructor
 
   /**
-   * createImage(java.lang.String)
    * We create the image of the map here and
    * assure that it is loaded properly.
    *
@@ -310,7 +306,6 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * javax.swing.JPanel createMainPanel()
    * Creates a JPanel to be used. Dictates how the map is
    * painted. Current problem is that islands inside sea
    * zones are not recognized when filling in the sea zone
@@ -356,7 +351,6 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * savePolygons()
    * Saves the polygons to disk.
    */
   private void savePolygons() {
@@ -374,7 +368,6 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * loadPolygons()
    * Loads a pre-defined file with map polygon points.
    */
   private void loadPolygons() {
@@ -392,16 +385,6 @@ public class PolygonGrabber extends JFrame {
     repaint();
   }
 
-  /**
-   * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
-   *
-   * @param java
-   *        .awt.Point point a point clicked by mouse
-   * @param java
-   *        .lang.boolean ctrlDown true if ctrl key was hit
-   * @param java
-   *        .lang.boolean rightMouse true if the right mouse button was hit
-   */
   private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
     final Polygon p = findPolygon(point.x, point.y);
     if (p == null) {
@@ -425,13 +408,8 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * java.lang.boolean pointInCurrentPolygon(java.awt.Point)
    * returns false if there is no points in a current polygon.
    * returns true if there is.
-   *
-   * @param java
-   *        .awt.Point p the point to check for
-   * @return java.lang.boolean
    */
   private boolean pointInCurrentPolygon(final Point p) {
     if (current == null) {
@@ -446,9 +424,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * doneCurrentGroup()
-   * Does something with respect to check if the name
-   * of a territory is valid or not.
+   * Does something with respect to check if the name of a territory is valid or not.
    */
   private void doneCurrentGroup() {
     final JTextField text = new JTextField();
@@ -474,13 +450,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * guessCountryName(javax.swing.JTextField, java.tools.Iterator)
-   * Guess the country name based on the location of the previous centers
-   *
-   * @param javax
-   *        .swing.JTextField text text dialog
-   * @param java
-   *        .tools.Iterator centersiter center iterator
+   * Guess the country name based on the location of the previous centers.
    */
   private void guessCountryName(final JTextField text, final Iterable<Entry<String, Point>> centersiter) {
     final List<String> options = new ArrayList<>();
@@ -499,27 +469,15 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * java.lang.boolean isBlack(java.awt.Point)
    * Checks to see if the given point is of color black.
-   *
-   * @param java
-   *        .awt.Point p the point to check
-   * @return java.lang.boolean
    */
   private boolean isBlack(final Point p) {
     return isBlack(p.x, p.y);
   }
 
   /**
-   * java.lang.boolean isBlack(java.lang.int, java.lang.int)
    * Checks to see if the x/y coordinates from a given point
    * are inbounds and if so is it black.
-   *
-   * @param java
-   *        .lang.int x the x coordinate
-   * @param java
-   *        .lang.int y the y coordinate
-   * @return java.lang.boolean
    */
   private boolean isBlack(final int x, final int y) {
     if (!inBounds(x, y)) {
@@ -546,14 +504,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * java.lang.boolean inBounds(java.lang.int, java.lang.int)
-   * Checks if the given x/y coordinate point is inbounds or not
-   *
-   * @param java
-   *        .lang.int x the x coordinate
-   * @param java
-   *        .lang.int y the y coordinate
-   * @return java.lang.boolean
+   * Checks if the given x/y coordinate point is inbounds or not.
    */
   private boolean inBounds(final int x, final int y) {
     return x >= 0 && x < bufferedImage.getWidth(null) && y >= 0 && y < bufferedImage.getHeight(null);
@@ -564,8 +515,7 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * move(java.awt.Point, java.lang.int)
-   * Moves to a specified direction
+   * Moves to a specified direction.
    * Directions
    * 0 - North
    * 1 - North east
@@ -575,11 +525,6 @@ public class PolygonGrabber extends JFrame {
    * 5 - South west
    * 6 - West
    * 7 - North west
-   *
-   * @param java
-   *        .awt.Point p the given point
-   * @param java
-   *        .lang.int direction the specified direction to move
    */
   private static void move(final Point p, final int direction) {
     if (direction < 0 || direction > 7) {
@@ -601,15 +546,7 @@ public class PolygonGrabber extends JFrame {
   private final Point testPoint = new Point();
 
   /**
-   * java.lang.boolean isOnEdge(java.lang.int, java.awt.Point)
    * Checks to see if the direction we're going is on the edge.
-   * At least thats what I can understand from this.
-   *
-   * @param java
-   *        .lang.int direction the given direction
-   * @param java
-   *        .awt.Point currentPoint the current point
-   * @return java.lang.boolean
    */
   private boolean isOnEdge(final int direction, final Point currentPoint) {
     testPoint.setLocation(currentPoint);
@@ -648,15 +585,8 @@ public class PolygonGrabber extends JFrame {
   }
 
   /**
-   * java.awt.Polygon findPolygon(java.lang.int, java.lang.int)
    * Algorithm to find a polygon given a x/y coordinates and
    * returns the found polygon.
-   *
-   * @param java
-   *        .lang.int x the x coordinate
-   * @param java
-   *        .lang.int y the y coordinate
-   * @return java.awt.Polygon
    */
   private Polygon findPolygon(final int x, final int y) {
     // walk up, find the first black point
@@ -678,12 +608,8 @@ public class PolygonGrabber extends JFrame {
                 + "and removing any anti-aliasing.");
         return null;
       }
-      int tempDirection;
-      for (int i = 2; i >= -3; i--) { // was -4
-        tempDirection = (currentDirection + i) % 8;
-        if (tempDirection < 0) {
-          tempDirection += 8;
-        }
+      for (int i = 2; i >= -3; i--) {
+        final int tempDirection = Math.floorMod(currentDirection + i, 8);
         if (isOnEdge(tempDirection, currentPoint)) {
           // if we need to change our course
           if (i != 0) {

@@ -110,12 +110,12 @@ class NioWriter {
                 if (done) {
                   totalBytes += packet.size();
                   if (logger.isLoggable(Level.FINE)) {
-                    String remote = "null";
                     final Socket s = channel.socket();
                     SocketAddress sa = null;
                     if (s != null) {
                       sa = s.getRemoteSocketAddress();
                     }
+                    String remote = "null";
                     if (sa != null) {
                       remote = sa.toString();
                     }

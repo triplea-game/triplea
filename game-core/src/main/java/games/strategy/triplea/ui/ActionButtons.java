@@ -273,28 +273,4 @@ public class ActionButtons extends JPanel {
   public BattlePanel getBattlePanel() {
     return battlePanel;
   }
-
-  public AbstractMovePanel getMovePanel() {
-    return movePanel;
-  }
-
-  public PlacePanel getPlacePanel() {
-    return placePanel;
-  }
-
-  public PurchasePanel getPurchasePanel() {
-    return purchasePanel;
-  }
-
-  public TechPanel getTechPanel() {
-    return techPanel;
-  }
-
-  public EndTurnPanel getEndTurnPanel() {
-    return endTurnPanel;
-  }
-
-  public MoveForumPosterPanel getMoveForumPosterPanel() {
-    return moveForumPosterPanel;
-  }
 }

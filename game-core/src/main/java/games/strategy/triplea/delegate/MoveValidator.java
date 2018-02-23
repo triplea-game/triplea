@@ -134,7 +134,7 @@ public class MoveValidator {
       final PlayerID player, final MoveValidationResult result) {
     if (!units.isEmpty() && !getEditMode(data)) {
       final Collection<Unit> matches = CollectionUtils.getMatches(units,
-          Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data, true).negate());
+          Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, data, true).negate());
       if (matches.isEmpty() || !matches.stream().allMatch(Matches.unitIsOwnedBy(player))) {
         result.setError("Player, " + player.getName() + ", is not owner of all the units: "
             + MyFormatter.unitsToTextNoOwner(units));
@@ -779,7 +779,6 @@ public class MoveValidator {
             .or(Matches.unitIsSub()).or(Matches.enemyUnit(player, data).negate());
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
     final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
-    boolean validMove = false;
     final List<Territory> steps;
     if (ignoreRouteEnd) {
       steps = route.getMiddleSteps();
@@ -791,6 +790,7 @@ public class MoveValidator {
     if (steps.isEmpty() && route.numberOfStepsIncludingStart() == 1 && !ignoreRouteEnd) {
       steps.add(route.getStart());
     }
+    boolean validMove = false;
     for (final Territory current : steps) {
       if (current.isWater()) {
         if (getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnits().allMatch(transportOrSubOnly)) {
@@ -1466,10 +1466,9 @@ public class MoveValidator {
     // we don't want to look at the dependents
     final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent =
         new ArrayList<>(CollectionUtils.getMatches(units,
-            Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data, true)
+            Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, data, true)
                 .negate()));
     boolean mustGoLand = false;
-    boolean mustGoSea = false;
     // If start and end are land, try a land route. Don't force a land route, since planes may be moving
     if (!start.isWater() && !end.isWater()) {
       final Route landRoute;
@@ -1489,6 +1488,7 @@ public class MoveValidator {
       }
     }
     // If the start and end are water, try and get a water route don't force a water route, since planes may be moving
+    boolean mustGoSea = false;
     if (start.isWater() && end.isWater()) {
       final Route waterRoute =
           data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassable));

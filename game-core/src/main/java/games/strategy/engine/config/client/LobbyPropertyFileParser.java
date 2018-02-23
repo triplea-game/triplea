@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -44,7 +45,7 @@ class LobbyPropertyFileParser {
   }
 
   private static JSONArray loadYaml(final File yamlFile) throws IOException {
-    final String yamlContent = new String(Files.readAllBytes(yamlFile.toPath()));
+    final String yamlContent = new String(Files.readAllBytes(yamlFile.toPath()), StandardCharsets.UTF_8);
     final Yaml yaml = new Yaml();
     return new JSONArray(yaml.loadAs(yamlContent, List.class));
   }

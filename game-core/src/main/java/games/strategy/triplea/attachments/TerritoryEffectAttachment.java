@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -20,6 +24,7 @@ import games.strategy.util.IntegerMap;
 @MapSupport
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
+
   private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();
   private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<>();
   private List<UnitType> m_noBlitz = new ArrayList<>();
@@ -139,7 +144,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNoBlitz(final ArrayList<UnitType> value) {
+  public void setNoBlitz(final List<UnitType> value) {
     m_noBlitz = value;
   }
 
@@ -174,7 +179,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitsNotAllowed(final ArrayList<UnitType> value) {
+  public void setUnitsNotAllowed(final List<UnitType> value) {
     m_unitsNotAllowed = value;
   }
 
@@ -192,4 +197,39 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("combatDefenseEffect",
+            AttachmentProperty.of(
+                this::setCombatDefenseEffect,
+                this::setCombatDefenseEffect,
+                this::getCombatDefenseEffect,
+                this::resetCombatDefenseEffect))
+        .put("combatOffenseEffect",
+            AttachmentProperty.of(
+                this::setCombatOffenseEffect,
+                this::setCombatOffenseEffect,
+                this::getCombatOffenseEffect,
+                this::resetCombatOffenseEffect))
+        .put("noBlitz",
+            AttachmentProperty.of(
+                this::setNoBlitz,
+                this::setNoBlitz,
+                this::getNoBlitz,
+                this::resetNoBlitz))
+        .put("unitsNotAllowed",
+            AttachmentProperty.of(
+                this::setUnitsNotAllowed,
+                this::setUnitsNotAllowed,
+                this::getUnitsNotAllowed,
+                this::resetUnitsNotAllowed))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

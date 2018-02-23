@@ -205,11 +205,11 @@ final class GameMenu extends JMenu {
           panelDice.setLayout(layout);
           final JLabel label = new JLabel("Rolls (no effect on game): ");
           panelDice.add(label);
-          String diceString = "";
+          final StringBuilder diceString = new StringBuilder();
           for (int i = 0; i < dice.length; i++) {
-            diceString += String.valueOf(dice[i] + 1) + ((i == dice.length - 1) ? "" : ", ");
+            diceString.append(String.valueOf(dice[i] + 1)).append((i == dice.length - 1) ? "" : ", ");
           }
-          final JTextField diceList = new JTextField(diceString);
+          final JTextField diceList = new JTextField(diceString.toString());
           diceList.setEditable(false);
           panelDice.add(diceList);
           JOptionPane.showMessageDialog(frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);

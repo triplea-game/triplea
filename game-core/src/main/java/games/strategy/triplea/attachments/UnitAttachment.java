@@ -15,7 +15,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -389,7 +392,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanBeGivenByTerritoryTo(final ArrayList<PlayerID> value) {
+  public void setCanBeGivenByTerritoryTo(final List<PlayerID> value) {
     m_canBeGivenByTerritoryTo = value;
   }
 
@@ -422,7 +425,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanBeCapturedOnEnteringBy(final ArrayList<PlayerID> value) {
+  public void setCanBeCapturedOnEnteringBy(final List<PlayerID> value) {
     m_canBeCapturedOnEnteringBy = value;
   }
 
@@ -552,7 +555,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhenCapturedChangesInto(final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> value) {
+  public void setWhenCapturedChangesInto(final Map<String, Tuple<String, IntegerMap<UnitType>>> value) {
     m_whenCapturedChangesInto = value;
   }
 
@@ -614,7 +617,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDestroyedWhenCapturedBy(final ArrayList<Tuple<String, PlayerID>> value) {
+  public void setDestroyedWhenCapturedBy(final List<Tuple<String, PlayerID>> value) {
     m_destroyedWhenCapturedBy = value;
   }
 
@@ -965,7 +968,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSpecial(final HashSet<String> value) {
+  public void setSpecial(final Set<String> value) {
     m_special = value;
   }
 
@@ -1009,7 +1012,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean canInvadeFrom(final Unit transport) {
-    if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].equals("")
+    if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].isEmpty()
         || m_canInvadeOnlyFrom[0].equals("all")) {
       return true;
     }
@@ -1029,7 +1032,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRequiresUnits(final ArrayList<String[]> value) {
+  public void setRequiresUnits(final List<String[]> value) {
     m_requiresUnits = value;
   }
 
@@ -1064,7 +1067,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRequiresUnitsToMove(final ArrayList<String[]> value) {
+  public void setRequiresUnitsToMove(final List<String[]> value) {
     m_requiresUnitsToMove = value;
   }
 
@@ -1108,7 +1111,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhenCombatDamaged(final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> value) {
+  public void setWhenCombatDamaged(final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> value) {
     m_whenCombatDamaged = value;
   }
 
@@ -1133,7 +1136,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setReceivesAbilityWhenWith(final ArrayList<String> value) {
+  public void setReceivesAbilityWhenWith(final List<String> value) {
     m_receivesAbilityWhenWith = value;
   }
 
@@ -1357,10 +1360,14 @@ public class UnitAttachment extends DefaultAttachment {
     m_transportCapacity = -1;
   }
 
-  // DO NOT REMOVE.
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   public void setIsTwoHit(final String s) {
-    m_hitPoints = getBool(s) ? 2 : 1;
+    setIsTwoHit(getBool(s));
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
+  public void setIsTwoHit(final boolean s) {
+    m_hitPoints = s ? 2 : 1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1924,8 +1931,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("givesMovement cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitTypeToProduce;
-    unitTypeToProduce = s[1];
+    final String unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
     if (ut == null) {
@@ -1962,8 +1968,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("consumesUnits must have two fields" + thisErrorMsg());
     }
-    final String unitTypeToProduce;
-    unitTypeToProduce = s[1];
+    final String unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
     if (ut == null) {
@@ -2002,8 +2007,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("createsUnitsList cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String unitTypeToProduce;
-    unitTypeToProduce = s[1];
+    final String unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
     if (ut == null) {
@@ -2043,8 +2047,7 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "createsResourcesList cannot be empty or have more than two fields" + thisErrorMsg());
     }
-    final String resourceToProduce;
-    resourceToProduce = s[1];
+    final String resourceToProduce = s[1];
     // validate that this resource exists in the xml
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
     if (r == null) {
@@ -2080,8 +2083,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("fuelCost must have two fields" + thisErrorMsg());
     }
-    final String resourceToProduce;
-    resourceToProduce = s[1];
+    final String resourceToProduce = s[1];
     // validate that this resource exists in the xml
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
     if (r == null) {
@@ -2170,7 +2172,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBombingTargets(final HashSet<UnitType> value) {
+  public void setBombingTargets(final Set<UnitType> value) {
     m_bombingTargets = value;
   }
 
@@ -2518,7 +2520,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTargetsAA(final HashSet<UnitType> value) {
+  public void setTargetsAA(final Set<UnitType> value) {
     m_targetsAA = value;
   }
 
@@ -2559,7 +2561,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWillNotFireIfPresent(final HashSet<UnitType> value) {
+  public void setWillNotFireIfPresent(final Set<UnitType> value) {
     m_willNotFireIfPresent = value;
   }
 
@@ -2581,7 +2583,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
-  public void setIsAAmovement(final Boolean s) throws GameParseException {
+  public void setIsAAmovement(final boolean s) throws GameParseException {
     setCanNotMoveDuringCombatMove(s);
     if (s) {
       setMovementLimit(Integer.MAX_VALUE + ":allied");
@@ -2828,13 +2830,13 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException("Restricted transports cannot have attack or defense, " + thisErrorMsg());
     }
     if (m_isConstruction
-        && (m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals("")
+        && (m_constructionType == null || m_constructionType.equals("none") || m_constructionType.isEmpty()
             || m_constructionsPerTerrPerTypePerTurn < 0 || m_maxConstructionsPerTypePerTerr < 0)) {
       throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType "
           + "and maxConstructionsPerType, " + thisErrorMsg());
     }
     if (!m_isConstruction
-        && (!(m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals(""))
+        && (!(m_constructionType == null || m_constructionType.equals("none") || m_constructionType.isEmpty())
             || m_constructionsPerTerrPerTypePerTurn >= 0 || m_maxConstructionsPerTypePerTerr >= 0)) {
       throw new GameParseException("Constructions must have isConstruction true, " + thisErrorMsg());
     }
@@ -3513,4 +3515,617 @@ public class UnitAttachment extends DefaultAttachment {
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
   public void setIsMechanized(final String s) {}
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("isAir",
+            AttachmentProperty.of(
+                this::setIsAir,
+                this::setIsAir,
+                this::getIsAir,
+                this::resetIsAir))
+        .put("isSea",
+            AttachmentProperty.of(
+                this::setIsSea,
+                this::setIsSea,
+                this::getIsSea,
+                this::resetIsSea))
+        .put("movement",
+            AttachmentProperty.of(
+                this::setMovement,
+                this::setMovement,
+                this::getMovement,
+                this::resetMovement))
+        .put("canBlitz",
+            AttachmentProperty.of(
+                this::setCanBlitz,
+                this::setCanBlitz,
+                this::getCanBlitz,
+                this::resetCanBlitz))
+        .put("isKamikaze",
+            AttachmentProperty.of(
+                this::setIsKamikaze,
+                this::setIsKamikaze,
+                this::getIsKamikaze,
+                this::resetIsKamikaze))
+        .put("canInvadeOnlyFrom",
+            AttachmentProperty.of(
+                this::setCanInvadeOnlyFrom,
+                this::setCanInvadeOnlyFrom,
+                this::getCanInvadeOnlyFrom,
+                this::resetCanInvadeOnlyFrom))
+        .put("fuelCost",
+            AttachmentProperty.of(
+                this::setFuelCost,
+                this::setFuelCost,
+                this::getFuelCost,
+                this::resetFuelCost))
+        .put("canNotMoveDuringCombatMove",
+            AttachmentProperty.of(
+                this::setCanNotMoveDuringCombatMove,
+                this::setCanNotMoveDuringCombatMove,
+                this::getCanNotMoveDuringCombatMove,
+                this::resetCanNotMoveDuringCombatMove))
+        .put("movementLimit",
+            AttachmentProperty.of(
+                this::setMovementLimit,
+                this::setMovementLimit,
+                this::getMovementLimit,
+                this::resetMovementLimit))
+        .put("attack",
+            AttachmentProperty.of(
+                this::setAttack,
+                this::setAttack,
+                this::getAttack,
+                this::resetAttack))
+        .put("defense",
+            AttachmentProperty.of(
+                this::setDefense,
+                this::setDefense,
+                this::getDefense,
+                this::resetDefense))
+        .put("isInfrastructure",
+            AttachmentProperty.of(
+                this::setIsInfrastructure,
+                this::setIsInfrastructure,
+                this::getIsInfrastructure,
+                this::resetIsInfrastructure))
+        .put("canBombard",
+            AttachmentProperty.of(
+                this::setCanBombard,
+                this::setCanBombard,
+                this::getCanBombard,
+                this::resetCanBombard))
+        .put("bombard",
+            AttachmentProperty.of(
+                this::setBombard,
+                this::setBombard,
+                this::getBombard,
+                this::resetBombard))
+        .put("isSub",
+            AttachmentProperty.of(
+                this::setIsSub,
+                this::setIsSub,
+                this::getIsSub,
+                this::resetIsSub))
+        .put("isDestroyer",
+            AttachmentProperty.of(
+                this::setIsDestroyer,
+                this::setIsDestroyer,
+                this::getIsDestroyer,
+                this::resetIsDestroyer))
+        .put("artillery",
+            AttachmentProperty.of(
+                this::setArtillery,
+                this::setArtillery,
+                this::getArtillery,
+                this::resetArtillery))
+        .put("artillerySupportable",
+            AttachmentProperty.of(
+                this::setArtillerySupportable,
+                this::setArtillerySupportable,
+                this::getArtillerySupportable,
+                this::resetArtillerySupportable))
+        .put("unitSupportCount",
+            AttachmentProperty.of(
+                this::setUnitSupportCount,
+                this::setUnitSupportCount,
+                this::getUnitSupportCount,
+                this::resetUnitSupportCount))
+        .put("isMarine",
+            AttachmentProperty.of(
+                this::setIsMarine,
+                this::setIsMarine,
+                this::getIsMarine,
+                this::resetIsMarine))
+        .put("isSuicide",
+            AttachmentProperty.of(
+                this::setIsSuicide,
+                this::setIsSuicide,
+                this::getIsSuicide,
+                this::resetIsSuicide))
+        .put("isSuicideOnHit",
+            AttachmentProperty.of(
+                this::setIsSuicideOnHit,
+                this::setIsSuicideOnHit,
+                this::getIsSuicideOnHit,
+                this::resetIsSuicideOnHit))
+        .put("attackingLimit",
+            AttachmentProperty.of(
+                this::setAttackingLimit,
+                this::setAttackingLimit,
+                this::getAttackingLimit,
+                this::resetAttackingLimit))
+        .put("attackRolls",
+            AttachmentProperty.of(
+                this::setAttackRolls,
+                this::setAttackRolls,
+                this::getAttackRolls,
+                this::resetAttackRolls))
+        .put("defenseRolls",
+            AttachmentProperty.of(
+                this::setDefenseRolls,
+                this::setDefenseRolls,
+                this::getDefenseRolls,
+                this::resetDefenseRolls))
+        .put("chooseBestRoll",
+            AttachmentProperty.of(
+                this::setChooseBestRoll,
+                this::setChooseBestRoll,
+                this::getChooseBestRoll,
+                this::resetChooseBestRoll))
+        .put("isCombatTransport",
+            AttachmentProperty.of(
+                this::setIsCombatTransport,
+                this::setIsCombatTransport,
+                this::getIsCombatTransport,
+                this::resetIsCombatTransport))
+        .put("transportCapacity",
+            AttachmentProperty.of(
+                this::setTransportCapacity,
+                this::setTransportCapacity,
+                this::getTransportCapacity,
+                this::resetTransportCapacity))
+        .put("transportCost",
+            AttachmentProperty.of(
+                this::setTransportCost,
+                this::setTransportCost,
+                this::getTransportCost,
+                this::resetTransportCost))
+        .put("carrierCapacity",
+            AttachmentProperty.of(
+                this::setCarrierCapacity,
+                this::setCarrierCapacity,
+                this::getCarrierCapacity,
+                this::resetCarrierCapacity))
+        .put("carrierCost",
+            AttachmentProperty.of(
+                this::setCarrierCost,
+                this::setCarrierCost,
+                this::getCarrierCost,
+                this::resetCarrierCost))
+        .put("isAirTransport",
+            AttachmentProperty.of(
+                this::setIsAirTransport,
+                this::setIsAirTransport,
+                this::getIsAirTransport,
+                this::resetIsAirTransport))
+        .put("isAirTransportable",
+            AttachmentProperty.of(
+                this::setIsAirTransportable,
+                this::setIsAirTransportable,
+                this::getIsAirTransportable,
+                this::resetIsAirTransportable))
+        .put("isInfantry",
+            AttachmentProperty.of(
+                this::setIsInfantry,
+                this::setIsInfantry,
+                this::getIsInfantry,
+                this::resetIsInfantry))
+        .put("isLandTransport",
+            AttachmentProperty.of(
+                this::setIsLandTransport,
+                this::setIsLandTransport,
+                this::getIsLandTransport,
+                this::resetIsLandTransport))
+        .put("isLandTransportable",
+            AttachmentProperty.of(
+                this::setIsLandTransportable,
+                this::setIsLandTransportable,
+                this::getIsLandTransportable,
+                this::resetIsLandTransportable))
+        .put("isAAforCombatOnly",
+            AttachmentProperty.of(
+                this::setIsAAforCombatOnly,
+                this::setIsAAforCombatOnly,
+                this::getIsAAforCombatOnly,
+                this::resetIsAAforCombatOnly))
+        .put("isAAforBombingThisUnitOnly",
+            AttachmentProperty.of(
+                this::setIsAAforBombingThisUnitOnly,
+                this::setIsAAforBombingThisUnitOnly,
+                this::getIsAAforBombingThisUnitOnly,
+                this::resetIsAAforBombingThisUnitOnly))
+        .put("isAAforFlyOverOnly",
+            AttachmentProperty.of(
+                this::setIsAAforFlyOverOnly,
+                this::setIsAAforFlyOverOnly,
+                this::getIsAAforFlyOverOnly,
+                this::resetIsAAforFlyOverOnly))
+        .put("isRocket",
+            AttachmentProperty.of(
+                this::setIsRocket,
+                this::setIsRocket,
+                this::getIsRocket,
+                this::resetIsRocket))
+        .put("attackAA",
+            AttachmentProperty.of(
+                this::setAttackAA,
+                this::setAttackAA,
+                this::getAttackAA,
+                this::resetAttackAA))
+        .put("offensiveAttackAA",
+            AttachmentProperty.of(
+                this::setOffensiveAttackAA,
+                this::setOffensiveAttackAA,
+                this::getOffensiveAttackAA,
+                this::resetOffensiveAttackAA))
+        .put("attackAAmaxDieSides",
+            AttachmentProperty.of(
+                this::setAttackAAmaxDieSides,
+                this::setAttackAAmaxDieSides,
+                this::getAttackAAmaxDieSides,
+                this::resetAttackAAmaxDieSides))
+        .put("offensiveAttackAAmaxDieSides",
+            AttachmentProperty.of(
+                this::setOffensiveAttackAAmaxDieSides,
+                this::setOffensiveAttackAAmaxDieSides,
+                this::getOffensiveAttackAAmaxDieSides,
+                this::resetOffensiveAttackAAmaxDieSides))
+        .put("maxAAattacks",
+            AttachmentProperty.of(
+                this::setMaxAAattacks,
+                this::setMaxAAattacks,
+                this::getMaxAAattacks,
+                this::resetMaxAAattacks))
+        .put("maxRoundsAA",
+            AttachmentProperty.of(
+                this::setMaxRoundsAA,
+                this::setMaxRoundsAA,
+                this::getMaxRoundsAA,
+                this::resetMaxRoundsAA))
+        .put("typeAA",
+            AttachmentProperty.of(
+                this::setTypeAA,
+                this::setTypeAA,
+                this::getTypeAA,
+                this::resetTypeAA))
+        .put("targetsAA",
+            AttachmentProperty.of(
+                this::setTargetsAA,
+                this::setTargetsAA,
+                this::getTargetsAA,
+                this::resetTargetsAA))
+        .put("mayOverStackAA",
+            AttachmentProperty.of(
+                this::setMayOverStackAA,
+                this::setMayOverStackAA,
+                this::getMayOverStackAA,
+                this::resetMayOverStackAA))
+        .put("damageableAA",
+            AttachmentProperty.of(
+                this::setDamageableAA,
+                this::setDamageableAA,
+                this::getDamageableAA,
+                this::resetDamageableAA))
+        .put("willNotFireIfPresent",
+            AttachmentProperty.of(
+                this::setWillNotFireIfPresent,
+                this::setWillNotFireIfPresent,
+                this::getWillNotFireIfPresent,
+                this::resetWillNotFireIfPresent))
+        .put("isStrategicBomber",
+            AttachmentProperty.of(
+                this::setIsStrategicBomber,
+                this::setIsStrategicBomber,
+                this::getIsStrategicBomber,
+                this::resetIsStrategicBomber))
+        .put("bombingMaxDieSides",
+            AttachmentProperty.of(
+                this::setBombingMaxDieSides,
+                this::setBombingMaxDieSides,
+                this::getBombingMaxDieSides,
+                this::resetBombingMaxDieSides))
+        .put("bombingBonus",
+            AttachmentProperty.of(
+                this::setBombingBonus,
+                this::setBombingBonus,
+                this::getBombingBonus,
+                this::resetBombingBonus))
+        .put("canIntercept",
+            AttachmentProperty.of(
+                this::setCanIntercept,
+                this::setCanIntercept,
+                this::getCanIntercept,
+                this::resetCanIntercept))
+        .put("canEscort",
+            AttachmentProperty.of(
+                this::setCanEscort,
+                this::setCanEscort,
+                this::getCanEscort,
+                this::resetCanEscort))
+        .put("canAirBattle",
+            AttachmentProperty.of(
+                this::setCanAirBattle,
+                this::setCanAirBattle,
+                this::getCanAirBattle,
+                this::resetCanAirBattle))
+        .put("airDefense",
+            AttachmentProperty.of(
+                this::setAirDefense,
+                this::setAirDefense,
+                this::getAirDefense,
+                this::resetAirDefense))
+        .put("airAttack",
+            AttachmentProperty.of(
+                this::setAirAttack,
+                this::setAirAttack,
+                this::getAirAttack,
+                this::resetAirAttack))
+        .put("bombingTargets",
+            AttachmentProperty.of(
+                this::setBombingTargets,
+                this::setBombingTargets,
+                this::getBombingTargets,
+                this::resetBombingTargets))
+        .put("canProduceUnits",
+            AttachmentProperty.of(
+                this::setCanProduceUnits,
+                this::setCanProduceUnits,
+                this::getCanProduceUnits,
+                this::resetCanProduceUnits))
+        .put("canProduceXUnits",
+            AttachmentProperty.of(
+                this::setCanProduceXUnits,
+                this::setCanProduceXUnits,
+                this::getCanProduceXUnits,
+                this::resetCanProduceXUnits))
+        .put("createsUnitsList",
+            AttachmentProperty.of(
+                this::setCreatesUnitsList,
+                this::setCreatesUnitsList,
+                this::getCreatesUnitsList,
+                this::resetCreatesUnitsList))
+        .put("createsResourcesList",
+            AttachmentProperty.of(
+                this::setCreatesResourcesList,
+                this::setCreatesResourcesList,
+                this::getCreatesResourcesList,
+                this::resetCreatesResourcesList))
+        .put("hitPoints",
+            AttachmentProperty.of(
+                this::setHitPoints,
+                this::setHitPoints,
+                this::getHitPoints,
+                this::resetHitPoints))
+        .put("canBeDamaged",
+            AttachmentProperty.of(
+                this::setCanBeDamaged,
+                this::setCanBeDamaged,
+                this::getCanBeDamaged,
+                this::resetCanBeDamaged))
+        .put("maxDamage",
+            AttachmentProperty.of(
+                this::setMaxDamage,
+                this::setMaxDamage,
+                this::getMaxDamage,
+                this::resetMaxDamage))
+        .put("maxOperationalDamage",
+            AttachmentProperty.of(
+                this::setMaxOperationalDamage,
+                this::setMaxOperationalDamage,
+                this::getMaxOperationalDamage,
+                this::resetMaxOperationalDamage))
+        .put("canDieFromReachingMaxDamage",
+            AttachmentProperty.of(
+                this::setCanDieFromReachingMaxDamage,
+                this::setCanDieFromReachingMaxDamage,
+                this::getCanDieFromReachingMaxDamage,
+                this::resetCanDieFromReachingMaxDamage))
+        .put("isConstruction",
+            AttachmentProperty.of(
+                this::setIsConstruction,
+                this::setIsConstruction,
+                this::getIsConstruction,
+                this::resetIsConstruction))
+        .put("constructionType",
+            AttachmentProperty.of(
+                this::setConstructionType,
+                this::setConstructionType,
+                this::getConstructionType,
+                this::resetConstructionType))
+        .put("constructionsPerTerrPerTypePerTurn",
+            AttachmentProperty.of(
+                this::setConstructionsPerTerrPerTypePerTurn,
+                this::setConstructionsPerTerrPerTypePerTurn,
+                this::getConstructionsPerTerrPerTypePerTurn,
+                this::resetConstructionsPerTerrPerTypePerTurn))
+        .put("maxConstructionsPerTypePerTerr",
+            AttachmentProperty.of(
+                this::setMaxConstructionsPerTypePerTerr,
+                this::setMaxConstructionsPerTypePerTerr,
+                this::getMaxConstructionsPerTypePerTerr,
+                this::resetMaxConstructionsPerTypePerTerr))
+        .put("canOnlyBePlacedInTerritoryValuedAtX",
+            AttachmentProperty.of(
+                this::setCanOnlyBePlacedInTerritoryValuedAtX,
+                this::setCanOnlyBePlacedInTerritoryValuedAtX,
+                this::getCanOnlyBePlacedInTerritoryValuedAtX,
+                this::resetCanOnlyBePlacedInTerritoryValuedAtX))
+        .put("requiresUnits",
+            AttachmentProperty.of(
+                this::setRequiresUnits,
+                this::setRequiresUnits,
+                this::getRequiresUnits,
+                this::resetRequiresUnits))
+        .put("consumesUnits",
+            AttachmentProperty.of(
+                this::setConsumesUnits,
+                this::setConsumesUnits,
+                this::getConsumesUnits,
+                this::resetConsumesUnits))
+        .put("requiresUnitsToMove",
+            AttachmentProperty.of(
+                this::setRequiresUnitsToMove,
+                this::setRequiresUnitsToMove,
+                this::getRequiresUnitsToMove,
+                this::resetRequiresUnitsToMove))
+        .put("unitPlacementRestrictions",
+            AttachmentProperty.of(
+                this::setUnitPlacementRestrictions,
+                this::setUnitPlacementRestrictions,
+                this::getUnitPlacementRestrictions,
+                this::resetUnitPlacementRestrictions))
+        .put("maxBuiltPerPlayer",
+            AttachmentProperty.of(
+                this::setMaxBuiltPerPlayer,
+                this::setMaxBuiltPerPlayer,
+                this::getMaxBuiltPerPlayer,
+                this::resetMaxBuiltPerPlayer))
+        .put("placementLimit",
+            AttachmentProperty.of(
+                this::setPlacementLimit,
+                this::setPlacementLimit,
+                this::getPlacementLimit,
+                this::resetPlacementLimit))
+        .put("canScramble",
+            AttachmentProperty.of(
+                this::setCanScramble,
+                this::setCanScramble,
+                this::getCanScramble,
+                this::resetCanScramble))
+        .put("isAirBase",
+            AttachmentProperty.of(
+                this::setIsAirBase,
+                this::setIsAirBase,
+                this::getIsAirBase,
+                this::resetIsAirBase))
+        .put("maxScrambleDistance",
+            AttachmentProperty.of(
+                this::setMaxScrambleDistance,
+                this::setMaxScrambleDistance,
+                this::getMaxScrambleDistance,
+                this::resetMaxScrambleDistance))
+        .put("maxScrambleCount",
+            AttachmentProperty.of(
+                this::setMaxScrambleCount,
+                this::setMaxScrambleCount,
+                this::getMaxScrambleCount,
+                this::resetMaxScrambleCount))
+        .put("blockade",
+            AttachmentProperty.of(
+                this::setBlockade,
+                this::setBlockade,
+                this::getBlockade,
+                this::resetBlockade))
+        .put("repairsUnits",
+            AttachmentProperty.of(
+                this::setRepairsUnits,
+                this::setRepairsUnits,
+                this::getRepairsUnits,
+                this::resetRepairsUnits))
+        .put("givesMovement",
+            AttachmentProperty.of(
+                this::setGivesMovement,
+                this::setGivesMovement,
+                this::getGivesMovement,
+                this::resetGivesMovement))
+        .put("destroyedWhenCapturedBy",
+            AttachmentProperty.of(
+                this::setDestroyedWhenCapturedBy,
+                this::setDestroyedWhenCapturedBy,
+                this::getDestroyedWhenCapturedBy,
+                this::resetDestroyedWhenCapturedBy))
+        .put("whenHitPointsDamagedChangesInto",
+            AttachmentProperty.of(
+                this::setWhenHitPointsDamagedChangesInto,
+                this::setWhenHitPointsDamagedChangesInto,
+                this::getWhenHitPointsDamagedChangesInto,
+                this::resetWhenHitPointsDamagedChangesInto))
+        .put("whenHitPointsRepairedChangesInto",
+            AttachmentProperty.of(
+                this::setWhenHitPointsRepairedChangesInto,
+                this::setWhenHitPointsRepairedChangesInto,
+                this::getWhenHitPointsRepairedChangesInto,
+                this::resetWhenHitPointsRepairedChangesInto))
+        .put("whenCapturedChangesInto",
+            AttachmentProperty.of(
+                this::setWhenCapturedChangesInto,
+                this::setWhenCapturedChangesInto,
+                this::getWhenCapturedChangesInto,
+                this::resetWhenCapturedChangesInto))
+        .put("whenCapturedSustainsDamage",
+            AttachmentProperty.of(
+                this::setWhenCapturedSustainsDamage,
+                this::setWhenCapturedSustainsDamage,
+                this::getWhenCapturedSustainsDamage,
+                this::resetWhenCapturedSustainsDamage))
+        .put("canBeCapturedOnEnteringBy",
+            AttachmentProperty.of(
+                this::setCanBeCapturedOnEnteringBy,
+                this::setCanBeCapturedOnEnteringBy,
+                this::getCanBeCapturedOnEnteringBy,
+                this::resetCanBeCapturedOnEnteringBy))
+        .put("canBeGivenByTerritoryTo",
+            AttachmentProperty.of(
+                this::setCanBeGivenByTerritoryTo,
+                this::setCanBeGivenByTerritoryTo,
+                this::getCanBeGivenByTerritoryTo,
+                this::resetCanBeGivenByTerritoryTo))
+        .put("whenCombatDamaged",
+            AttachmentProperty.of(
+                this::setWhenCombatDamaged,
+                this::setWhenCombatDamaged,
+                this::getWhenCombatDamaged,
+                this::resetWhenCombatDamaged))
+        .put("receivesAbilityWhenWith",
+            AttachmentProperty.of(
+                this::setReceivesAbilityWhenWith,
+                this::setReceivesAbilityWhenWith,
+                this::getReceivesAbilityWhenWith,
+                this::resetReceivesAbilityWhenWith))
+        .put("special",
+            AttachmentProperty.of(
+                this::setSpecial,
+                this::setSpecial,
+                this::getSpecial,
+                this::resetSpecial))
+        .put("tuv",
+            AttachmentProperty.of(
+                this::setTuv,
+                this::setTuv,
+                this::getTuv,
+                this::resetTuv))
+        .put("isFactory",
+            AttachmentProperty.<Boolean>of(
+                this::setIsFactory,
+                this::setIsFactory))
+        .put("isAA",
+            AttachmentProperty.<Boolean>of(
+                this::setIsAA,
+                this::setIsAA))
+        .put("destroyedWhenCapturedFrom",
+            AttachmentProperty.of(this::setDestroyedWhenCapturedFrom, this::setDestroyedWhenCapturedFrom))
+        .put("unitPlacementOnlyAllowedIn",
+            AttachmentProperty.of(this::setUnitPlacementOnlyAllowedIn, this::setUnitPlacementOnlyAllowedIn))
+        .put("isAAmovement", AttachmentProperty.<Boolean>of(this::setIsAAmovement, this::setIsAAmovement))
+        .put("isTwoHit", AttachmentProperty.<Boolean>of(this::setIsTwoHit, this::setIsTwoHit))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

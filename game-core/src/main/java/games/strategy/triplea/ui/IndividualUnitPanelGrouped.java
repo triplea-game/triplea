@@ -77,10 +77,6 @@ public class IndividualUnitPanelGrouped extends JPanel {
     textFieldListener.changedValue(null);
   }
 
-  public void setTitle(final String title) {
-    this.title.setText(title);
-  }
-
   private void updateLeft() {
     if (max == -1) {
       return;

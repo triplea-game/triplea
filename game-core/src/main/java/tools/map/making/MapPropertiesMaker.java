@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -295,7 +296,6 @@ public class MapPropertiesMaker extends JFrame {
   }
 
   private void loadProperties() {
-    final Properties properties = new Properties();
     ToolLogger.info("Load a properties file");
     final String centerName =
         new FileOpen("Load A Properties File", mapFolderLocation, ".properties").getPathString();
@@ -303,6 +303,7 @@ public class MapPropertiesMaker extends JFrame {
       return;
     }
     try (InputStream in = new FileInputStream(centerName)) {
+      final Properties properties = new Properties();
       properties.load(in);
     } catch (final IOException e) {
       ToolLogger.error("Failed to load map properties: " + centerName, e);
@@ -328,7 +329,7 @@ public class MapPropertiesMaker extends JFrame {
       }
       final String stringToWrite = getOutPutString();
       try (OutputStream sink = new FileOutputStream(fileName);
-          Writer out = new OutputStreamWriter(sink)) {
+          Writer out = new OutputStreamWriter(sink, StandardCharsets.UTF_8)) {
         out.write(stringToWrite);
       }
       ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());

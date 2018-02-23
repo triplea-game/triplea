@@ -89,23 +89,6 @@ public class JTextFieldBuilder {
   }
 
   /**
-   * Returns a builder that creates a JComponent with a text field and jbutton.
-   *
-   * @param buttonText The 'title' or 'text' displayed on the button that will
-   *        appear next to the constructed JTextField.
-   * @param buttonAction Action to be fired when the button is clicked. The value
-   *        of the TextField will be passed as input to the Consumer function.
-   */
-  public JTextFieldButtonAttachmentBuilder attachButton(
-      final String buttonText,
-      final Consumer<String> buttonAction) {
-
-    return new JTextFieldButtonAttachmentBuilder(this)
-        .withButton(buttonText, buttonAction);
-  }
-
-
-  /**
    * Adds an action listener that is fired when the user presses enter after entering text
    * into the text field.
    *

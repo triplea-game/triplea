@@ -37,7 +37,6 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -454,10 +453,6 @@ public class HeadlessGameServer {
     return game;
   }
 
-  public boolean isShutDown() {
-    return shutDown;
-  }
-
   private static synchronized void restartLobbyWatcher(
       final SetupPanelModel setupPanelModel, final ServerGame serverGame) {
     try {
@@ -519,18 +514,16 @@ public class HeadlessGameServer {
   }
 
   public void printThreadDumpsAndStatus() {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("Dump to Log:");
-    sb.append("\n\nStatus:\n");
-    sb.append(getStatus());
-    sb.append("\n\nServer:\n");
-    sb.append(getServerModel());
-    sb.append("\n\n");
-    sb.append(DebugUtils.getThreadDumps());
-    sb.append("\n\n");
-    sb.append(DebugUtils.getMemory());
-    sb.append("\n\nDump finished.\n");
-    System.out.println(sb.toString());
+    System.out.println("Dump to Log:"
+        + "\n\nStatus:\n"
+        + getStatus()
+        + "\n\nServer:\n"
+        + getServerModel()
+        + "\n\n"
+        + DebugUtils.getThreadDumps()
+        + "\n\n"
+        + DebugUtils.getMemory()
+        + "\n\nDump finished.\n");
   }
 
   synchronized void shutdown() {
@@ -601,12 +594,14 @@ public class HeadlessGameServer {
         System.out.println("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
             + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
         setupPanelModel.getPanel().preStartGame();
-        final ILauncher launcher = setupPanelModel.getPanel().getLauncher();
-        if (launcher != null) {
-          launcher.launch(null);
-        }
+
+        final boolean launched = setupPanelModel.getPanel().getLauncher()
+            .map(launcher -> {
+              launcher.launch(null);
+              return true;
+            }).orElse(false);
         setupPanelModel.getPanel().postStartGame();
-        return launcher != null;
+        return launched;
       }
     } catch (final Exception e) {
       logger.log(Level.SEVERE, "Failed to start headless game", e);
@@ -657,27 +652,21 @@ public class HeadlessGameServer {
    */
   public Chat getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    if (model instanceof ServerSetupPanel) {
-      return model.getChatPanel().getChat();
-    } else if (model instanceof ClientSetupPanel) {
-      return model.getChatPanel().getChat();
-    } else if (model instanceof HeadlessServerSetup) {
-      return model.getChatPanel().getChat();
-    } else {
-      return null;
-    }
+    return ((model instanceof ServerSetupPanel)
+        || (model instanceof ClientSetupPanel)
+        || (model instanceof HeadlessServerSetup))
+            ? model.getChatPanel().getChat()
+            : null;
   }
 
   /**
    * Launches a bot server. Most properties are passed via command line-like arguments.
    */
-  /*
-   * TODO: get properties from a configuration file instead of CLI.
-   */
   public static void main(final String[] args) {
     ClientSetting.initialize();
 
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
+    // TODO: get properties from a configuration file instead of CLI.
     if (!new ArgParser(getProperties()).handleCommandLineArgs(args)) {
       usage();
       return;

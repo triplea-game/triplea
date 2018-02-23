@@ -17,16 +17,13 @@ public class HashedPasswordTest {
 
   @Test
   public void isValidSyntax() {
-    final String md5CryptMagic = games.strategy.util.Md5Crypt.MAGIC;
-
     Arrays.asList(
-        md5CryptMagic,
-        md5CryptMagic + " ",
-        md5CryptMagic + "_",
-        md5CryptMagic + "abc").forEach(
-            valid -> assertThat(
-                "Expecting this to look valid, starts with magic: " + valid,
-                new HashedPassword(valid).isHashedWithSalt(), is(true)));
+        "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11",
+        "$2a$10$7v.RGs4Aw.cW8Hg1LGINQO/EKf47TAQDClHXkDAzx6HCuakrjBF7.")
+        .forEach(
+            value -> assertThat(
+                "Expecting this to look valid: " + value,
+                new HashedPassword(value).isHashedWithSalt(), is(true)));
   }
 
   @Test
@@ -36,9 +33,10 @@ public class HashedPasswordTest {
         "abc",
         "  ",
         "\n",
-        "#00000").forEach(
-            invalid -> assertThat(
-                "Expecting this to look invalid, does not start with magic: " + invalid,
-                new HashedPassword(invalid).isHashedWithSalt(), is(false)));
+        "#00000")
+        .forEach(
+            value -> assertThat(
+                "Expecting this to look invalid: " + value,
+                new HashedPassword(value).isHashedWithSalt(), is(false)));
   }
 }

@@ -133,10 +133,10 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     if (defaultCasualties.getKilled().size() <= 0) {
       return new CasualtyDetails(defaultCasualties, false);
     }
-    final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0;
     final CasualtyDetails myCasualties = new CasualtyDetails(false);
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
     final List<Unit> selectFromSorted = new ArrayList<>(selectFrom);
+    final int numberOfPlanesThatDoNotNeedToLandOnCarriers = 0;
     final List<Unit> interleavedTargetList = new ArrayList<>(
         AiUtils.interleaveCarriersAndPlanes(selectFromSorted, numberOfPlanesThatDoNotNeedToLandOnCarriers));
     for (int i = 0; i < defaultCasualties.getKilled().size(); ++i) {

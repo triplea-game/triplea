@@ -1,6 +1,11 @@
 package games.strategy.engine.data.annotations;
 
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.UnitType;
@@ -24,7 +29,7 @@ public class ExampleAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setTechCost(final String techCost) {
-    this.techCost = getInt(techCost);
+    setTechCost(getInt(techCost));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -120,4 +125,38 @@ public class ExampleAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("techCost",
+            AttachmentProperty.of(
+                this::setTechCost,
+                this::setTechCost,
+                this::getTechCost,
+                this::resetTechCost))
+        .put("heavyBomber",
+            AttachmentProperty.of(
+                this::setHeavyBomber,
+                this::setHeavyBomber,
+                this::getHeavyBomber,
+                this::resetHeavyBomber))
+        .put("attribute",
+            AttachmentProperty.of(
+                this::setAttribute,
+                this::getAttribute,
+                this::resetAttribute))
+        .put("givesMovement",
+            AttachmentProperty.of(
+                this::setGivesMovement,
+                this::setGivesMovement,
+                this::getGivesMovement,
+                this::resetGivesMovement))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

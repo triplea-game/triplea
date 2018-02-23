@@ -21,9 +21,9 @@ class SerializedHistory implements Serializable {
 
   public SerializedHistory(final History history, final GameData data, final List<Change> changes) {
     m_data = data;
-    int changeIndex = 0;
     final Enumeration<?> enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
     enumeration.nextElement();
+    int changeIndex = 0;
     while (enumeration.hasMoreElements()) {
       final HistoryNode node = (HistoryNode) enumeration.nextElement();
       // write the changes to the start of the node

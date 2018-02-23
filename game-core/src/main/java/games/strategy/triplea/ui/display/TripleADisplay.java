@@ -7,7 +7,6 @@ import java.util.Map;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
@@ -23,9 +22,6 @@ public class TripleADisplay implements ITripleADisplay {
   public TripleADisplay(final TripleAFrame ui) {
     this.ui = ui;
   }
-
-  @Override
-  public void initialize(final IDisplayBridge bridge) {}
 
   // TODO: unit_dependents and battleTitle are both likely not used, they have been removed
   // from BattlePane().showBattle( .. ) already
@@ -113,20 +109,18 @@ public class TripleADisplay implements ITripleADisplay {
       boolean isHost = false;
       boolean isClient = false;
       boolean isObserver = true;
-      if (doNotIncludeHost || doNotIncludeClients || doNotIncludeObservers) {
-        for (final IGamePlayer player : ui.getLocalPlayers().getLocalPlayers()) {
-          // if we have any local players, we are not an observer
-          isObserver = false;
-          if (player instanceof TripleAPlayer) {
-            if (IGameLoader.CLIENT_PLAYER_TYPE.equals(player.getType())) {
-              isClient = true;
-            } else {
-              isHost = true;
-            }
+      for (final IGamePlayer player : ui.getLocalPlayers().getLocalPlayers()) {
+        // if we have any local players, we are not an observer
+        isObserver = false;
+        if (player instanceof TripleAPlayer) {
+          if (IGameLoader.CLIENT_PLAYER_TYPE.equals(player.getType())) {
+            isClient = true;
           } else {
-            // AIs are run by the host machine
             isHost = true;
           }
+        } else {
+          // AIs are run by the host machine
+          isHost = true;
         }
       }
       if ((doNotIncludeHost && isHost) || (doNotIncludeClients && isClient) || (doNotIncludeObservers && isObserver)) {

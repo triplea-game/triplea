@@ -8,10 +8,11 @@ import games.strategy.engine.message.IChannelSubscribor;
  * on a single vm, and conversly a display may interact with many IGamePlayers
  */
 public interface IDisplay extends IChannelSubscribor {
-  /**
-   * before recieving messages, this method will be called by the game engine.
-   */
-  void initialize(IDisplayBridge bridge);
-
   void shutDown();
+
+  /**
+   * @deprecated Kept around for backwards compatibility.
+   */
+  @Deprecated
+  default void initialize(final IDisplayBridge bridge) {}
 }

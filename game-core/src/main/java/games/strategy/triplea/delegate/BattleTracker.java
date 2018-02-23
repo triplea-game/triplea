@@ -92,13 +92,6 @@ public class BattleTracker implements Serializable {
     return getPendingBattle(t, bombing, null) != null;
   }
 
-  /**
-   * add to the conquered.
-   */
-  void addToConquered(final Collection<Territory> territories) {
-    m_conquered.addAll(territories);
-  }
-
   void addToConquered(final Territory territory) {
     m_conquered.add(territory);
   }
@@ -383,7 +376,7 @@ public class BattleTracker implements Serializable {
       final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
     final GameData data = bridge.getData();
     final Collection<Unit> canConquer = CollectionUtils.getMatches(units,
-        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).negate());
+        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, id, data, false).negate());
     if (canConquer.stream().noneMatch(Matches.unitIsNotAir())) {
       return;
     }
@@ -941,7 +934,7 @@ public class BattleTracker implements Serializable {
   public IBattle getPendingBattle(final Territory t, final boolean bombing, final BattleType type) {
     for (final IBattle battle : m_pendingBattles) {
       if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing) {
-        if (type == null || type.equals(battle.getBattleType())) {
+        if (type == null || type == battle.getBattleType()) {
           return battle;
         }
       }
@@ -964,7 +957,7 @@ public class BattleTracker implements Serializable {
   Collection<IBattle> getPendingBattles(final Territory t, final BattleType type) {
     final Collection<IBattle> battles = new HashSet<>();
     for (final IBattle battle : m_pendingBattles) {
-      if (battle.getTerritory().equals(t) && (type == null || type.equals(battle.getBattleType()))) {
+      if (battle.getTerritory().equals(t) && (type == null || type == battle.getBattleType())) {
         battles.add(battle);
       }
     }
@@ -1048,21 +1041,6 @@ public class BattleTracker implements Serializable {
       m_pendingBattles.remove(battle);
       m_foughBattles.add(battle.getTerritory());
     }
-  }
-
-  /**
-   * Marks the set of territories as having been the source of a naval
-   * bombardment.
-   *
-   * @param territories
-   *        a collection of territories
-   */
-  public void addPreviouslyNavalBombardmentSource(final Collection<Territory> territories) {
-    m_bombardedFromTerritories.addAll(territories);
-  }
-
-  public boolean wasNavalBombardmentSource(final Territory territory) {
-    return m_bombardedFromTerritories.contains(territory);
   }
 
   private static boolean isPacificTheater(final GameData data) {

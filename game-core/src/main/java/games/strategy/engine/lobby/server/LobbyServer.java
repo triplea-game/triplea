@@ -62,12 +62,4 @@ public class LobbyServer {
       logger.log(Level.SEVERE, ex.toString(), ex);
     }
   }
-
-  public IServerMessenger getMessenger() {
-    return (IServerMessenger) messengers.getMessenger();
-  }
-
-  public Messengers getMessengers() {
-    return messengers;
-  }
 }

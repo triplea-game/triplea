@@ -59,7 +59,7 @@ public class HeadlessUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player, final GameData data,
+  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player,
       final UnitDamage damaged, final UnitEnable disabled) {
     return null;
   }

@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -295,7 +299,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSuicideAttackTargets(final HashSet<UnitType> value) {
+  public void setSuicideAttackTargets(final Set<UnitType> value) {
     m_suicideAttackTargets = value;
   }
 
@@ -437,7 +441,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setGiveUnitControl(final ArrayList<PlayerID> value) {
+  public void setGiveUnitControl(final List<PlayerID> value) {
     m_giveUnitControl = value;
   }
 
@@ -470,7 +474,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value) {
+  public void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
     m_captureUnitOnEnteringBy = value;
   }
 
@@ -503,7 +507,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setShareTechnology(final ArrayList<PlayerID> value) {
+  public void setShareTechnology(final List<PlayerID> value) {
     m_shareTechnology = value;
   }
 
@@ -536,7 +540,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setHelpPayTechCost(final ArrayList<PlayerID> value) {
+  public void setHelpPayTechCost(final List<PlayerID> value) {
     m_helpPayTechCost = value;
   }
 
@@ -590,4 +594,100 @@ public class PlayerAttachment extends DefaultAttachment {
 
   @Override
   public void validate(final GameData data) {}
+
+
+  private Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .put("vps", AttachmentProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
+        .put("captureVps",
+            AttachmentProperty.of(
+                this::setCaptureVps,
+                this::setCaptureVps,
+                this::getCaptureVps,
+                this::resetCaptureVps))
+        .put("retainCapitalNumber",
+            AttachmentProperty.of(
+                this::setRetainCapitalNumber,
+                this::setRetainCapitalNumber,
+                this::getRetainCapitalNumber,
+                this::resetRetainCapitalNumber))
+        .put("retainCapitalProduceNumber",
+            AttachmentProperty.of(
+                this::setRetainCapitalProduceNumber,
+                this::setRetainCapitalProduceNumber,
+                this::getRetainCapitalProduceNumber,
+                this::resetRetainCapitalProduceNumber))
+        .put("giveUnitControl",
+            AttachmentProperty.of(
+                this::setGiveUnitControl,
+                this::setGiveUnitControl,
+                this::getGiveUnitControl,
+                this::resetGiveUnitControl))
+        .put("captureUnitOnEnteringBy",
+            AttachmentProperty.of(
+                this::setCaptureUnitOnEnteringBy,
+                this::setCaptureUnitOnEnteringBy,
+                this::getCaptureUnitOnEnteringBy,
+                this::resetCaptureUnitOnEnteringBy))
+        .put("shareTechnology",
+            AttachmentProperty.of(
+                this::setShareTechnology,
+                this::setShareTechnology,
+                this::getShareTechnology,
+                this::resetShareTechnology))
+        .put("helpPayTechCost",
+            AttachmentProperty.of(
+                this::setHelpPayTechCost,
+                this::setHelpPayTechCost,
+                this::getHelpPayTechCost,
+                this::resetHelpPayTechCost))
+        .put("destroysPUs",
+            AttachmentProperty.of(
+                this::setDestroysPUs,
+                this::setDestroysPUs,
+                this::getDestroysPUs,
+                this::resetDestroysPUs))
+        .put("immuneToBlockade",
+            AttachmentProperty.of(
+                this::setImmuneToBlockade,
+                this::setImmuneToBlockade,
+                this::getImmuneToBlockade,
+                this::resetImmuneToBlockade))
+        .put("suicideAttackResources",
+            AttachmentProperty.of(
+                this::setSuicideAttackResources,
+                this::setSuicideAttackResources,
+                this::getSuicideAttackResources,
+                this::resetSuicideAttackResources))
+        .put("suicideAttackTargets",
+            AttachmentProperty.of(
+                this::setSuicideAttackTargets,
+                this::setSuicideAttackTargets,
+                this::getSuicideAttackTargets,
+                this::resetSuicideAttackTargets))
+        .put("placementLimit",
+            AttachmentProperty.of(
+                this::setPlacementLimit,
+                this::setPlacementLimit,
+                this::getPlacementLimit,
+                this::resetPlacementLimit))
+        .put("movementLimit",
+            AttachmentProperty.of(
+                this::setMovementLimit,
+                this::setMovementLimit,
+                this::getMovementLimit,
+                this::resetMovementLimit))
+        .put("attackingLimit",
+            AttachmentProperty.of(
+                this::setAttackingLimit,
+                this::setAttackingLimit,
+                this::getAttackingLimit,
+                this::resetAttackingLimit))
+        .build();
+  }
+
+  @Override
+  public Map<String, AttachmentProperty<?>> getPropertyMap() {
+    return createPropertyMap();
+  }
 }

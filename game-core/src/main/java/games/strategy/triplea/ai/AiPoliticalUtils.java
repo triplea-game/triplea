@@ -36,10 +36,10 @@ public class AiPoliticalUtils {
   public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
-    final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     final Collection<PoliticalActionAttachment> validActions =
         PoliticalActionAttachment.getValidActions(id, testedConditions, data);
     validActions.removeAll(warActions);
+    final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     for (final PoliticalActionAttachment nextAction : validActions) {
       if (warActions.contains(nextAction)) {
         continue;

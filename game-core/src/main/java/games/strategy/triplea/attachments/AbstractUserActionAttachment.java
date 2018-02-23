@@ -3,8 +3,12 @@ package games.strategy.triplea.attachments;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -19,6 +23,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 3569461523853104614L;
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
+
 
   public AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -111,7 +116,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setActionAccept(final ArrayList<PlayerID> value) {
+  public void setActionAccept(final List<PlayerID> value) {
     m_actionAccept = value;
   }
 
@@ -167,8 +172,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setAttemptsLeftThisTurn(final Integer attempts) {
-    m_attemptsLeftThisTurn = attempts;
+  public void setAttemptsLeftThisTurn(final String attempts) {
+    setAttemptsLeftThisTurn(getInt(attempts));
   }
 
   /**
@@ -202,5 +207,42 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     if (m_text.trim().length() <= 0) {
       throw new GameParseException("value: text can't be empty" + thisErrorMsg());
     }
+  }
+
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
+        .put("text",
+            AttachmentProperty.of(
+                this::setText,
+                this::setText,
+                this::getText,
+                this::resetText))
+        .put("costPU",
+            AttachmentProperty.of(
+                this::setCostPU,
+                this::setCostPU,
+                this::getCostPU,
+                this::resetCostPU))
+        .put("attemptsPerTurn",
+            AttachmentProperty.of(
+                this::setAttemptsPerTurn,
+                this::setAttemptsPerTurn,
+                this::getAttemptsPerTurn,
+                this::resetAttemptsPerTurn))
+        .put("attemptsLeftThisTurn",
+            AttachmentProperty.of(
+                this::setAttemptsLeftThisTurn,
+                this::setAttemptsLeftThisTurn,
+                this::getAttemptsLeftThisTurn,
+                this::resetAttemptsLeftThisTurn))
+        .put("actionAccept",
+            AttachmentProperty.of(
+                this::setActionAccept,
+                this::setActionAccept,
+                this::getActionAccept,
+                this::resetActionAccept))
+        .build();
   }
 }

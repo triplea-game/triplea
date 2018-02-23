@@ -14,24 +14,6 @@ public class JButtonDialog {
   /**
    * Show a new modal dialog and block until the user press a button of closes the dialog.
    *
-   * @param frame
-   *        the frame owner
-   * @param title
-   *        the dialog title
-   * @param message
-   *        the String message, or a JPanel
-   * @param buttons
-   *        the string button options (may not be null)
-   * @return the option pressed or null if the dialog is closed without pressing a button
-   */
-  public static String showDialog(final Frame frame, final String title, final Object message,
-      final String... buttons) {
-    return showDialog(frame, title, message, JOptionPane.PLAIN_MESSAGE, buttons);
-  }
-
-  /**
-   * Show a new modal dialog and block until the user press a button of closes the dialog.
-   *
    * @param component
    *        the component owner
    * @param title

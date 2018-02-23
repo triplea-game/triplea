@@ -80,7 +80,6 @@ public class BattleRecordsList extends GameDataComponent {
   // Interpretation stuff below
   public static int getTuvDamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl,
       final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
-    int damageCausedByAttacker = 0;
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
       if (brl != null) {
@@ -102,6 +101,7 @@ public class BattleRecordsList extends GameDataComponent {
         }
       }
     }
+    int damageCausedByAttacker = 0;
     for (final BattleRecords br : brs) {
       damageCausedByAttacker += BattleRecords
           .getLostTuvForBattleRecords(BattleRecords.getRecordsForPlayerId(attacker, br), false, includeNullPlayer);

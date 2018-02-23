@@ -37,6 +37,7 @@ import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 import swinglib.JButtonBuilder;
 
 /**
@@ -359,14 +360,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
       if (file == null || !file.exists()) {
         return;
       }
-      try {
-        GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
-          model.load(file, this);
-          setOriginalPropertiesMap(model.getGameData());
-        });
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+
+      Interruptibles.await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
+        model.load(file, this);
+        setOriginalPropertiesMap(model.getGameData());
+      }));
     } else {
       try {
         final GameChooserEntry entry =

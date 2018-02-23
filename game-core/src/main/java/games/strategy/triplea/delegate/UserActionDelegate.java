@@ -66,8 +66,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   @Override
   public Collection<UserActionAttachment> getValidActions() {
     final GameData data = bridge.getData();
-    final HashMap<ICondition, Boolean> testedConditions;
     data.acquireReadLock();
+    final HashMap<ICondition, Boolean> testedConditions;
     try {
       testedConditions = getTestedConditions();
     } finally {

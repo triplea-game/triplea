@@ -105,9 +105,7 @@ public class GameStepPropertiesHelper {
         return Boolean.parseBoolean(prop);
       } else if (isNonCombatDelegate(data)) {
         return true;
-      } else if (isCombatDelegate(data)) {
-        return false;
-      } else if (doNotThrowErrorIfNotMoveDelegate) {
+      } else if (isCombatDelegate(data) || doNotThrowErrorIfNotMoveDelegate) {
         return false;
       } else {
         throw new IllegalStateException("Cannot determine combat or not: " + data.getSequence().getStep().getName());
@@ -208,8 +206,8 @@ public class GameStepPropertiesHelper {
    *         empty. never null.
    */
   public static Set<PlayerID> getCombinedTurns(final GameData data, final PlayerID player) {
-    final Set<PlayerID> allowedIDs = new HashSet<>();
     data.acquireReadLock();
+    final Set<PlayerID> allowedIDs = new HashSet<>();
     try {
       final String allowedPlayers =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.COMBINED_TURNS);
@@ -281,8 +279,8 @@ public class GameStepPropertiesHelper {
    *         empty. never null.
    */
   public static Set<PlayerID> getRepairPlayers(final GameData data, final PlayerID player) {
-    final Set<PlayerID> allowedIDs = new HashSet<>();
     data.acquireReadLock();
+    final Set<PlayerID> allowedIDs = new HashSet<>();
     try {
       final String allowedPlayers =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REPAIR_PLAYERS);

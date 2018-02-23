@@ -2,9 +2,10 @@ package games.strategy.triplea.ui.menubar;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ final class ExportMenu extends JMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
+    try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(xmlFile);
     } catch (final IOException e1) {
       ClientLogger.logQuietly("Failed to write XML: " + chooser.getSelectedFile().getAbsolutePath(), e1);
@@ -154,10 +155,9 @@ final class ExportMenu extends JMenu {
       return;
     }
     final StringBuilder text = new StringBuilder(1000);
-    final GameData clone;
     try {
       gameData.acquireReadLock();
-      clone = GameDataUtils.cloneGameData(gameData);
+      final GameData clone = GameDataUtils.cloneGameData(gameData);
       final IStat[] stats = statPanel.getStats();
       // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech
       // tokens or # techs, etc.
@@ -170,26 +170,26 @@ final class ExportMenu extends JMenu {
       for (int i = 0; i < players.length; i++) {
         players[i] = clone.getPlayerList().getPlayerId(players[i].getName());
       }
-      text.append(defaultFileName + ",");
+      text.append(defaultFileName).append(",");
       text.append("\n");
       text.append("TripleA Engine Version: ,");
-      text.append(ClientContext.engineVersion() + ",");
+      text.append(ClientContext.engineVersion()).append(",");
       text.append("\n");
       text.append("Game Name: ,");
-      text.append(gameData.getGameName() + ",");
+      text.append(gameData.getGameName()).append(",");
       text.append("\n");
       text.append("Game Version: ,");
-      text.append(gameData.getGameVersion() + ",");
+      text.append(gameData.getGameVersion()).append(",");
       text.append("\n");
       text.append("\n");
       text.append("Current Round: ,");
-      text.append(currentRound + ",");
+      text.append(currentRound).append(",");
       text.append("\n");
       text.append("Number of Players: ,");
-      text.append(statPanel.getPlayers().size() + ",");
+      text.append(statPanel.getPlayers().size()).append(",");
       text.append("\n");
       text.append("Number of Alliances: ,");
-      text.append(statPanel.getAlliances().size() + ",");
+      text.append(statPanel.getAlliances().size()).append(",");
       text.append("\n");
       text.append("\n");
       text.append("Turn Order: ,");
@@ -221,7 +221,7 @@ final class ExportMenu extends JMenu {
       text.append("Resource Chart: ,");
       text.append("\n");
       for (final Resource resource : gameData.getResourceList().getResources()) {
-        text.append(resource.getName() + ",");
+        text.append(resource.getName()).append(",");
         text.append("\n");
       }
       // if short, we won't both showing production and unit info
@@ -369,7 +369,7 @@ final class ExportMenu extends JMenu {
     } finally {
       gameData.releaseReadLock();
     }
-    try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
+    try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(text.toString());
     } catch (final IOException e1) {
       ClientLogger.logQuietly("Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
@@ -388,7 +388,7 @@ final class ExportMenu extends JMenu {
       if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
         return;
       }
-      try (Writer writer = new FileWriter(chooser.getSelectedFile())) {
+      try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
         writer.write(
             HelpMenu.getUnitStatsTable(gameData, uiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
                 .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));

@@ -133,9 +133,9 @@ public class IntTextField extends JTextField {
       final String currentText = this.getText(0, getLength());
       final String beforeOffset = currentText.substring(0, offs);
       final String afterOffset = currentText.substring(offs, currentText.length());
-      final String proposedResult = beforeOffset + str + afterOffset;
       // allow start of negative
       try {
+        final String proposedResult = beforeOffset + str + afterOffset;
         Integer.parseInt(proposedResult);
         super.insertString(offs, str, a);
         checkValue();
@@ -146,7 +146,7 @@ public class IntTextField extends JTextField {
         if (offs == 0) {
           if (min < 0) {
             if (str.equals("-")) {
-              super.insertString(offs, str, a);
+              super.insertString(0, str, a);
             }
           }
         }

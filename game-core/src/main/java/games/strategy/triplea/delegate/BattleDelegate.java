@@ -632,7 +632,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         .andIf(fromIslandOnly, Matches.territoryIsIsland())
         .build();
 
-    final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     final Set<Territory> territoriesWithBattles =
         battleTracker.getPendingBattleSites().getNormalBattlesIncludingAirBattles();
     if (toSbr) {
@@ -640,9 +639,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           .addAll(battleTracker.getPendingBattleSites().getStrategicBombingRaidsIncludingAirBattles());
     }
     final Set<Territory> territoriesWithBattlesWater = new HashSet<>();
-    final Set<Territory> territoriesWithBattlesLand = new HashSet<>();
     territoriesWithBattlesWater.addAll(CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater()));
+    final Set<Territory> territoriesWithBattlesLand = new HashSet<>();
     territoriesWithBattlesLand.addAll(CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
+    final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory battleTerr : territoriesWithBattlesWater) {
       final Set<Territory> canScrambleFrom = new HashSet<>(
           CollectionUtils.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
@@ -685,12 +685,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Tuple<Territory, PlayerID>, Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
         new HashMap<>();
     for (final Territory to : scrambleTerrs.keySet()) {
-      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers = new HashMap<>();
       // find who we should ask
       PlayerID defender = null;
       if (battleTracker.hasPendingBattle(to, false)) {
         defender = AbstractBattle.findDefender(to, player, data);
       }
+      final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers = new HashMap<>();
       for (final Territory from : scrambleTerrs.get(to)) {
         if (defender == null) {
           defender = AbstractBattle.findDefender(from, player, data);
@@ -770,8 +770,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             // TODO: maybe sort from biggest to smallest first?
             for (final Unit airbase : airbases) {
               final int allowedScramble = ((TripleAUnit) airbase).getMaxScrambleCount();
-              final int newAllowed;
               if (allowedScramble > 0) {
+                final int newAllowed;
                 if (allowedScramble >= numberScrambled) {
                   newAllowed = allowedScramble - numberScrambled;
                   numberScrambled = 0;
@@ -836,7 +836,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               bridge.addChange(change1);
             }
             // after that is applied, we have to make a map of all dependencies
-            final Map<Territory, Map<Unit, Collection<Unit>>> dependencies = new HashMap<>();
             final Map<Unit, Collection<Unit>> dependenciesForMfb =
                 TransportTracker.transporting(attackingUnits, attackingUnits);
             for (final Unit transport : CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
@@ -847,6 +846,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 dependenciesForMfb.put(transport, new ArrayList<>());
               }
             }
+            final Map<Territory, Map<Unit, Collection<Unit>>> dependencies = new HashMap<>();
             dependencies.put(to, dependenciesForMfb);
             for (final Territory t : neighborsLand) {
               // All other maps, must hold only the transported units that in their territory
@@ -1417,7 +1417,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       final PlayerID alliedPlayer, final GameData data, final BattleTracker battleTracker,
       final int carrierCostForCurrentTerr, final int allowedMovement,
       final boolean useMaxScrambleDistance) {
-    final HashSet<Territory> whereCanLand = new HashSet<>();
     int maxDistance = allowedMovement;
     if ((maxDistance > 1) || useMaxScrambleDistance) {
       UnitType ut = null;
@@ -1459,6 +1458,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     availableLand.addAll(CollectionUtils.getMatches(possibleTerrs,
         Matches.isTerritoryAllied(alliedPlayer, data).and(Matches.territoryIsLand())));
     availableLand.removeAll(canNotLand);
+    final HashSet<Territory> whereCanLand = new HashSet<>();
     whereCanLand.addAll(availableLand);
     // now for carrier-air-landing validation
     if (!strandedAir.isEmpty() && strandedAir.stream().allMatch(Matches.unitCanLandOnCarrier())) {

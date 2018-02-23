@@ -7,6 +7,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.Test;
 
+import games.strategy.util.Interruptibles;
+
 public final class DelegateExecutionManagerTest {
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
 
@@ -39,11 +41,7 @@ public final class DelegateExecutionManagerTest {
     final Thread delegate1Thread = new Thread(() -> {
       delegateExecutionManager.enterDelegateExecution();
       delegate1RunningLatch.countDown();
-      try {
-        testCompleteLatch.await();
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      Interruptibles.await(testCompleteLatch);
     });
     delegate1Thread.start();
     delegate1RunningLatch.await();

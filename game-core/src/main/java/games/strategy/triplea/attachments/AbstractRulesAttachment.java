@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.Attachable;
+import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
@@ -27,6 +30,7 @@ import games.strategy.util.CollectionUtils;
  */
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
+
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
   // purposes of m_objectiveValue
@@ -74,7 +78,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayers(final ArrayList<PlayerID> value) {
+  public void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
 
@@ -248,7 +252,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTurns(final HashMap<Integer, Integer> value) {
+  public void setTurns(final String turns) throws GameParseException {
+    setRounds(turns);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  public void setTurns(final Map<Integer, Integer> value) {
     m_turns = value;
   }
 
@@ -323,11 +332,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       setTerritoryCount(String.valueOf(allTerrs.size()));
       return allTerrs;
     } else { // The list just contained 1 territory
-      final Set<Territory> terr = new HashSet<>();
       final Territory t = data.getMap().getTerritory(name);
       if (t == null) {
         throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
       }
+      final Set<Territory> terr = new HashSet<>();
       terr.add(t);
       setTerritoryCount(String.valueOf(1));
       return terr;
@@ -423,5 +432,51 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       setTerritoryCount(String.valueOf(territories.size()));
     }
     return territories;
+  }
+
+  @Override
+  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
+    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+        .putAll(super.createPropertyMap())
+        .put("countEach", AttachmentProperty.of(this::getCountEach))
+        .put("eachMultiple", AttachmentProperty.of(this::getEachMultiple))
+        .put("players",
+            AttachmentProperty.of(
+                this::setPlayers,
+                this::setPlayers,
+                this::getPlayers,
+                this::resetPlayers))
+        .put("objectiveValue",
+            AttachmentProperty.of(
+                this::setObjectiveValue,
+                this::setObjectiveValue,
+                this::getObjectiveValue,
+                this::resetObjectiveValue))
+        .put("uses",
+            AttachmentProperty.of(
+                this::setUses,
+                this::setUses,
+                this::getUses,
+                this::resetUses))
+        .put("turns",
+            AttachmentProperty.of(
+                this::setTurns,
+                this::setTurns,
+                this::getTurns,
+                this::resetTurns))
+        .put("switch",
+            AttachmentProperty.of(
+                this::setSwitch,
+                this::setSwitch,
+                this::getSwitch,
+                this::resetSwitch))
+        .put("gameProperty",
+            AttachmentProperty.of(
+                this::setGameProperty,
+                this::setGameProperty,
+                this::getGameProperty,
+                this::resetGameProperty))
+        .put("rounds", AttachmentProperty.of(this::setRounds, this::setRounds))
+        .build();
   }
 }

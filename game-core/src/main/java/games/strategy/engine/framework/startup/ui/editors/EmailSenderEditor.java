@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -157,12 +158,12 @@ public class EmailSenderEditor extends EditorPanel {
       String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
       int messageType = JOptionPane.ERROR_MESSAGE;
       try {
-        final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
         final File dummy = new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
         dummy.deleteOnExit();
         try (OutputStream fout = new FileOutputStream(dummy)) {
-          fout.write("This file would normally be a save game".getBytes());
+          fout.write("This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
         }
+        final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
         ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
         // email was sent, or an exception would have been thrown
         message = "Email sent, it should arrive shortly, otherwise check your spam folder";

@@ -21,18 +21,6 @@ public class MouseDetails {
     this.y = y;
   }
 
-  public MouseEvent getMouseEvent() {
-    return mouseEvent;
-  }
-
-  public double getX() {
-    return x;
-  }
-
-  public double getY() {
-    return y;
-  }
-
   public boolean isRightButton() {
     return SwingUtilities.isRightMouseButton(mouseEvent);
   }

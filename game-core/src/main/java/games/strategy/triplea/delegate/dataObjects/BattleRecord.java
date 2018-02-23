@@ -193,7 +193,7 @@ public class BattleRecord implements Serializable {
       return false;
     }
     final BattleRecord other = (BattleRecord) o;
-    return other.battleSite.equals(this.battleSite) && other.battleType.equals(this.battleType)
+    return other.battleSite.equals(this.battleSite) && other.battleType == this.battleType
         && other.attacker.equals(this.attacker);
   }
 

@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -134,7 +135,6 @@ public class ConnectionFinder {
         // ignore malformed input
       }
     }
-    final Map<String, Collection<String>> connections = new HashMap<>();
     ToolLogger.info("Now Scanning for Connections");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
@@ -142,6 +142,7 @@ public class ConnectionFinder {
     Collections.sort(allTerritories, new AlphanumComparator());
     final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
     Collections.sort(allAreas, new AlphanumComparator());
+    final Map<String, Collection<String>> connections = new HashMap<>();
     for (final String territory : allTerritories) {
       final Set<String> thisTerritoryConnections = new LinkedHashSet<>();
       final List<Polygon> currentPolygons = mapOfPolygons.get(territory);
@@ -188,9 +189,9 @@ public class ConnectionFinder {
       } else {
         try (OutputStream out = new FileOutputStream(fileName)) {
           if (territoryDefinitions != null) {
-            out.write(String.valueOf(territoryDefinitions).getBytes());
+            out.write(String.valueOf(territoryDefinitions).getBytes(StandardCharsets.UTF_8));
           }
-          out.write(String.valueOf(connectionsString).getBytes());
+          out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
         }
         ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
       }
@@ -268,11 +269,9 @@ public class ConnectionFinder {
    */
   private static double calcSignedPolygonArea(final Point2D[] pointArray) {
     final int length = pointArray.length;
-    int i;
-    int j;
     double area = 0;
-    for (i = 0; i < length; i++) {
-      j = (i + 1) % length;
+    for (int i = 0; i < length; i++) {
+      final int j = (i + 1) % length;
       area += pointArray[i].getX() * pointArray[j].getY();
       area -= pointArray[i].getY() * pointArray[j].getX();
     }
@@ -293,10 +292,8 @@ public class ConnectionFinder {
     double cy = 0;
     double area = calcSignedPolygonArea(pointArray);
     final Point2D centroid = new Point2D.Double();
-    int i;
-    int j;
-    for (i = 0; i < length; i++) {
-      j = (i + 1) % length;
+    for (int i = 0; i < length; i++) {
+      final int j = (i + 1) % length;
       final double factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
       cx += (pointArray[i].getX() + pointArray[j].getX()) * factor;
       cy += (pointArray[i].getY() + pointArray[j].getY()) * factor;

@@ -10,7 +10,9 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,7 +40,7 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, Point> mapping = new HashMap<>();
-    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
+    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       @Nullable
       String current = reader.readLine();
@@ -126,7 +128,7 @@ public final class PointFileReaderWriter {
   }
 
   private static void write(final StringBuilder buf, final OutputStream sink) throws IOException {
-    try (Writer out = new OutputStreamWriter(new CloseShieldOutputStream(sink))) {
+    try (Writer out = new OutputStreamWriter(new CloseShieldOutputStream(sink), StandardCharsets.UTF_8)) {
       out.write(buf.toString());
     }
   }
@@ -172,7 +174,7 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, List<Point>> mapping = new HashMap<>();
-    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
+    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       @Nullable
       String current = reader.readLine();
@@ -193,7 +195,7 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, List<Polygon>> mapping = new HashMap<>();
-    try (InputStreamReader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream));
+    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
       @Nullable
       String current = reader.readLine();
@@ -221,11 +223,11 @@ public final class PointFileReaderWriter {
         char current = line.charAt(index);
         if (current == '<') {
           int x = 0;
-          int y;
           int base = 0;
           // inside a poly
           while (true) {
             current = line.charAt(++index);
+            final int y;
             switch (current) {
               case '0':
               case '1':

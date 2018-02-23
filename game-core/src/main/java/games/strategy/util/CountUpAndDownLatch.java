@@ -155,7 +155,7 @@ public class CountUpAndDownLatch implements Serializable {
         return false;
       }
       // Decrement count; signal when transition to zero
-      for (;;) {
+      while (true) {
         final int c = getState();
         int nextc = c + delta;
         if (c <= 0 && nextc <= 0) {

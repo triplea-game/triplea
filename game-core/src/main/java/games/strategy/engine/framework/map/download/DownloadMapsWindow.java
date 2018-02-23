@@ -37,6 +37,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.OptionalUtils;
 import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
@@ -150,14 +151,14 @@ public class DownloadMapsWindow extends JFrame {
       assert state == State.UNINITIALIZED;
 
       state = State.INITIALIZING;
-      try {
-        final List<DownloadFileDescription> downloads = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
-            "Downloading list of available maps...",
-            ClientContext::getMapDownloadList);
-        createAndShow(mapNames, downloads);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground).result
+          .ifPresent(downloads -> createAndShow(mapNames, downloads));
+    }
+
+    private static List<DownloadFileDescription> getMapDownloadListInBackground() throws InterruptedException {
+      return GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
+          "Downloading list of available maps...",
+          ClientContext::getMapDownloadList);
     }
 
     private void createAndShow(final Collection<String> mapNames, final List<DownloadFileDescription> downloads) {
@@ -216,7 +217,7 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     pendingDownloads.addAll(ClientContext.downloadCoordinator().getDownloads().stream()
-        .filter(download -> !download.getDownloadState().equals(DownloadState.CANCELLED))
+        .filter(download -> download.getDownloadState() != DownloadState.CANCELLED)
         .map(DownloadFile::getDownload)
         .collect(Collectors.toList()));
 

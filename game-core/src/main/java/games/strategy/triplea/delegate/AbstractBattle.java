@@ -182,10 +182,6 @@ abstract class AbstractBattle implements IBattle {
     return m_battleSite;
   }
 
-  public final Collection<TerritoryEffect> getTerritoryEffects() {
-    return m_territoryEffects;
-  }
-
   @Override
   public PlayerID getAttacker() {
     return m_attacker;
@@ -234,7 +230,7 @@ abstract class AbstractBattle implements IBattle {
     }
     final IBattle other = (IBattle) o;
     return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun()
-        && other.getBattleType().equals(this.getBattleType());
+        && other.getBattleType() == this.getBattleType();
   }
 
   @Override

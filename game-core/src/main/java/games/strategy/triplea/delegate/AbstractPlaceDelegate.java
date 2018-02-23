@@ -350,7 +350,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   protected void freePlacementCapacity(final Territory producer, final int freeSize,
       final Collection<Unit> unitsLeftToPlace, final Territory at, final PlayerID player) {
-    int foundSpaceTotal = 0;
     // placements of the producer that could be redone by other territories
     final List<UndoablePlacement> redoPlacements = new ArrayList<>();
     // territories the producer produced for (but not itself) and the amount of units it produced
@@ -379,6 +378,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // remember placement move and new territory if a placement has to be split up
     final Collection<Tuple<UndoablePlacement, Territory>> splitPlacements =
         new ArrayList<>();
+    int foundSpaceTotal = 0;
     for (final Entry<Territory, Integer> entry : redoPlacementsCount.entrySet()) {
       final Territory placeTerritory = entry.getKey();
       final int maxProductionThatCanBeTakenOverFromThisPlacement = entry.getValue();
@@ -432,9 +432,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     // we had a bug where we tried to split the same undoable placement twice (it can only be undone once!)
     boolean unusedSplitPlacments = false;
-    final Collection<UndoablePlacement> usedUnoablePlacements = new ArrayList<>();
     if (foundSpaceTotal < freeSize) {
       // we need to split some placement moves
+      final Collection<UndoablePlacement> usedUnoablePlacements = new ArrayList<>();
       for (final Tuple<UndoablePlacement, Territory> tuple : splitPlacements) {
         final UndoablePlacement placement = tuple.getFirst();
         if (usedUnoablePlacements.contains(placement)) {
@@ -576,7 +576,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return canProduce(producers.iterator().next(), to, units, player);
     }
     final Collection<Territory> failingProducers = new ArrayList<>();
-    String error = "";
+    final StringBuilder error = new StringBuilder();
     for (final Territory producer : producers) {
       final String errorP = canProduce(producer, to, units, player);
       if (errorP != null) {
@@ -584,12 +584,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         // do not include the error for same territory, if water, because users do not want to see this error report for
         // 99.9% of games
         if (!(producer.equals(to) && producer.isWater())) {
-          error += ", " + errorP;
+          error.append(", ").append(errorP);
         }
       }
     }
     if (producers.size() == failingProducers.size()) {
-      return "Adjacent territories to " + to.getName() + " cannot produce, due to: \n " + error.replaceFirst(", ", "");
+      return "Adjacent territories to " + to.getName() + " cannot produce, due to: \n " + error.toString()
+          .replaceFirst(", ", "");
     }
     return null;
   }
@@ -1162,13 +1163,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
             productionCanNotBeMoved += unitsPlacedByCurrentPlacementMove.size();
           } else {
             final int maxProductionThatCanBeTakenOverFromThisPlacement = unitsPlacedByCurrentPlacementMove.size();
-            int productionThatCanBeTakenOverFromThisPlacement = 0;
             // find other producers for this placement move to the same water territory
             final List<Territory> newPotentialOtherProducers =
                 getAllProducers(placeTerritory, player, unitsCanBePlacedByThisProducer);
             newPotentialOtherProducers.removeAll(notUsableAsOtherProducers);
             Collections.sort(newPotentialOtherProducers,
                 getBestProducerComparator(placeTerritory, unitsCanBePlacedByThisProducer, player));
+            int productionThatCanBeTakenOverFromThisPlacement = 0;
             for (final Territory potentialOtherProducer : newPotentialOtherProducers) {
               Integer potential = currentAvailablePlacementForOtherProducers.get(potentialOtherProducer);
               if (potential == null) {
@@ -1176,7 +1177,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
                     unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
               }
               if (potential == -1) {
-                currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, potential);
+                currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, -1);
                 productionThatCanBeTakenOverFromThisPlacement = maxProductionThatCanBeTakenOverFromThisPlacement;
                 break;
               }

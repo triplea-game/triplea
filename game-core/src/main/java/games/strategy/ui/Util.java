@@ -2,7 +2,6 @@ package games.strategy.ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -15,7 +14,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -57,10 +55,6 @@ public final class Util {
     return new BufferedImage(width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
   }
 
-  public static Dimension getDimension(final Image anImage, final ImageObserver obs) {
-    return new Dimension(anImage.getWidth(obs), anImage.getHeight(obs));
-  }
-
   public static void center(final Window w) {
     final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
     final int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -82,8 +76,6 @@ public final class Util {
   public static Image getBanner(final String text) {
     final int w = 400;
     final int h = 60;
-    final float loginStringX = w * .05f;
-    final float loginStringY = h * .75f;
     final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     final Graphics2D g2 = img.createGraphics();
     final Font font = new Font("Arial Bold", Font.PLAIN, 36);
@@ -110,6 +102,8 @@ public final class Util {
     g2.fill(curveShape);
     // g2.setPaint(Color.white);
     originalGraphics.setColor(Color.WHITE);
+    final float loginStringY = h * .75f;
+    final float loginStringX = w * .05f;
     originalGraphics.drawString(text, loginStringX, loginStringY);
     return img;
   }
