@@ -26,10 +26,10 @@ public abstract class Invoke implements Externalizable {
   }
 
   public Invoke(final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
-    if (needReturnValues && methodCallId == null) {
+    if (needReturnValues && (methodCallId == null)) {
       throw new IllegalArgumentException("Cant have no id and need return values");
     }
-    if (!needReturnValues && methodCallId != null) {
+    if (!needReturnValues && (methodCallId != null)) {
       throw new IllegalArgumentException("Cant have id and not need return values");
     }
     this.methodCallId = methodCallId;

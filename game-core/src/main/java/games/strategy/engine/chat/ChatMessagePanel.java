@@ -164,7 +164,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       @Override
       public void mouseReleased(final MouseEvent e) {
         final String markedText = text.getSelectedText();
-        if (markedText == null || markedText.length() == 0) {
+        if ((markedText == null) || (markedText.length() == 0)) {
           nextMessage.requestFocusInWindow();
         }
       }
@@ -222,7 +222,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   private enum MessageOffset {
-    PREVIOUS, NEXT;
+    PREVIOUS, NEXT
   }
 
   private void cleanupKeyMap() {
@@ -243,7 +243,10 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
       final String sound) {
     SwingAction.invokeNowOrLater(() -> {
-      if (from == null || chat == null || chat.getServerNode() == null || chat.getServerNode().getName() == null) {
+      if ((from == null)
+          || (chat == null)
+          || (chat.getServerNode() == null)
+          || (chat.getServerNode().getName() == null)) {
         // someone likely disconnected from the game.
         return;
       }
@@ -278,9 +281,9 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     final Document doc = text.getDocument();
     try {
       if (thirdperson) {
-        doc.insertString(doc.getLength(), (showTime ? "* " + time + " " + from : "* " + from), bold);
+        doc.insertString(doc.getLength(), (showTime ? ("* " + time + " " + from) : ("* " + from)), bold);
       } else {
-        doc.insertString(doc.getLength(), (showTime ? time + " " + from + ": " : from + ": "), bold);
+        doc.insertString(doc.getLength(), (showTime ? (time + " " + from + ": ") : (from + ": ")), bold);
       }
       doc.insertString(doc.getLength(), " " + message + "\n", normal);
       // don't let the chat get too big

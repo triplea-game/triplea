@@ -56,7 +56,7 @@ class PuChart {
   }
 
   private void initializeAvoidMap() {
-    for (int i = 0; i < numPlayers - 1; i++) {
+    for (int i = 0; i < (numPlayers - 1); i++) {
       for (int j = i + 1; j < numPlayers; j++) {
         // i = firstPlayerMoney ; j = secondPlayerMoney
         if (moneyArray[i].equals(moneyArray[j])) {
@@ -69,11 +69,11 @@ class PuChart {
 
   private void drawEllipseAndString(final int x, final int y, final String string) {
     g2d.setFont(chartFont);
-    g2d.draw(new Ellipse2D.Double(5 + 87 * x, 5 + 87 * y, 72, 72));
+    g2d.draw(new Ellipse2D.Double(5 + (87 * x), 5 + (87 * y), 72, 72));
     final FontMetrics metrics = g2d.getFontMetrics();
     final int h = metrics.stringWidth(string) / 2;
     final int k = metrics.getHeight() / 2;
-    g2d.drawString(string, 42 + 87 * x - h, 39 + 87 * y + k);
+    g2d.drawString(string, (42 + (87 * x)) - h, 39 + (87 * y) + k);
   }
 
   void saveToFile() throws IOException {
@@ -89,31 +89,31 @@ class PuChart {
         final int valMod42 = moneyArray[z] % 42;
         final int valModXDim = valMod42 % cols;
         final int valFloorXDim = valMod42 / cols;
-        if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
+        if (avoidMap.containsKey(z) && ((moneyArray[z] / 42) == i)) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
-        } else if (avoidMap.containsValue(z) && moneyArray[z] / 42 == i) {
+          g2d.drawString(playerArray[z].getName(), (42 + (87 * valModXDim)) - width, 63 + (87 * valFloorXDim));
+        } else if (avoidMap.containsValue(z) && ((moneyArray[z] / 42) == i)) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
-        } else if (moneyArray[z] / 42 == i) {
+          g2d.drawString(playerArray[z].getName(), (42 + (87 * valModXDim)) - width, 30 + (87 * valFloorXDim));
+        } else if ((moneyArray[z] / 42) == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
+          g2d.drawString(playerArray[z].getName(), (42 + (87 * valModXDim)) - width, 60 + (87 * valFloorXDim));
         }
       }
       // Draw Ellipses and Numbers
       for (int j = 0; j < rows; j++) {
         for (int k = 0; k < cols; k++) {
-          final int numberincircle = cols * rows * i + cols * j + k;
+          final int numberincircle = (cols * rows * i) + (cols * j) + k;
           final String string = "" + numberincircle;
           drawEllipseAndString(k, j, string);
         }
       }
       // Write to file
       final int firstnum = cols * rows * i;
-      final int secondnum = cols * rows * (i + 1) - 1;
+      final int secondnum = (cols * rows * (i + 1)) - 1;
       final File outputfile = new File(outDir, "PUchart" + firstnum + "-" + secondnum + ".png");
       ImageIO.write(puImage, "png", outputfile);
       final Color transparent = new Color(0, 0, 0, 0);

@@ -418,7 +418,7 @@ public class ServerGame extends AbstractGame {
     }
     if (gameData.getSequence().next()) {
       gameData.getHistory().getHistoryWriter().startNextRound(gameData.getSequence().getRound());
-      autoSave(gameData.getSequence().getRound() % 2 == 0
+      autoSave(((gameData.getSequence().getRound() % 2) == 0)
           ? SaveGameFileChooser.getAutoSaveEvenFileName()
           : SaveGameFileChooser.getAutoSaveOddFileName());
     }
@@ -542,7 +542,7 @@ public class ServerGame extends AbstractGame {
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
     // the first delegate to
     // start before making changes.
-    if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || (firstRun)) {
+    if ((getCurrentStep() == null) || (getCurrentStep().getPlayerId() == null) || (firstRun)) {
       firstRun = false;
       return;
     }

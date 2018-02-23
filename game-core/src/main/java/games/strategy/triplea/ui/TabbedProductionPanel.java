@@ -74,8 +74,8 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private void calculateRowsAndColumns(final ProductionTabsProperties properties, final int largestList) {
-    if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0
-        || properties.getRows() * properties.getColumns() < largestList) {
+    if ((properties == null) || (properties.getRows() == 0) || (properties.getColumns() == 0)
+        || ((properties.getRows() * properties.getColumns()) < largestList)) {
       final int maxColumns;
       if (largestList <= 36) {
         maxColumns = Math.max(8,
@@ -121,7 +121,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   }
 
   private List<Tuple<String, List<Rule>>> getRuleLists(final ProductionTabsProperties properties) {
-    if (properties != null && !properties.useDefaultTabs()) {
+    if ((properties != null) && !properties.useDefaultTabs()) {
       final List<Tuple<String, List<Rule>>> ruleLists = properties.getRuleLists();
       checkLists(ruleLists);
       return ruleLists;
@@ -144,7 +144,7 @@ public class TabbedProductionPanel extends ProductionPanel {
       if (resourceOrUnit instanceof UnitType) {
         final UnitType type = (UnitType) resourceOrUnit;
         final UnitAttachment attach = UnitAttachment.get(type);
-        if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1) {
+        if ((attach.getConsumesUnits() != null) && (attach.getConsumesUnits().totalValues() >= 1)) {
           upgradeConsumesRules.add(rule);
         }
         // canproduceUnits isn't checked on purpose, since this category is for units that can be placed
@@ -184,7 +184,7 @@ public class TabbedProductionPanel extends ProductionPanel {
         panel.add(panelHolder[m][n]);
       }
     }
-    for (int x = 0; x < columns * rows; x++) {
+    for (int x = 0; x < (columns * rows); x++) {
       if (x < rules.size()) {
         panelHolder[(x % rows)][(x / rows)].add(rules.get(x).getPanelComponent());
       }

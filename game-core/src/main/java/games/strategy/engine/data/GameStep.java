@@ -85,7 +85,7 @@ public class GameStep extends GameDataComponent {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof GameStep)) {
+    if ((o == null) || !(o instanceof GameStep)) {
       return false;
     }
     final GameStep other = (GameStep) o;

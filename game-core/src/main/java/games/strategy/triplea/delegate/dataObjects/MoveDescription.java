@@ -21,7 +21,7 @@ public class MoveDescription extends AbstractMoveDescription {
     super(units);
     m_route = route;
     m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
-    if (dependentUnits != null && !dependentUnits.isEmpty()) {
+    if ((dependentUnits != null) && !dependentUnits.isEmpty()) {
       m_dependentUnits = new HashMap<>();
       for (final Entry<Unit, Collection<Unit>> entry : dependentUnits.entrySet()) {
         m_dependentUnits.put(entry.getKey(), new HashSet<>(entry.getValue()));

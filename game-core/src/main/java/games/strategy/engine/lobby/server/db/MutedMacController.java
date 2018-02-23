@@ -35,7 +35,7 @@ public class MutedMacController extends TimedController {
     checkNotNull(mutedUser);
     checkNotNull(moderator);
 
-    if (muteTill != null && muteTill.isBefore(now())) {
+    if ((muteTill != null) && muteTill.isBefore(now())) {
       removeMutedMac(mutedUser.getHashedMacAddress());
       return;
     }
@@ -55,7 +55,7 @@ public class MutedMacController extends TimedController {
       ps.setString(1, mutedUser.getUsername());
       ps.setString(2, mutedUser.getInetAddress().getHostAddress());
       ps.setString(3, mutedUser.getHashedMacAddress());
-      ps.setTimestamp(4, muteTill != null ? Timestamp.from(muteTill) : null);
+      ps.setTimestamp(4, (muteTill != null) ? Timestamp.from(muteTill) : null);
       ps.setString(5, moderator.getUsername());
       ps.setString(6, moderator.getInetAddress().getHostAddress());
       ps.setString(7, moderator.getHashedMacAddress());

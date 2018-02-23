@@ -91,7 +91,7 @@ public class ProOddsCalculator {
     final boolean hasNoDefenders = defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure());
     final boolean isLandAndCanOnlyBeAttackedByAir =
         !t.isWater() && !attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir());
-    if (attackingUnits.size() == 0 || hasNoDefenders && isLandAndCanOnlyBeAttackedByAir) {
+    if ((attackingUnits.size() == 0) || (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir)) {
       return new ProBattleResult();
     } else if (hasNoDefenders) {
       return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);
@@ -150,7 +150,7 @@ public class ProOddsCalculator {
         CollectionUtils.getMatches(defendingUnits, Matches.unitIsBeingTransported());
     if (t.isWater() && !defendingTransportedUnits.isEmpty()) { // Add TUV swing for transported units
       final double transportedUnitValue = TuvUtils.getTuv(defendingTransportedUnits, ProData.unitValueMap);
-      tuvSwing += transportedUnitValue * winPercentage / 100;
+      tuvSwing += (transportedUnitValue * winPercentage) / 100;
     }
 
     // Create battle result object

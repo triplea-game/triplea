@@ -153,7 +153,7 @@ public class SelectAndViewEditor extends EditorPanel {
 
   @Override
   public boolean isBeanValid() {
-    return editor == null || editor.isBeanValid();
+    return (editor == null) || editor.isBeanValid();
   }
 
   /**

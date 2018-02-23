@@ -260,7 +260,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private static <T extends IBean> T useCacheIfAvailable(final T instance) {
     @SuppressWarnings("unchecked")
     final T cached = (T) LocalBeanCache.INSTANCE.getSerializable(instance.getClass().getCanonicalName());
-    return cached == null ? instance : cached;
+    return (cached == null) ? instance : cached;
   }
 
   @Override
@@ -287,7 +287,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final boolean diceServerValid = diceServerEditor.isBeanValid();
     final boolean summaryValid = forumPosterEditor.isBeanValid();
     final boolean emailValid = emailSenderEditor.isBeanValid();
-    final boolean pbemReady = diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
+    final boolean pbemReady =
+        diceServerValid && summaryValid && emailValid && (gameSelectorModel.getGameData() != null);
     if (!pbemReady) {
       return false;
     }
@@ -319,7 +320,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
       data.getProperties().set(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
     }
     // store whether we are a pbem game or not, whether we are capable of posting a game save
-    if (poster != null || sender != null) {
+    if ((poster != null) || (sender != null)) {
       data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, true);
     }
   }

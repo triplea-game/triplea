@@ -54,7 +54,7 @@ public class RandomStatsDetails implements Serializable {
       total = localTotal;
       average = (sumTotal) / ((double) stats.totalValues());
       // calculate median
-      if (localTotal % 2 != 0) {
+      if ((localTotal % 2) != 0) {
         median = calcMedian((localTotal / 2) + 1, diceSides, stats);
       } else {
         final double tmp1 = calcMedian((localTotal / 2), diceSides, stats);
@@ -141,7 +141,7 @@ public class RandomStatsDetails implements Serializable {
       }
       sb.append("\n");
       sb.append(getStatsString(entry.getValue(), m_playerStats.get(entry.getKey()),
-          (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")));
+          ((entry.getKey() == null) ? "Null / Other" : (entry.getKey().getName() + " Combat"))));
     }
     return sb.toString();
   }
@@ -190,7 +190,7 @@ public class RandomStatsDetails implements Serializable {
       }
       panel.add(
           getStatsDisplay(entry.getValue(), m_playerStats.get(entry.getKey()),
-              (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")),
+              ((entry.getKey() == null) ? "Null / Other" : (entry.getKey().getName() + " Combat"))),
           new GridBagConstraints((x / rows), 1 + (x % rows), 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START,
               GridBagConstraints.NONE, insets, 0, 0));
       x++;

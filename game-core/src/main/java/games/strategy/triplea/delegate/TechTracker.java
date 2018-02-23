@@ -63,7 +63,7 @@ public class TechTracker implements Serializable {
   public static synchronized void addAdvance(final PlayerID player, final IDelegateBridge bridge,
       final TechAdvance advance) {
     final Change attachmentChange;
-    if (advance instanceof GenericTechAdvance && ((GenericTechAdvance) advance).getAdvance() == null) {
+    if ((advance instanceof GenericTechAdvance) && (((GenericTechAdvance) advance).getAdvance() == null)) {
       attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
     } else {
       attachmentChange =

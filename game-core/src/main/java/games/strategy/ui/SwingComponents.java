@@ -427,7 +427,7 @@ public class SwingComponents {
 
   @VisibleForTesting
   static String extensionWithLeadingPeriod(final String extension) {
-    return extension.isEmpty() || extension.startsWith(PERIOD) ? extension : PERIOD + extension;
+    return (extension.isEmpty() || extension.startsWith(PERIOD)) ? extension : (PERIOD + extension);
   }
 
   @VisibleForTesting

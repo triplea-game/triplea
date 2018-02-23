@@ -133,7 +133,7 @@ public class TripleADisplay implements ITripleADisplay {
   @Override
   public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
       final Collection<PlayerID> butNotThesePlayers, final String message, final String title) {
-    if (playersToSendTo == null || playersToSendTo.isEmpty()) {
+    if ((playersToSendTo == null) || playersToSendTo.isEmpty()) {
       return;
     }
     if (butNotThesePlayers != null) {

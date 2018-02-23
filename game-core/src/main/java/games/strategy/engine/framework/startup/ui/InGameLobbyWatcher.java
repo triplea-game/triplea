@@ -87,7 +87,7 @@ public class InGameLobbyWatcher {
       final InGameLobbyWatcher oldWatcher) {
     final String host = System.getProperty(LOBBY_HOST);
     final String port = System.getProperty(LOBBY_PORT);
-    if (host == null || port == null) {
+    if ((host == null) || (port == null)) {
       return null;
     }
     // clear the properties
@@ -165,19 +165,23 @@ public class InGameLobbyWatcher {
     this.remoteMessenger = remoteMessenger;
     this.serverMessenger = serverMessenger;
     final String password = System.getProperty(SERVER_PASSWORD);
-    final boolean passworded = password != null && password.length() > 0;
-    final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
-        || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
+    final boolean passworded = (password != null) && (password.length() > 0);
+    final Instant startDateTime = ((oldWatcher == null)
+        || (oldWatcher.gameDescription == null)
+        || (oldWatcher.gameDescription.getStartDateTime() == null))
+            ? Instant.now()
             : oldWatcher.gameDescription.getStartDateTime();
-    final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
+    final int playerCount = ((oldWatcher == null) || (oldWatcher.gameDescription == null))
         ? (HeadlessGameServer.headless() ? 0 : 1)
         : oldWatcher.gameDescription.getPlayerCount();
-    final GameStatus gameStatus =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
+    final GameStatus gameStatus = ((oldWatcher == null)
+        || (oldWatcher.gameDescription == null)
+        || (oldWatcher.gameDescription.getStatus() == null))
             ? GameStatus.WAITING_FOR_PLAYERS
             : oldWatcher.gameDescription.getStatus();
-    final String gameRound =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
+    final String gameRound = ((oldWatcher == null)
+        || (oldWatcher.gameDescription == null)
+        || (oldWatcher.gameDescription.getRound() == null))
             ? "-"
             : oldWatcher.gameDescription.getRound();
     gameDescription = new GameDescription(
@@ -213,7 +217,7 @@ public class InGameLobbyWatcher {
     // when players join or leave the game
     // update the connection count
     this.serverMessenger.addConnectionChangeListener(connectionChangeListener);
-    if (oldWatcher != null && oldWatcher.gameDescription != null) {
+    if ((oldWatcher != null) && (oldWatcher.gameDescription != null)) {
       this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);
     }
     // if we loose our connection, then shutdown
@@ -225,7 +229,7 @@ public class InGameLobbyWatcher {
           shutDown();
           SwingUtilities.invokeLater(() -> {
             String portString = System.getProperty(TRIPLEA_PORT);
-            if (portString == null || portString.trim().length() <= 0) {
+            if ((portString == null) || (portString.trim().length() <= 0)) {
               portString = "3300";
             }
             final String message = "Your computer is not reachable from the internet.\n"

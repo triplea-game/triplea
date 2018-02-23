@@ -123,7 +123,7 @@ public class AirBattle extends AbstractBattle {
   }
 
   public boolean shouldEndBattleDueToMaxRounds() {
-    return m_maxRounds > 0 && m_maxRounds <= m_round;
+    return (m_maxRounds > 0) && (m_maxRounds <= m_round);
   }
 
   protected boolean canAttackerRetreat() {
@@ -312,7 +312,7 @@ public class AirBattle extends AbstractBattle {
               CollectionUtils.getMatches(enemyTargetsTotal, Matches.unitIsLegalBombingTargetBy(unit));
           if (!enemyTargets.isEmpty()) {
             Unit target = null;
-            if (enemyTargets.size() > 1
+            if ((enemyTargets.size() > 1)
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data)) {
               while (target == null) {
                 target =
@@ -436,7 +436,7 @@ public class AirBattle extends AbstractBattle {
     getDisplay(bridge).gotoBattleStep(m_battleID, step);
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, false, m_battleSite, availableTerritories, text);
-    if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
+    if ((retreatTo != null) && !availableTerritories.contains(retreatTo)) {
       System.err.println("Invalid retreat selection :" + retreatTo + " not in "
           + MyFormatter.defaultNamedToTextList(availableTerritories));
       Thread.dumpStack();
@@ -511,7 +511,7 @@ public class AirBattle extends AbstractBattle {
           groundedPlanesRetreated = false;
         }
       }
-      if (interceptors != null && !m_defendingUnits.containsAll(interceptors)) {
+      if ((interceptors != null) && !m_defendingUnits.containsAll(interceptors)) {
         throw new IllegalStateException("Interceptors choose from outside of available units");
       }
       final Collection<Unit> beingRemoved = new ArrayList<>(m_defendingUnits);
@@ -668,7 +668,7 @@ public class AirBattle extends AbstractBattle {
     if (canScrambleToAirBattle) {
       for (final UnitType unitType : data.getUnitTypeList()) {
         final UnitAttachment ua = UnitAttachment.get(unitType);
-        if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance()) {
+        if (ua.getCanScramble() && (maxScrambleDistance < ua.getMaxScrambleDistance())) {
           maxScrambleDistance = ua.getMaxScrambleDistance();
         }
       }

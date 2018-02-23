@@ -152,7 +152,7 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   private void setupListeners() {
-    clientModel.setRemoteModelListener(remoteModelListener == null
+    clientModel.setRemoteModelListener((remoteModelListener == null)
         ? IRemoteModelListener.NULL_LISTENER
         : remoteModelListener);
   }

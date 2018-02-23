@@ -125,7 +125,7 @@ public class FileProperty extends AEditableProperty {
       final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
       fileDialog.setFilenameFilter((dir, name) -> {
-        if (acceptableSuffixes == null || acceptableSuffixes.length == 0) {
+        if ((acceptableSuffixes == null) || (acceptableSuffixes.length == 0)) {
           return true;
         }
         for (final String suffix : acceptableSuffixes) {
@@ -177,7 +177,7 @@ public class FileProperty extends AEditableProperty {
     if (value instanceof File) {
       final File file = (File) value;
       for (final String suff : m_acceptableSuffixes) {
-        if (file.getName() != null && file.getName().endsWith(suff)) {
+        if ((file.getName() != null) && file.getName().endsWith(suff)) {
           return true;
         }
       }

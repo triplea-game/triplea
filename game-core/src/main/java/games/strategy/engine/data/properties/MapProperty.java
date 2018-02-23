@@ -45,7 +45,7 @@ public class MapProperty<T, U> extends AEditableProperty {
         properties.add(new FileProperty(key, description, ((File) value)));
       } else if (value instanceof String) {
         properties.add(new StringProperty(key, description, ((String) value)));
-      } else if (value instanceof Collection || value instanceof List || value instanceof Set) {
+      } else if ((value instanceof Collection) || (value instanceof List) || (value instanceof Set)) {
         properties.add(new CollectionProperty<>(name, description, ((Collection<U>) value)));
       } else if (value instanceof Integer) {
         properties.add(new NumberProperty(key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
@@ -104,21 +104,21 @@ public class MapProperty<T, U> extends AEditableProperty {
       try {
         @SuppressWarnings("unchecked")
         final Map<T, U> test = (Map<T, U>) value;
-        if (m_map != null && !m_map.isEmpty() && !test.isEmpty()) {
+        if ((m_map != null) && !m_map.isEmpty() && !test.isEmpty()) {
           T key = null;
           U val = null;
           for (final Entry<T, U> entry : m_map.entrySet()) {
-            if (entry.getValue() != null && entry.getKey() != null) {
+            if ((entry.getValue() != null) && (entry.getKey() != null)) {
               key = entry.getKey();
               val = entry.getValue();
               break;
             }
           }
-          if (key != null && val != null) {
+          if ((key != null) && (val != null)) {
             for (final Entry<T, U> entry : test.entrySet()) {
-              if (entry.getKey() != null && entry.getValue() != null
+              if ((entry.getKey() != null) && (entry.getValue() != null)
                   && (!entry.getKey().getClass().isAssignableFrom(key.getClass())
-                      || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
+                  || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
                 return false;
               }
             }

@@ -224,7 +224,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     ClientSetting.PLAYER_NAME.save(name);
     ClientSetting.flush();
     final int port = options.getPort();
-    if (port >= 65536 || port == 0) {
+    if ((port >= 65536) || (port == 0)) {
       if (headless) {
         System.out.println("Invalid Port: " + port);
       } else {
@@ -275,7 +275,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       chatController =
           new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, moderatorController);
 
-      if (ui == null && headless) {
+      if ((ui == null) && headless) {
         chatPanel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
@@ -366,7 +366,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public byte[] getGameOptions() {
-      if (data == null || data.getProperties() == null || data.getProperties().getEditableProperties() == null
+      if ((data == null) || (data.getProperties() == null) || (data.getProperties().getEditableProperties() == null)
           || data.getProperties().getEditableProperties().isEmpty()) {
         return null;
       }
@@ -401,7 +401,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
-      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2) {
+      if ((HeadlessGameServer.getInstance() == null) || (autoSaveType == SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2)) {
         return;
       }
       final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
@@ -416,7 +416,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
       // if not.
       final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null || bytes == null) {
+      if ((headless == null) || (bytes == null)) {
         return;
       }
       try {
@@ -435,7 +435,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
       // if not.
       final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null || bytes == null) {
+      if ((headless == null) || (bytes == null)) {
         return;
       }
       System.out.println("Changing to user game options.");
@@ -595,7 +595,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     synchronized (this) {
       for (final String player : playersToNodeListing.keySet()) {
         final String playedBy = playersToNodeListing.get(player);
-        if (playedBy != null && playedBy.equals(node.getName())) {
+        if ((playedBy != null) && playedBy.equals(node.getName())) {
           free.add(player);
         }
       }
@@ -610,14 +610,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private void disallowRemoveConnections() {
-    while (removeConnectionsLatch != null && removeConnectionsLatch.getCount() > 0) {
+    while ((removeConnectionsLatch != null) && (removeConnectionsLatch.getCount() > 0)) {
       removeConnectionsLatch.countDown();
     }
     removeConnectionsLatch = new CountDownLatch(1);
   }
 
   public void allowRemoveConnections() {
-    while (removeConnectionsLatch != null && removeConnectionsLatch.getCount() > 0) {
+    while ((removeConnectionsLatch != null) && (removeConnectionsLatch.getCount() > 0)) {
       removeConnectionsLatch.countDown();
     }
     removeConnectionsLatch = null;
@@ -690,8 +690,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("ServerModel GameData:").append(data == null ? "null" : data.getGameName()).append("\n");
-    sb.append("Connected:").append(serverMessenger == null ? "null" : serverMessenger.isConnected()).append("\n");
+    sb.append("ServerModel GameData:").append((data == null) ? "null" : data.getGameName()).append("\n");
+    sb.append("Connected:").append((serverMessenger == null) ? "null" : serverMessenger.isConnected()).append("\n");
     sb.append(serverMessenger);
     sb.append("\n");
     sb.append(remoteMessenger);

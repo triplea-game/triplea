@@ -50,7 +50,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (result != null) {
       return result;
     }
-    if (units == null || units.isEmpty()) {
+    if ((units == null) || units.isEmpty()) {
       return null;
     }
     final Collection<PlayerID> owners = new HashSet<>();
@@ -77,7 +77,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (result != null) {
       return result;
     }
-    if (units == null || units.isEmpty()) {
+    if ((units == null) || units.isEmpty()) {
       return null;
     }
     // now make sure land units are put on transports properly
@@ -117,7 +117,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (Properties.getUnitsMayGiveBonusMovement(getData()) && GameStepPropertiesHelper.isGiveBonusMovement(data)) {
       bridge.addChange(MoveDelegate.giveBonusMovementToUnits(player, data, territory));
     }
-    if (mapLoading != null && !mapLoading.isEmpty()) {
+    if ((mapLoading != null) && !mapLoading.isEmpty()) {
       for (final Entry<Unit, Unit> entry : mapLoading.entrySet()) {
         bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));
       }
@@ -304,7 +304,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   @Override
   public String changePoliticalRelationships(
       final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
-    if (relationshipChanges == null || relationshipChanges.isEmpty()) {
+    if ((relationshipChanges == null) || relationshipChanges.isEmpty()) {
       return null;
     }
     String result = checkEditMode();

@@ -208,7 +208,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       m_upkeepCost = PROPERTY_DEFAULT;
     } else {
       final String[] s = integerCost.split(":");
-      if (s.length < 1 || s.length > 2) {
+      if ((s.length < 1) || (s.length > 2)) {
         throw new GameParseException("upkeepCost must have either 1 or 2 fields" + thisErrorMsg());
       }
       final int cost = getInt(s[0]);

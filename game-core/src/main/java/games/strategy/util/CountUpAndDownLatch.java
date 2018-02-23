@@ -146,7 +146,7 @@ public class CountUpAndDownLatch implements Serializable {
 
     @Override
     protected int tryAcquireShared(final int acquires) {
-      return getState() == 0 ? 1 : -1;
+      return (getState() == 0) ? 1 : -1;
     }
 
     @Override
@@ -158,7 +158,7 @@ public class CountUpAndDownLatch implements Serializable {
       while (true) {
         final int c = getState();
         int nextc = c + delta;
-        if (c <= 0 && nextc <= 0) {
+        if ((c <= 0) && (nextc <= 0)) {
           return false;
         }
         if (nextc < 0) {

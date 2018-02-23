@@ -548,13 +548,13 @@ public class AirMovementValidator {
     if (areNeutralsPassableByAir) {
       final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot,
           Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
-      return (neutralViolatingRoute != null && neutralViolatingRoute.getMovementCost(unit) <= movementLeft
-          && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS));
+      return ((neutralViolatingRoute != null) && (neutralViolatingRoute.getMovementCost(unit) <= movementLeft)
+          && (getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS)));
     }
 
     final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot,
         Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
-    return noNeutralRoute != null && noNeutralRoute.getMovementCost(unit) <= movementLeft;
+    return (noNeutralRoute != null) && (noNeutralRoute.getMovementCost(unit) <= movementLeft);
   }
 
   /**
@@ -682,7 +682,7 @@ public class AirMovementValidator {
               .getMatches(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier()));
           for (final Unit airUnit : airCargo) {
             final TripleAUnit taUnit = (TripleAUnit) airUnit;
-            if (taUnit.getTransportedBy() != null && taUnit.getTransportedBy().equals(unit)) {
+            if ((taUnit.getTransportedBy() != null) && taUnit.getTransportedBy().equals(unit)) {
               // capacity = are cargo only
               cargo += UnitAttachment.get(taUnit.getType()).getCarrierCost();
             }

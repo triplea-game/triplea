@@ -44,7 +44,7 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
 
   @Override
   public boolean equals(final Object other) {
-    return other instanceof AEditableProperty && ((AEditableProperty) other).m_name.equals(m_name);
+    return (other instanceof AEditableProperty) && ((AEditableProperty) other).m_name.equals(m_name);
   }
 
   @Override

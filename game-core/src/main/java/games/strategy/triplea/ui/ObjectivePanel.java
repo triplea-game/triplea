@@ -307,7 +307,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           final int each = AbstractTriggerAttachment.getEachMultiple(ta);
           final int uses = ta.getUses();
           if (uses < 0) {
-            final String comment = satisfied ? (each > 1 ? "T" + each : "T") : "F";
+            final String comment = satisfied ? ((each > 1) ? ("T" + each) : "T") : "F";
             conditionsComments.put(entry.getKey(), comment);
           } else if (uses == 0) {
             final String comment = satisfied ? "Used" : "used";
@@ -321,7 +321,7 @@ public class ObjectivePanel extends AbstractStatPanel {
           final int each = ra.getEachMultiple();
           final int uses = ra.getUses();
           if (uses < 0) {
-            final String comment = satisfied ? (each > 1 ? "T" + each : "T") : "F";
+            final String comment = satisfied ? ((each > 1) ? ("T" + each) : "T") : "F";
             conditionsComments.put(entry.getKey(), comment);
           } else if (uses == 0) {
             final String comment = satisfied ? "Used" : "used";
@@ -570,7 +570,7 @@ public class ObjectivePanel extends AbstractStatPanel {
 
     public static ObjectiveProperties getInstance() {
       // cache properties for 1 second
-      if (instance == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
+      if ((instance == null) || timestamp.plusSeconds(1).isBefore(Instant.now())) {
         instance = new ObjectiveProperties();
         timestamp = Instant.now();
       }

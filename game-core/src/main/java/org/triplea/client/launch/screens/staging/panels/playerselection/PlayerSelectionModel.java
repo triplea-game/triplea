@@ -43,7 +43,7 @@ public class PlayerSelectionModel {
     this.gameData = gameData;
     this.currentPlayerName = currentPlayerName;
     this.networkModel =
-        (serverModel == null && clientModel == null) ? null : buildNetworkModel(serverModel, clientModel);
+        ((serverModel == null) && (clientModel == null)) ? null : buildNetworkModel(serverModel, clientModel);
   }
 
   private static NetworkModel buildNetworkModel(final ServerModel serverModel, final ClientModel clientModel) {

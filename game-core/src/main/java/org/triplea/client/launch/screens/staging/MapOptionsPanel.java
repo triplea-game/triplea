@@ -35,7 +35,7 @@ class MapOptionsPanel {
               .tooltip(prop.getName())
               .build());
           panelBuilder.add(
-              screen != StagingScreen.NETWORK_CLIENT ? prop.getEditorComponent()
+              (screen != StagingScreen.NETWORK_CLIENT) ? prop.getEditorComponent()
                   : prop.getEditorComponentDisabled());
         });
     return panelBuilder.build();

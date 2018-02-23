@@ -49,7 +49,7 @@ public class MyFormatter {
   public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerID owner) {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (final Unit unit : units) {
-      if (owner == null || owner.equals(unit.getOwner())) {
+      if ((owner == null) || owner.equals(unit.getOwner())) {
         map.add(unit.getType(), 1);
       }
     }
@@ -62,7 +62,7 @@ public class MyFormatter {
       final int quantity = map.getInt(type);
       buf.append(quantity);
       buf.append(" ");
-      buf.append(quantity > 1 ? pluralize(type.getName()) : type.getName());
+      buf.append((quantity > 1) ? pluralize(type.getName()) : type.getName());
       count--;
       if (count > 1) {
         buf.append(", ");
@@ -93,7 +93,7 @@ public class MyFormatter {
     quantitiesByOwner.forEach((owner, quantity) -> {
       buf.append(quantity);
       buf.append(" ");
-      buf.append(quantity > 1 ? pluralize(owner.getType().getName()) : owner.getType().getName());
+      buf.append((quantity > 1) ? pluralize(owner.getType().getName()) : owner.getType().getName());
       buf.append(" owned by the ");
       buf.append(owner.getOwner().getName());
       final int count = countRef.decrementAndGet();
@@ -107,10 +107,7 @@ public class MyFormatter {
   }
 
   public static String pluralize(final String in, final int quantity) {
-    if (quantity == -1 || quantity == 1) {
-      return in;
-    }
-    return pluralize(in);
+    return ((quantity == -1) || (quantity == 1)) ? in : pluralize(in);
   }
 
   public static String pluralize(final String in) {
@@ -172,13 +169,13 @@ public class MyFormatter {
   }
 
   public static String asDice(final DiceRoll roll) {
-    if (roll == null || roll.size() == 0) {
+    if ((roll == null) || (roll.size() == 0)) {
       return "none";
     }
     final StringBuilder buf = new StringBuilder();
     for (int i = 0; i < roll.size(); i++) {
       buf.append(roll.getDie(i).getValue() + 1);
-      if (i + 1 < roll.size()) {
+      if ((i + 1) < roll.size()) {
         buf.append(",");
       }
     }
@@ -186,13 +183,13 @@ public class MyFormatter {
   }
 
   public static String asDice(final int[] rolls) {
-    if (rolls == null || rolls.length == 0) {
+    if ((rolls == null) || (rolls.length == 0)) {
       return "none";
     }
     final StringBuilder buf = new StringBuilder(rolls.length * 2);
     for (int i = 0; i < rolls.length; i++) {
       buf.append(rolls[i] + 1);
-      if (i + 1 < rolls.length) {
+      if ((i + 1) < rolls.length) {
         buf.append(",");
       }
     }
@@ -200,13 +197,13 @@ public class MyFormatter {
   }
 
   public static String asDice(final List<Die> rolls) {
-    if (rolls == null || rolls.size() == 0) {
+    if ((rolls == null) || (rolls.size() == 0)) {
       return "none";
     }
     final StringBuilder buf = new StringBuilder(rolls.size() * 2);
     for (int i = 0; i < rolls.size(); i++) {
       buf.append(rolls.get(i).getValue() + 1);
-      if (i + 1 < rolls.size()) {
+      if ((i + 1) < rolls.size()) {
         buf.append(",");
       }
     }
@@ -221,7 +218,7 @@ public class MyFormatter {
       final boolean showQuantity) {
     final IntegerMap<DefaultNamed> map = new IntegerMap<>();
     for (final DefaultNamed unit : list) {
-      if (unit == null || unit.getName() == null) {
+      if ((unit == null) || (unit.getName() == null)) {
         throw new IllegalStateException("Unit or Resource no longer exists?!?");
       }
       map.add(unit, 1);
@@ -236,7 +233,7 @@ public class MyFormatter {
         final int quantity = map.getInt(type);
         buf.append(quantity);
         buf.append(" ");
-        buf.append(quantity > 1 ? pluralize(type.getName()) : type.getName());
+        buf.append((quantity > 1) ? pluralize(type.getName()) : type.getName());
       } else {
         buf.append(type.getName());
       }

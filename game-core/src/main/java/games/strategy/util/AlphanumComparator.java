@@ -15,7 +15,7 @@ import java.util.Comparator;
  */
 public class AlphanumComparator implements Comparator<String> {
   private static boolean isDigit(final char ch) {
-    return ch >= 48 && ch <= 57;
+    return (ch >= 48) && (ch <= 57);
   }
 
   /** Length of string is passed in for improved efficiency (only need to calculate it once). **/
@@ -52,7 +52,7 @@ public class AlphanumComparator implements Comparator<String> {
     int thatMarker = 0;
     final int s1Length = s1.length();
     final int s2Length = s2.length();
-    while (thisMarker < s1Length && thatMarker < s2Length) {
+    while ((thisMarker < s1Length) && (thatMarker < s2Length)) {
       final String thisChunk = getChunk(s1, s1Length, thisMarker);
       thisMarker += thisChunk.length();
       final String thatChunk = getChunk(s2, s2Length, thatMarker);

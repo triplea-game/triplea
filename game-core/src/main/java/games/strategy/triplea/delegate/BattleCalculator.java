@@ -67,7 +67,7 @@ public class BattleCalculator {
   }
 
   public static int getTotalHitpointsLeft(final Collection<Unit> units) {
-    if (units == null || units.isEmpty()) {
+    if ((units == null) || units.isEmpty()) {
       return 0;
     }
     int totalHitPoints = 0;
@@ -211,7 +211,7 @@ public class BattleCalculator {
     }
     final int numberOfGroupsByDiceSides = (int) Math.ceil((double) planesList.size() / (double) groupSize);
     final boolean tooManyHitsToDoGroups = hitsLeft > numberOfGroupsByDiceSides;
-    if (!allSameAttackPower || tooManyHitsToDoGroups || chosenDiceSize % highestAttack != 0) {
+    if (!allSameAttackPower || tooManyHitsToDoGroups || ((chosenDiceSize % highestAttack) != 0)) {
       // we have too many hits, so just pick randomly
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
@@ -503,7 +503,7 @@ public class BattleCalculator {
         battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
     final List<Unit> sortedTargetsToPickFrom = defaultCasualtiesAndSortedTargets.getSecond();
-    if (sortedTargetsToPickFrom.size() != targetsToPickFrom.size()
+    if ((sortedTargetsToPickFrom.size() != targetsToPickFrom.size())
         || !targetsToPickFrom.containsAll(sortedTargetsToPickFrom)
         || !sortedTargetsToPickFrom.containsAll(targetsToPickFrom)) {
       throw new IllegalStateException("sortedTargetsToPickFrom must contain the same units as targetsToPickFrom list");
@@ -544,7 +544,7 @@ public class BattleCalculator {
     }
     // check right number
     if (!isEditMode
-        && !(numhits + damaged.size() == (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining))) {
+        && !((numhits + damaged.size()) == ((hitsRemaining > totalHitpoints) ? totalHitpoints : hitsRemaining))) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
       if (headLess) {
         System.err.println("Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
@@ -801,7 +801,8 @@ public class BattleCalculator {
           }
         }
         // Check if unit has lower power
-        if (power < minPower || (power == minPower && unitComparatorWithoutPrimaryPower.compare(u, worstUnit) < 0)) {
+        if ((power < minPower) || ((power == minPower) && (unitComparatorWithoutPrimaryPower.compare(u, worstUnit)
+            < 0))) {
           worstUnit = u;
           minPower = power;
         }
@@ -898,7 +899,7 @@ public class BattleCalculator {
     final Set<UnitCategory> categorized = UnitSeperator.categorize(targets, dependents, false, false);
     if (categorized.size() == 1) {
       final UnitCategory unitCategory = categorized.iterator().next();
-      return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;
+      return (unitCategory.getHitPoints() - unitCategory.getDamaged()) <= 1;
     }
     return false;
   }
@@ -1024,7 +1025,7 @@ public class BattleCalculator {
     int strengthWithoutSupport = 0;
     // Find the strength the unit has without support
     // lhtr heavy bombers take best of n dice for both attack and defense
-    if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
+    if ((rolls > 1) && (lhtrBombers || ua.getChooseBestRoll())) {
       strengthWithoutSupport = (defending) ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
       strengthWithoutSupport +=
           TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);

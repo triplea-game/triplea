@@ -272,7 +272,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   protected boolean checkTurns(final GameData data) {
     final int turn = data.getSequence().getRound();
     for (final int t : m_turns.keySet()) {
-      if (turn >= t && turn <= m_turns.get(t)) {
+      if ((turn >= t) && (turn <= m_turns.get(t))) {
         return true;
       }
     }
@@ -372,7 +372,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   protected void validateNames(final String[] terrList) {
-    if (terrList != null && terrList.length > 0) {
+    if ((terrList != null) && (terrList.length > 0)) {
       getListedTerritories(terrList, true, true);
       // removed checks for length & group commands because it breaks the setTerritoryCount feature.
     }
@@ -387,13 +387,16 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       final boolean mustSetTerritoryCount) {
     final Set<Territory> territories = new HashSet<>();
     // this list is null, empty, or contains "", so return a blank list of territories
-    if (list == null || list.length == 0 || (list.length == 1 && (list[0] == null || list[0].length() == 0))) {
+    if ((list == null)
+        || (list.length == 0)
+        || ((list.length == 1) && ((list[0] == null)
+        || (list[0].length() == 0)))) {
       return territories;
     }
     boolean haveSetCount = false;
     for (int i = 0; i < list.length; i++) {
       final String name = list[i];
-      if (testFirstItemForCount && i == 0) {
+      if (testFirstItemForCount && (i == 0)) {
         // See if the first entry contains the number of territories needed to meet the criteria
         try {
           // check if this is an integer, and if so set territory count

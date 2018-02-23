@@ -107,7 +107,7 @@ final class DefaultCredentialManager implements CredentialManager {
     final int dataBitsPerBase64Digit = 6;
     final int totalBitsPerBase64Digit = 8;
     final int byteLengthForDesiredEntropy =
-        (base64DigitCountFor160BitEntropy * dataBitsPerBase64Digit / totalBitsPerBase64Digit) + 1;
+        ((base64DigitCountFor160BitEntropy * dataBitsPerBase64Digit) / totalBitsPerBase64Digit) + 1;
 
     final byte[] randomBytes = new byte[byteLengthForDesiredEntropy];
     fillRandom(randomBytes);

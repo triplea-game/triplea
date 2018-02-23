@@ -65,7 +65,7 @@ public class Route implements Serializable, Iterable<Territory> {
    *         form a loop
    */
   public static Route join(final Route r1, final Route r2) {
-    if (r1 == null || r2 == null) {
+    if ((r1 == null) || (r2 == null)) {
       // throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
       return null;
     }

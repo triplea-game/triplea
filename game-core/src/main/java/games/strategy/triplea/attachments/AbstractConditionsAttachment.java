@@ -139,7 +139,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
               + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
         }
       } else if (nums.length == 2) {
-        if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0
+        if ((Integer.parseInt(nums[0]) < 0) || (Integer.parseInt(nums[1]) < 0)
             || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1]))) {
           throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
               + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
@@ -278,7 +278,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
             count++;
           }
         }
-        met = (count >= start && count <= end);
+        met = ((count >= start) && (count <= end));
       }
     }
     return met;
@@ -290,7 +290,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     try {
       final int i = getInt(s[0]);
       final int j = getInt(s[1]);
-      if (i > j || i < 0 || j < 0 || i > 120 || j > 120) {
+      if ((i > j) || (i < 0) || (j < 0) || (i > 120) || (j > 120)) {
         throw new GameParseException(
             "chance should have a format of \"x:y\" where x is <= y and both x and y are >=0 and <=120"
                 + thisErrorMsg());

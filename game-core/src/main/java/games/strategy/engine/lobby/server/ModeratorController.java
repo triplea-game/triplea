@@ -27,7 +27,7 @@ public class ModeratorController extends AbstractModeratorController {
 
   @Override
   public void banUsername(final INode node, final @Nullable Date banExpires) {
-    banUsername(node, banExpires != null ? banExpires.toInstant() : null);
+    banUsername(node, (banExpires != null) ? banExpires.toInstant() : null);
   }
 
   private void banUsername(final INode node, final @Nullable Instant banExpires) {
@@ -44,7 +44,7 @@ public class ModeratorController extends AbstractModeratorController {
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
         bannedUser.getUsername(), bannedUser.getInetAddress().getHostAddress(), bannedUser.getHashedMacAddress(),
         moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        banExpires == null ? "forever" : banExpires.toString()));
+        (banExpires == null) ? "forever" : banExpires.toString()));
   }
 
   private void assertUserIsAdmin() {
@@ -63,7 +63,7 @@ public class ModeratorController extends AbstractModeratorController {
   public boolean isPlayerAdmin(final INode node) {
     final User user = getUserForNode(node);
     final DBUser dbUser = new UserController().getUserByName(user.getUsername());
-    return dbUser != null && dbUser.isAdmin();
+    return (dbUser != null) && dbUser.isAdmin();
   }
 
   private User getUserForNode(final INode node) {
@@ -83,7 +83,7 @@ public class ModeratorController extends AbstractModeratorController {
 
   @Override
   public void banMac(final INode node, final String hashedMac, final @Nullable Date banExpires) {
-    banMac(node, hashedMac, banExpires != null ? banExpires.toInstant() : null);
+    banMac(node, hashedMac, (banExpires != null) ? banExpires.toInstant() : null);
   }
 
   private void banMac(final INode node, final String hashedMac, final @Nullable Instant banExpires) {
@@ -100,12 +100,12 @@ public class ModeratorController extends AbstractModeratorController {
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
         bannedUser.getUsername(), bannedUser.getInetAddress().getHostAddress(), bannedUser.getHashedMacAddress(),
         moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        banExpires == null ? "forever" : banExpires.toString()));
+        (banExpires == null) ? "forever" : banExpires.toString()));
   }
 
   @Override
   public void muteUsername(final INode node, final @Nullable Date muteExpires) {
-    muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
+    muteUsername(node, (muteExpires != null) ? muteExpires.toInstant() : null);
   }
 
   private void muteUsername(final INode node, final @Nullable Instant muteExpires) {
@@ -123,12 +123,12 @@ public class ModeratorController extends AbstractModeratorController {
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
         mutedUser.getUsername(), mutedUser.getInetAddress().getHostAddress(), mutedUser.getHashedMacAddress(),
         moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        muteExpires == null ? "forever" : muteExpires.toString()));
+        (muteExpires == null) ? "forever" : muteExpires.toString()));
   }
 
   @Override
   public void muteMac(final INode node, final @Nullable Date muteExpires) {
-    muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
+    muteMac(node, (muteExpires != null) ? muteExpires.toInstant() : null);
   }
 
   private void muteMac(final INode node, final @Nullable Instant muteExpires) {
@@ -146,7 +146,7 @@ public class ModeratorController extends AbstractModeratorController {
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
         mutedUser.getUsername(), mutedUser.getInetAddress().getHostAddress(), mutedUser.getHashedMacAddress(),
         moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        muteExpires == null ? "forever" : muteExpires.toString()));
+        (muteExpires == null) ? "forever" : muteExpires.toString()));
   }
 
   @Override

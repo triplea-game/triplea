@@ -423,7 +423,7 @@ class ProLogWindow extends JDialog {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
         for (int i = 0; i < logHolderTabbedPane.getTabCount(); i++) {
           // Remember, we never remove last tab, in case user turns logging back on in the middle of a round
-          if (i != 0 && i < logHolderTabbedPane.getTabCount() - maxHistoryRounds) {
+          if ((i != 0) && (i < (logHolderTabbedPane.getTabCount() - maxHistoryRounds))) {
             // Remove the tab and decrease i by one, so the next component will be checked
             logHolderTabbedPane.removeTabAt(i);
             i--;

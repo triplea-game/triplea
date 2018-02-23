@@ -96,7 +96,7 @@ public final class GameParser {
   }
 
   private GameParseException newGameParseException(final String message, final @Nullable Throwable cause) {
-    final String gameName = data.getGameName() != null ? data.getGameName() : "<unknown>";
+    final String gameName = (data.getGameName() != null) ? data.getGameName() : "<unknown>";
     return new GameParseException(
         String.format("map name: '%s', game name: '%s', %s", mapName, gameName, message),
         cause);
@@ -326,7 +326,7 @@ public final class GameParser {
       throws GameParseException {
     final String name = element.getAttribute(attribute);
     final T attachable = function.apply(name);
-    if (attachable == null && mustFind) {
+    if ((attachable == null) && mustFind) {
       throw newGameParseException("Could not find " + errorName + ". name:" + name);
     }
     return attachable;
@@ -603,7 +603,7 @@ public final class GameParser {
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
         for (int y = 0; y < sizeY; y++) {
-          for (int x = 0; x < sizeX - 1; x++) {
+          for (int x = 0; x < (sizeX - 1); x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y));
           }
         }
@@ -611,22 +611,22 @@ public final class GameParser {
       // Add any implicit vertical connections
       if (verticalConnectionsImplict) {
         for (int x = 0; x < sizeX; x++) {
-          for (int y = 0; y < sizeY - 1; y++) {
+          for (int y = 0; y < (sizeY - 1); y++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x, y + 1));
           }
         }
       }
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < sizeY - 1; y++) {
-          for (int x = 0; x < sizeX - 1; x++) {
+        for (int y = 0; y < (sizeY - 1); y++) {
+          for (int x = 0; x < (sizeX - 1); x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x + 1, y + 1));
           }
         }
       }
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
-        for (int y = 0; y < sizeY - 1; y++) {
+        for (int y = 0; y < (sizeY - 1); y++) {
           for (int x = 1; x < sizeX; x++) {
             map.addConnection(map.getTerritoryFromCoordinates(x, y), map.getTerritoryFromCoordinates(x - 1, y + 1));
           }
@@ -646,10 +646,10 @@ public final class GameParser {
       // Add any implicit horizontal connections
       if (horizontalConnectionsImplict) {
         for (int y = 0; y < sizeY; y++) {
-          for (int x = 0; x < sizeX - 1; x++) {
+          for (int x = 0; x < (sizeX - 1); x++) {
             final Territory from = map.getTerritoryFromCoordinates(x, y);
             final Territory to = map.getTerritoryFromCoordinates(x + 1, y);
-            if (from != null && to != null) {
+            if ((from != null) && (to != null)) {
               map.addConnection(from, to);
             }
           }
@@ -658,17 +658,17 @@ public final class GameParser {
       // Add any implicit acute diagonal connections
       if (diagonalConnectionsImplict) {
         for (int y = 1; y < sizeY; y++) {
-          for (int x = 0; x < sizeX - 1; x++) {
-            if (y % 4 == 0 || (y + 1) % 4 == 0) {
+          for (int x = 0; x < (sizeX - 1); x++) {
+            if (((y % 4) == 0) || (((y + 1) % 4) == 0)) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x, y - 1);
-              if (from != null && to != null) {
+              if ((from != null) && (to != null)) {
                 map.addConnection(from, to);
               }
             } else {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x + 1, y - 1);
-              if (from != null && to != null) {
+              if ((from != null) && (to != null)) {
                 map.addConnection(from, to);
               }
             }
@@ -678,17 +678,17 @@ public final class GameParser {
       // Add any implicit obtuse diagonal connections
       if (diagonalConnectionsImplict) {
         for (int y = 1; y < sizeY; y++) {
-          for (int x = 0; x < sizeX - 1; x++) {
-            if (y % 4 == 0 || (y + 1) % 4 == 0) {
+          for (int x = 0; x < (sizeX - 1); x++) {
+            if (((y % 4) == 0) || (((y + 1) % 4) == 0)) {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x - 1, y - 1);
-              if (from != null && to != null) {
+              if ((from != null) && (to != null)) {
                 map.addConnection(from, to);
               }
             } else {
               final Territory from = map.getTerritoryFromCoordinates(x, y);
               final Territory to = map.getTerritoryFromCoordinates(x, y - 1);
-              if (from != null && to != null) {
+              if ((from != null) && (to != null)) {
                 map.addConnection(from, to);
               }
             }
@@ -852,7 +852,7 @@ public final class GameParser {
       final String property = current.getAttribute("name");
       String value = current.getAttribute("value");
       runningList.add(property);
-      if (value == null || value.length() == 0) {
+      if ((value == null) || (value.length() == 0)) {
         final List<Element> valueChildren = getChildren("value", current);
         if (!valueChildren.isEmpty()) {
           final Element valueNode = valueChildren.get(0);
@@ -861,7 +861,7 @@ public final class GameParser {
           }
         }
       }
-      if (editable != null && editable.equalsIgnoreCase("true")) {
+      if ((editable != null) && editable.equalsIgnoreCase("true")) {
         parseEditableProperty(current, property, value);
       } else {
         final List<Node> children2 = getNonTextNodesIgnoring(current, "value");
@@ -1332,15 +1332,15 @@ public final class GameParser {
       final String hitsTakenString = current.getAttribute("hitsTaken");
       final String unitDamageString = current.getAttribute("unitDamage");
       final PlayerID owner;
-      if (ownerString == null || ownerString.trim().length() == 0) {
+      if ((ownerString == null) || (ownerString.trim().length() == 0)) {
         owner = PlayerID.NULL_PLAYERID;
       } else {
         owner = getPlayerId(current, "owner", false);
       }
       final int hits;
-      if (hitsTakenString != null && hitsTakenString.trim().length() > 0) {
+      if ((hitsTakenString != null) && (hitsTakenString.trim().length() > 0)) {
         hits = Integer.parseInt(hitsTakenString);
-        if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
+        if ((hits < 0) || (hits > (UnitAttachment.get(type).getHitPoints() - 1))) {
           throw newGameParseException(
               "hitsTaken cannot be less than zero or greater than one less than total hitpPoints");
         }
@@ -1348,7 +1348,7 @@ public final class GameParser {
         hits = 0;
       }
       final int unitDamage;
-      if (unitDamageString != null && unitDamageString.trim().length() > 0) {
+      if ((unitDamageString != null) && (unitDamageString.trim().length() > 0)) {
         unitDamage = Integer.parseInt(unitDamageString);
         if (unitDamage < 0) {
           throw newGameParseException("unitDamage cannot be less than zero");

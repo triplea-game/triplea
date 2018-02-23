@@ -71,7 +71,7 @@ public class ProPurchaseOption {
       hitPoints = 0;
     }
     attack = unitAttachment.getAttack(player) * quantity;
-    amphibAttack = attack + 0.5 * unitAttachment.getIsMarine() * quantity;
+    amphibAttack = attack + (0.5 * unitAttachment.getIsMarine() * quantity);
     defense = unitAttachment.getDefense(player) * quantity;
     transportCost = unitAttachment.getTransportCost() * quantity;
     carrierCost = unitAttachment.getCarrierCost() * quantity;
@@ -88,11 +88,11 @@ public class ProPurchaseOption {
       costPerHitPoint = ((double) cost) / hitPoints;
     }
     hitPointEfficiency =
-        (hitPoints + 0.1 * attack * 6 / data.getDiceSides() + 0.2 * defense * 6 / data.getDiceSides()) / cost;
-    attackEfficiency = (1 + hitPoints)
-        * (hitPoints + attack * 6 / data.getDiceSides() + 0.5 * defense * 6 / data.getDiceSides()) / cost;
-    defenseEfficiency = (1 + hitPoints)
-        * (hitPoints + 0.5 * attack * 6 / data.getDiceSides() + defense * 6 / data.getDiceSides()) / cost;
+        (hitPoints + ((0.1 * attack * 6) / data.getDiceSides()) + ((0.2 * defense * 6) / data.getDiceSides())) / cost;
+    attackEfficiency = ((1 + hitPoints)
+        * (hitPoints + ((attack * 6) / data.getDiceSides()) + ((0.5 * defense * 6) / data.getDiceSides()))) / cost;
+    defenseEfficiency = ((1 + hitPoints)
+        * (hitPoints + ((0.5 * attack * 6) / data.getDiceSides()) + ((defense * 6) / data.getDiceSides()))) / cost;
     maxBuiltPerPlayer = unitAttachment.getMaxBuiltPerPlayer();
 
     // Support fields
@@ -236,7 +236,7 @@ public class ProPurchaseOption {
   public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits,
       final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity,
       final int unusedLocalCarrierCapacity) {
-    if (isAir && (carrierCost <= 0 || carrierCost > unusedCarrierCapacity
+    if (isAir && ((carrierCost <= 0) || (carrierCost > unusedCarrierCapacity)
         || !Properties.getProduceFightersOnCarriers(data))) {
       return 0;
     }
@@ -246,7 +246,7 @@ public class ProPurchaseOption {
     if (needDestroyer && isDestroyer) {
       seaFactor = 8;
     }
-    if (isAir || carrierCapacity > 0 && unusedLocalCarrierCapacity <= 0) {
+    if (isAir || ((carrierCapacity > 0) && (unusedLocalCarrierCapacity <= 0))) {
       seaFactor = 4;
     }
     return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);
@@ -256,19 +256,19 @@ public class ProPurchaseOption {
       final List<Unit> unitsToPlace) {
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
     final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
-    final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
+    final double hitPointPerUnitFactor = (3 + (hitPoints / quantity));
     final double transportCostFactor = Math.pow(1.0 / transportCost, .2);
     final double hitPointValue = 2 * hitPoints;
-    final double attackValue = (amphibAttack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
-    final double defenseValue = (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
-    return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * transportCostFactor / cost,
+    final double attackValue = ((amphibAttack + (supportAttackFactor * quantity)) * 6) / data.getDiceSides();
+    final double defenseValue = ((defense + (supportDefenseFactor * quantity)) * 6) / data.getDiceSides();
+    return Math.pow(((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * transportCostFactor) / cost,
         30) / quantity;
   }
 
   private double calculateLandDistanceFactor(final int enemyDistance) {
     final double distance = Math.max(0, enemyDistance - 1.5);
     // 1, 2, 2.5, 2.75, etc
-    final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1);
+    final double moveFactor = 1 + ((2 * (Math.pow(2, movement - 1) - 1)) / Math.pow(2, movement - 1));
     final double distanceFactor = Math.pow(moveFactor, distance / 5);
     return distanceFactor;
   }
@@ -311,7 +311,7 @@ public class ProPurchaseOption {
         final int numExtraSupportableUnits = Math.max(0, numSupportableUnits - numSupportProvided);
 
         // Ranges from 0 to 1
-        final double ratio = Math.min(1, 2.0 * numExtraSupportableUnits / (numSupportableUnits + numAddedSupport));
+        final double ratio = Math.min(1, (2.0 * numExtraSupportableUnits) / (numSupportableUnits + numAddedSupport));
 
         // Find approximate strength bonus provided
         double bonus = 0;
@@ -344,12 +344,13 @@ public class ProPurchaseOption {
   private double calculateEfficiency(final double attackFactor, final double defenseFactor,
       final double supportAttackFactor, final double supportDefenseFactor, final double distanceFactor,
       final double seaFactor, final GameData data) {
-    final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
+    final double hitPointPerUnitFactor = (3 + (hitPoints / quantity));
     final double hitPointValue = 2 * hitPoints;
-    final double attackValue = attackFactor * (attack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
-    final double defenseValue = defenseFactor * (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
+    final double attackValue = (attackFactor * (attack + (supportAttackFactor * quantity)) * 6) / data.getDiceSides();
+    final double defenseValue =
+        (defenseFactor * (defense + (supportDefenseFactor * quantity)) * 6) / data.getDiceSides();
     return Math.pow(
-        (hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor / cost, 30)
+        ((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor) / cost, 30)
         / quantity;
   }
 }

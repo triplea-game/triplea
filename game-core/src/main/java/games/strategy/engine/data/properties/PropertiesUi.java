@@ -72,7 +72,7 @@ public class PropertiesUi extends JPanel {
     itemConstraints.anchor = GridBagConstraints.WEST;
     itemConstraints.fill = GridBagConstraints.NONE;
     add(item, itemConstraints);
-    if (tooltip != null && tooltip.length() > 0) {
+    if ((tooltip != null) && (tooltip.length() > 0)) {
       label.setToolTipText(tooltip);
       item.setToolTipText(tooltip);
     }

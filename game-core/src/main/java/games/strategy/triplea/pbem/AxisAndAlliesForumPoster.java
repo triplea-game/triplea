@@ -160,7 +160,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               .addTextBody("message", message)
               // If the user has chosen to receive notifications, ensure this setting is passed on
               .addTextBody("notify", NOTIFY_PATTERN.matcher(body).matches() ? "1" : "0");
-          if (m_includeSaveGame && saveGameFile != null) {
+          if (m_includeSaveGame && (saveGameFile != null)) {
             builder.addBinaryBody("attachment[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM,
                 saveGameFileName);
           }

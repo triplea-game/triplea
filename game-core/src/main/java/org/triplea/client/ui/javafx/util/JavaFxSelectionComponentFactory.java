@@ -64,8 +64,8 @@ class JavaFxSelectionComponentFactory {
       }
 
       private Integer getIntegerFromString(final String string) {
-        return string.isEmpty() && allowUnset
-            ? minValue - 1
+        return (string.isEmpty() && allowUnset)
+            ? (minValue - 1)
             : Integer.valueOf(string);
       }
 
@@ -82,7 +82,7 @@ class JavaFxSelectionComponentFactory {
       @Override
       public Map<GameSetting, String> readValues() {
         final Integer value = spinner.getValue();
-        final String stringValue = allowUnset && value == minValue - 1 ? "" : value.toString();
+        final String stringValue = (allowUnset && (value == (minValue - 1))) ? "" : value.toString();
         return Collections.singletonMap(clientSetting, stringValue);
       }
 

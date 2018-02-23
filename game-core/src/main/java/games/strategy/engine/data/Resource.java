@@ -27,7 +27,7 @@ public class Resource extends NamedAttachable {
 
   public boolean isDisplayedFor(final PlayerID player) {
     // TODO: remove null check on incompatible release
-    return players == null || players.contains(player);
+    return (players == null) || players.contains(player);
   }
 
 }

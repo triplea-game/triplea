@@ -13,7 +13,7 @@ public class DefaultNamed extends GameDataComponent implements Named {
   /** Creates new DefaultNamed. */
   public DefaultNamed(final String name, final GameData data) {
     super(data);
-    if (name == null || name.length() == 0) {
+    if ((name == null) || (name.length() == 0)) {
       throw new IllegalArgumentException("Name must not be null");
     }
     m_name = name;
@@ -26,7 +26,7 @@ public class DefaultNamed extends GameDataComponent implements Named {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof Named)) {
+    if ((o == null) || !(o instanceof Named)) {
       return false;
     }
     final Named other = (Named) o;

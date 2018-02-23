@@ -66,7 +66,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.AIRBORNE_MOVE);
-      return prop != null ? Boolean.parseBoolean(prop) : isAirborneDelegate(data);
+      return (prop != null) ? Boolean.parseBoolean(prop) : isAirborneDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -168,7 +168,7 @@ public class GameStepPropertiesHelper {
     try {
       final String prop =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.GIVE_BONUS_MOVEMENT);
-      return prop != null ? Boolean.parseBoolean(prop) : isCombatDelegate(data);
+      return (prop != null) ? Boolean.parseBoolean(prop) : isCombatDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -185,7 +185,7 @@ public class GameStepPropertiesHelper {
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REMOVE_AIR_THAT_CAN_NOT_LAND);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
-      } else if (data.getSequence().getStep().getDelegate() != null
+      } else if ((data.getSequence().getStep().getDelegate() != null)
           && NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) {
         return false;
       } else {
@@ -254,7 +254,7 @@ public class GameStepPropertiesHelper {
     try {
       final String prop =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END);
-      return prop != null ? Boolean.parseBoolean(prop) : isNonCombatDelegate(data);
+      return (prop != null) ? Boolean.parseBoolean(prop) : isNonCombatDelegate(data);
     } finally {
       data.releaseReadLock();
     }
@@ -267,7 +267,7 @@ public class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.BID);
-      return prop != null ? Boolean.parseBoolean(prop) : (isBidPurchaseDelegate(data) || isBidPlaceDelegate(data));
+      return (prop != null) ? Boolean.parseBoolean(prop) : (isBidPurchaseDelegate(data) || isBidPlaceDelegate(data));
     } finally {
       data.releaseReadLock();
     }

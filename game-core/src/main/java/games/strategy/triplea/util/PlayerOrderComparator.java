@@ -41,7 +41,7 @@ public class PlayerOrderComparator implements Comparator<PlayerID> {
       } finally {
         gameData.releaseReadLock();
       }
-      if (delegate != null && delegate.getClass() != null) {
+      if ((delegate != null) && (delegate.getClass() != null)) {
         final String delegateClassName = delegate.getClass().getName();
         if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate")
             || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
@@ -49,7 +49,7 @@ public class PlayerOrderComparator implements Comparator<PlayerID> {
             || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate")) {
           continue;
         }
-      } else if (s.getName() != null && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace"))) {
+      } else if ((s.getName() != null) && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace"))) {
         continue;
       }
       if (s.getPlayerId().equals(p1)) {

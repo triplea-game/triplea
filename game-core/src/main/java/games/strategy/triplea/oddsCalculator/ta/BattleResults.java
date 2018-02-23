@@ -72,16 +72,16 @@ public class BattleResults extends GameDataComponent {
   // combat units that can
   // die.
   public boolean attackerWon() {
-    return !draw() && m_whoWon == WhoWon.ATTACKER;
+    return !draw() && (m_whoWon == WhoWon.ATTACKER);
   }
 
   public boolean defenderWon() {
     // if noone is left, it is considered a draw, even if m_whoWon says defender.
-    return !draw() && m_whoWon == WhoWon.DEFENDER;
+    return !draw() && (m_whoWon == WhoWon.DEFENDER);
   }
 
   public boolean draw() {
-    return (m_whoWon != WhoWon.ATTACKER && m_whoWon != WhoWon.DEFENDER)
-        || (getAttackingCombatUnitsLeft() == 0 && getDefendingCombatUnitsLeft() == 0);
+    return ((m_whoWon != WhoWon.ATTACKER) && (m_whoWon != WhoWon.DEFENDER))
+        || ((getAttackingCombatUnitsLeft() == 0) && (getDefendingCombatUnitsLeft() == 0));
   }
 }

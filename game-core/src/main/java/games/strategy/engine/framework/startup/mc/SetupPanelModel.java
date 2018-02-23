@@ -55,8 +55,8 @@ public class SetupPanelModel extends Observable {
     setGameTypePanel(new ServerSetupPanel(model, gameSelectorModel));
     // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
     // requiring scroll bars
-    final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
-    final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
+    final int x = ((ui.getPreferredSize().width > 800) ? ui.getPreferredSize().width : 800);
+    final int y = ((ui.getPreferredSize().height > 660) ? ui.getPreferredSize().height : 660);
     ui.setPreferredSize(new Dimension(x, y));
     ui.setSize(new Dimension(x, y));
   }

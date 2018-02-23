@@ -35,15 +35,15 @@ public class RouteDescription {
       return false;
     }
     final RouteDescription other = (RouteDescription) o;
-    if ((start == null && other.start != null) || (other.start == null && start != null)
-        || (start != other.start && !start.equals(other.start))) {
+    if (((start == null) && (other.start != null)) || ((other.start == null) && (start != null))
+        || ((start != other.start) && !start.equals(other.start))) {
       return false;
     }
-    if ((route == null && other.route != null) || (other.route == null && route != null)
-        || (route != other.route && !route.equals(other.route))) {
+    if (((route == null) && (other.route != null)) || ((other.route == null) && (route != null))
+        || ((route != other.route) && !route.equals(other.route))) {
       return false;
     }
-    if ((end == null && other.end != null) || (other.end == null && end != null)) {
+    if (((end == null) && (other.end != null)) || ((other.end == null) && (end != null))) {
       return false;
     }
     if (cursorImage != other.cursorImage) {
@@ -51,7 +51,7 @@ public class RouteDescription {
     }
     // we dont want to be updating for every small change,
     // if the end points are close enough, they are close enough
-    if (other.end == null && this.end == null) {
+    if ((other.end == null) && (this.end == null)) {
       return true;
     }
     int diffX = end.x - other.end.x;

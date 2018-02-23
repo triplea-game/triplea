@@ -47,7 +47,7 @@ public class RouteCalculator {
     final Point2D[] result = new Point2D[route.length];
     for (int i = 0; i < route.length; i++) {
       final Point2D point = route[i];
-      result[i] = i == 0 ? point : getClosestPoint(result[i - 1], getPossiblePoints(point));
+      result[i] = (i == 0) ? point : getClosestPoint(result[i - 1], getPossiblePoints(point));
     }
     return result;
   }

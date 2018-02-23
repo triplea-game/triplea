@@ -97,8 +97,8 @@ public class JPanelBuilder {
       panel.setBorder(border);
     }
 
-    if (layout == null && boxLayoutType != null) {
-      final int boxDirection = boxLayoutType == BoxLayoutType.HORIZONTAL ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS;
+    if ((layout == null) && (boxLayoutType != null)) {
+      final int boxDirection = (boxLayoutType == BoxLayoutType.HORIZONTAL) ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS;
       layout = new BoxLayout(panel, boxDirection);
     } else if (layout == null) {
       layout = new FlowLayout();

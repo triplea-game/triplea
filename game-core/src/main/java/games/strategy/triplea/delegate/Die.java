@@ -45,7 +45,7 @@ public class Die implements Serializable {
   // we write a lot of dice over the network and to the saved
   // game, so we want to make this fairly efficient
   int getCompressedValue() {
-    if (m_value > 255 || m_rolledAt > 255) {
+    if ((m_value > 255) || (m_rolledAt > 255)) {
       throw new IllegalStateException("too big to serialize");
     }
     return (m_rolledAt << 8) + (m_value << 16) + (m_type.ordinal());
@@ -65,7 +65,7 @@ public class Die implements Serializable {
       return false;
     }
     final Die other = (Die) o;
-    return other.m_type == this.m_type && other.m_value == this.m_value && other.m_rolledAt == this.m_rolledAt;
+    return (other.m_type == this.m_type) && (other.m_value == this.m_value) && (other.m_rolledAt == this.m_rolledAt);
   }
 
   @Override

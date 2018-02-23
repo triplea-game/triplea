@@ -74,7 +74,7 @@ public class TripleA implements IGameLoader {
 
   @Override
   public void shutDown() {
-    if (game != null && soundChannel != null) {
+    if ((game != null) && (soundChannel != null)) {
       game.removeSoundChannel(soundChannel);
       // set sound channel to null to handle the case of shutdown being called multiple times.
       // If/when shutdown is called exactly once, then the null assignment should be unnecessary.

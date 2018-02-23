@@ -27,7 +27,7 @@ public class DefaultSoundChannel implements ISound {
   public void playSoundToPlayers(final String clipName,
       final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
       final boolean includeObservers) {
-    if (playersToSendTo == null || playersToSendTo.isEmpty()) {
+    if ((playersToSendTo == null) || playersToSendTo.isEmpty()) {
       return;
     }
     if (butNotThesePlayers != null) {

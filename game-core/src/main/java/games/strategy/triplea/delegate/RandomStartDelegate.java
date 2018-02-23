@@ -93,7 +93,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     int pos = 0;
     // divvy up territories
     while (!allPickableTerritories.isEmpty() && !playersCanPick.isEmpty()) {
-      if (currentPickingPlayer == null || !playersCanPick.contains(currentPickingPlayer)) {
+      if ((currentPickingPlayer == null) || !playersCanPick.contains(currentPickingPlayer)) {
         currentPickingPlayer = playersCanPick.get(0);
       }
       if (!Interruptibles.sleep(250)) {
@@ -131,8 +131,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
           unitsToPlace = pick.getSecond();
           if (!allPickableTerritories.contains(picked)
               || !currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
-              || unitsToPlace.size() > UNITS_PER_PICK || (unitsToPlace.size() < UNITS_PER_PICK
-                  && unitsToPlace.size() < currentPickingPlayer.getUnits().getUnits().size())) {
+              || (unitsToPlace.size() > UNITS_PER_PICK) || ((unitsToPlace.size() < UNITS_PER_PICK)
+              && (unitsToPlace.size() < currentPickingPlayer.getUnits().getUnits().size()))) {
             getRemotePlayer(currentPickingPlayer).reportMessage("Chosen territory or units invalid!",
                 "Chosen territory or units invalid!");
           } else {
@@ -164,7 +164,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     }
     // place any remaining units
     while (!playersCanPick.isEmpty()) {
-      if (currentPickingPlayer == null || !playersCanPick.contains(currentPickingPlayer)) {
+      if ((currentPickingPlayer == null) || !playersCanPick.contains(currentPickingPlayer)) {
         currentPickingPlayer = playersCanPick.get(0);
       }
       final List<Territory> territoriesToPickFrom = data.getMap().getTerritoriesOwnedBy(currentPickingPlayer);
@@ -178,8 +178,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         unitsToPlace = pick.getSecond();
         if (!territoriesToPickFrom.contains(picked)
             || !currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
-            || unitsToPlace.size() > UNITS_PER_PICK || (unitsToPlace.size() < UNITS_PER_PICK
-                && unitsToPlace.size() < currentPickingPlayer.getUnits().getUnits().size())) {
+            || (unitsToPlace.size() > UNITS_PER_PICK) || ((unitsToPlace.size() < UNITS_PER_PICK)
+            && (unitsToPlace.size() < currentPickingPlayer.getUnits().getUnits().size()))) {
           getRemotePlayer(currentPickingPlayer).reportMessage("Chosen territory or units invalid!",
               "Chosen territory or units invalid!");
         } else {
@@ -232,7 +232,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
 
   private static Predicate<PlayerID> getPlayerCanPickMatch() {
     return player -> {
-      if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
+      if ((player == null) || player.equals(PlayerID.NULL_PLAYERID)) {
         return false;
       }
       if (player.getUnits().isEmpty()) {

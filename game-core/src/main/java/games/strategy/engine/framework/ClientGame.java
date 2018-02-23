@@ -87,8 +87,8 @@ public class ClientGame extends AbstractGame {
             // right now, fixing it with a hack. but in reality we probably need to have a better way of determining
             // when a new round has
             // started (like with a roundChanged listener).
-            if ((currentRound - 1 > round && ourOriginalCurrentRound >= round)
-                || (currentRound > round && ourOriginalCurrentRound < round)) {
+            if ((((currentRound - 1) > round) && (ourOriginalCurrentRound >= round))
+                || ((currentRound > round) && (ourOriginalCurrentRound < round))) {
               System.err.println("Cannot create more rounds that host currently has. Host Round:" + round
                   + " and new Client Round:" + currentRound);
               throw new IllegalStateException("Cannot create more rounds that host currently has. Host Round:" + round
@@ -133,7 +133,7 @@ public class ClientGame extends AbstractGame {
             break;
           }
           i++;
-          if (i > 300 && !shownErrorMessage) {
+          if ((i > 300) && !shownErrorMessage) {
             System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
             shownErrorMessage = true;
             // TODO: should we throw an illegal state error? or just return? or a game over exception? should we

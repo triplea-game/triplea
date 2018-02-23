@@ -632,7 +632,7 @@ public class MapData implements Closeable {
   public Dimension getMapDimensions() {
     final String widthProperty = mapProperties.getProperty(PROPERTY_MAP_WIDTH);
     final String heightProperty = mapProperties.getProperty(PROPERTY_MAP_HEIGHT);
-    if (widthProperty == null || heightProperty == null) {
+    if ((widthProperty == null) || (heightProperty == null)) {
       throw new IllegalStateException(
           "Missing " + PROPERTY_MAP_WIDTH + " or " + PROPERTY_MAP_HEIGHT + " in " + MAP_PROPERTIES);
     }
@@ -663,8 +663,8 @@ public class MapData implements Closeable {
     // the tiles for the
     // map (and a java heap space error)
     final Dimension mapDimensions = getMapDimensions();
-    if ((scrollWrapX() && bounds.width > 1800 && bounds.width > mapDimensions.width * 0.9)
-        || (scrollWrapY() && bounds.height > 1200 && bounds.height > mapDimensions.height * 0.9)) {
+    if ((scrollWrapX() && (bounds.width > 1800) && (bounds.width > (mapDimensions.width * 0.9)))
+        || (scrollWrapY() && (bounds.height > 1200) && (bounds.height > (mapDimensions.height * 0.9)))) {
       return getBoundingRectWithTranslate(polys, mapDimensions);
     }
     return bounds;
@@ -689,10 +689,10 @@ public class MapData implements Closeable {
       // territory borders are
       // thick)
       final Rectangle itemRect = item.getBounds();
-      if (scrollWrapX && itemRect.getMaxX() >= closeToMapWidth) {
+      if (scrollWrapX && (itemRect.getMaxX() >= closeToMapWidth)) {
         itemRect.translate(-mapWidth, 0);
       }
-      if (scrollWrapY && itemRect.getMaxY() >= closeToMapHeight) {
+      if (scrollWrapY && (itemRect.getMaxY() >= closeToMapHeight)) {
         itemRect.translate(0, -mapHeight);
       }
       if (boundingRect == null) {
@@ -702,10 +702,10 @@ public class MapData implements Closeable {
       }
     }
     // if the polygon is completely negative, we can make translate it back to normal
-    if (boundingRect.x < 0 && boundingRect.getMaxX() <= 0) {
+    if ((boundingRect.x < 0) && (boundingRect.getMaxX() <= 0)) {
       boundingRect.translate(mapWidth, 0);
     }
-    if (boundingRect.y < 0 && boundingRect.getMaxY() <= 0) {
+    if ((boundingRect.y < 0) && (boundingRect.getMaxY() <= 0)) {
       boundingRect.translate(0, mapHeight);
     }
     return boundingRect;

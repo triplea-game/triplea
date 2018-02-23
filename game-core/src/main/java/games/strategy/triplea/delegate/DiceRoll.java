@@ -82,7 +82,7 @@ public class DiceRoll implements Externalizable {
         chosenDiceSize = uaDiceSides;
       }
     }
-    if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1) {
+    if ((highestAttack > (chosenDiceSize / 2)) && (chosenDiceSize > 1)) {
       // TODO: sadly the whole low luck section falls apart if AA are hitting at greater than half the
       // value of dice, and I don't feel like rewriting it
       highestAttack = chosenDiceSize / 2;
@@ -246,7 +246,7 @@ public class DiceRoll implements Externalizable {
     // if we are low luck, we only want to know the power and total attacks, while if we are dice we will be filling the
     // sorted dice
     final boolean recordSortedDice =
-        fillInSortedDiceAndRecordHits && dice != null && dice.length > 0 && sortedDice != null;
+        fillInSortedDiceAndRecordHits && (dice != null) && (dice.length > 0) && (sortedDice != null);
     int totalPower = 0;
     int hits = 0;
     int i = 0;
@@ -254,7 +254,7 @@ public class DiceRoll implements Externalizable {
     // non-infinite, non-overstack aa
     int runningMaximum = normalNonInfiniteAAtotalAAattacks;
     final Iterator<Unit> normalAAiter = normalNonInfiniteAa.iterator();
-    while (i < runningMaximum && normalAAiter.hasNext()) {
+    while ((i < runningMaximum) && normalAAiter.hasNext()) {
       final Unit aaGun = normalAAiter.next();
       // should be > 0 at this point
       int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks();
@@ -262,7 +262,7 @@ public class DiceRoll implements Externalizable {
       if (hitAt < hitAtForInfinite) {
         continue;
       }
-      while (i < runningMaximum && numAttacks > 0) {
+      while ((i < runningMaximum) && (numAttacks > 0)) {
         if (recordSortedDice) {
           // dice are zero based
           final boolean hit = dice[i] < hitAt;
@@ -296,13 +296,13 @@ public class DiceRoll implements Externalizable {
     // overstack aa
     runningMaximum += overstackAAtotalAAattacks;
     final Iterator<Unit> overstackAAiter = overstackAa.iterator();
-    while (i < runningMaximum && overstackAAiter.hasNext()) {
+    while ((i < runningMaximum) && overstackAAiter.hasNext()) {
       final Unit aaGun = overstackAAiter.next();
       // should be > 0 at this point
       int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks();
       // zero based, so subtract 1
       final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
-      while (i < runningMaximum && numAttacks > 0) {
+      while ((i < runningMaximum) && (numAttacks > 0)) {
         if (recordSortedDice) {
           // dice are zero based
           final boolean hit = dice[i] < hitAt;
@@ -422,7 +422,7 @@ public class DiceRoll implements Externalizable {
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRolls = new HashMap<>();
-    if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
+    if ((unitsGettingPowerFor == null) || unitsGettingPowerFor.isEmpty()) {
       return unitPowerAndRolls;
     }
     // get all supports, friendly and enemy
@@ -470,7 +470,7 @@ public class DiceRoll implements Externalizable {
             true, false);
       } else {
         strength = ua.getAttack(current.getOwner());
-        if (ua.getIsMarine() != 0 && isAmphibiousBattle) {
+        if ((ua.getIsMarine() != 0) && isAmphibiousBattle) {
           if (amphibiousLandAttackers.contains(current)) {
             strength += ua.getIsMarine();
           }
@@ -489,7 +489,7 @@ public class DiceRoll implements Externalizable {
       strength = Math.min(Math.max(strength, 0), diceSides);
       // now determine our rolls
       int rolls;
-      if (!bombing && strength == 0) {
+      if (!bombing && (strength == 0)) {
         rolls = 0;
       } else {
         if (defending) {
@@ -529,7 +529,7 @@ public class DiceRoll implements Externalizable {
     for (final Entry<Unit, Tuple<Integer, Integer>> entry : unitPowerAndRollsMap.entrySet()) {
       int unitStrength = Math.min(Math.max(0, entry.getValue().getFirst()), diceSides);
       final int unitRolls = entry.getValue().getSecond();
-      if (unitStrength <= 0 || unitRolls <= 0) {
+      if ((unitStrength <= 0) || (unitRolls <= 0)) {
         continue;
       }
       if (unitRolls == 1) {
@@ -620,7 +620,7 @@ public class DiceRoll implements Externalizable {
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
       final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeft, final GameData data,
       final boolean defence, final boolean allies) {
-    if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty()) {
+    if ((unitsGivingTheSupport == null) || unitsGivingTheSupport.isEmpty()) {
       return;
     }
     for (final UnitSupportAttachment rule : UnitSupportAttachment.get(data)) {
@@ -687,7 +687,7 @@ public class DiceRoll implements Externalizable {
           continue;
         }
         final Set<UnitType> types = rule.getUnitType();
-        if (types != null && types.contains(unit.getType()) && supportLeft.getInt(rule) > 0) {
+        if ((types != null) && types.contains(unit.getType()) && (supportLeft.getInt(rule) > 0)) {
           givenSupport += rule.getBonus();
           supportLeft.add(rule, -1);
           final LinkedIntegerMap<Unit> supportersLeft = supportUnitsLeft.get(rule);
@@ -745,16 +745,16 @@ public class DiceRoll implements Externalizable {
       if (friendly) {
         // favor rolls over strength
         if (u1.getRoll() || u2.getRoll()) {
-          final int u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
-          final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+          final int u1Bonus = (u1.getRoll() && u1CanBonus) ? u1.getBonus() : 0;
+          final Integer u2Bonus = (u2.getRoll() && u2CanBonus) ? u2.getBonus() : 0;
           compareTo = u2Bonus.compareTo(u1Bonus);
           if (compareTo != 0) {
             return compareTo;
           }
         }
         if (u1.getStrength() || u2.getStrength()) {
-          final int u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
-          final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+          final int u1Bonus = (u1.getStrength() && u1CanBonus) ? u1.getBonus() : 0;
+          final Integer u2Bonus = (u2.getStrength() && u2CanBonus) ? u2.getBonus() : 0;
           compareTo = u2Bonus.compareTo(u1Bonus);
           if (compareTo != 0) {
             return compareTo;
@@ -762,16 +762,16 @@ public class DiceRoll implements Externalizable {
         }
       } else {
         if (u1.getRoll() || u2.getRoll()) {
-          final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
-          final int u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+          final Integer u1Bonus = (u1.getRoll() && u1CanBonus) ? u1.getBonus() : 0;
+          final int u2Bonus = (u2.getRoll() && u2CanBonus) ? u2.getBonus() : 0;
           compareTo = u1Bonus.compareTo(u2Bonus);
           if (compareTo != 0) {
             return compareTo;
           }
         }
         if (u1.getStrength() || u2.getStrength()) {
-          final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
-          final int u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+          final Integer u1Bonus = (u1.getStrength() && u1CanBonus) ? u1.getBonus() : 0;
+          final int u2Bonus = (u2.getStrength() && u2CanBonus) ? u2.getBonus() : 0;
           compareTo = u1Bonus.compareTo(u2Bonus);
           if (compareTo != 0) {
             return compareTo;
@@ -795,8 +795,8 @@ public class DiceRoll implements Externalizable {
       // come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
       final Set<UnitType> types1 = u1.getUnitType();
       final Set<UnitType> types2 = u2.getUnitType();
-      final Integer s1 = types1 == null ? 0 : types1.size();
-      final int s2 = types2 == null ? 0 : types2.size();
+      final Integer s1 = (types1 == null) ? 0 : types1.size();
+      final int s2 = (types2 == null) ? 0 : types2.size();
       compareTo = s1.compareTo(s2);
       if (compareTo != 0) {
         return compareTo;
@@ -858,7 +858,7 @@ public class DiceRoll implements Externalizable {
         // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1
         // onto the power to
         // simulate the gains of having the best die picked.
-        if (i > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
+        if ((i > 1) && (lhtrBombers || ua.getChooseBestRoll())) {
           totalStrength += extraRollBonus;
           continue;
         }
@@ -890,7 +890,7 @@ public class DiceRoll implements Externalizable {
             Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));
         final int rolls = AirBattle.getAirBattleRolls(current, defending);
         // lhtr heavy bombers take best of n dice for both attack and defense
-        if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
+        if ((rolls > 1) && (lhtrBombers || ua.getChooseBestRoll())) {
           int minIndex = 0;
           int min = data.getDiceSides();
           for (int i = 0; i < rolls; i++) {
@@ -967,10 +967,10 @@ public class DiceRoll implements Externalizable {
       final int strength = powerAndRolls.getFirst();
       final int rolls = powerAndRolls.getSecond();
       // lhtr heavy bombers take best of n dice for both attack and defense
-      if (rolls <= 0 || strength <= 0) {
+      if ((rolls <= 0) || (strength <= 0)) {
         continue;
       }
-      if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
+      if ((rolls > 1) && (lhtrBombers || ua.getChooseBestRoll())) {
         int smallestDieIndex = 0;
         int smallestDie = data.getDiceSides();
         for (int i = 0; i < rolls; i++) {
@@ -1011,7 +1011,7 @@ public class DiceRoll implements Externalizable {
 
   private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
-    if (player.isNull() || data.getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player)) {
+    if (player.isNull() || (data.getSequence().getRound() != 1) || isNegateDominatingFirstRoundAttack(player)) {
       return false;
     }
     return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());

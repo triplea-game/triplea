@@ -119,7 +119,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
       challenge.put(SALT_KEY, games.strategy.util.Md5Crypt.newSalt());
     } else {
       final HashedPassword password = userDao.getLegacyPassword(userName);
-      if (password != null && Strings.emptyToNull(password.value) != null) {
+      if ((password != null) && (Strings.emptyToNull(password.value) != null)) {
         challenge.put(SALT_KEY, games.strategy.util.Md5Crypt.getSalt(password.value));
       }
     }
@@ -254,7 +254,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         final String legacyHashedPassword = response.get(HASHED_PASSWORD_KEY);
         if (hashedPassword.isBcrypted()) {
           if (userDao.login(username, new HashedPassword(pass))) {
-            if (legacyHashedPassword != null && userDao.getLegacyPassword(username).value.isEmpty()) {
+            if ((legacyHashedPassword != null) && userDao.getLegacyPassword(username).value.isEmpty()) {
               userDao.updateUser(userDao.getUserByName(username), new HashedPassword(legacyHashedPassword));
               userDao.updateUser(userDao.getUserByName(username),
                   new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt())));

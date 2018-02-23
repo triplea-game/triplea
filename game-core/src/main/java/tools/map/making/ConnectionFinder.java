@@ -191,7 +191,7 @@ public class ConnectionFinder {
           if (territoryDefinitions != null) {
             out.write(String.valueOf(territoryDefinitions).getBytes(StandardCharsets.UTF_8));
           }
-          out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
+          out.write(String.valueOf(connectionsString).getBytes());
         }
         ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
       }

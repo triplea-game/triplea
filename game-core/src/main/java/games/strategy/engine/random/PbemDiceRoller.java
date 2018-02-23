@@ -86,7 +86,7 @@ public class PbemDiceRoller implements IRandomSource {
     for (final Frame frame : frames) {
       // find the window with focus, failing that, get something that is
       // visible
-      if (frame.isFocused() || focusedFrame == null && frame.isVisible()) {
+      if (frame.isFocused() || ((focusedFrame == null) && frame.isVisible())) {
         focusedFrame = frame;
       }
     }
@@ -134,7 +134,7 @@ public class PbemDiceRoller implements IRandomSource {
       this.sides = sides;
       this.count = count;
       this.subjectMessage = subjectMessage;
-      gameId = diceServer.getGameId() == null ? "" : diceServer.getGameId();
+      gameId = (diceServer.getGameId() == null) ? "" : diceServer.getGameId();
       this.diceServer = diceServer;
       this.gameUuid = gameUuid;
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

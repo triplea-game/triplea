@@ -36,11 +36,11 @@ class PuInfo {
           StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
         // Print Title
         final int numResources = gameData.getResourceList().size();
-        for (int i = 0; i < numResources / 2 - 1 + numResources % 2; i++) {
+        for (int i = 0; i < (((numResources / 2) - 1) + (numResources % 2)); i++) {
           resourceWriter.write(",");
         }
         resourceWriter.write("Resource Chart");
-        for (int i = 0; i < numResources / 2 - numResources % 2; i++) {
+        for (int i = 0; i < ((numResources / 2) - (numResources % 2)); i++) {
           resourceWriter.write(",");
         }
         resourceWriter.write("\r\n");

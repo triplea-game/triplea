@@ -26,7 +26,7 @@ public class NumberProperty extends AEditableProperty {
     if (max < min) {
       throw new IllegalThreadStateException("Max must be greater than min");
     }
-    if (def > max || def < min) {
+    if ((def > max) || (def < min)) {
       throw new IllegalThreadStateException("Default value out of range");
     }
     this.max = max;
@@ -63,7 +63,7 @@ public class NumberProperty extends AEditableProperty {
   public boolean validate(final Object value) {
     if (value instanceof Integer) {
       final int i = (int) value;
-      return i <= max && i >= min;
+      return (i <= max) && (i >= min);
     }
     return false;
   }

@@ -115,7 +115,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     if (setCellRenderer instanceof PlayerChatRenderer) {
       iconCounter = ((PlayerChatRenderer) setCellRenderer).getMaxIconCounter();
     }
-    setPreferredSize(new Dimension(maxNameLength + 40 + iconCounter * 14, 80));
+    setPreferredSize(new Dimension(maxNameLength + 40 + (iconCounter * 14), 80));
   }
 
   private void createComponents() {
@@ -201,7 +201,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     boolean hasActions = false;
     for (final IPlayerActionFactory factory : actionFactories) {
       final List<Action> actions = factory.mouseOnPlayer(player);
-      if (actions != null && !actions.isEmpty()) {
+      if ((actions != null) && !actions.isEmpty()) {
         if (hasActions) {
           menu.addSeparator();
         }
@@ -241,18 +241,18 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     }
     String extra = "";
     final String notes = chat.getNotesForNode(node);
-    if (notes != null && notes.length() > 0) {
+    if ((notes != null) && (notes.length() > 0)) {
       extra = extra + notes;
     }
     String status = chat.getStatusManager().getStatus(node);
     final StringBuilder sb = new StringBuilder("");
-    if (status != null && status.length() > 0) {
+    if ((status != null) && (status.length() > 0)) {
       if (status.length() > 25) {
         status = status.substring(0, 25);
       }
       for (int i = 0; i < status.length(); i++) {
         final char c = status.charAt(i);
-        if (c >= '\u0300' && c <= '\u036F') { // skip combining characters
+        if ((c >= '\u0300') && (c <= '\u036F')) { // skip combining characters
           continue;
         }
         sb.append(c);

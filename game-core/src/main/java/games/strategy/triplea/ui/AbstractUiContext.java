@@ -82,7 +82,7 @@ public abstract class AbstractUiContext implements UiContext {
 
   protected static String getDefaultMapDir(final GameData data) {
     final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
-    if (mapName == null || mapName.trim().length() == 0) {
+    if ((mapName == null) || (mapName.trim().length() == 0)) {
       throw new IllegalStateException("Map name property not set on game");
     }
     final Preferences prefs = getPreferencesForMap(mapName);

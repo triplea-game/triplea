@@ -114,8 +114,8 @@ final class GameMenu extends JMenu {
       final int availWidth = screenResolution.width - 40;
 
       scroll.setPreferredSize(
-          new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
-              (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
+          new Dimension(((scroll.getPreferredSize().width > availWidth) ? availWidth : scroll.getPreferredSize().width),
+              ((scroll.getPreferredSize().height > availHeight) ? availHeight : scroll.getPreferredSize().height)));
 
       JOptionPane.showMessageDialog(frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
     })).setMnemonic(KeyEvent.VK_P);
@@ -207,7 +207,7 @@ final class GameMenu extends JMenu {
           panelDice.add(label);
           final StringBuilder diceString = new StringBuilder();
           for (int i = 0; i < dice.length; i++) {
-            diceString.append(String.valueOf(dice[i] + 1)).append((i == dice.length - 1) ? "" : ", ");
+            diceString.append(String.valueOf(dice[i] + 1)).append((i == (dice.length - 1)) ? "" : ", ");
           }
           final JTextField diceList = new JTextField(diceString.toString());
           diceList.setEditable(false);

@@ -32,7 +32,7 @@ class MapDownloadList {
 
       if (mapVersion.isPresent()) {
         installed.add(download);
-        if (download.getVersion() != null && download.getVersion().isGreaterThan(mapVersion.get())) {
+        if ((download.getVersion() != null) && download.getVersion().isGreaterThan(mapVersion.get())) {
           outOfDate.add(download);
         }
       } else {

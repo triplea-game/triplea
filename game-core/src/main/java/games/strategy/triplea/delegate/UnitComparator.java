@@ -71,10 +71,10 @@ public class UnitComparator {
       final int left1 = TripleAUnit.get(u1).getMovementLeft();
       final int left2 = TripleAUnit.get(u2).getMovementLeft();
       if (route != null) {
-        if (left1 >= route.getMovementCost(u1) && left2 < route.getMovementCost(u2)) {
+        if ((left1 >= route.getMovementCost(u1)) && (left2 < route.getMovementCost(u2))) {
           return -1;
         }
-        if (left1 < route.getMovementCost(u1) && left2 >= route.getMovementCost(u2)) {
+        if ((left1 < route.getMovementCost(u1)) && (left2 >= route.getMovementCost(u2))) {
           return 1;
         }
       }
@@ -96,7 +96,7 @@ public class UnitComparator {
 
       // Sort by increasing movement normally, but by decreasing movement during loading
       if (left1 != left2) {
-        return (route != null && route.isLoad()) ? (left2 - left1) : (left1 - left2);
+        return ((route != null) && route.isLoad()) ? (left2 - left1) : (left1 - left2);
       }
 
       return Integer.compare(u1.hashCode(), u2.hashCode());

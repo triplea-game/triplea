@@ -35,7 +35,7 @@ class JTextAreaOptionPane {
     windowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (icon != null) {
       windowFrame.setIconImage(icon);
-    } else if (parentComponent != null && parentComponent.getIconImage() != null) {
+    } else if ((parentComponent != null) && (parentComponent.getIconImage() != null)) {
       windowFrame.setIconImage(parentComponent.getIconImage());
     }
     final BorderLayout layout = new BorderLayout();

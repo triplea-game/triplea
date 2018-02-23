@@ -36,7 +36,7 @@ public class UnitsThatCantFightUtil {
       // only noncombat units
       final Collection<Unit> nonCombatUnits =
           current.getUnits().getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
-      if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
+      if (nonCombatUnits.isEmpty() || (nonCombatUnits.size() != countAllOwnedUnits)) {
         continue;
       }
       if (current.getUnits().anyMatch(enemyAttackUnits)) {

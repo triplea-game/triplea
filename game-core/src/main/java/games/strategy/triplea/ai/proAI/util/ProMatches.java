@@ -484,7 +484,7 @@ public class ProMatches {
   }
 
   public static Predicate<Unit> unitIsOwnedCarrier(final PlayerID player) {
-    return unit -> UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1
+    return unit -> (UnitAttachment.get(unit.getType()).getCarrierCapacity() != -1)
         && Matches.unitIsOwnedBy(player).test(unit);
   }
 

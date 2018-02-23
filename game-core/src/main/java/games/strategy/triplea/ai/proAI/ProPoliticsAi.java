@@ -112,7 +112,7 @@ class ProPoliticsAi {
       Collections.shuffle(options);
       for (final PoliticalActionAttachment action : options) {
         final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
-        final double warChance = roundFactor + attackPercentageMap.get(action) * (1 + 10 * roundFactor);
+        final double warChance = roundFactor + (attackPercentageMap.get(action) * (1 + (10 * roundFactor)));
         final double random = Math.random();
         ProLogger.trace(enemyMap.get(action) + ", warChance=" + warChance + ", random=" + random);
         if (random <= warChance) {
@@ -139,20 +139,20 @@ class ProPoliticsAi {
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesOther =
           AiPoliticalUtils.getPoliticalActionsOther(player, politicsDelegate.getTestedConditions(), data);
-      if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
+      if ((actionChoicesOther != null) && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         final double random = Math.random();
         final int maxOtherActionsPerTurn =
-            (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
+            ((random < .3) ? 0 : ((random < .6) ? 1 : ((random < .9) ? 2 : ((random < .99) ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-        while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
+        while (actionOtherIter.hasNext() && (maxOtherActionsPerTurn > 0)) {
           final PoliticalActionAttachment action = actionOtherIter.next();
           if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
               .test(action)) {
             continue;
           }
-          if (action.getCostPU() > 0 && action.getCostPU() > player.getResources().getQuantity(Constants.PUS)) {
+          if ((action.getCostPU() > 0) && (action.getCostPU() > player.getResources().getQuantity(Constants.PUS))) {
             continue;
           }
           i++;

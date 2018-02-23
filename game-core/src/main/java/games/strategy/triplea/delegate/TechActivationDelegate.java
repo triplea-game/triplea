@@ -100,7 +100,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     final Collection<PlayerID> shareWith = pa.getShareTechnology();
-    if (shareWith == null || shareWith.isEmpty()) {
+    if ((shareWith == null) || shareWith.isEmpty()) {
       return;
     }
     final GameData data = getData();

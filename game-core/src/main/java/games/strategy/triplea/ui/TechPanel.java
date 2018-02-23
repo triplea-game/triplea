@@ -253,7 +253,7 @@ public class TechPanel extends ActionPanel {
       }
       listedAlready.add(advance);
       final int freq = Collections.frequency(techList, advance);
-      strTechCategory.append(advance.getName()).append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
+      strTechCategory.append(advance.getName()).append((freq > 1) ? (" (" + freq + "/" + techList.size() + ")") : "");
       if (iterTechList.hasNext()) {
         strTechCategory.append(", ");
       }
@@ -315,7 +315,7 @@ public class TechPanel extends ActionPanel {
     TechTokenPanel(final int pus, final int currTokens, final PlayerID player, final Collection<PlayerID> helpPay) {
       playerPus = pus;
       totalPus = pus;
-      if (helpPay != null && !helpPay.isEmpty()) {
+      if ((helpPay != null) && !helpPay.isEmpty()) {
         helpPay.remove(player);
         for (final PlayerID p : helpPay) {
           totalPus += p.getResources().getQuantity(Constants.PUS);
@@ -350,7 +350,7 @@ public class TechPanel extends ActionPanel {
           new Insets(10, 130, space, space), 0, 0));
       add(totalCost, new GridBagConstraints(0, 3, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
           new Insets(10, 5, space, space), 0, 0));
-      if (helpPay != null && !helpPay.isEmpty()) {
+      if ((helpPay != null) && !helpPay.isEmpty()) {
         if (whoPaysTextFields == null) {
           whoPaysTextFields = new HashMap<>();
         }
@@ -387,7 +387,7 @@ public class TechPanel extends ActionPanel {
     }
 
     private void setWidgetActivation() {
-      if (whoPaysTextFields == null || whoPaysTextFields.isEmpty()) {
+      if ((whoPaysTextFields == null) || whoPaysTextFields.isEmpty()) {
         return;
       }
       final int cost = TechTracker.getTechCost(player) * textField.getValue();
@@ -398,7 +398,7 @@ public class TechPanel extends ActionPanel {
       final int totalPaidByPlayer = Math.max(0, cost - totalPaidByOthers);
       int amountOver = -1 * (playerPus - totalPaidByPlayer);
       final Iterator<Entry<PlayerID, ScrollableTextField>> otherPayers = whoPaysTextFields.entrySet().iterator();
-      while (amountOver > 0 && otherPayers.hasNext()) {
+      while ((amountOver > 0) && otherPayers.hasNext()) {
         final Entry<PlayerID, ScrollableTextField> entry = otherPayers.next();
         int current = entry.getValue().getValue();
         final int max = entry.getValue().getMax();
@@ -416,7 +416,7 @@ public class TechPanel extends ActionPanel {
       }
       int amountUnder = -1 * (cost - totalPaidByOthers);
       final Iterator<Entry<PlayerID, ScrollableTextField>> otherPayers2 = whoPaysTextFields.entrySet().iterator();
-      while (amountUnder > 0 && otherPayers2.hasNext()) {
+      while ((amountUnder > 0) && otherPayers2.hasNext()) {
         final Entry<PlayerID, ScrollableTextField> entry = otherPayers2.next();
         int current = entry.getValue().getValue();
         if (current > 0) {
@@ -451,7 +451,7 @@ public class TechPanel extends ActionPanel {
       final int numberOfTechRolls = getValue();
       final int totalCost = numberOfTechRolls * techCost;
       final IntegerMap<PlayerID> whoPaysHowMuch = new IntegerMap<>();
-      if (whoPaysTextFields == null || whoPaysTextFields.isEmpty()) {
+      if ((whoPaysTextFields == null) || whoPaysTextFields.isEmpty()) {
         whoPaysHowMuch.put(player, totalCost);
       } else {
         int runningTotal = 0;

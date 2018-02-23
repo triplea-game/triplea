@@ -118,7 +118,7 @@ final class HmacSha512Authenticator {
       throws AuthenticationException {
     final byte[] nonce = decodeOptionalProperty(challenge, ChallengePropertyNames.NONCE);
     final byte[] salt = decodeOptionalProperty(challenge, ChallengePropertyNames.SALT);
-    if (nonce == null || salt == null) {
+    if ((nonce == null) || (salt == null)) {
       return Collections.emptyMap();
     }
 

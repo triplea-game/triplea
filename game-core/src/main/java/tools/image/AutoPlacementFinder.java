@@ -77,14 +77,14 @@ public class AutoPlacementFinder {
    */
   static void calculate() {
     // ask user where the map is
-    final String mapDir = mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
+    final String mapDir = (mapFolderLocation == null) ? getMapDirectory() : mapFolderLocation.getName();
     if (mapDir == null) {
       ToolLogger.info("You need to specify a map name for this to work");
       ToolLogger.info("Shutting down");
       System.exit(0);
     }
     final File file = getMapPropertiesFile(mapDir);
-    if (file.exists() && mapFolderLocation == null) {
+    if (file.exists() && (mapFolderLocation == null)) {
       mapFolderLocation = file.getParentFile();
     }
     if (!placeDimensionsSet) {
@@ -148,11 +148,11 @@ public class AutoPlacementFinder {
         ToolLogger.error("Failed to initialize from map properties: " + file.getAbsolutePath(), e);
       }
     }
-    if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
+    if (!placeDimensionsSet || (JOptionPane.showConfirmDialog(new JPanel(),
         "Placement Box Size already set (" + placeWidth + "x" + placeHeight + "), "
             + "do you wish to continue with this?\r\n"
             + "Select Yes to continue, Select No to override and change the size.",
-        "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
+        "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1)) {
       try {
         final String result = getUnitsScale();
         try {
@@ -287,7 +287,7 @@ public class AutoPlacementFinder {
     int x = center.x - (placeHeight / 2);
     int y = center.y - (placeWidth / 2);
     int step = 1;
-    for (int i = 0; i < 2 * Math.max(bounding.width, bounding.height); i++) {
+    for (int i = 0; i < (2 * Math.max(bounding.width, bounding.height)); i++) {
       for (int j = 0; j < Math.abs(step); j++) {
         if (step > 0) {
           x++;
@@ -343,8 +343,8 @@ public class AutoPlacementFinder {
     final List<Rectangle2D> placementRects = new ArrayList<>();
     final List<Point> placementPoints = new ArrayList<>();
     final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, placeHeight, placeWidth);
-    for (int x = bounding.x + 1; x < bounding.width + bounding.x; x++) {
-      for (int y = bounding.y + 1; y < bounding.height + bounding.y; y++) {
+    for (int x = bounding.x + 1; x < (bounding.width + bounding.x); x++) {
+      for (int y = bounding.y + 1; y < (bounding.height + bounding.y); y++) {
         isPlacement(countryPolygons, containedCountryPolygons, placementRects, placementPoints, place, x, y);
       }
       if (placementPoints.size() > 50) {
@@ -514,7 +514,7 @@ public class AutoPlacementFinder {
       }
     }
     final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
-    if (folderString != null && folderString.length() > 0) {
+    if ((folderString != null) && (folderString.length() > 0)) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
@@ -523,7 +523,7 @@ public class AutoPlacementFinder {
       }
     }
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
-    if (zoomString != null && zoomString.length() > 0) {
+    if ((zoomString != null) && (zoomString.length() > 0)) {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
         ToolLogger.info("Unit Zoom Percent to use: " + unitZoomPercent);
@@ -533,7 +533,7 @@ public class AutoPlacementFinder {
       }
     }
     final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
+    if ((widthString != null) && (widthString.length() > 0)) {
       try {
         unitWidth = Integer.parseInt(widthString);
         ToolLogger.info("Unit Width to use: " + unitWidth);
@@ -543,7 +543,7 @@ public class AutoPlacementFinder {
       }
     }
     final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
+    if ((heightString != null) && (heightString.length() > 0)) {
       try {
         unitHeight = Integer.parseInt(heightString);
         ToolLogger.info("Unit Height to use: " + unitHeight);

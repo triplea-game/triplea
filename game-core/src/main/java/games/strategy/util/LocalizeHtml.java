@@ -36,7 +36,9 @@ public class LocalizeHtml {
 
   public static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader resourceLoader,
       final String mapNameDir) {
-    if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
+    if ((htmlText == null)
+        || ((resourceLoader == null) && ((mapNameDir == null)
+        || (mapNameDir.trim().length() == 0)))) {
       return htmlText;
     }
     ResourceLoader ourResourceLoader = resourceLoader;
@@ -55,7 +57,7 @@ public class LocalizeHtml {
       while (matcherLink.find()) {
         // src link
         final String fullLink = matcherLink.group(1);
-        if (fullLink != null && fullLink.length() > 2) {
+        if ((fullLink != null) && (fullLink.length() > 2)) {
           if (ourResourceLoader == null) {
             ourResourceLoader = ResourceLoader.getMapResourceLoader(mapNameDir);
           }
@@ -67,11 +69,11 @@ public class LocalizeHtml {
           // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
           URL replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName);
 
-          if (replacementUrl == null || replacementUrl.toString().length() == 0) {
+          if ((replacementUrl == null) || (replacementUrl.toString().length() == 0)) {
             System.out.println("Could not find: " + mapNameDir + "/" + ASSET_IMAGE_FOLDER + imageFileName);
             replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
           }
-          if (replacementUrl == null || replacementUrl.toString().length() == 0) {
+          if ((replacementUrl == null) || (replacementUrl.toString().length() == 0)) {
             System.err.println("Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
             continue;
           }

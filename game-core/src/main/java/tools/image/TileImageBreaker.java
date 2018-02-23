@@ -56,7 +56,7 @@ public class TileImageBreaker {
             + "<br>For the relief image, please save it to a folder called reliefTiles" + "</html>"));
     final FileSave locationSelection = new FileSave("Where to save Tile Images?", null, mapFolderLocation);
     location = locationSelection.getPathString();
-    if (mapFolderLocation == null && locationSelection.getFile() != null) {
+    if ((mapFolderLocation == null) && (locationSelection.getFile() != null)) {
       mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
@@ -88,8 +88,8 @@ public class TileImageBreaker {
 
 
     textOptionPane.show();
-    for (int x = 0; (x) * TileManager.TILE_SIZE < map.getWidth(null); x++) {
-      for (int y = 0; (y) * TileManager.TILE_SIZE < map.getHeight(null); y++) {
+    for (int x = 0; ((x) * TileManager.TILE_SIZE) < map.getWidth(null); x++) {
+      for (int y = 0; ((y) * TileManager.TILE_SIZE) < map.getHeight(null); y++) {
         final Rectangle bounds = new Rectangle(x * TileManager.TILE_SIZE, y * TileManager.TILE_SIZE,
             TileManager.TILE_SIZE, TileManager.TILE_SIZE);
         final GraphicsConfiguration localGraphicSystem =
@@ -164,9 +164,9 @@ public class TileImageBreaker {
       ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
+    if ((mapFolderLocation == null) || (mapFolderLocation.length() < 1)) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
-      if (value != null && value.length() > 0) {
+      if ((value != null) && (value.length() > 0)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;

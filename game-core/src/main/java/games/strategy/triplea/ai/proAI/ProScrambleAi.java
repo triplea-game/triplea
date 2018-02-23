@@ -52,7 +52,7 @@ class ProScrambleAi {
     final ProBattleResult minResult = calc.calculateBattleResults(scrambleTo, attackers, defenders, bombardingUnits);
     ProLogger
         .debug(scrambleTo + ", minTUVSwing=" + minResult.getTuvSwing() + ", minWin%=" + minResult.getWinPercentage());
-    if (minResult.getTuvSwing() <= 0 && minResult.getWinPercentage() < (100 - ProData.minWinPercentage)) {
+    if ((minResult.getTuvSwing() <= 0) && (minResult.getWinPercentage() < (100 - ProData.minWinPercentage))) {
       return null;
     }
 
@@ -116,7 +116,7 @@ class ProScrambleAi {
       result = calc.calculateBattleResults(scrambleTo, attackers, currentDefenders, bombardingUnits);
       ProLogger.debug(scrambleTo + ", TUVSwing=" + result.getTuvSwing() + ", Win%=" + result.getWinPercentage()
           + ", addedUnit=" + u);
-      if (result.getTuvSwing() <= 0 && result.getWinPercentage() < (100 - ProData.minWinPercentage)) {
+      if ((result.getTuvSwing() <= 0) && (result.getWinPercentage() < (100 - ProData.minWinPercentage))) {
         break;
       }
     }

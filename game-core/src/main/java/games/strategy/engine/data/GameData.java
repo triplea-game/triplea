@@ -346,7 +346,7 @@ public class GameData implements Serializable {
   }
 
   void setDiceSides(final int diceSides) {
-    if (diceSides > 0 && diceSides <= 200) {
+    if ((diceSides > 0) && (diceSides <= 200)) {
       this.diceSides = diceSides;
     } else {
       this.diceSides = 6;

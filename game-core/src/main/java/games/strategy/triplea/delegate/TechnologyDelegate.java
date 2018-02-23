@@ -140,7 +140,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         return false;
       }
       final Collection<PlayerID> helpPay = pa.getHelpPayTechCost();
-      if (helpPay == null || helpPay.isEmpty()) {
+      if ((helpPay == null) || helpPay.isEmpty()) {
         return false;
       }
       for (final PlayerID p : helpPay) {
@@ -213,7 +213,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       remainder = techRolls % diceSides;
       if (remainder > 0) {
         random = bridge.getRandom(diceSides, 1, player, DiceType.TECH, annotation);
-        if (random[0] + 1 <= remainder) {
+        if ((random[0] + 1) <= remainder) {
           techHits++;
         }
       } else {
@@ -225,7 +225,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       techHits = getTechHits(random);
     }
     final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
-    final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
+    final String directedTechInfo = isRevisedModel ? (" for " + techToRollFor.getTechs().get(0)) : "";
     final DiceRoll renderDice = (isLowLuckTechOnly() ? new DiceRoll(random, techHits, remainder, false)
         : new DiceRoll(random, techHits, diceSides - 1, true));
     bridge.getHistoryWriter()
@@ -234,7 +234,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
                 + directedTechInfo + " and gets " + techHits + " " + MyFormatter.pluralize("hit", techHits),
             renderDice);
     if (isWW2V3TechModel()
-        && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
+        && ((techHits > 0) || Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
       techCategory = techToRollFor;
       // remove all the tokens
       final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
@@ -285,7 +285,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     final int cost = rolls * getTechCost();
-    if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
+    if ((whoPaysHowMuch == null) || whoPaysHowMuch.isEmpty()) {
       final int has = bridge.getPlayerId().getResources().getQuantity(pus);
       return has >= cost;
     }
@@ -305,7 +305,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   private void chargeForTechRolls(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     int cost = rolls * getTechCost();
-    if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
+    if ((whoPaysHowMuch == null) || whoPaysHowMuch.isEmpty()) {
       final String transcriptText = bridge.getPlayerId().getName() + " spend " + cost + " on tech rolls";
       bridge.getHistoryWriter().startEvent(transcriptText);
       final Change charge = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), pus, -cost);
@@ -334,7 +334,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   private int getTechHits(final int[] random) {
     int count = 0;
     for (final int element : random) {
-      if (element == getData().getDiceSides() - 1) {
+      if (element == (getData().getDiceSides() - 1)) {
         count++;
       }
     }
@@ -343,7 +343,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
 
   private Collection<TechAdvance> getTechAdvances(int hits) {
     final List<TechAdvance> available;
-    if (hits > 0 && isWW2V3TechModel()) {
+    if ((hits > 0) && isWW2V3TechModel()) {
       available = getAvailableAdvancesForCategory(techCategory);
       hits = 1;
     } else {
@@ -384,7 +384,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     for (final int element : random) {
       final int index = element;
       // check in case of dice chooser.
-      if (!rolled.contains(index) && index < available.size()) {
+      if (!rolled.contains(index) && (index < available.size())) {
         newAdvances.add(available.get(index));
         rolled.add(index);
       }

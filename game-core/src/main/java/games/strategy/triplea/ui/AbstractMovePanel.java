@@ -130,7 +130,7 @@ public abstract class AbstractMovePanel extends ActionPanel {
     cancelMove();
     // undo the move
     final String error = getMoveDelegate().undoMove(moveIndex);
-    if (error != null && !suppressError) {
+    if ((error != null) && !suppressError) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
     } else {
       updateMoves();

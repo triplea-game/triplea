@@ -52,7 +52,7 @@ public class Tile {
   public boolean isDirty() {
     acquireLock();
     try {
-      return isDirty || imageRef == null || imageRef.get() == null;
+      return isDirty || (imageRef == null) || (imageRef.get() == null);
     } finally {
       releaseLock();
     }

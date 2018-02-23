@@ -136,18 +136,18 @@ public final class HelpMenu extends JMenu {
         final PlayerID player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
         hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">")
-            .append(player == null ? "NULL" : player.getName()).append(" Units</th></tr>");
-        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+            .append((player == null) ? "NULL" : player.getName()).append(" Units</th></tr>");
+        hints.append("<tr").append(((i & 1) == 0) ? (" bgcolor=\"" + color1 + "\"") : (" bgcolor=\"" + color2 + "\""))
             .append("><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
         for (final UnitType ut : entry.getValue()) {
           i++;
-          hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+          hints.append("<tr").append(((i & 1) == 0) ? (" bgcolor=\"" + color1 + "\"") : (" bgcolor=\"" + color2 + "\""))
               .append(">").append("<td>").append(getUnitImageUrl(ut, player, uiContext)).append("</td>").append("<td>")
               .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHtml())
               .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
         }
         i++;
-        hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+        hints.append("<tr").append(((i & 1) == 0) ? (" bgcolor=\"" + color1 + "\"") : (" bgcolor=\"" + color2 + "\""))
             .append(">").append("<td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr></table></p><br />");
       }
     } finally {
@@ -159,7 +159,7 @@ public final class HelpMenu extends JMenu {
 
   private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final UiContext uiContext) {
     final UnitImageFactory unitImageFactory = uiContext.getUnitImageFactory();
-    if (player == null || unitImageFactory == null) {
+    if ((player == null) || (unitImageFactory == null)) {
       return "no image";
     }
     final Optional<URL> imageUrl = unitImageFactory.getBaseImageUrl(unitType.getName(), player);
@@ -187,14 +187,14 @@ public final class HelpMenu extends JMenu {
       final int availWidth = screenResolution.width - 40;
       scroll
           .setPreferredSize(new Dimension(
-              (scroll.getPreferredSize().width > availWidth ? availWidth
-                  : (scroll.getPreferredSize().height > availHeight
-                      ? Math.min(availWidth, scroll.getPreferredSize().width + 22)
-                      : scroll.getPreferredSize().width)),
-              (scroll.getPreferredSize().height > availHeight ? availHeight
-                  : (scroll.getPreferredSize().width > availWidth
-                      ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
-                      : scroll.getPreferredSize().height))));
+              ((scroll.getPreferredSize().width > availWidth) ? availWidth
+                  : ((scroll.getPreferredSize().height > availHeight)
+                  ? Math.min(availWidth, scroll.getPreferredSize().width + 22)
+                  : scroll.getPreferredSize().width)),
+              ((scroll.getPreferredSize().height > availHeight) ? availHeight
+                  : ((scroll.getPreferredSize().width > availWidth)
+                  ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
+                  : scroll.getPreferredSize().height))));
       final JDialog dialog = new JDialog((JFrame) null, unitHelpTitle);
       dialog.add(scroll, BorderLayout.CENTER);
       final JPanel buttons = new JPanel();
@@ -227,7 +227,7 @@ public final class HelpMenu extends JMenu {
     // allow the game developer to write notes that appear in the game
     // displays whatever is in the notes field in html
     final String notesProperty = gameData.getProperties().get("notes", "");
-    if (notesProperty != null && notesProperty.trim().length() != 0) {
+    if ((notesProperty != null) && (notesProperty.trim().length() != 0)) {
       final String notes = LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim());
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");

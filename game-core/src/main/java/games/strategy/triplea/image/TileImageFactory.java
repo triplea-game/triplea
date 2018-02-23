@@ -174,7 +174,7 @@ public final class TileImageFactory {
       // This is null if there is no image
       final URL url = resourceLoader.getResource(fileName);
 
-      if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
+      if ((!showMapBlends || !showReliefImages || !transparent) && (url == null)) {
         return null;
       }
       loadImage(url, fileName, transparent, true, true);
@@ -268,7 +268,7 @@ public final class TileImageFactory {
       final BufferedImage blendedImage =
           new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g2 = blendedImage.createGraphics();
-      if (scaled && scale != 1.0) {
+      if (scaled && (scale != 1.0)) {
         final AffineTransform transform = new AffineTransform();
         transform.scale(scale, scale);
         g2.setTransform(transform);
@@ -308,7 +308,7 @@ public final class TileImageFactory {
       // png directly as the right type
       image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
-      if (scaled && scale != 1.0) {
+      if (scaled && (scale != 1.0)) {
         final AffineTransform transform = new AffineTransform();
         transform.scale(scale, scale);
         g.setTransform(transform);

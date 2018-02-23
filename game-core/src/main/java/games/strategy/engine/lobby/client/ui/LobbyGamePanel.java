@@ -37,11 +37,11 @@ import games.strategy.ui.SwingAction;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
+  private final Messengers messengers;
   private JButton hostGame;
   private JButton joinGame;
   private JButton bootGame;
   private LobbyGameTableModel gameTableModel;
-  private final Messengers messengers;
   private JTable gameTable;
 
   LobbyGamePanel(final Messengers messengers) {
@@ -127,7 +127,7 @@ class LobbyGamePanel extends JPanel {
       public void mousePressed(final MouseEvent e) {
         // right clicks do not 'select' a row by default. so force a row selection at the mouse point.
         final int r = gameTable.rowAtPoint(e.getPoint());
-        if (r >= 0 && r < gameTable.getRowCount()) {
+        if ((r >= 0) && (r < gameTable.getRowCount())) {
           gameTable.setRowSelectionInterval(r, r);
         } else {
           gameTable.clearSelection();
@@ -194,7 +194,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private static Action getHostSupportInfoAction(final GameDescription description) {
-    final String supportEmail = description == null ? "" : Strings.nullToEmpty(description.getBotSupportEmail());
+    final String supportEmail = (description == null) ? "" : Strings.nullToEmpty(description.getBotSupportEmail());
     if (supportEmail.isEmpty()) {
       return null;
     }
@@ -227,8 +227,11 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Action getChatLogOfHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+    final String supportEmail = (description == null)
+        ? ""
+        : ((description.getBotSupportEmail() == null)
+            ? ""
+            : description.getBotSupportEmail());
     if (supportEmail.length() == 0) {
       return null;
     }
@@ -236,8 +239,11 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Action getMutePlayerHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+    final String supportEmail = (description == null)
+        ? ""
+        : ((description.getBotSupportEmail() == null)
+            ? ""
+            : description.getBotSupportEmail());
     if (supportEmail.length() == 0) {
       return null;
     }
@@ -245,8 +251,9 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Action getBootPlayerHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+    final String supportEmail = (description == null)
+        ? ""
+        : ((description.getBotSupportEmail() == null) ? "" : description.getBotSupportEmail());
     if (supportEmail.length() == 0) {
       return null;
     }
@@ -254,8 +261,11 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Action getBanPlayerHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+    final String supportEmail = (description == null)
+        ? ""
+        : ((description.getBotSupportEmail() == null)
+            ? ""
+            : description.getBotSupportEmail());
     if (supportEmail.length() == 0) {
       return null;
     }
@@ -263,8 +273,11 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Action getShutDownHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+    final String supportEmail = (description == null)
+        ? ""
+        : ((description.getBotSupportEmail() == null)
+            ? ""
+            : description.getBotSupportEmail());
     if (supportEmail.length() == 0) {
       return null;
     }
@@ -272,8 +285,11 @@ class LobbyGamePanel extends JPanel {
   }
 
   private Action getStopGameHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
+    final String supportEmail = (description == null)
+        ? ""
+        : ((description.getBotSupportEmail() == null)
+            ? ""
+            : description.getBotSupportEmail());
     if (supportEmail.length() == 0) {
       return null;
     }
@@ -290,7 +306,7 @@ class LobbyGamePanel extends JPanel {
     GameRunner.joinGame(description, messengers, getParent());
   }
 
-  protected void hostGame() {
+  private void hostGame() {
     final ServerOptions options = new ServerOptions(JOptionPane.getFrameForComponent(this),
         messengers.getMessenger().getLocalNode().getName(), 3300, true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
@@ -359,7 +375,7 @@ class LobbyGamePanel extends JPanel {
     panel.add(passwordField, BorderLayout.CENTER);
     final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
         "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    if ((selectedOption != JOptionPane.OK_OPTION) || (passwordField.getPassword() == null)) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -368,7 +384,7 @@ class LobbyGamePanel extends JPanel {
     final String response = controller.getChatLogHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     final JTextPane textPane = new JTextPane();
     textPane.setEditable(false);
-    textPane.setText(response == null ? "Failed to get chat log!" : response);
+    textPane.setText((response == null) ? "Failed to get chat log!" : response);
     textPane.setCaretPosition(textPane.getText().length());
     final JScrollPane scroll = new JScrollPane(textPane);
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -386,11 +402,10 @@ class LobbyGamePanel extends JPanel {
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {
     final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     final String hostedByName = description.getHostedBy().getName();
-    final INode lobbyWatcherNode = new Node(
+    return new Node(
         (hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName
-            : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+            : (hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME)),
         description.getHostedBy().getAddress(), description.getHostedBy().getPort());
-    return lobbyWatcherNode;
   }
 
   private void mutePlayerInHeadlessHostBot() {
@@ -432,7 +447,7 @@ class LobbyGamePanel extends JPanel {
     panel.add(passwordField, BorderLayout.CENTER);
     final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
         "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    if ((selectedOption != JOptionPane.OK_OPTION) || (passwordField.getPassword() == null)) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -440,9 +455,9 @@ class LobbyGamePanel extends JPanel {
     final String hashedPassword = md5Crypt(password, salt);
     final String response =
         controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted to mute player (" + playerToBeMuted + ") on host"
-        : "Failed: " + response));
+    JOptionPane.showMessageDialog(null, ((response == null)
+        ? ("Successfully attempted to mute player (" + playerToBeMuted + ") on host")
+        : ("Failed: " + response)));
   }
 
   private void bootPlayerInHeadlessHostBot() {
@@ -472,7 +487,7 @@ class LobbyGamePanel extends JPanel {
     panel.add(passwordField, BorderLayout.CENTER);
     final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
         "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    if ((selectedOption != JOptionPane.OK_OPTION) || (passwordField.getPassword() == null)) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -480,9 +495,9 @@ class LobbyGamePanel extends JPanel {
     final String hashedPassword = md5Crypt(password, salt);
     final String response =
         controller.bootPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted to boot player (" + playerToBeBooted + ") on host"
-        : "Failed: " + response));
+    JOptionPane.showMessageDialog(null, ((response == null)
+        ? ("Successfully attempted to boot player (" + playerToBeBooted + ") on host")
+        : ("Failed: " + response)));
   }
 
   private void banPlayerInHeadlessHostBot() {
@@ -524,7 +539,7 @@ class LobbyGamePanel extends JPanel {
     panel.add(passwordField, BorderLayout.CENTER);
     final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
         "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    if ((selectedOption != JOptionPane.OK_OPTION) || (passwordField.getPassword() == null)) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -532,9 +547,9 @@ class LobbyGamePanel extends JPanel {
     final String hashedPassword = md5Crypt(password, salt);
     final String response =
         controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted banned player (" + playerToBeBanned + ") on host"
-        : "Failed: " + response));
+    JOptionPane.showMessageDialog(null, ((response == null)
+        ? ("Successfully attempted banned player (" + playerToBeBanned + ") on host")
+        : ("Failed: " + response)));
   }
 
   private void stopGameHeadlessHostBot() {
@@ -559,7 +574,7 @@ class LobbyGamePanel extends JPanel {
     panel.add(passwordField, BorderLayout.CENTER);
     final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
         "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    if ((selectedOption != JOptionPane.OK_OPTION) || (passwordField.getPassword() == null)) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -567,7 +582,7 @@ class LobbyGamePanel extends JPanel {
     final String hashedPassword = md5Crypt(password, salt);
     final String response = controller.stopGameHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     JOptionPane.showMessageDialog(null,
-        (response == null ? "Successfully attempted stop of current game on host" : "Failed: " + response));
+        ((response == null) ? "Successfully attempted stop of current game on host" : ("Failed: " + response)));
   }
 
   private void shutDownHeadlessHostBot() {
@@ -592,7 +607,7 @@ class LobbyGamePanel extends JPanel {
     panel.add(passwordField, BorderLayout.CENTER);
     final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
         "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
+    if ((selectedOption != JOptionPane.OK_OPTION) || (passwordField.getPassword() == null)) {
       return;
     }
     final String password = new String(passwordField.getPassword());
@@ -600,7 +615,7 @@ class LobbyGamePanel extends JPanel {
     final String hashedPassword = md5Crypt(password, salt);
     final String response = controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     JOptionPane.showMessageDialog(null,
-        (response == null ? "Successfully attempted to shut down host" : "Failed: " + response));
+        ((response == null) ? "Successfully attempted to shut down host" : ("Failed: " + response)));
   }
 
   private void setWidgetActivation() {

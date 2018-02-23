@@ -166,7 +166,7 @@ public class MovePerformer implements Serializable {
           change.add(markFuelCostResourceChange(units, route, id, data));
         }
         markTransportsMovement(arrived, transporting, route);
-        if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
+        if (route.anyMatch(mustFightThrough) && (arrived.size() != 0)) {
           boolean bombing = false;
           boolean ignoreBattle = false;
           // could it be a bombing raid
@@ -201,7 +201,7 @@ public class MovePerformer implements Serializable {
               // Matches.UnitCanBeDamagedButIsNotFactory);
               // determine which unit to bomb
               final Unit target;
-              if (enemyTargets.size() > 1
+              if ((enemyTargets.size() > 1)
                   && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                   && !canCreateAirBattle) {
                 target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets, arrived);
@@ -271,7 +271,7 @@ public class MovePerformer implements Serializable {
         final Change moveChange = markMovementChange(arrived, route, id);
         change.add(moveChange);
         // actually move the units
-        if (route.getStart() != null && route.getEnd() != null) {
+        if ((route.getStart() != null) && (route.getEnd() != null)) {
           // ChangeFactory.addUnits(route.getEnd(), arrived);
           final Change remove = ChangeFactory.removeUnits(route.getStart(), units);
           final Change add = ChangeFactory.addUnits(route.getEnd(), arrived);
@@ -319,11 +319,11 @@ public class MovePerformer implements Serializable {
       int moved = route.getMovementCost(unit);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {
-        if (taRouteStart != null && taRouteStart.getAirBase()
+        if ((taRouteStart != null) && taRouteStart.getAirBase()
             && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner())) {
           moved--;
         }
-        if (taRouteEnd != null && taRouteEnd.getAirBase()
+        if ((taRouteEnd != null) && taRouteEnd.getAirBase()
             && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner())) {
           moved--;
         }
@@ -333,14 +333,14 @@ public class MovePerformer implements Serializable {
     // if neutrals were taken over mark land units with 0 movement
     // if entered a non blitzed conquered territory, mark with 0 movement
     if (GameStepPropertiesHelper.isCombatMove(data)
-        && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route))) {
+        && ((MoveDelegate.getEmptyNeutral(route).size() != 0) || hasConqueredNonBlitzed(route))) {
       for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsLand())) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
       }
     }
-    if (routeEnd != null && Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
+    if ((routeEnd != null) && Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
-            .anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitIsDestroyer()))) {
+        .anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them
       // if there is an enemy destroyer there
@@ -428,7 +428,7 @@ public class MovePerformer implements Serializable {
         }
         final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
         // we will unload our paratroopers after they land in battle (after aa guns fire)
-        if (paratroopsLanding && transportedBy != null && Matches.unitIsAirTransport().test(transportedBy)
+        if (paratroopsLanding && (transportedBy != null) && Matches.unitIsAirTransport().test(transportedBy)
             && GameStepPropertiesHelper.isCombatMove(data)
             && Matches.territoryHasNonSubmergedEnemyUnits(player, data).test(route.getEnd())) {
           continue;

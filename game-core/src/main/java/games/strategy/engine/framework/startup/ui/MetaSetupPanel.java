@@ -165,8 +165,8 @@ public class MetaSetupPanel extends SetupPanel {
 
   @Override
   public void setWidgetActivation() {
-    if (model == null || model.getGameSelectorModel() == null
-        || model.getGameSelectorModel().getGameData() == null) {
+    if ((model == null) || (model.getGameSelectorModel() == null)
+        || (model.getGameSelectorModel().getGameData() == null)) {
       startLocal.setEnabled(false);
       startPbem.setEnabled(false);
       hostGame.setEnabled(false);

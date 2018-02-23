@@ -143,7 +143,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final Set<TriggerAttachment> trigs = new HashSet<>();
     for (final IAttachment a : player.getAttachments().values()) {
       if (a instanceof TriggerAttachment) {
-        if (cond == null || cond.test((TriggerAttachment) a)) {
+        if ((cond == null) || cond.test((TriggerAttachment) a)) {
           trigs.add((TriggerAttachment) a);
         }
       }
@@ -267,7 +267,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     for (final TriggerAttachment trig : triggersToBeFired) {
       final int currentUses = trig.getUses();
       // we only care about triggers that have WHEN set. Triggers without When set are changed during EndRoundDelegate.
-      if (currentUses > 0 && !trig.getWhen().isEmpty()) {
+      if ((currentUses > 0) && !trig.getWhen().isEmpty()) {
         change.add(ChangeFactory.attachmentPropertyChange(trig, Integer.toString(currentUses - 1), "uses"));
         if (trig.getUsedThisRound()) {
           change.add(ChangeFactory.attachmentPropertyChange(trig, false, "usedThisRound"));
@@ -1260,7 +1260,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     } catch (final Exception e) {
       count = 1;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if ((s.length < 1) || ((s.length == 1) && (count != -1))) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
     final Territory territory = getData().getMap().getTerritory(s[i]);
@@ -1327,7 +1327,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     } catch (final Exception e) {
       count = 1;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if ((s.length < 1) || ((s.length == 1) && (count != -1))) {
       throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
     }
     final Collection<Territory> territories = new ArrayList<>();
@@ -1405,7 +1405,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     } catch (final Exception e) {
       count = 1;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if ((s.length < 1) || ((s.length == 1) && (count != -1))) {
       throw new GameParseException("Empty purchase list" + thisErrorMsg());
     }
 
@@ -1608,7 +1608,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
+          if ((newValue.length() > 0) && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
             newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
             clearFirst = true;
           }
@@ -1618,7 +1618,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1633,7 +1633,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1649,7 +1649,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1664,7 +1664,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1680,7 +1680,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1696,7 +1696,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1740,7 +1740,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
+          if ((newValue.length() > 0) && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
             newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
             clearFirst = true;
           }
@@ -1751,7 +1751,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1795,7 +1795,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
+          if ((newValue.length() > 0) && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
             newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
             clearFirst = true;
           }
@@ -1810,7 +1810,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1826,7 +1826,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1872,7 +1872,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
+          if ((newValue.length() > 0) && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
             newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
             clearFirst = true;
           }
@@ -1883,7 +1883,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1926,7 +1926,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           String newValue = property.getSecond();
           boolean clearFirst = false;
           // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
+          if ((newValue.length() > 0) && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
             newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
             clearFirst = true;
           }
@@ -1936,7 +1936,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -1952,7 +1952,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
               continue;
             }
-            if (clearFirst && newValue.length() < 1) {
+            if (clearFirst && (newValue.length() < 1)) {
               change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
             } else {
               change.add(
@@ -2268,7 +2268,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (TerritoryAttachment.get(terr) == null) {
             continue; // any territory that has no territory attachment should definitely not be changed
           }
-          if (oldOwner != null && !oldOwner.equals(currentOwner)) {
+          if ((oldOwner != null) && !oldOwner.equals(currentOwner)) {
             continue;
           }
           bridge.getHistoryWriter()
@@ -2472,7 +2472,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             continue;
           }
         }
-        for (int i = 0; i < numberOfTimesToFire * eachMultiple; ++i) {
+        for (int i = 0; i < (numberOfTimesToFire * eachMultiple); ++i) {
           bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName())
               + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
           fireTriggers(toFireSet, testedConditionsSoFar, bridge, beforeOrAfter, stepName, useUsesToFire,
@@ -2500,7 +2500,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (useUses) {
         t.use(bridge);
       }
-      if (t.getVictory() == null || t.getPlayers() == null) {
+      if ((t.getVictory() == null) || (t.getPlayers() == null)) {
         continue;
       }
       final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory().trim());
@@ -2537,7 +2537,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> prodFrontierEditMatch() {
-    return t -> t.getProductionRule() != null && t.getProductionRule().size() > 0;
+    return t -> (t.getProductionRule() != null) && (t.getProductionRule().size() > 0);
   }
 
   public static Predicate<TriggerAttachment> techMatch() {
@@ -2561,7 +2561,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> resourceMatch() {
-    return t -> t.getResource() != null && t.getResourceCount() != 0;
+    return t -> (t.getResource() != null) && (t.getResourceCount() != 0);
   }
 
   public static Predicate<TriggerAttachment> supportMatch() {
@@ -2573,11 +2573,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> unitPropertyMatch() {
-    return t -> !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
+    return t -> !t.getUnitType().isEmpty() && (t.getUnitProperty() != null);
   }
 
   public static Predicate<TriggerAttachment> territoryPropertyMatch() {
-    return t -> !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
+    return t -> !t.getTerritories().isEmpty() && (t.getTerritoryProperty() != null);
   }
 
   public static Predicate<TriggerAttachment> playerPropertyMatch() {
@@ -2585,11 +2585,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> relationshipTypePropertyMatch() {
-    return t -> !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
+    return t -> !t.getRelationshipTypes().isEmpty() && (t.getRelationshipTypeProperty() != null);
   }
 
   public static Predicate<TriggerAttachment> territoryEffectPropertyMatch() {
-    return t -> !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
+    return t -> !t.getTerritoryEffects().isEmpty() && (t.getTerritoryEffectProperty() != null);
   }
 
   public static Predicate<TriggerAttachment> relationshipChangeMatch() {
@@ -2597,7 +2597,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> victoryMatch() {
-    return t -> t.getVictory() != null && t.getVictory().length() > 0;
+    return t -> (t.getVictory() != null) && (t.getVictory().length() > 0);
   }
 
   public static Predicate<TriggerAttachment> activateTriggerMatch() {

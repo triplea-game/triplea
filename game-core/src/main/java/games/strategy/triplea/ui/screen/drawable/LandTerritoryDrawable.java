@@ -23,7 +23,7 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
     final Territory territory = data.getMap().getTerritory(territoryName);
     final Color territoryColor;
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta != null && ta.getIsImpassable()) {
+    if ((ta != null) && ta.getIsImpassable()) {
       territoryColor = mapData.impassableColor();
     } else {
       territoryColor = mapData.getPlayerColor(territory.getOwner().getName());

@@ -86,7 +86,7 @@ class ProRetreatAi {
     // Calculate current attack value
     double territoryValue = 0;
     if (result.isHasLandUnitRemaining() || attackers.stream().noneMatch(Matches.unitIsAir())) {
-      territoryValue = result.getWinPercentage() / 100 * (2 * production * (1 + isFactory) * (1 + isCapital));
+      territoryValue = (result.getWinPercentage() / 100) * (2 * production * (1 + isFactory) * (1 + isCapital));
     }
     double battleValue = result.getTuvSwing() + territoryValue;
     if (!isAttacker) {

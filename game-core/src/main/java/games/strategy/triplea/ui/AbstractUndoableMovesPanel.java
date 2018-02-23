@@ -90,7 +90,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
         items.add(seperator);
       }
     }
-    if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
+    if ((movePanel.getUndoableMoves() != null) && (movePanel.getUndoableMoves().size() > 1)) {
       final JButton undoAllButton = new JButton("Undo All");
       undoAllButton.addActionListener(new UndoAllMovesActionListener());
       items.add(undoAllButton);

@@ -31,11 +31,11 @@ public class VaultID implements Serializable {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof VaultID)) {
+    if ((o == null) || !(o instanceof VaultID)) {
       return false;
     }
     final VaultID other = (VaultID) o;
-    return other.m_generatedOn.equals(this.m_generatedOn) && other.m_uniqueID == this.m_uniqueID;
+    return other.m_generatedOn.equals(this.m_generatedOn) && (other.m_uniqueID == this.m_uniqueID);
   }
 
   @Override

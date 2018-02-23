@@ -30,7 +30,7 @@ public class ImageFactory {
   protected Image getImage(final String key, final boolean throwIfNotFound) {
     if (!images.containsKey(key)) {
       final URL url = resourceLoader.getResource(key);
-      if (url == null && throwIfNotFound) {
+      if ((url == null) && throwIfNotFound) {
         throw new IllegalStateException("Image Not Found:" + key);
       } else if (url == null) {
         images.put(key, null);

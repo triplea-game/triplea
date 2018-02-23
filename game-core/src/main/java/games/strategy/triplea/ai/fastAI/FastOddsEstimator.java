@@ -43,12 +43,12 @@ public class FastOddsEstimator implements IOddsCalculator {
     if (winPercentage > 50) {
       remainingAttackingUnits.addAll(attackingUnits);
       Collections.sort(remainingAttackingUnits, ProPurchaseUtils.getCostComparator().reversed());
-      final int numRemainingUnits = (int) Math.ceil(attackingUnits.size() * (Math.min(100, winPercentage) - 50) / 50);
+      final int numRemainingUnits = (int) Math.ceil((attackingUnits.size() * (Math.min(100, winPercentage) - 50)) / 50);
       remainingAttackingUnits = remainingAttackingUnits.subList(0, numRemainingUnits);
     } else {
       remainingDefendingUnits.addAll(defendingUnits);
       Collections.sort(remainingDefendingUnits, ProPurchaseUtils.getCostComparator().reversed());
-      final int numRemainingUnits = (int) Math.ceil(defendingUnits.size() * (50 - Math.max(0, winPercentage)) / 50);
+      final int numRemainingUnits = (int) Math.ceil((defendingUnits.size() * (50 - Math.max(0, winPercentage))) / 50);
       remainingDefendingUnits = remainingDefendingUnits.subList(0, numRemainingUnits);
     }
     final int battleRoundsFought = 3;

@@ -50,7 +50,7 @@ public class UnitBattleComparator implements Comparator<Unit> {
     final boolean transporting2 = Matches.transportIsTransporting().test(u2);
     final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
     final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-    if (ua1 == ua2 && u1.getOwner().equals(u2.getOwner())) {
+    if ((ua1 == ua2) && u1.getOwner().equals(u2.getOwner())) {
       if (transporting1 && !transporting2) {
         return 1;
       }

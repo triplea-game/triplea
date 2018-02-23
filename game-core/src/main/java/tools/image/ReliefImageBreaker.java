@@ -55,7 +55,7 @@ public class ReliefImageBreaker {
             + "</html>"));
     final FileSave locationSelection = new FileSave("Where to save Relief Images?", null, mapFolderLocation);
     location = locationSelection.getPathString();
-    if (mapFolderLocation == null && locationSelection.getFile() != null) {
+    if ((mapFolderLocation == null) && (locationSelection.getFile() != null)) {
       mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
@@ -84,7 +84,7 @@ public class ReliefImageBreaker {
 
     // ask user where the map is
     final String mapDir = getMapDirectory();
-    if (mapDir == null || mapDir.isEmpty()) {
+    if ((mapDir == null) || mapDir.isEmpty()) {
       ToolLogger.info("You need to specify a map name for this to work");
       ToolLogger.info("Shutting down");
       System.exit(0);
@@ -238,9 +238,9 @@ public class ReliefImageBreaker {
       ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
+    if ((mapFolderLocation == null) || (mapFolderLocation.length() < 1)) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
-      if (value != null && value.length() > 0) {
+      if ((value != null) && (value.length() > 0)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;

@@ -365,7 +365,7 @@ public class HistoryLog extends JFrame {
         }
       } // while (nodeEnum.hasMoreElements())
       curNode = curNode.getNextSibling();
-    } while (curNode != null && (curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
+    } while ((curNode != null) && (curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
     // if we are mid-phase, this might not get flushed
     if (moving && !moveList.isEmpty()) {
       final Iterator<String> moveIter = moveList.iterator();
@@ -417,7 +417,7 @@ public class HistoryLog extends JFrame {
   }
 
   public void printTerritorySummary(final GameData data, final Collection<PlayerID> allowedPlayers) {
-    if (allowedPlayers == null || allowedPlayers.isEmpty()) {
+    if ((allowedPlayers == null) || allowedPlayers.isEmpty()) {
       printTerritorySummary(data);
       return;
     }
@@ -433,7 +433,7 @@ public class HistoryLog extends JFrame {
 
   private void printTerritorySummary(final Collection<PlayerID> players,
       final Collection<Territory> territories) {
-    if (players == null || players.isEmpty() || territories == null || territories.isEmpty()) {
+    if ((players == null) || players.isEmpty() || (territories == null) || territories.isEmpty()) {
       return;
     }
     final PrintWriter logWriter = printWriter;
@@ -443,10 +443,10 @@ public class HistoryLog extends JFrame {
       final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
       // see if there's a flag
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      final boolean hasFlag = ta != null
-          && t.getOwner() != null
+      final boolean hasFlag = (ta != null)
+          && (t.getOwner() != null)
           && players.contains(t.getOwner())
-          && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
+          && ((ta.getOriginalOwner() == null) || !players.contains(ta.getOriginalOwner()));
       if (hasFlag || !ownedUnits.isEmpty()) {
         logWriter.print("    " + t.getName() + " : ");
         if (hasFlag && ownedUnits.isEmpty()) {
@@ -508,8 +508,9 @@ public class HistoryLog extends JFrame {
       boolean isConvoyOrLand = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       if (!place.isWater()
-          || place.isWater() && ta != null && OriginalOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID
-              && OriginalOwnerTracker.getOriginalOwner(place) == player && place.getOwner().equals(player)) {
+          || (place.isWater() && (ta != null) && (OriginalOwnerTracker.getOriginalOwner(place)
+          != PlayerID.NULL_PLAYERID)
+          && (OriginalOwnerTracker.getOriginalOwner(place) == player) && place.getOwner().equals(player))) {
         isConvoyOrLand = true;
       }
       if (place.getOwner().equals(player) && isConvoyOrLand) {

@@ -127,10 +127,10 @@ public final class EventThreadJOptionPane {
     final int availWidth = screenResolution.width - 40;
     final int availHeight = screenResolution.height - 140;
     // add 25 for scrollbars
-    final int newWidth = (scroll.getPreferredSize().width > availWidth ? availWidth
-        : (scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeight ? 25 : 0)));
-    final int newHeight = (scroll.getPreferredSize().height > availHeight ? availHeight
-        : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 25 : 0)));
+    final int newWidth = ((scroll.getPreferredSize().width > availWidth) ? availWidth
+        : (scroll.getPreferredSize().width + ((scroll.getPreferredSize().height > availHeight) ? 25 : 0)));
+    final int newHeight = ((scroll.getPreferredSize().height > availHeight) ? availHeight
+        : (scroll.getPreferredSize().height + ((scroll.getPreferredSize().width > availWidth) ? 25 : 0)));
     scroll.setPreferredSize(new Dimension(newWidth, newHeight));
     return scroll;
   }

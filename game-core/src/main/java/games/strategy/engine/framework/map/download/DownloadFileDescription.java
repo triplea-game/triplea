@@ -102,7 +102,7 @@ public class DownloadFileDescription {
    * @return Name of the zip file.
    */
   String getMapZipFileName() {
-    return (url != null && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1, url.length()) : "";
+    return ((url != null) && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1, url.length()) : "";
   }
 
   /** File reference for where to install the file. */
@@ -129,7 +129,7 @@ public class DownloadFileDescription {
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs == null || getClass() != rhs.getClass()) {
+    if ((rhs == null) || (getClass() != rhs.getClass())) {
       return false;
     }
     final DownloadFileDescription other = (DownloadFileDescription) rhs;

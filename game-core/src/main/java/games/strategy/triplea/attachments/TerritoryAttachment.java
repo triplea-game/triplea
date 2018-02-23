@@ -54,7 +54,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
+      if ((ta != null) && (ta.getCapital() != null)) {
         final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
@@ -91,7 +91,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
+      if ((ta != null) && (ta.getCapital() != null)) {
         final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
@@ -118,7 +118,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
-      if (ta != null && ta.getCapital() != null) {
+      if ((ta != null) && (ta.getCapital() != null)) {
         final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
@@ -140,7 +140,7 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {
     final TerritoryAttachment territoryAttachment = (TerritoryAttachment) t.getAttachment(nameOfAttachment);
-    if (territoryAttachment == null && !t.isWater()) {
+    if ((territoryAttachment == null) && !t.isWater()) {
       throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
     }
     return territoryAttachment;
@@ -694,13 +694,13 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta == null || !ta.getConvoyRoute()) {
+    if ((ta == null) || !ta.getConvoyRoute()) {
       return null;
     }
     final Set<Territory> territories = new HashSet<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment cta = TerritoryAttachment.get(current);
-      if (cta == null || !cta.getConvoyRoute()) {
+      if ((cta == null) || !cta.getConvoyRoute()) {
         continue;
       }
       if (cta.getConvoyAttached().contains(t)) {
@@ -727,7 +727,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
       sb.append(br);
       final PlayerID owner = t.getOwner();
-      if (owner != null && !owner.isNull()) {
+      if ((owner != null) && !owner.isNull()) {
         sb.append("Current Owner: ").append(t.getOwner().getName());
         sb.append(br);
       }
@@ -741,7 +741,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("Is Impassable");
       sb.append(br);
     }
-    if (m_capital != null && m_capital.length() > 0) {
+    if ((m_capital != null) && (m_capital.length() > 0)) {
       sb.append("A Capital of ").append(m_capital);
       sb.append(br);
     }
@@ -766,15 +766,15 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append("Required By: ").append(MyFormatter.defaultNamedToTextList(requiredBy)).append(br);
       }
     }
-    if (m_changeUnitOwners != null && !m_changeUnitOwners.isEmpty()) {
+    if ((m_changeUnitOwners != null) && !m_changeUnitOwners.isEmpty()) {
       sb.append("Units May Change Ownership Here");
       sb.append(br);
     }
-    if (m_captureUnitOnEnteringBy != null && !m_captureUnitOnEnteringBy.isEmpty()) {
+    if ((m_captureUnitOnEnteringBy != null) && !m_captureUnitOnEnteringBy.isEmpty()) {
       sb.append("May Allow The Capture of Some Units");
       sb.append(br);
     }
-    if (m_whenCapturedByGoesTo != null && !m_whenCapturedByGoesTo.isEmpty()) {
+    if ((m_whenCapturedByGoesTo != null) && !m_whenCapturedByGoesTo.isEmpty()) {
       sb.append("Captured By -> Ownership Goes To");
       sb.append(br);
       for (final String value : m_whenCapturedByGoesTo) {
@@ -784,13 +784,13 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
     }
     sb.append(br);
-    if (!t.isWater() && m_unitProduction > 0
+    if (!t.isWater() && (m_unitProduction > 0)
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       sb.append("Base Unit Production: ");
       sb.append(m_unitProduction);
       sb.append(br);
     }
-    if (m_production > 0 || (m_resources != null && m_resources.toString().length() > 0)) {
+    if ((m_production > 0) || ((m_resources != null) && (m_resources.toString().length() > 0))) {
       sb.append("Production: ");
       sb.append(br);
       if (m_production > 0) {

@@ -86,7 +86,7 @@ public class GameDataExporter {
   private void technology(final GameData data) {
     final String technologies = technologies(data);
     final String playerTechs = playertechs(data);
-    if (technologies.length() > 0 || playerTechs.length() > 0) {
+    if ((technologies.length() > 0) || (playerTechs.length() > 0)) {
       xmlfile.append("    <technology>\n");
       xmlfile.append(technologies);
       xmlfile.append(playerTechs);
@@ -307,7 +307,7 @@ public class GameDataExporter {
       for (final PlayerID player : uc.getPlayersWithUnits()) {
         final IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
         for (final UnitType unit : ucp.keySet()) {
-          if (player == null || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
+          if ((player == null) || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
             xmlfile.append("            <unitPlacement unitType=\"").append(unit.getName()).append("\" territory=\"")
                 .append(terr.getName()).append("\" quantity=\"").append(ucp.getInt(unit)).append("\"/>\n");
           } else {
@@ -360,7 +360,7 @@ public class GameDataExporter {
       }
     }
     // add occupiedTerrOf until we fix engine to only use originalOwner
-    if (!alreadyHasOccupiedTerrOf && attachment instanceof TerritoryAttachment) {
+    if (!alreadyHasOccupiedTerrOf && (attachment instanceof TerritoryAttachment)) {
       final TerritoryAttachment ta = (TerritoryAttachment) attachment;
       if (ta.getOriginalOwner() != null) {
         sb.append("            <option name=\"occupiedTerrOf\" value=\"").append(ta.getOriginalOwner().getName())
@@ -659,7 +659,7 @@ public class GameDataExporter {
         return false;
       }
       final Connection con = (Connection) o;
-      return (territory1 == con.territory1 && territory2 == con.territory2);
+      return ((territory1 == con.territory1) && (territory2 == con.territory2));
     }
   }
 

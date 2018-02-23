@@ -45,7 +45,7 @@ public class JLabelBuilder {
    * Values that must be set: text or icon
    */
   public JLabel build() {
-    Preconditions.checkState(text != null || icon != null);
+    Preconditions.checkState((text != null) || (icon != null));
 
     final String truncated;
     if (text != null) {

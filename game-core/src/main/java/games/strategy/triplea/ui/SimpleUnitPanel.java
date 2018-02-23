@@ -114,7 +114,7 @@ public class SimpleUnitPanel extends JPanel {
 
     @Override
     public int compare(final ProductionRule o1, final ProductionRule o2) {
-      if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
+      if ((o1.getResults().size() == 1) && (o2.getResults().size() == 1)) {
         final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
         final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
         if (n1 instanceof UnitType) {
@@ -154,7 +154,7 @@ public class SimpleUnitPanel extends JPanel {
 
     @Override
     public int compare(final RepairRule o1, final RepairRule o2) {
-      if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
+      if ((o1.getResults().size() == 1) && (o2.getResults().size() == 1)) {
         final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
         final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
         if (n1 instanceof UnitType) {

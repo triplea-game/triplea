@@ -64,7 +64,7 @@ public abstract class AbstractStatPanel extends JPanel {
 
     @Override
     public String getName() {
-      return resource == null ? "" : resource.getName();
+      return (resource == null) ? "" : resource.getName();
     }
 
     @Override

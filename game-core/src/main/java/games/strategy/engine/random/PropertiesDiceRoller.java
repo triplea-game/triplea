@@ -167,8 +167,10 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     final String errorStartString = m_props.getProperty("error.start");
     final String errorEndString = m_props.getProperty("error.end");
     // if the error strings are defined
-    if (errorStartString != null && errorStartString.length() > 0 && errorEndString != null
-        && errorEndString.length() > 0) {
+    if ((errorStartString != null)
+        && (errorStartString.length() > 0)
+        && (errorEndString != null)
+        && (errorEndString.length() > 0)) {
       final int startIndex = string.indexOf(errorStartString);
       if (startIndex >= 0) {
         final int endIndex = string.indexOf(errorEndString, (startIndex + errorStartString.length()));
@@ -253,7 +255,8 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
 
   @Override
   public boolean equals(final Object other) {
-    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), ((IBean) other).getDisplayName());
+    return (other instanceof PropertiesDiceRoller)
+        && Objects.equals(getDisplayName(), ((IBean) other).getDisplayName());
   }
 
   @Override
@@ -275,8 +278,9 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         return new HttpGet(uri);
       } else {
         final int status = response.getStatusLine().getStatusCode();
-        if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY
-            || status == HttpStatus.SC_MOVED_TEMPORARILY) {
+        if ((status == HttpStatus.SC_TEMPORARY_REDIRECT)
+            || (status == HttpStatus.SC_MOVED_PERMANENTLY)
+            || (status == HttpStatus.SC_MOVED_TEMPORARILY)) {
           return RequestBuilder.copy(request).setUri(uri).build();
         }
         return new HttpGet(uri);

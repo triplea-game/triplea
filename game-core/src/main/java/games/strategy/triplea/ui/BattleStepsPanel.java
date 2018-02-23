@@ -90,13 +90,13 @@ class BattleStepsPanel extends JPanel implements Active {
         return true;
       }
       // we cant find it, something is wrong
-      if (!targetStep.equals(LAST_STEP) && listModel.lastIndexOf(targetStep) == -1) {
+      if (!targetStep.equals(LAST_STEP) && (listModel.lastIndexOf(targetStep) == -1)) {
         new IllegalStateException("Step not found:" + targetStep + " in:" + listModel).printStackTrace();
         clearTargetStep();
         return true;
       }
       // at end, we are done
-      if (targetStep.equals(LAST_STEP) && list.getSelectedIndex() == listModel.getSize() - 1) {
+      if (targetStep.equals(LAST_STEP) && (list.getSelectedIndex() == (listModel.getSize() - 1))) {
         return true;
       }
       // we found it, we are done

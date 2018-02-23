@@ -91,14 +91,14 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   public String getDisallowedUnitWarning(final int index) {
-    if (index < 0 || index >= m_disallowedUnitWarnings.size()) {
+    if ((index < 0) || (index >= m_disallowedUnitWarnings.size())) {
       return null;
     }
     return m_disallowedUnitWarnings.get(index);
   }
 
   public String getUnresolvedUnitWarning(final int index) {
-    if (index < 0 || index >= m_unresolvedUnitWarnings.size()) {
+    if ((index < 0) || (index >= m_unresolvedUnitWarnings.size())) {
       return null;
     }
     return m_unresolvedUnitWarnings.get(index);

@@ -34,7 +34,7 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
 
   public static boolean getEditMode(final GameData data) {
     final Object editMode = data.getProperties().get(Constants.EDIT_MODE);
-    return editMode != null && editMode instanceof Boolean && (boolean) editMode;
+    return (editMode != null) && (editMode instanceof Boolean) && (boolean) editMode;
   }
 
   public boolean getEditMode() {

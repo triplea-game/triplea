@@ -43,13 +43,13 @@ public class PlayerListing implements Serializable {
       final String gameRound, final Collection<String> playersAllowedToBeDisabled,
       final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder) {
     m_playerToNodeListing =
-        playerToNodeListing == null ? new HashMap<>() : new HashMap<>(playerToNodeListing);
-    m_playersEnabledListing = playersEnabledListing == null ? new HashMap<>()
+        (playerToNodeListing == null) ? new HashMap<>() : new HashMap<>(playerToNodeListing);
+    m_playersEnabledListing = (playersEnabledListing == null) ? new HashMap<>()
         : new HashMap<>(playersEnabledListing);
     m_localPlayerTypes =
-        localPlayerTypes == null ? new HashMap<>() : new HashMap<>(localPlayerTypes);
+        (localPlayerTypes == null) ? new HashMap<>() : new HashMap<>(localPlayerTypes);
     m_playersAllowedToBeDisabled =
-        playersAllowedToBeDisabled == null ? new HashSet<>() : new HashSet<>(playersAllowedToBeDisabled);
+        (playersAllowedToBeDisabled == null) ? new HashSet<>() : new HashSet<>(playersAllowedToBeDisabled);
     m_gameVersion = gameVersion;
     m_gameName = gameName;
     m_gameRound = gameRound;

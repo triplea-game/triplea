@@ -244,7 +244,7 @@ final class UnitChooser extends JPanel {
     for (final ChooserEntry chooserEntry : entries) {
       if (chooserEntry.hasMultipleHitPoints()) {
         // there may be some units being given multiple hits, while others get a single or no hits
-        for (int i = 0; i < chooserEntry.size() - 1; i++) {
+        for (int i = 0; i < (chooserEntry.size() - 1); i++) {
           // here we are counting on the fact that unit category stores the units in a list, so the order is the same
           // every time we access
           // it.
@@ -328,9 +328,9 @@ final class UnitChooser extends JPanel {
         final boolean allowTwoHit, final int defaultValue, final UiContext uiContext) {
       hitTextFieldListener = listener;
       this.category = category;
-      this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
+      this.leftToSelect = (leftToSelect < 0) ? category.getUnits().size() : leftToSelect;
       hasMultipleHits =
-          allowTwoHit && category.getHitPoints() > 1 && category.getDamaged() < category.getHitPoints() - 1;
+          allowTwoHit && (category.getHitPoints() > 1) && (category.getDamaged() < (category.getHitPoints() - 1));
       hitTexts = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
       defaultHits = new ArrayList<>(Math.max(1, category.getHitPoints() - category.getDamaged()));
       final int numUnits = category.getUnits().size();
@@ -355,7 +355,7 @@ final class UnitChooser extends JPanel {
         final JLabel label = new JLabel("x" + category.getUnits().size());
         hitLabel.add(label);
         panel.add(new UnitChooserEntryIcon(i > 0, uiContext), new GridBagConstraints(gridx++, rowIndex, 1, 1, 0, 0,
-            GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, (i == 0 ? 0 : 8), 0, 0), 0, 0));
+            GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, ((i == 0) ? 0 : 8), 0, 0), 0, 0));
         if (i == 0) {
           if (category.getMovement() != -1) {
             panel.add(new JLabel("mvt " + category.getMovement()), new GridBagConstraints(gridx, rowIndex, 1, 1, 0, 0,
@@ -398,7 +398,7 @@ final class UnitChooser extends JPanel {
     }
 
     void setLeftToSelect(final int leftToSelect) {
-      this.leftToSelect = leftToSelect < 0 ? category.getUnits().size() : leftToSelect;
+      this.leftToSelect = (leftToSelect < 0) ? category.getUnits().size() : leftToSelect;
       updateLeftToSelect();
     }
 
@@ -407,12 +407,12 @@ final class UnitChooser extends JPanel {
       for (int i = 0; i < hitTexts.size(); i++) {
         final int newMax = leftToSelect + getHits(i);
         final ScrollableTextField text = hitTexts.get(i);
-        if (i > 0 && !hasMultipleHits) {
+        if ((i > 0) && !hasMultipleHits) {
           text.setMax(0);
         } else {
           text.setMax(Math.min(newMax, previousMax));
         }
-        if (text.getValue() < 0 || text.getValue() > text.getMax()) {
+        if ((text.getValue() < 0) || (text.getValue() > text.getMax())) {
           text.setValue(Math.max(0, Math.min(text.getMax(), text.getValue())));
         }
         hitLabel.get(i).setText("x" + (i == 0 ? category.getUnits().size() : text.getMax()));
@@ -429,10 +429,10 @@ final class UnitChooser extends JPanel {
     }
 
     int getHits(final int zeroBasedHitsPosition) {
-      if (zeroBasedHitsPosition < 0 || zeroBasedHitsPosition > hitTexts.size() - 1) {
+      if ((zeroBasedHitsPosition < 0) || (zeroBasedHitsPosition > (hitTexts.size() - 1))) {
         throw new IllegalArgumentException("Index out of range");
       }
-      if (!hasMultipleHits && zeroBasedHitsPosition > 0) {
+      if (!hasMultipleHits && (zeroBasedHitsPosition > 0)) {
         return 0;
       }
       return hitTexts.get(zeroBasedHitsPosition).getValue();

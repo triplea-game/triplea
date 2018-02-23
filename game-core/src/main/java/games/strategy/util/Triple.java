@@ -70,7 +70,7 @@ public class Triple<F, S, T> implements Serializable {
       return true;
     }
 
-    if (obj == null || getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
 

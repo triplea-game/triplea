@@ -89,7 +89,7 @@ public class BattleRecords implements Serializable {
       final boolean includeNullPlayer) {
     int lostTuv = 0;
     for (final BattleRecord br : brs) {
-      if (!includeNullPlayer && (br.getDefender() == null || br.getAttacker() == null || br.getDefender().isNull()
+      if (!includeNullPlayer && ((br.getDefender() == null) || (br.getAttacker() == null) || br.getDefender().isNull()
           || br.getAttacker().isNull())) {
         continue;
       }
@@ -107,10 +107,10 @@ public class BattleRecords implements Serializable {
       final Collection<Territory> anyOfTheseTerritories) {
     for (final BattleRecord br : brs) {
       if (anyOfTheseTerritories.contains(br.getBattleSite())) {
-        if (attacker != null && !attacker.equals(br.getAttacker())) {
+        if ((attacker != null) && !attacker.equals(br.getAttacker())) {
           continue;
         }
-        if (defender != null && !defender.equals(br.getDefender())) {
+        if ((defender != null) && !defender.equals(br.getDefender())) {
           continue;
         }
         if (!battleType.equalsIgnoreCase("any")) {
@@ -131,9 +131,9 @@ public class BattleRecords implements Serializable {
     // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
     // under a different
     // player.
-    if (current == null || !current.containsKey(battleId)) {
+    if ((current == null) || !current.containsKey(battleId)) {
       for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : m_records.entrySet()) {
-        if (entry.getValue() != null && entry.getValue().containsKey(battleId)) {
+        if ((entry.getValue() != null) && entry.getValue().containsKey(battleId)) {
           entry.getValue().remove(battleId);
           return;
         }
@@ -228,7 +228,7 @@ public class BattleRecords implements Serializable {
       for (final Entry<GUID, BattleRecord> entry2 : entry.getValue().entrySet()) {
         sb2.append(", ");
         final String guid = entry2.getKey().toString();
-        sb2.append(guid.substring(Math.max(0, Math.min(guid.length(), 7 * guid.length() / 8)), guid.length()));
+        sb2.append(guid.substring(Math.max(0, Math.min(guid.length(), (7 * guid.length()) / 8)), guid.length()));
         sb2.append(":");
         sb2.append(entry2.getValue().toString());
       }

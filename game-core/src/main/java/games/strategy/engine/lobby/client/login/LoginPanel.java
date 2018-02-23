@@ -113,10 +113,10 @@ final class LoginPanel extends JPanel {
       JOptionPane.showMessageDialog(this, DBUser.getUserNameValidationErrorMessage(userName.getText()),
           "Invalid Username", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (password.getPassword().length == 0 && !anonymousLogin.isSelected()) {
+    } else if ((password.getPassword().length == 0) && !anonymousLogin.isSelected()) {
       JOptionPane.showMessageDialog(this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (password.getPassword().length < 3 && !anonymousLogin.isSelected()) {
+    } else if ((password.getPassword().length < 3) && !anonymousLogin.isSelected()) {
       JOptionPane.showMessageDialog(this, "Passwords must be at least three characters long", "Invalid Password",
           JOptionPane.ERROR_MESSAGE);
       return;

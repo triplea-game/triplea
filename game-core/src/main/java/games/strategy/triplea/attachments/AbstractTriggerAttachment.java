@@ -195,7 +195,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     // this is in order to let a trigger that contains multiple actions, fire all of them in a single use
     // we only do this for things that do not have m_when set. triggers with m_when set have their uses modified
     // elsewhere.
-    if (!m_usedThisRound && m_uses > 0 && m_when.isEmpty()) {
+    if (!m_usedThisRound && (m_uses > 0) && m_when.isEmpty()) {
       bridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
     }
   }
@@ -204,7 +204,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     // "chance" should ALWAYS be checked last! (always check all other conditions first)
     final int hitTarget = getChanceToHit();
     final int diceSides = getChanceDiceSides();
-    if (diceSides <= 0 || hitTarget >= diceSides) {
+    if ((diceSides <= 0) || (hitTarget >= diceSides)) {
       changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, true, false);
       return true;
     } else if (hitTarget <= 0) {
@@ -246,9 +246,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    */
   public static Predicate<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
     return t -> {
-      if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
+      if ((beforeOrAfter == null) && (stepName == null) && t.getWhen().isEmpty()) {
         return true;
-      } else if (beforeOrAfter != null && stepName != null && !t.getWhen().isEmpty()) {
+      } else if ((beforeOrAfter != null) && (stepName != null) && !t.getWhen().isEmpty()) {
         for (final Tuple<String, String> w : t.getWhen()) {
           if (beforeOrAfter.equals(w.getFirst()) && stepName.equals(w.getSecond())) {
             return true;
@@ -272,7 +272,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       sb.append(subString);
     }
     // remove leading colon
-    if (sb.length() > 0 && sb.substring(0, 1).equals(":")) {
+    if ((sb.length() > 0) && sb.substring(0, 1).equals(":")) {
       sb.replace(0, 1, "");
     }
     return sb.toString();
@@ -280,12 +280,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   protected static String getValueFromStringArrayForAllExceptLastSubstring(final String[] s) {
     final StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < s.length - 1; i++) {
+    for (int i = 0; i < (s.length - 1); i++) {
       sb.append(":");
       sb.append(s[i]);
     }
     // remove leading colon
-    if (sb.length() > 0 && sb.substring(0, 1).equals(":")) {
+    if ((sb.length() > 0) && sb.substring(0, 1).equals(":")) {
       sb.replace(0, 1, "");
     }
     return sb.toString();

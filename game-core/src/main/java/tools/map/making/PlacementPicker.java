@@ -123,7 +123,7 @@ public class PlacementPicker extends JFrame {
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
+    if ((mapFolderLocation == null) && (mapSelection.getFile() != null)) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
@@ -151,10 +151,10 @@ public class PlacementPicker extends JFrame {
     if (!placeDimensionsSet) {
       try {
         File file = null;
-        if (mapFolderLocation != null && mapFolderLocation.exists()) {
+        if ((mapFolderLocation != null) && mapFolderLocation.exists()) {
           file = new File(mapFolderLocation, "map.properties");
         }
-        if (file == null || !file.exists()) {
+        if ((file == null) || !file.exists()) {
           file = new File(new File(mapName).getParent() + File.separator + "map.properties");
         }
         if (file.exists()) {
@@ -216,11 +216,11 @@ public class PlacementPicker extends JFrame {
         ToolLogger.error("Failed to initialize from map properties", e);
       }
     }
-    if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
+    if (!placeDimensionsSet || (JOptionPane.showConfirmDialog(new JPanel(),
         "Placement Box Size already set (" + placeWidth + "x" + placeHeight + "), "
             + "do you wish to continue with this?\r\n"
             + "Select Yes to continue, Select No to override and change the size.",
-        "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
+        "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1)) {
       try {
         final String result = getUnitsScale();
         try {
@@ -252,15 +252,15 @@ public class PlacementPicker extends JFrame {
       }
     }
     File file = null;
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+    if ((mapFolderLocation != null) && mapFolderLocation.exists()) {
       file = new File(mapFolderLocation, "polygons.txt");
     }
-    if (file == null || !file.exists()) {
+    if ((file == null) || !file.exists()) {
       file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
     }
-    if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
+    if (file.exists() && (JOptionPane.showConfirmDialog(new JPanel(),
         "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?",
-        "File Suggestion", 1) == 0) {
+        "File Suggestion", 1) == 0)) {
       try (InputStream is = new FileInputStream(file.getPath())) {
         ToolLogger.info("Polygons : " + file.getPath());
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
@@ -416,7 +416,7 @@ public class PlacementPicker extends JFrame {
         if (showAllMode) {
           g.setColor(Color.yellow);
           for (final Entry<String, List<Point>> entry : placements.entrySet()) {
-            if (entry.getKey().equals(currentCountry) && currentPlacements != null
+            if (entry.getKey().equals(currentCountry) && (currentPlacements != null)
                 && !currentPlacements.isEmpty()) {
               continue;
             }
@@ -426,7 +426,7 @@ public class PlacementPicker extends JFrame {
               g.fillRect(item.x, item.y, placeWidth, placeHeight);
               if (showOverflowMode && !pointIter.hasNext()) {
                 g.setColor(Color.gray);
-                g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+                g.fillRect(item.x + placeWidth, item.y + (placeHeight / 2), placeWidth, 4);
                 g.setColor(Color.yellow);
               }
             }
@@ -439,13 +439,13 @@ public class PlacementPicker extends JFrame {
           while (terrIter.hasNext()) {
             final String terr = terrIter.next();
             final List<Point> points = placements.get(terr);
-            if (points != null && points.size() >= incompleteNum) {
+            if ((points != null) && (points.size() >= incompleteNum)) {
               terrIter.remove();
             }
           }
           for (final String terr : territories) {
             final List<Polygon> polys = polygons.get(terr);
-            if (polys == null || polys.isEmpty()) {
+            if ((polys == null) || polys.isEmpty()) {
               continue;
             }
             for (final Polygon poly : polys) {
@@ -466,7 +466,7 @@ public class PlacementPicker extends JFrame {
           g.fillRect(item.x, item.y, placeWidth, placeHeight);
           if (showOverflowMode && !pointIter.hasNext()) {
             g.setColor(Color.gray);
-            g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+            g.fillRect(item.x + placeWidth, item.y + (placeHeight / 2), placeWidth, 4);
             g.setColor(Color.red);
           }
         }
@@ -531,7 +531,7 @@ public class PlacementPicker extends JFrame {
     if (!rightMouse && !ctrlDown) {
       currentCountry = Util.findTerritoryName(point, polygons, "there be dragons");
       // If there isn't an existing array, create one
-      if (placements == null || placements.get(currentCountry) == null) {
+      if ((placements == null) || (placements.get(currentCountry) == null)) {
         currentPlacements = new ArrayList<>();
       } else {
         currentPlacements = new ArrayList<>(placements.get(currentCountry));
@@ -552,7 +552,7 @@ public class PlacementPicker extends JFrame {
         ToolLogger.info("done:" + currentCountry);
       }
     } else if (rightMouse) {
-      if (currentPlacements != null && !currentPlacements.isEmpty()) {
+      if ((currentPlacements != null) && !currentPlacements.isEmpty()) {
         currentPlacements.remove(currentPlacements.size() - 1);
       }
     }
@@ -642,7 +642,7 @@ public class PlacementPicker extends JFrame {
       }
     }
     final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
-    if (folderString != null && folderString.length() > 0) {
+    if ((folderString != null) && (folderString.length() > 0)) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
@@ -651,7 +651,7 @@ public class PlacementPicker extends JFrame {
       }
     }
     final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
-    if (zoomString != null && zoomString.length() > 0) {
+    if ((zoomString != null) && (zoomString.length() > 0)) {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
         ToolLogger.info("Unit Zoom Percent to use: " + unitZoomPercent);
@@ -661,7 +661,7 @@ public class PlacementPicker extends JFrame {
       }
     }
     final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
+    if ((widthString != null) && (widthString.length() > 0)) {
       try {
         unitWidth = Integer.parseInt(widthString);
         ToolLogger.info("Unit Width to use: " + unitWidth);
@@ -671,7 +671,7 @@ public class PlacementPicker extends JFrame {
       }
     }
     final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
+    if ((heightString != null) && (heightString.length() > 0)) {
       try {
         unitHeight = Integer.parseInt(heightString);
         ToolLogger.info("Unit Height to use: " + unitHeight);

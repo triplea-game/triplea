@@ -162,7 +162,7 @@ public class ProSimulateTurnUtils {
     final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
-    if (ta != null && ta.getCapital() != null && terrOrigOwner != null
+    if ((ta != null) && (ta.getCapital() != null) && (terrOrigOwner != null)
         && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(t)
         && relationshipTracker.isAllied(terrOrigOwner, player)) {
 

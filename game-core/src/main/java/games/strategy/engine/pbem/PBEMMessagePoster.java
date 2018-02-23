@@ -52,7 +52,7 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   public boolean hasMessengers() {
-    return m_forumPoster != null || m_emailSender != null;
+    return (m_forumPoster != null) || (m_emailSender != null);
   }
 
   public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
@@ -62,7 +62,7 @@ public class PBEMMessagePoster implements Serializable {
     final IForumPoster forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
     final IEmailSender emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
     final boolean isPbem = gameData.getProperties().get(PBEM_GAME_PROP_NAME, false);
-    return isPbem && (forumPoster != null || emailSender != null);
+    return isPbem && ((forumPoster != null) || (emailSender != null));
   }
 
   public IForumPoster getForumPoster() {
@@ -109,7 +109,7 @@ public class PBEMMessagePoster implements Serializable {
         forumSuccess = m_forumPoster.postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
             "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber);
         turnSummaryRef = m_forumPoster.getTurnSummaryRef();
-        if (turnSummaryRef != null && historyWriter != null) {
+        if ((turnSummaryRef != null) && (historyWriter != null)) {
           historyWriter.startEvent("Turn Summary: " + turnSummaryRef);
         }
       } catch (final Exception e) {
@@ -268,7 +268,7 @@ public class PBEMMessagePoster implements Serializable {
           historyLog.setVisible(true);
         }
         try {
-          if (saveGameFile != null && !saveGameFile.delete()) {
+          if ((saveGameFile != null) && !saveGameFile.delete()) {
             System.out.println(
                 (new StringBuilder()).append("INFO TripleA PBEM/PBF poster couldn't delete temporary savegame: ")
                     .append(saveGameFile.getCanonicalPath()).toString());

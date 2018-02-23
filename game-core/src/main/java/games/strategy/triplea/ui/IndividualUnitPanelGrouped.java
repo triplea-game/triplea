@@ -136,14 +136,14 @@ public class IndividualUnitPanelGrouped extends JPanel {
       chooserScrollPane
           .setPreferredSize(
               new Dimension(
-                  (chooserScrollPane.getPreferredSize().width > 220 ? 220
-                      : (chooserScrollPane.getPreferredSize().height > 520
-                          ? chooserScrollPane.getPreferredSize().width + 20
-                          : chooserScrollPane.getPreferredSize().width)),
-                  (chooserScrollPane.getPreferredSize().height > 520 ? 520
-                      : (chooserScrollPane.getPreferredSize().width > 220
-                          ? chooserScrollPane.getPreferredSize().height + 20
-                          : chooserScrollPane.getPreferredSize().height))));
+                  ((chooserScrollPane.getPreferredSize().width > 220) ? 220
+                      : ((chooserScrollPane.getPreferredSize().height > 520)
+                      ? (chooserScrollPane.getPreferredSize().width + 20)
+                      : chooserScrollPane.getPreferredSize().width)),
+                  ((chooserScrollPane.getPreferredSize().height > 520) ? 520
+                      : ((chooserScrollPane.getPreferredSize().width > 220)
+                      ? (chooserScrollPane.getPreferredSize().height + 20)
+                      : chooserScrollPane.getPreferredSize().height))));
       entries.add(chooserScrollPane);
     }
     int rowIndex = 1;

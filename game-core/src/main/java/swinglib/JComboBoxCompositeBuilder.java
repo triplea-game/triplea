@@ -65,13 +65,13 @@ public class JComboBoxCompositeBuilder {
 
 
     for (final Map.Entry<String, JComponent> entry : componentRevealMap.entrySet()) {
-      if (comboBox.getSelectedItem() != null && comboBox.getSelectedItem().toString().equals(entry.getKey())) {
+      if ((comboBox.getSelectedItem() != null) && comboBox.getSelectedItem().toString().equals(entry.getKey())) {
         parent.add(entry.getValue());
       }
     }
 
 
-    if (triggerValueForPanelHide != null && comboBox.getSelectedItem() != null
+    if ((triggerValueForPanelHide != null) && (comboBox.getSelectedItem() != null)
         && !comboBox.getSelectedItem().toString().equals(triggerValueForPanelHide)) {
       parent.add(componentToHide);
     }
@@ -80,7 +80,7 @@ public class JComboBoxCompositeBuilder {
 
     comboBox.addItemListener(itemEvent -> {
       for (final Map.Entry<String, JComponent> entry : componentRevealMap.entrySet()) {
-        if (comboBox.getSelectedItem() != null && comboBox.getSelectedItem().toString().equals(entry.getKey())) {
+        if ((comboBox.getSelectedItem() != null) && comboBox.getSelectedItem().toString().equals(entry.getKey())) {
           parent.add(entry.getValue());
         } else {
           parent.remove(entry.getValue());
@@ -88,7 +88,7 @@ public class JComboBoxCompositeBuilder {
       }
 
       if (triggerValueForPanelHide != null) {
-        if (itemEvent.getItem() != null && itemEvent.getItem().toString().equals(triggerValueForPanelHide)) {
+        if ((itemEvent.getItem() != null) && itemEvent.getItem().toString().equals(triggerValueForPanelHide)) {
           parent.remove(componentToHide);
         } else {
           parent.add(componentToHide);

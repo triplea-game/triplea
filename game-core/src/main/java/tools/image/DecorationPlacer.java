@@ -125,7 +125,7 @@ public class DecorationPlacer extends JFrame {
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
-    if (mapFolderLocation == null && mapSelection.getFile() != null) {
+    if ((mapFolderLocation == null) && (mapSelection.getFile() != null)) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
@@ -187,16 +187,16 @@ public class DecorationPlacer extends JFrame {
     setLocationRelativeTo(null);
     highlightAll = false;
     File fileCenters = null;
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+    if ((mapFolderLocation != null) && mapFolderLocation.exists()) {
       fileCenters = new File(mapFolderLocation, "centers.txt");
     }
-    if (fileCenters == null || !fileCenters.exists()) {
+    if ((fileCenters == null) || !fileCenters.exists()) {
       fileCenters = new File(new File(mapName).getParent() + File.separator + "centers.txt");
     }
-    if (fileCenters.exists() && JOptionPane.showConfirmDialog(new JPanel(),
+    if (fileCenters.exists() && (JOptionPane.showConfirmDialog(new JPanel(),
         "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "centers?",
-        "File Suggestion", 1) == 0) {
+        "File Suggestion", 1) == 0)) {
       try (InputStream is = new FileInputStream(fileCenters.getPath())) {
         ToolLogger.info("Centers : " + fileCenters.getPath());
         centers = PointFileReaderWriter.readOneToOne(is);
@@ -224,16 +224,16 @@ public class DecorationPlacer extends JFrame {
       }
     }
     File filePoly = null;
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
+    if ((mapFolderLocation != null) && mapFolderLocation.exists()) {
       filePoly = new File(mapFolderLocation, "polygons.txt");
     }
-    if (filePoly == null || !filePoly.exists()) {
+    if ((filePoly == null) || !filePoly.exists()) {
       filePoly = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
     }
-    if (filePoly.exists() && JOptionPane.showConfirmDialog(new JPanel(),
+    if (filePoly.exists() && (JOptionPane.showConfirmDialog(new JPanel(),
         "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
             + "polygons?",
-        "File Suggestion", 1) == 0) {
+        "File Suggestion", 1) == 0)) {
       try (InputStream is = new FileInputStream(filePoly.getPath())) {
         ToolLogger.info("Polygons : " + filePoly.getPath());
         polygons = PointFileReaderWriter.readOneToManyPolygons(is);
@@ -396,7 +396,7 @@ public class DecorationPlacer extends JFrame {
       for (final Point p : entry.getValue().getSecond()) {
         g.drawImage(entry.getValue().getFirst(), p.x,
             p.y - (showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)), null);
-        if (currentSelectedImage != null && currentSelectedImage.getThird().equals(p)) {
+        if ((currentSelectedImage != null) && currentSelectedImage.getThird().equals(p)) {
           g.setColor(Color.green);
           g.drawRect(p.x, p.y - (showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)),
               entry.getValue().getFirst().getWidth(null), entry.getValue().getFirst().getHeight(null));
@@ -583,7 +583,7 @@ public class DecorationPlacer extends JFrame {
       folder = mapFolderLocation;
     }
     final FileSave imageFolder = new FileSave("Load an Image Folder", null, folder);
-    if (imageFolder.getPathString() == null || imageFolder.getFile() == null
+    if ((imageFolder.getPathString() == null) || (imageFolder.getFile() == null)
         || !imageFolder.getFile().exists()) {
       currentImageFolderLocation = null;
     } else {
@@ -596,7 +596,7 @@ public class DecorationPlacer extends JFrame {
     final FileOpen centerName = new FileOpen("Load an Image Points Text File", mapFolderLocation,
         new File(mapFolderLocation, imagePointType.getFileName()), ".txt");
     currentImagePointsTextFile = centerName.getFile();
-    if (centerName.getFile() != null && centerName.getFile().exists() && centerName.getPathString() != null) {
+    if ((centerName.getFile() != null) && centerName.getFile().exists() && (centerName.getPathString() != null)) {
       try (InputStream in = new FileInputStream(centerName.getPathString())) {
         currentPoints = PointFileReaderWriter.readOneToMany(in);
       } catch (final IOException e) {
@@ -621,16 +621,16 @@ public class DecorationPlacer extends JFrame {
     }
     while (staticImageForPlacing == null) {
       final FileOpen imageSelection = new FileOpen("Select Example Image To Use",
-          (image == null ? mapFolderLocation : new File(image.getParent())), image, ".gif", ".png");
-      if (imageSelection.getFile() == null || !imageSelection.getFile().exists()) {
+          ((image == null) ? mapFolderLocation : new File(image.getParent())), image, ".gif", ".png");
+      if ((imageSelection.getFile() == null) || !imageSelection.getFile().exists()) {
         continue;
       }
       staticImageForPlacing = createImage(imageSelection.getPathString());
     }
     final int width = staticImageForPlacing.getWidth(null);
     final int height = staticImageForPlacing.getHeight(null);
-    final int addY = (imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
-        : (imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
+    final int addY = ((imagePointType == ImagePointType.comments) ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
+        : ((imagePointType == ImagePointType.pu_place) ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
     if (fillInAllTerritories) {
       for (final Entry<String, Point> entry : centers.entrySet()) {
         List<Point> points = currentPoints.get(entry.getKey());
@@ -656,8 +656,8 @@ public class DecorationPlacer extends JFrame {
   }
 
   private void fillCurrentImagePointsBasedOnImageFolder(final boolean pointsAreExactlyTerritoryNames) {
-    final int addY = (imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
-        : (imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
+    final int addY = ((imagePointType == ImagePointType.comments) ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
+        : ((imagePointType == ImagePointType.pu_place) ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
     final List<String> allTerritories = new ArrayList<>(centers.keySet());
     for (final File file : FileUtils.listFiles(currentImageFolderLocation)) {
       if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {
@@ -666,7 +666,7 @@ public class DecorationPlacer extends JFrame {
       final String imageName = file.getName();
       final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
       final Image image = createImage(file.getPath());
-      List<Point> points = (currentPoints != null
+      List<Point> points = ((currentPoints != null)
           ? currentPoints.get((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName))
           : null);
       if (points == null) {
@@ -688,7 +688,7 @@ public class DecorationPlacer extends JFrame {
       currentImagePoints.put((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName),
           Tuple.of(image, points));
     }
-    if (!allTerritories.isEmpty() && imagePointType == ImagePointType.name_place) {
+    if (!allTerritories.isEmpty() && (imagePointType == ImagePointType.name_place)) {
       JOptionPane.showMessageDialog(this, new JLabel("Territory images not found in folder: " + allTerritories));
       ToolLogger.info("Territory images not found in folder: " + allTerritories);
     }
@@ -706,18 +706,18 @@ public class DecorationPlacer extends JFrame {
     if (cheapMutex) {
       return;
     }
-    if (!rightMouse && !ctrlDown && currentSelectedImage == null) {
+    if (!rightMouse && !ctrlDown && (currentSelectedImage == null)) {
       // find whatever image we are left clicking on
       Point testPoint = null;
       for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
         for (final Point p : entry.getValue().getSecond()) {
-          if (testPoint == null || p.distance(currentMousePoint) < testPoint.distance(currentMousePoint)) {
+          if ((testPoint == null) || (p.distance(currentMousePoint) < testPoint.distance(currentMousePoint))) {
             testPoint = p;
             currentSelectedImage = Triple.of(entry.getKey(), entry.getValue().getFirst(), p);
           }
         }
       }
-    } else if (!rightMouse && !ctrlDown && currentSelectedImage != null) {
+    } else if (!rightMouse && !ctrlDown && (currentSelectedImage != null)) {
       // save the image
       final Tuple<Image, List<Point>> imagePoints = currentImagePoints.get(currentSelectedImage.getFirst());
       final List<Point> points = imagePoints.getSecond();
@@ -726,8 +726,8 @@ public class DecorationPlacer extends JFrame {
       currentImagePoints.put(currentSelectedImage.getFirst(),
           Tuple.of(currentSelectedImage.getSecond(), points));
       currentSelectedImage = null;
-    } else if (rightMouse && !ctrlDown && createNewImageOnRightClick && staticImageForPlacing != null
-        && currentSelectedImage == null) {
+    } else if (rightMouse && !ctrlDown && createNewImageOnRightClick && (staticImageForPlacing != null)
+        && (currentSelectedImage == null)) {
       // create a new point here in this territory
       final Optional<String> territoryName = Util.findTerritoryName(currentMousePoint, polygons);
       if (territoryName.isPresent()) {
@@ -741,7 +741,7 @@ public class DecorationPlacer extends JFrame {
         Point testPoint = null;
         for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
           for (final Point p : entry.getValue().getSecond()) {
-            if (testPoint == null || p.distance(currentMousePoint) < testPoint.distance(currentMousePoint)) {
+            if ((testPoint == null) || (p.distance(currentMousePoint) < testPoint.distance(currentMousePoint))) {
               testPoint = p;
               currentSelectedImage =
                   Triple.of(entry.getKey(), entry.getValue().getFirst(), null);
@@ -803,9 +803,9 @@ public class DecorationPlacer extends JFrame {
       ToolLogger.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
-    if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
+    if ((mapFolderLocation == null) || (mapFolderLocation.length() < 1)) {
       final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
-      if (value != null && value.length() > 0) {
+      if ((value != null) && (value.length() > 0)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;

@@ -78,7 +78,7 @@ public final class JComboBoxBuilder {
         if (e.getStateChange() == ItemEvent.SELECTED) {
           final String selectionValue = (e.getItem() == null) ? null : e.getItem().toString();
 
-          Preconditions.checkState(!(clientSetting != null && settingKeyName != null),
+          Preconditions.checkState(!((clientSetting != null) && (settingKeyName != null)),
               "Only one of ClientSetting or settingKey should be set at a type, they are"
                   + "are redundant to each other. One is a type safe enum, the other is a free form String value."
                   + " Client setting == null ? " + (clientSetting == null)

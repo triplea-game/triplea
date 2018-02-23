@@ -91,7 +91,7 @@ public final class AvailableGames {
             final boolean added = addToAvailableGames(
                 URI.create(url.toString().replace(" ", "%20")),
                 availableGames);
-            if (added && map.getName().length() > 4) {
+            if (added && (map.getName().length() > 4)) {
               availableMapFolderOrZipNames
                   .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
             }

@@ -111,7 +111,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private PlayerID getUnitOwner(final Collection<Unit> units) {
-    return (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
+    return (BaseEditDelegate.getEditMode(getData()) && (units != null) && !units.isEmpty())
         ? units.iterator().next().getOwner()
         : getCurrentPlayer();
   }
@@ -120,7 +120,7 @@ public class MovePanel extends AbstractMovePanel {
    * Sort the specified units in preferred movement or unload order.
    */
   private void sortUnitsToMove(final List<Unit> units, final Route route) {
-    if (units == null || units.isEmpty()) {
+    if ((units == null) || units.isEmpty()) {
       return;
     } else if (route == null) {
       final Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
@@ -250,7 +250,7 @@ public class MovePanel extends AbstractMovePanel {
           }
         }
         // Repeat until there are no units left or no changes occur
-      } while (availableUnits.size() > 0 && hasChanged);
+      } while ((availableUnits.size() > 0) && hasChanged);
 
       // If we haven't seen all of the transports (and removed them) then there are extra transports that don't fit
       return (sortedTransports.size() == 0);
@@ -292,7 +292,7 @@ public class MovePanel extends AbstractMovePanel {
         final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
         for (final Unit candidate : transporting) {
           if (selected.getType().equals(candidate.getType()) && selected.getOwner().equals(candidate.getOwner())
-              && selected.getHits() == candidate.getHits()) {
+              && (selected.getHits() == candidate.getHits())) {
             hasChanged = true;
             selectedUnitsToUnload.add(candidate);
             allUnitsInSelectedTransports.remove(candidate);
@@ -312,7 +312,7 @@ public class MovePanel extends AbstractMovePanel {
       while (candidateIter.hasNext()) {
         final Unit candidate = candidateIter.next();
         if (selected.getType().equals(candidate.getType()) && selected.getOwner().equals(candidate.getOwner())
-            && selected.getHits() == candidate.getHits()) {
+            && (selected.getHits() == candidate.getHits())) {
           selectedUnitsToUnload.add(candidate);
           candidateIter.remove();
           break;
@@ -356,7 +356,7 @@ public class MovePanel extends AbstractMovePanel {
         movableBuilder.and(enoughMovement);
       }
     }
-    if (route != null && route.getEnd() != null) {
+    if ((route != null) && (route.getEnd() != null)) {
       final boolean water = route.getEnd().isWater();
       if (water && !route.isLoad()) {
         movableBuilder.and(Matches.unitIsNotLand());
@@ -365,7 +365,7 @@ public class MovePanel extends AbstractMovePanel {
         movableBuilder.and(Matches.unitIsNotSea());
       }
     }
-    if (units != null && !units.isEmpty()) {
+    if ((units != null) && !units.isEmpty()) {
       // force all units to have the same owner in edit mode
       final PlayerID owner = getUnitOwner(units);
       if (BaseEditDelegate.getEditMode(getData())) {
@@ -397,7 +397,7 @@ public class MovePanel extends AbstractMovePanel {
    * Get the route including the territories that we are forced to move through.
    */
   private Route getRouteForced(final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
-    if (forced == null || forced.size() == 0) {
+    if ((forced == null) || (forced.size() == 0)) {
       throw new IllegalStateException("No forced territories:" + forced + " end:" + end + " start:" + start);
     }
     Territory last = getFirstSelectedTerritory();
@@ -435,7 +435,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   private void updateUnitsThatCanMoveOnRoute(final Collection<Unit> units, final Route route) {
-    if (route == null || route.hasNoSteps()) {
+    if ((route == null) || route.hasNoSteps()) {
       clearStatusMessage();
       getMap().showMouseCursor();
       currentCursorImage = null;
@@ -453,7 +453,7 @@ public class MovePanel extends AbstractMovePanel {
     // if the player selects a land unit and other units
     // when the
     // only consider the non land units
-    if (route.getStart().isWater() && route.getEnd() != null && route.getEnd().isWater() && !route.isLoad()) {
+    if (route.getStart().isWater() && (route.getEnd() != null) && route.getEnd().isWater() && !route.isLoad()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
     }
     sortUnitsToMove(best, route);
@@ -667,8 +667,8 @@ public class MovePanel extends AbstractMovePanel {
         return candidateTransports;
       }
       // all the same type, dont ask unless we have more than 1 unit type
-      if (UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), true, false).size() == 1
-          && unitsToLoad.size() == 1) {
+      if ((UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), true, false).size() == 1)
+          && (unitsToLoad.size() == 1)) {
         return candidateTransports;
       }
       // If we've filled all transports, then no user intervention is required.
@@ -860,7 +860,7 @@ public class MovePanel extends AbstractMovePanel {
               CollectionUtils.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatch);
           // candidateAirTransports.removeAll(selectedUnits);
           candidateAirTransports.removeAll(dependentUnits.keySet());
-          if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0) {
+          if ((unitsToLoad.size() > 0) && (candidateAirTransports.size() > 0)) {
             final Collection<Unit> airTransportsToLoad = getAirTransportsToLoad(candidateAirTransports);
             selectedUnits.addAll(airTransportsToLoad);
             if (!airTransportsToLoad.isEmpty()) {
@@ -1077,7 +1077,7 @@ public class MovePanel extends AbstractMovePanel {
       final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
       final List<Unit> units = unitsThatCanMoveOnRoute;
       setSelectedEndpointTerritory(territory);
-      if (units.isEmpty() || route == null) {
+      if (units.isEmpty() || (route == null)) {
         cancelMove();
         return;
       }
@@ -1160,7 +1160,9 @@ public class MovePanel extends AbstractMovePanel {
           // if we find that two categories are compatable, and some units
           // are selected from one category, but not the other
           // then the user has to refine his selection
-          if (category1 != category2 && category1.getType() == category2.getType() && !category1.equals(category2)) {
+          if ((category1 != category2)
+              && (category1.getType() == category2.getType())
+              && !category1.equals(category2)) {
             // if we are moving all the units from both categories, then nothing to choose
             if (units.containsAll(category1.getUnits()) && units.containsAll(category2.getUnits())) {
               continue;
@@ -1222,7 +1224,7 @@ public class MovePanel extends AbstractMovePanel {
       final PlayerID owner = getUnitOwner(selectedUnits);
       final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
       final boolean someOwned = units.stream().anyMatch(match);
-      final boolean isCorrectTerritory = firstSelectedTerritory == null || firstSelectedTerritory == territory;
+      final boolean isCorrectTerritory = (firstSelectedTerritory == null) || (firstSelectedTerritory == territory);
       if (someOwned && isCorrectTerritory) {
         final Map<Territory, List<Unit>> highlight = new HashMap<>();
         highlight.put(territory, units);
@@ -1242,9 +1244,9 @@ public class MovePanel extends AbstractMovePanel {
       if (!getListening()) {
         return;
       }
-      if (getFirstSelectedTerritory() != null && territory != null) {
+      if ((getFirstSelectedTerritory() != null) && (territory != null)) {
         Route route;
-        if (mouseCurrentTerritory == null || !mouseCurrentTerritory.equals(territory)
+        if ((mouseCurrentTerritory == null) || !mouseCurrentTerritory.equals(territory)
             || mouseCurrentPoint.equals(mouseLastUpdatePoint)) {
           route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
           getData().acquireReadLock();
@@ -1253,9 +1255,9 @@ public class MovePanel extends AbstractMovePanel {
             // now, check if there is a better route for just the units that can get there (we check only air since that
             // is the only one for
             // which the route may actually change much)
-            if (unitsThatCanMoveOnRoute.size() < selectedUnits.size()
-                && (unitsThatCanMoveOnRoute.size() == 0 || (!unitsThatCanMoveOnRoute.isEmpty()
-                    && unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir())))) {
+            if ((unitsThatCanMoveOnRoute.size() < selectedUnits.size())
+                && ((unitsThatCanMoveOnRoute.size() == 0) || (!unitsThatCanMoveOnRoute.isEmpty()
+                && unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir())))) {
               final Collection<Unit> airUnits = CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
               if (airUnits.size() > 0) {
                 route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
@@ -1393,7 +1395,7 @@ public class MovePanel extends AbstractMovePanel {
             highlightMoveableUnits();
             break;
           case KeyEvent.VK_U:
-            if (getMap().getHighlightedUnits() != null && !getMap().getHighlightedUnits().isEmpty()) {
+            if ((getMap().getHighlightedUnits() != null) && !getMap().getHighlightedUnits().isEmpty()) {
               undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
             }
             break;
@@ -1441,7 +1443,7 @@ public class MovePanel extends AbstractMovePanel {
         .build();
     final int size = allTerritories.size();
     // new focused index is 1 greater
-    int newFocusedIndex = lastFocusedTerritory == null ? 0 : allTerritories.indexOf(lastFocusedTerritory) + 1;
+    int newFocusedIndex = (lastFocusedTerritory == null) ? 0 : (allTerritories.indexOf(lastFocusedTerritory) + 1);
     if (newFocusedIndex >= size) {
       // if we are larger than the number of territories, we must start back at zero
       newFocusedIndex = 0;

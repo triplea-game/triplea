@@ -90,7 +90,7 @@ public class GameSelectorModel extends Observable {
       System.out.println(e.getMessage());
     } catch (final Exception e) {
       String message = e.getMessage();
-      if (message == null && e.getStackTrace() != null) {
+      if ((message == null) && (e.getStackTrace() != null)) {
         message = e.getClass().getName() + "  at  " + e.getStackTrace()[0].toString();
       }
       message = "Exception while parsing: " + file.getName() + " : " + message;
@@ -279,7 +279,7 @@ public class GameSelectorModel extends Observable {
     GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName)
         .orElse(null);
 
-    if (selectedGame == null && model.size() > 0) {
+    if ((selectedGame == null) && (model.size() > 0)) {
       selectedGame = model.get(0);
     }
     if (selectedGame == null) {

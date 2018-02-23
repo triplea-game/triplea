@@ -164,7 +164,7 @@ public class CanalAttachment extends DefaultAttachment {
     if (m_canalName == null) {
       throw new GameParseException("Canals must have a canalName set!" + thisErrorMsg());
     }
-    if (m_landTerritories == null || m_landTerritories.size() == 0) {
+    if ((m_landTerritories == null) || (m_landTerritories.size() == 0)) {
       throw new GameParseException("Canal named " + m_canalName + " must have landTerritories set!" + thisErrorMsg());
     }
   }

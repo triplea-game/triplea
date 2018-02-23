@@ -81,7 +81,7 @@ public final class OpenJsonUtils {
   }
 
   private static @Nullable Object unwrap(final @Nullable Object value) {
-    if (value == null || JSONObject.NULL.equals(value)) {
+    if ((value == null) || JSONObject.NULL.equals(value)) {
       return null;
     } else if (value instanceof JSONArray) {
       return toList((JSONArray) value);

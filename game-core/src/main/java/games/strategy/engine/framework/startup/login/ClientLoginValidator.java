@@ -78,7 +78,7 @@ public final class ClientLoginValidator implements ILoginValidator {
       final String hashedMac,
       final SocketAddress remoteAddress) {
     final String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
-    if (versionString == null || versionString.length() > 20 || versionString.trim().length() == 0) {
+    if ((versionString == null) || (versionString.length() > 20) || (versionString.trim().length() == 0)) {
       return "Invalid version " + versionString;
     }
 

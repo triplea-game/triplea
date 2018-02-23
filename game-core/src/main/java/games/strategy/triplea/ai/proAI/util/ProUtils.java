@@ -50,7 +50,7 @@ public class ProUtils {
       }
       final GameStep step = sequence.getStep(currentIndex);
       final PlayerID stepPlayer = step.getPlayerId();
-      if (step.getName().endsWith("CombatMove") && stepPlayer != null && !stepPlayer.equals(player)
+      if (step.getName().endsWith("CombatMove") && (stepPlayer != null) && !stepPlayer.equals(player)
           && !players.contains(stepPlayer)) {
         players.add(step.getPlayerId());
       }
@@ -214,7 +214,7 @@ public class ProUtils {
     for (final Territory enemyLandTerritory : enemyOrAdjacentLandTerritories) {
       final int distance =
           data.getMap().getDistance_IgnoreEndForCondition(t, enemyLandTerritory, Matches.territoryIsWater());
-      if (distance > 0 && distance < minDistance) {
+      if ((distance > 0) && (distance < minDistance)) {
         minDistance = distance;
       }
     }
