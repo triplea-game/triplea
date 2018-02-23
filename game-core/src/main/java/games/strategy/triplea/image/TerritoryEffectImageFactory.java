@@ -7,26 +7,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
-import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 
-public class ResourceImageFactory {
+/**
+ * Used to manage territory effect images.
+ */
+public class TerritoryEffectImageFactory {
 
-  private static final String FILE_NAME_BASE = "resources/";
+  private static final String FILE_NAME_BASE = "territoryEffects/";
   private final Map<String, ImageIcon> icons = new HashMap<>();
   private ResourceLoader resourceLoader;
 
-  public ResourceImageFactory() {}
+  public TerritoryEffectImageFactory() {}
 
   public void setResourceLoader(final ResourceLoader loader) {
     resourceLoader = loader;
     clearImageCache();
   }
 
-  // Clear the image and icon cache
   private void clearImageCache() {
     icons.clear();
   }
@@ -48,7 +49,7 @@ public class ResourceImageFactory {
    *
    * @throws IllegalStateException if image can't be found
    */
-  public ImageIcon getIcon(final Resource type, final boolean large) {
+  public ImageIcon getIcon(final TerritoryEffect type, final boolean large) {
     final String fullName = type.getName() + (large ? "_large" : "");
     if (icons.containsKey(fullName)) {
       return icons.get(fullName);
@@ -57,21 +58,6 @@ public class ResourceImageFactory {
     final ImageIcon icon = new ImageIcon(img);
     icons.put(fullName, icon);
     return icon;
-  }
-
-  /**
-   * Returns label with icon and text. If icon is missing then sets resource name.
-   */
-  public JLabel getLabel(final Resource resource, final String text) {
-    final JLabel label = new JLabel();
-    try {
-      label.setIcon(getIcon(resource, false));
-      label.setText(text);
-      label.setToolTipText(resource.getName());
-    } catch (final IllegalStateException e) {
-      label.setText(resource.getName() + " " + text);
-    }
-    return label;
   }
 
 }
