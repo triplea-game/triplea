@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 
 public class ObjectPropertyChange extends Change {
@@ -42,7 +43,15 @@ public class ObjectPropertyChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    m_object.getPropertyOrThrow(m_property).setObjectValue(m_newValue);
+    try {
+      m_object.getPropertyOrThrow(m_property).setValue(m_newValue);
+    } catch (final MutableProperty.InvalidValueException e) {
+      throw new IllegalStateException(
+          String.format(
+              "failed to set value '%s' on property '%s' for object '%s'",
+              m_newValue, m_property, m_object),
+          e);
+    }
   }
 
   @Override

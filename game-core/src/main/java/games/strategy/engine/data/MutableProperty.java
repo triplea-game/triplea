@@ -9,7 +9,7 @@ import java.util.function.Supplier;
  *
  * @param <T> The type of the field to set, get and reset.
  */
-public class MutableProperty<T> {
+public final class MutableProperty<T> {
 
   private final ThrowingConsumer<T, Exception> setter;
   private final ThrowingConsumer<String, Exception> stringSetter;
@@ -51,27 +51,40 @@ public class MutableProperty<T> {
     };
   }
 
-  public void setValue(final String string) throws Exception {
-    stringSetter.accept(string);
+  private void setStringValue(final String value) throws InvalidValueException {
+    try {
+      stringSetter.accept(value);
+    } catch (final RuntimeException e) {
+      throw e;
+    } catch (final Exception e) {
+      throw new InvalidValueException("failed to set string property value to '" + value + "'", e);
+    }
   }
 
-  public void setValue(final T value) throws Exception {
-    setter.accept(value);
+  private void setTypedValue(final T value) throws InvalidValueException {
+    try {
+      setter.accept(value);
+    } catch (final RuntimeException e) {
+      throw e;
+    } catch (final Exception e) {
+      throw new InvalidValueException("failed to set typed property value to '" + value + "'", e);
+    }
   }
 
   /**
-   * Calls the appropriate {@link MutableProperty#setValue} method.
+   * Sets the property value.
+   *
+   * @param value The new property value. If a {@link String}, the value will be set using {@link #stringSetter};
+   *        otherwise the value will be set using {@link #setter}.
+   *
+   * @throws InvalidValueException If the new property value is invalid.
    */
   @SuppressWarnings("unchecked")
-  public void setObjectValue(final Object o) {
-    try {
-      if (o instanceof String) {
-        setValue((String) o);
-      } else {
-        setValue((T) o);
-      }
-    } catch (final Exception e) {
-      throw new IllegalStateException(e);
+  public void setValue(final Object value) throws InvalidValueException {
+    if (value instanceof String) {
+      setStringValue((String) value);
+    } else {
+      setTypedValue((T) value);
     }
   }
 
@@ -156,7 +169,7 @@ public class MutableProperty<T> {
   }
 
   /**
-   * A Consumer capable of throwing a GameParseException.
+   * A Consumer capable of throwing an exception.
    *
    * @param <T> The type of Object to consume.
    * @param <E> The type of Throwable to throw.
@@ -164,5 +177,16 @@ public class MutableProperty<T> {
   @FunctionalInterface
   public interface ThrowingConsumer<T, E extends Throwable> {
     void accept(T object) throws E;
+  }
+
+  /**
+   * A checked exception that indicates an attempt was made to set a property to an invalid value.
+   */
+  public static final class InvalidValueException extends Exception {
+    private static final long serialVersionUID = 7634850287487589543L;
+
+    private InvalidValueException(final String message, final Throwable cause) {
+      super(message, cause);
+    }
   }
 }

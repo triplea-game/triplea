@@ -74,7 +74,15 @@ public class ChangeAttachmentChange extends Change {
     if (clearFirst) {
       attachmentProperty.resetValue();
     }
-    attachmentProperty.setObjectValue(newValue);
+    try {
+      attachmentProperty.setValue(newValue);
+    } catch (final MutableProperty.InvalidValueException e) {
+      throw new IllegalStateException(
+          String.format(
+              "failed to set value '%s' on property '%s' for attachment '%s' associated with '%s'",
+              newValue, property, attachmentName, attachedTo),
+          e);
+    }
   }
 
   @Override
