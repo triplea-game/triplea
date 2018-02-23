@@ -87,6 +87,7 @@ public class InGameLobbyWatcher {
       final InGameLobbyWatcher oldWatcher) {
     final String host = System.getProperty(LOBBY_HOST);
     final String port = System.getProperty(LOBBY_PORT);
+    final String hostedBy = System.getProperty(LOBBY_GAME_HOSTED_BY);
     if (host == null || port == null) {
       return null;
     }
@@ -97,7 +98,6 @@ public class InGameLobbyWatcher {
     // add them as temporary properties (in case we load an old savegame and need them again)
     System.setProperty(LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
     System.setProperty(LOBBY_PORT + GameRunner.OLD_EXTENSION, port);
-    final String hostedBy = System.getProperty(LOBBY_GAME_HOSTED_BY);
     System.setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = new IConnectionLogin() {
       @Override
