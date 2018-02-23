@@ -175,12 +175,14 @@ public class CanalAttachment extends DefaultAttachment {
         .put("canalName", MutableProperty.ofString(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
             MutableProperty.of(
+                Set.class,
                 this::setLandTerritories,
                 this::setLandTerritories,
                 this::getLandTerritories,
                 this::resetLandTerritories))
         .put("excludedUnits",
             MutableProperty.of(
+                Set.class,
                 this::setExcludedUnits,
                 this::setExcludedUnits,
                 this::getExcludedUnits,

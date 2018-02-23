@@ -1170,94 +1170,107 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         .putAll(super.getPropertyMap())
         .put("techs",
             MutableProperty.of(
+                List.class,
                 this::setTechs,
                 this::setTechs,
                 this::getTechs,
                 this::resetTechs))
         .put("techCount",
-            MutableProperty.of(this::getTechCount))
+            MutableProperty.of(Integer.class, this::getTechCount))
         .put("relationship",
             MutableProperty.of(
+                List.class,
                 this::setRelationship,
                 this::setRelationship,
                 this::getRelationship,
                 this::resetRelationship))
         .put("atWarPlayers",
             MutableProperty.of(
+                Set.class,
                 this::setAtWarPlayers,
                 this::setAtWarPlayers,
                 this::getAtWarPlayers,
                 this::resetAtWarPlayers))
         .put("atWarCount",
-            MutableProperty.of(this::getAtWarCount))
+            MutableProperty.of(Integer.class, this::getAtWarCount))
         .put("destroyedTUV",
-            MutableProperty.of(
-                this::setDestroyedTUV,
+            MutableProperty.ofString(
                 this::setDestroyedTUV,
                 this::getDestroyedTUV,
                 this::resetDestroyedTUV))
         .put("battle",
             MutableProperty.of(
+                List.class,
                 this::setBattle,
                 this::setBattle,
                 this::getBattle,
                 this::resetBattle))
         .put("alliedOwnershipTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setAlliedOwnershipTerritories,
                 this::setAlliedOwnershipTerritories,
                 this::getAlliedOwnershipTerritories,
                 this::resetAlliedOwnershipTerritories))
         .put("directOwnershipTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setDirectOwnershipTerritories,
                 this::setDirectOwnershipTerritories,
                 this::getDirectOwnershipTerritories,
                 this::resetDirectOwnershipTerritories))
         .put("alliedExclusionTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setAlliedExclusionTerritories,
                 this::setAlliedExclusionTerritories,
                 this::getAlliedExclusionTerritories,
                 this::resetAlliedExclusionTerritories))
         .put("directExclusionTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setDirectExclusionTerritories,
                 this::setDirectExclusionTerritories,
                 this::getDirectExclusionTerritories,
                 this::resetDirectExclusionTerritories))
         .put("enemyExclusionTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setEnemyExclusionTerritories,
                 this::setEnemyExclusionTerritories,
                 this::getEnemyExclusionTerritories,
                 this::resetEnemyExclusionTerritories))
         .put("enemySurfaceExclusionTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setEnemySurfaceExclusionTerritories,
                 this::setEnemySurfaceExclusionTerritories,
                 this::getEnemySurfaceExclusionTerritories,
                 this::resetEnemySurfaceExclusionTerritories))
         .put("directPresenceTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setDirectPresenceTerritories,
                 this::setDirectPresenceTerritories,
                 this::getDirectPresenceTerritories,
                 this::resetDirectPresenceTerritories))
         .put("alliedPresenceTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setAlliedPresenceTerritories,
                 this::setAlliedPresenceTerritories,
                 this::getAlliedPresenceTerritories,
                 this::resetAlliedPresenceTerritories))
         .put("enemyPresenceTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setEnemyPresenceTerritories,
                 this::setEnemyPresenceTerritories,
                 this::getEnemyPresenceTerritories,
                 this::resetEnemyPresenceTerritories))
         .put("unitPresence",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setUnitPresence,
                 this::setUnitPresence,
                 this::getUnitPresence,

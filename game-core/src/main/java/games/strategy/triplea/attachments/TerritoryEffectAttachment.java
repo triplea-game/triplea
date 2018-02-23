@@ -203,24 +203,28 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("combatDefenseEffect",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setCombatDefenseEffect,
                 this::setCombatDefenseEffect,
                 this::getCombatDefenseEffect,
                 this::resetCombatDefenseEffect))
         .put("combatOffenseEffect",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setCombatOffenseEffect,
                 this::setCombatOffenseEffect,
                 this::getCombatOffenseEffect,
                 this::resetCombatOffenseEffect))
         .put("noBlitz",
             MutableProperty.of(
+                List.class,
                 this::setNoBlitz,
                 this::setNoBlitz,
                 this::getNoBlitz,
                 this::resetNoBlitz))
         .put("unitsNotAllowed",
             MutableProperty.of(
+                List.class,
                 this::setUnitsNotAllowed,
                 this::setUnitsNotAllowed,
                 this::getUnitsNotAllowed,

@@ -10,17 +10,19 @@ import java.util.function.Supplier;
  * @param <T> The type of the field to set, get and reset.
  */
 public final class MutableProperty<T> {
-
+  private final Class<T> type;
   private final ThrowingConsumer<T, Exception> setter;
   private final ThrowingConsumer<String, Exception> stringSetter;
   private final Supplier<T> getter;
   private final Runnable resetter;
 
   private MutableProperty(
+      final Class<T> type,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
+    this.type = checkNotNull(type);
     this.setter = checkNotNull(setter);
     this.stringSetter = checkNotNull(stringSetter);
     this.getter = checkNotNull(getter);
@@ -79,12 +81,23 @@ public final class MutableProperty<T> {
    *
    * @throws InvalidValueException If the new property value is invalid.
    */
-  @SuppressWarnings("unchecked")
   public void setValue(final Object value) throws InvalidValueException {
+    // TODO: do we need to allow null values? if so, document it; if not, add precondition check
+
     if (value instanceof String) {
       setStringValue((String) value);
     } else {
-      setTypedValue((T) value);
+      final T typedValue;
+      try {
+        typedValue = type.cast(value);
+      } catch (final ClassCastException e) {
+        throw new InvalidValueException(
+            String.format(
+                "failed to set property value; expected value of type '%s' but was '%s'", type,
+                value.getClass()),
+            e);
+      }
+      setTypedValue(typedValue);
     }
   }
 
@@ -100,37 +113,40 @@ public final class MutableProperty<T> {
    * Convenience method to create an instance of this interface.
    */
   public static <T> MutableProperty<T> of(
+      final Class<T> type,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    return new MutableProperty<>(setter, stringSetter, getter, resetter);
+    return new MutableProperty<>(type, setter, stringSetter, getter, resetter);
   }
 
   /**
    * Convenience method to create an instance of this interface with no resetter.
    */
   public static <T> MutableProperty<T> of(
+      final Class<T> type,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter) {
-    return of(setter, stringSetter, getter, noResetter());
+    return of(type, setter, stringSetter, getter, noResetter());
   }
 
   /**
    * Convenience method to create an instance of this interface that only gets.
    */
-  public static <T> MutableProperty<T> of(final Supplier<T> getter) {
-    return of(noSetter(), noStringSetter(), getter, noResetter());
+  public static <T> MutableProperty<T> of(final Class<T> type, final Supplier<T> getter) {
+    return of(type, noSetter(), noStringSetter(), getter, noResetter());
   }
 
   /**
    * Convenience method to create an instance of this interface that only sets, but doesn't reset.
    */
   public static <T> MutableProperty<T> of(
+      final Class<T> type,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(setter, stringSetter, noGetter(), noResetter());
+    return of(type, setter, stringSetter, noGetter(), noResetter());
   }
 
   /**
@@ -140,7 +156,7 @@ public final class MutableProperty<T> {
       final ThrowingConsumer<String, Exception> setter,
       final Supplier<String> getter,
       final Runnable resetter) {
-    return of(setter, setter, getter, resetter);
+    return of(String.class, setter, setter, getter, resetter);
   }
 
   /**
@@ -148,24 +164,25 @@ public final class MutableProperty<T> {
    * setter and getter. And no support for Strings as secondary setter.
    */
   public static <T> MutableProperty<T> ofSimple(
+      final Class<T> type,
       final ThrowingConsumer<T, Exception> setter,
       final Supplier<T> getter) {
-    return of(setter, noStringSetter(), getter, noResetter());
+    return of(type, setter, noStringSetter(), getter, noResetter());
   }
 
   /**
    * Convenience method to create an instance of this interface that just contains a
    * getter. And no support for setters of any kind.
    */
-  public static <T> MutableProperty<T> ofSimple(final Supplier<T> getter) {
-    return ofSimple(noSetter(), getter);
+  public static <T> MutableProperty<T> ofSimple(final Class<T> type, final Supplier<T> getter) {
+    return ofSimple(type, noSetter(), getter);
   }
 
   /**
    * Convenience method to create an instance of this interface that only sets via the string value.
    */
-  public static <T> MutableProperty<T> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(noSetter(), stringSetter, noGetter(), noResetter());
+  public static MutableProperty<String> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
+    return of(String.class, noSetter(), stringSetter, noGetter(), noResetter());
   }
 
   /**

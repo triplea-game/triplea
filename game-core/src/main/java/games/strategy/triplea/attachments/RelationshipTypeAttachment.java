@@ -414,74 +414,62 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("archeType",
-            MutableProperty.of(
-                this::setArcheType,
+            MutableProperty.ofString(
                 this::setArcheType,
                 this::getArcheType,
                 this::resetArcheType))
         .put("canMoveLandUnitsOverOwnedLand",
-            MutableProperty.of(
-                this::setCanMoveLandUnitsOverOwnedLand,
+            MutableProperty.ofString(
                 this::setCanMoveLandUnitsOverOwnedLand,
                 this::getCanMoveLandUnitsOverOwnedLand,
                 this::resetCanMoveLandUnitsOverOwnedLand))
         .put("canMoveAirUnitsOverOwnedLand",
-            MutableProperty.of(
-                this::setCanMoveAirUnitsOverOwnedLand,
+            MutableProperty.ofString(
                 this::setCanMoveAirUnitsOverOwnedLand,
                 this::getCanMoveAirUnitsOverOwnedLand,
                 this::resetCanMoveAirUnitsOverOwnedLand))
         .put("alliancesCanChainTogether",
-            MutableProperty.of(
-                this::setAlliancesCanChainTogether,
+            MutableProperty.ofString(
                 this::setAlliancesCanChainTogether,
                 this::getAlliancesCanChainTogether,
                 this::resetAlliancesCanChainTogether))
         .put("isDefaultWarPosition",
-            MutableProperty.of(
-                this::setIsDefaultWarPosition,
+            MutableProperty.ofString(
                 this::setIsDefaultWarPosition,
                 this::getIsDefaultWarPosition,
                 this::resetIsDefaultWarPosition))
         .put("upkeepCost",
-            MutableProperty.of(
-                this::setUpkeepCost,
+            MutableProperty.ofString(
                 this::setUpkeepCost,
                 this::getUpkeepCost,
                 this::resetUpkeepCost))
         .put("canLandAirUnitsOnOwnedLand",
-            MutableProperty.of(
-                this::setCanLandAirUnitsOnOwnedLand,
+            MutableProperty.ofString(
                 this::setCanLandAirUnitsOnOwnedLand,
                 this::getCanLandAirUnitsOnOwnedLand,
                 this::resetCanLandAirUnitsOnOwnedLand))
         .put("canTakeOverOwnedTerritory",
-            MutableProperty.of(
-                this::setCanTakeOverOwnedTerritory,
+            MutableProperty.ofString(
                 this::setCanTakeOverOwnedTerritory,
                 this::getCanTakeOverOwnedTerritory,
                 this::resetCanTakeOverOwnedTerritory))
         .put("givesBackOriginalTerritories",
-            MutableProperty.of(
-                this::setGivesBackOriginalTerritories,
+            MutableProperty.ofString(
                 this::setGivesBackOriginalTerritories,
                 this::getGivesBackOriginalTerritories,
                 this::resetGivesBackOriginalTerritories))
         .put("canMoveIntoDuringCombatMove",
-            MutableProperty.of(
-                this::setCanMoveIntoDuringCombatMove,
+            MutableProperty.ofString(
                 this::setCanMoveIntoDuringCombatMove,
                 this::getCanMoveIntoDuringCombatMove,
                 this::resetCanMoveIntoDuringCombatMove))
         .put("canMoveThroughCanals",
-            MutableProperty.of(
-                this::setCanMoveThroughCanals,
+            MutableProperty.ofString(
                 this::setCanMoveThroughCanals,
                 this::getCanMoveThroughCanals,
                 this::resetCanMoveThroughCanals))
         .put("rocketsCanFlyOver",
-            MutableProperty.of(
-                this::setRocketsCanFlyOver,
+            MutableProperty.ofString(
                 this::setRocketsCanFlyOver,
                 this::getRocketsCanFlyOver,
                 this::resetRocketsCanFlyOver))

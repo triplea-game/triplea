@@ -426,90 +426,105 @@ public class TechAttachment extends DefaultAttachment {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("techCost",
             MutableProperty.of(
+                Integer.class,
                 this::setTechCost,
                 this::setTechCost,
                 this::getTechCost,
                 this::resetTechCost))
         .put("heavyBomber",
             MutableProperty.of(
+                Boolean.class,
                 this::setHeavyBomber,
                 this::setHeavyBomber,
                 this::getHeavyBomber,
                 this::resetHeavyBomber))
         .put("longRangeAir",
             MutableProperty.of(
+                Boolean.class,
                 this::setLongRangeAir,
                 this::setLongRangeAir,
                 this::getLongRangeAir,
                 this::resetLongRangeAir))
         .put("jetPower",
             MutableProperty.of(
+                Boolean.class,
                 this::setJetPower,
                 this::setJetPower,
                 this::getJetPower,
                 this::resetJetPower))
         .put("rocket",
             MutableProperty.of(
+                Boolean.class,
                 this::setRocket,
                 this::setRocket,
                 this::getRocket,
                 this::resetRocket))
         .put("industrialTechnology",
             MutableProperty.of(
+                Boolean.class,
                 this::setIndustrialTechnology,
                 this::setIndustrialTechnology,
                 this::getIndustrialTechnology,
                 this::resetIndustrialTechnology))
         .put("superSub",
             MutableProperty.of(
+                Boolean.class,
                 this::setSuperSub,
                 this::setSuperSub,
                 this::getSuperSub,
                 this::resetSuperSub))
         .put("destroyerBombard",
             MutableProperty.of(
+                Boolean.class,
                 this::setDestroyerBombard,
                 this::setDestroyerBombard,
                 this::getDestroyerBombard,
                 this::resetDestroyerBombard))
         .put("improvedArtillerySupport",
             MutableProperty.of(
+                Boolean.class,
                 this::setImprovedArtillerySupport,
                 this::setImprovedArtillerySupport,
                 this::getImprovedArtillerySupport,
                 this::resetImprovedArtillerySupport))
         .put("paratroopers",
             MutableProperty.of(
+                Boolean.class,
                 this::setParatroopers,
                 this::setParatroopers,
                 this::getParatroopers,
                 this::resetParatroopers))
         .put("increasedFactoryProduction",
             MutableProperty.of(
+                Boolean.class,
                 this::setIncreasedFactoryProduction,
                 this::setIncreasedFactoryProduction,
                 this::getIncreasedFactoryProduction,
                 this::resetIncreasedFactoryProduction))
         .put("warBonds",
             MutableProperty.of(
+                Boolean.class,
                 this::setWarBonds,
                 this::setWarBonds,
                 this::getWarBonds,
                 this::resetWarBonds))
         .put("mechanizedInfantry",
             MutableProperty.of(
+                Boolean.class,
                 this::setMechanizedInfantry,
                 this::setMechanizedInfantry,
                 this::getMechanizedInfantry,
                 this::resetMechanizedInfantry))
         .put("aARadar",
             MutableProperty.of(
+                Boolean.class,
                 this::setAARadar,
                 this::setAARadar,
                 this::getAARadar,
                 this::resetAARadar))
         .put("shipyards",
             MutableProperty.of(
+                Boolean.class,
                 this::setShipyards,
                 this::setShipyards,
                 this::getShipyards,

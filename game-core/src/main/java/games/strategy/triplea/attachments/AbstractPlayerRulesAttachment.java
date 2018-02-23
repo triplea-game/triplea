@@ -339,73 +339,83 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("movementRestrictionType",
-            MutableProperty.of(
-                this::setMovementRestrictionType,
+            MutableProperty.ofString(
                 this::setMovementRestrictionType,
                 this::getMovementRestrictionType,
                 this::resetMovementRestrictionType))
         .put("movementRestrictionTerritories",
             MutableProperty.of(
+                String[].class,
                 this::setMovementRestrictionTerritories,
                 this::setMovementRestrictionTerritories,
                 this::getMovementRestrictionTerritories,
                 this::resetMovementRestrictionTerritories))
         .put("placementAnyTerritory",
             MutableProperty.of(
+                Boolean.class,
                 this::setPlacementAnyTerritory,
                 this::setPlacementAnyTerritory,
                 this::getPlacementAnyTerritory,
                 this::resetPlacementAnyTerritory))
         .put("placementAnySeaZone",
             MutableProperty.of(
+                Boolean.class,
                 this::setPlacementAnySeaZone,
                 this::setPlacementAnySeaZone,
                 this::getPlacementAnySeaZone,
                 this::resetPlacementAnySeaZone))
         .put("placementCapturedTerritory",
             MutableProperty.of(
+                Boolean.class,
                 this::setPlacementCapturedTerritory,
                 this::setPlacementCapturedTerritory,
                 this::getPlacementCapturedTerritory,
                 this::resetPlacementCapturedTerritory))
         .put("unlimitedProduction",
             MutableProperty.of(
+                Boolean.class,
                 this::setUnlimitedProduction,
                 this::setUnlimitedProduction,
                 this::getUnlimitedProduction,
                 this::resetUnlimitedProduction))
         .put("placementInCapitalRestricted",
             MutableProperty.of(
+                Boolean.class,
                 this::setPlacementInCapitalRestricted,
                 this::setPlacementInCapitalRestricted,
                 this::getPlacementInCapitalRestricted,
                 this::resetPlacementInCapitalRestricted))
         .put("dominatingFirstRoundAttack",
             MutableProperty.of(
+                Boolean.class,
                 this::setDominatingFirstRoundAttack,
                 this::setDominatingFirstRoundAttack,
                 this::getDominatingFirstRoundAttack,
                 this::resetDominatingFirstRoundAttack))
         .put("negateDominatingFirstRoundAttack",
             MutableProperty.of(
+                Boolean.class,
                 this::setNegateDominatingFirstRoundAttack,
                 this::setNegateDominatingFirstRoundAttack,
                 this::getNegateDominatingFirstRoundAttack,
                 this::resetNegateDominatingFirstRoundAttack))
         .put("productionPerXTerritories",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setProductionPerXTerritories,
                 this::setProductionPerXTerritories,
                 this::getProductionPerXTerritories,
                 this::resetProductionPerXTerritories))
         .put("placementPerTerritory",
             MutableProperty.of(
+                Integer.class,
                 this::setPlacementPerTerritory,
                 this::setPlacementPerTerritory,
                 this::getPlacementPerTerritory,
                 this::resetPlacementPerTerritory))
         .put("maxPlacePerTerritory",
             MutableProperty.of(
+                Integer.class,
                 this::setMaxPlacePerTerritory,
                 this::setMaxPlacePerTerritory,
                 this::getMaxPlacePerTerritory,

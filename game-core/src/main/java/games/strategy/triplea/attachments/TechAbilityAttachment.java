@@ -1354,144 +1354,168 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("attackBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setAttackBonus,
                 this::setAttackBonus,
                 this::getAttackBonus,
                 this::resetAttackBonus))
         .put("defenseBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setDefenseBonus,
                 this::setDefenseBonus,
                 this::getDefenseBonus,
                 this::resetDefenseBonus))
         .put("movementBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setMovementBonus,
                 this::setMovementBonus,
                 this::getMovementBonus,
                 this::resetMovementBonus))
         .put("radarBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setRadarBonus,
                 this::setRadarBonus,
                 this::getRadarBonus,
                 this::resetRadarBonus))
         .put("airAttackBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setAirAttackBonus,
                 this::setAirAttackBonus,
                 this::getAirAttackBonus,
                 this::resetAirAttackBonus))
         .put("airDefenseBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setAirDefenseBonus,
                 this::setAirDefenseBonus,
                 this::getAirDefenseBonus,
                 this::resetAirDefenseBonus))
         .put("productionBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setProductionBonus,
                 this::setProductionBonus,
                 this::getProductionBonus,
                 this::resetProductionBonus))
         .put("minimumTerritoryValueForProductionBonus",
             MutableProperty.of(
+                Integer.class,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::getMinimumTerritoryValueForProductionBonus,
                 this::resetMinimumTerritoryValueForProductionBonus))
         .put("repairDiscount",
             MutableProperty.of(
+                Integer.class,
                 this::setRepairDiscount,
                 this::setRepairDiscount,
                 this::getRepairDiscount,
                 this::resetRepairDiscount))
         .put("warBondDiceSides",
             MutableProperty.of(
+                Integer.class,
                 this::setWarBondDiceSides,
                 this::setWarBondDiceSides,
                 this::getWarBondDiceSides,
                 this::resetWarBondDiceSides))
         .put("warBondDiceNumber",
             MutableProperty.of(
+                Integer.class,
                 this::setWarBondDiceNumber,
                 this::setWarBondDiceNumber,
                 this::getWarBondDiceNumber,
                 this::resetWarBondDiceNumber))
         .put("rocketDiceNumber",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setRocketDiceNumber,
                 this::setRocketDiceNumber,
                 this::getRocketDiceNumber,
                 this::resetRocketDiceNumber))
         .put("rocketDistance",
             MutableProperty.of(
+                Integer.class,
                 this::setRocketDistance,
                 this::setRocketDistance,
                 this::getRocketDistance,
                 this::resetRocketDistance))
         .put("rocketNumberPerTerritory",
             MutableProperty.of(
+                Integer.class,
                 this::setRocketNumberPerTerritory,
                 this::setRocketNumberPerTerritory,
                 this::getRocketNumberPerTerritory,
                 this::resetRocketNumberPerTerritory))
         .put("unitAbilitiesGained",
             MutableProperty.of(
+                Map.class,
                 this::setUnitAbilitiesGained,
                 this::setUnitAbilitiesGained,
                 this::getUnitAbilitiesGained,
                 this::resetUnitAbilitiesGained))
         .put("airborneForces",
             MutableProperty.of(
+                Boolean.class,
                 this::setAirborneForces,
                 this::setAirborneForces,
                 this::getAirborneForces,
                 this::resetAirborneForces))
         .put("airborneCapacity",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setAirborneCapacity,
                 this::setAirborneCapacity,
                 this::getAirborneCapacity,
                 this::resetAirborneCapacity))
         .put("airborneTypes",
             MutableProperty.of(
+                Set.class,
                 this::setAirborneTypes,
                 this::setAirborneTypes,
                 this::getAirborneTypes,
                 this::resetAirborneTypes))
         .put("airborneDistance",
             MutableProperty.of(
+                Integer.class,
                 this::setAirborneDistance,
                 this::setAirborneDistance,
                 this::getAirborneDistance,
                 this::resetAirborneDistance))
         .put("airborneBases",
             MutableProperty.of(
+                Set.class,
                 this::setAirborneBases,
                 this::setAirborneBases,
                 this::getAirborneBases,
                 this::resetAirborneBases))
         .put("airborneTargettedByAA",
             MutableProperty.of(
+                Map.class,
                 this::setAirborneTargettedByAA,
                 this::setAirborneTargettedByAA,
                 this::getAirborneTargettedByAA,
                 this::resetAirborneTargettedByAA))
         .put("attackRollsBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setAttackRollsBonus,
                 this::setAttackRollsBonus,
                 this::getAttackRollsBonus,
                 this::resetAttackRollsBonus))
         .put("defenseRollsBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setDefenseRollsBonus,
                 this::setDefenseRollsBonus,
                 this::getDefenseRollsBonus,
                 this::resetDefenseRollsBonus))
         .put("bombingBonus",
             MutableProperty.of(
+                IntegerMap.class,
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,

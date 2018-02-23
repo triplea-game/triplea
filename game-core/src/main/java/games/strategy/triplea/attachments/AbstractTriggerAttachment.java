@@ -315,30 +315,33 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
         .putAll(super.getPropertyMap())
         .put("uses",
             MutableProperty.of(
+                Integer.class,
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("usedThisRound",
             MutableProperty.of(
+                Boolean.class,
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,
                 this::resetUsedThisRound))
         .put("notification",
-            MutableProperty.of(
-                this::setNotification,
+            MutableProperty.ofString(
                 this::setNotification,
                 this::getNotification,
                 this::resetNotification))
         .put("when",
             MutableProperty.of(
+                List.class,
                 this::setWhen,
                 this::setWhen,
                 this::getWhen,
                 this::resetWhen))
         .put("trigger",
             MutableProperty.of(
+                List.class,
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");
                 },
