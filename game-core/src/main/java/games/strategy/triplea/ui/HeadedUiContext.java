@@ -25,6 +25,7 @@ import games.strategy.triplea.image.FlagIconImageFactory;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
+import games.strategy.triplea.image.TerritoryEffectImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -39,6 +40,7 @@ public class HeadedUiContext extends AbstractUiContext {
   protected final TileImageFactory tileImageFactory = new TileImageFactory();
   protected final UnitImageFactory unitImageFactory = new UnitImageFactory();
   protected final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
+  protected final TerritoryEffectImageFactory territoryEffectImageFactory = new TerritoryEffectImageFactory();
   protected final MapImage mapImage;
   protected final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
   protected DiceImageFactory diceImageFactory;
@@ -84,7 +86,8 @@ public class HeadedUiContext extends AbstractUiContext {
         mapData.getDefaultUnitHeight(), mapData.getDefaultUnitCounterOffsetWidth(),
         mapData.getDefaultUnitCounterOffsetHeight());
     // TODO: separate scale for resources
-    resourceImageFactory.setResourceLoader(resourceLoader, 1);
+    resourceImageFactory.setResourceLoader(resourceLoader);
+    territoryEffectImageFactory.setResourceLoader(resourceLoader);
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setMapDir(resourceLoader);
@@ -142,6 +145,11 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public ResourceImageFactory getResourceImageFactory() {
     return resourceImageFactory;
+  }
+
+  @Override
+  public TerritoryEffectImageFactory getTerritoryEffectImageFactory() {
+    return territoryEffectImageFactory;
   }
 
   @Override
