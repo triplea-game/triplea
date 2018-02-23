@@ -24,7 +24,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -289,7 +288,6 @@ public class ProductionPanel extends JPanel {
       for (final Resource resource : cost.keySet()) {
         final JLabel resourceLabel =
             uiContext.getResourceImageFactory().getLabel(resource, String.valueOf(cost.getInt(resource)));
-        resourceLabel.setHorizontalTextPosition(SwingConstants.LEFT);
         costPanel.add(resourceLabel,
             new GridBagConstraints(0, count++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
                 new Insets(1, 0, 0, 0), 0, 0));
