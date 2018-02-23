@@ -3516,7 +3516,6 @@ public class UnitAttachment extends DefaultAttachment {
   @GameProperty(xmlProperty = true, gameProperty = false, adds = false)
   public void setIsMechanized(final String s) {}
 
-
   private Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .put("isAir",
@@ -3525,6 +3524,12 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsAir,
                 this::getIsAir,
                 this::resetIsAir))
+        .put("isMechanized",
+            AttachmentProperty.ofWriteOnlyString(
+                this::setIsMechanized))
+        .put("isParatroop",
+            AttachmentProperty.ofWriteOnlyString(
+                this::setIsParatroop))
         .put("isSea",
             AttachmentProperty.of(
                 this::setIsSea,

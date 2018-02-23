@@ -94,6 +94,17 @@ public interface AttachmentProperty<T> {
   }
 
   /**
+   * Convenience method to create an instance of this interface that only sets via the string value.
+   */
+  static <T> AttachmentProperty<T> ofWriteOnlyString(final GameParsingConsumer<String> stringSetter) {
+    return of(
+        t -> throwIllegalStateException("No Setter"),
+        stringSetter,
+        () -> throwIllegalStateException("No Getter"),
+        () -> throwIllegalStateException("No Resetter"));
+  }
+
+  /**
    * A Consumer capable of throwing a GameParseException.
    *
    * @param <T> The type of Object to consume.
