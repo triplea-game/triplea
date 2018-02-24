@@ -118,7 +118,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     final String[] stringArray = value.split(":");
     if (stringArray.length <= 0 || stringArray.length > 2) {
       throw new GameParseException(
-          String.format("%s cannot be empty or have more than two fields $s", name, thisErrorMsg()));
+          String.format("%s cannot be empty or have more than two fields %s", name, thisErrorMsg()));
     }
     return stringArray;
   }
