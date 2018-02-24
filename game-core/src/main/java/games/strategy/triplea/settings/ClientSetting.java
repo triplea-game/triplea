@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -16,6 +17,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
 
@@ -92,7 +94,11 @@ public enum ClientSetting implements GameSetting {
 
   SHOW_BETA_FEATURES(false),
 
-  SHOW_CONSOLE_ALWAYS(false),
+  SHOW_CONSOLE_ALWAYS(false, saveValue -> {
+    if (saveValue.equals("true")) {
+      ErrorConsole.showConsole();
+    }
+  }),
 
   TEST_LOBBY_HOST,
 
@@ -132,14 +138,26 @@ public enum ClientSetting implements GameSetting {
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
+  private final Consumer<String> onSaveAction;
+
   public final String defaultValue;
 
-  ClientSetting() {
-    this("");
+  ClientSetting(final String defaultValue, final Consumer<String> onSaveAction) {
+    this.defaultValue = defaultValue;
+    this.onSaveAction = onSaveAction;
+  }
+
+  ClientSetting(final boolean defaultVAlue, final Consumer<String> onSaveAction) {
+    this(String.valueOf(defaultVAlue), onSaveAction);
   }
 
   ClientSetting(final String defaultValue) {
-    this.defaultValue = defaultValue;
+    this(defaultValue, newValue -> {
+    });
+  }
+
+  ClientSetting() {
+    this("");
   }
 
   ClientSetting(final File file) {
@@ -153,6 +171,7 @@ public enum ClientSetting implements GameSetting {
   ClientSetting(final boolean defaultValue) {
     this(String.valueOf(defaultValue));
   }
+
 
   /**
    * Initializes the client settings framework.
@@ -218,6 +237,7 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void save(final String newValue) {
+    onSaveAction.accept(newValue);
     getPreferences().put(name(), newValue);
   }
 
