@@ -23,9 +23,6 @@ public final class TestDelegate extends AbstractDelegate {
   }
 
   @Override
-  public void end() {}
-
-  @Override
   public String getDisplayName() {
     return "displayName";
   }
@@ -39,9 +36,6 @@ public final class TestDelegate extends AbstractDelegate {
   public Serializable saveState() {
     return null;
   }
-
-  @Override
-  public void loadState(final Serializable state) {}
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {

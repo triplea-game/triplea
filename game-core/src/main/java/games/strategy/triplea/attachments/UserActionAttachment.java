@@ -172,11 +172,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {
-    super.validate(data);
-  }
-
-  @Override
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .putAll(super.createPropertyMap())

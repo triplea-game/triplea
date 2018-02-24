@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.ArrayList;
@@ -68,11 +67,6 @@ public class StatPanel extends AbstractStatPanel {
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
     statsTable = new JTable(dataModel) {
       private static final long serialVersionUID = -5516554955307630864L;
-
-      @Override
-      public void print(final Graphics g) {
-        super.print(g);
-      }
     };
     statsTable.getTableHeader().setReorderingAllowed(false);
     statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);

@@ -44,11 +44,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   public PoliticsDelegate() {}
 
   @Override
-  public void start() {
-    super.start();
-  }
-
-  @Override
   public void end() {
     super.end();
     resetAttempts();

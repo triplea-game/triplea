@@ -33,11 +33,6 @@ public class ExtendedStats extends StatPanel {
     // no layout necessary
   }
 
-  @Override
-  public void setGameData(final GameData data) {
-    super.setGameData(data);
-  }
-
   public IStat[] getStatsExtended(final GameData data) {
     if (statsExtended.length == 0) {
       fillExtendedStats(data);

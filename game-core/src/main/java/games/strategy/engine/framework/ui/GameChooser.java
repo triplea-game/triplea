@@ -46,7 +46,6 @@ public class GameChooser extends JDialog {
     createComponents();
     layoutCoponents();
     setupListeners();
-    setWidgetActivation();
     updateInfoPanel();
   }
 
@@ -168,8 +167,6 @@ public class GameChooser extends JDialog {
     }
     return gameListModel.get(selected);
   }
-
-  private void setWidgetActivation() {}
 
   private void setupListeners() {
     okButton.addActionListener(e -> selectAndReturn());

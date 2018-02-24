@@ -27,11 +27,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   public UserActionDelegate() {}
 
   @Override
-  public void start() {
-    super.start();
-  }
-
-  @Override
   public void end() {
     super.end();
     resetAttempts();
