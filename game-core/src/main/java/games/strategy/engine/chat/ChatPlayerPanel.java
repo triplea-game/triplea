@@ -66,7 +66,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     createComponents();
     layoutComponents();
     setupListeners();
-    setWidgetActivation();
     statusListener = (node, newStatus) -> repaint();
     setChat(chat);
   }
@@ -177,8 +176,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       return Arrays.asList(slap, ignore);
     });
   }
-
-  private void setWidgetActivation() {}
 
   /**
    * The renderer will be passed in a string.

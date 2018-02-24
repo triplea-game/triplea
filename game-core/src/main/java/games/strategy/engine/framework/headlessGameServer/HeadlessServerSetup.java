@@ -35,7 +35,6 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     this.gameSelectorModel = gameSelectorModel;
     this.model.setRemoteModelListener(this);
     createLobbyWatcher();
-    setupListeners();
     setWidgetActivation();
     internalPlayerListChanged();
   }
@@ -63,8 +62,6 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   void shutDownLobbyWatcher() {
     lobbyWatcher.shutDown();
   }
-
-  private void setupListeners() {}
 
   @Override
   public void setWidgetActivation() {}
