@@ -3,6 +3,7 @@ package games.strategy.triplea.image;
 import javax.swing.JLabel;
 
 import games.strategy.engine.data.Resource;
+import games.strategy.util.IntegerMap;
 
 /**
  * Used to manage resource images.
@@ -16,6 +17,10 @@ public class ResourceImageFactory extends AbstractImageFactory {
   @Override
   protected String getFileNameBase() {
     return FILE_NAME_BASE;
+  }
+
+  public JLabel getLabel(final Resource resource, final IntegerMap<Resource> resources) {
+    return getLabel(resource, String.valueOf(resources.getInt(resource)));
   }
 
   /**

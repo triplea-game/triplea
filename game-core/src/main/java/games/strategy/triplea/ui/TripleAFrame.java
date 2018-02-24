@@ -645,7 +645,7 @@ public class TripleAFrame extends MainGameFrame {
           }
           for (final Resource resource : resources.keySet()) {
             final JLabel resourceLabel =
-                uiContext.getResourceImageFactory().getLabel(resource, String.valueOf(resources.getInt(resource)));
+                uiContext.getResourceImageFactory().getLabel(resource, resources);
             resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
             territoryInfo.add(resourceLabel,
                 new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,

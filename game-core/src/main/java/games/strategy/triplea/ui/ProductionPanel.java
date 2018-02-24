@@ -181,7 +181,7 @@ public class ProductionPanel extends JPanel {
           continue;
         }
         final JLabel resourceLabel =
-            uiContext.getResourceImageFactory().getLabel(resource, String.valueOf(resources.getInt(resource)));
+            uiContext.getResourceImageFactory().getLabel(resource, resources);
         resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
         remainingResources.add(resourceLabel,
             new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
@@ -287,7 +287,7 @@ public class ProductionPanel extends JPanel {
       int count = 0;
       for (final Resource resource : cost.keySet()) {
         final JLabel resourceLabel =
-            uiContext.getResourceImageFactory().getLabel(resource, String.valueOf(cost.getInt(resource)));
+            uiContext.getResourceImageFactory().getLabel(resource, cost);
         costPanel.add(resourceLabel,
             new GridBagConstraints(0, count++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
                 new Insets(1, 0, 0, 0), 0, 0));
