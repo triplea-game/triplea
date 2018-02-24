@@ -6,8 +6,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -102,25 +110,79 @@ public class TechAbilityAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // setters and getters
+  @VisibleForTesting
+  UnitType getUnitType(final String value) throws GameParseException {
+    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(value))
+        .orElseThrow(() -> new GameParseException("No unit called:" + value + thisErrorMsg()));
+  }
+
+  @VisibleForTesting
+  String[] splitAndValidate(final String name, final String value) throws GameParseException {
+    final String[] stringArray = value.split(":");
+    if (value.isEmpty() || stringArray.length > 2) {
+      throw new GameParseException(
+          String.format("%s cannot be empty or have more than two fields %s", name, thisErrorMsg()));
+    }
+    return stringArray;
+  }
+
+  @VisibleForTesting
+  void applyCheckedValue(
+      final String name,
+      final String value,
+      final BiConsumer<UnitType, Integer> putter) throws GameParseException {
+    final String[] s = splitAndValidate(name, value);
+    putter.accept(getUnitType(s[1]), getInt(s[0]));
+  }
+
+  @VisibleForTesting
+  static int sumIntegerMap(final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
+      final UnitType ut,
+      final PlayerID player,
+      final GameData data) {
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(mapper)
+        .mapToInt(m -> m.getInt(ut))
+        .sum();
+  }
+
+  @VisibleForTesting
+  static int sumNumbers(
+      final ToIntFunction<TechAbilityAttachment> mapper,
+      final PlayerID player,
+      final GameData data) {
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .mapToInt(mapper)
+        .filter(i -> i > 0)
+        .sum();
+  }
+
+  @VisibleForTesting
+  int getIntInRange(final String name, final String value, final int max, final boolean allowUndefined)
+      throws GameParseException {
+    final int intValue = getInt(value);
+    if (intValue < (allowUndefined ? -1 : 0) || intValue > max) {
+      throw new GameParseException(String.format(
+          "%s must be%s between 0 and %s, was %s %s",
+          name,
+          allowUndefined ? " -1 (no effect), or be" : "",
+          max,
+          value,
+          thisErrorMsg()));
+    }
+    return intValue;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_attackBonus.put(ut, n);
+    applyCheckedValue("attackBonus", value, m_attackBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -133,14 +195,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int attackBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        attackBonus += taa.getAttackBonus().getInt(ut);
-      }
-    }
-    return attackBonus;
+    return sumIntegerMap(TechAbilityAttachment::getAttackBonus, ut, player, data);
   }
 
   public void clearAttackBonus() {
@@ -156,19 +211,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_defenseBonus.put(ut, n);
+    applyCheckedValue("defenseBonus", value, m_defenseBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -181,14 +224,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int defenseBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        defenseBonus += taa.getDefenseBonus().getInt(ut);
-      }
-    }
-    return defenseBonus;
+    return sumIntegerMap(TechAbilityAttachment::getDefenseBonus, ut, player, data);
   }
 
   public void clearDefenseBonus() {
@@ -204,19 +240,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setMovementBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("movementBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_movementBonus.put(ut, n);
+    applyCheckedValue("movementBonus", value, m_movementBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -229,14 +253,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getMovementBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int movementBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        movementBonus += taa.getMovementBonus().getInt(ut);
-      }
-    }
-    return movementBonus;
+    return sumIntegerMap(TechAbilityAttachment::getMovementBonus, ut, player, data);
   }
 
   public void clearMovementBonus() {
@@ -252,19 +269,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRadarBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("radarBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_radarBonus.put(ut, n);
+    applyCheckedValue("radarBonus", value, m_radarBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -277,14 +282,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getRadarBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int radarBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        radarBonus += taa.getRadarBonus().getInt(ut);
-      }
-    }
-    return radarBonus;
+    return sumIntegerMap(TechAbilityAttachment::getRadarBonus, ut, player, data);
   }
 
   public void clearRadarBonus() {
@@ -300,19 +298,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirAttackBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airAttackBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_airAttackBonus.put(ut, n);
+    applyCheckedValue("airAttackBonus", value, m_airAttackBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -325,14 +311,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getAirAttackBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int airAttackBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airAttackBonus += taa.getAirAttackBonus().getInt(ut);
-      }
-    }
-    return airAttackBonus;
+    return sumIntegerMap(TechAbilityAttachment::getAirAttackBonus, ut, player, data);
   }
 
   public void clearAirAttackBonus() {
@@ -348,19 +327,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirDefenseBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airDefenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_airDefenseBonus.put(ut, n);
+    applyCheckedValue("airDefenseBonus", value, m_airDefenseBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -373,14 +340,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getAirDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int airDefenseBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airDefenseBonus += taa.getAirDefenseBonus().getInt(ut);
-      }
-    }
-    return airDefenseBonus;
+    return sumIntegerMap(TechAbilityAttachment::getAirDefenseBonus, ut, player, data);
   }
 
   public void clearAirDefenseBonus() {
@@ -396,19 +356,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setProductionBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("productionBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_productionBonus.put(ut, n);
+    applyCheckedValue("productionBonus", value, m_productionBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -421,14 +369,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getProductionBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int productionBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        productionBonus += taa.getProductionBonus().getInt(ut);
-      }
-    }
-    return productionBonus;
+    return sumIntegerMap(TechAbilityAttachment::getProductionBonus, ut, player, data);
   }
 
   public void clearProductionBonus() {
@@ -441,12 +382,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMinimumTerritoryValueForProductionBonus(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 10000)) {
-      throw new GameParseException(
-          "minimumTerritoryValueForProductionBonus must be -1 (no effect), or be between 0 and 10000" + thisErrorMsg());
-    }
-    m_minimumTerritoryValueForProductionBonus = v;
+    m_minimumTerritoryValueForProductionBonus =
+        getIntInRange("minimumTerritoryValueForProductionBonus", value, 10000, true);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -459,19 +396,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getMinimumTerritoryValueForProductionBonus(final PlayerID player, final GameData data) {
-    int minimumTerritoryValueForProductionBonus = -1;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int min = taa.getMinimumTerritoryValueForProductionBonus();
-        if (min == -1) {
-          continue;
-        } else if (minimumTerritoryValueForProductionBonus == -1 || min < minimumTerritoryValueForProductionBonus) {
-          minimumTerritoryValueForProductionBonus = min;
-        }
-      }
-    }
-    return Math.max(0, minimumTerritoryValueForProductionBonus);
+    return Math.max(0, TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
+        .filter(i -> i != -1)
+        .min()
+        .orElse(-1));
   }
 
   public void resetMinimumTerritoryValueForProductionBonus() {
@@ -480,11 +411,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRepairDiscount(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 100)) {
-      throw new GameParseException("m_repairDiscount must be -1 (no effect), or be between 0 and 100" + thisErrorMsg());
-    }
-    m_repairDiscount = v;
+    m_repairDiscount = getIntInRange("repairDiscount", value, 100, true);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -497,18 +424,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static double getRepairDiscount(final PlayerID player, final GameData data) {
-    double repairDiscount = 1.0D;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int min = taa.getRepairDiscount();
-        if (min == -1) {
-          continue;
-        }
-        repairDiscount -= min / 100.0;
-      }
-    }
-    return Math.max(0.0D, repairDiscount);
+    return Math.max(0, 1.0 - TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .mapToInt(TechAbilityAttachment::getRepairDiscount)
+        .filter(i -> i != -1)
+        .mapToDouble(d -> d / 100.0)
+        .sum());
   }
 
   public void resetRepairDiscount() {
@@ -517,11 +439,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBondDiceSides(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 200)) {
-      throw new GameParseException("warBondDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
-    }
-    m_warBondDiceSides = v;
+    m_warBondDiceSides = getIntInRange("warBondDiceSides", value, 200, true);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -534,17 +452,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceSides(final PlayerID player, final GameData data) {
-    int warBondDiceSides = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int sides = taa.getWarBondDiceSides();
-        if (sides > 0) {
-          warBondDiceSides += sides;
-        }
-      }
-    }
-    return Math.max(0, warBondDiceSides);
+    return sumNumbers(TechAbilityAttachment::getWarBondDiceSides, player, data);
   }
 
   public void resetWarBondDiceSides() {
@@ -553,11 +461,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBondDiceNumber(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 100) {
-      throw new GameParseException("warBondDiceNumber must be between 0 and 100" + thisErrorMsg());
-    }
-    m_warBondDiceNumber = v;
+    m_warBondDiceNumber = getIntInRange("warBondDiceNumber", value, 100, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -570,17 +474,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceNumber(final PlayerID player, final GameData data) {
-    int warBondDiceNumber = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int number = taa.getWarBondDiceNumber();
-        if (number > 0) {
-          warBondDiceNumber += number;
-        }
-      }
-    }
-    return Math.max(0, warBondDiceNumber);
+    return sumNumbers(TechAbilityAttachment::getWarBondDiceNumber, player, data);
   }
 
   public void resetWarBondDiceNumber() {
@@ -596,15 +490,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("rocketDiceNumber must have two fields" + thisErrorMsg());
     }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_rocketDiceNumber.put(ut, n);
+    m_rocketDiceNumber.put(getUnitType(s[1]), getInt(s[0]));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -617,14 +503,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private static int getRocketDiceNumber(final UnitType ut, final PlayerID player, final GameData data) {
-    int rocketDiceNumber = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        rocketDiceNumber += taa.getRocketDiceNumber().getInt(ut);
-      }
-    }
-    return rocketDiceNumber;
+    return sumIntegerMap(TechAbilityAttachment::getRocketDiceNumber, ut, player, data);
   }
 
   public static int getRocketDiceNumber(final Collection<Unit> rockets, final GameData data) {
@@ -645,11 +524,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketDistance(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 100) {
-      throw new GameParseException("rocketDistance must be between 0 and 100" + thisErrorMsg());
-    }
-    m_rocketDistance = v;
+    m_rocketDistance = getIntInRange("rocketDistance", value, 100, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -662,17 +537,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getRocketDistance(final PlayerID player, final GameData data) {
-    int rocketDistance = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int distance = taa.getRocketDistance();
-        if (distance > 0) {
-          rocketDistance += distance;
-        }
-      }
-    }
-    return Math.max(0, rocketDistance);
+    return sumNumbers(TechAbilityAttachment::getRocketDistance, player, data);
   }
 
   public void resetRocketDistance() {
@@ -681,11 +546,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketNumberPerTerritory(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 200) {
-      throw new GameParseException("rocketNumberPerTerritory must be between 0 and 200" + thisErrorMsg());
-    }
-    m_rocketNumberPerTerritory = v;
+    m_rocketNumberPerTerritory = getIntInRange("rocketNumberPerTerritory", value, 200, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -698,17 +559,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getRocketNumberPerTerritory(final PlayerID player, final GameData data) {
-    int rocketNumberPerTerritory = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final int number = taa.getRocketNumberPerTerritory();
-        if (number > 0) {
-          rocketNumberPerTerritory += number;
-        }
-      }
-    }
-    return Math.max(0, rocketNumberPerTerritory);
+    return sumNumbers(TechAbilityAttachment::getRocketNumberPerTerritory, player, data);
   }
 
   public void resetRocketNumberPerTerritory() {
@@ -727,14 +578,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[0];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    Set<String> abilities = m_unitAbilitiesGained.get(ut);
-    if (abilities == null) {
-      abilities = new HashSet<>();
-    }
+    final UnitType ut = getUnitType(unitType);
+    final Set<String> abilities = m_unitAbilitiesGained.getOrDefault(ut, new HashSet<>());
     // start at 1
     for (int i = 1; i < s.length; i++) {
       final String ability = s[i];
@@ -758,22 +603,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public static boolean getUnitAbilitiesGained(final String filterForAbility, final UnitType ut, final PlayerID player,
       final GameData data) {
-    final HashSet<String> abilities = getUnitAbilitiesGained(ut, player, data);
-    return abilities.contains(filterForAbility);
-  }
-
-  private static HashSet<String> getUnitAbilitiesGained(final UnitType ut, final PlayerID player, final GameData data) {
-    final HashSet<String> unitAbilities = new HashSet<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        final Set<String> abilities = taa.getUnitAbilitiesGained().get(ut);
-        if (abilities != null) {
-          unitAbilities.addAll(abilities);
-        }
-      }
-    }
-    return unitAbilities;
+    Preconditions.checkNotNull(filterForAbility);
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(TechAbilityAttachment::getUnitAbilitiesGained)
+        .map(m -> m.get(ut))
+        .filter(Objects::nonNull)
+        .flatMap(Collection::stream)
+        .anyMatch(filterForAbility::equals);
   }
 
   public void clearUnitAbilitiesGained() {
@@ -807,19 +645,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneCapacity(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airborneCapacity cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_airborneCapacity.put(ut, n);
+    applyCheckedValue("airborneCapacity", value, m_airborneCapacity::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -864,13 +690,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneTypes(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    for (final String u : s) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(u);
-      if (ut == null) {
-        throw new GameParseException("airborneTypes: no such unit type: " + u + thisErrorMsg());
-      }
-      m_airborneTypes.add(ut);
+    for (final String unit : value.split(":")) {
+      m_airborneTypes.add(getUnitType(unit));
     }
   }
 
@@ -884,14 +705,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitType> getAirborneTypes(final PlayerID player, final GameData data) {
-    final Set<UnitType> airborneUnits = new HashSet<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airborneUnits.addAll(taa.getAirborneTypes());
-      }
-    }
-    return airborneUnits;
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(TechAbilityAttachment::getAirborneTypes)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public void clearAirborneTypes() {
@@ -904,11 +723,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAirborneDistance(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 100) {
-      throw new GameParseException("airborneDistance must be between 0 and 100" + thisErrorMsg());
-    }
-    m_airborneDistance = v;
+    m_airborneDistance = getIntInRange("airborneDistance", value, 100, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -921,14 +736,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getAirborneDistance(final PlayerID player, final GameData data) {
-    int airborneDistance = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airborneDistance += taa.getAirborneDistance();
-      }
-    }
-    return Math.max(0, airborneDistance);
+    return Math.max(0, TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .mapToInt(TechAbilityAttachment::getAirborneDistance)
+        .sum());
   }
 
   public void resetAirborneDistance() {
@@ -940,13 +752,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneBases(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    for (final String u : s) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(u);
-      if (ut == null) {
-        throw new GameParseException("airborneBases: no such unit type: " + u + thisErrorMsg());
-      }
-      m_airborneBases.add(ut);
+    for (final String u : value.split(":")) {
+      m_airborneBases.add(getUnitType(u));
     }
   }
 
@@ -960,14 +767,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitType> getAirborneBases(final PlayerID player, final GameData data) {
-    final Set<UnitType> airborneBases = new HashSet<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airborneBases.addAll(taa.getAirborneBases());
-      }
-    }
-    return airborneBases;
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(TechAbilityAttachment::getAirborneBases)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public void clearAirborneBases() {
@@ -987,16 +792,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length < 2) {
       throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
     }
-    final String aaType = s[0];
-    final HashSet<UnitType> unitTypes = new HashSet<>();
+    final Set<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
-      if (ut == null) {
-        throw new GameParseException("airborneTargettedByAA: no such unit type: " + s[i] + thisErrorMsg());
-      }
-      unitTypes.add(ut);
+      unitTypes.add(getUnitType(s[i]));
     }
-    m_airborneTargettedByAA.put(aaType, unitTypes);
+    m_airborneTargettedByAA.put(s[0], unitTypes);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1017,10 +817,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
         final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAA();
         if (mapAa != null && !mapAa.isEmpty()) {
           for (final Entry<String, Set<UnitType>> entry : mapAa.entrySet()) {
-            HashSet<UnitType> current = airborneTargettedByAa.get(entry.getKey());
-            if (current == null) {
-              current = new HashSet<>();
-            }
+            final HashSet<UnitType> current = airborneTargettedByAa.getOrDefault(entry.getKey(), new HashSet<>());
             current.addAll(entry.getValue());
             airborneTargettedByAa.put(entry.getKey(), current);
           }
@@ -1043,19 +840,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackRollsBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_attackRollsBonus.put(ut, n);
+    applyCheckedValue("attackRollsBonus", value, m_attackRollsBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1068,14 +853,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getAttackRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int attackRollsBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        attackRollsBonus += taa.getAttackRollsBonus().getInt(ut);
-      }
-    }
-    return attackRollsBonus;
+    return sumIntegerMap(TechAbilityAttachment::getAttackRollsBonus, ut, player, data);
   }
 
   public void clearAttackRollsBonus() {
@@ -1091,19 +869,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseRollsBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_defenseRollsBonus.put(ut, n);
+    applyCheckedValue("defenseRollsBonus", value, m_defenseRollsBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1116,14 +882,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   static int getDefenseRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int defenseRollsBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        defenseRollsBonus += taa.getDefenseRollsBonus().getInt(ut);
-      }
-    }
-    return defenseRollsBonus;
+    return sumIntegerMap(TechAbilityAttachment::getDefenseRollsBonus, ut, player, data);
   }
 
   /**
@@ -1131,19 +890,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setBombingBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("bombingBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_bombingBonus.put(ut, n);
+    applyCheckedValue("bombingBonus", value, m_bombingBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1156,14 +903,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getBombingBonus(final UnitType ut, final PlayerID player, final GameData data) {
-    int bombingBonus = 0;
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        bombingBonus += taa.getBombingBonus().getInt(ut);
-      }
-    }
-    return bombingBonus;
+    return sumIntegerMap(TechAbilityAttachment::getBombingBonus, ut, player, data);
   }
 
   public void clearDefenseRollsBonus() {
@@ -1183,15 +923,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static boolean getAllowAirborneForces(final PlayerID player, final GameData data) {
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        if (taa.getAirborneForces()) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .anyMatch(TechAbilityAttachment::getAirborneForces);
   }
 
   /**

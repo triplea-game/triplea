@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @param <T> The type of the map key.
  */
-public final class IntegerMap<T> implements Cloneable, Serializable {
+public class IntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
   private final Map<T, Integer> mapValues;
 
@@ -265,7 +265,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Objects.hashCode(mapValues);
   }
 
@@ -275,7 +275,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
    * then a and b are not equal.
    */
   @Override
-  public boolean equals(final Object o) {
+  public final boolean equals(final Object o) {
     if (this == o) {
       return true;
     } else if (!(o instanceof IntegerMap)) {

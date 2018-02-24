@@ -34,9 +34,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     setAttachedTo(attachable);
   }
 
-  @Override
-  public abstract void validate(final GameData data) throws GameParseException;
-
   /**
    * Gets the attachment with the specified name and type from the specified object.
    *
@@ -72,8 +69,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   protected static int getInt(final String value) {
     try {
       return Integer.parseInt(value);
-    } catch (final NumberFormatException nfe) {
-      throw new IllegalArgumentException("Attachments: " + value + " is not a valid int value");
+    } catch (final NumberFormatException e) {
+      throw new IllegalArgumentException("Attachments: " + value + " is not a valid int value", e);
     }
   }
 
