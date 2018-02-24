@@ -3,23 +3,52 @@ package games.strategy.triplea.attachments;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.util.IntegerMap;
 
 public class TechAbilityAttachmentTest {
 
-  private final TechAbilityAttachment attachment = spy(new TechAbilityAttachment("", null, null));
+  private final GameData data = mock(GameData.class);
+  private final TechAbilityAttachment attachment = spy(new TechAbilityAttachment("", null, data));
+  private final UnitTypeList list = mock(UnitTypeList.class);
+  private final UnitType dummyUnitType = mock(UnitType.class);
   private final String name = "Test Name";
   private final String customToString = "CustomToString";
+  private final String testUnitType = "someExistentKey";
 
   @BeforeEach
   public void setup() {
     when(attachment.toString()).thenReturn(customToString);
+    when(data.getUnitTypeList()).thenReturn(list);
+    when(list.getUnitType(testUnitType)).thenReturn(dummyUnitType);
+    final TechnologyFrontier fron = mock(TechnologyFrontier.class);
+    when(data.getTechnologyFrontier()).thenReturn(fron);
+    final TechAdvance advance = mock(TechAdvance.class);
+    when(fron.getTechs()).thenReturn(Arrays.asList(advance, advance, advance, advance));
+    when(advance.hasTech(any())).thenReturn(Boolean.TRUE);
+    when(advance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME))
+        .thenReturn(attachment, null, attachment, attachment);
   }
 
   @Test
@@ -92,12 +121,58 @@ public class TechAbilityAttachmentTest {
     assertTrue(e.getMessage().contains(customToString));
   }
 
-
   @Test
   public void testGetIntInRange_validValues() throws Exception {
     assertEquals(-1, attachment.getIntInRange(name, "-1", 10, true));
     assertEquals(10, attachment.getIntInRange(name, "10", 10, true));
     assertEquals(0, attachment.getIntInRange(name, "0", 10, false));
     assertEquals(10, attachment.getIntInRange(name, "10", 10, false));
+  }
+
+  @Test
+  public void testGetUnitType() throws Exception {
+    assertEquals(dummyUnitType, attachment.getUnitType(testUnitType));
+    verify(list).getUnitType(testUnitType);
+    verify(list).getUnitType(any());
+  }
+
+
+  @Test
+  public void testGetUnitType_noValue() {
+    final String test = "someNonExistentKey";
+    final Exception e = assertThrows(GameParseException.class, () -> attachment.getUnitType(test));
+    verify(list).getUnitType(test);
+    verify(list).getUnitType(any());
+    assertTrue(e.getMessage().contains(test));
+  }
+
+  @Test
+  public void testApplyCheckedValue() throws Exception {
+    final Map<UnitType, Integer> map = new HashMap<>();
+    attachment.applyCheckedValue(name, "1:" + testUnitType, map::put);
+    assertEquals(1, map.size());
+    assertEquals(1, (int) map.get(dummyUnitType));
+  }
+
+  @Test
+  public void testSumIntegerMap() {
+    final IntegerMap<UnitType> map = spy(new IntegerMap<>());
+    when(map.getInt(dummyUnitType)).thenReturn(-1, 20, 300);
+    final int result = TechAbilityAttachment.sumIntegerMap(a -> {
+      assertEquals(attachment, a);
+      return map;
+    }, dummyUnitType, mock(PlayerID.class), data);
+    assertEquals(319, result);
+  }
+
+
+  @Test
+  public void testSumNumbers() {
+    final AtomicInteger counter = new AtomicInteger(1);
+    final int result = TechAbilityAttachment.sumNumbers(a -> {
+      assertEquals(attachment, a);
+      return counter.getAndUpdate(i -> i * -10);
+    }, mock(PlayerID.class), data);
+    assertEquals(101, result);
   }
 }

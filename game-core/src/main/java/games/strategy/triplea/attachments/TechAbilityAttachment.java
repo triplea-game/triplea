@@ -110,7 +110,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  private UnitType getUnitType(final String value) throws GameParseException {
+  @VisibleForTesting
+  UnitType getUnitType(final String value) throws GameParseException {
     return Optional.ofNullable(getData().getUnitTypeList().getUnitType(value))
         .orElseThrow(() -> new GameParseException("No unit called:" + value + thisErrorMsg()));
   }
@@ -125,7 +126,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return stringArray;
   }
 
-  private void applyCheckedValue(
+  @VisibleForTesting
+  void applyCheckedValue(
       final String name,
       final String value,
       final BiConsumer<UnitType, Integer> putter) throws GameParseException {
@@ -133,7 +135,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     putter.accept(getUnitType(s[1]), getInt(s[0]));
   }
 
-  private static int sumIntegerMap(final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
+  @VisibleForTesting
+  static int sumIntegerMap(final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper,
       final UnitType ut,
       final PlayerID player,
       final GameData data) {
@@ -145,7 +148,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .sum();
   }
 
-  private static int sumNumbers(
+  @VisibleForTesting
+  static int sumNumbers(
       final ToIntFunction<TechAbilityAttachment> mapper,
       final PlayerID player,
       final GameData data) {

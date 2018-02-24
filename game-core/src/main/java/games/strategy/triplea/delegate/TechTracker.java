@@ -18,8 +18,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 public class TechTracker implements Serializable {
   private static final long serialVersionUID = 4705039229340373735L;
 
-  /** Creates new TechTracker. */
-  public TechTracker() {}
+  private TechTracker() {}
 
   /**
    * Returns what tech advances this player already has successfully researched (including ones that may not be in their
