@@ -53,11 +53,6 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   @Override
-  public void end() {
-    super.end();
-  }
-
-  @Override
   public Serializable saveState() {
     final InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
     state.superState = super.saveState();

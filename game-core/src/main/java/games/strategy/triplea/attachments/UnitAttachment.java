@@ -2956,14 +2956,6 @@ public class UnitAttachment extends DefaultAttachment {
     return ta.getParatroopers();
   }
 
-  @Override
-  public String toString() {
-    // Any overriding method for toString on an attachment needs to include at least the Class, m_attachedTo, and
-    // m_name. Or call
-    // super.toString()
-    return super.toString();
-  }
-
   /**
    * Returns a list of all unit properties. Should cover ALL fields stored in UnitAttachment
    * Remember to test for null and fix arrays. The stats exporter relies on this toString having

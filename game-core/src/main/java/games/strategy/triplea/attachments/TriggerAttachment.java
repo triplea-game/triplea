@@ -2605,10 +2605,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  public void validate(final GameData data) throws GameParseException {
-    super.validate(data);
-  }
-
   protected Map<String, AttachmentProperty<?>> createPropertyMap() {
     return ImmutableMap.<String, AttachmentProperty<?>>builder()
         .putAll(super.createPropertyMap())

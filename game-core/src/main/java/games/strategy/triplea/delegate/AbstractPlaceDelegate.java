@@ -63,11 +63,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   @Override
-  public void start() {
-    super.start();
-  }
-
-  @Override
   public void end() {
     super.end();
     doAfterEnd();
