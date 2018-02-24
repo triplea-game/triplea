@@ -77,13 +77,14 @@ public final class LookAndFeel {
   /**
    * Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be used.
    *
+   * @param lookAndFeelName Value that is sent to UIManager for new look and feel setting.
    * @throws IllegalStateException If this method is not called from the EDT.
    */
-  public static void setupLookAndFeel() {
+  public static void setupLookAndFeel(final String lookAndFeelName) {
     checkState(SwingUtilities.isEventDispatchThread());
 
     try {
-      UIManager.setLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
+      UIManager.setLookAndFeel(lookAndFeelName);
     } catch (final Throwable t) {
       if (!SystemProperties.isMac()) {
         try {
@@ -93,5 +94,9 @@ public final class LookAndFeel {
         }
       }
     }
+  }
+
+  public static void setupLookAndFeel() {
+    setupLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
   }
 }

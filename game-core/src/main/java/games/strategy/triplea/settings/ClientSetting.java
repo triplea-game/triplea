@@ -68,7 +68,8 @@ public enum ClientSetting implements GameSetting {
 
   LOBBY_LAST_USED_PORT,
 
-  LOOK_AND_FEEL_PREF(getDefaultLookAndFeelClassName()),
+  LOOK_AND_FEEL_PREF(getDefaultLookAndFeelClassName(),
+      games.strategy.engine.framework.lookandfeel.LookAndFeel::setupLookAndFeel),
 
   MAP_EDGE_SCROLL_SPEED(30),
 
