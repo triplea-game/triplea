@@ -1,7 +1,9 @@
 package games.strategy.engine.framework;
 
 import games.strategy.triplea.formatter.MyFormatter;
+import lombok.Getter;
 
+@Getter
 public class VerifiedRandomNumbers {
   private final int[] values;
   private final String annotation;
@@ -14,19 +16,5 @@ public class VerifiedRandomNumbers {
   @Override
   public String toString() {
     return "Rolled :" + MyFormatter.asDice(values) + " for " + annotation;
-  }
-
-  /**
-   * @return Returns the annotation.
-   */
-  public String getAnnotation() {
-    return annotation;
-  }
-
-  /**
-   * @return Returns the values.
-   */
-  public int[] getValues() {
-    return values;
   }
 }

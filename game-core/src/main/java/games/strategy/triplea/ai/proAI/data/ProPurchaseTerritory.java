@@ -9,11 +9,19 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.proAI.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 public class ProPurchaseTerritory {
 
+  @Getter
   private final Territory territory;
+  @Getter
+  @Setter
   private int unitProduction;
+  @Getter
   private final List<ProPlaceTerritory> canPlaceTerritories;
 
   public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
@@ -54,26 +62,5 @@ public class ProPurchaseTerritory {
       remainingUnitProduction -= ppt.getPlaceUnits().size();
     }
     return remainingUnitProduction;
-  }
-
-  public Territory getTerritory() {
-    return territory;
-  }
-
-  @Override
-  public String toString() {
-    return territory + " | unitProduction=" + unitProduction + " | placeTerritories=" + canPlaceTerritories;
-  }
-
-  public int getUnitProduction() {
-    return unitProduction;
-  }
-
-  public void setUnitProduction(final int unitProduction) {
-    this.unitProduction = unitProduction;
-  }
-
-  public List<ProPlaceTerritory> getCanPlaceTerritories() {
-    return canPlaceTerritories;
   }
 }

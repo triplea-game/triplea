@@ -22,36 +22,64 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
+import lombok.Getter;
 
 public class ProPurchaseOption {
 
+  @Getter
   private final ProductionRule productionRule;
+
+  @Getter
   private final UnitType unitType;
   private final PlayerID player;
+
+  @Getter
   private final int cost;
+
+  @Getter
   private final IntegerMap<Resource> costs;
+  @Getter
   private final int movement;
+  @Getter
   private final int quantity;
+  @Getter
   private int hitPoints;
+  @Getter
   private final double attack;
   private final double amphibAttack;
+  @Getter
   private final double defense;
+  @Getter
   private final int transportCost;
+  @Getter
   private final int carrierCost;
+  @Getter
   private final boolean isAir;
+  @Getter
   private final boolean isSub;
+  @Getter
   private final boolean isDestroyer;
+  @Getter
   private final boolean isTransport;
+  @Getter
   private final boolean isCarrier;
+  @Getter
   private final int carrierCapacity;
+  @Getter
   private final double transportEfficiency;
+  @Getter
   private final double costPerHitPoint;
   private final double hitPointEfficiency;
+  @Getter
   private final double attackEfficiency;
+  @Getter
   private final double defenseEfficiency;
+  @Getter
   private final int maxBuiltPerPlayer;
   private final Set<UnitSupportAttachment> unitSupportAttachments;
+  @Getter
   private boolean isAttackSupport;
+  @Getter
   private boolean isDefenseSupport;
 
   ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player,
@@ -117,97 +145,10 @@ public class ProPurchaseOption {
         + " | isCarrier=" + isCarrier;
   }
 
-  public ProductionRule getProductionRule() {
-    return productionRule;
-  }
-
-  public int getCost() {
-    return cost;
-  }
-
-  public IntegerMap<Resource> getCosts() {
-    return costs;
-  }
-
-  public int getMovement() {
-    return movement;
-  }
-
-  public int getQuantity() {
-    return quantity;
-  }
-
-  public double getAttack() {
-    return attack;
-  }
-
-  public double getDefense() {
-    return defense;
-  }
-
-  public boolean isSub() {
-    return isSub;
-  }
-
-  public boolean isDestroyer() {
-    return isDestroyer;
-  }
-
-  public boolean isTransport() {
-    return isTransport;
-  }
-
-  public boolean isCarrier() {
-    return isCarrier;
-  }
-
-  public double getTransportEfficiency() {
-    return transportEfficiency;
-  }
-
   public double getTransportEfficiencyRatio() {
     return Math.pow(transportEfficiency, 30) / quantity;
   }
 
-  public double getAttackEfficiency() {
-    return attackEfficiency;
-  }
-
-  public double getDefenseEfficiency() {
-    return defenseEfficiency;
-  }
-
-  public UnitType getUnitType() {
-    return unitType;
-  }
-
-  public int getTransportCost() {
-    return transportCost;
-  }
-
-  public int getCarrierCost() {
-    return carrierCost;
-  }
-
-  public boolean isAir() {
-    return isAir;
-  }
-
-  public double getCostPerHitPoint() {
-    return costPerHitPoint;
-  }
-
-  public int getMaxBuiltPerPlayer() {
-    return maxBuiltPerPlayer;
-  }
-
-  public boolean isAttackSupport() {
-    return isAttackSupport;
-  }
-
-  public boolean isDefenseSupport() {
-    return isDefenseSupport;
-  }
 
   public double getFodderEfficiency(final int enemyDistance, final GameData data, final List<Unit> ownedLocalUnits,
       final List<Unit> unitsToPlace) {

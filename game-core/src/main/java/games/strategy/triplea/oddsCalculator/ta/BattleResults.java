@@ -48,6 +48,7 @@ public class BattleResults extends GameDataComponent {
     m_whoWon = scriptedWhoWon;
   }
 
+
   public List<Unit> getRemainingAttackingUnits() {
     return m_remainingAttackingUnits;
   }

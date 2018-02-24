@@ -19,6 +19,16 @@ https://github.com/triplea-game/triplea/tree/master/eclipse/format
 Useful:
   - [EGit in Eclipse](http://www.eclipse.org/egit/) - with [tutorial](http://www.vogella.com/tutorials/EclipseGit/article.html)
 
+Lombok:
+Install Plugin ([reference](https://projectlombok.org/downloads/lombok.jar)):
+- Download 1.16.20 (Feb 24, 2018; check gradle build file for most recent) from: https://projectlombok.org/all-versions
+- Execute it: `java -jar lombok.jar`
+- If the installer does not work, there is a manual install option: https://groups.google.com/forum/#!topic/project-lombok/3rVS0eXVl5U
+- On version upgrades these steps may need to be repeated
+Enable annotation processing: 
+- https://stackoverflow.com/questions/43404891/how-to-configure-java-annotation-processors-in-eclipse
+
+  
 Checkstyle:
  
 The [Eclipse Checkstyle plugin](http://eclipse-cs.sourceforge.net) integrates Checkstyle into the Eclipse IDE and notifies you of violations in real time.
@@ -47,7 +57,11 @@ Plugins:
     - after install finish configuration in: **Other Settings > Checkstyle** 
   - *Save Actions*
     - configure in settings to add 'final' to local variables and class variables.
+  - *Lombok*
   - Method ordering: ![keep_dependents_first](https://user-images.githubusercontent.com/12397753/27557429-72fb899c-5a6e-11e7-8f9f-59cc508ba86c.png)
+
+Lombok:
+ - requires annotation processing to be turned on (settings > 'annotation processing')
 
 # Team Communication
 
@@ -201,3 +215,8 @@ Note:
 ## Variables
 Define variables as close to their usage as possible.
 
+## Using Lombok
+- Use narrow scopes, if you don't need public getters, set them to the most restrictive scope possible, eg:
+```@Getter -> @Getter(access = AccessLevel.PACKAGE)```
+- Avoid `@Data`, it is a mutable data structure, avoid the mutability when you can.
+- Beware of circular loops with @ToString and @EqualsAndHashcode, if two classes have a circular dependency, and then you toString that, you'll get a loop. The insidious part is you only get this when `toString` is actually called, that may only be in for example a logging statement or on error.

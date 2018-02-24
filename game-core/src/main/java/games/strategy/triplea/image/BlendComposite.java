@@ -8,9 +8,12 @@ import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
+import lombok.Getter;
+
 /**
  * This class handles the various types of blends for base/relief tiles.
  */
+@Getter
 class BlendComposite implements Composite {
   public enum BlendingMode {
     NORMAL, OVERLAY, MULTIPLY, DIFFERENCE, LINEAR_LIGHT
@@ -34,14 +37,6 @@ class BlendComposite implements Composite {
 
   public BlendComposite derive(final float alpha) {
     return this.alpha == alpha ? this : new BlendComposite(getMode(), alpha);
-  }
-
-  public float getAlpha() {
-    return alpha;
-  }
-
-  public BlendingMode getMode() {
-    return mode;
   }
 
   private void setAlpha(final float alpha) {

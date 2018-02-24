@@ -8,7 +8,9 @@ import java.util.Set;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import lombok.Getter;
 
+@Getter
 public class ProMyMoveOptions {
 
   private final Map<Territory, ProTerritory> territoryMap;
@@ -38,29 +40,4 @@ public class ProMyMoveOptions {
     transportList.addAll(myMoveOptions.transportList);
     bomberMoveMap.putAll(myMoveOptions.bomberMoveMap);
   }
-
-  public Map<Territory, ProTerritory> getTerritoryMap() {
-    return territoryMap;
-  }
-
-  public Map<Unit, Set<Territory>> getUnitMoveMap() {
-    return unitMoveMap;
-  }
-
-  public Map<Unit, Set<Territory>> getTransportMoveMap() {
-    return transportMoveMap;
-  }
-
-  public Map<Unit, Set<Territory>> getBombardMap() {
-    return bombardMap;
-  }
-
-  public List<ProTransport> getTransportList() {
-    return transportList;
-  }
-
-  public Map<Unit, Set<Territory>> getBomberMoveMap() {
-    return bomberMoveMap;
-  }
-
 }

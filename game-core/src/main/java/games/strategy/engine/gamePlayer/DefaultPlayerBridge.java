@@ -18,13 +18,15 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.RemoteNotFoundException;
+import lombok.Getter;
 
 /**
  * Default implementation of PlayerBridge.
  */
 public class DefaultPlayerBridge implements IPlayerBridge {
   private final IGame game;
-  private String currentStep;
+  @Getter
+  private String stepName;
   private String currentDelegate;
 
   /** Creates new DefaultPlayerBridge. */
@@ -37,15 +39,10 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       if (delegateName == null) {
         throw new IllegalArgumentException("Null delegate");
       }
-      currentStep = stepName;
+      this.stepName = stepName;
       currentDelegate = delegateName;
     };
     this.game.addGameStepListener(gameStepListener);
-  }
-
-  @Override
-  public String getStepName() {
-    return currentStep;
   }
 
   @Override
@@ -69,7 +66,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         final IDelegate delegate = game.getData().getDelegateList().getDelegate(currentDelegate);
         if (delegate == null) {
           final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
-              + currentStep + ", and CurrentDelegate: " + currentDelegate;
+              + stepName + ", and CurrentDelegate: " + currentDelegate;
           // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
           // too
           System.err.println(errorMessage);
@@ -82,7 +79,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         } catch (final Exception e) {
           final String errorMessage =
               "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
-                  + currentStep + ", and CurrentDelegate: " + currentDelegate;
+                  + stepName + ", and CurrentDelegate: " + currentDelegate;
           // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
           // too
           System.err.println(errorMessage);

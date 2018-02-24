@@ -5,16 +5,23 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.util.Interruptibles;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
  * using a change).
  */
+@ToString(exclude = "playerBridge")
 public abstract class AbstractBasePlayer implements IGamePlayer {
 
+  @Getter
   private final String name; // what nation are we playing? ex: "Americans"
+  @Getter
   private final String type; // what are we? ex: "Human" or "AI"
+  @Getter
   private PlayerID playerId;
+  @Getter
   private IPlayerBridge playerBridge;
   private boolean isStoppedGame = false;
 
@@ -41,38 +48,6 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
    */
   public GameData getGameData() {
     return playerBridge.getGameData();
-  }
-
-  /**
-   * Get the IPlayerBridge for this game player.
-   * (This is not a delegate bridge, and we cannot send changes on this. Changes should only be done within a delegate,
-   * never through a
-   * player.)
-   */
-  protected final IPlayerBridge getPlayerBridge() {
-    return playerBridge;
-  }
-
-  @Override
-  public final String getName() {
-    return name;
-  }
-
-  @Override
-  public final String getType() {
-    return type;
-  }
-
-  @Override
-  public final PlayerID getPlayerId() {
-    return playerId;
-  }
-
-  @Override
-  public String toString() {
-    return (playerId == null || playerId.getName() == null || !playerId.getName().equals(name))
-        ? (type + ":" + name + ":" + (playerId == null ? "NullID" : playerId.getName()))
-        : (type + ":" + name);
   }
 
   /**

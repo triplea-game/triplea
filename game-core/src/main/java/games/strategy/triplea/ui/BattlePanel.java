@@ -509,7 +509,11 @@ public class BattlePanel extends ActionPanel {
       if (oldCenteredTerritory != null) {
         getMap().clearTerritoryOverlay(oldCenteredTerritory);
       }
-      fightBattleMessage = new FightBattleDetails(territory, bomb, battleType);
+      fightBattleMessage = FightBattleDetails.builder()
+          .where(territory)
+          .bombingRaid(bomb)
+          .battleType(battleType)
+          .build();
       release();
     }
   }

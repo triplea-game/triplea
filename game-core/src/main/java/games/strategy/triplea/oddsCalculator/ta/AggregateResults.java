@@ -12,27 +12,31 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import lombok.Getter;
+import lombok.Setter;
 
 public class AggregateResults implements Serializable {
   private static final long serialVersionUID = -556699626060414738L;
   // can be empty!
-  private final List<BattleResults> m_results;
-  private long m_time;
+  private final List<BattleResults> results;
+  @Getter
+  @Setter
+  private long time;
 
   public AggregateResults(final int expectedCount) {
-    m_results = new ArrayList<>(expectedCount);
+    results = new ArrayList<>(expectedCount);
   }
 
   public void addResult(final BattleResults result) {
-    m_results.add(result);
+    results.add(result);
   }
 
   public void addResults(final Collection<BattleResults> results) {
-    m_results.addAll(results);
+    this.results.addAll(results);
   }
 
   public List<BattleResults> getResults() {
-    return m_results;
+    return results;
   }
 
   /**
@@ -41,12 +45,12 @@ public class AggregateResults implements Serializable {
   public BattleResults getBattleResultsClosestToAverage() {
     double closestBattleDif = Integer.MAX_VALUE;
     BattleResults closestBattle = null;
-    for (final BattleResults results : m_results) {
-      double dif = Math.abs(results.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft());
-      dif += Math.abs(results.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft());
+    for (final BattleResults result : results) {
+      double dif = Math.abs(result.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft());
+      dif += Math.abs(result.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft());
       if (dif < closestBattleDif) {
         closestBattleDif = dif;
-        closestBattle = results;
+        closestBattle = result;
       }
     }
     // can be null!
@@ -55,25 +59,25 @@ public class AggregateResults implements Serializable {
 
   public List<Unit> getAverageAttackingUnitsRemaining() {
     // can be null!
-    final BattleResults results = getBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<>() : results.getRemainingAttackingUnits();
+    final BattleResults result = getBattleResultsClosestToAverage();
+    return result == null ? new ArrayList<>() : result.getRemainingAttackingUnits();
   }
 
   public List<Unit> getAverageDefendingUnitsRemaining() {
     // can be null!
-    final BattleResults results = getBattleResultsClosestToAverage();
-    return results == null ? new ArrayList<>() : results.getRemainingDefendingUnits();
+    final BattleResults result = getBattleResultsClosestToAverage();
+    return result == null ? new ArrayList<>() : result.getRemainingDefendingUnits();
   }
 
   double getAverageAttackingUnitsLeft() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       count += result.getAttackingCombatUnitsLeft();
     }
-    return count / m_results.size();
+    return count / results.size();
   }
 
   /**
@@ -81,21 +85,21 @@ public class AggregateResults implements Serializable {
    */
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTuv,
       final IntegerMap<UnitType> defenderCostsForTuv) {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return Tuple.of(0.0, 0.0);
     }
     double attackerTuv = 0;
     double defenderTuv = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       attackerTuv += TuvUtils.getTuv(result.getRemainingAttackingUnits(), attackerCostsForTuv);
       defenderTuv += TuvUtils.getTuv(result.getRemainingDefendingUnits(), defenderCostsForTuv);
     }
-    return Tuple.of(attackerTuv / m_results.size(), defenderTuv / m_results.size());
+    return Tuple.of(attackerTuv / results.size(), defenderTuv / results.size());
   }
 
   public double getAverageTuvSwing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
       final Collection<Unit> defenders, final GameData data) {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, data);
@@ -110,12 +114,12 @@ public class AggregateResults implements Serializable {
   }
 
   double getAverageAttackingUnitsLeftWhenAttackerWon() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
     double total = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       if (result.attackerWon()) {
         count += result.getAttackingCombatUnitsLeft();
         total += 1;
@@ -128,23 +132,23 @@ public class AggregateResults implements Serializable {
   }
 
   double getAverageDefendingUnitsLeft() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       count += result.getDefendingCombatUnitsLeft();
     }
-    return count / m_results.size();
+    return count / results.size();
   }
 
   double getAverageDefendingUnitsLeftWhenDefenderWon() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
     double total = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       if (result.defenderWon()) {
         count += result.getDefendingCombatUnitsLeft();
         total += 1;
@@ -157,68 +161,60 @@ public class AggregateResults implements Serializable {
   }
 
   public double getAttackerWinPercent() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       if (result.attackerWon()) {
         count++;
       }
     }
-    return count / m_results.size();
+    return count / results.size();
   }
 
   double getDefenderWinPercent() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       if (result.defenderWon()) {
         count++;
       }
     }
-    return count / m_results.size();
+    return count / results.size();
   }
 
   public double getAverageBattleRoundsFought() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       count += result.getBattleRoundsFought();
     }
     if (count == 0) {
       // If this is a 'fake' aggregate result, return 1.0
       return 1.0;
     }
-    return count / m_results.size();
+    return count / results.size();
   }
 
   double getDrawPercent() {
-    if (m_results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) { // can be empty!
       return 0.0;
     }
     double count = 0;
-    for (final BattleResults result : m_results) {
+    for (final BattleResults result : results) {
       if (result.draw()) {
         count++;
       }
     }
-    return count / m_results.size();
+    return count / results.size();
   }
 
   public int getRollCount() {
-    return m_results.size();
-  }
-
-  public long getTime() {
-    return m_time;
-  }
-
-  public void setTime(final long time) {
-    m_time = time;
+    return results.size();
   }
 }
