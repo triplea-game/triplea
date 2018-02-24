@@ -32,11 +32,6 @@ import games.strategy.util.Triple;
  */
 public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   @Override
-  public void start() {
-    super.start();
-  }
-
-  @Override
   public void end() {}
 
   @Override
