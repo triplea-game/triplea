@@ -38,11 +38,6 @@ public final class LobbyGamePanelTest {
     }
 
     @Test
-    public void shouldReturnEmptyWhenGameDescriptionIsNull() {
-      assertThat(LobbyGamePanel.getBotSupportEmail(null), is(Optional.empty()));
-    }
-
-    @Test
     public void shouldReturnEmptyWhenBotSupportEmailIsNull() {
       when(gameDescription.getBotSupportEmail()).thenReturn(null);
 
@@ -68,11 +63,6 @@ public final class LobbyGamePanelTest {
       when(gameDescription.getBotSupportEmail()).thenReturn("");
 
       assertThat(LobbyGamePanel.isBot(gameDescription), is(false));
-    }
-
-    @Test
-    public void shouldReturnFalseWhenGameDescriptionIsNull() {
-      assertThat(LobbyGamePanel.isBot(null), is(false));
     }
 
     @Test
