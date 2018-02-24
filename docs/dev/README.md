@@ -21,7 +21,7 @@ Useful:
 
 Lombok:
 Install Plugin ([reference](https://projectlombok.org/downloads/lombok.jar)):
-- Download 1.16.20 from: https://projectlombok.org/all-versions
+- Download 1.16.20 (Feb 24, 2018; check gradle build file for most recent) from: https://projectlombok.org/all-versions
 - Execute it: `java -jar lombok.jar`
 - If the installer does not work, there is a manual install option: https://groups.google.com/forum/#!topic/project-lombok/3rVS0eXVl5U
 - On version upgrades these steps may need to be repeated
