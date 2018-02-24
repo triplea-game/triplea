@@ -39,17 +39,17 @@ public class TechAbilityAttachmentTest {
   @Test
   public void testSplitAndValidate_oneValue() throws Exception {
     final String[] result = attachment.splitAndValidate(name, "a");
-    assertEquals("a", result[0]);
     assertEquals(1, result.length);
+    assertEquals("a", result[0]);
   }
 
 
   @Test
   public void testSplitAndValidate_twoValues() throws Exception {
     final String[] result = attachment.splitAndValidate(name, "a:b");
+    assertEquals(2, result.length);
     assertEquals("a", result[0]);
     assertEquals("b", result[1]);
-    assertEquals(2, result.length);
   }
 
 
