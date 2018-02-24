@@ -214,7 +214,7 @@ class LobbyGamePanel extends JPanel {
         + "\n(Please copy the email address below and manually email them ONLY if something is seriously "
         + "\nwrong with the bot, like it needs to be restarted because it is down and not working at all.) "
         + "\n\nEmail: \n" + supportEmail;
-    return SwingAction.of("Show Bot Support Information/Email", e -> {
+    return SwingAction.of("Show Support Information/Email Of Headless Host Bot", e -> {
       final JTextPane textPane = new JTextPane();
       textPane.setEditable(false);
       textPane.setText(text);
