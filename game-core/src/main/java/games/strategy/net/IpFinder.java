@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.stream.Collectors;
 
 import games.strategy.util.Util;
 
@@ -49,16 +50,22 @@ public class IpFinder {
     if (interfaces == null) {
       return InetAddress.getLocalHost();
     }
+
     return Collections.list(interfaces).stream()
         .map(NetworkInterface::getInetAddresses)
         .map(Collections::list)
         .flatMap(Collection::stream)
         .filter(Util.not(InetAddress::isLoopbackAddress))
         .sorted(Comparator
-            .comparing(InetAddress::isLinkLocalAddress, Comparator.reverseOrder())
-            .thenComparing(InetAddress::isSiteLocalAddress, Comparator.reverseOrder())
-            .thenComparing(Inet4Address.class::isInstance))
+            .comparing(IpFinder::isPublic)
+            .thenComparing(Inet4Address.class::isInstance)
+            .thenComparing(InetAddress::isLinkLocalAddress, Comparator.reverseOrder())
+            .reversed())
         .findFirst()
         .orElse(InetAddress.getLocalHost());
+  }
+
+  private static boolean isPublic(final InetAddress address) {
+    return !(address.isSiteLocalAddress() || address.isLinkLocalAddress());
   }
 }
