@@ -155,6 +155,20 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .sum();
   }
 
+  private int getIntInRange(final String name, final String value, final int max, final boolean allowUndefined)
+      throws GameParseException {
+    final int intValue = getInt(value);
+    if (intValue < (allowUndefined ? -1 : 0) || intValue > max) {
+      throw new GameParseException(String.format(
+          "%s must be%s between 0 and %s%s",
+          name,
+          allowUndefined ? "-1 (no effect), or be" : "",
+          max,
+          thisErrorMsg()));
+    }
+    return intValue;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -360,12 +374,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setMinimumTerritoryValueForProductionBonus(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 10000)) {
-      throw new GameParseException(
-          "minimumTerritoryValueForProductionBonus must be -1 (no effect), or be between 0 and 10000" + thisErrorMsg());
-    }
-    m_minimumTerritoryValueForProductionBonus = v;
+    m_minimumTerritoryValueForProductionBonus =
+        getIntInRange("minimumTerritoryValueForProductionBonus", value, 10000, true);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -392,11 +402,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRepairDiscount(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 100)) {
-      throw new GameParseException("m_repairDiscount must be -1 (no effect), or be between 0 and 100" + thisErrorMsg());
-    }
-    m_repairDiscount = v;
+    m_repairDiscount = getIntInRange("repairDiscount", value, 100, true);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -424,11 +430,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBondDiceSides(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if ((v != -1) && (v < 0 || v > 200)) {
-      throw new GameParseException("warBondDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
-    }
-    m_warBondDiceSides = v;
+    m_warBondDiceSides = getIntInRange("warBondDiceSides", value, 200, true);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -450,11 +452,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setWarBondDiceNumber(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 100) {
-      throw new GameParseException("warBondDiceNumber must be between 0 and 100" + thisErrorMsg());
-    }
-    m_warBondDiceNumber = v;
+    m_warBondDiceNumber = getIntInRange("warBondDiceNumber", value, 100, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -517,11 +515,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketDistance(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 100) {
-      throw new GameParseException("rocketDistance must be between 0 and 100" + thisErrorMsg());
-    }
-    m_rocketDistance = v;
+    m_rocketDistance = getIntInRange("rocketDistance", value, 100, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -543,11 +537,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setRocketNumberPerTerritory(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 200) {
-      throw new GameParseException("rocketNumberPerTerritory must be between 0 and 200" + thisErrorMsg());
-    }
-    m_rocketNumberPerTerritory = v;
+    m_rocketNumberPerTerritory = getIntInRange("rocketNumberPerTerritory", value, 200, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -724,11 +714,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setAirborneDistance(final String value) throws GameParseException {
-    final int v = getInt(value);
-    if (v < 0 || v > 100) {
-      throw new GameParseException("airborneDistance must be between 0 and 100" + thisErrorMsg());
-    }
-    m_airborneDistance = v;
+    m_airborneDistance = getIntInRange("airborneDistance", value, 100, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -772,14 +758,12 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static Set<UnitType> getAirborneBases(final PlayerID player, final GameData data) {
-    final Set<UnitType> airborneBases = new HashSet<>();
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        airborneBases.addAll(taa.getAirborneBases());
-      }
-    }
-    return airborneBases;
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .map(TechAbilityAttachment::getAirborneBases)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   public void clearAirborneBases() {
@@ -799,12 +783,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length < 2) {
       throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
     }
-    final String aaType = s[0];
-    final HashSet<UnitType> unitTypes = new HashSet<>();
+    final Set<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
       unitTypes.add(getUnitType(s[i]));
     }
-    m_airborneTargettedByAA.put(aaType, unitTypes);
+    m_airborneTargettedByAA.put(s[0], unitTypes);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
