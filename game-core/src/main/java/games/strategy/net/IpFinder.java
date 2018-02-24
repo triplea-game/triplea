@@ -4,9 +4,13 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import games.strategy.util.Util;
 
 /**
  * nekromancer@users.sourceforge.net
@@ -41,33 +45,25 @@ public class IpFinder {
    * @return java.net.InetAddress the ip address to use
    */
   public static InetAddress findInetAddress() throws SocketException, UnknownHostException {
-    final Enumeration<NetworkInterface> enum1 = NetworkInterface.getNetworkInterfaces();
-    // Test if null, no point taking a performance hit by
-    // letting the JVM check for a NullPointerException.
-    if (enum1 == null) {
-      final InetAddress ip1 = InetAddress.getLocalHost();
-      return ip1;
+    final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+    if (interfaces == null) {
+      return InetAddress.getLocalHost();
     }
-    final List<InetAddress> allButLoopback = new ArrayList<>();
-    while (enum1.hasMoreElements()) {
-      final NetworkInterface netface = enum1.nextElement();
-      final Enumeration<InetAddress> enum2 = netface.getInetAddresses();
-      while (enum2.hasMoreElements()) {
-        final InetAddress ip2 = enum2.nextElement();
-        if (!ip2.isLoopbackAddress()) {
-          allButLoopback.add(ip2);
-        }
-      }
-    }
+    final List<InetAddress> allButLoopback = Collections.list(interfaces).stream()
+        .map(NetworkInterface::getInetAddresses)
+        .map(Collections::list)
+        .flatMap(Collection::stream)
+        .filter(Util.not(InetAddress::isLoopbackAddress))
+        .collect(Collectors.toList());
     // try to find one that is not private and ip4
     for (final InetAddress address : allButLoopback) {
-      if (address.getAddress().length == 4 && !address.isSiteLocalAddress()) {
+      if (address.getAddress().length == 4 && isPublic(address)) {
         return address;
       }
     }
     // try to find one that is not private
     for (final InetAddress address : allButLoopback) {
-      if (!address.isSiteLocalAddress()) {
+      if (isPublic(address)) {
         return address;
       }
     }
@@ -79,5 +75,9 @@ public class IpFinder {
     }
     // all else fails, return localhost
     return InetAddress.getLocalHost();
+  }
+
+  private static boolean isPublic(final InetAddress address) {
+    return !(address.isSiteLocalAddress() || address.isLinkLocalAddress());
   }
 }
