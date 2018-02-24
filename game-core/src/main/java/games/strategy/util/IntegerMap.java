@@ -2,7 +2,7 @@ package games.strategy.util;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -19,15 +19,15 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
 
   /** Creates new IntegerMap. */
   public IntegerMap() {
-    mapValues = new HashMap<>();
+    mapValues = new LinkedHashMap<>();
   }
 
   public IntegerMap(final int size) {
-    mapValues = new HashMap<>(size);
+    mapValues = new LinkedHashMap<>(size);
   }
 
   public IntegerMap(final int size, final float loadFactor) {
-    mapValues = new HashMap<>(size, loadFactor);
+    mapValues = new LinkedHashMap<>(size, loadFactor);
   }
 
   public IntegerMap(final T object, final int value) {
@@ -45,18 +45,18 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
    * The Objects will be linked, but the integers mapped to them will not be linked.
    */
   public IntegerMap(final IntegerMap<T> integerMap) {
-    mapValues = new HashMap<>(integerMap.size());
+    mapValues = new LinkedHashMap<>(integerMap.size());
     for (final T t : integerMap.keySet()) {
       mapValues.put(t, integerMap.getInt(t));
     }
   }
 
   public IntegerMap(final Map<T, Integer> map) {
-    mapValues = new HashMap<>(map);
+    mapValues = new LinkedHashMap<>(map);
   }
 
   public Map<T, Integer> toMap() {
-    return new HashMap<>(mapValues);
+    return new LinkedHashMap<>(mapValues);
   }
 
   public int size() {

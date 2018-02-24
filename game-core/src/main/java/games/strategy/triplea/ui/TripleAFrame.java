@@ -23,6 +23,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +41,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
@@ -114,6 +114,7 @@ import games.strategy.engine.history.Step;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.TripleAUnit;
@@ -170,6 +171,7 @@ public class TripleAFrame extends MainGameFrame {
   private final IGame game;
   private final MapPanel mapPanel;
   private final MapPanelSmallView smallView;
+  private final JPanel territoryInfo = new JPanel();
   private final JLabel message = new JLabel("No selection");
   private final ResourceBar resourceBar;
   private final JLabel status = new JLabel("");
@@ -286,25 +288,26 @@ public class TripleAFrame extends MainGameFrame {
     gameMainPanel.setLayout(new BorderLayout());
     this.getContentPane().setLayout(new BorderLayout());
     this.getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+
     gameSouthPanel = new JPanel();
     gameSouthPanel.setLayout(new BorderLayout());
-    message.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-    message.setPreferredSize(message.getPreferredSize());
-    message.setText("some text to set a reasonable preferred size for territory name and resources");
+    territoryInfo.setLayout(new GridBagLayout());
+    territoryInfo.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    territoryInfo.setPreferredSize(new Dimension(0, 0));
     resourceBar = new ResourceBar(data, uiContext);
-    status.setText("some text to set a reasonable preferred size for movement error messages");
-    message.setPreferredSize(message.getPreferredSize());
-    status.setPreferredSize(message.getPreferredSize());
-    message.setText("");
+    message.setFont(message.getFont().deriveFont(Collections.singletonMap(
+        TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
+    status.setPreferredSize(new Dimension(0, 0));
     status.setText("");
+
     final JPanel bottomMessagePanel = new JPanel();
     bottomMessagePanel.setLayout(new GridBagLayout());
     bottomMessagePanel.setBorder(BorderFactory.createEmptyBorder());
-    bottomMessagePanel.add(message, new GridBagConstraints(0, 0, 1, 1, .40, 1, GridBagConstraints.WEST,
+    bottomMessagePanel.add(resourceBar, new GridBagConstraints(0, 0, 1, 1, 0, 1, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    bottomMessagePanel.add(resourceBar, new GridBagConstraints(1, 0, 1, 1, .30, 1, GridBagConstraints.CENTER,
+    bottomMessagePanel.add(territoryInfo, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
         GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    bottomMessagePanel.add(status, new GridBagConstraints(2, 0, 1, 1, .30, 1, GridBagConstraints.EAST,
+    bottomMessagePanel.add(status, new GridBagConstraints(2, 0, 1, 1, 1, 1, GridBagConstraints.EAST,
         GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     gameSouthPanel.add(bottomMessagePanel, BorderLayout.CENTER);
     status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -596,38 +599,62 @@ public class TripleAFrame extends MainGameFrame {
     }
 
     void refresh() {
+      territoryInfo.removeAll();
+
       final StringBuilder buf = new StringBuilder();
       buf.append(territoryLastEntered == null ? "none" : territoryLastEntered.getName());
       if (territoryLastEntered != null) {
         final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
         if (ta != null) {
-          final List<TerritoryEffect> territoryEffect = ta.getTerritoryEffect();
-          if (!territoryEffect.isEmpty()) {
-            buf.append(territoryEffect.stream()
-                .map(TerritoryEffect::getName)
-                .collect(Collectors.joining(", ", " (", ")")));
+          final List<TerritoryEffect> territoryEffects = ta.getTerritoryEffect();
+          int count = 0;
+          final StringBuilder territoryEffectText = new StringBuilder();
+          for (final TerritoryEffect territoryEffect : territoryEffects) {
+            try {
+              final JLabel territoryEffectLabel = new JLabel();
+              territoryEffectLabel.setIcon(uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect, false));
+              territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+              territoryInfo.add(territoryEffectLabel,
+                  new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                      new Insets(0, 0, 0, 0), 0, 0));
+            } catch (final IllegalStateException e) {
+              territoryEffectText.append(territoryEffect.getName() + ", ");
+            }
           }
+
+          territoryInfo.add(message, new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+              GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+
+          if (territoryEffectText.length() > 0) {
+            territoryEffectText.setLength(territoryEffectText.length() - 2);
+            final JLabel territoryEffectTextLabel = new JLabel();
+            territoryEffectTextLabel.setText(" (" + territoryEffectText + ")");
+            territoryInfo.add(territoryEffectTextLabel,
+                new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+                    GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+          }
+
           final int production = ta.getProduction();
-          final int unitProduction = ta.getUnitProduction();
-          final ResourceCollection resource = ta.getResources();
-          if (unitProduction > 0 && unitProduction != production) {
-            buf.append(", UnitProd: ").append(unitProduction);
+          final ResourceCollection resourceCollection = ta.getResources();
+          final IntegerMap<Resource> resources = new IntegerMap<>();
+          if (production > 0) {
+            resources.add(new Resource(Constants.PUS, data), production);
           }
-          if (production > 0 || (resource != null && resource.toString().length() > 0)) {
-            buf.append(", Prod: ");
-            if (production > 0) {
-              buf.append(production).append(" PUs");
-              if (resource != null && resource.toString().length() > 0) {
-                buf.append(", ");
-              }
-            }
-            if (resource != null) {
-              buf.append(resource.toString());
-            }
+          if (resourceCollection != null) {
+            resources.add(resourceCollection.getResourcesCopy());
+          }
+          for (final Resource resource : resources.keySet()) {
+            final JLabel resourceLabel =
+                uiContext.getResourceImageFactory().getLabel(resource, resources);
+            resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+            territoryInfo.add(resourceLabel,
+                new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                    new Insets(0, 0, 0, 0), 0, 0));
           }
         }
       }
       message.setText(buf.toString());
+      territoryInfo.repaint();
     }
   };
 
