@@ -127,10 +127,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
   }
 
-  public synchronized boolean isShutDown() {
-    return shutdown;
-  }
-
   @Override
   public boolean isConnected() {
     return !shutdown;

@@ -26,10 +26,6 @@ public class Step extends IndexedHistoryNode {
     return new StepHistorySerializer(stepName, delegateName, player, super.getTitle());
   }
 
-  public String getDelegateName() {
-    return delegateName;
-  }
-
   public String getStepName() {
     return stepName;
   }

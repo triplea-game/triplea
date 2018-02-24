@@ -78,5 +78,4 @@ public interface IMessenger {
    * different than the actual port we use.
    */
   InetSocketAddress getRemoteServerSocketAddress();
-  // TODO: add this into next release: boolean isShutDown();
 }

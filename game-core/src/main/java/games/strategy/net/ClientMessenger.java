@@ -178,10 +178,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     }
   }
 
-  public boolean isShutDown() {
-    return shutDown;
-  }
-
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
     if (msg.getFor() != null && !msg.getFor().equals(node)) {
