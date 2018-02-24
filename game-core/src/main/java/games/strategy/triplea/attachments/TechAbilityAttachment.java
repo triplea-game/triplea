@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
@@ -114,9 +115,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .orElseThrow(() -> new GameParseException("No unit called:" + value + thisErrorMsg()));
   }
 
-  private String[] splitAndValidate(final String name, final String value) throws GameParseException {
+  @VisibleForTesting
+  String[] splitAndValidate(final String name, final String value) throws GameParseException {
     final String[] stringArray = value.split(":");
-    if (stringArray.length <= 0 || stringArray.length > 2) {
+    if (value.isEmpty() || stringArray.length > 2) {
       throw new GameParseException(
           String.format("%s cannot be empty or have more than two fields %s", name, thisErrorMsg()));
     }
