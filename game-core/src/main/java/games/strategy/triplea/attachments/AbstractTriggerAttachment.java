@@ -314,15 +314,13 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("uses",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("usedThisRound",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,

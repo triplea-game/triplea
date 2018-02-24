@@ -599,29 +599,25 @@ public class PlayerAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("vps",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setVps,
                 this::setVps,
                 this::getVps,
                 this::resetVps))
         .put("captureVps",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setCaptureVps,
                 this::setCaptureVps,
                 this::getCaptureVps,
                 this::resetCaptureVps))
         .put("retainCapitalNumber",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setRetainCapitalNumber,
                 this::setRetainCapitalNumber,
                 this::getRetainCapitalNumber,
                 this::resetRetainCapitalNumber))
         .put("retainCapitalProduceNumber",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setRetainCapitalProduceNumber,
                 this::setRetainCapitalProduceNumber,
                 this::getRetainCapitalProduceNumber,
@@ -655,15 +651,13 @@ public class PlayerAttachment extends DefaultAttachment {
                 this::getHelpPayTechCost,
                 this::resetHelpPayTechCost))
         .put("destroysPUs",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setDestroysPUs,
                 this::setDestroysPUs,
                 this::getDestroysPUs,
                 this::resetDestroysPUs))
         .put("immuneToBlockade",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setImmuneToBlockade,
                 this::setImmuneToBlockade,
                 this::getImmuneToBlockade,

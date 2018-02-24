@@ -155,8 +155,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
                 this::getOwner))
         .put("uid", MutableProperty.ofSimple(GUID.class, this::getId))
         .put("hits",
-            MutableProperty.ofSimple(
-                Integer.class,
+            MutableProperty.ofSimpleInteger(
                 this::setHits,
                 this::getHits))
         .put("type", MutableProperty.ofSimple(UnitType.class, this::getType))

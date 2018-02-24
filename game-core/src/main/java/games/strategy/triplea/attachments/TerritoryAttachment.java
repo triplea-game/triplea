@@ -831,15 +831,13 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::getCapital,
                 this::resetCapital))
         .put("originalFactory",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setOriginalFactory,
                 this::setOriginalFactory,
                 this::getOriginalFactory,
                 this::resetOriginalFactory))
         .put("production",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setProduction,
                 this::setProduction,
                 this::getProduction,
@@ -848,15 +846,13 @@ public class TerritoryAttachment extends DefaultAttachment {
             MutableProperty.ofWriteOnlyString(
                 this::setProductionOnly))
         .put("victoryCity",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setVictoryCity,
                 this::setVictoryCity,
                 this::getVictoryCity,
                 this::resetVictoryCity))
         .put("isImpassable",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsImpassable,
                 this::setIsImpassable,
                 this::getIsImpassable,
@@ -869,8 +865,7 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::getOriginalOwner,
                 this::resetOriginalOwner))
         .put("convoyRoute",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setConvoyRoute,
                 this::setConvoyRoute,
                 this::getConvoyRoute,
@@ -897,36 +892,31 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("navalBase",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setNavalBase,
                 this::setNavalBase,
                 this::getNavalBase,
                 this::resetNavalBase))
         .put("airBase",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setAirBase,
                 this::setAirBase,
                 this::getAirBase,
                 this::resetAirBase))
         .put("kamikazeZone",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setKamikazeZone,
                 this::setKamikazeZone,
                 this::getKamikazeZone,
                 this::resetKamikazeZone))
         .put("unitProduction",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setUnitProduction,
                 this::setUnitProduction,
                 this::getUnitProduction,
                 this::resetUnitProduction))
         .put("blockadeZone",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setBlockadeZone,
                 this::setBlockadeZone,
                 this::getBlockadeZone,

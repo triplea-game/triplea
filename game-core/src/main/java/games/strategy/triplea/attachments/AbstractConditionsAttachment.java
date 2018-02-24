@@ -412,8 +412,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                 this::getConditionType,
                 this::resetConditionType))
         .put("invert",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setInvert,
                 this::setInvert,
                 this::getInvert,
@@ -424,15 +423,13 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                 this::getChance,
                 this::resetChance))
         .put("chanceIncrementOnFailure",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setChanceIncrementOnFailure,
                 this::setChanceIncrementOnFailure,
                 this::getChanceIncrementOnFailure,
                 this::resetChanceIncrementOnFailure))
         .put("chanceDecrementOnSuccess",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setChanceDecrementOnSuccess,
                 this::setChanceDecrementOnSuccess,
                 this::getChanceDecrementOnSuccess,

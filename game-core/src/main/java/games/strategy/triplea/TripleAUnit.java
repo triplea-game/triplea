@@ -532,8 +532,7 @@ public class TripleAUnit extends Unit {
                 this::setUnloaded,
                 this::getUnloaded))
         .put("wasLoadedThisTurn",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setWasLoadedThisTurn,
                 this::getWasLoadedThisTurn))
         .put("unloadedTo",
@@ -542,28 +541,23 @@ public class TripleAUnit extends Unit {
                 this::setUnloadedTo,
                 this::getUnloadedTo))
         .put("wasUnloadedInCombatPhase",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setWasUnloadedInCombatPhase,
                 this::getWasUnloadedInCombatPhase))
         .put("alreadyMoved",
-            MutableProperty.ofSimple(
-                Integer.class,
+            MutableProperty.ofSimpleInteger(
                 this::setAlreadyMoved,
                 this::getAlreadyMoved))
         .put("bonusMovement",
-            MutableProperty.ofSimple(
-                Integer.class,
+            MutableProperty.ofSimpleInteger(
                 this::setBonusMovement,
                 this::getBonusMovement))
         .put("unitDamage",
-            MutableProperty.ofSimple(
-                Integer.class,
+            MutableProperty.ofSimpleInteger(
                 this::setUnitDamage,
                 this::getUnitDamage))
         .put("submerged",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setSubmerged,
                 this::getSubmerged))
         .put("originalOwner",
@@ -572,18 +566,15 @@ public class TripleAUnit extends Unit {
                 this::setOriginalOwner,
                 this::getOriginalOwner))
         .put("wasInCombat",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setWasInCombat,
                 this::getWasInCombat))
         .put("wasLoadedAfterCombat",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setWasLoadedAfterCombat,
                 this::getWasLoadedAfterCombat))
         .put("wasAmphibious",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setWasAmphibious,
                 this::getWasAmphibious))
         .put("originatedFrom",
@@ -592,33 +583,27 @@ public class TripleAUnit extends Unit {
                 this::setOriginatedFrom,
                 this::getOriginatedFrom))
         .put("wasScrambled",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setWasScrambled,
                 this::getWasScrambled))
         .put("maxScrambleCount",
-            MutableProperty.ofSimple(
-                Integer.class,
+            MutableProperty.ofSimpleInteger(
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount))
         .put("wasInAirBattle",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setWasInAirBattle,
                 this::getWasInAirBattle))
         .put("disabled",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setDisabled,
                 this::getDisabled))
         .put("launched",
-            MutableProperty.ofSimple(
-                Integer.class,
+            MutableProperty.ofSimpleInteger(
                 this::setLaunched,
                 this::getLaunched))
         .put("airborne",
-            MutableProperty.ofSimple(
-                Boolean.class,
+            MutableProperty.ofSimpleBoolean(
                 this::setAirborne,
                 this::getAirborne))
         .build();

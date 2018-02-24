@@ -438,8 +438,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("countEach", MutableProperty.of(Boolean.class, this::getCountEach))
-        .put("eachMultiple", MutableProperty.of(Integer.class, this::getEachMultiple))
+        .put("countEach", MutableProperty.ofReadOnlyBoolean(this::getCountEach))
+        .put("eachMultiple", MutableProperty.ofReadOnlyInteger(this::getEachMultiple))
         .put("players",
             MutableProperty.of(
                 List.class,
@@ -448,15 +448,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                 this::getPlayers,
                 this::resetPlayers))
         .put("objectiveValue",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setObjectiveValue,
                 this::setObjectiveValue,
                 this::getObjectiveValue,
                 this::resetObjectiveValue))
         .put("uses",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setUses,
                 this::setUses,
                 this::getUses,
@@ -469,8 +467,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                 this::getTurns,
                 this::resetTurns))
         .put("switch",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setSwitch,
                 this::setSwitch,
                 this::getSwitch,

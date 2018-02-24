@@ -430,26 +430,24 @@ public class UnitSupportAttachment extends DefaultAttachment {
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
-        .put("offence", MutableProperty.of(Boolean.class, this::getOffence))
-        .put("defence", MutableProperty.of(Boolean.class, this::getDefence))
-        .put("roll", MutableProperty.of(Boolean.class, this::getRoll))
-        .put("strength", MutableProperty.of(Boolean.class, this::getStrength))
+        .put("offence", MutableProperty.ofReadOnlyBoolean(this::getOffence))
+        .put("defence", MutableProperty.ofReadOnlyBoolean(this::getDefence))
+        .put("roll", MutableProperty.ofReadOnlyBoolean(this::getRoll))
+        .put("strength", MutableProperty.ofReadOnlyBoolean(this::getStrength))
         .put("bonus",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setBonus,
                 this::setBonus,
                 this::getBonus,
                 this::resetBonus))
         .put("number",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setNumber,
                 this::setNumber,
                 this::getNumber,
                 this::resetNumber))
-        .put("allied", MutableProperty.of(Boolean.class, this::getAllied))
-        .put("enemy", MutableProperty.of(Boolean.class, this::getEnemy))
+        .put("allied", MutableProperty.ofReadOnlyBoolean(this::getAllied))
+        .put("enemy", MutableProperty.ofReadOnlyBoolean(this::getEnemy))
         .put("bonusType",
             MutableProperty.ofString(
                 this::setBonusType,
@@ -463,8 +461,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
                 this::getPlayers,
                 this::resetPlayers))
         .put("impArtTech",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setImpArtTech,
                 this::setImpArtTech,
                 this::getImpArtTech,

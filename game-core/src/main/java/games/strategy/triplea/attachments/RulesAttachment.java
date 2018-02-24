@@ -1176,7 +1176,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 this::getTechs,
                 this::resetTechs))
         .put("techCount",
-            MutableProperty.of(Integer.class, this::getTechCount))
+            MutableProperty.ofReadOnlyInteger(this::getTechCount))
         .put("relationship",
             MutableProperty.of(
                 List.class,
@@ -1192,7 +1192,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 this::getAtWarPlayers,
                 this::resetAtWarPlayers))
         .put("atWarCount",
-            MutableProperty.of(Integer.class, this::getAtWarCount))
+            MutableProperty.ofReadOnlyInteger(this::getAtWarCount))
         .put("destroyedTUV",
             MutableProperty.ofString(
                 this::setDestroyedTUV,

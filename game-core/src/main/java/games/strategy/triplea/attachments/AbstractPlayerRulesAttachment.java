@@ -351,50 +351,43 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
                 this::getMovementRestrictionTerritories,
                 this::resetMovementRestrictionTerritories))
         .put("placementAnyTerritory",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setPlacementAnyTerritory,
                 this::setPlacementAnyTerritory,
                 this::getPlacementAnyTerritory,
                 this::resetPlacementAnyTerritory))
         .put("placementAnySeaZone",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setPlacementAnySeaZone,
                 this::setPlacementAnySeaZone,
                 this::getPlacementAnySeaZone,
                 this::resetPlacementAnySeaZone))
         .put("placementCapturedTerritory",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setPlacementCapturedTerritory,
                 this::setPlacementCapturedTerritory,
                 this::getPlacementCapturedTerritory,
                 this::resetPlacementCapturedTerritory))
         .put("unlimitedProduction",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setUnlimitedProduction,
                 this::setUnlimitedProduction,
                 this::getUnlimitedProduction,
                 this::resetUnlimitedProduction))
         .put("placementInCapitalRestricted",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setPlacementInCapitalRestricted,
                 this::setPlacementInCapitalRestricted,
                 this::getPlacementInCapitalRestricted,
                 this::resetPlacementInCapitalRestricted))
         .put("dominatingFirstRoundAttack",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setDominatingFirstRoundAttack,
                 this::setDominatingFirstRoundAttack,
                 this::getDominatingFirstRoundAttack,
                 this::resetDominatingFirstRoundAttack))
         .put("negateDominatingFirstRoundAttack",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setNegateDominatingFirstRoundAttack,
                 this::setNegateDominatingFirstRoundAttack,
                 this::getNegateDominatingFirstRoundAttack,
@@ -407,15 +400,13 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
                 this::getProductionPerXTerritories,
                 this::resetProductionPerXTerritories))
         .put("placementPerTerritory",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setPlacementPerTerritory,
                 this::setPlacementPerTerritory,
                 this::getPlacementPerTerritory,
                 this::resetPlacementPerTerritory))
         .put("maxPlacePerTerritory",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxPlacePerTerritory,
                 this::setMaxPlacePerTerritory,
                 this::getMaxPlacePerTerritory,

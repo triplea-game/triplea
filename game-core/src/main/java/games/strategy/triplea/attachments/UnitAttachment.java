@@ -3513,8 +3513,7 @@ public class UnitAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("isAir",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsAir,
                 this::setIsAir,
                 this::getIsAir,
@@ -3526,29 +3525,25 @@ public class UnitAttachment extends DefaultAttachment {
             MutableProperty.ofWriteOnlyString(
                 this::setIsParatroop))
         .put("isSea",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsSea,
                 this::setIsSea,
                 this::getIsSea,
                 this::resetIsSea))
         .put("movement",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMovement,
                 this::setMovement,
                 this::getMovement,
                 this::resetMovement))
         .put("canBlitz",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanBlitz,
                 this::setCanBlitz,
                 this::getCanBlitz,
                 this::resetCanBlitz))
         .put("isKamikaze",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsKamikaze,
                 this::setIsKamikaze,
                 this::getIsKamikaze,
@@ -3568,8 +3563,7 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getFuelCost,
                 this::resetFuelCost))
         .put("canNotMoveDuringCombatMove",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanNotMoveDuringCombatMove,
                 this::setCanNotMoveDuringCombatMove,
                 this::getCanNotMoveDuringCombatMove,
@@ -3582,92 +3576,79 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put("attack",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setAttack,
                 this::setAttack,
                 this::getAttack,
                 this::resetAttack))
         .put("defense",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setDefense,
                 this::setDefense,
                 this::getDefense,
                 this::resetDefense))
         .put("isInfrastructure",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsInfrastructure,
                 this::setIsInfrastructure,
                 this::getIsInfrastructure,
                 this::resetIsInfrastructure))
         .put("canBombard",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanBombard,
                 this::setCanBombard,
                 this::getCanBombard,
                 this::resetCanBombard))
         .put("bombard",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setBombard,
                 this::setBombard,
                 this::getBombard,
                 this::resetBombard))
         .put("isSub",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsSub,
                 this::setIsSub,
                 this::getIsSub,
                 this::resetIsSub))
         .put("isDestroyer",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsDestroyer,
                 this::setIsDestroyer,
                 this::getIsDestroyer,
                 this::resetIsDestroyer))
         .put("artillery",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setArtillery,
                 this::setArtillery,
                 this::getArtillery,
                 this::resetArtillery))
         .put("artillerySupportable",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setArtillerySupportable,
                 this::setArtillerySupportable,
                 this::getArtillerySupportable,
                 this::resetArtillerySupportable))
         .put("unitSupportCount",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setUnitSupportCount,
                 this::setUnitSupportCount,
                 this::getUnitSupportCount,
                 this::resetUnitSupportCount))
         .put("isMarine",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setIsMarine,
                 this::setIsMarine,
                 this::getIsMarine,
                 this::resetIsMarine))
         .put("isSuicide",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsSuicide,
                 this::setIsSuicide,
                 this::getIsSuicide,
                 this::resetIsSuicide))
         .put("isSuicideOnHit",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsSuicideOnHit,
                 this::setIsSuicideOnHit,
                 this::getIsSuicideOnHit,
@@ -3680,162 +3661,139 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getAttackingLimit,
                 this::resetAttackingLimit))
         .put("attackRolls",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setAttackRolls,
                 this::setAttackRolls,
                 this::getAttackRolls,
                 this::resetAttackRolls))
         .put("defenseRolls",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setDefenseRolls,
                 this::setDefenseRolls,
                 this::getDefenseRolls,
                 this::resetDefenseRolls))
         .put("chooseBestRoll",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setChooseBestRoll,
                 this::setChooseBestRoll,
                 this::getChooseBestRoll,
                 this::resetChooseBestRoll))
         .put("isCombatTransport",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsCombatTransport,
                 this::setIsCombatTransport,
                 this::getIsCombatTransport,
                 this::resetIsCombatTransport))
         .put("transportCapacity",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setTransportCapacity,
                 this::setTransportCapacity,
                 this::getTransportCapacity,
                 this::resetTransportCapacity))
         .put("transportCost",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setTransportCost,
                 this::setTransportCost,
                 this::getTransportCost,
                 this::resetTransportCost))
         .put("carrierCapacity",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setCarrierCapacity,
                 this::setCarrierCapacity,
                 this::getCarrierCapacity,
                 this::resetCarrierCapacity))
         .put("carrierCost",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setCarrierCost,
                 this::setCarrierCost,
                 this::getCarrierCost,
                 this::resetCarrierCost))
         .put("isAirTransport",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsAirTransport,
                 this::setIsAirTransport,
                 this::getIsAirTransport,
                 this::resetIsAirTransport))
         .put("isAirTransportable",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsAirTransportable,
                 this::setIsAirTransportable,
                 this::getIsAirTransportable,
                 this::resetIsAirTransportable))
         .put("isInfantry",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsInfantry,
                 this::setIsInfantry,
                 this::getIsInfantry,
                 this::resetIsInfantry))
         .put("isLandTransport",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsLandTransport,
                 this::setIsLandTransport,
                 this::getIsLandTransport,
                 this::resetIsLandTransport))
         .put("isLandTransportable",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsLandTransportable,
                 this::setIsLandTransportable,
                 this::getIsLandTransportable,
                 this::resetIsLandTransportable))
         .put("isAAforCombatOnly",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsAAforCombatOnly,
                 this::setIsAAforCombatOnly,
                 this::getIsAAforCombatOnly,
                 this::resetIsAAforCombatOnly))
         .put("isAAforBombingThisUnitOnly",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsAAforBombingThisUnitOnly,
                 this::setIsAAforBombingThisUnitOnly,
                 this::getIsAAforBombingThisUnitOnly,
                 this::resetIsAAforBombingThisUnitOnly))
         .put("isAAforFlyOverOnly",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsAAforFlyOverOnly,
                 this::setIsAAforFlyOverOnly,
                 this::getIsAAforFlyOverOnly,
                 this::resetIsAAforFlyOverOnly))
         .put("isRocket",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsRocket,
                 this::setIsRocket,
                 this::getIsRocket,
                 this::resetIsRocket))
         .put("attackAA",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setAttackAA,
                 this::setAttackAA,
                 this::getAttackAA,
                 this::resetAttackAA))
         .put("offensiveAttackAA",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setOffensiveAttackAA,
                 this::setOffensiveAttackAA,
                 this::getOffensiveAttackAA,
                 this::resetOffensiveAttackAA))
         .put("attackAAmaxDieSides",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setAttackAAmaxDieSides,
                 this::setAttackAAmaxDieSides,
                 this::getAttackAAmaxDieSides,
                 this::resetAttackAAmaxDieSides))
         .put("offensiveAttackAAmaxDieSides",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setOffensiveAttackAAmaxDieSides,
                 this::setOffensiveAttackAAmaxDieSides,
                 this::getOffensiveAttackAAmaxDieSides,
                 this::resetOffensiveAttackAAmaxDieSides))
         .put("maxAAattacks",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxAAattacks,
                 this::setMaxAAattacks,
                 this::getMaxAAattacks,
                 this::resetMaxAAattacks))
         .put("maxRoundsAA",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxRoundsAA,
                 this::setMaxRoundsAA,
                 this::getMaxRoundsAA,
@@ -3853,15 +3811,13 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getTargetsAA,
                 this::resetTargetsAA))
         .put("mayOverStackAA",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setMayOverStackAA,
                 this::setMayOverStackAA,
                 this::getMayOverStackAA,
                 this::resetMayOverStackAA))
         .put("damageableAA",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setDamageableAA,
                 this::setDamageableAA,
                 this::getDamageableAA,
@@ -3874,57 +3830,49 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getWillNotFireIfPresent,
                 this::resetWillNotFireIfPresent))
         .put("isStrategicBomber",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsStrategicBomber,
                 this::setIsStrategicBomber,
                 this::getIsStrategicBomber,
                 this::resetIsStrategicBomber))
         .put("bombingMaxDieSides",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setBombingMaxDieSides,
                 this::setBombingMaxDieSides,
                 this::getBombingMaxDieSides,
                 this::resetBombingMaxDieSides))
         .put("bombingBonus",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,
                 this::resetBombingBonus))
         .put("canIntercept",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanIntercept,
                 this::setCanIntercept,
                 this::getCanIntercept,
                 this::resetCanIntercept))
         .put("canEscort",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanEscort,
                 this::setCanEscort,
                 this::getCanEscort,
                 this::resetCanEscort))
         .put("canAirBattle",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanAirBattle,
                 this::setCanAirBattle,
                 this::getCanAirBattle,
                 this::resetCanAirBattle))
         .put("airDefense",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setAirDefense,
                 this::setAirDefense,
                 this::getAirDefense,
                 this::resetAirDefense))
         .put("airAttack",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setAirAttack,
                 this::setAirAttack,
                 this::getAirAttack,
@@ -3937,15 +3885,13 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getBombingTargets,
                 this::resetBombingTargets))
         .put("canProduceUnits",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanProduceUnits,
                 this::setCanProduceUnits,
                 this::getCanProduceUnits,
                 this::resetCanProduceUnits))
         .put("canProduceXUnits",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setCanProduceXUnits,
                 this::setCanProduceXUnits,
                 this::getCanProduceXUnits,
@@ -3965,43 +3911,37 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getCreatesResourcesList,
                 this::resetCreatesResourcesList))
         .put("hitPoints",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setHitPoints,
                 this::setHitPoints,
                 this::getHitPoints,
                 this::resetHitPoints))
         .put("canBeDamaged",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanBeDamaged,
                 this::setCanBeDamaged,
                 this::getCanBeDamaged,
                 this::resetCanBeDamaged))
         .put("maxDamage",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxDamage,
                 this::setMaxDamage,
                 this::getMaxDamage,
                 this::resetMaxDamage))
         .put("maxOperationalDamage",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxOperationalDamage,
                 this::setMaxOperationalDamage,
                 this::getMaxOperationalDamage,
                 this::resetMaxOperationalDamage))
         .put("canDieFromReachingMaxDamage",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanDieFromReachingMaxDamage,
                 this::setCanDieFromReachingMaxDamage,
                 this::getCanDieFromReachingMaxDamage,
                 this::resetCanDieFromReachingMaxDamage))
         .put("isConstruction",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsConstruction,
                 this::setIsConstruction,
                 this::getIsConstruction,
@@ -4012,22 +3952,19 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getConstructionType,
                 this::resetConstructionType))
         .put("constructionsPerTerrPerTypePerTurn",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setConstructionsPerTerrPerTypePerTurn,
                 this::setConstructionsPerTerrPerTypePerTurn,
                 this::getConstructionsPerTerrPerTypePerTurn,
                 this::resetConstructionsPerTerrPerTypePerTurn))
         .put("maxConstructionsPerTypePerTerr",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxConstructionsPerTypePerTerr,
                 this::setMaxConstructionsPerTypePerTerr,
                 this::getMaxConstructionsPerTypePerTerr,
                 this::resetMaxConstructionsPerTypePerTerr))
         .put("canOnlyBePlacedInTerritoryValuedAtX",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setCanOnlyBePlacedInTerritoryValuedAtX,
                 this::setCanOnlyBePlacedInTerritoryValuedAtX,
                 this::getCanOnlyBePlacedInTerritoryValuedAtX,
@@ -4061,8 +3998,7 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getUnitPlacementRestrictions,
                 this::resetUnitPlacementRestrictions))
         .put("maxBuiltPerPlayer",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxBuiltPerPlayer,
                 this::setMaxBuiltPerPlayer,
                 this::getMaxBuiltPerPlayer,
@@ -4075,36 +4011,31 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
         .put("canScramble",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setCanScramble,
                 this::setCanScramble,
                 this::getCanScramble,
                 this::resetCanScramble))
         .put("isAirBase",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setIsAirBase,
                 this::setIsAirBase,
                 this::getIsAirBase,
                 this::resetIsAirBase))
         .put("maxScrambleDistance",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxScrambleDistance,
                 this::setMaxScrambleDistance,
                 this::getMaxScrambleDistance,
                 this::resetMaxScrambleDistance))
         .put("maxScrambleCount",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMaxScrambleCount,
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount,
                 this::resetMaxScrambleCount))
         .put("blockade",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setBlockade,
                 this::setBlockade,
                 this::getBlockade,
@@ -4152,8 +4083,7 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getWhenCapturedChangesInto,
                 this::resetWhenCapturedChangesInto))
         .put("whenCapturedSustainsDamage",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setWhenCapturedSustainsDamage,
                 this::setWhenCapturedSustainsDamage,
                 this::getWhenCapturedSustainsDamage,
@@ -4194,20 +4124,17 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getSpecial,
                 this::resetSpecial))
         .put("tuv",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setTuv,
                 this::setTuv,
                 this::getTuv,
                 this::resetTuv))
         .put("isFactory",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofWriteOnlyBoolean(
                 this::setIsFactory,
                 this::setIsFactory))
         .put("isAA",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofWriteOnlyBoolean(
                 this::setIsAA,
                 this::setIsAA))
         .put("destroyedWhenCapturedFrom",
@@ -4221,13 +4148,11 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setUnitPlacementOnlyAllowedIn,
                 this::setUnitPlacementOnlyAllowedIn))
         .put("isAAmovement",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofWriteOnlyBoolean(
                 this::setIsAAmovement,
                 this::setIsAAmovement))
         .put("isTwoHit",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofWriteOnlyBoolean(
                 this::setIsTwoHit,
                 this::setIsTwoHit))
         .build();

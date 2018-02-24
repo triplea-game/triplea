@@ -150,6 +150,51 @@ public final class MutableProperty<T> {
   }
 
   /**
+   * Convenience method to create a generic read-write Boolean instance of this interface.
+   */
+  public static MutableProperty<Boolean> ofBoolean(
+      final ThrowingConsumer<Boolean, Exception> setter,
+      final ThrowingConsumer<String, Exception> stringSetter,
+      final Supplier<Boolean> getter,
+      final Runnable resetter) {
+    return of(Boolean.class, setter, stringSetter, getter, resetter);
+  }
+
+  /**
+   * Convenience method to create a generic read-only Boolean instance of this interface.
+   */
+  public static MutableProperty<Boolean> ofReadOnlyBoolean(final Supplier<Boolean> getter) {
+    return of(Boolean.class, noSetter(), noStringSetter(), getter, noResetter());
+  }
+
+  /**
+   * Convenience method to create a generic write-only Boolean instance of this interface.
+   */
+  public static MutableProperty<Boolean> ofWriteOnlyBoolean(
+      final ThrowingConsumer<Boolean, Exception> setter,
+      final ThrowingConsumer<String, Exception> stringSetter) {
+    return of(Boolean.class, setter, stringSetter, noGetter(), noResetter());
+  }
+
+  /**
+   * Convenience method to create a generic read-write Integer instance of this interface.
+   */
+  public static MutableProperty<Integer> ofInteger(
+      final ThrowingConsumer<Integer, Exception> setter,
+      final ThrowingConsumer<String, Exception> stringSetter,
+      final Supplier<Integer> getter,
+      final Runnable resetter) {
+    return of(Integer.class, setter, stringSetter, getter, resetter);
+  }
+
+  /**
+   * Convenience method to create a generic read-only Integer instance of this interface.
+   */
+  public static MutableProperty<Integer> ofReadOnlyInteger(final Supplier<Integer> getter) {
+    return of(Integer.class, noSetter(), noStringSetter(), getter, noResetter());
+  }
+
+  /**
    * Convenience method to create a generic String instance of this interface.
    */
   public static MutableProperty<String> ofString(
@@ -176,6 +221,26 @@ public final class MutableProperty<T> {
    */
   public static <T> MutableProperty<T> ofSimple(final Class<T> type, final Supplier<T> getter) {
     return ofSimple(type, noSetter(), getter);
+  }
+
+  /**
+   * Convenience method to create an instance of this interface that just contains a direct
+   * setter and getter for a Boolean. And no support for Strings as secondary setter.
+   */
+  public static MutableProperty<Boolean> ofSimpleBoolean(
+      final ThrowingConsumer<Boolean, Exception> setter,
+      final Supplier<Boolean> getter) {
+    return of(Boolean.class, setter, noStringSetter(), getter, noResetter());
+  }
+
+  /**
+   * Convenience method to create an instance of this interface that just contains a direct
+   * setter and getter for an Integer. And no support for Strings as secondary setter.
+   */
+  public static MutableProperty<Integer> ofSimpleInteger(
+      final ThrowingConsumer<Integer, Exception> setter,
+      final Supplier<Integer> getter) {
+    return of(Integer.class, setter, noStringSetter(), getter, noResetter());
   }
 
   /**

@@ -1402,29 +1402,25 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 this::getProductionBonus,
                 this::resetProductionBonus))
         .put("minimumTerritoryValueForProductionBonus",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::getMinimumTerritoryValueForProductionBonus,
                 this::resetMinimumTerritoryValueForProductionBonus))
         .put("repairDiscount",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setRepairDiscount,
                 this::setRepairDiscount,
                 this::getRepairDiscount,
                 this::resetRepairDiscount))
         .put("warBondDiceSides",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setWarBondDiceSides,
                 this::setWarBondDiceSides,
                 this::getWarBondDiceSides,
                 this::resetWarBondDiceSides))
         .put("warBondDiceNumber",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setWarBondDiceNumber,
                 this::setWarBondDiceNumber,
                 this::getWarBondDiceNumber,
@@ -1437,15 +1433,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 this::getRocketDiceNumber,
                 this::resetRocketDiceNumber))
         .put("rocketDistance",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setRocketDistance,
                 this::setRocketDistance,
                 this::getRocketDistance,
                 this::resetRocketDistance))
         .put("rocketNumberPerTerritory",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setRocketNumberPerTerritory,
                 this::setRocketNumberPerTerritory,
                 this::getRocketNumberPerTerritory,
@@ -1458,8 +1452,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 this::getUnitAbilitiesGained,
                 this::resetUnitAbilitiesGained))
         .put("airborneForces",
-            MutableProperty.of(
-                Boolean.class,
+            MutableProperty.ofBoolean(
                 this::setAirborneForces,
                 this::setAirborneForces,
                 this::getAirborneForces,
@@ -1479,8 +1472,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 this::getAirborneTypes,
                 this::resetAirborneTypes))
         .put("airborneDistance",
-            MutableProperty.of(
-                Integer.class,
+            MutableProperty.ofInteger(
                 this::setAirborneDistance,
                 this::setAirborneDistance,
                 this::getAirborneDistance,
