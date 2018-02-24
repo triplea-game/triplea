@@ -7,9 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
-import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,9 +21,6 @@ import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -174,9 +169,8 @@ class LobbyGamePanel extends JPanel {
         generalAdminActions.forEach(menu::add);
       }
 
-      final @Nullable GameDescription gameDescription =
-          gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-      if ((gameDescription != null) && isBot(gameDescription)) {
+      final GameDescription gameDescription = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+      if (gameDescription.isBot()) {
         final Collection<Action> botAdminActions = getBotAdminGamesListContextActions(gameDescription);
         if (!botAdminActions.isEmpty()) {
           menu.addSeparator();
@@ -213,18 +207,8 @@ class LobbyGamePanel extends JPanel {
         SwingAction.of("Remote Shutdown Headless Host Bot", e -> shutDownHeadlessHostBot()));
   }
 
-  @VisibleForTesting
-  static boolean isBot(final GameDescription gameDescription) {
-    return getBotSupportEmail(gameDescription).isPresent();
-  }
-
-  @VisibleForTesting
-  static Optional<String> getBotSupportEmail(final GameDescription gameDescription) {
-    return Optional.ofNullable(Strings.emptyToNull(gameDescription.getBotSupportEmail()));
-  }
-
   private static Action getSupportInfoHeadlessHostBotAction(final GameDescription gameDescription) {
-    final String supportEmail = getBotSupportEmail(gameDescription)
+    final String supportEmail = gameDescription.getBotSupportEmail()
         .orElseThrow(() -> new IllegalArgumentException("game description is not for a bot"));
     final String text = "Support Email for this bot is as follows. "
         + "\n(Please copy the email address below and manually email them ONLY if something is seriously "
