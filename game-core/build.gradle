@@ -114,6 +114,7 @@ dependencies {
     compile 'commons-cli:commons-cli:1.4'
     compile remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/substance-7.1.01.jar')
 
+    compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/trident-1.4.jar')
 
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
