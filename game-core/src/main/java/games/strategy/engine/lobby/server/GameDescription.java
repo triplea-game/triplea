@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.time.Instant;
+import java.util.Optional;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.net.INode;
@@ -155,8 +159,17 @@ public class GameDescription implements Externalizable, Cloneable {
     return gameVersion;
   }
 
-  public String getBotSupportEmail() {
-    return botSupportEmail;
+  public Optional<String> getBotSupportEmail() {
+    return Optional.ofNullable(Strings.emptyToNull(botSupportEmail));
+  }
+
+  @VisibleForTesting
+  void setBotSupportEmail(final String botSupportEmail) {
+    this.botSupportEmail = botSupportEmail;
+  }
+
+  public boolean isBot() {
+    return getBotSupportEmail().isPresent();
   }
 
   public String getRound() {

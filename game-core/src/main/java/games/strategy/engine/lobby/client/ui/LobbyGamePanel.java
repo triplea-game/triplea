@@ -5,8 +5,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -21,8 +21,6 @@ import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
-import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -159,125 +157,69 @@ class LobbyGamePanel extends JPanel {
     if (selectedIndex == -1) {
       return;
     }
-    // we sort the table, so get the correct index
-    final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+
     final JPopupMenu menu = new JPopupMenu();
-    boolean hasActions = false;
-    for (final Action a : getGamesListRightClickActions(description)) {
-      if (a == null) {
-        continue;
+
+    getUserGamesListContextActions().forEach(menu::add);
+
+    if (isAdmin()) {
+      final Collection<Action> generalAdminActions = getGeneralAdminGamesListContextActions();
+      if (!generalAdminActions.isEmpty()) {
+        menu.addSeparator();
+        generalAdminActions.forEach(menu::add);
       }
-      hasActions = true;
-      menu.add(a);
+
+      final GameDescription gameDescription = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+      if (gameDescription.isBot()) {
+        final Collection<Action> botAdminActions = getBotAdminGamesListContextActions(gameDescription);
+        if (!botAdminActions.isEmpty()) {
+          menu.addSeparator();
+          botAdminActions.forEach(menu::add);
+        }
+      }
     }
-    if (hasActions) {
+
+    if (menu.getComponentCount() > 0) {
       menu.show(gameTable, e.getX(), e.getY());
     }
   }
 
-  private List<Action> getGamesListRightClickActions(final GameDescription description) {
-    final List<Action> actions = new ArrayList<>();
-    actions.add(getJoinGameAction());
-    actions.add(getHostGameAction());
-    if (isAdmin()) {
-      actions.add(getHostSupportInfoAction(description));
-      actions.add(getHostInfoAction());
-      actions.add(getChatLogOfHeadlessHostBotAction(description));
-      actions.add(getMutePlayerHeadlessHostBotAction(description));
-      actions.add(getBootPlayerHeadlessHostBotAction(description));
-      actions.add(getBanPlayerHeadlessHostBotAction(description));
-      actions.add(getStopGameHeadlessHostBotAction(description));
-      actions.add(getShutDownHeadlessHostBotAction(description));
-      actions.add(getBootGameAction());
-    }
-    return actions;
+  private Collection<Action> getUserGamesListContextActions() {
+    return Arrays.asList(
+        SwingAction.of("Join Game", e -> joinGame()),
+        SwingAction.of("Host Game", e -> hostGame()));
   }
 
-  private static Action getHostSupportInfoAction(final GameDescription description) {
-    final String supportEmail = description == null ? "" : Strings.nullToEmpty(description.getBotSupportEmail());
-    if (supportEmail.isEmpty()) {
-      return null;
-    }
-    final String text = "Support Email for this Host is as follows. "
+  private Collection<Action> getGeneralAdminGamesListContextActions() {
+    return Arrays.asList(
+        SwingAction.of("Host Information", e -> getHostInfo()),
+        SwingAction.of("Boot Game", e -> bootGame()));
+  }
+
+  private Collection<Action> getBotAdminGamesListContextActions(final GameDescription description) {
+    return Arrays.asList(
+        getSupportInfoHeadlessHostBotAction(description),
+        SwingAction.of("Get Chat Log Of Headless Host Bot", e -> getChatLogOfHeadlessHostBot()),
+        SwingAction.of("Mute Player In Headless Host Bot", e -> mutePlayerInHeadlessHostBot()),
+        SwingAction.of("Boot Player In Headless Host Bot", e -> bootPlayerInHeadlessHostBot()),
+        SwingAction.of("Ban Player In Headless Host Bot", e -> banPlayerInHeadlessHostBot()),
+        SwingAction.of("Remote Stop Game Headless Host Bot", e -> stopGameHeadlessHostBot()),
+        SwingAction.of("Remote Shutdown Headless Host Bot", e -> shutDownHeadlessHostBot()));
+  }
+
+  private static Action getSupportInfoHeadlessHostBotAction(final GameDescription gameDescription) {
+    final String supportEmail = gameDescription.getBotSupportEmail()
+        .orElseThrow(() -> new IllegalArgumentException("game description is not for a bot"));
+    final String text = "Support Email for this bot is as follows. "
         + "\n(Please copy the email address below and manually email them ONLY if something is seriously "
-        + "\nwrong with the host, like it needs to be restarted because it is down and not working at all.) "
+        + "\nwrong with the bot, like it needs to be restarted because it is down and not working at all.) "
         + "\n\nEmail: \n" + supportEmail;
-    return SwingAction.of("Show Host Support Information/Email", e -> {
+    return SwingAction.of("Show Support Information/Email Of Headless Host Bot", e -> {
       final JTextPane textPane = new JTextPane();
       textPane.setEditable(false);
       textPane.setText(text);
-      JOptionPane.showMessageDialog(null, textPane, "Host Support Info", JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showMessageDialog(null, textPane, "Bot Support Info", JOptionPane.INFORMATION_MESSAGE);
     });
-  }
-
-  private Action getJoinGameAction() {
-    return SwingAction.of("Join Game", e -> joinGame());
-  }
-
-  private Action getHostGameAction() {
-    return SwingAction.of("Host Game", e -> hostGame());
-  }
-
-  private Action getBootGameAction() {
-    return SwingAction.of("Boot Game", e -> bootGame());
-  }
-
-  private Action getHostInfoAction() {
-    return SwingAction.of("Host Information", e -> getHostInfo());
-  }
-
-  private Action getChatLogOfHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
-    if (supportEmail.length() == 0) {
-      return null;
-    }
-    return SwingAction.of("Get Chat Log Of Headless Host Bot", e -> getChatLogOfHeadlessHostBot());
-  }
-
-  private Action getMutePlayerHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
-    if (supportEmail.length() == 0) {
-      return null;
-    }
-    return SwingAction.of("Mute Player In Headless Host Bot", e -> mutePlayerInHeadlessHostBot());
-  }
-
-  private Action getBootPlayerHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
-    if (supportEmail.length() == 0) {
-      return null;
-    }
-    return SwingAction.of("Boot Player In Headless Host Bot", e -> bootPlayerInHeadlessHostBot());
-  }
-
-  private Action getBanPlayerHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
-    if (supportEmail.length() == 0) {
-      return null;
-    }
-    return SwingAction.of("Ban Player In Headless Host Bot", e -> banPlayerInHeadlessHostBot());
-  }
-
-  private Action getShutDownHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
-    if (supportEmail.length() == 0) {
-      return null;
-    }
-    return SwingAction.of("Remote Shutdown Headless Host Bot", e -> shutDownHeadlessHostBot());
-  }
-
-  private Action getStopGameHeadlessHostBotAction(final GameDescription description) {
-    final String supportEmail =
-        description == null ? "" : description.getBotSupportEmail() == null ? "" : description.getBotSupportEmail();
-    if (supportEmail.length() == 0) {
-      return null;
-    }
-    return SwingAction.of("Remote Stop Game Headless Host Bot", e -> stopGameHeadlessHostBot());
   }
 
   private void joinGame() {
