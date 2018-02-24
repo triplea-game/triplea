@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -102,7 +103,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  // setters and getters
+  private UnitType getUnitType(final String value) throws GameParseException {
+    return Optional.ofNullable(getData().getUnitTypeList().getUnitType(value))
+        .orElseThrow(() -> new GameParseException("No unit called:" + value + thisErrorMsg()));
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -114,10 +119,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_attackBonus.put(ut, n);
@@ -162,10 +164,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_defenseBonus.put(ut, n);
@@ -210,10 +209,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_movementBonus.put(ut, n);
@@ -258,10 +254,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_radarBonus.put(ut, n);
@@ -306,10 +299,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_airAttackBonus.put(ut, n);
@@ -354,10 +344,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_airDefenseBonus.put(ut, n);
@@ -402,10 +389,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_productionBonus.put(ut, n);
@@ -598,10 +582,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_rocketDiceNumber.put(ut, n);
@@ -731,10 +712,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (ut == null) {
       throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
     }
-    Set<String> abilities = m_unitAbilitiesGained.get(ut);
-    if (abilities == null) {
-      abilities = new HashSet<>();
-    }
+    final Set<String> abilities = m_unitAbilitiesGained.getOrDefault(ut, new HashSet<>());
     // start at 1
     for (int i = 1; i < s.length; i++) {
       final String ability = s[i];
@@ -813,10 +791,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_airborneCapacity.put(ut, n);
@@ -866,10 +841,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirborneTypes(final String value) throws GameParseException {
     final String[] s = value.split(":");
     for (final String u : s) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(u);
-      if (ut == null) {
-        throw new GameParseException("airborneTypes: no such unit type: " + u + thisErrorMsg());
-      }
+      final UnitType ut = getUnitType(u);
       m_airborneTypes.add(ut);
     }
   }
@@ -942,10 +914,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   public void setAirborneBases(final String value) throws GameParseException {
     final String[] s = value.split(":");
     for (final String u : s) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(u);
-      if (ut == null) {
-        throw new GameParseException("airborneBases: no such unit type: " + u + thisErrorMsg());
-      }
+      final UnitType ut = getUnitType(u);
       m_airborneBases.add(ut);
     }
   }
@@ -990,10 +959,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     final String aaType = s[0];
     final HashSet<UnitType> unitTypes = new HashSet<>();
     for (int i = 1; i < s.length; i++) {
-      final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
-      if (ut == null) {
-        throw new GameParseException("airborneTargettedByAA: no such unit type: " + s[i] + thisErrorMsg());
-      }
+      final UnitType ut = getUnitType(s[i]);
       unitTypes.add(ut);
     }
     m_airborneTargettedByAA.put(aaType, unitTypes);
@@ -1017,10 +983,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
         final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAA();
         if (mapAa != null && !mapAa.isEmpty()) {
           for (final Entry<String, Set<UnitType>> entry : mapAa.entrySet()) {
-            HashSet<UnitType> current = airborneTargettedByAa.get(entry.getKey());
-            if (current == null) {
-              current = new HashSet<>();
-            }
+            final HashSet<UnitType> current = airborneTargettedByAa.getOrDefault(entry.getKey(), new HashSet<>());
             current.addAll(entry.getValue());
             airborneTargettedByAa.put(entry.getKey(), current);
           }
@@ -1049,10 +1012,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_attackRollsBonus.put(ut, n);
@@ -1097,10 +1057,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_defenseRollsBonus.put(ut, n);
@@ -1137,10 +1094,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[1];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     // we should allow positive and negative numbers
     final int n = getInt(s[0]);
     m_bombingBonus.put(ut, n);
