@@ -69,8 +69,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   protected static int getInt(final String value) {
     try {
       return Integer.parseInt(value);
-    } catch (final NumberFormatException nfe) {
-      throw new IllegalArgumentException("Attachments: " + value + " is not a valid int value");
+    } catch (final NumberFormatException e) {
+      throw new IllegalArgumentException("Attachments: " + value + " is not a valid int value", e);
     }
   }
 

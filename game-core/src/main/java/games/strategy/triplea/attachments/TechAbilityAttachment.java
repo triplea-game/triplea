@@ -157,15 +157,17 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .sum();
   }
 
-  private int getIntInRange(final String name, final String value, final int max, final boolean allowUndefined)
+  @VisibleForTesting
+  int getIntInRange(final String name, final String value, final int max, final boolean allowUndefined)
       throws GameParseException {
     final int intValue = getInt(value);
     if (intValue < (allowUndefined ? -1 : 0) || intValue > max) {
       throw new GameParseException(String.format(
-          "%s must be%s between 0 and %s%s",
+          "%s must be%s between 0 and %s, was %s %s",
           name,
           allowUndefined ? " -1 (no effect), or be" : "",
           max,
+          value,
           thisErrorMsg()));
     }
     return intValue;
