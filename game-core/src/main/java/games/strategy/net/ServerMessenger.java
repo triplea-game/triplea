@@ -137,14 +137,13 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     if (shutdown) {
       return;
     }
-    final MessageHeader header = new MessageHeader(to, node, msg);
     final SocketChannel socketChannel = nodeToChannel.get(to);
     // the socket was removed
     if (socketChannel == null) {
       // the socket has not been added yet
       return;
     }
-    nioSocket.send(socketChannel, header);
+    nioSocket.send(socketChannel, new MessageHeader(to, node, msg));
   }
 
   @Override
@@ -162,16 +161,12 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private final Object cachedListLock = new Object();
-  private final HashMap<String, String> cachedMacAddresses = new HashMap<>();
+  private final Map<String, String> cachedMacAddresses = new HashMap<>();
 
   @Override
   public @Nullable String getPlayerMac(final String name) {
     synchronized (cachedListLock) {
-      String mac = cachedMacAddresses.get(name);
-      if (mac == null) {
-        mac = playersThatLeftMacsLast10.get(name);
-      }
-      return mac;
+      return cachedMacAddresses.getOrDefault(name, playersThatLeftMacsLast10.get(name));
     }
   }
 
@@ -323,20 +318,16 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private void bareBonesSendChatMessage(final String message, final INode to) {
-    final List<Object> args = new ArrayList<>();
-    args.add(message);
-    final Class<? extends Object>[] argTypes = new Class<?>[1];
-    argTypes[0] = args.get(0).getClass();
-    final RemoteName rn;
-    if (isLobby()) {
-      rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
-    } else {
-      rn = new RemoteName(
-          ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
-          IChatChannel.class);
-    }
-    final RemoteMethodCall call =
-        new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
+    final RemoteName rn = new RemoteName(isLobby()
+        ? ChatController.getChatChannelName("_LOBBY_CHAT")
+        : ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
+        IChatChannel.class);
+    final RemoteMethodCall call = new RemoteMethodCall(
+        rn.getName(),
+        "chatOccured",
+        new String[] {message},
+        new Class<?>[] {String.class},
+        IChatChannel.class);
     final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
     send(spokeInvoke, to);
   }
