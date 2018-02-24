@@ -166,7 +166,8 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Override
   public @Nullable String getPlayerMac(final String name) {
     synchronized (cachedListLock) {
-      return cachedMacAddresses.getOrDefault(name, playersThatLeftMacsLast10.get(name));
+      return Optional.ofNullable(cachedMacAddresses.get(name))
+          .orElseGet(() -> playersThatLeftMacsLast10.get(name));
     }
   }
 
@@ -325,7 +326,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     final RemoteMethodCall call = new RemoteMethodCall(
         rn.getName(),
         "chatOccured",
-        new String[] {message},
+        new Object[] {message},
         new Class<?>[] {String.class},
         IChatChannel.class);
     final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
