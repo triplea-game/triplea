@@ -6,9 +6,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import games.strategy.util.Util;
 
@@ -49,35 +48,17 @@ public class IpFinder {
     if (interfaces == null) {
       return InetAddress.getLocalHost();
     }
-    final List<InetAddress> allButLoopback = Collections.list(interfaces).stream()
+    return Collections.list(interfaces).stream()
         .map(NetworkInterface::getInetAddresses)
         .map(Collections::list)
         .flatMap(Collection::stream)
         .filter(Util.not(InetAddress::isLoopbackAddress))
-        .collect(Collectors.toList());
-    // try to find one that is not private and ip4
-    for (final InetAddress address : allButLoopback) {
-      if (address.getAddress().length == 4 && isPublic(address)) {
-        return address;
-      }
-    }
-    // try to find one that is not private
-    for (final InetAddress address : allButLoopback) {
-      if (isPublic(address)) {
-        return address;
-      }
-    }
-    // try to find one that is not link local
-    for (final InetAddress address : allButLoopback) {
-      if (!address.isLinkLocalAddress()) {
-        return address;
-      }
-    }
-    // all else fails, return localhost
-    return InetAddress.getLocalHost();
-  }
-
-  private static boolean isPublic(final InetAddress address) {
-    return !(address.isSiteLocalAddress() || address.isLinkLocalAddress());
+        .sorted(Comparator
+            .comparing(InetAddress::isLinkLocalAddress, Comparator.reverseOrder())
+            .thenComparing(InetAddress::isSiteLocalAddress, Comparator.reverseOrder())
+            .thenComparing(InetAddress::getAddress,
+                Comparator.comparing(a -> a.length == 4)))
+        .findFirst()
+        .orElse(InetAddress.getLocalHost());
   }
 }
