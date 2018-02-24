@@ -50,7 +50,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (result != null) {
       return result;
     }
-    if (units == null || units.isEmpty()) {
+    if (units.isEmpty()) {
       return null;
     }
     final Collection<PlayerID> owners = new HashSet<>();
