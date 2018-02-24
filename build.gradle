@@ -11,6 +11,9 @@ plugins {
 
 apply from: 'gradle/scripts/yaml.gradle'
 
+dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
+}
 
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
     doLast {
