@@ -2,7 +2,6 @@ package games.strategy.net;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -76,11 +75,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     final int boundPortNumber = socketChannel.socket().getLocalPort();
     nioSocket = new NioSocket(streamFactory, this, "Server");
     acceptorSelector = Selector.open();
-    if (IpFinder.findInetAddress() != null) {
-      node = new Node(name, IpFinder.findInetAddress(), boundPortNumber);
-    } else {
-      node = new Node(name, InetAddress.getLocalHost(), boundPortNumber);
-    }
+    node = new Node(name, IpFinder.findInetAddress(), boundPortNumber);
     new Thread(new ConnectionHandler(), "Server Messenger Connection Handler").start();
   }
 

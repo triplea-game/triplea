@@ -1,12 +1,16 @@
 package games.strategy.net;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.List;
+
+import games.strategy.util.Util;
 
 /**
  * nekromancer@users.sourceforge.net
@@ -41,64 +45,26 @@ public class IpFinder {
    * @return java.net.InetAddress the ip address to use
    */
   public static InetAddress findInetAddress() throws SocketException, UnknownHostException {
-    final Enumeration<NetworkInterface> enum1 = NetworkInterface.getNetworkInterfaces();
-    // Test if null, no point taking a performance hit by
-    // letting the JVM check for a NullPointerException.
-    if (enum1 == null) {
-      final InetAddress ip1 = InetAddress.getLocalHost();
-      return ip1;
+    final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+    if (interfaces == null) {
+      return InetAddress.getLocalHost();
     }
-    final List<InetAddress> allButLoopback = new ArrayList<>();
-    while (enum1.hasMoreElements()) {
-      final NetworkInterface netface = enum1.nextElement();
-      final Enumeration<InetAddress> enum2 = netface.getInetAddresses();
-      while (enum2.hasMoreElements()) {
-        final InetAddress ip2 = enum2.nextElement();
-        if (!ip2.isLoopbackAddress()) {
-          allButLoopback.add(ip2);
-        }
-      }
-    }
-    // try to find one that is not private and ip4
-    for (final InetAddress address : allButLoopback) {
-      if (address.getAddress().length == 4 && isPublicNetworkAddress(address)) {
-        return address;
-      }
-    }
-    // try to find one that is not private
-    for (final InetAddress address : allButLoopback) {
-      if (isPublicNetworkAddress(address)) {
-        return address;
-      }
-    }
-    // try to find one that is not link local
-    for (final InetAddress address : allButLoopback) {
-      if (!address.isLinkLocalAddress()) {
-        return address;
-      }
-    }
-    // all else fails, return localhost
-    return InetAddress.getLocalHost();
-  } // end static findInetAddress()
 
-  private static boolean isPublicNetworkAddress(final InetAddress address) {
-    // stupid java signed byte type
-    final byte octet254 = (byte) 0xFE;
-    final byte[] bytes = address.getAddress();
-    // ip 4
-    if (bytes.length == 4) {
-      // http://en.wikipedia.org/wiki/Private_network
-      final byte octet169 = (byte) 0xA9;
-      final byte octet168 = (byte) 0xA8;
-      final byte octet172 = (byte) 0xAC;
-      final byte octet192 = (byte) 0xC0;
-      return (bytes[0] != 10) && (bytes[0] != octet172 || bytes[1] < 16 || bytes[1] > 31)
-          && (bytes[0] != octet192 || bytes[1] != octet168) && (bytes[0] != octet169 || bytes[1] != octet254);
-    }
-    // ip 6
-    // http://en.wikipedia.org/wiki/IPv6#Addressing
-    final byte octet252 = (byte) 0xFC;
-    return (bytes[0] != octet252 || bytes[1] != 0) && bytes[0] != octet254;
+    return Collections.list(interfaces).stream()
+        .map(NetworkInterface::getInetAddresses)
+        .map(Collections::list)
+        .flatMap(Collection::stream)
+        .filter(Util.not(InetAddress::isLoopbackAddress))
+        .sorted(Comparator
+            .comparing(IpFinder::isPublic)
+            .thenComparing(Inet4Address.class::isInstance)
+            .thenComparing(InetAddress::isLinkLocalAddress, Comparator.reverseOrder())
+            .reversed())
+        .findFirst()
+        .orElse(InetAddress.getLocalHost());
+  }
 
+  private static boolean isPublic(final InetAddress address) {
+    return !(address.isSiteLocalAddress() || address.isLinkLocalAddress());
   }
 }
