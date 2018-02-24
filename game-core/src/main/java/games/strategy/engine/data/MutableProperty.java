@@ -87,17 +87,17 @@ public final class MutableProperty<T> {
     if (value instanceof String) {
       setStringValue((String) value);
     } else {
-      final T typedValue;
-      try {
-        typedValue = type.cast(value);
-      } catch (final ClassCastException e) {
-        throw new InvalidValueException(
-            String.format(
-                "failed to set property value; expected value of type '%s' but was '%s'", type,
-                value.getClass()),
-            e);
-      }
-      setTypedValue(typedValue);
+      setTypedValue(cast(value));
+    }
+  }
+
+  private T cast(final Object value) throws InvalidValueException {
+    try {
+      return type.cast(value);
+    } catch (final ClassCastException e) {
+      throw new InvalidValueException(
+          String.format("expected value of type '%s' but was '%s'", type, value.getClass()),
+          e);
     }
   }
 
