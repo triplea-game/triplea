@@ -2605,7 +2605,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())

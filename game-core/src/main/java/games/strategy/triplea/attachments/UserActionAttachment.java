@@ -172,7 +172,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
