@@ -23,11 +23,18 @@ public final class LobbyGamePanelTest {
     private final GameDescription gameDescription = new GameDescription();
 
     @Test
-    public void shouldReturnBotSupportEmailWhenBotSupportEmailIsNotNull() {
+    public void shouldReturnBotSupportEmailWhenBotSupportEmailIsNotEmpty() {
       final String botSupportEmail = "bot@me.com";
       when(gameDescription.getBotSupportEmail()).thenReturn(botSupportEmail);
 
       assertThat(LobbyGamePanel.getBotSupportEmail(gameDescription), is(Optional.of(botSupportEmail)));
+    }
+
+    @Test
+    public void shouldReturnEmptyWhenBotSupportEmailIsEmpty() {
+      when(gameDescription.getBotSupportEmail()).thenReturn("");
+
+      assertThat(LobbyGamePanel.getBotSupportEmail(gameDescription), is(Optional.empty()));
     }
 
     @Test
@@ -50,10 +57,17 @@ public final class LobbyGamePanelTest {
     private final GameDescription gameDescription = new GameDescription();
 
     @Test
-    public void shouldReturnTrueWhenBotSupportEmailIsNotNull() {
+    public void shouldReturnTrueWhenBotSupportEmailIsNotEmpty() {
       when(gameDescription.getBotSupportEmail()).thenReturn("bot@me.com");
 
       assertThat(LobbyGamePanel.isBot(gameDescription), is(true));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenBotSupportEmailIsEmpty() {
+      when(gameDescription.getBotSupportEmail()).thenReturn("");
+
+      assertThat(LobbyGamePanel.isBot(gameDescription), is(false));
     }
 
     @Test

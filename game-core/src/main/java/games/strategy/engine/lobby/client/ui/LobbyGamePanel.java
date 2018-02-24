@@ -25,6 +25,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -214,7 +215,9 @@ class LobbyGamePanel extends JPanel {
 
   @VisibleForTesting
   static Optional<String> getBotSupportEmail(final @Nullable GameDescription gameDescription) {
-    return (gameDescription != null) ? Optional.ofNullable(gameDescription.getBotSupportEmail()) : Optional.empty();
+    return (gameDescription != null)
+        ? Optional.ofNullable(Strings.emptyToNull(gameDescription.getBotSupportEmail()))
+        : Optional.empty();
   }
 
   private Action getJoinGameAction() {
