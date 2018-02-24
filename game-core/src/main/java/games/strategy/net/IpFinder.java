@@ -1,5 +1,6 @@
 package games.strategy.net;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -56,8 +57,7 @@ public class IpFinder {
         .sorted(Comparator
             .comparing(InetAddress::isLinkLocalAddress, Comparator.reverseOrder())
             .thenComparing(InetAddress::isSiteLocalAddress, Comparator.reverseOrder())
-            .thenComparing(InetAddress::getAddress,
-                Comparator.comparing(a -> a.length == 4)))
+            .thenComparing(Inet4Address.class::isInstance))
         .findFirst()
         .orElse(InetAddress.getLocalHost());
   }
