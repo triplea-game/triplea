@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -117,18 +119,20 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return stringArray;
   }
 
+  private void applyCheckedValue(
+      final String name,
+      final String value,
+      final BiConsumer<UnitType, Integer> putter) throws GameParseException {
+    final String[] s = splitAndValidate(name, value);
+    putter.accept(getUnitType(s[1]), getInt(s[0]));
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("attackBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_attackBonus.put(ut, n);
+    applyCheckedValue("attackBonus", value, m_attackBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -164,13 +168,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("defenseBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_defenseBonus.put(ut, n);
+    applyCheckedValue("defenseBonus", value, m_defenseBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -206,13 +204,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setMovementBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("movementBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_movementBonus.put(ut, n);
+    applyCheckedValue("movementBonus", value, m_movementBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -248,13 +240,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRadarBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("radarBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_radarBonus.put(ut, n);
+    applyCheckedValue("radarBonus", value, m_radarBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -290,13 +276,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirAttackBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("airAttackBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_airAttackBonus.put(ut, n);
+    applyCheckedValue("airAttackBonus", value, m_airAttackBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -332,13 +312,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirDefenseBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("airDefenseBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_airDefenseBonus.put(ut, n);
+    applyCheckedValue("airDefenseBonus", value, m_airDefenseBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -374,13 +348,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setProductionBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("productionBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_productionBonus.put(ut, n);
+    applyCheckedValue("productionBonus", value, m_productionBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -568,12 +536,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     if (s.length != 2) {
       throw new GameParseException("rocketDiceNumber must have two fields" + thisErrorMsg());
     }
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_rocketDiceNumber.put(ut, n);
+    m_rocketDiceNumber.put(getUnitType(s[1]), getInt(s[0]));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -696,10 +659,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
     final String unitType = s[0];
     // validate that this unit exists in the xml
-    final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
-    if (ut == null) {
-      throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
-    }
+    final UnitType ut = getUnitType(unitType);
     final Set<String> abilities = m_unitAbilitiesGained.getOrDefault(ut, new HashSet<>());
     // start at 1
     for (int i = 1; i < s.length; i++) {
@@ -773,13 +733,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneCapacity(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("aitborneCapacity", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_airborneCapacity.put(ut, n);
+    applyCheckedValue("airborneCapacity", value, m_airborneCapacity::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -824,10 +778,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneTypes(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    for (final String u : s) {
-      final UnitType ut = getUnitType(u);
-      m_airborneTypes.add(ut);
+    for (final String unit : value.split(":")) {
+      m_airborneTypes.add(getUnitType(unit));
     }
   }
 
@@ -897,10 +849,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneBases(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    for (final String u : s) {
-      final UnitType ut = getUnitType(u);
-      m_airborneBases.add(ut);
+    for (final String u : value.split(":")) {
+      m_airborneBases.add(getUnitType(u));
     }
   }
 
@@ -991,13 +941,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackRollsBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("attackRollsBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_attackRollsBonus.put(ut, n);
+    applyCheckedValue("attackRollsBonus", value, m_attackRollsBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1033,13 +977,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseRollsBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("defenseRollsBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_defenseRollsBonus.put(ut, n);
+    applyCheckedValue("defenseRollsBonus", value, m_defenseRollsBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1067,13 +1005,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setBombingBonus(final String value) throws GameParseException {
-    final String[] s = splitAndValidate("bombingBonus", value);
-    final String unitType = s[1];
-    // validate that this unit exists in the xml
-    final UnitType ut = getUnitType(unitType);
-    // we should allow positive and negative numbers
-    final int n = getInt(s[0]);
-    m_bombingBonus.put(ut, n);
+    applyCheckedValue("bombingBonus", value, m_bombingBonus::put);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1113,15 +1045,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static boolean getAllowAirborneForces(final PlayerID player, final GameData data) {
-    for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
-      final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
-      if (taa != null) {
-        if (taa.getAirborneForces()) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return TechTracker.getCurrentTechAdvances(player, data).stream()
+        .map(TechAbilityAttachment::get)
+        .filter(Objects::nonNull)
+        .anyMatch(TechAbilityAttachment::getAirborneForces);
   }
 
   /**
