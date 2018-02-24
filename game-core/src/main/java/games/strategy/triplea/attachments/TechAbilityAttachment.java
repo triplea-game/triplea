@@ -162,7 +162,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
       throw new GameParseException(String.format(
           "%s must be%s between 0 and %s%s",
           name,
-          allowUndefined ? "-1 (no effect), or be" : "",
+          allowUndefined ? " -1 (no effect), or be" : "",
           max,
           thisErrorMsg()));
     }
@@ -392,6 +392,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
         .mapToInt(TechAbilityAttachment::getMinimumTerritoryValueForProductionBonus)
+        .filter(i -> i != -1)
         .min()
         .orElse(-1));
   }
