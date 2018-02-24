@@ -108,15 +108,21 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .orElseThrow(() -> new GameParseException("No unit called:" + value + thisErrorMsg()));
   }
 
+  private String[] splitAndValidate(final String name, final String value) throws GameParseException {
+    final String[] stringArray = value.split(":");
+    if (stringArray.length <= 0 || stringArray.length > 2) {
+      throw new GameParseException(
+          String.format("%s cannot be empty or have more than two fields $s", name, thisErrorMsg()));
+    }
+    return stringArray;
+  }
+
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("attackBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -158,10 +164,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("defenseBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -203,10 +206,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setMovementBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("movementBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("movementBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -248,10 +248,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setRadarBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("radarBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("radarBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -293,10 +290,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirAttackBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airAttackBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("airAttackBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -338,10 +332,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirDefenseBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airDefenseBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("airDefenseBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -383,10 +374,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setProductionBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("productionBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("productionBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -785,10 +773,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAirborneCapacity(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("airborneCapacity cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("aitborneCapacity", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -1006,10 +991,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setAttackRollsBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("attackRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("attackRollsBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -1051,10 +1033,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setDefenseRollsBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("defenseRollsBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("defenseRollsBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
@@ -1088,10 +1067,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setBombingBonus(final String value) throws GameParseException {
-    final String[] s = value.split(":");
-    if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("bombingBonus cannot be empty or have more than two fields" + thisErrorMsg());
-    }
+    final String[] s = splitAndValidate("bombingBonus", value);
     final String unitType = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getUnitType(unitType);
