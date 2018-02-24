@@ -1,7 +1,5 @@
 package tools.map.making;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.awt.Color;
 import java.beans.Introspector;
 import java.io.File;
@@ -18,6 +16,8 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.properties.AEditableProperty;
 import games.strategy.engine.data.properties.BooleanProperty;
@@ -205,10 +205,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
    *
    * @throws IllegalStateException If no backing field for the specified property exists.
    */
-  private static Field getPropertyField(final String propertyName, final Class<?> type) {
-    checkNotNull(propertyName);
-    checkNotNull(type);
-
+  @VisibleForTesting
+  static Field getPropertyField(final String propertyName, final Class<?> type) {
     try {
       return getFieldIncludingFromSuperClasses(type, "m_" + propertyName, false);
     } catch (final IllegalStateException ignored) {
