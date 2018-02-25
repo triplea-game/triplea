@@ -82,6 +82,7 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -846,14 +847,17 @@ public class TripleAFrame extends MainGameFrame {
     }
     messageAndDialogThreadPool.waitForAll();
     final StringBuilder buf = new StringBuilder("Units in the following territories will die: ");
-    Joiner.on(' ').appendTo(buf, unitsCantFight.stream().map(unit -> unit.getName()).collect(Collectors.toList()));
+    Joiner.on(' ').appendTo(buf, unitsCantFight.stream()
+        .map(DefaultNamed::getName)
+        .collect(Collectors.toList()));
     final String ok = movePhase ? "Done Moving" : "Kill Units";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
     this.mapPanel.centerOn(unitsCantFight.iterator().next());
-    final int choice =
-        EventThreadJOptionPane.showOptionDialog(this, buf.toString(), "Units cannot fight", JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE, null, options, cancel, getUiContext().getCountDownLatchHandler());
+    final int choice = EventThreadJOptionPane.showOptionDialog(this, buf.toString(),
+            "Units cannot fight", JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE, null, options, cancel,
+            getUiContext().getCountDownLatchHandler());
     return choice == 1;
   }
 
