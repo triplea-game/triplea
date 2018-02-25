@@ -186,9 +186,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     m_attackingFrom.add(attackingFrom);
     m_attackingUnits.addAll(attackingUnits);
-    if (m_attackingFromMap.get(attackingFrom) == null) {
-      m_attackingFromMap.put(attackingFrom, new ArrayList<>());
-    }
+    m_attackingFromMap.computeIfAbsent(attackingFrom, k -> new ArrayList<>());
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     attackingFromMapUnits.addAll(attackingUnits);
     // are we amphibious

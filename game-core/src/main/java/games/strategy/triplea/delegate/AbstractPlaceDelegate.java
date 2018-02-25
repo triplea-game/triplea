@@ -360,12 +360,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           // found placement move of producer that can be taken over
           // remember move and amount of placements in that territory
           redoPlacements.add(placement);
-          final Integer integer = redoPlacementsCount.get(placeTerritory);
-          if (integer == null) {
-            redoPlacementsCount.put(placeTerritory, placement.getUnits().size());
-          } else {
-            redoPlacementsCount.put(placeTerritory, integer + placement.getUnits().size());
-          }
+          redoPlacementsCount.merge(placeTerritory, placement.getUnits().size(), (a, b) -> a + b);
         }
       }
     }
