@@ -1,8 +1,8 @@
 package games.strategy.engine.data;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.triplea.delegate.Matches;
 
@@ -25,21 +25,14 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   public boolean isAlliedWithAnyOfThesePlayers(final PlayerID p1, final Collection<PlayerID> p2s) {
-    for (final PlayerID p2 : p2s) {
-      if (Matches.relationshipTypeIsAllied().test((getRelationshipType(p1, p2)))) {
-        return true;
-      }
-    }
-    return false;
+    return p2s.stream()
+        .anyMatch(p2 -> Matches.relationshipTypeIsAllied().test((getRelationshipType(p1, p2))));
   }
 
   public Set<PlayerID> getAllies(final PlayerID p1, final boolean includeSelf) {
-    final Set<PlayerID> allies = new HashSet<>();
-    for (final PlayerID player : getData().getPlayerList().getPlayers()) {
-      if (Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, player))) {
-        allies.add(player);
-      }
-    }
+    final Set<PlayerID> allies = getData().getPlayerList().getPlayers().stream()
+        .filter(player -> Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, player)))
+        .collect(Collectors.toSet());
     if (includeSelf) {
       allies.add(p1);
     } else {
@@ -62,21 +55,14 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   public boolean isAtWarWithAnyOfThesePlayers(final PlayerID p1, final Collection<PlayerID> p2s) {
-    for (final PlayerID p2 : p2s) {
-      if (Matches.relationshipTypeIsAtWar().test((getRelationshipType(p1, p2)))) {
-        return true;
-      }
-    }
-    return false;
+    return p2s.stream()
+        .anyMatch(p2 -> Matches.relationshipTypeIsAtWar().test((getRelationshipType(p1, p2))));
   }
 
   public Set<PlayerID> getEnemies(final PlayerID p1) {
-    final Set<PlayerID> enemies = new HashSet<>();
-    for (final PlayerID player : getData().getPlayerList().getPlayers()) {
-      if (Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, player))) {
-        enemies.add(player);
-      }
-    }
+    final Set<PlayerID> enemies = getData().getPlayerList().getPlayers().stream()
+        .filter(player -> Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, player)))
+        .collect(Collectors.toSet());
     enemies.remove(p1);
     return enemies;
   }
@@ -90,15 +76,6 @@ public class RelationshipInterpreter extends GameDataComponent {
    */
   public boolean isNeutral(final PlayerID p1, final PlayerID p2) {
     return Matches.relationshipTypeIsNeutral().test((getRelationshipType(p1, p2)));
-  }
-
-  public boolean isNeutralWithAnyOfThesePlayers(final PlayerID p1, final Collection<PlayerID> p2s) {
-    for (final PlayerID p2 : p2s) {
-      if (Matches.relationshipTypeIsNeutral().test((getRelationshipType(p1, p2)))) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public boolean canMoveLandUnitsOverOwnedLand(final PlayerID p1, final PlayerID p2) {

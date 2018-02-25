@@ -44,12 +44,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
       return false;
     }
     // make sure at least 1 player is enabled
-    for (final PlayerSelectorRow player : playerTypes) {
-      if (player.isPlayerEnabled()) {
-        return true;
-      }
-    }
-    return false;
+    return playerTypes.stream()
+        .anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
 
   @Override

@@ -1,5 +1,8 @@
 package games.strategy.engine.framework.map.download;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -22,12 +25,8 @@ public class MapDownloadHelpPanel extends JPanel {
   }
 
   private static String buildHelpHtmlOutput() {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("<html>");
-    for (final String helpComment : HELP_COMMENTS) {
-      sb.append("<li>").append(helpComment).append("</li>");
-    }
-    sb.append("</html>");
-    return sb.toString();
+    return Arrays.stream(HELP_COMMENTS)
+        .map(helpComment -> "<li>" + helpComment + "</li>")
+        .collect(Collectors.joining("", "<html>", "</html>"));
   }
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -69,12 +70,10 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       if (players.size() > 0) {
-        final List<Icon> icons = new ArrayList<>(players.size());
-        for (final String player : players) {
-          if (uiContext != null && uiContext.getFlagImageFactory() != null) {
-            icons.add(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerId(player))));
-          }
-        }
+        final List<Icon> icons = players.stream()
+            .filter(player -> uiContext != null && uiContext.getFlagImageFactory() != null)
+            .map(player -> new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerId(player))))
+            .collect(Collectors.toCollection(() -> new ArrayList<>(players.size())));
         maxIconCounter = Math.max(maxIconCounter, icons.size());
         playerMap.put(playerNode.toString(), players);
         if (uiContext == null) {

@@ -444,12 +444,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private boolean isNameTaken(final String nodeName) {
-    for (final INode node : getNodes()) {
-      if (node.getName().equalsIgnoreCase(nodeName)) {
-        return true;
-      }
-    }
-    return false;
+    return getNodes().stream()
+        .map(INode::getName)
+        .anyMatch(nodeName::equalsIgnoreCase);
   }
 
   public String getUniqueName(String currentName) {

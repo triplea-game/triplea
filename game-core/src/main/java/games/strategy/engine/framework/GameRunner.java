@@ -23,6 +23,7 @@ import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SE
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_STARTED;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -510,13 +511,8 @@ public class GameRunner {
 
   public static void exitGameIfFinished() {
     SwingUtilities.invokeLater(() -> {
-      boolean allFramesClosed = true;
-      for (final Frame f : Frame.getFrames()) {
-        if (f.isVisible()) {
-          allFramesClosed = false;
-          break;
-        }
-      }
+      final boolean allFramesClosed = Arrays.stream(Frame.getFrames())
+          .noneMatch(Component::isVisible);
       if (allFramesClosed) {
         System.exit(0);
       }
