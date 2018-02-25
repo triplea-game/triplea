@@ -664,7 +664,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           final Set<INode> nodes = serverMessenger.getNodes();
           nodes.stream()
               .filter(node -> node.getName().equals(playedBy))
-              .findFirst()
+              .findAny()
               .ifPresent(node -> remotePlayers.put(player, node));
         }
       }

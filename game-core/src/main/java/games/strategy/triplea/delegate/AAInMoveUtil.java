@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -237,6 +238,7 @@ class AAInMoveUtil implements Serializable {
     }
 
     return units.stream()
+        .filter(Objects::nonNull)
         .filter(u -> u != null && u.getOwner() != null)
         .findFirst()
         .map(Unit::getOwner)

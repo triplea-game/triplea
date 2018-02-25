@@ -428,8 +428,8 @@ public class StatPanel extends AbstractStatPanel {
     @Override
     public double getValue(final PlayerID player, final GameData data) {
       int production = data.getMap().getTerritories().stream()
-          .filter(place -> place.getOwner().equals(player)
-              && Matches.territoryCanCollectIncomeFrom(player, data).test(place))
+          .filter(place -> place.getOwner().equals(player))
+          .filter(place -> Matches.territoryCanCollectIncomeFrom(player, data).test(place))
           .mapToInt(TerritoryAttachment::getProduction)
           .sum();
       /*
@@ -457,7 +457,8 @@ public class StatPanel extends AbstractStatPanel {
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player);
       // sum the total match count
       return data.getMap().getTerritories().stream()
-          .mapToInt(place -> place.getUnits().countMatches(ownedBy))
+          .map(Territory::getUnits)
+          .mapToInt(units -> units.countMatches(ownedBy))
           .sum();
     }
   }

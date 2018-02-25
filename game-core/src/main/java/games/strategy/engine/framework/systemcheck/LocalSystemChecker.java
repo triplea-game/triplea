@@ -55,7 +55,7 @@ public final class LocalSystemChecker {
   public Set<Exception> getExceptions() {
     return systemChecks.stream()
         .filter(systemCheck -> systemCheck.getException().isPresent())
-            .map(systemCheck -> systemCheck.getException().get())
+        .map(systemCheck -> systemCheck.getException().get())
         .collect(Collectors.toSet());
   }
 

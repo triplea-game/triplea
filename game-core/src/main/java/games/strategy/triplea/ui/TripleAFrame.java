@@ -822,7 +822,9 @@ public class TripleAFrame extends MainGameFrame {
     final boolean lhtrProd = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     final int carrierCount = GameStepPropertiesHelper.getCombinedTurns(data, id).stream()
-        .mapToInt(p -> p.getUnits().getMatches(Matches.unitIsCarrier()).size())
+        .map(PlayerID::getUnits)
+        .map(units -> units.getMatches(Matches.unitIsCarrier()))
+        .mapToInt(List::size)
         .sum();
     final boolean canProduceCarriersUnderFighter = lhtrProd && carrierCount != 0;
     if (canProduceCarriersUnderFighter && carrierCount > 0) {
