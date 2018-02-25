@@ -99,7 +99,7 @@ public class LobbyLogin {
   }
 
   private static String playerMacIdString() {
-    final String mac = MacFinder.getHashedMacAddress(new byte[6]);
+    final String mac = MacFinder.getHashedMacAddress();
     return mac.substring(mac.length() - 10);
   }
 
