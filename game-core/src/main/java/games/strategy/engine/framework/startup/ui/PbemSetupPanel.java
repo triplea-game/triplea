@@ -92,16 +92,13 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   private void createComponents() {
     final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
-    localPlayerPanel.addHierarchyListener(new HierarchyListener() {
-      @Override
-      public void hierarchyChanged(final HierarchyEvent e) {
-        final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
-        if (window instanceof Dialog) {
-          final Dialog dialog = (Dialog) window;
-          if (!dialog.isResizable()) {
-            dialog.setResizable(true);
-            dialog.setMinimumSize(new Dimension(700, 700));
-          }
+    localPlayerPanel.addHierarchyListener(e -> {
+      final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
+      if (window instanceof Dialog) {
+        final Dialog dialog = (Dialog) window;
+        if (!dialog.isResizable()) {
+          dialog.setResizable(true);
+          dialog.setMinimumSize(new Dimension(700, 700));
         }
       }
     });

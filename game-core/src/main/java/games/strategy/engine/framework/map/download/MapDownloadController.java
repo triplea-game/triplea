@@ -169,13 +169,10 @@ public class MapDownloadController {
   }
 
   private static UserMaps getUserMaps() {
-    return new UserMaps() {
-      @Override
-      public boolean isEmpty() {
-        final String[] entries = ClientFileSystemHelper.getUserMapsFolder().list();
-        final int entryCount = Optional.ofNullable(entries).map(it -> it.length).orElse(0);
-        return entryCount == 0;
-      }
+    return () -> {
+      final String[] entries = ClientFileSystemHelper.getUserMapsFolder().list();
+      final int entryCount = Optional.ofNullable(entries).map(it -> it.length).orElse(0);
+      return entryCount == 0;
     };
   }
 

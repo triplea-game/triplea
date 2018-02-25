@@ -8,8 +8,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -344,37 +342,28 @@ public class PlacementPicker extends JFrame {
     showIncompleteMode = false;
     incompleteNum = 1;
     showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
-    showAllModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        showAllMode = showAllModeItem.getState();
-        repaint();
-      }
+    showAllModeItem.addActionListener(event -> {
+      showAllMode = showAllModeItem.getState();
+      repaint();
     });
     showOverflowModeItem = new JCheckBoxMenuItem("Show Overflow Mode", false);
-    showOverflowModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        showOverflowMode = showOverflowModeItem.getState();
-        repaint();
-      }
+    showOverflowModeItem.addActionListener(event -> {
+      showOverflowMode = showOverflowModeItem.getState();
+      repaint();
     });
     showIncompleteModeItem = new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
-    showIncompleteModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        if (showIncompleteModeItem.getState()) {
-          final String num = JOptionPane.showInputDialog(null,
-              "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
-          try {
-            incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
-          } catch (final Exception ex) {
-            incompleteNum = 1;
-          }
+    showIncompleteModeItem.addActionListener(event -> {
+      if (showIncompleteModeItem.getState()) {
+        final String num = JOptionPane.showInputDialog(null,
+            "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
+        try {
+          incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
+        } catch (final Exception ex) {
+          incompleteNum = 1;
         }
-        showIncompleteMode = showIncompleteModeItem.getState();
-        repaint();
       }
+      showIncompleteMode = showIncompleteModeItem.getState();
+      repaint();
     });
     final JMenu editMenu = new JMenu("Edit");
     editMenu.setMnemonic('E');
