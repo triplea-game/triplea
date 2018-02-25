@@ -12,10 +12,10 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
@@ -435,48 +435,49 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .putAll(super.createPropertyMap())
-        .put("countEach", AttachmentProperty.of(this::getCountEach))
-        .put("eachMultiple", AttachmentProperty.of(this::getEachMultiple))
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .putAll(super.getPropertyMap())
+        .put("countEach", MutableProperty.ofReadOnlyBoolean(this::getCountEach))
+        .put("eachMultiple", MutableProperty.ofReadOnlyInteger(this::getEachMultiple))
         .put("players",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("objectiveValue",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setObjectiveValue,
                 this::setObjectiveValue,
                 this::getObjectiveValue,
                 this::resetObjectiveValue))
         .put("uses",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("turns",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Map.class,
                 this::setTurns,
                 this::setTurns,
                 this::getTurns,
                 this::resetTurns))
         .put("switch",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setSwitch,
                 this::setSwitch,
                 this::getSwitch,
                 this::resetSwitch))
         .put("gameProperty",
-            AttachmentProperty.of(
-                this::setGameProperty,
+            MutableProperty.ofString(
                 this::setGameProperty,
                 this::getGameProperty,
                 this::resetGameProperty))
-        .put("rounds", AttachmentProperty.of(this::setRounds, this::setRounds))
+        .put("rounds", MutableProperty.of(String.class, this::setRounds, this::setRounds))
         .build();
   }
 }

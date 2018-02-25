@@ -10,10 +10,10 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -595,99 +595,108 @@ public class PlayerAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .put("vps", AttachmentProperty.of(this::setVps, this::setVps, this::getVps, this::resetVps))
+  @Override
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .put("vps",
+            MutableProperty.ofInteger(
+                this::setVps,
+                this::setVps,
+                this::getVps,
+                this::resetVps))
         .put("captureVps",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setCaptureVps,
                 this::setCaptureVps,
                 this::getCaptureVps,
                 this::resetCaptureVps))
         .put("retainCapitalNumber",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setRetainCapitalNumber,
                 this::setRetainCapitalNumber,
                 this::getRetainCapitalNumber,
                 this::resetRetainCapitalNumber))
         .put("retainCapitalProduceNumber",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setRetainCapitalProduceNumber,
                 this::setRetainCapitalProduceNumber,
                 this::getRetainCapitalProduceNumber,
                 this::resetRetainCapitalProduceNumber))
         .put("giveUnitControl",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setGiveUnitControl,
                 this::setGiveUnitControl,
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
         .put("captureUnitOnEnteringBy",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("shareTechnology",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setShareTechnology,
                 this::setShareTechnology,
                 this::getShareTechnology,
                 this::resetShareTechnology))
         .put("helpPayTechCost",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setHelpPayTechCost,
                 this::setHelpPayTechCost,
                 this::getHelpPayTechCost,
                 this::resetHelpPayTechCost))
         .put("destroysPUs",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setDestroysPUs,
                 this::setDestroysPUs,
                 this::getDestroysPUs,
                 this::resetDestroysPUs))
         .put("immuneToBlockade",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setImmuneToBlockade,
                 this::setImmuneToBlockade,
                 this::getImmuneToBlockade,
                 this::resetImmuneToBlockade))
         .put("suicideAttackResources",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setSuicideAttackResources,
                 this::setSuicideAttackResources,
                 this::getSuicideAttackResources,
                 this::resetSuicideAttackResources))
         .put("suicideAttackTargets",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setSuicideAttackTargets,
                 this::setSuicideAttackTargets,
                 this::getSuicideAttackTargets,
                 this::resetSuicideAttackTargets))
         .put("placementLimit",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
         .put("movementLimit",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put("attackingLimit",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setAttackingLimit,
                 this::setAttackingLimit,
                 this::getAttackingLimit,
                 this::resetAttackingLimit))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

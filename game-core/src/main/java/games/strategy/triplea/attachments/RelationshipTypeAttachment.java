@@ -5,10 +5,10 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -410,85 +410,69 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  @Override
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("archeType",
-            AttachmentProperty.of(
-                this::setArcheType,
+            MutableProperty.ofString(
                 this::setArcheType,
                 this::getArcheType,
                 this::resetArcheType))
         .put("canMoveLandUnitsOverOwnedLand",
-            AttachmentProperty.of(
-                this::setCanMoveLandUnitsOverOwnedLand,
+            MutableProperty.ofString(
                 this::setCanMoveLandUnitsOverOwnedLand,
                 this::getCanMoveLandUnitsOverOwnedLand,
                 this::resetCanMoveLandUnitsOverOwnedLand))
         .put("canMoveAirUnitsOverOwnedLand",
-            AttachmentProperty.of(
-                this::setCanMoveAirUnitsOverOwnedLand,
+            MutableProperty.ofString(
                 this::setCanMoveAirUnitsOverOwnedLand,
                 this::getCanMoveAirUnitsOverOwnedLand,
                 this::resetCanMoveAirUnitsOverOwnedLand))
         .put("alliancesCanChainTogether",
-            AttachmentProperty.of(
-                this::setAlliancesCanChainTogether,
+            MutableProperty.ofString(
                 this::setAlliancesCanChainTogether,
                 this::getAlliancesCanChainTogether,
                 this::resetAlliancesCanChainTogether))
         .put("isDefaultWarPosition",
-            AttachmentProperty.of(
-                this::setIsDefaultWarPosition,
+            MutableProperty.ofString(
                 this::setIsDefaultWarPosition,
                 this::getIsDefaultWarPosition,
                 this::resetIsDefaultWarPosition))
         .put("upkeepCost",
-            AttachmentProperty.of(
-                this::setUpkeepCost,
+            MutableProperty.ofString(
                 this::setUpkeepCost,
                 this::getUpkeepCost,
                 this::resetUpkeepCost))
         .put("canLandAirUnitsOnOwnedLand",
-            AttachmentProperty.of(
-                this::setCanLandAirUnitsOnOwnedLand,
+            MutableProperty.ofString(
                 this::setCanLandAirUnitsOnOwnedLand,
                 this::getCanLandAirUnitsOnOwnedLand,
                 this::resetCanLandAirUnitsOnOwnedLand))
         .put("canTakeOverOwnedTerritory",
-            AttachmentProperty.of(
-                this::setCanTakeOverOwnedTerritory,
+            MutableProperty.ofString(
                 this::setCanTakeOverOwnedTerritory,
                 this::getCanTakeOverOwnedTerritory,
                 this::resetCanTakeOverOwnedTerritory))
         .put("givesBackOriginalTerritories",
-            AttachmentProperty.of(
-                this::setGivesBackOriginalTerritories,
+            MutableProperty.ofString(
                 this::setGivesBackOriginalTerritories,
                 this::getGivesBackOriginalTerritories,
                 this::resetGivesBackOriginalTerritories))
         .put("canMoveIntoDuringCombatMove",
-            AttachmentProperty.of(
-                this::setCanMoveIntoDuringCombatMove,
+            MutableProperty.ofString(
                 this::setCanMoveIntoDuringCombatMove,
                 this::getCanMoveIntoDuringCombatMove,
                 this::resetCanMoveIntoDuringCombatMove))
         .put("canMoveThroughCanals",
-            AttachmentProperty.of(
-                this::setCanMoveThroughCanals,
+            MutableProperty.ofString(
                 this::setCanMoveThroughCanals,
                 this::getCanMoveThroughCanals,
                 this::resetCanMoveThroughCanals))
         .put("rocketsCanFlyOver",
-            AttachmentProperty.of(
-                this::setRocketsCanFlyOver,
+            MutableProperty.ofString(
                 this::setRocketsCanFlyOver,
                 this::getRocketsCanFlyOver,
                 this::resetRocketsCanFlyOver))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

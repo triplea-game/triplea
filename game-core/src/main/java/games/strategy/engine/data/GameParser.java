@@ -1249,7 +1249,7 @@ public final class GameParser {
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
-    final Map<String, AttachmentProperty<?>> attachmentMap = attachment.getPropertyMap();
+    final Map<String, MutableProperty<?>> attachmentMap = attachment.getPropertyMap();
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
@@ -1261,11 +1261,17 @@ public final class GameParser {
       final String value = current.getAttribute("value");
       final String count = current.getAttribute("count");
       final String itemValues = (count.length() > 0 ? count + ":" : "") + value;
-      Optional.ofNullable(attachmentMap.get(name))
-          .orElseThrow(() -> new GameParseException(String.format(
-              "Missing property definition for option '%s' in attachment '%s'",
-              name, attachment.getName())))
-          .setValue(itemValues);
+      try {
+        Optional.ofNullable(attachmentMap.get(name))
+            .orElseThrow(() -> new GameParseException(String.format(
+                "Missing property definition for option '%s' in attachment '%s'",
+                name, attachment.getName())))
+            .setValue(itemValues);
+      } catch (final GameParseException e) {
+        throw e;
+      } catch (final Exception e) {
+        throw new GameParseException("Unexpected Exception while setting values for attachment" + attachment, e);
+      }
 
       options.add(Tuple.of(name, itemValues));
     }

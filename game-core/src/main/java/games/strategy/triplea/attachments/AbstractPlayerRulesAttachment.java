@@ -5,9 +5,9 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -335,77 +335,78 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .putAll(super.getPropertyMap())
         .put("movementRestrictionType",
-            AttachmentProperty.of(
-                this::setMovementRestrictionType,
+            MutableProperty.ofString(
                 this::setMovementRestrictionType,
                 this::getMovementRestrictionType,
                 this::resetMovementRestrictionType))
         .put("movementRestrictionTerritories",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                String[].class,
                 this::setMovementRestrictionTerritories,
                 this::setMovementRestrictionTerritories,
                 this::getMovementRestrictionTerritories,
                 this::resetMovementRestrictionTerritories))
         .put("placementAnyTerritory",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setPlacementAnyTerritory,
                 this::setPlacementAnyTerritory,
                 this::getPlacementAnyTerritory,
                 this::resetPlacementAnyTerritory))
         .put("placementAnySeaZone",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setPlacementAnySeaZone,
                 this::setPlacementAnySeaZone,
                 this::getPlacementAnySeaZone,
                 this::resetPlacementAnySeaZone))
         .put("placementCapturedTerritory",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setPlacementCapturedTerritory,
                 this::setPlacementCapturedTerritory,
                 this::getPlacementCapturedTerritory,
                 this::resetPlacementCapturedTerritory))
         .put("unlimitedProduction",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setUnlimitedProduction,
                 this::setUnlimitedProduction,
                 this::getUnlimitedProduction,
                 this::resetUnlimitedProduction))
         .put("placementInCapitalRestricted",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setPlacementInCapitalRestricted,
                 this::setPlacementInCapitalRestricted,
                 this::getPlacementInCapitalRestricted,
                 this::resetPlacementInCapitalRestricted))
         .put("dominatingFirstRoundAttack",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setDominatingFirstRoundAttack,
                 this::setDominatingFirstRoundAttack,
                 this::getDominatingFirstRoundAttack,
                 this::resetDominatingFirstRoundAttack))
         .put("negateDominatingFirstRoundAttack",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setNegateDominatingFirstRoundAttack,
                 this::setNegateDominatingFirstRoundAttack,
                 this::getNegateDominatingFirstRoundAttack,
                 this::resetNegateDominatingFirstRoundAttack))
         .put("productionPerXTerritories",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setProductionPerXTerritories,
                 this::setProductionPerXTerritories,
                 this::getProductionPerXTerritories,
                 this::resetProductionPerXTerritories))
         .put("placementPerTerritory",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setPlacementPerTerritory,
                 this::setPlacementPerTerritory,
                 this::getPlacementPerTerritory,
                 this::resetPlacementPerTerritory))
         .put("maxPlacePerTerritory",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setMaxPlacePerTerritory,
                 this::setMaxPlacePerTerritory,
                 this::getMaxPlacePerTerritory,

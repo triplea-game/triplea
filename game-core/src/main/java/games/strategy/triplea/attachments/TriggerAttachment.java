@@ -15,12 +15,12 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -2605,188 +2605,207 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .putAll(super.getPropertyMap())
         .put("frontier",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                ProductionFrontier.class,
                 this::setFrontier,
                 this::setFrontier,
                 this::getFrontier,
                 this::resetFrontier))
         .put("productionRule",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setProductionRule,
                 this::setProductionRule,
                 this::getProductionRule,
                 this::resetProductionRule))
         .put("tech",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setTech,
                 this::setTech,
                 this::getTech,
                 this::resetTech))
         .put("availableTech",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Map.class,
                 this::setAvailableTech,
                 this::setAvailableTech,
                 this::getAvailableTech,
                 this::resetAvailableTech))
         .put("placement",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Map.class,
                 this::setPlacement,
                 this::setPlacement,
                 this::getPlacement,
                 this::resetPlacement))
         .put("removeUnits",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Map.class,
                 this::setRemoveUnits,
                 this::setRemoveUnits,
                 this::getRemoveUnits,
                 this::resetRemoveUnits))
         .put("purchase",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setPurchase,
                 this::setPurchase,
                 this::getPurchase,
                 this::resetPurchase))
         .put("resource",
-            AttachmentProperty.of(
-                this::setResource,
+            MutableProperty.ofString(
                 this::setResource,
                 this::getResource,
                 this::resetResource))
         .put("resourceCount",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setResourceCount,
                 this::setResourceCount,
                 this::getResourceCount,
                 this::resetResourceCount))
         .put("support",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Map.class,
                 this::setSupport,
                 this::setSupport,
                 this::getSupport,
                 this::resetSupport))
         .put("relationshipChange",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setRelationshipChange,
                 this::setRelationshipChange,
                 this::getRelationshipChange,
                 this::resetRelationshipChange))
         .put("victory",
-            AttachmentProperty.of(
-                this::setVictory,
+            MutableProperty.ofString(
                 this::setVictory,
                 this::getVictory,
                 this::resetVictory))
         .put("activateTrigger",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setActivateTrigger,
                 this::setActivateTrigger,
                 this::getActivateTrigger,
                 this::resetActivateTrigger))
         .put("changeOwnership",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setChangeOwnership,
                 this::setChangeOwnership,
                 this::getChangeOwnership,
                 this::resetChangeOwnership))
         .put("unitType",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
         .put("unitAttachmentName",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Tuple.class,
                 this::setUnitAttachmentName,
                 this::setUnitAttachmentName,
                 this::getUnitAttachmentName,
                 this::resetUnitAttachmentName))
         .put("unitProperty",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setUnitProperty,
                 this::setUnitProperty,
                 this::getUnitProperty,
                 this::resetUnitProperty))
         .put("territories",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setTerritories,
                 this::setTerritories,
                 this::getTerritories,
                 this::resetTerritories))
         .put("territoryAttachmentName",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Tuple.class,
                 this::setTerritoryAttachmentName,
                 this::setTerritoryAttachmentName,
                 this::getTerritoryAttachmentName,
                 this::resetTerritoryAttachmentName))
         .put("territoryProperty",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setTerritoryProperty,
                 this::setTerritoryProperty,
                 this::getTerritoryProperty,
                 this::resetTerritoryProperty))
         .put("players",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("playerAttachmentName",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Tuple.class,
                 this::setPlayerAttachmentName,
                 this::setPlayerAttachmentName,
                 this::getPlayerAttachmentName,
                 this::resetPlayerAttachmentName))
         .put("playerProperty",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setPlayerProperty,
                 this::setPlayerProperty,
                 this::getPlayerProperty,
                 this::resetPlayerProperty))
         .put("relationshipTypes",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setRelationshipTypes,
                 this::setRelationshipTypes,
                 this::getRelationshipTypes,
                 this::resetRelationshipTypes))
         .put("relationshipTypeAttachmentName",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Tuple.class,
                 this::setRelationshipTypeAttachmentName,
                 this::setRelationshipTypeAttachmentName,
                 this::getRelationshipTypeAttachmentName,
                 this::resetRelationshipTypeAttachmentName))
         .put("relationshipTypeProperty",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setRelationshipTypeProperty,
                 this::setRelationshipTypeProperty,
                 this::getRelationshipTypeProperty,
                 this::resetRelationshipTypeProperty))
         .put("territoryEffects",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setTerritoryEffects,
                 this::setTerritoryEffects,
                 this::getTerritoryEffects,
                 this::resetTerritoryEffects))
         .put("territoryEffectAttachmentName",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Tuple.class,
                 this::setTerritoryEffectAttachmentName,
                 this::setTerritoryEffectAttachmentName,
                 this::getTerritoryEffectAttachmentName,
                 this::resetTerritoryEffectAttachmentName))
         .put("territoryEffectProperty",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setTerritoryEffectProperty,
                 this::setTerritoryEffectProperty,
                 this::getTerritoryEffectProperty,
                 this::resetTerritoryEffectProperty))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

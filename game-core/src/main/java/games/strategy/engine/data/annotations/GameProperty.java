@@ -6,9 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that marks a method as a setter called through reflection by the GameParser (through the xml) and/or
- * PropertyUtil (through the
- * ChangeFactory).
+ * Annotation that marks a method as a setter called by the GameParser (through the xml) and/or
+ * PropertyUtil (through the ChangeFactory).
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

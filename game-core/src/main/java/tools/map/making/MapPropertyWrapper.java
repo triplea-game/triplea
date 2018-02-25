@@ -17,6 +17,8 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.properties.AEditableProperty;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.CollectionProperty;
@@ -28,7 +30,6 @@ import games.strategy.engine.data.properties.MapProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.data.properties.StringProperty;
-import games.strategy.util.PropertyUtil;
 import games.strategy.util.Tuple;
 import tools.util.ToolLogger;
 
@@ -130,7 +131,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
           setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
 
       final String fieldName = Introspector.decapitalize(propertyName);
-      final Field field = PropertyUtil.getPropertyField(fieldName, object.getClass());
+      final Field field = getPropertyField(fieldName, object.getClass());
       final Object currentValue;
       try {
         currentValue = field.get(object);
@@ -171,6 +172,46 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   @Override
   public boolean validate(final Object value) {
     return property.validate(value);
+  }
+
+
+  private static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
+      final boolean justFromSuper) {
+    if (!justFromSuper) {
+      try {
+        return c.getDeclaredField(name); // TODO: unchecked reflection
+      } catch (final NoSuchFieldException e) {
+        return getFieldIncludingFromSuperClasses(c, name, true);
+      }
+    }
+
+    if (c.getSuperclass() == null) {
+      throw new IllegalStateException("No such Property Field: " + name);
+    }
+    try {
+      return c.getSuperclass().getDeclaredField(name); // TODO: unchecked reflection
+    } catch (final NoSuchFieldException e) {
+      return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
+    }
+  }
+
+  /**
+   * Gets the backing field for the property with the specified name in the specified type.
+   *
+   * @param propertyName The property name.
+   * @param type The type that hosts the property.
+   *
+   * @return The backing field for the specified property.
+   *
+   * @throws IllegalStateException If no backing field for the specified property exists.
+   */
+  @VisibleForTesting
+  static Field getPropertyField(final String propertyName, final Class<?> type) {
+    try {
+      return getFieldIncludingFromSuperClasses(type, "m_" + propertyName, false);
+    } catch (final IllegalStateException ignored) {
+      return getFieldIncludingFromSuperClasses(type, propertyName, false);
+    }
   }
 
   public static void main(final String[] args) {

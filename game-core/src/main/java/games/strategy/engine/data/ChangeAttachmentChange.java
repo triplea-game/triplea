@@ -1,7 +1,5 @@
 package games.strategy.engine.data;
 
-import games.strategy.util.PropertyUtil;
-
 public class ChangeAttachmentChange extends Change {
   private static final long serialVersionUID = -6447264150952218283L;
   private final Attachable attachedTo;
@@ -31,7 +29,7 @@ public class ChangeAttachmentChange extends Change {
     attachedTo = attachment.getAttachedTo();
     clearFirst = false;
     attachmentName = attachment.getName();
-    oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
+    oldValue = attachment.getPropertyOrThrow(property).getValue();
     this.newValue = newValue;
     this.property = property;
   }
@@ -49,7 +47,7 @@ public class ChangeAttachmentChange extends Change {
     attachedTo = attachment.getAttachedTo();
     clearFirst = resetFirst;
     attachmentName = attachment.getName();
-    oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
+    oldValue = attachment.getPropertyOrThrow(property).getValue();
     this.newValue = newValue;
     this.property = property;
   }
@@ -72,7 +70,19 @@ public class ChangeAttachmentChange extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = attachedTo.getAttachment(attachmentName);
-    PropertyUtil.set(property, newValue, attachment, clearFirst);
+    final MutableProperty<?> attachmentProperty = attachment.getPropertyOrThrow(property);
+    if (clearFirst) {
+      attachmentProperty.resetValue();
+    }
+    try {
+      attachmentProperty.setValue(newValue);
+    } catch (final MutableProperty.InvalidValueException e) {
+      throw new IllegalStateException(
+          String.format(
+              "failed to set value '%s' on property '%s' for attachment '%s' associated with '%s'",
+              newValue, property, attachmentName, attachedTo),
+          e);
+    }
   }
 
   @Override

@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -822,125 +822,126 @@ public class TerritoryAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  @Override
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("capital",
-            AttachmentProperty.of(
-                this::setCapital,
+            MutableProperty.ofString(
                 this::setCapital,
                 this::getCapital,
                 this::resetCapital))
         .put("originalFactory",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setOriginalFactory,
                 this::setOriginalFactory,
                 this::getOriginalFactory,
                 this::resetOriginalFactory))
         .put("production",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setProduction,
                 this::setProduction,
                 this::getProduction,
                 this::resetProduction))
         .put("productionOnly",
-            AttachmentProperty.ofWriteOnlyString(
+            MutableProperty.ofWriteOnlyString(
                 this::setProductionOnly))
         .put("victoryCity",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setVictoryCity,
                 this::setVictoryCity,
                 this::getVictoryCity,
                 this::resetVictoryCity))
         .put("isImpassable",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setIsImpassable,
                 this::setIsImpassable,
                 this::getIsImpassable,
                 this::resetIsImpassable))
         .put("originalOwner",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                PlayerID.class,
                 this::setOriginalOwner,
                 this::setOriginalOwner,
                 this::getOriginalOwner,
                 this::resetOriginalOwner))
         .put("convoyRoute",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setConvoyRoute,
                 this::setConvoyRoute,
                 this::getConvoyRoute,
                 this::resetConvoyRoute))
         .put("convoyAttached",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                HashSet.class,
                 this::setConvoyAttached,
                 this::setConvoyAttached,
                 this::getConvoyAttached,
                 this::resetConvoyAttached))
         .put("changeUnitOwners",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                ArrayList.class,
                 this::setChangeUnitOwners,
                 this::setChangeUnitOwners,
                 this::getChangeUnitOwners,
                 this::resetChangeUnitOwners))
         .put("captureUnitOnEnteringBy",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                ArrayList.class,
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("navalBase",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setNavalBase,
                 this::setNavalBase,
                 this::getNavalBase,
                 this::resetNavalBase))
         .put("airBase",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setAirBase,
                 this::setAirBase,
                 this::getAirBase,
                 this::resetAirBase))
         .put("kamikazeZone",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setKamikazeZone,
                 this::setKamikazeZone,
                 this::getKamikazeZone,
                 this::resetKamikazeZone))
         .put("unitProduction",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setUnitProduction,
                 this::setUnitProduction,
                 this::getUnitProduction,
                 this::resetUnitProduction))
         .put("blockadeZone",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setBlockadeZone,
                 this::setBlockadeZone,
                 this::getBlockadeZone,
                 this::resetBlockadeZone))
         .put("territoryEffect",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                ArrayList.class,
                 this::setTerritoryEffect,
                 this::setTerritoryEffect,
                 this::getTerritoryEffect,
                 this::resetTerritoryEffect))
         .put("whenCapturedByGoesTo",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                ArrayList.class,
                 this::setWhenCapturedByGoesTo,
                 this::setWhenCapturedByGoesTo,
                 this::getWhenCapturedByGoesTo,
                 this::resetWhenCapturedByGoesTo))
         .put("resources",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                ResourceCollection.class,
                 this::setResources,
                 this::setResources,
                 this::getResources,
                 this::resetResources))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

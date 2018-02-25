@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -169,26 +169,24 @@ public class CanalAttachment extends DefaultAttachment {
     }
   }
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .put("canalName", AttachmentProperty.of(this::setCanalName, this::getCanalName, this::resetCanalName))
+  @Override
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .put("canalName", MutableProperty.ofString(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setLandTerritories,
                 this::setLandTerritories,
                 this::getLandTerritories,
                 this::resetLandTerritories))
         .put("excludedUnits",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setExcludedUnits,
                 this::setExcludedUnits,
                 this::getExcludedUnits,
                 this::resetExcludedUnits))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

@@ -4,7 +4,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
-import games.strategy.util.PropertyUtil;
+import games.strategy.engine.data.MutableProperty;
 
 class AttachmentPropertyResetUndo extends Change {
   private static final long serialVersionUID = 5943939650116851332L;
@@ -32,7 +32,15 @@ class AttachmentPropertyResetUndo extends Change {
   @Override
   public void perform(final GameData data) {
     final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
-    PropertyUtil.set(m_property, m_newValue, attachment, false);
+    try {
+      attachment.getPropertyOrThrow(m_property).setValue(m_newValue);
+    } catch (final MutableProperty.InvalidValueException e) {
+      throw new IllegalStateException(
+          String.format(
+              "failed to set value '%s' on property '%s' for attachment '%s' associated with '%s'",
+              m_newValue, m_property, m_attachmentName, m_attachedTo),
+          e);
+    }
   }
 
   @Override

@@ -9,10 +9,10 @@ import java.util.function.Predicate;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -310,35 +310,36 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .putAll(super.getPropertyMap())
         .put("uses",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("usedThisRound",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,
                 this::resetUsedThisRound))
         .put("notification",
-            AttachmentProperty.of(
-                this::setNotification,
+            MutableProperty.ofString(
                 this::setNotification,
                 this::getNotification,
                 this::resetNotification))
         .put("when",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setWhen,
                 this::setWhen,
                 this::getWhen,
                 this::resetWhen))
         .put("trigger",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");
                 },

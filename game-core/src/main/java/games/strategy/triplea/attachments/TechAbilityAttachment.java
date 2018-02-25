@@ -19,10 +19,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -1084,157 +1084,169 @@ public class TechAbilityAttachment extends DefaultAttachment {
     }
   }
 
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  @Override
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("attackBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setAttackBonus,
                 this::setAttackBonus,
                 this::getAttackBonus,
                 this::resetAttackBonus))
         .put("defenseBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setDefenseBonus,
                 this::setDefenseBonus,
                 this::getDefenseBonus,
                 this::resetDefenseBonus))
         .put("movementBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setMovementBonus,
                 this::setMovementBonus,
                 this::getMovementBonus,
                 this::resetMovementBonus))
         .put("radarBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setRadarBonus,
                 this::setRadarBonus,
                 this::getRadarBonus,
                 this::resetRadarBonus))
         .put("airAttackBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setAirAttackBonus,
                 this::setAirAttackBonus,
                 this::getAirAttackBonus,
                 this::resetAirAttackBonus))
         .put("airDefenseBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setAirDefenseBonus,
                 this::setAirDefenseBonus,
                 this::getAirDefenseBonus,
                 this::resetAirDefenseBonus))
         .put("productionBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setProductionBonus,
                 this::setProductionBonus,
                 this::getProductionBonus,
                 this::resetProductionBonus))
         .put("minimumTerritoryValueForProductionBonus",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::getMinimumTerritoryValueForProductionBonus,
                 this::resetMinimumTerritoryValueForProductionBonus))
         .put("repairDiscount",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setRepairDiscount,
                 this::setRepairDiscount,
                 this::getRepairDiscount,
                 this::resetRepairDiscount))
         .put("warBondDiceSides",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setWarBondDiceSides,
                 this::setWarBondDiceSides,
                 this::getWarBondDiceSides,
                 this::resetWarBondDiceSides))
         .put("warBondDiceNumber",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setWarBondDiceNumber,
                 this::setWarBondDiceNumber,
                 this::getWarBondDiceNumber,
                 this::resetWarBondDiceNumber))
         .put("rocketDiceNumber",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setRocketDiceNumber,
                 this::setRocketDiceNumber,
                 this::getRocketDiceNumber,
                 this::resetRocketDiceNumber))
         .put("rocketDistance",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setRocketDistance,
                 this::setRocketDistance,
                 this::getRocketDistance,
                 this::resetRocketDistance))
         .put("rocketNumberPerTerritory",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setRocketNumberPerTerritory,
                 this::setRocketNumberPerTerritory,
                 this::getRocketNumberPerTerritory,
                 this::resetRocketNumberPerTerritory))
         .put("unitAbilitiesGained",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Map.class,
                 this::setUnitAbilitiesGained,
                 this::setUnitAbilitiesGained,
                 this::getUnitAbilitiesGained,
                 this::resetUnitAbilitiesGained))
         .put("airborneForces",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setAirborneForces,
                 this::setAirborneForces,
                 this::getAirborneForces,
                 this::resetAirborneForces))
         .put("airborneCapacity",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setAirborneCapacity,
                 this::setAirborneCapacity,
                 this::getAirborneCapacity,
                 this::resetAirborneCapacity))
         .put("airborneTypes",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setAirborneTypes,
                 this::setAirborneTypes,
                 this::getAirborneTypes,
                 this::resetAirborneTypes))
         .put("airborneDistance",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setAirborneDistance,
                 this::setAirborneDistance,
                 this::getAirborneDistance,
                 this::resetAirborneDistance))
         .put("airborneBases",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setAirborneBases,
                 this::setAirborneBases,
                 this::getAirborneBases,
                 this::resetAirborneBases))
         .put("airborneTargettedByAA",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Map.class,
                 this::setAirborneTargettedByAA,
                 this::setAirborneTargettedByAA,
                 this::getAirborneTargettedByAA,
                 this::resetAirborneTargettedByAA))
         .put("attackRollsBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setAttackRollsBonus,
                 this::setAttackRollsBonus,
                 this::getAttackRollsBonus,
                 this::resetAttackRollsBonus))
         .put("defenseRollsBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setDefenseRollsBonus,
                 this::setDefenseRollsBonus,
                 this::getDefenseRollsBonus,
                 this::resetDefenseRollsBonus))
         .put("bombingBonus",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                IntegerMap.class,
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,
                 this::resetBombingBonus))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

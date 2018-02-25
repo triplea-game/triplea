@@ -13,10 +13,10 @@ import java.util.stream.StreamSupport;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
@@ -420,71 +420,67 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-
-  private Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
+  @Override
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("unitType",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                Set.class,
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
-        .put("offence", AttachmentProperty.of(this::getOffence))
-        .put("defence", AttachmentProperty.of(this::getDefence))
-        .put("roll", AttachmentProperty.of(this::getRoll))
-        .put("strength", AttachmentProperty.of(this::getStrength))
+        .put("offence", MutableProperty.ofReadOnlyBoolean(this::getOffence))
+        .put("defence", MutableProperty.ofReadOnlyBoolean(this::getDefence))
+        .put("roll", MutableProperty.ofReadOnlyBoolean(this::getRoll))
+        .put("strength", MutableProperty.ofReadOnlyBoolean(this::getStrength))
         .put("bonus",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setBonus,
                 this::setBonus,
                 this::getBonus,
                 this::resetBonus))
         .put("number",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setNumber,
                 this::setNumber,
                 this::getNumber,
                 this::resetNumber))
-        .put("allied", AttachmentProperty.of(this::getAllied))
-        .put("enemy", AttachmentProperty.of(this::getEnemy))
+        .put("allied", MutableProperty.ofReadOnlyBoolean(this::getAllied))
+        .put("enemy", MutableProperty.ofReadOnlyBoolean(this::getEnemy))
         .put("bonusType",
-            AttachmentProperty.of(
-                this::setBonusType,
+            MutableProperty.ofString(
                 this::setBonusType,
                 this::getBonusType,
                 this::resetBonusType))
         .put("players",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("impArtTech",
-            AttachmentProperty.of(
+            MutableProperty.ofBoolean(
                 this::setImpArtTech,
                 this::setImpArtTech,
                 this::getImpArtTech,
                 this::resetImpArtTech))
         .put("dice",
-            AttachmentProperty.of(
+            MutableProperty.ofString(
                 this::setDice,
                 this::getDice,
                 this::resetDice))
         .put("side",
-            AttachmentProperty.of(
+            MutableProperty.ofString(
                 this::setSide,
                 this::getSide,
                 this::resetSide))
         .put("faction",
-            AttachmentProperty.of(
+            MutableProperty.ofString(
                 this::setFaction,
                 this::getFaction,
                 this::resetFaction))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

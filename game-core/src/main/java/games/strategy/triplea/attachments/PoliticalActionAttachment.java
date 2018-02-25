@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -152,20 +152,16 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .putAll(super.getPropertyMap())
         .put("relationshipChange",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setRelationshipChange,
                 this::setRelationshipChange,
                 this::getRelationshipChange,
                 this::resetRelationshipChange))
         .build();
-  }
-
-  @Override
-  public Map<String, AttachmentProperty<?>> getPropertyMap() {
-    return createPropertyMap();
   }
 }

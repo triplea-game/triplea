@@ -8,9 +8,9 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
-import games.strategy.engine.data.AttachmentProperty;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -210,35 +210,35 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
-  protected Map<String, AttachmentProperty<?>> createPropertyMap() {
-    return ImmutableMap.<String, AttachmentProperty<?>>builder()
-        .putAll(super.createPropertyMap())
+  public Map<String, MutableProperty<?>> getPropertyMap() {
+    return ImmutableMap.<String, MutableProperty<?>>builder()
+        .putAll(super.getPropertyMap())
         .put("text",
-            AttachmentProperty.of(
-                this::setText,
+            MutableProperty.ofString(
                 this::setText,
                 this::getText,
                 this::resetText))
         .put("costPU",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setCostPU,
                 this::setCostPU,
                 this::getCostPU,
                 this::resetCostPU))
         .put("attemptsPerTurn",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setAttemptsPerTurn,
                 this::setAttemptsPerTurn,
                 this::getAttemptsPerTurn,
                 this::resetAttemptsPerTurn))
         .put("attemptsLeftThisTurn",
-            AttachmentProperty.of(
+            MutableProperty.ofInteger(
                 this::setAttemptsLeftThisTurn,
                 this::setAttemptsLeftThisTurn,
                 this::getAttemptsLeftThisTurn,
                 this::resetAttemptsLeftThisTurn))
         .put("actionAccept",
-            AttachmentProperty.of(
+            MutableProperty.of(
+                List.class,
                 this::setActionAccept,
                 this::setActionAccept,
                 this::getActionAccept,
