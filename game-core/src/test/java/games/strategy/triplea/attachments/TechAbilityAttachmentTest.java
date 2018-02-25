@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -156,15 +158,16 @@ public class TechAbilityAttachmentTest {
 
   @Test
   public void testSumIntegerMap() {
-    final IntegerMap<UnitType> map = spy(new IntegerMap<>());
-    when(map.getInt(dummyUnitType)).thenReturn(-1, 20, 300);
-    final int result = TechAbilityAttachment.sumIntegerMap(a -> {
-      assertEquals(attachment, a);
-      return map;
-    }, dummyUnitType, mock(PlayerID.class), data);
+    @SuppressWarnings("unchecked")
+    final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper = mock(Function.class);
+    doReturn(
+        new IntegerMap<>(dummyUnitType, -1),
+        new IntegerMap<>(dummyUnitType, 20),
+        new IntegerMap<>(dummyUnitType, 300))
+            .when(mapper).apply(attachment);
+    final int result = TechAbilityAttachment.sumIntegerMap(mapper, dummyUnitType, mock(PlayerID.class), data);
     assertEquals(319, result);
   }
-
 
   @Test
   public void testSumNumbers() {
