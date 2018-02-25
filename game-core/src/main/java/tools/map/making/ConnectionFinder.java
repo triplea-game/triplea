@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -139,9 +138,9 @@ public class ConnectionFinder {
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
         mapOfPolygons == null ? new ArrayList<>() : new ArrayList<>(mapOfPolygons.keySet());
-    Collections.sort(allTerritories, new AlphanumComparator());
+    allTerritories.sort(new AlphanumComparator());
     final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
-    Collections.sort(allAreas, new AlphanumComparator());
+    allAreas.sort(new AlphanumComparator());
     final Map<String, Collection<String>> connections = new HashMap<>();
     for (final String territory : allTerritories) {
       final Set<String> thisTerritoryConnections = new LinkedHashSet<>();
@@ -210,7 +209,7 @@ public class ConnectionFinder {
    */
   private static StringBuilder doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {
     // sort for pretty xml's
-    Collections.sort(allTerritoryNames, new AlphanumComparator());
+    allTerritoryNames.sort(new AlphanumComparator());
     final StringBuilder output = new StringBuilder();
     output.append("<!-- Territory Definitions -->\r\n");
     final Pattern waterPattern = Pattern.compile(waterString);
@@ -240,7 +239,7 @@ public class ConnectionFinder {
     output.append("<!-- Territory Connections -->\r\n");
     // sort for pretty xml's
     final List<String> allTerritories = new ArrayList<>(connections.keySet());
-    Collections.sort(allTerritories, new AlphanumComparator());
+    allTerritories.sort(new AlphanumComparator());
     for (final String t1 : allTerritories) {
       for (final String t2 : connections.get(t1)) {
         output.append("<connection t1=\"").append(t1).append("\" t2=\"").append(t2).append("\"/>\r\n");

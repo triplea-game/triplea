@@ -50,7 +50,7 @@ public class ProBattleUtils {
 
     // Determine if enough attack power to win in 1 round
     final List<Unit> sortedUnitsList = new ArrayList<>(attackingUnits);
-    Collections.sort(sortedUnitsList,
+    sortedUnitsList.sort(
         new UnitBattleComparator(false, ProData.unitValueMap, TerritoryEffectHelper.getEffects(t), data, false, false));
     Collections.reverse(sortedUnitsList);
     final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
@@ -99,7 +99,7 @@ public class ProBattleUtils {
     final List<Unit> unitsThatCanFight =
         CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
-    Collections.sort(sortedUnitsList, new UnitBattleComparator(!attacking, ProData.unitValueMap,
+    sortedUnitsList.sort(new UnitBattleComparator(!attacking, ProData.unitValueMap,
         TerritoryEffectHelper.getEffects(t), data, false, false));
     Collections.reverse(sortedUnitsList);
     final int myPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,

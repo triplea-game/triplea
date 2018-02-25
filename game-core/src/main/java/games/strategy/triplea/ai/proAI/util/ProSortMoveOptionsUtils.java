@@ -27,7 +27,7 @@ public class ProSortMoveOptionsUtils {
   public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final Map<Unit, Set<Territory>> unitAttackOptions) {
 
     final List<Map.Entry<Unit, Set<Territory>>> list = new ArrayList<>(unitAttackOptions.entrySet());
-    Collections.sort(list, (o1, o2) -> {
+    list.sort((o1, o2) -> {
 
       // Sort by number of move options then cost of unit then unit type
       if (o1.getValue().size() != o2.getValue().size()) {
@@ -52,7 +52,7 @@ public class ProSortMoveOptionsUtils {
     final GameData data = ProData.getData();
 
     final List<Map.Entry<Unit, Set<Territory>>> list = new ArrayList<>(unitAttackOptions.entrySet());
-    Collections.sort(list, (o1, o2) -> {
+    list.sort((o1, o2) -> {
 
       // Find number of territories that still need units
       int numOptions1 = 0;
@@ -101,7 +101,7 @@ public class ProSortMoveOptionsUtils {
     final GameData data = ProData.getData();
 
     final List<Map.Entry<Unit, Set<Territory>>> list = new ArrayList<>(unitAttackOptions.entrySet());
-    Collections.sort(list, (o1, o2) -> {
+    list.sort((o1, o2) -> {
 
       // Sort by number of territories that still need units
       int numOptions1 = 0;
@@ -139,14 +139,14 @@ public class ProSortMoveOptionsUtils {
         if (!attackMap.get(t).isCurrentlyWins()) {
           final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
           final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
-          Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
+          sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));
           Collections.reverse(sortedUnitsList);
           final int powerWithout =
               DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
                   false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
           sortedUnitsList.add(o1.getKey());
-          Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
+          sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));
           Collections.reverse(sortedUnitsList);
           final int powerWith = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
@@ -167,14 +167,14 @@ public class ProSortMoveOptionsUtils {
         if (!attackMap.get(t).isCurrentlyWins()) {
           final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
           final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
-          Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
+          sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));
           Collections.reverse(sortedUnitsList);
           final int powerWithout =
               DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
                   false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
           sortedUnitsList.add(o2.getKey());
-          Collections.sort(sortedUnitsList, new UnitBattleComparator(false, ProData.unitValueMap,
+          sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));
           Collections.reverse(sortedUnitsList);
           final int powerWith = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,

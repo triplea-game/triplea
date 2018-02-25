@@ -87,7 +87,7 @@ public class UserActionPanel extends ActionPanel {
     this.firstRun = firstRun;
 
     validUserActions = new ArrayList<>(userActionsDelegate.getValidActions());
-    Collections.sort(validUserActions, new UserActionComparator());
+    validUserActions.sort(new UserActionComparator());
     if (validUserActions.isEmpty()) {
       // No Valid User actions, do nothing
       return null;

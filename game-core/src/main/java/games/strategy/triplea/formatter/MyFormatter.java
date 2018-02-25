@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +55,7 @@ public class MyFormatter {
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
     final List<UnitType> sortedList = new ArrayList<>(map.keySet());
-    Collections.sort(sortedList, Comparator.comparing(UnitType::getName));
+    sortedList.sort(Comparator.comparing(UnitType::getName));
     int count = map.keySet().size();
     for (final UnitType type : sortedList) {
       final int quantity = map.getInt(type);
@@ -229,7 +228,7 @@ public class MyFormatter {
     final StringBuilder buf = new StringBuilder();
     // sort on unit name
     final List<DefaultNamed> sortedList = new ArrayList<>(map.keySet());
-    Collections.sort(sortedList, Comparator.comparing(DefaultNamed::getName));
+    sortedList.sort(Comparator.comparing(DefaultNamed::getName));
     int count = map.keySet().size();
     for (final DefaultNamed type : sortedList) {
       if (showQuantity) {

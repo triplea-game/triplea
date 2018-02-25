@@ -513,7 +513,7 @@ class ProPurchaseAi {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(needToDefendTerritories);
-    Collections.sort(sortedTerritories, (t1, t2) -> {
+    sortedTerritories.sort((t1, t2) -> {
       final double value1 = t1.getDefenseValue();
       final double value2 = t2.getDefenseValue();
       return Double.compare(value2, value1);
@@ -676,7 +676,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
+    prioritizedLandTerritories.sort((t1, t2) -> {
       final double value1 = t1.getStrategicValue();
       final double value2 = t2.getStrategicValue();
       return Double.compare(value2, value1);
@@ -1099,7 +1099,7 @@ class ProPurchaseAi {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(seaPlaceTerritories);
-    Collections.sort(sortedTerritories, (t1, t2) -> {
+    sortedTerritories.sort((t1, t2) -> {
       final double value1 = t1.getStrategicValue();
       final double value2 = t2.getStrategicValue();
       return Double.compare(value2, value1);
@@ -1542,7 +1542,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
+    prioritizedLandTerritories.sort((t1, t2) -> {
       final double value1 = t1.getStrategicValue();
       final double value2 = t2.getStrategicValue();
       return Double.compare(value2, value1);
@@ -1598,7 +1598,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedCantHoldLandTerritories, (t1, t2) -> {
+    prioritizedCantHoldLandTerritories.sort((t1, t2) -> {
       final double value1 = t1.getDefenseValue();
       final double value2 = t2.getDefenseValue();
       return Double.compare(value2, value1);
@@ -1669,7 +1669,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by ascending value (try upgrading units in far away territories first)
-    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
+    prioritizedLandTerritories.sort((t1, t2) -> {
       final double value1 = t1.getStrategicValue();
       final double value2 = t2.getStrategicValue();
       return Double.compare(value1, value2);

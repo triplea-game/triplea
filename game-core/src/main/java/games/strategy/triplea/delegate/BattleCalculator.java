@@ -60,10 +60,9 @@ public class BattleCalculator {
   // we also want to sort by movement, so casualties will be choosen as the
   // units with least movement
   static void sortPreBattle(final List<Unit> units) {
-    Collections.sort(units,
-        Comparator.comparing(Unit::getType,
-            Comparator.comparing(UnitType::getName))
-            .thenComparing(UnitComparator.getLowestToHighestMovementComparator()));
+    units.sort(Comparator.comparing(Unit::getType,
+        Comparator.comparing(UnitType::getName))
+        .thenComparing(UnitComparator.getLowestToHighestMovementComparator()));
   }
 
   public static int getTotalHitpointsLeft(final Collection<Unit> units) {
@@ -714,7 +713,7 @@ public class BattleCalculator {
     // System.out.println("Miss with cacheSize=" + oolCache.size() + ", key=" + key);
     // Sort enough units to kill off
     final List<Unit> sortedUnitsList = new ArrayList<>(targetsToPickFrom);
-    Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
+    sortedUnitsList.sort(new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));
     // Sort units starting with strongest so that support gets added to them first
     Collections.reverse(sortedUnitsList);
     final UnitBattleComparator unitComparatorWithoutPrimaryPower =

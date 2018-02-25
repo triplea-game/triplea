@@ -85,7 +85,7 @@ public class AirMovementValidator {
     airThatMustLandOnCarriersHash.addAll(ownedAirThatMustLandOnCarriers);
     final List<Unit> airThatMustLandOnCarriers = new ArrayList<>(airThatMustLandOnCarriersHash);
     // sort the list by shortest range first so those birds will get first pick of landingspots
-    Collections.sort(airThatMustLandOnCarriers, getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
+    airThatMustLandOnCarriers.sort(getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
     // now we should see if the carriers we are moving with, plus the carriers already there, can handle all our air
     // units (we check ending
     // territories first, separately, because it is special [it includes units in our selection])
@@ -119,7 +119,7 @@ public class AirMovementValidator {
     // we only want to consider
     landingSpots.removeAll(CollectionUtils.getMatches(landingSpots, Matches.seaCanMoveOver(player, data).negate()));
     // places we can move carriers to
-    Collections.sort(landingSpots, getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data)));
+    landingSpots.sort(getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data)));
     final Collection<Territory> potentialCarrierOrigins = new LinkedHashSet<>(landingSpots);
     potentialCarrierOrigins.addAll(data.getMap().getNeighbors(new HashSet<>(landingSpots),
         maxMovementLeftForAllOwnedCarriers, Matches.seaCanMoveOver(player, data)));
@@ -534,7 +534,7 @@ public class AirMovementValidator {
     ownedAir.addAll(CollectionUtils.getMatches(route.getEnd().getUnits().getUnits(), ownedAirMatch));
     ownedAir.addAll(CollectionUtils.getMatches(units, ownedAirMatch));
     // sort the list by shortest range first so those birds will get first pick of landingspots
-    Collections.sort(ownedAir, getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
+    ownedAir.sort(getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
     return ownedAir;
   }
 

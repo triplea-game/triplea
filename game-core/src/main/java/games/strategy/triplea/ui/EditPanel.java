@@ -356,7 +356,7 @@ class EditPanel extends ActionPanel {
           return;
         }
         sortUnitsToRemove(units);
-        Collections.sort(units, new UnitBattleComparator(false,
+        units.sort(new UnitBattleComparator(false,
             TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
@@ -404,7 +404,7 @@ class EditPanel extends ActionPanel {
           return;
         }
         sortUnitsToRemove(units);
-        Collections.sort(units, new UnitBattleComparator(false,
+        units.sort(new UnitBattleComparator(false,
             TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
@@ -533,7 +533,7 @@ class EditPanel extends ActionPanel {
       return;
     }
     // sort units based on which transports are allowed to unload
-    Collections.sort(units, getRemovableUnitsOrder());
+    units.sort(getRemovableUnitsOrder());
   }
 
   private static Comparator<Unit> getRemovableUnitsOrder() {

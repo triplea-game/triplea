@@ -529,7 +529,7 @@ public class WeakAi extends AbstractAi {
             .or(Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = CollectionUtils.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
-    Collections.sort(enemyOwned, (o1, o2) -> {
+    enemyOwned.sort((o1, o2) -> {
       // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
       if (Objects.equals(o1, o2)) {
         return 0;
@@ -593,7 +593,7 @@ public class WeakAi extends AbstractAi {
           }
           // get the cheapest unit to move in
           final List<Unit> unitsSortedByCost = new ArrayList<>(attackFrom.getUnits().getUnits());
-          Collections.sort(unitsSortedByCost, AiUtils.getCostComparator());
+          unitsSortedByCost.sort(AiUtils.getCostComparator());
           for (final Unit unit : unitsSortedByCost) {
             final Predicate<Unit> match = Matches.unitIsOwnedBy(player)
                 .and(Matches.unitIsLand())

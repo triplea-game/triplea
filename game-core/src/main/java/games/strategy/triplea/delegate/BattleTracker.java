@@ -1161,9 +1161,8 @@ public class BattleTracker implements Serializable {
       final Territory territory, final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(CollectionUtils.getMatches(defenders,
         Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
-    Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(false, TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
-            TerritoryEffectHelper.getEffects(territory), gameData, false, false));
+    sortedUnitsList.sort(new UnitBattleComparator(false, TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
+        TerritoryEffectHelper.getEffects(territory), gameData, false, false));
     Collections.reverse(sortedUnitsList);
     return sortedUnitsList;
   }

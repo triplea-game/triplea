@@ -1292,7 +1292,7 @@ public class MoveValidator {
       final Map<Unit, Collection<Unit>> newDependents, final Territory start, final GameData data,
       final PlayerID player) {
     final List<Unit> sortedUnits = new ArrayList<>(units);
-    Collections.sort(sortedUnits, UnitComparator.getHighestToLowestMovementComparator());
+    sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
     final Map<Unit, Collection<Unit>> mapping = new HashMap<>();
     mapping.putAll(transportsMustMoveWith(sortedUnits));
     // Check if there are combined transports (carriers that are transports) and load them.

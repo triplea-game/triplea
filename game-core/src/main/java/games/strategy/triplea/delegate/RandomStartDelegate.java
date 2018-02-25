@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -105,7 +104,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         i++;
         final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(currentPickingPlayer, data);
         final List<Unit> units = new ArrayList<>(currentPickingPlayer.getUnits().getUnits());
-        Collections.sort(units, new UnitCostComparator(costs));
+        units.sort(new UnitCostComparator(costs));
         final Set<Unit> unitsToPlace = new HashSet<>();
         unitsToPlace.add(units.get(0));
         picked = allPickableTerritories.get(pos % allPickableTerritories.size());

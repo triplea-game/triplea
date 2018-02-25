@@ -653,7 +653,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
             && killedUnits.stream().anyMatch(Matches.unitIsLand())) {
           final List<Unit> notKilledAndNotLand = CollectionUtils.getMatches(notKilled, Matches.unitIsNotLand());
           // sort according to cost
-          Collections.sort(notKilledAndNotLand, AiUtils.getCostComparator());
+          notKilledAndNotLand.sort(AiUtils.getCostComparator());
           // remove the last killed unit, this should be the strongest
           killedUnits.remove(killedUnits.size() - 1);
           // add the cheapest unit

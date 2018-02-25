@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.proAI;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -287,7 +286,7 @@ class ProCombatMoveAi {
     }
 
     // Sort attack territories by value
-    Collections.sort(attackOptions, (t1, t2) -> {
+    attackOptions.sort((t1, t2) -> {
       final double value1 = t1.getValue();
       final double value2 = t2.getValue();
       return Double.compare(value2, value1);

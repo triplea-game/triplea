@@ -63,7 +63,7 @@ class ProScrambleAi {
       final int maxCanScramble = BattleDelegate.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
       List<Unit> canScrambleAir = new ArrayList<>(possibleScramblers.get(t).getSecond());
       if (maxCanScramble < canScrambleAir.size()) {
-        Collections.sort(canScrambleAir, (o1, o2) -> {
+        canScrambleAir.sort((o1, o2) -> {
           final double strength1 =
               ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o1), new ArrayList<>(), false);
           final double strength2 =
