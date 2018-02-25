@@ -137,8 +137,11 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (lobbyPropertyReader.isMaintenanceMode()) {
       return ErrorMessages.MAINTENANCE_MODE_ENABLED;
     }
-
-    final User user = new User(clientName, ((InetSocketAddress) remoteAddress).getAddress(), clientMac);
+    final User user = User.builder()
+        .username(clientName)
+        .inetAddress(((InetSocketAddress) remoteAddress).getAddress())
+        .hashedMacAddress(clientMac)
+        .build();
     final @Nullable String errorMessage = authenticateUser(response, user);
     logAuthenticationResult(user, getUserTypeFor(response), errorMessage);
     return errorMessage;
