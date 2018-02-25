@@ -75,9 +75,12 @@ public final class MacFinder {
       final NetworkInterface localHostNetworkInterface = NetworkInterface.getByInetAddress(address);
       if (localHostNetworkInterface != null) {
         final byte[] rawMac = localHostNetworkInterface.getHardwareAddress();
-        final String mac = convertMacBytesToString(rawMac);
-        if (isMacValid(mac)) {
-          return mac;
+        
+        if (rawMac != null) {
+          final String mac = convertMacBytesToString(rawMac);
+          if (isMacValid(mac)) {
+            return mac;
+          }
         }
       }
     } catch (final SocketException | UnknownHostException e) {
@@ -88,9 +91,11 @@ public final class MacFinder {
     try {
       for (final NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
         final byte[] rawMac = ni.getHardwareAddress();
-        final String mac = convertMacBytesToString(rawMac);
-        if (isMacValid(mac)) {
-          return mac;
+        if (rawMac != null) {
+          final String mac = convertMacBytesToString(rawMac);
+          if (isMacValid(mac)) {
+            return mac;
+          }
         }
       }
     } catch (final SocketException e) {
@@ -222,9 +227,6 @@ public final class MacFinder {
   }
 
   private static String convertMacBytesToString(final byte[] mac) {
-    if (mac == null) {
-      return null;
-    }
     return Joiner.on('.').join(Bytes.asList(mac).stream()
         .map(macbyte -> String.format("%02X", macbyte))
         .collect(Collectors.toList()));
