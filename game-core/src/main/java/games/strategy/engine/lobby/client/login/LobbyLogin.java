@@ -59,7 +59,7 @@ public class LobbyLogin {
       panel.getLobbyLoginPreferences().save();
       return new LobbyClient(messenger, panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
-      showError("Login Failed", e.getMessage());
+      showError("Login Failed", e.getMessage() + "\n" + playerMacIdString());
       return loginToServer(); // NB: potential stack overflow due to recursive call
     } catch (final IOException e) {
       showError("Could Not Connect", "Could not connect to lobby: " + e.getMessage());
@@ -92,6 +92,11 @@ public class LobbyLogin {
           response.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
           return response;
         });
+  }
+
+  private static String playerMacIdString() {
+    final String mac = MacFinder.getHashedMacAddress();
+    return mac.substring(mac.length() - 10);
   }
 
   private void showError(final String title, final String message) {
