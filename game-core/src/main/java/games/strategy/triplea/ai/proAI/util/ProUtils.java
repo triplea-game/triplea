@@ -61,24 +61,14 @@ public class ProUtils {
   public static List<PlayerID> getAlliedPlayersInTurnOrder(final PlayerID player) {
     final GameData data = ProData.getData();
     final List<PlayerID> players = getOtherPlayersInTurnOrder(player);
-    for (final Iterator<PlayerID> it = players.iterator(); it.hasNext();) {
-      final PlayerID currentPlayer = it.next();
-      if (!data.getRelationshipTracker().isAllied(player, currentPlayer)) {
-        it.remove();
-      }
-    }
+    players.removeIf(currentPlayer -> !data.getRelationshipTracker().isAllied(player, currentPlayer));
     return players;
   }
 
   public static List<PlayerID> getEnemyPlayersInTurnOrder(final PlayerID player) {
     final GameData data = ProData.getData();
     final List<PlayerID> players = getOtherPlayersInTurnOrder(player);
-    for (final Iterator<PlayerID> it = players.iterator(); it.hasNext();) {
-      final PlayerID currentPlayer = it.next();
-      if (data.getRelationshipTracker().isAllied(player, currentPlayer)) {
-        it.remove();
-      }
-    }
+    players.removeIf(currentPlayer -> data.getRelationshipTracker().isAllied(player, currentPlayer));
     return players;
   }
 

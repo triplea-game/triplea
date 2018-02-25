@@ -504,12 +504,7 @@ class ProPurchaseAi {
     }
 
     // Remove any territories with negative defense value
-    for (final Iterator<ProPlaceTerritory> it = needToDefendTerritories.iterator(); it.hasNext();) {
-      final ProPlaceTerritory ppt = it.next();
-      if (ppt.getDefenseValue() <= 0) {
-        it.remove();
-      }
-    }
+    needToDefendTerritories.removeIf(ppt -> ppt.getDefenseValue() <= 0);
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(needToDefendTerritories);
@@ -946,13 +941,9 @@ class ProPurchaseAi {
 
     // Remove any territories that don't have local land superiority
     if (!hasExtraPUs) {
-      for (final Iterator<Territory> it = purchaseFactoryTerritories.iterator(); it.hasNext();) {
-        final Territory t = it.next();
-        if (!ProBattleUtils.territoryHasLocalLandSuperiority(t, ProBattleUtils.MEDIUM_RANGE, player,
-            purchaseTerritories)) {
-          it.remove();
-        }
-      }
+      purchaseFactoryTerritories
+          .removeIf(t -> !ProBattleUtils.territoryHasLocalLandSuperiority(t, ProBattleUtils.MEDIUM_RANGE, player,
+              purchaseTerritories));
       ProLogger.debug("Possible factory territories that have land superiority: " + purchaseFactoryTerritories);
     }
 
@@ -1405,12 +1396,8 @@ class ProPurchaseAi {
             transportsThatNeedUnits.add(transport);
             final Set<Territory> territoriesToLoadFrom =
                 new HashSet<>(data.getMap().getNeighbors(seaTerritory, distance));
-            for (final Iterator<Territory> it = territoriesToLoadFrom.iterator(); it.hasNext();) {
-              final Territory potentialTerritory = it.next();
-              if (potentialTerritory.isWater() || territoryValueMap.get(potentialTerritory) > 0.25) {
-                it.remove();
-              }
-            }
+            territoriesToLoadFrom.removeIf(
+                potentialTerritory -> potentialTerritory.isWater() || territoryValueMap.get(potentialTerritory) > 0.25);
             final List<Unit> units =
                 ProTransportUtils.getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom,
                     new ArrayList<>(potentialUnitsToLoad), ProMatches.unitIsOwnedCombatTransportableUnit(player));

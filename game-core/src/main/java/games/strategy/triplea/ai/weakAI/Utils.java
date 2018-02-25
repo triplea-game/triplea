@@ -75,13 +75,7 @@ class Utils {
   // returns all territories that are water territories (veqryn)
   static List<Territory> onlyWaterTerr(final List<Territory> allTerr) {
     final List<Territory> water = new ArrayList<>(allTerr);
-    final Iterator<Territory> waterFactIter = water.iterator();
-    while (waterFactIter.hasNext()) {
-      final Territory waterFact = waterFactIter.next();
-      if (!Matches.territoryIsWater().test(waterFact)) {
-        waterFactIter.remove();
-      }
-    }
+    water.removeIf(waterFact -> !Matches.territoryIsWater().test(waterFact));
     return water;
   }
 

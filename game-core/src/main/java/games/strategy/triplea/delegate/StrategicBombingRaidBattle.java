@@ -84,12 +84,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // the stuff still exists here.
     m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
     m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
-    final Iterator<Unit> iter = m_targets.keySet().iterator();
-    while (iter.hasNext()) {
-      if (!m_battleSite.getUnits().getUnits().contains(iter.next())) {
-        iter.remove();
-      }
-    }
+    m_targets.keySet().removeIf(unit -> !m_battleSite.getUnits().getUnits().contains(unit));
   }
 
   protected void updateDefendingUnits() {
