@@ -12,14 +12,15 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.FluentIterable;
 import com.google.common.primitives.Bytes;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.util.Md5Crypt;
 
 /**
  * Provides access to the MAC address of the local node.
@@ -59,7 +60,7 @@ public final class MacFinder {
   }
 
   private static String getHashedMacAddress(final String macAddress) {
-    return games.strategy.util.Md5Crypt.crypt(macAddress, HASHED_MAC_ADDRESS_SALT);
+    return Md5Crypt.crypt(macAddress, HASHED_MAC_ADDRESS_SALT);
   }
 
   private static String getMacAddress() {
@@ -216,7 +217,7 @@ public final class MacFinder {
       return null;
     }
     return Joiner.on('.')
-        .join(FluentIterable.from(Bytes.asList(mac)).transform(macbyte -> String.format("%02X", macbyte)));
+        .join(Bytes.asList(mac).stream().map(macbyte -> String.format("%02X", macbyte)).collect(Collectors.toList()));
   }
 
   private static boolean isMacValid(final String mac) {
@@ -286,7 +287,7 @@ public final class MacFinder {
     checkNotNull(value);
 
     try {
-      return HASHED_MAC_ADDRESS_SALT.equals(games.strategy.util.Md5Crypt.getSalt(value));
+      return HASHED_MAC_ADDRESS_SALT.equals(Md5Crypt.getSalt(value));
     } catch (final IllegalArgumentException e) {
       return false;
     }
@@ -304,6 +305,6 @@ public final class MacFinder {
   public static String trimHashedMacAddressPrefix(final String hashedMacAddress) {
     checkNotNull(hashedMacAddress);
 
-    return games.strategy.util.Md5Crypt.getHash(hashedMacAddress);
+    return Md5Crypt.getHash(hashedMacAddress);
   }
 }
