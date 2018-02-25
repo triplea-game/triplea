@@ -533,13 +533,8 @@ public class BattleCalculator {
         final int damageToUnit = Collections.frequency(damaged, unit);
         // allowed damage
         numhits += Math.max(0, Math.min(damageToUnit, (ua.getHitPoints() - (1 + unit.getHits()))));
-        final Iterator<Unit> iter = damaged.iterator();
-        while (iter.hasNext()) {
-          if (unit.equals(iter.next())) {
-            // remove from damaged list, since they will die
-            iter.remove();
-          }
-        }
+        // remove from damaged list, since they will die
+        damaged.removeIf(unit::equals);
       }
     }
     // check right number

@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -301,14 +300,8 @@ class EditPanel extends ActionPanel {
         try {
           techs = TechTracker.getCurrentTechAdvances(player, data);
           // there is no way to "undo" these two techs, so do not allow them to be removed
-          final Iterator<TechAdvance> iter = techs.iterator();
-          while (iter.hasNext()) {
-            final TechAdvance ta = iter.next();
-            if (ta.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS)
-                || ta.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY)) {
-              iter.remove();
-            }
-          }
+          techs.removeIf(ta -> ta.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS)
+              || ta.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY));
         } finally {
           getData().releaseReadLock();
         }

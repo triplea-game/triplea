@@ -997,22 +997,14 @@ class ProNonCombatMoveAi {
       for (final Unit u : t.getTempUnits()) {
         if (Matches.unitIsTransport().test(u)) {
           transportMoveMap.remove(u);
-          for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
-            if (it.next().getTransport().equals(u)) {
-              it.remove();
-            }
-          }
+          transportMapList.removeIf(proTransport -> proTransport.getTransport().equals(u));
         } else {
           unitMoveMap.remove(u);
         }
       }
       for (final Unit u : t.getTempAmphibAttackMap().keySet()) {
         transportMoveMap.remove(u);
-        for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
-          if (it.next().getTransport().equals(u)) {
-            it.remove();
-          }
-        }
+        transportMapList.removeIf(proTransport -> proTransport.getTransport().equals(u));
       }
       t.getTempUnits().clear();
       t.getTempAmphibAttackMap().clear();
@@ -1560,22 +1552,14 @@ class ProNonCombatMoveAi {
       for (final Unit u : t.getTempUnits()) {
         if (Matches.unitIsTransport().test(u)) {
           transportMoveMap.remove(u);
-          for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
-            if (it.next().getTransport().equals(u)) {
-              it.remove();
-            }
-          }
+          transportMapList.removeIf(proTransport -> proTransport.getTransport().equals(u));
         } else {
           unitMoveMap.remove(u);
         }
       }
       for (final Unit u : t.getTempAmphibAttackMap().keySet()) {
         transportMoveMap.remove(u);
-        for (final Iterator<ProTransport> it = transportMapList.iterator(); it.hasNext();) {
-          if (it.next().getTransport().equals(u)) {
-            it.remove();
-          }
-        }
+        transportMapList.removeIf(proTransport -> proTransport.getTransport().equals(u));
       }
       t.getTempUnits().clear();
       t.getTempAmphibAttackMap().clear();

@@ -7,7 +7,6 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -136,14 +135,9 @@ public class PoliticalStateOverview extends JPanel {
               "Change Current Relationship", JOptionPane.PLAIN_MESSAGE, null, possibilities, relType);
       if (chosenRelationship != null) {
         // remove any old ones
-        final Iterator<Triple<PlayerID, PlayerID, RelationshipType>> iter = editChanges.iterator();
-        while (iter.hasNext()) {
-          final Triple<PlayerID, PlayerID, RelationshipType> changesSoFar = iter.next();
-          if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
-              || (player2.equals(changesSoFar.getFirst()) && player1.equals(changesSoFar.getSecond()))) {
-            iter.remove();
-          }
-        }
+        editChanges.removeIf(
+            changesSoFar -> (player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
+                || (player2.equals(changesSoFar.getFirst()) && player1.equals(changesSoFar.getSecond())));
 
         // see if there is actually a change
         data.acquireReadLock();

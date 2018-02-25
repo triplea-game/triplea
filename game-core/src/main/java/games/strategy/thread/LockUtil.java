@@ -62,12 +62,7 @@ public enum LockUtil {
         for (final Lock l : locksHeld.get().keySet()) {
           final Set<WeakLockRef> held = locksHeldWhenAcquired.get(l);
           // clear out of date locks
-          final Iterator<WeakLockRef> iter = held.iterator();
-          while (iter.hasNext()) {
-            if (iter.next().get() == null) {
-              iter.remove();
-            }
-          }
+          held.removeIf(weakLockRef -> weakLockRef.get() == null);
           if (held.contains(new WeakLockRef(lock))) {
             errorReporterRef.get().reportError(lock, l);
           }

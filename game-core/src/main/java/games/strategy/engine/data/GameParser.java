@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -496,12 +495,7 @@ public final class GameParser {
 
   private static List<Node> getNonTextNodesIgnoring(final Node node, final String ignore) {
     final List<Node> nonTextNodes = getNonTextNodes(node);
-    final Iterator<Node> iter = nonTextNodes.iterator();
-    while (iter.hasNext()) {
-      if (((Element) iter.next()).getTagName().equals(ignore)) {
-        iter.remove();
-      }
-    }
+    nonTextNodes.removeIf(node1 -> ((Element) node1).getTagName().equals(ignore));
     return nonTextNodes;
   }
 
