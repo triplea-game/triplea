@@ -19,14 +19,15 @@ public class LocalPlayers {
   }
 
   public boolean playing(final PlayerID id) {
-    if (id == null) {
-      return false;
-    }
-    for (final IGamePlayer gamePlayer : localPlayers) {
-      if (gamePlayer.getPlayerId().equals(id) && AbstractHumanPlayer.class.isAssignableFrom(gamePlayer.getClass())) {
-        return true;
-      }
-    }
-    return false;
+    return id != null
+        && localPlayers.stream()
+            .anyMatch(gamePlayer -> isGamePlayerWithPlayerId(gamePlayer, id));
+  }
+  
+  private static boolean isGamePlayerWithPlayerId(
+      IGamePlayer gamePlayer,
+      final PlayerID id) {
+    return gamePlayer.getPlayerId().equals(id)
+        && AbstractHumanPlayer.class.isAssignableFrom(gamePlayer.getClass());
   }
 }

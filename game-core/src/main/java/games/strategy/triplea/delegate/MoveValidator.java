@@ -755,12 +755,8 @@ public class MoveValidator {
     final Predicate<Unit> alliedOrNonCombat =
         Matches.unitIsInfrastructure().or(Matches.enemyUnit(player, data).negate()).or(Matches.unitIsSubmerged());
     // Submerged units do not interfere with movement
-    for (final Territory current : route.getMiddleSteps()) {
-      if (!current.getUnits().allMatch(alliedOrNonCombat)) {
-        return false;
-      }
-    }
-    return true;
+    return route.getMiddleSteps().stream()
+        .allMatch(current -> current.getUnits().allMatch(alliedOrNonCombat));
   }
 
   /**
@@ -813,12 +809,8 @@ public class MoveValidator {
 
   private static boolean enemyDestroyerOnPath(final Route route, final PlayerID player, final GameData data) {
     final Predicate<Unit> enemyDestroyer = Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data));
-    for (final Territory current : route.getMiddleSteps()) {
-      if (current.getUnits().anyMatch(enemyDestroyer)) {
-        return true;
-      }
-    }
-    return false;
+    return route.getMiddleSteps().stream()
+        .anyMatch(current -> current.getUnits().anyMatch(enemyDestroyer));
   }
 
   private static boolean getEditMode(final GameData data) {

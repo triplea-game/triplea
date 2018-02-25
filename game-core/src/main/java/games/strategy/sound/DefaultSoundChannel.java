@@ -37,17 +37,11 @@ public class DefaultSoundChannel implements ISound {
         }
       }
     }
-    boolean isPlaying = false;
-    for (final PlayerID p : playersToSendTo) {
-      if (localPlayers.playing(p)) {
-        isPlaying = true;
-        break;
-      }
-    }
-    if (includeObservers && localPlayers.getLocalPlayers().isEmpty()) {
-      isPlaying = true;
-    }
-    if (isPlaying) {
+    final boolean isPlaying = playersToSendTo.stream()
+        .anyMatch(localPlayers::playing);
+    final boolean includingObserversLocalNotEmpty = localPlayers.getLocalPlayers().isEmpty();
+
+    if (isPlaying || includingObserversLocalNotEmpty) {
       ClipPlayer.play(clipName);
     }
   }

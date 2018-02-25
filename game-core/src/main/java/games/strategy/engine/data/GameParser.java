@@ -16,6 +16,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
@@ -482,15 +484,12 @@ public final class GameParser {
   }
 
   private static List<Element> getChildren(final String name, final Node node) {
-    final ArrayList<Element> found = new ArrayList<>();
     final NodeList children = node.getChildNodes();
-    for (int i = 0; i < children.getLength(); i++) {
-      final Node current = children.item(i);
-      if (current.getNodeName().equals(name)) {
-        found.add((Element) current);
-      }
-    }
-    return found;
+    return IntStream.range(0, children.getLength())
+        .mapToObj(children::item)
+        .filter(current -> current.getNodeName().equals(name))
+        .map(Element.class::cast)
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 
   private static List<Node> getNonTextNodesIgnoring(final Node node, final String ignore) {
@@ -500,15 +499,11 @@ public final class GameParser {
   }
 
   private static List<Node> getNonTextNodes(final Node node) {
-    final ArrayList<Node> found = new ArrayList<>();
     final NodeList children = node.getChildNodes();
-    for (int i = 0; i < children.getLength(); ++i) {
-      final Node current = children.item(i);
-      if (!(current.getNodeType() == Node.TEXT_NODE)) {
-        found.add(current);
-      }
-    }
-    return found;
+    return IntStream.range(0, children.getLength())
+        .mapToObj(children::item)
+        .filter(current -> !(current.getNodeType() == Node.TEXT_NODE))
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 
   private void parseInfo(final Node info) {

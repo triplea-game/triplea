@@ -3,11 +3,11 @@ package games.strategy.engine.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
 
@@ -61,14 +61,10 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   }
 
   public Collection<String> getPlayersThatMayBeDisabled() {
-    final Collection<String> disableable = new HashSet<>();
-    for (final PlayerID p : m_players.values()) {
-      // already disabled players cannot be reenabled
-      if (p.getCanBeDisabled() && !p.getIsDisabled()) {
-        disableable.add(p.getName());
-      }
-    }
-    return disableable;
+    return m_players.values().stream()
+        .filter(PlayerID::getCanBeDisabled)
+        .filter(p -> !p.getIsDisabled()).map(DefaultNamed::getName)
+        .collect(Collectors.toSet());
   }
 
   public HashMap<String, Boolean> getPlayersEnabledListing() {

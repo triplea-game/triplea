@@ -571,12 +571,10 @@ public class DownloadMapsWindow extends JFrame {
       final DefaultListModel<String> listModel) {
     return () -> {
       final List<String> selectedValues = gamesList.getSelectedValuesList();
-      final List<DownloadFileDescription> downloadList = new ArrayList<>();
-      for (final DownloadFileDescription map : maps) {
-        if (selectedValues.contains(map.getMapName())) {
-          downloadList.add(map);
-        }
-      }
+      final List<DownloadFileDescription> downloadList = maps.stream()
+          .filter(map -> selectedValues.contains(map.getMapName()))
+          .collect(Collectors.toList());
+
       if (!downloadList.isEmpty()) {
         progressPanel.download(downloadList);
       }

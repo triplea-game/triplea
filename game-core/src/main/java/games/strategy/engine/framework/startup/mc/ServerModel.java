@@ -662,12 +662,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         }
         if (!playedBy.equals(serverMessenger.getLocalNode().getName())) {
           final Set<INode> nodes = serverMessenger.getNodes();
-          for (final INode node : nodes) {
-            if (node.getName().equals(playedBy)) {
-              remotePlayers.put(player, node);
-              break;
-            }
-          }
+          nodes.stream()
+              .filter(node -> node.getName().equals(playedBy))
+              .findAny()
+              .ifPresent(node -> remotePlayers.put(player, node));
         }
       }
       return Optional.of(new ServerLauncher(clientCount, remoteMessenger, channelMessenger,

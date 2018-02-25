@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import javax.swing.ImageIcon;
@@ -426,15 +427,14 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int production = 0;
-      for (final Territory place : data.getMap().getTerritories()) {
-        /*
-         * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
-         */
-        if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).test(place)) {
-          production += TerritoryAttachment.getProduction(place);
-        }
-      }
+      int production = data.getMap().getTerritories().stream()
+          .filter(place -> place.getOwner().equals(player))
+          .filter(place -> Matches.territoryCanCollectIncomeFrom(player, data).test(place))
+          .mapToInt(TerritoryAttachment::getProduction)
+          .sum();
+      /*
+       * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
+       */
       production *= Properties.getPuMultiplier(data);
       return production;
     }
@@ -454,12 +454,12 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int matchCount = 0;
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player);
-      for (final Territory place : data.getMap().getTerritories()) {
-        matchCount += place.getUnits().countMatches(ownedBy);
-      }
-      return matchCount;
+      // sum the total match count
+      return data.getMap().getTerritories().stream()
+          .map(Territory::getUnits)
+          .mapToInt(units -> units.countMatches(ownedBy))
+          .sum();
     }
   }
 
@@ -473,12 +473,11 @@ public class StatPanel extends AbstractStatPanel {
     public double getValue(final PlayerID player, final GameData data) {
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
       final Predicate<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
-      int tuv = 0;
-      for (final Territory place : data.getMap().getTerritories()) {
-        final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
-        tuv += TuvUtils.getTuv(owned, costs);
-      }
-      return tuv;
+      return data.getMap().getTerritories().stream()
+          .map(Territory::getUnits)
+          .map(units -> units.getMatches(unitIsOwnedBy))
+          .mapToInt(owned -> TuvUtils.getTuv(owned, costs))
+          .sum();
     }
   }
 
@@ -490,20 +489,14 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int victoryCities = 0;
-      for (final Territory place : data.getMap().getTerritories()) {
-        if (!place.getOwner().equals(player)) {
-          continue;
-        }
-        final TerritoryAttachment ta = TerritoryAttachment.get(place);
-        if (ta == null) {
-          continue;
-        }
-        if (ta.getVictoryCity() != 0) {
-          victoryCities = victoryCities + ta.getVictoryCity();
-        }
-      }
-      return victoryCities;
+      // return sum of victory cities
+      return data.getMap().getTerritories().stream()
+          .filter(place -> place.getOwner().equals(player))
+          .map(TerritoryAttachment::get)
+          .filter(Objects::nonNull)
+          .filter(ta -> ta.getVictoryCity() != 0)
+          .mapToInt(TerritoryAttachment::getVictoryCity)
+          .sum();
     }
   }
 

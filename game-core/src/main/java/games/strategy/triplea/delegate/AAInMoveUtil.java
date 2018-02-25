@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -236,13 +237,12 @@ class AAInMoveUtil implements Serializable {
       return player;
     }
 
-    for (final Unit u : units) {
-      if (u != null && u.getOwner() != null) {
-        return u.getOwner();
-      }
-    }
-
-    return PlayerID.NULL_PLAYERID;
+    return units.stream()
+        .filter(Objects::nonNull)
+        .filter(u -> u != null && u.getOwner() != null)
+        .findFirst()
+        .map(Unit::getOwner)
+        .orElse(PlayerID.NULL_PLAYERID);
   }
 
   private static PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory) {
@@ -255,12 +255,11 @@ class AAInMoveUtil implements Serializable {
         && defendingUnits.stream().anyMatch(Matches.unitIsOwnedBy(territory.getOwner()))) {
       return territory.getOwner();
     }
-    for (final Unit u : defendingUnits) {
-      if (u != null && u.getOwner() != null) {
-        return u.getOwner();
-      }
-    }
-    return PlayerID.NULL_PLAYERID;
+    return defendingUnits.stream()
+        .filter(u -> u != null && u.getOwner() != null)
+        .findFirst()
+        .map(Unit::getOwner)
+        .orElse(PlayerID.NULL_PLAYERID);
   }
 
   /**

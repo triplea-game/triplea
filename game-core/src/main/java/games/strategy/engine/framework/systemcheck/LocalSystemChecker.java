@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 /**
  * This class runs a set of local system checks, like access network, and create a temp file.
@@ -53,20 +53,15 @@ public final class LocalSystemChecker {
 
   /** Return any exceptions encountered while running each check. */
   public Set<Exception> getExceptions() {
-    final Set<Exception> exceptions = Sets.newHashSet();
-    for (final SystemCheck systemCheck : systemChecks) {
-      if (systemCheck.getException().isPresent()) {
-        exceptions.add(systemCheck.getException().get());
-      }
-    }
-    return exceptions;
+    return systemChecks.stream()
+        .filter(systemCheck -> systemCheck.getException().isPresent())
+        .map(systemCheck -> systemCheck.getException().get())
+        .collect(Collectors.toSet());
   }
 
   public String getStatusMessage() {
-    final StringBuilder sb = new StringBuilder();
-    for (final SystemCheck systemCheck : systemChecks) {
-      sb.append(systemCheck.getResultMessage()).append("\n");
-    }
-    return sb.toString();
+    return systemChecks.stream()
+        .map(systemCheck -> systemCheck.getResultMessage() + "\n")
+        .collect(Collectors.joining());
   }
 }

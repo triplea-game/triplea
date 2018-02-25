@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.TripleAUnit;
@@ -39,11 +41,9 @@ public class UnitType extends NamedAttachable {
 
   List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp, final int hitsTaken,
       final int bombingUnitDamage) {
-    final List<Unit> collection = new ArrayList<>();
-    for (int i = 0; i < quantity; i++) {
-      collection.add(create(owner, isTemp, hitsTaken, bombingUnitDamage));
-    }
-    return collection;
+    return IntStream.range(0, quantity)
+        .mapToObj(i -> create(owner, isTemp, hitsTaken, bombingUnitDamage))
+        .collect(Collectors.toList());
   }
 
   private Unit create(final PlayerID owner, final boolean isTemp, final int hitsTaken, final int bombingUnitDamage) {

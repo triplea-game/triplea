@@ -140,15 +140,9 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
    * @return true if all values are equal to the given integer.
    */
   public boolean allValuesEqual(final int integer) {
-    if (mapValues.isEmpty()) {
-      return false;
-    }
-    for (final int value : mapValues.values()) {
-      if (integer != value) {
-        return false;
-      }
-    }
-    return true;
+    return !mapValues.isEmpty()
+        && mapValues.values().stream()
+            .noneMatch(value -> integer != value);
   }
 
   /**
@@ -173,11 +167,9 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
    * @return The sum of all keys.
    */
   public int totalValues() {
-    int sum = 0;
-    for (final int value : mapValues.values()) {
-      sum += value;
-    }
-    return sum;
+    return mapValues.values().stream()
+        .mapToInt(value -> value)
+        .sum();
   }
 
   public void subtract(final IntegerMap<T> map) {
@@ -195,24 +187,16 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
    * that a and b are not equal.
    */
   public boolean greaterThanOrEqualTo(final IntegerMap<T> map) {
-    for (final T key : map.keySet()) {
-      if (!(this.getInt(key) >= map.getInt(key))) {
-        return false;
-      }
-    }
-    return true;
+    return map.keySet().stream()
+        .allMatch(key -> this.getInt(key) >= map.getInt(key));
   }
 
   /**
    * True if all values are >= 0.
    */
   public boolean isPositive() {
-    for (final T key : mapValues.keySet()) {
-      if (getInt(key) < 0) {
-        return false;
-      }
-    }
-    return true;
+    return mapValues.keySet().stream()
+        .noneMatch(key -> getInt(key) < 0);
   }
 
   public IntegerMap<T> copy() {
