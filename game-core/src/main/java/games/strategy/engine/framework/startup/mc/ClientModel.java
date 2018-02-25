@@ -70,6 +70,8 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a network aware game client connecting to another game that is acting as a server.
@@ -431,7 +433,7 @@ public class ClientModel implements IMessengerErrorListener {
     return chatPanel;
   }
 
-  boolean getIsServerHeadlessTest() {
+  private boolean getIsServerHeadlessTest() {
     final IServerStartupRemote serverRemote = getServerStartup();
     if (serverRemote != null) {
       hostIsHeadlessBot = serverRemote.getIsServerHeadless();
@@ -478,33 +480,11 @@ public class ClientModel implements IMessengerErrorListener {
         + channelMessenger;
   }
 
+  @Getter
+  @Setter
   static class ClientProps {
     private int port;
     private String name;
     private String host;
-
-    public String getHost() {
-      return host;
-    }
-
-    public void setHost(final String host) {
-      this.host = host;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(final String name) {
-      this.name = name;
-    }
-
-    public int getPort() {
-      return port;
-    }
-
-    public void setPort(final int port) {
-      this.port = port;
-    }
   }
 }
