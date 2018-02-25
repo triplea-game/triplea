@@ -9,8 +9,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -325,20 +323,14 @@ public class DecorationPlacer extends JFrame {
     fileMenu.addSeparator();
     fileMenu.add(exitItem);
     final JCheckBoxMenuItem highlightAllModeItem = new JCheckBoxMenuItem("Highlight All", false);
-    highlightAllModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        highlightAll = highlightAllModeItem.getState();
-        DecorationPlacer.this.repaint();
-      }
+    highlightAllModeItem.addActionListener(event -> {
+      highlightAll = highlightAllModeItem.getState();
+      DecorationPlacer.this.repaint();
     });
     final JCheckBoxMenuItem showNamesModeItem = new JCheckBoxMenuItem("Show Point Names", false);
-    showNamesModeItem.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent event) {
-        showPointNames = showNamesModeItem.getState();
-        DecorationPlacer.this.repaint();
-      }
+    showNamesModeItem.addActionListener(event -> {
+      showPointNames = showNamesModeItem.getState();
+      DecorationPlacer.this.repaint();
     });
     final Action clearAction = SwingAction.of("Clear All Current Points.", e -> currentImagePoints.clear());
     clearAction.putValue(Action.SHORT_DESCRIPTION, "Delete all points.");

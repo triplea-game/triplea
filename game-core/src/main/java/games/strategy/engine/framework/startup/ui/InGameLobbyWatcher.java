@@ -99,15 +99,12 @@ public class InGameLobbyWatcher {
     System.setProperty(LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
     System.setProperty(LOBBY_PORT + GameRunner.OLD_EXTENSION, port);
     System.setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
-    final IConnectionLogin login = new IConnectionLogin() {
-      @Override
-      public Map<String, String> getProperties(final Map<String, String> challengeProperties) {
-        final Map<String, String> properties = new HashMap<>();
-        properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-        properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-        properties.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
-        return properties;
-      }
+    final IConnectionLogin login = challengeProperties -> {
+      final Map<String, String> properties = new HashMap<>();
+      properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+      properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+      properties.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
+      return properties;
     };
     try {
       System.out.println("host:" + host + " port:" + port);

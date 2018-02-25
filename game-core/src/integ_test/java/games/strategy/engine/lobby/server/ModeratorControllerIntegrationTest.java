@@ -65,12 +65,9 @@ public class ModeratorControllerIntegrationTest {
     connectionChangeListener = new ConnectionChangeListener();
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);
 
-    doAnswer(new Answer<Void>() {
-      @Override
-      public Void answer(final InvocationOnMock invocation) {
-        connectionChangeListener.connectionRemoved(invocation.getArgument(0));
-        return null;
-      }
+    doAnswer((Answer<Void>) invocation -> {
+      connectionChangeListener.connectionRemoved(invocation.getArgument(0));
+      return null;
     }).when(serverMessenger).removeConnection(booted);
 
     final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);

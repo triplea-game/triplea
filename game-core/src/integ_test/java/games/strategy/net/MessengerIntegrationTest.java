@@ -234,12 +234,7 @@ public class MessengerIntegrationTest {
   @Test
   public void testClose() {
     final AtomicBoolean closed = new AtomicBoolean(false);
-    client1Messenger.addErrorListener(new IMessengerErrorListener() {
-      @Override
-      public void messengerInvalid(final IMessenger messenger, final Exception reason) {
-        closed.set(true);
-      }
-    });
+    client1Messenger.addErrorListener((messenger, reason) -> closed.set(true));
     serverMessenger.removeConnection(client1Messenger.getLocalNode());
     int waitCount = 0;
     while (!closed.get() && waitCount < 10) {
