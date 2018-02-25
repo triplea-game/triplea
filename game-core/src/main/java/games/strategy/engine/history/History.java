@@ -3,6 +3,7 @@ package games.strategy.engine.history;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -73,7 +74,7 @@ public class History extends DefaultTreeModel {
 
   private int getLastChange(final HistoryNode node) {
     final int lastChangeIndex;
-    if (node == getRoot()) {
+    if (Objects.equals(node, getRoot())) {
       lastChangeIndex = 0;
     } else if (node instanceof Event) {
       lastChangeIndex = ((Event) node).getChangeEndIndex();
@@ -158,7 +159,7 @@ public class History extends DefaultTreeModel {
     if (currentNode == null) {
       return;
     }
-    if (currentNode == getLastNode()) {
+    if (Objects.equals(currentNode, getLastNode())) {
       gameData.performChange(change);
     }
   }

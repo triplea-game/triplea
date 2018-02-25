@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -394,7 +395,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @InternalDoNotExport
   static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
     for (final UnitSupportAttachment rule : get(data)) {
-      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttachedTo() == type) {
+      if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && Objects.equals(rule.getAttachedTo(), type)) {
         rule.setNumber(count);
       }
     }

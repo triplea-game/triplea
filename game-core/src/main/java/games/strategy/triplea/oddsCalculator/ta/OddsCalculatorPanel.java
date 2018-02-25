@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -155,7 +156,8 @@ class OddsCalculatorPanel extends JPanel {
         } else {
           // we need to find out the defender for sea zones
           for (final PlayerID player : location.getUnits().getPlayersWithUnits()) {
-            if (player != getAttacker() && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
+            if (!Objects.equals(player, getAttacker())
+                && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
               defenderCombo.setSelectedItem(player);
               break;
             }

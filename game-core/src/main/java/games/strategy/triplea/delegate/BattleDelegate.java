@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -201,7 +202,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @Override
   public String fightBattle(final Territory territory, final boolean bombing, final BattleType type) {
     final IBattle battle = battleTracker.getPendingBattle(territory, bombing, type);
-    if (currentBattle != null && currentBattle != battle) {
+    if (currentBattle != null && !Objects.equals(currentBattle, battle)) {
       return "Must finish " + getFightingWord(currentBattle) + " in " + currentBattle.getTerritory() + " first";
     }
     // does the battle exist

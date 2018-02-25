@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       }
 
       for (final PlayerID otherPlayer : playersToSearch) {
-        if (otherPlayer == player) {
+        if (Objects.equals(otherPlayer, player)) {
           continue;
         }
         paa = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);

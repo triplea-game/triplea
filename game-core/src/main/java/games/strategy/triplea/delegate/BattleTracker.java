@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -393,7 +394,7 @@ public class BattleTracker implements Serializable {
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
       // in case we begin in enemy territory, and blitz out of it, check the first territory
-      if (route.getStart() != route.getEnd() && conquerable.test(route.getStart())) {
+      if (!Objects.equals(route.getStart(), route.getEnd()) && conquerable.test(route.getStart())) {
         conquered.add(route.getStart());
       }
     }
@@ -699,7 +700,7 @@ public class BattleTracker implements Serializable {
           CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
-        if (item.getOwner() == terrOrigOwner) {
+        if (Objects.equals(item.getOwner(), terrOrigOwner)) {
           continue;
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);

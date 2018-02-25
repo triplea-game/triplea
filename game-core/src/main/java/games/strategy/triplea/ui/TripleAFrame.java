@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -1611,7 +1612,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private void hideEditMode() {
-    if (tabsPanel.getSelectedComponent() == editPanel) {
+    if (Objects.equals(tabsPanel.getSelectedComponent(), editPanel)) {
       tabsPanel.setSelectedIndex(0);
     }
     tabsPanel.remove(editPanel);

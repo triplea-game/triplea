@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -209,7 +210,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       if (territory == null) {
         return;
       }
-      if (currentAction == selectTerritoryAction) {
+      if (Objects.equals(currentAction, selectTerritoryAction)) {
         if (!territoryChoices.contains(territory)) {
           EventThreadJOptionPane.showMessageDialog(parent,
               "Must Pick An Unowned Territory (will have a white highlight)", "Must Pick An Unowned Territory",
@@ -235,8 +236,8 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
       }
       if (territory != null) {
         // highlight territory
-        if (currentAction == selectTerritoryAction) {
-          if (currentHighlightedTerritory != territory) {
+        if (Objects.equals(currentAction, selectTerritoryAction)) {
+          if (!Objects.equals(currentHighlightedTerritory, territory)) {
             if (currentHighlightedTerritory != null) {
               getMap().clearTerritoryOverlay(currentHighlightedTerritory);
             }

@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -626,14 +627,14 @@ class EditPanel extends ActionPanel {
         return;
       }
       final boolean rightMouse = md.isRightButton();
-      if (!selectedUnits.isEmpty() && !(selectedTerritory == t)) {
+      if (!selectedUnits.isEmpty() && !(Objects.equals(selectedTerritory, t))) {
         deselectUnits(new ArrayList<>(selectedUnits), t, md);
         selectedTerritory = null;
       }
-      if (rightMouse && (selectedTerritory == t)) {
+      if (rightMouse && (Objects.equals(selectedTerritory, t))) {
         deselectUnits(units, t, md);
       }
-      if (!rightMouse && (currentAction == addUnitsAction)) {
+      if (!rightMouse && (Objects.equals(currentAction, addUnitsAction))) {
         // clicking on unit or territory selects territory
         selectedTerritory = t;
         mapSelectionListener.territorySelected(t, md);
@@ -647,7 +648,7 @@ class EditPanel extends ActionPanel {
     private void deselectUnits(final List<Unit> units, final Territory t, final MouseDetails md) {
       // no unit selected, deselect the most recent
       if (units.isEmpty()) {
-        if (md.isControlDown() || t != selectedTerritory || selectedUnits.isEmpty()) {
+        if (md.isControlDown() || !Objects.equals(t, selectedTerritory) || selectedUnits.isEmpty()) {
           selectedUnits.clear();
         } else {
           // remove the last element
@@ -655,7 +656,7 @@ class EditPanel extends ActionPanel {
         }
       } else { // user has clicked on a specific unit
         // deselect all if control is down
-        if (md.isControlDown() || t != selectedTerritory) {
+        if (md.isControlDown() || !Objects.equals(t, selectedTerritory)) {
           selectedUnits.removeAll(units);
         } else { // deselect one
           // remove those with the least movement first
@@ -743,7 +744,7 @@ class EditPanel extends ActionPanel {
       if (territory == null) {
         return;
       }
-      if (currentAction == changeTerritoryOwnerAction) {
+      if (Objects.equals(currentAction, changeTerritoryOwnerAction)) {
         final TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta == null) {
           JOptionPane.showMessageDialog(getTopLevelAncestor(), "No TerritoryAttachment for " + territory + ".",
@@ -765,7 +766,7 @@ class EditPanel extends ActionPanel {
           }
         }
         SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
-      } else if (currentAction == addUnitsAction) {
+      } else if (Objects.equals(currentAction, addUnitsAction)) {
         final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
         final PlayerChooser playerChooser =
             new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUiContext(), allowNeutral);
@@ -807,8 +808,8 @@ class EditPanel extends ActionPanel {
           getMap().setMouseShadowUnits(selectedUnits);
         }
         // highlight territory
-        if (currentAction == changeTerritoryOwnerAction || currentAction == addUnitsAction) {
-          if (currentTerritory != territory) {
+        if (Objects.equals(currentAction, changeTerritoryOwnerAction) || Objects.equals(currentAction, addUnitsAction)) {
+          if (!Objects.equals(currentTerritory, territory)) {
             if (currentTerritory != null) {
               getMap().clearTerritoryOverlay(currentTerritory);
             }

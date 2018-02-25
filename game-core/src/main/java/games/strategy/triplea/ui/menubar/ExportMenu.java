@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.Action;
@@ -309,7 +310,7 @@ final class ExportMenu extends JMenu {
         }
         // this is to stop from having multiple entries for each players turn.
         if (!showPhaseStats) {
-          if (step.getPlayerId() == currentPlayer) {
+          if (Objects.equals(step.getPlayerId(), currentPlayer)) {
             continue;
           }
         }

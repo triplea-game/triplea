@@ -3,7 +3,6 @@ package games.strategy.thread;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -139,7 +138,7 @@ public enum LockUtil {
       }
       if (o instanceof WeakLockRef) {
         final WeakLockRef other = (WeakLockRef) o;
-        return other.get() == this.get();
+        return Objects.equals(other.get(), this.get());
       }
       return false;
     }

@@ -1,5 +1,7 @@
 package games.strategy.engine.framework;
 
+import java.util.Objects;
+
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Change;
@@ -25,7 +27,7 @@ public class HistorySynchronizer {
 
   public HistorySynchronizer(final GameData data, final IGame game) {
     // this is not the way to use this.
-    if (game.getData() == data) {
+    if (Objects.equals(game.getData(), data)) {
       throw new IllegalStateException(
           "You dont need a history synchronizer to synchronize game data that is managed by an IGame");
     }

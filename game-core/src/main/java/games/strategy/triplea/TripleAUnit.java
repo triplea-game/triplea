@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
@@ -117,7 +118,7 @@ public class TripleAUnit extends Unit {
     for (final Territory t : getData().getMap()) {
       // find the territory this transport is in
       if (t.getUnits().getUnits().contains(this)) {
-        return t.getUnits().getMatches(o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this);
+        return t.getUnits().getMatches(o -> Objects.equals(TripleAUnit.get(o).getTransportedBy(), TripleAUnit.this));
       }
     }
     return Collections.emptyList();
@@ -127,7 +128,7 @@ public class TripleAUnit extends Unit {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
     return CollectionUtils.getMatches(transportedUnitsPossible,
-        o -> TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this);
+        o -> Objects.equals(TripleAUnit.get(o).getTransportedBy(), TripleAUnit.this));
   }
 
   public List<Unit> getUnloaded() {

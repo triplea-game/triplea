@@ -36,17 +36,17 @@ public class RouteDescription {
     }
     final RouteDescription other = (RouteDescription) o;
     if ((start == null && other.start != null) || (other.start == null && start != null)
-        || (start != other.start && !start.equals(other.start))) {
+        || (!Objects.equals(start, other.start) && !start.equals(other.start))) {
       return false;
     }
     if ((route == null && other.route != null) || (other.route == null && route != null)
-        || (route != other.route && !route.equals(other.route))) {
+        || (!Objects.equals(route, other.route) && !route.equals(other.route))) {
       return false;
     }
     if ((end == null && other.end != null) || (other.end == null && end != null)) {
       return false;
     }
-    if (cursorImage != other.cursorImage) {
+    if (!Objects.equals(cursorImage, other.cursorImage)) {
       return false;
     }
     // we dont want to be updating for every small change,

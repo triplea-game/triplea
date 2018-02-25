@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
@@ -29,7 +30,8 @@ class EditValidator {
     // territory cannot be in an UndoableMove route
     final List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();
     for (final UndoableMove move : moves) {
-      if (move.getRoute().getStart() == territory || move.getRoute().getEnd() == territory) {
+      if (Objects.equals(move.getRoute().getStart(), territory)
+          || Objects.equals(move.getRoute().getEnd(), territory)) {
         return "Territory is start or end of a pending move";
       }
     }

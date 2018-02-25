@@ -157,7 +157,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (!Objects.equals(getClass(), obj.getClass())) {
       return false;
     }
     final DefaultAttachment other = (DefaultAttachment) obj;

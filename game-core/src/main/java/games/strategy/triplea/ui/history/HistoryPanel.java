@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Enumeration;
+import java.util.Objects;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -185,7 +186,7 @@ public class HistoryPanel extends JPanel {
     TreeNode previous = null;
     while (nodeEnum.hasMoreElements()) {
       final TreeNode current = nodeEnum.nextElement();
-      if (current == selected) {
+      if (Objects.equals(current, selected)) {
         break;
       } else if (current.getParent() instanceof Step) {
         previous = current;
@@ -228,7 +229,7 @@ public class HistoryPanel extends JPanel {
     boolean foundSelected = false;
     while (nodeEnum.hasMoreElements()) {
       final TreeNode current = nodeEnum.nextElement();
-      if (current == selected) {
+      if (Objects.equals(current, selected)) {
         foundSelected = true;
       } else if (foundSelected) {
         if (current.getParent() instanceof Step) {

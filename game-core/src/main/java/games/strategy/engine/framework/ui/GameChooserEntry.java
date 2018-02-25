@@ -132,7 +132,7 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (!Objects.equals(getClass(), obj.getClass())) {
       return false;
     }
     final GameChooserEntry other = (GameChooserEntry) obj;

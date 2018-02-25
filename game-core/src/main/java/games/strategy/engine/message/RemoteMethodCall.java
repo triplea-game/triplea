@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -120,7 +121,7 @@ public class RemoteMethodCall implements Externalizable {
     // case where the object is the same type as its arg
     final String[] string = new String[classes.length];
     for (int i = 0; i < classes.length; i++) {
-      if (args != null && args[i] != null && classes[i] == args[i].getClass()) {
+      if (args != null && args[i] != null && Objects.equals(classes[i], args[i].getClass())) {
         string[i] = null;
       } else {
         string[i] = classes[i].getName();

@@ -802,7 +802,7 @@ public class WeakAi extends AbstractAi {
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
-        if (fixTerr == capitol) {
+        if (Objects.equals(fixTerr, capitol)) {
           capProduction =
               TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
           capUnit = possibleFactoryNeedingRepair;
@@ -990,7 +990,7 @@ public class WeakAi extends AbstractAi {
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     for (final Territory t : randomTerritories) {
-      if (t != capitol && t.getOwner().equals(player) && t.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
+      if (!Objects.equals(t, capitol) && t.getOwner().equals(player) && t.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }
