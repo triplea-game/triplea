@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -167,9 +168,7 @@ final class ExportMenu extends JMenu {
       // its important here to translate the player objects into our game data
       // the players for the stat panel are only relevant with respect to
       // the game data they belong to
-      for (int i = 0; i < players.length; i++) {
-        players[i] = clone.getPlayerList().getPlayerId(players[i].getName());
-      }
+      Arrays.setAll(players, i -> clone.getPlayerList().getPlayerId(players[i].getName()));
       text.append(defaultFileName).append(",");
       text.append("\n");
       text.append("TripleA Engine Version: ,");
