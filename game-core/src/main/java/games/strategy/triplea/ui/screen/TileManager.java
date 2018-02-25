@@ -12,7 +12,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -488,7 +487,7 @@ public class TileManager {
       drawablesSet.addAll(toAdd);
     }
     final List<IDrawable> orderedDrawables = new ArrayList<>(drawablesSet);
-    Collections.sort(orderedDrawables, new DrawableComparator());
+    orderedDrawables.sort(new DrawableComparator());
     for (final IDrawable drawer : orderedDrawables) {
       if (drawer.getLevel() >= IDrawable.UNITS_LEVEL) {
         break;

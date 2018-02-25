@@ -765,7 +765,7 @@ class OddsCalculatorPanel extends JPanel {
       final boolean isAmphibiousBattle = isAmphibiousBattle();
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
-      Collections.sort(attackers, new UnitBattleComparator(false, costs, territoryEffects, data, false, false));
+      attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data, false, false));
       Collections.reverse(attackers);
       final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, defenders,
           false, false, data, location, territoryEffects, isAmphibiousBattle,
@@ -853,7 +853,7 @@ class OddsCalculatorPanel extends JPanel {
     void init(final PlayerID id, final List<Unit> units, final boolean land) {
       isLand = land;
       categories = new ArrayList<>(categorize(id, units));
-      Collections.sort(categories, Comparator.comparing(UnitCategory::getType, (ut1, ut2) -> {
+      categories.sort(Comparator.comparing(UnitCategory::getType, (ut1, ut2) -> {
         final UnitAttachment u1 = UnitAttachment.get(ut1);
         final UnitAttachment u2 = UnitAttachment.get(ut2);
         // For land battles, sort by land, air, can't combat move (AA), bombarding

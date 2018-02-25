@@ -12,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -124,7 +123,7 @@ public class Tile {
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
-    Collections.sort(contents, new DrawableComparator());
+    contents.sort(new DrawableComparator());
     for (final IDrawable drawable : contents) {
       drawable.draw(bounds, data, g, mapData, unscaled, scaled);
     }

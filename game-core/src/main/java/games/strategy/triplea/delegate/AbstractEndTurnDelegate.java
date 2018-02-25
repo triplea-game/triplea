@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -455,15 +454,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     // multiple sea zones
     // touching the same land zone.
     final List<Territory> blockadeZonesSorted = new ArrayList<>(damagePerBlockadeZone.keySet());
-    Collections.sort(blockadeZonesSorted, getSingleBlockadeThenHighestToLowestBlockadeDamage(damagePerBlockadeZone));
+    blockadeZonesSorted.sort(getSingleBlockadeThenHighestToLowestBlockadeDamage(damagePerBlockadeZone));
     // we want to match highest damage to largest producer first, that is why we sort twice
     final IntegerMap<Territory> totalDamageTracker = new IntegerMap<>();
     for (final Territory b : blockadeZonesSorted) {
       final Tuple<Integer, List<Territory>> tuple = damagePerBlockadeZone.get(b);
       int damageForZone = tuple.getFirst();
       final List<Territory> terrsLosingIncome = new ArrayList<>(tuple.getSecond());
-      Collections.sort(terrsLosingIncome,
-          getSingleNeighborBlockadesThenHighestToLowestProduction(blockadeZonesSorted, map));
+      terrsLosingIncome.sort(getSingleNeighborBlockadesThenHighestToLowestProduction(blockadeZonesSorted, map));
       final Iterator<Territory> iter = terrsLosingIncome.iterator();
       while (damageForZone > 0 && iter.hasNext()) {
         final Territory t = iter.next();

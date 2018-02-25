@@ -380,7 +380,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       // find other producers that could produce for the placeTerritory
       final List<Territory> potentialNewProducers = getAllProducers(placeTerritory, player, unitsLeftToPlace);
       potentialNewProducers.remove(producer);
-      Collections.sort(potentialNewProducers, getBestProducerComparator(placeTerritory, unitsLeftToPlace, player));
+      potentialNewProducers.sort(getBestProducerComparator(placeTerritory, unitsLeftToPlace, player));
       // we can just free a certain amount or still need a certain amount of space
       final int maxSpaceToBeFree =
           Math.min(maxProductionThatCanBeTakenOverFromThisPlacement, freeSize - foundSpaceTotal);
@@ -732,7 +732,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return "No factory in or adjacent to " + to.getName();
     }
     // if its an original factory then unlimited production
-    Collections.sort(producers, getBestProducerComparator(to, units, player));
+    producers.sort(getBestProducerComparator(to, units, player));
     if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to)) {
       return "Cannot place more units which require units, than production capacity of territories with the required "
           + "units";
@@ -1032,7 +1032,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (producers.isEmpty()) {
       return maxUnitsToBePlacedMap;
     }
-    Collections.sort(producers, getBestProducerComparator(to, units, player));
+    producers.sort(getBestProducerComparator(to, units, player));
     final Collection<Territory> notUsableAsOtherProducers = new ArrayList<>();
     notUsableAsOtherProducers.addAll(producers);
     final Map<Territory, Integer> currentAvailablePlacementForOtherProducers = new HashMap<>();
@@ -1162,8 +1162,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
             final List<Territory> newPotentialOtherProducers =
                 getAllProducers(placeTerritory, player, unitsCanBePlacedByThisProducer);
             newPotentialOtherProducers.removeAll(notUsableAsOtherProducers);
-            Collections.sort(newPotentialOtherProducers,
-                getBestProducerComparator(placeTerritory, unitsCanBePlacedByThisProducer, player));
+            newPotentialOtherProducers
+                .sort(getBestProducerComparator(placeTerritory, unitsCanBePlacedByThisProducer, player));
             int productionThatCanBeTakenOverFromThisPlacement = 0;
             for (final Territory potentialOtherProducer : newPotentialOtherProducers) {
               Integer potential = currentAvailablePlacementForOtherProducers.get(potentialOtherProducer);
@@ -1390,7 +1390,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (producers.isEmpty()) {
       return false;
     }
-    Collections.sort(producers, getBestProducerComparator(to, units, player));
+    producers.sort(getBestProducerComparator(to, units, player));
     final Collection<Unit> unitsLeftToPlace = new ArrayList<>(units);
     for (final Territory t : producers) {
       if (unitsLeftToPlace.isEmpty()) {
@@ -1403,7 +1403,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         unitsLeftToPlace.removeAll(canBePlacedHere);
         continue;
       }
-      Collections.sort(canBePlacedHere, getHardestToPlaceWithRequiresUnitsRestrictions(true));
+      canBePlacedHere.sort(getHardestToPlaceWithRequiresUnitsRestrictions(true));
       final Collection<Unit> placedHere =
           CollectionUtils.getNMatches(canBePlacedHere, productionHere, Matches.always());
       unitsLeftToPlace.removeAll(placedHere);

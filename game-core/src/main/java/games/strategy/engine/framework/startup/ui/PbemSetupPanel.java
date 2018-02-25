@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -92,16 +90,13 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   private void createComponents() {
     final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
-    localPlayerPanel.addHierarchyListener(new HierarchyListener() {
-      @Override
-      public void hierarchyChanged(final HierarchyEvent e) {
-        final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
-        if (window instanceof Dialog) {
-          final Dialog dialog = (Dialog) window;
-          if (!dialog.isResizable()) {
-            dialog.setResizable(true);
-            dialog.setMinimumSize(new Dimension(700, 700));
-          }
+    localPlayerPanel.addHierarchyListener(e -> {
+      final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
+      if (window instanceof Dialog) {
+        final Dialog dialog = (Dialog) window;
+        if (!dialog.isResizable()) {
+          dialog.setResizable(true);
+          dialog.setMinimumSize(new Dimension(700, 700));
         }
       }
     });
