@@ -1573,7 +1573,7 @@
     	<li>	Helicopter       5/5/3(6)/8  (9)</li>
     	<li>	Bomber			 7/7/4(8)/12 (6)</li>
     </ul>
-<br>The Americans can also use a Suicide Strike Token which attack at 7 and move anywheres on the map.
+    <br>The Americans can also use a Suicide Strike Token which attack at 7 and move anywheres on the map.
 - mapName: Feudal Japan Warlords
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/feudal_japan_warlords/archive/master.zip
