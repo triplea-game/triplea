@@ -21,7 +21,13 @@ public class LocalPlayers {
   public boolean playing(final PlayerID id) {
     return id != null
         && localPlayers.stream()
-            .anyMatch(gamePlayer -> gamePlayer.getPlayerId().equals(id)
-                && AbstractHumanPlayer.class.isAssignableFrom(gamePlayer.getClass()));
+            .anyMatch(gamePlayer -> isGamePlayerWithPlayerId(gamePlayer, id));
+  }
+  
+  private static boolean isGamePlayerWithPlayerId(
+      IGamePlayer gamePlayer,
+      final PlayerID id) {
+    return gamePlayer.getPlayerId().equals(id)
+        && AbstractHumanPlayer.class.isAssignableFrom(gamePlayer.getClass());
   }
 }

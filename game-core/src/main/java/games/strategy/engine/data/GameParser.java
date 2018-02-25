@@ -489,7 +489,7 @@ public final class GameParser {
     return IntStream.range(0, children.getLength())
         .mapToObj(children::item)
         .filter(current -> current.getNodeName().equals(name))
-        .map(current -> (Element) current)
+        .map(Element.class::cast)
         .collect(Collectors.toCollection(ArrayList::new));
   }
 

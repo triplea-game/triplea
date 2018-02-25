@@ -57,13 +57,14 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   public TechAdvance getAdvanceByProperty(final String property) {
     return m_techs.stream()
         .filter(ta -> ta.getProperty().equals(property))
-        .findFirst().orElse(null);
+        .findFirst()
+        .orElse(null);
   }
 
   public TechAdvance getAdvanceByName(final String name) {
     return m_techs.stream()
         .filter(ta -> ta.getName().equals(name))
-        .findFirst()
+        .findAny()
         .orElse(null);
   }
 
