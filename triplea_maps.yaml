@@ -1546,10 +1546,9 @@
 - mapName: Invasion USA
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/invasion_usa/archive/master.zip
-  version: 2.2.5
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/invasion_usa/master/description/TripleA_Invasion_USA_mini.png
   description: |
-    <div style="text-align: center;"><b>The economy of the world is in turmoil!</b></div>
     <br>The United States of America, against the advise of the United Nations, has continued their development of Advance Laser Technology.
     <br>As the first tower nears completion, many European, Asian and third world nations begin recalling their diplomats home.
     <br>Now the world waits...
