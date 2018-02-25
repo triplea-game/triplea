@@ -71,11 +71,6 @@ public class LobbyLogin {
     }
   }
 
-  private static String playerMacIdString() {
-    final String mac = MacFinder.getHashedMacAddress(new byte[6]);
-    return mac.substring(mac.length() - 10);
-  }
-
   private IMessenger login(final String userName, final String password, final boolean anonymousLogin)
       throws IOException {
     return new ClientMessenger(
@@ -101,6 +96,11 @@ public class LobbyLogin {
             return response;
           }
         });
+  }
+
+  private static String playerMacIdString() {
+    final String mac = MacFinder.getHashedMacAddress(new byte[6]);
+    return mac.substring(mac.length() - 10);
   }
 
   private void showError(final String title, final String message) {
