@@ -34,8 +34,8 @@ public class ModeratorControllerIntegrationTest {
   private ConnectionChangeListener connectionChangeListener;
   private INode adminNode;
 
-  private static String md5Crypt(final String value) {
-    return Md5Crypt.crypt(value, Md5Crypt.newSalt());
+  private static String encryptPassword(final String value) {
+    return Md5Crypt.cryptSensitive(value, Md5Crypt.newSalt());
   }
 
   private static String newHashedMacAddress() {
@@ -52,7 +52,7 @@ public class ModeratorControllerIntegrationTest {
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
     final UserController userController = new UserController();
-    userController.createUser(dbUser, new HashedPassword(md5Crypt(adminName)));
+    userController.createUser(dbUser, new HashedPassword(encryptPassword(adminName)));
     userController.makeAdmin(dbUser);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
@@ -79,14 +79,14 @@ public class ModeratorControllerIntegrationTest {
   @Test
   public void testCantResetAdminPassword() {
     MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = md5Crypt("" + System.currentTimeMillis());
+    final String newPassword = encryptPassword("" + System.currentTimeMillis());
     assertNotNull(moderatorController.setPassword(adminNode, newPassword));
   }
 
   @Test
   public void testResetUserPasswordUnknownUser() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = md5Crypt("" + System.currentTimeMillis());
+    final String newPassword = encryptPassword("" + System.currentTimeMillis());
     final INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
     assertNotNull(moderatorController.setPassword(node, newPassword));
   }

@@ -31,10 +31,28 @@ public final class Md5Crypt {
    *
    * @return The encrypted password.
    *
-   * @deprecated Do not use this method for protecting sensitive information.
+   * @deprecated MD5-crypt is not secure for encrypting sensitive information. Use a different encryption algorithm,
+   *             such as bcrypt.
    */
   @Deprecated
-  public static String crypt(final String password, final String salt) {
+  public static String cryptSensitive(final String password, final String salt) {
+    return cryptInsensitive(password, salt);
+  }
+
+  /**
+   * Encrypts the specified password using the specified salt.
+   *
+   * <p>
+   * <b>WARNING:</b> This method should only be used to encrypt insensitive information.
+   * </p>
+   *
+   * @param password The password to be encrypted.
+   * @param salt The salt. May begin with {@code $1$} and end with {@code $} followed by any number of characters.
+   *        No more than eight characters will be used. If empty, a new random salt will be used.
+   *
+   * @return The encrypted password.
+   */
+  public static String cryptInsensitive(final String password, final String salt) {
     checkNotNull(password);
     checkNotNull(salt);
 

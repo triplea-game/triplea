@@ -108,7 +108,7 @@ public final class LobbyLoginValidatorTest {
     }
 
     final String md5Crypt(final String password) {
-      return Md5Crypt.crypt(password, md5CryptSalt);
+      return Md5Crypt.cryptSensitive(password, md5CryptSalt);
     }
 
     final void givenAnonymousAuthenticationWillFail() {

@@ -70,7 +70,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   private static String md5Crypt(final String value) {
-    return Md5Crypt.crypt(value, Md5Crypt.newSalt());
+    return Md5Crypt.cryptSensitive(value, Md5Crypt.newSalt());
   }
 
   @Test

@@ -49,7 +49,7 @@ public class EmailLimitIntegrationTest {
         connection.prepareStatement("insert into ta_users (username, email, password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);
-      ps.setString(3, Md5Crypt.crypt("password", Md5Crypt.newSalt()));
+      ps.setString(3, Md5Crypt.cryptSensitive("password", Md5Crypt.newSalt()));
       ps.execute();
     }
   }

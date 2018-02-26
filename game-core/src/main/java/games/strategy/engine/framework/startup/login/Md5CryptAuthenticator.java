@@ -95,7 +95,7 @@ final class Md5CryptAuthenticator {
   }
 
   private static String digest(final String password, final String salt) {
-    return Md5Crypt.crypt(password, salt);
+    return Md5Crypt.cryptSensitive(password, salt);
   }
 
   /**

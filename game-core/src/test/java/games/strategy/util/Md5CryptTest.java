@@ -1,5 +1,11 @@
 package games.strategy.util;
 
+import static games.strategy.util.Md5Crypt.cryptInsensitive;
+import static games.strategy.util.Md5Crypt.cryptSensitive;
+import static games.strategy.util.Md5Crypt.getHash;
+import static games.strategy.util.Md5Crypt.getSalt;
+import static games.strategy.util.Md5Crypt.isLegalEncryptedPassword;
+import static games.strategy.util.Md5Crypt.newSalt;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -11,7 +17,15 @@ import org.junit.jupiter.api.Test;
 
 public final class Md5CryptTest {
   @Test
-  public void crypt_ShouldReturnEncryptedPassword() {
+  public void cryptSensitive_ShouldReturnEncryptedPassword() {
+    final String password = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        + "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F";
+    final String salt = "wwmV2glD";
+    assertThat(cryptSensitive(password, salt), is("$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11"));
+  }
+
+  @Test
+  public void cryptInsensitive_ShouldReturnEncryptedPassword() {
     Arrays.asList(
         Triple.of("", "ll5ESPtE", "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"),
         Triple.of("password", "Eim8FgMk", "$1$Eim8FgMk$Y7Rv7y5WCc7rARI/g7xgH1"),
@@ -25,55 +39,55 @@ public final class Md5CryptTest {
           final String encryptedPassword = t.getThird();
           assertThat(
               String.format("wrong encrypted password for '%s'", password),
-              Md5Crypt.crypt(password, salt),
+              cryptInsensitive(password, salt),
               is(encryptedPassword));
         });
   }
 
   @Test
-  public void crypt_ShouldUseNewRandomSaltWhenSaltIsEmpty() {
-    assertThat(Md5Crypt.getSalt(Md5Crypt.crypt("password", "")).length(), is(8));
+  public void cryptInsensitive_ShouldUseNewRandomSaltWhenSaltIsEmpty() {
+    assertThat(getSalt(cryptInsensitive("password", "")).length(), is(8));
   }
 
   @Test
-  public void crypt_ShouldIgnoreLeadingMagicInSalt() {
-    assertThat(Md5Crypt.crypt("password", "$1$Eim8FgMk"), is(Md5Crypt.crypt("password", "Eim8FgMk")));
+  public void cryptInsensitive_ShouldIgnoreLeadingMagicInSalt() {
+    assertThat(cryptInsensitive("password", "$1$Eim8FgMk"), is(cryptInsensitive("password", "Eim8FgMk")));
   }
 
   @Test
-  public void crypt_ShouldIgnoreTrailingHashInSalt() {
-    assertThat(Md5Crypt.crypt("password", "Z$IGNOREME"), is(Md5Crypt.crypt("password", "Z")));
+  public void cryptInsensitive_ShouldIgnoreTrailingHashInSalt() {
+    assertThat(cryptInsensitive("password", "Z$IGNOREME"), is(cryptInsensitive("password", "Z")));
   }
 
   @Test
-  public void crypt_ShouldUseNoMoreThanEightCharactersFromSalt() {
-    assertThat(Md5Crypt.crypt("password", "123456789"), is(Md5Crypt.crypt("password", "12345678")));
+  public void cryptInsensitive_ShouldUseNoMoreThanEightCharactersFromSalt() {
+    assertThat(cryptInsensitive("password", "123456789"), is(cryptInsensitive("password", "12345678")));
   }
 
   @Test
-  public void crypt_ShouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
-    assertThat(Md5Crypt.crypt("password", "ABC!@DEF"), is(Md5Crypt.crypt("password", "ABC..DEF")));
+  public void cryptInsensitive_ShouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
+    assertThat(cryptInsensitive("password", "ABC!@DEF"), is(cryptInsensitive("password", "ABC..DEF")));
   }
 
   @Test
   public void getHash_ShouldReturnHashWhenEncryptedPasswordIsLegal() {
-    assertThat(Md5Crypt.getHash("$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"), is("KsXRew.PuhVQTNMKSXQZx0"));
+    assertThat(getHash("$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"), is("KsXRew.PuhVQTNMKSXQZx0"));
   }
 
   @Test
   public void getHash_ShouldThrowExceptionWhenEncryptedPasswordIsIllegal() {
-    assertThrows(IllegalArgumentException.class, () -> Md5Crypt.getHash("1$A$KnCRC85Rudn6P3cpfe3LR/"));
+    assertThrows(IllegalArgumentException.class, () -> getHash("1$A$KnCRC85Rudn6P3cpfe3LR/"));
   }
 
   @Test
   public void getSalt_ShouldReturnSaltWhenEncryptedPasswordIsLegal() {
-    assertThat(Md5Crypt.getSalt("$1$A$KnCRC85Rudn6P3cpfe3LR/"), is("A"));
-    assertThat(Md5Crypt.getSalt("$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1"), is("ABCDEFGH"));
+    assertThat(getSalt("$1$A$KnCRC85Rudn6P3cpfe3LR/"), is("A"));
+    assertThat(getSalt("$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1"), is("ABCDEFGH"));
   }
 
   @Test
   public void getSalt_ShouldThrowExceptionWhenEncryptedPasswordIsIllegal() {
-    assertThrows(IllegalArgumentException.class, () -> Md5Crypt.getSalt("1$A$KnCRC85Rudn6P3cpfe3LR/"));
+    assertThrows(IllegalArgumentException.class, () -> getSalt("1$A$KnCRC85Rudn6P3cpfe3LR/"));
   }
 
   @Test
@@ -95,7 +109,7 @@ public final class Md5CryptTest {
         .forEach(value -> {
           assertThat(
               String.format("expected legal encrypted password '%s'", value),
-              Md5Crypt.isLegalEncryptedPassword(value),
+              isLegalEncryptedPassword(value),
               is(true));
         });
   }
@@ -114,18 +128,18 @@ public final class Md5CryptTest {
         .forEach(value -> {
           assertThat(
               String.format("expected illegal encrypted password '%s'", value),
-              Md5Crypt.isLegalEncryptedPassword(value),
+              isLegalEncryptedPassword(value),
               is(false));
         });
   }
 
   @Test
   public void newSalt_ShouldReturnSaltOfLengthEight() {
-    assertThat(Md5Crypt.newSalt().length(), is(8));
+    assertThat(newSalt().length(), is(8));
   }
 
   @Test
   public void newSalt_ShouldReturnDifferentSuccessiveSalts() {
-    assertThat(Md5Crypt.newSalt(), is(not(Md5Crypt.newSalt())));
+    assertThat(newSalt(), is(not(newSalt())));
   }
 }

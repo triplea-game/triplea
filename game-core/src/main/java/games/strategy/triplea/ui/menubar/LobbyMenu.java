@@ -311,7 +311,7 @@ public final class LobbyMenu extends JMenuBar {
         + Strings.nullToEmpty(manager.updateUser(
             panel.getUserName(),
             panel.getEmail(),
-            Md5Crypt.crypt(panel.getPassword(), Md5Crypt.newSalt())))
+            Md5Crypt.cryptSensitive(panel.getPassword(), Md5Crypt.newSalt())))
         + Strings.nullToEmpty(manager.updateUser(
             panel.getUserName(),
             panel.getEmail(),
