@@ -17,7 +17,11 @@ public final class TestUserUtils {
    * Creates a new unique user.
    */
   public static User newUser() {
-    return new User(newUsername(), newInetAddress(), newHashedMacAddress());
+    return User.builder()
+        .username(newUsername())
+        .inetAddress(newInetAddress())
+        .hashedMacAddress(newHashedMacAddress())
+        .build();
   }
 
   private static String newUsername() {

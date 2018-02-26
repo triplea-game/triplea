@@ -67,7 +67,11 @@ public class ModeratorController extends AbstractModeratorController {
   }
 
   private User getUserForNode(final INode node) {
-    return new User(getUsernameForNode(node), node.getAddress(), getNodeMacAddress(node));
+    return User.builder()
+        .username(getUsernameForNode(node))
+        .inetAddress(node.getAddress())
+        .hashedMacAddress(getNodeMacAddress(node))
+        .build();
   }
 
   @VisibleForTesting

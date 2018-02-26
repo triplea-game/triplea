@@ -6,8 +6,13 @@ import java.net.InetAddress;
 
 import javax.annotation.concurrent.Immutable;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import lombok.Value;
 
 /**
@@ -15,7 +20,10 @@ import lombok.Value;
  */
 @Immutable
 @Builder
-@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+@EqualsAndHashCode
+@Getter
 public final class User {
   @NonNull
   private final String hashedMacAddress;
