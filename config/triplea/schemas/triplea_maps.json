@@ -28,7 +28,7 @@
       },
       "version": {
         "description": "The map download version",
-        "type": "number",
+        "type": "integer",
         "minimum": 1
       },
       "img": {

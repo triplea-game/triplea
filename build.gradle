@@ -6,11 +6,13 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'application'
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
 
+ext {
+    schemasDir = file('config/triplea/schemas')
+}
 
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
     doLast {
@@ -23,3 +25,6 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
     }
 }
 
+check {
+    dependsOn 'validateYamls'
+}
