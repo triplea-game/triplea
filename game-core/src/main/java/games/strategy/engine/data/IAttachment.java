@@ -2,7 +2,7 @@ package games.strategy.engine.data;
 
 import java.io.Serializable;
 
-public interface IAttachment extends Serializable, DynamicallyModifiable {
+public interface IAttachment extends Serializable, CaseInsensitiveDynamicallyModifiable {
   /** each implementing class NEEDS to have such an constructor, otherwise the parsing in GameParser won't work */
   Class<?>[] attachmentConstructorParameter = new Class<?>[] {String.class, Attachable.class, GameData.class};
 

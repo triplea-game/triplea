@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -1238,7 +1236,6 @@ public final class GameParser {
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
-    final Map<String, MutableProperty<?>> attachmentMap = attachment.getPropertyMap();
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // find the setter
@@ -1251,7 +1248,7 @@ public final class GameParser {
       final String count = current.getAttribute("count");
       final String itemValues = (count.length() > 0 ? count + ":" : "") + value;
       try {
-        Optional.ofNullable(attachmentMap.get(name))
+        attachment.getProperty(name)
             .orElseThrow(() -> new GameParseException(String.format(
                 "Missing property definition for option '%s' in attachment '%s'",
                 name, attachment.getName())))
