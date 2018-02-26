@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.server;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -26,7 +25,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
-import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
 public class ModeratorControllerIntegrationTest {
@@ -34,10 +32,6 @@ public class ModeratorControllerIntegrationTest {
   private ModeratorController moderatorController;
   private ConnectionChangeListener connectionChangeListener;
   private INode adminNode;
-
-  private static String encryptPassword(final String value) {
-    return Md5Crypt.cryptSensitive(value, Md5Crypt.newSalt());
-  }
 
   private static String newHashedMacAddress() {
     final byte[] bytes = new byte[6];
@@ -75,21 +69,6 @@ public class ModeratorControllerIntegrationTest {
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
     moderatorController.boot(booted);
     assertTrue(connectionChangeListener.getRemoved().contains(booted));
-  }
-
-  @Test
-  public void testCantResetAdminPassword() {
-    MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = encryptPassword("" + System.currentTimeMillis());
-    assertNotNull(moderatorController.setPassword(adminNode, newPassword));
-  }
-
-  @Test
-  public void testResetUserPasswordUnknownUser() throws UnknownHostException {
-    MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = encryptPassword("" + System.currentTimeMillis());
-    final INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
-    assertNotNull(moderatorController.setPassword(node, newPassword));
   }
 
   @Test
