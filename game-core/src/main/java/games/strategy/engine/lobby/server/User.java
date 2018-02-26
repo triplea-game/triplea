@@ -26,18 +26,17 @@ import lombok.Value;
 @Getter
 public final class User {
   @NonNull
-  private final String hashedMacAddress;
+  private final String username;
   @NonNull
   private final InetAddress inetAddress;
   @NonNull
-  private final String username;
+  private final String hashedMacAddress;
 
   /**
    * Creates a copy of this user but with the specified hashed MAC address.
    */
   public User withHashedMacAddress(final String hashedMacAddress) {
     checkNotNull(hashedMacAddress);
-
     return new User(username, inetAddress, hashedMacAddress);
   }
 
@@ -46,7 +45,6 @@ public final class User {
    */
   public User withUsername(final String username) {
     checkNotNull(username);
-
     return new User(username, inetAddress, hashedMacAddress);
   }
 }
