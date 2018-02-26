@@ -29,7 +29,7 @@ public class History extends DefaultTreeModel {
   private static final long serialVersionUID = -1769876896869L;
 
   private final HistoryWriter writer = new HistoryWriter(this);
-  private final List<Change> changes = new ArrayList<>();
+  private final List<Change> changes;
   private final GameData gameData;
   private HistoryNode currentNode;
   private HistoryPanel panel = null;
@@ -41,8 +41,13 @@ public class History extends DefaultTreeModel {
   }
 
   public History(final GameData data) {
+    this(data, new ArrayList<>());
+  }
+
+  private History(final GameData data, final List<Change> changes) {
     super(new RootHistoryNode("Game History"));
     gameData = data;
+    this.changes = changes;
   }
 
   public HistoryWriter getHistoryWriter() {
@@ -173,5 +178,9 @@ public class History extends DefaultTreeModel {
 
   GameData getGameData() {
     return gameData;
+  }
+
+  public History clone(final GameData newData) {
+    return new History(newData, new ArrayList<>(changes));
   }
 }

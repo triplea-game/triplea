@@ -6,10 +6,15 @@ import java.util.Map;
 
 public class RepairRuleList extends GameDataComponent {
   private static final long serialVersionUID = 8153102637443800391L;
-  private final Map<String, RepairRule> m_repairRules = new HashMap<>();
+  private final Map<String, RepairRule> m_repairRules;
 
   public RepairRuleList(final GameData data) {
+    this(data, new HashMap<>());
+  }
+
+  private RepairRuleList(final GameData data, final Map<String, RepairRule> repairRules) {
     super(data);
+    m_repairRules = repairRules;
   }
 
   protected void addRepairRule(final RepairRule pf) {
@@ -26,5 +31,9 @@ public class RepairRuleList extends GameDataComponent {
 
   public Collection<RepairRule> getRepairRules() {
     return m_repairRules.values();
+  }
+  
+  RepairRuleList clone(final GameData newData) {
+    return new RepairRuleList(newData, new HashMap<>(m_repairRules));
   }
 }

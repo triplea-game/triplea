@@ -13,10 +13,15 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
  */
 public class BattleRecordsList extends GameDataComponent {
   private static final long serialVersionUID = 7515693859612849475L;
-  private final Map<Integer, BattleRecords> battleRecords = new HashMap<>();
+  private final Map<Integer, BattleRecords> battleRecords;
 
   public BattleRecordsList(final GameData data) {
+    this(data, new HashMap<>());
+  }
+
+  private BattleRecordsList(final GameData data, final Map<Integer, BattleRecords> battleRecords) {
     super(data);
+    this.battleRecords = battleRecords;
   }
 
   public static void addRecords(final Map<Integer, BattleRecords> recordList, final int currentRound,
@@ -143,5 +148,9 @@ public class BattleRecordsList extends GameDataComponent {
       }
     }
     return false;
+  }
+
+  BattleRecordsList clone(final GameData newData) {
+    return new BattleRecordsList(newData, new HashMap<>(battleRecords));
   }
 }

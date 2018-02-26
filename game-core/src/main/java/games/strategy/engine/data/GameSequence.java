@@ -7,13 +7,18 @@ import java.util.List;
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
 
-  private final List<GameStep> m_steps = new ArrayList<>();
+  private final List<GameStep> m_steps;
   private int m_currentIndex;
   private int m_round = 1;
   private int m_roundOffset = 0;
 
   public GameSequence(final GameData data) {
+    this(data, new ArrayList<>());
+  }
+
+  private GameSequence(final GameData data, final List<GameStep> steps) {
     super(data);
+    m_steps = steps;
   }
 
   /**
@@ -135,5 +140,13 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 
   public int size() {
     return m_steps.size();
+  }
+
+  GameSequence clone(final GameData newData) {
+    final GameSequence sequence = new GameSequence(newData, new ArrayList<>(m_steps));
+    sequence.m_currentIndex = m_currentIndex;
+    sequence.m_round = m_round;
+    sequence.m_roundOffset = m_roundOffset;
+    return sequence;
   }
 }

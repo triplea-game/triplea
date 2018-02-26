@@ -6,10 +6,15 @@ import java.util.Map;
 
 public class ProductionRuleList extends GameDataComponent {
   private static final long serialVersionUID = -5313215563006788188L;
-  private final Map<String, ProductionRule> m_productionRules = new HashMap<>();
+  private final Map<String, ProductionRule> m_productionRules;
 
   public ProductionRuleList(final GameData data) {
+    this(data, new HashMap<>());
+  }
+
+  private ProductionRuleList(final GameData data, final Map<String, ProductionRule> productionRules) {
     super(data);
+    m_productionRules = productionRules;
   }
 
   protected void addProductionRule(final ProductionRule pf) {
@@ -26,5 +31,9 @@ public class ProductionRuleList extends GameDataComponent {
 
   public Collection<ProductionRule> getProductionRules() {
     return m_productionRules.values();
+  }
+
+  ProductionRuleList clone(final GameData newData) {
+    return new ProductionRuleList(newData, new HashMap<>(m_productionRules));
   }
 }

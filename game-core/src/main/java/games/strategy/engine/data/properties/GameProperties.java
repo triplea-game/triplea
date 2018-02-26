@@ -29,18 +29,18 @@ public class GameProperties extends GameDataComponent {
 
   // keep this in sync with the corresponding property, this name is used by reflection
   public static final String CONSTANT_PROPERTIES_FIELD_NAME = "constantProperties";
-  private final Map<String, Object> constantProperties = new HashMap<>();
+  private final Map<String, Object> constantProperties;
 
 
   // keep this in sync with the corresponding property, this name is used by reflection
   public static final String EDITABLE_PROPERTIES_FIELD_NAME = "editableProperties";
-  private final Map<String, IEditableProperty> editableProperties = new HashMap<>();
+  private final Map<String, IEditableProperty> editableProperties;
 
   // This list is used to keep track of order properties were
   // added.
-  private final List<String> ordering = new ArrayList<>();
+  private final List<String> ordering;
 
-  private Map<String, IEditableProperty> playerProperties = new HashMap<>();
+  private Map<String, IEditableProperty> playerProperties;
 
   /**
    * Creates a new instance of GameProperties.
@@ -49,7 +49,20 @@ public class GameProperties extends GameDataComponent {
    *        game data
    */
   public GameProperties(final GameData data) {
+    this(data, new HashMap<>(), new HashMap<>(), new ArrayList<>(), new HashMap<>());
+  }
+
+  private GameProperties(
+      final GameData data,
+      final Map<String, Object> constantProperties,
+      final Map<String, IEditableProperty> editableProperties,
+      final List<String> ordering,
+      final Map<String, IEditableProperty> playerProperties) {
     super(data);
+    this.constantProperties = constantProperties;
+    this.editableProperties = editableProperties;
+    this.ordering = ordering;
+    this.playerProperties = playerProperties;
   }
 
   /**
@@ -221,5 +234,14 @@ public class GameProperties extends GameDataComponent {
         p.setValue(prop.getValue());
       }
     }
+  }
+
+  public GameProperties clone(final GameData newData) {
+    return new GameProperties(
+        newData,
+        new HashMap<>(constantProperties),
+        new HashMap<>(editableProperties),
+        new ArrayList<>(ordering),
+        new HashMap<>(playerProperties));
   }
 }

@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 
 import javax.swing.SwingUtilities;
 
@@ -70,7 +71,7 @@ import games.strategy.util.Version;
  * History object.
  * </p>
  */
-public class GameData implements Serializable {
+public class GameData implements Serializable, Cloneable {
   private static final long serialVersionUID = -2612710634080125728L;
   public static final String GAME_UUID = "GAME_UUID";
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -82,40 +83,97 @@ public class GameData implements Serializable {
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
   private transient List<GameMapListener> gameMapListeners = new CopyOnWriteArrayList<>();
-  private final AllianceTracker alliances = new AllianceTracker();
+  private final AllianceTracker alliances;
   // Tracks current relationships between players, this is empty if relationships aren't used
-  private final RelationshipTracker relationships = new RelationshipTracker(this);
+  private final RelationshipTracker relationships;
   private final DelegateList delegateList;
-  private final GameMap map = new GameMap(this);
-  private final PlayerList playerList = new PlayerList(this);
-  private final ProductionFrontierList productionFrontierList = new ProductionFrontierList(this);
-  private final ProductionRuleList productionRuleList = new ProductionRuleList(this);
-  private final RepairFrontierList repairFrontierList = new RepairFrontierList(this);
-  private final RepairRuleList repairRuleList = new RepairRuleList(this);
-  private final ResourceList resourceList = new ResourceList(this);
-  private final GameSequence sequence = new GameSequence(this);
-  private final UnitTypeList unitTypeList = new UnitTypeList(this);
+  private final GameMap map;
+  private final PlayerList playerList;
+  private final ProductionFrontierList productionFrontierList;
+  private final ProductionRuleList productionRuleList;
+  private final RepairFrontierList repairFrontierList;
+  private final RepairRuleList repairRuleList;
+  private final ResourceList resourceList;
+  private final GameSequence sequence;
+  private final UnitTypeList unitTypeList;
   // Tracks all relationshipTypes that are in the current game, default there will be the SelfRelation and the
   // NullRelation any other relations are map designer created.
-  private final RelationshipTypeList relationshipTypeList = new RelationshipTypeList(this);
-  private final GameProperties properties = new GameProperties(this);
-  private final UnitsList unitsList = new UnitsList();
-  private final TechnologyFrontier technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
+  private final RelationshipTypeList relationshipTypeList;
+  private final GameProperties properties;
+  private final UnitsList unitsList;
+  private final TechnologyFrontier technologyFrontier;
   private transient ResourceLoader resourceLoader;
   private IGameLoader loader;
-  private final History gameHistory = new History(this);
+  private final History gameHistory;
   private transient volatile boolean testLockIsHeld = false;
-  private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
-      new ArrayList<>();
-  // TODO: change to Map/HashMap upon next incompatible release
-  private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
-  private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
+  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues;
+  private final Hashtable<String, TerritoryEffect> territoryEffectList;
+  private final BattleRecordsList battleRecordsList;
 
-  /** Creates new GameData. */
   public GameData() {
+    this(new AllianceTracker(),
+        RelationshipTracker::new,
+        GameMap::new,
+        PlayerList::new,
+        ProductionFrontierList::new,
+        ProductionRuleList::new,
+        RepairFrontierList::new,
+        RepairRuleList::new,
+        ResourceList::new,
+        GameSequence::new,
+        UnitTypeList::new,
+        RelationshipTypeList::new,
+        GameProperties::new,
+        new UnitsList(),
+        data -> new TechnologyFrontier("allTechsForGame", data),
+        History::new,
+        new ArrayList<>(),
+        new Hashtable<>(),
+        BattleRecordsList::new);
+  }
+
+  private GameData(
+      final AllianceTracker alliances,
+      final Function<GameData, RelationshipTracker> relationships,
+      final Function<GameData, GameMap> map,
+      final Function<GameData, PlayerList> playerList,
+      final Function<GameData, ProductionFrontierList> productionFrontierList,
+      final Function<GameData, ProductionRuleList> productionRuleList,
+      final Function<GameData, RepairFrontierList> repairFrontierList,
+      final Function<GameData, RepairRuleList> repairRuleList,
+      final Function<GameData, ResourceList> resourceList,
+      final Function<GameData, GameSequence> sequence,
+      final Function<GameData, UnitTypeList> unitTypeList,
+      final Function<GameData, RelationshipTypeList> relationshipTypeList,
+      final Function<GameData, GameProperties> properties,
+      final UnitsList unitsList,
+      final Function<GameData, TechnologyFrontier> technologyFrontier,
+      final Function<GameData, History> gameHistory,
+      final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues,
+      final Hashtable<String, TerritoryEffect> territoryEffectList,
+      final Function<GameData, BattleRecordsList> battleRecordsList) {
     super();
+    this.alliances = alliances;
+    this.relationships = relationships.apply(this);
+    this.map = map.apply(this);
+    this.playerList = playerList.apply(this);
+    this.productionFrontierList = productionFrontierList.apply(this);
+    this.productionRuleList = productionRuleList.apply(this);
+    this.repairFrontierList = repairFrontierList.apply(this);
+    this.repairRuleList = repairRuleList.apply(this);
+    this.resourceList = resourceList.apply(this);
+    this.sequence = sequence.apply(this);
+    this.unitTypeList = unitTypeList.apply(this);
+    this.relationshipTypeList = relationshipTypeList.apply(this);
+    this.properties = properties.apply(this);
+    this.unitsList = unitsList;
+    this.technologyFrontier = technologyFrontier.apply(this);
+    this.gameHistory = gameHistory.apply(this);
+    this.attachmentOrderAndValues = attachmentOrderAndValues;
+    this.territoryEffectList = territoryEffectList;
+    this.battleRecordsList = battleRecordsList.apply(this);
     delegateList = new DelegateList(this);
-    properties.set(GAME_UUID, UUID.randomUUID().toString());
+    this.properties.set(GAME_UUID, UUID.randomUUID().toString());
   }
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -438,11 +496,11 @@ public class GameData implements Serializable {
   }
 
   public void addToAttachmentOrderAndValues(
-      final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
+      final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);
   }
 
-  public List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> getAttachmentOrderAndValues() {
+  public List<Tuple<IAttachment, List<Tuple<String, String>>>> getAttachmentOrderAndValues() {
     return attachmentOrderAndValues;
   }
 
@@ -464,7 +522,7 @@ public class GameData implements Serializable {
     return relationships;
   }
 
-  public Map<String, TerritoryEffect> getTerritoryEffectList() {
+  public Hashtable<String, TerritoryEffect> getTerritoryEffectList() {
     return territoryEffectList;
   }
 
@@ -545,5 +603,31 @@ public class GameData implements Serializable {
     } finally {
       releaseReadLock();
     }
+  }
+
+
+  @Override
+  public GameData clone() {
+    return new GameData(
+        getAllianceTracker().clone(),
+        getRelationshipTracker()::clone,
+        getMap()::clone,
+        getPlayerList()::clone,
+        getProductionFrontierList()::clone,
+        getProductionRuleList()::clone,
+        getRepairFrontierList()::clone,
+        getRepairRuleList()::clone,
+        getResourceList()::clone,
+        getSequence()::clone,
+        getUnitTypeList()::clone,
+        getRelationshipTypeList()::clone,
+        // Clone delegates if needed
+        getProperties()::clone,
+        getUnits().clone(),
+        getTechnologyFrontier()::clone,
+        getHistory()::clone,
+        new ArrayList<>(getAttachmentOrderAndValues()),
+        new Hashtable<>(getTerritoryEffectList()),
+        getBattleRecordsList()::clone);
   }
 }
