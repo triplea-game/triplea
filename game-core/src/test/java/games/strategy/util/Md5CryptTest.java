@@ -11,25 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public final class Md5CryptTest {
   @Test
-  public void cryptWithoutSalt_ShouldReturnEncryptedPassword() {
-    Arrays.asList(
-        "",
-        "password",
-        "the quick brown fox",
-        "ABYZabyz0189",
-        " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F")
-        .forEach(password -> {
-          final String encryptedPassword = Md5Crypt.crypt(password);
-          final String salt = Md5Crypt.getSalt(encryptedPassword);
-          assertThat(
-              String.format("wrong encrypted password for '%s'", password),
-              Md5Crypt.crypt(password, salt),
-              is(encryptedPassword));
-        });
-  }
-
-  @Test
-  public void cryptWithSalt_ShouldReturnEncryptedPassword() {
+  public void crypt_ShouldReturnEncryptedPassword() {
     Arrays.asList(
         Triple.of("", "ll5ESPtE", "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"),
         Triple.of("password", "Eim8FgMk", "$1$Eim8FgMk$Y7Rv7y5WCc7rARI/g7xgH1"),
@@ -49,27 +31,27 @@ public final class Md5CryptTest {
   }
 
   @Test
-  public void cryptWithSalt_ShouldUseNewRandomSaltWhenSaltIsEmpty() {
+  public void crypt_ShouldUseNewRandomSaltWhenSaltIsEmpty() {
     assertThat(Md5Crypt.getSalt(Md5Crypt.crypt("password", "")).length(), is(8));
   }
 
   @Test
-  public void cryptWithSalt_ShouldIgnoreLeadingMagicInSalt() {
+  public void crypt_ShouldIgnoreLeadingMagicInSalt() {
     assertThat(Md5Crypt.crypt("password", "$1$Eim8FgMk"), is(Md5Crypt.crypt("password", "Eim8FgMk")));
   }
 
   @Test
-  public void cryptWithSalt_ShouldIgnoreTrailingHashInSalt() {
+  public void crypt_ShouldIgnoreTrailingHashInSalt() {
     assertThat(Md5Crypt.crypt("password", "Z$IGNOREME"), is(Md5Crypt.crypt("password", "Z")));
   }
 
   @Test
-  public void cryptWithSalt_ShouldUseNoMoreThanEightCharactersFromSalt() {
+  public void crypt_ShouldUseNoMoreThanEightCharactersFromSalt() {
     assertThat(Md5Crypt.crypt("password", "123456789"), is(Md5Crypt.crypt("password", "12345678")));
   }
 
   @Test
-  public void cryptWithSalt_ShouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
+  public void crypt_ShouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
     assertThat(Md5Crypt.crypt("password", "ABC!@DEF"), is(Md5Crypt.crypt("password", "ABC..DEF")));
   }
 

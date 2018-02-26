@@ -23,22 +23,6 @@ public final class Md5Crypt {
   private Md5Crypt() {}
 
   /**
-   * Encrypts the specified password using a new random salt.
-   *
-   * @param password The password to be encrypted.
-   *
-   * @return The encrypted password.
-   *
-   * @deprecated Do not use this method for protecting sensitive information.
-   */
-  @Deprecated
-  public static String crypt(final String password) {
-    checkNotNull(password);
-
-    return crypt(password, newSalt());
-  }
-
-  /**
    * Encrypts the specified password using the specified salt.
    *
    * @param password The password to be encrypted.

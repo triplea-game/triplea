@@ -164,7 +164,7 @@ public class LobbyLogin {
           response.put(LobbyLoginValidator.EMAIL_KEY, email);
           // TODO: Don't send the md5-hashed password once the lobby removes the support, kept for
           // backwards-compatibility
-          response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, Md5Crypt.crypt(password));
+          response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, Md5Crypt.crypt(password, Md5Crypt.newSalt()));
           if (RsaAuthenticator.canProcessChallenge(challenge)) {
             response.putAll(RsaAuthenticator.newResponse(challenge, password));
           }
