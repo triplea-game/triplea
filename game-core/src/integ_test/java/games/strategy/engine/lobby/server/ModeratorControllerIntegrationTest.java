@@ -14,6 +14,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.lobby.server.db.HashedPassword;
@@ -52,7 +53,7 @@ public class ModeratorControllerIntegrationTest {
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
     final UserController userController = new UserController();
-    userController.createUser(dbUser, new HashedPassword(encryptPassword(adminName)));
+    userController.createUser(dbUser, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
     userController.makeAdmin(dbUser);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
