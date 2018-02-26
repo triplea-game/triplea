@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.net.InetAddress;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 import lombok.AccessLevel;
@@ -11,9 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.ToString;
-import lombok.Value;
 
 /**
  * Information about a lobby user.
@@ -25,11 +24,11 @@ import lombok.Value;
 @EqualsAndHashCode
 @Getter
 public final class User {
-  @NonNull
+  @Nonnull
   private final String username;
-  @NonNull
+  @Nonnull
   private final InetAddress inetAddress;
-  @NonNull
+  @Nonnull
   private final String hashedMacAddress;
 
   /**
