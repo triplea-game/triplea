@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -13,11 +12,9 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
 /**
- * Tracks which players have which technology advances.
+ * A collection of methods for tracking which players have which technology advances.
  */
-public class TechTracker implements Serializable {
-  private static final long serialVersionUID = 4705039229340373735L;
-
+public final class TechTracker {
   private TechTracker() {}
 
   /**
@@ -59,8 +56,7 @@ public class TechTracker implements Serializable {
     return technologyFrontiers;
   }
 
-  public static synchronized void addAdvance(final PlayerID player, final IDelegateBridge bridge,
-      final TechAdvance advance) {
+  public static void addAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance && ((GenericTechAdvance) advance).getAdvance() == null) {
       attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
@@ -72,8 +68,7 @@ public class TechTracker implements Serializable {
     advance.perform(player, bridge);
   }
 
-  static synchronized void removeAdvance(final PlayerID player, final IDelegateBridge bridge,
-      final TechAdvance advance) {
+  static void removeAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance) {
       if (((GenericTechAdvance) advance).getAdvance() == null) {
