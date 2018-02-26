@@ -32,6 +32,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Md5Crypt;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
@@ -322,7 +323,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private static String md5Crypt(final String value, final String salt) {
-    return games.strategy.util.Md5Crypt.crypt(value, salt);
+    return Md5Crypt.crypt(value, salt);
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {

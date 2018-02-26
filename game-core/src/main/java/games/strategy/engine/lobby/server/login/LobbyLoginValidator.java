@@ -32,6 +32,7 @@ import games.strategy.engine.lobby.server.db.UserDao;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
+import games.strategy.util.Md5Crypt;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
@@ -116,11 +117,11 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
     if (lobbyPropertyReader.isMaintenanceMode()) {
-      challenge.put(SALT_KEY, games.strategy.util.Md5Crypt.newSalt());
+      challenge.put(SALT_KEY, Md5Crypt.newSalt());
     } else {
       final HashedPassword password = userDao.getLegacyPassword(userName);
       if (password != null && Strings.emptyToNull(password.value) != null) {
-        challenge.put(SALT_KEY, games.strategy.util.Md5Crypt.getSalt(password.value));
+        challenge.put(SALT_KEY, Md5Crypt.getSalt(password.value));
       }
     }
     return challenge;

@@ -10,30 +10,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 public final class Md5CryptTest {
-  private static String crypt(final String password) {
-    return Md5Crypt.crypt(password);
-  }
-
-  private static String crypt(final String password, final String salt) {
-    return Md5Crypt.crypt(password, salt);
-  }
-
-  private static String getHash(final String encryptedPassword) {
-    return Md5Crypt.getHash(encryptedPassword);
-  }
-
-  private static String getSalt(final String encryptedPassword) {
-    return Md5Crypt.getSalt(encryptedPassword);
-  }
-
-  private static boolean isLegalEncryptedPassword(final String encryptedPassword) {
-    return Md5Crypt.isLegalEncryptedPassword(encryptedPassword);
-  }
-
-  private static String newSalt() {
-    return Md5Crypt.newSalt();
-  }
-
   @Test
   public void cryptWithoutSalt_ShouldReturnEncryptedPassword() {
     Arrays.asList(
@@ -43,11 +19,11 @@ public final class Md5CryptTest {
         "ABYZabyz0189",
         " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F")
         .forEach(password -> {
-          final String encryptedPassword = crypt(password);
-          final String salt = getSalt(encryptedPassword);
+          final String encryptedPassword = Md5Crypt.crypt(password);
+          final String salt = Md5Crypt.getSalt(encryptedPassword);
           assertThat(
               String.format("wrong encrypted password for '%s'", password),
-              crypt(password, salt),
+              Md5Crypt.crypt(password, salt),
               is(encryptedPassword));
         });
   }
@@ -67,55 +43,55 @@ public final class Md5CryptTest {
           final String encryptedPassword = t.getThird();
           assertThat(
               String.format("wrong encrypted password for '%s'", password),
-              crypt(password, salt),
+              Md5Crypt.crypt(password, salt),
               is(encryptedPassword));
         });
   }
 
   @Test
   public void cryptWithSalt_ShouldUseNewRandomSaltWhenSaltIsEmpty() {
-    assertThat(getSalt(crypt("password", "")).length(), is(8));
+    assertThat(Md5Crypt.getSalt(Md5Crypt.crypt("password", "")).length(), is(8));
   }
 
   @Test
   public void cryptWithSalt_ShouldIgnoreLeadingMagicInSalt() {
-    assertThat(crypt("password", "$1$Eim8FgMk"), is(crypt("password", "Eim8FgMk")));
+    assertThat(Md5Crypt.crypt("password", "$1$Eim8FgMk"), is(Md5Crypt.crypt("password", "Eim8FgMk")));
   }
 
   @Test
   public void cryptWithSalt_ShouldIgnoreTrailingHashInSalt() {
-    assertThat(crypt("password", "Z$IGNOREME"), is(crypt("password", "Z")));
+    assertThat(Md5Crypt.crypt("password", "Z$IGNOREME"), is(Md5Crypt.crypt("password", "Z")));
   }
 
   @Test
   public void cryptWithSalt_ShouldUseNoMoreThanEightCharactersFromSalt() {
-    assertThat(crypt("password", "123456789"), is(crypt("password", "12345678")));
+    assertThat(Md5Crypt.crypt("password", "123456789"), is(Md5Crypt.crypt("password", "12345678")));
   }
 
   @Test
   public void cryptWithSalt_ShouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
-    assertThat(crypt("password", "ABC!@DEF"), is(crypt("password", "ABC..DEF")));
+    assertThat(Md5Crypt.crypt("password", "ABC!@DEF"), is(Md5Crypt.crypt("password", "ABC..DEF")));
   }
 
   @Test
   public void getHash_ShouldReturnHashWhenEncryptedPasswordIsLegal() {
-    assertThat(getHash("$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"), is("KsXRew.PuhVQTNMKSXQZx0"));
+    assertThat(Md5Crypt.getHash("$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"), is("KsXRew.PuhVQTNMKSXQZx0"));
   }
 
   @Test
   public void getHash_ShouldThrowExceptionWhenEncryptedPasswordIsIllegal() {
-    assertThrows(IllegalArgumentException.class, () -> getHash("1$A$KnCRC85Rudn6P3cpfe3LR/"));
+    assertThrows(IllegalArgumentException.class, () -> Md5Crypt.getHash("1$A$KnCRC85Rudn6P3cpfe3LR/"));
   }
 
   @Test
   public void getSalt_ShouldReturnSaltWhenEncryptedPasswordIsLegal() {
-    assertThat(getSalt("$1$A$KnCRC85Rudn6P3cpfe3LR/"), is("A"));
-    assertThat(getSalt("$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1"), is("ABCDEFGH"));
+    assertThat(Md5Crypt.getSalt("$1$A$KnCRC85Rudn6P3cpfe3LR/"), is("A"));
+    assertThat(Md5Crypt.getSalt("$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1"), is("ABCDEFGH"));
   }
 
   @Test
   public void getSalt_ShouldThrowExceptionWhenEncryptedPasswordIsIllegal() {
-    assertThrows(IllegalArgumentException.class, () -> getSalt("1$A$KnCRC85Rudn6P3cpfe3LR/"));
+    assertThrows(IllegalArgumentException.class, () -> Md5Crypt.getSalt("1$A$KnCRC85Rudn6P3cpfe3LR/"));
   }
 
   @Test
@@ -137,7 +113,7 @@ public final class Md5CryptTest {
         .forEach(value -> {
           assertThat(
               String.format("expected legal encrypted password '%s'", value),
-              isLegalEncryptedPassword(value),
+              Md5Crypt.isLegalEncryptedPassword(value),
               is(true));
         });
   }
@@ -156,18 +132,18 @@ public final class Md5CryptTest {
         .forEach(value -> {
           assertThat(
               String.format("expected illegal encrypted password '%s'", value),
-              isLegalEncryptedPassword(value),
+              Md5Crypt.isLegalEncryptedPassword(value),
               is(false));
         });
   }
 
   @Test
   public void newSalt_ShouldReturnSaltOfLengthEight() {
-    assertThat(newSalt().length(), is(8));
+    assertThat(Md5Crypt.newSalt().length(), is(8));
   }
 
   @Test
   public void newSalt_ShouldReturnDifferentSuccessiveSalts() {
-    assertThat(newSalt(), is(not(newSalt())));
+    assertThat(Md5Crypt.newSalt(), is(not(Md5Crypt.newSalt())));
   }
 }

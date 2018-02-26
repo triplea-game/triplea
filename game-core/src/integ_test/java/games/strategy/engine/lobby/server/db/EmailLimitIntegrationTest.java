@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Strings;
 
+import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
 /**
@@ -48,7 +49,7 @@ public class EmailLimitIntegrationTest {
         connection.prepareStatement("insert into ta_users (username, email, password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);
-      ps.setString(3, games.strategy.util.Md5Crypt.crypt("password"));
+      ps.setString(3, Md5Crypt.crypt("password"));
       ps.execute();
     }
   }

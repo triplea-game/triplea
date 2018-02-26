@@ -25,6 +25,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
+import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
 public class ModeratorControllerIntegrationTest {
@@ -34,7 +35,7 @@ public class ModeratorControllerIntegrationTest {
   private INode adminNode;
 
   private static String md5Crypt(final String value) {
-    return games.strategy.util.Md5Crypt.crypt(value);
+    return Md5Crypt.crypt(value);
   }
 
   private static String newHashedMacAddress() {

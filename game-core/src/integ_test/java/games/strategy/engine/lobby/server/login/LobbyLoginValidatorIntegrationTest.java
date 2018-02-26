@@ -28,6 +28,7 @@ import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
+import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
 public class LobbyLoginValidatorIntegrationTest {
@@ -69,7 +70,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   private static String md5Crypt(final String value) {
-    return games.strategy.util.Md5Crypt.crypt(value);
+    return Md5Crypt.crypt(value);
   }
 
   @Test
