@@ -56,8 +56,7 @@ public final class TechTracker {
     return technologyFrontiers;
   }
 
-  public static synchronized void addAdvance(final PlayerID player, final IDelegateBridge bridge,
-      final TechAdvance advance) {
+  public static void addAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance && ((GenericTechAdvance) advance).getAdvance() == null) {
       attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
@@ -69,8 +68,7 @@ public final class TechTracker {
     advance.perform(player, bridge);
   }
 
-  static synchronized void removeAdvance(final PlayerID player, final IDelegateBridge bridge,
-      final TechAdvance advance) {
+  static void removeAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance) {
       if (((GenericTechAdvance) advance).getAdvance() == null) {
