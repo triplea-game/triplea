@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.util.Util;
 
 /**
@@ -55,13 +57,18 @@ public class IpFinder {
         .map(Collections::list)
         .flatMap(Collection::stream)
         .filter(Util.not(InetAddress::isLoopbackAddress))
-        .sorted(Comparator
-            .comparing(IpFinder::isPublic)
-            .thenComparing(Inet4Address.class::isInstance)
-            .thenComparing(InetAddress::isLinkLocalAddress, Comparator.reverseOrder())
-            .reversed())
+        .sorted(getInetAddressComparator())
         .findFirst()
         .orElse(InetAddress.getLocalHost());
+  }
+
+  @VisibleForTesting
+  static Comparator<InetAddress> getInetAddressComparator() {
+    return Comparator
+        .comparing(IpFinder::isPublic)
+        .thenComparing(Inet4Address.class::isInstance)
+        .thenComparing(InetAddress::isLinkLocalAddress, Comparator.reverseOrder())
+        .reversed();
   }
 
   private static boolean isPublic(final InetAddress address) {
