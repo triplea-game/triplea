@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
@@ -655,17 +656,16 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       // -1 since we dont count outselves
       final int clientCount = serverMessenger.getNodes().size() - 1;
       final Map<String, INode> remotePlayers = new HashMap<>();
-      for (final String player : playersToNodeListing.keySet()) {
-        final String playedBy = playersToNodeListing.get(player);
+      for (final Entry<String, String> entry : playersToNodeListing.entrySet()) {
+        final String playedBy = entry.getValue();
         if (playedBy == null) {
           return Optional.empty();
         }
         if (!playedBy.equals(serverMessenger.getLocalNode().getName())) {
-          final Set<INode> nodes = serverMessenger.getNodes();
-          nodes.stream()
+          serverMessenger.getNodes().stream()
               .filter(node -> node.getName().equals(playedBy))
               .findAny()
-              .ifPresent(node -> remotePlayers.put(player, node));
+              .ifPresent(node -> remotePlayers.put(entry.getKey(), node));
         }
       }
       return Optional.of(new ServerLauncher(clientCount, remoteMessenger, channelMessenger,

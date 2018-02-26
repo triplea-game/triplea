@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 
-import com.google.common.base.Joiner;
 import com.google.common.primitives.Bytes;
 
 import games.strategy.debug.ClientLogger;
@@ -38,7 +37,7 @@ public final class MacFinder {
   public static String getHashedMacAddress() {
     final String mac = getMacAddress();
     if (mac == null) {
-      throw new IllegalArgumentException("You have an invalid MAC address or TripleA can't" 
+      throw new IllegalArgumentException("You have an invalid MAC address or TripleA can't"
           + " find your mac address");
     }
     return getHashedMacAddress(mac);
@@ -65,7 +64,7 @@ public final class MacFinder {
   }
 
   private static String getMacAddress() {
-    // We must try different methods of obtaining the mac address because not all the methods 
+    // We must try different methods of obtaining the mac address because not all the methods
     // work on each system, and
     // if we can't obtain
     // the mac, we can't login to the lobby
@@ -75,7 +74,7 @@ public final class MacFinder {
       final NetworkInterface localHostNetworkInterface = NetworkInterface.getByInetAddress(address);
       if (localHostNetworkInterface != null) {
         final byte[] rawMac = localHostNetworkInterface.getHardwareAddress();
-        
+
         if (rawMac != null) {
           final String mac = convertMacBytesToString(rawMac);
           if (isMacValid(mac)) {
@@ -101,7 +100,7 @@ public final class MacFinder {
     } catch (final SocketException e) {
       ClientLogger.logError("Error while trying to get a valid MAC adress", e);
     }
-    // Next, try to get the mac address by calling the 'getmac' app that exists in Windows, 
+    // Next, try to get the mac address by calling the 'getmac' app that exists in Windows,
     // Mac, and possibly others.
     /*
      * Physical Address Transport Name
@@ -117,7 +116,7 @@ public final class MacFinder {
     } catch (final Exception e) {
       ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
-    // Next, try to get the mac address by calling the 'ipconfig -all' app that exists in Windows 
+    // Next, try to get the mac address by calling the 'ipconfig -all' app that exists in Windows
     // and possibly others.
     /*
      * ...
@@ -144,7 +143,7 @@ public final class MacFinder {
     } catch (final Exception e) {
       ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
-    // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux 
+    // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux
     // and possibly others. May
     // have 1 or 2 spaces
     // between Ethernet and HWaddr, and may be wireless instead of ethernet.
@@ -184,7 +183,7 @@ public final class MacFinder {
     } catch (final Exception e) {
       ClientLogger.logQuietly("Error while trying to get mac address", e);
     }
-    // Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD 
+    // Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD
     // and possibly others.
     /*
      * ...
@@ -227,9 +226,9 @@ public final class MacFinder {
   }
 
   private static String convertMacBytesToString(final byte[] mac) {
-    return Joiner.on('.').join(Bytes.asList(mac).stream()
+    return Bytes.asList(mac).stream()
         .map(macbyte -> String.format("%02X", macbyte))
-        .collect(Collectors.toList()));
+        .collect(Collectors.joining("."));
   }
 
   private static boolean isMacValid(final String mac) {
@@ -256,7 +255,7 @@ public final class MacFinder {
   }
 
   private static String tryToParseMacFromOutput(
-      final String output, 
+      final String output,
       final List<String> possibleSeparators,
       final boolean allowAppendedZeroCheck) {
     if (output == null || output.trim().length() < 6) {
@@ -267,7 +266,7 @@ public final class MacFinder {
       while (leftToSearch.length() > 0 && leftToSearch.contains(separator)) {
         int macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 2);
         String rawMac = leftToSearch.substring(
-            macStartIndex, 
+            macStartIndex,
             Math.min(macStartIndex + 17, leftToSearch.length()));
         if (rawMac.length() > 0) {
           String mac = rawMac.replace(separator, ".");
@@ -277,8 +276,8 @@ public final class MacFinder {
             // If mac is invalid, see if it works after adding a zero to the front
             macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 1);
             rawMac = "0" + leftToSearch.substring(
-                macStartIndex, 
-                Math.min(macStartIndex + 16, 
+                macStartIndex,
+                Math.min(macStartIndex + 16,
                     leftToSearch.length()));
             mac = rawMac.replace(separator, ".");
             if (isMacValid(mac)) {

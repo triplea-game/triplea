@@ -239,9 +239,9 @@ class AAInMoveUtil implements Serializable {
 
     return units.stream()
         .filter(Objects::nonNull)
-        .filter(u -> u != null && u.getOwner() != null)
-        .findFirst()
         .map(Unit::getOwner)
+        .filter(Objects::nonNull)
+        .findAny()
         .orElse(PlayerID.NULL_PLAYERID);
   }
 
@@ -256,9 +256,10 @@ class AAInMoveUtil implements Serializable {
       return territory.getOwner();
     }
     return defendingUnits.stream()
-        .filter(u -> u != null && u.getOwner() != null)
-        .findFirst()
+        .filter(Objects::nonNull)
         .map(Unit::getOwner)
+        .filter(Objects::nonNull)
+        .findAny()
         .orElse(PlayerID.NULL_PLAYERID);
   }
 

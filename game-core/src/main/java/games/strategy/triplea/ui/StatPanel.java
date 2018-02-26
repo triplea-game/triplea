@@ -427,16 +427,15 @@ public class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerID player, final GameData data) {
-      int production = data.getMap().getTerritories().stream()
+      final int production = data.getMap().getTerritories().stream()
           .filter(place -> place.getOwner().equals(player))
-          .filter(place -> Matches.territoryCanCollectIncomeFrom(player, data).test(place))
+          .filter(Matches.territoryCanCollectIncomeFrom(player, data))
           .mapToInt(TerritoryAttachment::getProduction)
           .sum();
       /*
        * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
        */
-      production *= Properties.getPuMultiplier(data);
-      return production;
+      return production * Properties.getPuMultiplier(data);
     }
   }
 
