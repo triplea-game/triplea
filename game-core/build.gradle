@@ -18,7 +18,6 @@ plugins {
     id 'de.undercouch.download' version '3.3.0'
 }
 
-apply from: '../gradle/scripts/yaml.gradle'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 group = 'triplea'
@@ -30,7 +29,6 @@ ext {
     releasesDir = file("$buildDir/releases")
     remoteLibsDir = file('.remote-libs')
     rootFilesDir = file("$buildDir/rootFiles")
-    schemasDir = file('config/triplea/schemas')
 
     gameEnginePropertiesFile = file('game_engine.properties')
     gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
@@ -162,17 +160,6 @@ task jacocoRootReport(type: JacocoReport) {
             destination = file("${project.jacoco.reportsDir}/root/jacocoRootReport.xml")
             enabled = true
         }
-    }
-}
-
-task validateYamls(group: 'verification', description: 'Validates YAML files.') {
-    doLast {
-        def lobbyServerYamlFile = file('lobby_server.yaml')
-        validateYaml(lobbyServerYamlFile, file("$schemasDir/lobby_server.json"))
-
-        def mapsYamlFile = file('triplea_maps.yaml')
-        validateYaml(mapsYamlFile, file("$schemasDir/triplea_maps.json"))
-        validateMapsYamlUris(mapsYamlFile)
     }
 }
 
