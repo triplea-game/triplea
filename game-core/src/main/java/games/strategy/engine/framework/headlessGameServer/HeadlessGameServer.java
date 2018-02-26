@@ -232,8 +232,7 @@ public class HeadlessGameServer {
   }
 
   public String getSalt() {
-    final String encryptedPassword = Md5Crypt.crypt(System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, ""));
-    return Md5Crypt.getSalt(encryptedPassword);
+    return Md5Crypt.newSalt();
   }
 
   private static String md5Crypt(final String value, final String salt) {
