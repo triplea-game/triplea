@@ -13,11 +13,7 @@ import java.util.regex.Pattern;
  *
  * @see https://www.usenix.org/legacyurl/md5-crypt
  * @see https://www.systutorials.com/docs/linux/man/n-md5crypt/
- *
- * @deprecated Use SHA512(fast) or BCrypt(secure) in the future instead
- *             (kept for backwards compatibility)
  */
-@Deprecated
 public final class Md5Crypt {
   private static final String MAGIC = "$1$";
   private static final Pattern ENCRYPTED_PASSWORD_PATTERN =
@@ -32,7 +28,10 @@ public final class Md5Crypt {
    * @param password The password to be encrypted.
    *
    * @return The encrypted password.
+   *
+   * @deprecated Do not use this method for protecting sensitive information.
    */
+  @Deprecated
   public static String crypt(final String password) {
     checkNotNull(password);
 
@@ -47,7 +46,10 @@ public final class Md5Crypt {
    *        No more than eight characters will be used. If empty, a new random salt will be used.
    *
    * @return The encrypted password.
+   *
+   * @deprecated Do not use this method for protecting sensitive information.
    */
+  @Deprecated
   public static String crypt(final String password, final String salt) {
     checkNotNull(password);
     checkNotNull(salt);
