@@ -18,6 +18,15 @@ import games.strategy.triplea.settings.ClientSetting;
 @ExtendWith(ApplicationExtension.class)
 public class TripleAApplicationTest {
 
+  static {
+    System.setProperty("java.awt.headless", String.valueOf(true));
+    System.setProperty("testfx.robot", "glass");
+    System.setProperty("testfx.headless", String.valueOf(true));
+    System.setProperty("prism.order", "sw");
+    System.setProperty("prism.text", "t2k");
+    System.setProperty("testfx.setup.timeout", String.valueOf(2500));
+  }
+
 
   @BeforeAll
   public static void setup() throws Exception {
