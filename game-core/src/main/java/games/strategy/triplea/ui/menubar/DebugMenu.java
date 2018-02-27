@@ -9,7 +9,7 @@ import games.strategy.debug.DebugUtils;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.performance.EnablePerformanceLoggingCheckBox;
-import games.strategy.triplea.ai.proAI.ProAi;
+import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 

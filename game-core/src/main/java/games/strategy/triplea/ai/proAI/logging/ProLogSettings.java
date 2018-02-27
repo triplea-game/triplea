@@ -1,5 +1,7 @@
 package games.strategy.triplea.ai.proAI.logging;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,7 +12,6 @@ import java.util.prefs.Preferences;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.io.IoUtils;
-import games.strategy.triplea.ai.proAI.ProAi;
 
 /**
  * Class to manage log settings.
@@ -24,11 +25,17 @@ public class ProLogSettings implements Serializable {
   private static ProLogSettings lastSettings = null;
   private static final String PROGRAM_SETTINGS = "Program Settings";
 
-  static ProLogSettings loadSettings() {
+  /**
+   * Loads the previously-saved pro AI log settings from the user's preference store.
+   *
+   * @return The previously-saved pro AI log settings or the default settings if the user has not previously saved the
+   *         settings.
+   */
+  public static ProLogSettings loadSettings() {
     if (lastSettings == null) {
       ProLogSettings result = new ProLogSettings();
       try {
-        final byte[] pool = Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
+        final byte[] pool = getPreferences().getByteArray(PROGRAM_SETTINGS, null);
         if (pool != null) {
           result = IoUtils.readFromMemory(pool, is -> {
             try (ObjectInputStream ois = new ObjectInputStream(is)) {
@@ -51,7 +58,19 @@ public class ProLogSettings implements Serializable {
     return lastSettings;
   }
 
-  static void saveSettings(final ProLogSettings settings) {
+  private static Preferences getPreferences() {
+    // TODO: replace with "Preferences.userNodeForPackage(ProAi.class)" upon next incompatible release
+    return Preferences.userRoot().node("/games/strategy/triplea/ai/proAI");
+  }
+
+  /**
+   * Saves the specified pro AI log settings to the user's preference store.
+   *
+   * @param settings The pro AI log settings to save.
+   */
+  public static void saveSettings(final ProLogSettings settings) {
+    checkNotNull(settings);
+
     lastSettings = settings;
     try {
       final byte[] bytes = IoUtils.writeToMemory(os -> {
@@ -59,7 +78,7 @@ public class ProLogSettings implements Serializable {
           outputStream.writeObject(settings);
         }
       });
-      final Preferences prefs = Preferences.userNodeForPackage(ProAi.class);
+      final Preferences prefs = getPreferences();
       prefs.putByteArray(PROGRAM_SETTINGS, bytes);
       try {
         prefs.flush();

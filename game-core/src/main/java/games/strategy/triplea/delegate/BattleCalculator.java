@@ -24,7 +24,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleA;
-import games.strategy.triplea.ai.weakAI.WeakAi;
+import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
