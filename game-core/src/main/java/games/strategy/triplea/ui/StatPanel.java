@@ -493,7 +493,6 @@ public class StatPanel extends AbstractStatPanel {
           .filter(place -> place.getOwner().equals(player))
           .map(TerritoryAttachment::get)
           .filter(Objects::nonNull)
-          .filter(ta -> ta.getVictoryCity() != 0)
           .mapToInt(TerritoryAttachment::getVictoryCity)
           .sum();
     }
