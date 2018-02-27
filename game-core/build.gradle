@@ -121,6 +121,9 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
     testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
+    testCompile 'org.testfx:openjfx-monocle:8u76-b04'
+    testCompile 'org.testfx:testfx-core:4.0.12-alpha'
+    testCompile 'org.testfx:testfx-junit5:4.0.12-alpha'
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 

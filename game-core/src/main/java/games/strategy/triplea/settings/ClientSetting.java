@@ -213,7 +213,7 @@ public enum ClientSetting implements GameSetting {
   }
 
   @VisibleForTesting
-  static void setPreferences(final Preferences preferences) {
+  public static void setPreferences(final Preferences preferences) {
     preferencesRef.set(preferences);
   }
 
