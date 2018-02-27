@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +30,8 @@ public interface DynamicallyModifiable {
    * @return The property with the specified name or empty if the property doesn't exist.
    */
   default Optional<MutableProperty<?>> getProperty(final String name) {
+    checkNotNull(name);
+
     return Optional.ofNullable(getPropertyMap().get(name));
   }
 
@@ -41,6 +45,8 @@ public interface DynamicallyModifiable {
    * @throws IllegalArgumentException If the property doesn't exist.
    */
   default MutableProperty<?> getPropertyOrThrow(final String name) {
+    checkNotNull(name);
+
     return getProperty(name)
         .orElseThrow(() -> new IllegalArgumentException("unknown property named '" + name + "'"));
   }
