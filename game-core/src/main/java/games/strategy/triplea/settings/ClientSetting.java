@@ -173,6 +173,9 @@ public enum ClientSetting implements GameSetting {
     setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
   }
 
+  /**
+   * A method exposing internals for testing purposes.
+   */
   @VisibleForTesting
   static void resetPreferences() {
     preferencesRef.set(null);

@@ -1,6 +1,5 @@
 package org.triplea.client.ui.javafx;
 
-
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.hasChildren;
 import static org.testfx.matcher.base.NodeMatchers.isInvisible;
@@ -24,7 +23,7 @@ public class TripleAApplicationTest {
     System.setProperty("testfx.headless", String.valueOf(true));
     System.setProperty("prism.order", "sw");
     System.setProperty("prism.text", "t2k");
-    System.setProperty("testfx.setup.timeout", String.valueOf(2500));
+    System.setProperty("testfx.setup.timeout", String.valueOf(10000));
   }
 
 
