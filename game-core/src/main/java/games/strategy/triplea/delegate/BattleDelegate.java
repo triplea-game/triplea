@@ -319,7 +319,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (!neighbourUnits.isEmpty() && neighbourUnits.stream().allMatch(Matches.unitIsAir())) {
           continue;
         }
-        final Collection<IBattle> battles = possibleBombardingTerritories.computeIfAbsent(neighbor, k -> new ArrayList<>());
+        final Collection<IBattle> battles =
+            possibleBombardingTerritories.computeIfAbsent(neighbor, k -> new ArrayList<>());
         battles.add(battle);
       }
     }
