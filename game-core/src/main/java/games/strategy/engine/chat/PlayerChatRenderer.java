@@ -1,7 +1,6 @@
 package games.strategy.engine.chat;
 
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +72,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
         final List<Icon> icons = players.stream()
             .filter(player -> uiContext != null && uiContext.getFlagImageFactory() != null)
             .map(player -> new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerId(player))))
-            .collect(Collectors.toCollection(() -> new ArrayList<>(players.size())));
+            .collect(Collectors.toList());
         maxIconCounter = Math.max(maxIconCounter, icons.size());
         playerMap.put(playerNode.toString(), players);
         if (uiContext == null) {
