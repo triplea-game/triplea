@@ -489,7 +489,7 @@ public final class GameParser {
         .mapToObj(children::item)
         .filter(current -> current.getNodeName().equals(name))
         .map(Element.class::cast)
-        .collect(Collectors.toCollection(ArrayList::new));
+        .collect(Collectors.toList());
   }
 
   private static List<Node> getNonTextNodesIgnoring(final Node node, final String ignore) {
@@ -503,7 +503,7 @@ public final class GameParser {
     return IntStream.range(0, children.getLength())
         .mapToObj(children::item)
         .filter(current -> !(current.getNodeType() == Node.TEXT_NODE))
-        .collect(Collectors.toCollection(ArrayList::new));
+        .collect(Collectors.toList());
   }
 
   private void parseInfo(final Node info) {
