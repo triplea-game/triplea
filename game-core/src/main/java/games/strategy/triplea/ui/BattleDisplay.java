@@ -841,11 +841,9 @@ public class BattleDisplay extends JPanel {
     private final DicePanel dice;
     private final JPanel killed = new JPanel();
     private final JPanel damaged = new JPanel();
-    private final GameData data;
     private final UiContext uiContext;
 
     CasualtyNotificationPanel(final GameData data, final UiContext uiContext) {
-      this.data = data;
       this.uiContext = uiContext;
       dice = new DicePanel(uiContext, data);
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

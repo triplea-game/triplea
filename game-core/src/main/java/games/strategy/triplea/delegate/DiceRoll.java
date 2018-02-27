@@ -520,7 +520,6 @@ public class DiceRoll implements Externalizable {
   private static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
     final int diceSides = data.getDiceSides();
-    final boolean lowLuck = Properties.getLowLuck(data);
     final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     // bonus is normally 1 for most games
     final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);

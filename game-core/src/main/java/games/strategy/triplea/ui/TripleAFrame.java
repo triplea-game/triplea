@@ -75,7 +75,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
