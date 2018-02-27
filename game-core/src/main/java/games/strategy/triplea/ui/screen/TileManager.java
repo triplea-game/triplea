@@ -12,7 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,7 +40,6 @@ import games.strategy.triplea.ui.screen.drawable.BlockadeZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.CapitolMarkerDrawable;
 import games.strategy.triplea.ui.screen.drawable.ConvoyZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.DecoratorDrawable;
-import games.strategy.triplea.ui.screen.drawable.DrawableComparator;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.drawable.KamikazeZoneDrawable;
@@ -488,7 +487,7 @@ public class TileManager {
       drawablesSet.addAll(toAdd);
     }
     final List<IDrawable> orderedDrawables = new ArrayList<>(drawablesSet);
-    Collections.sort(orderedDrawables, new DrawableComparator());
+    orderedDrawables.sort(Comparator.comparingInt(IDrawable::getLevel));
     for (final IDrawable drawer : orderedDrawables) {
       if (drawer.getLevel() >= IDrawable.UNITS_LEVEL) {
         break;

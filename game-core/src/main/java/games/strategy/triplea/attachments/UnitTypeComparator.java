@@ -10,9 +10,7 @@ public class UnitTypeComparator implements Comparator<UnitType>, Serializable {
   private static final long serialVersionUID = -7065456161376169082L;
 
   @Override
-  public int compare(final UnitType o1, final UnitType o2) {
-    final UnitType u1 = o1;
-    final UnitType u2 = o2;
+  public int compare(final UnitType u1, final UnitType u2) {
     final UnitAttachment ua1 = UnitAttachment.get(u1);
     final UnitAttachment ua2 = UnitAttachment.get(u2);
     if (ua1 == null) {
