@@ -12,6 +12,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
+// TODO: make the Comparator be serializable. To get there all cass members need to be serializable or removed.
 public class UnitBattleComparator implements Comparator<Unit> {
   private final boolean defending;
   private final IntegerMap<UnitType> costs;

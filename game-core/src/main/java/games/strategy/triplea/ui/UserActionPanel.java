@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -252,7 +253,9 @@ public class UserActionPanel extends ActionPanel {
     return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
   }
 
-  private static final class UserActionComparator implements Comparator<UserActionAttachment> {
+  private static final class UserActionComparator implements Comparator<UserActionAttachment>, Serializable {
+    private static final long serialVersionUID = 1874682780706623303L;
+
     @Override
     public int compare(final UserActionAttachment uaa1, final UserActionAttachment uaa2) {
       if (uaa1.equals(uaa2)) {

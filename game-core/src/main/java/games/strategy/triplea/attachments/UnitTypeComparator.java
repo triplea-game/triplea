@@ -1,11 +1,14 @@
 package games.strategy.triplea.attachments;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
 
-public class UnitTypeComparator implements Comparator<UnitType> {
+public class UnitTypeComparator implements Comparator<UnitType>, Serializable {
+  private static final long serialVersionUID = -7065456161376169082L;
+
   @Override
   public int compare(final UnitType o1, final UnitType o2) {
     final UnitType u1 = o1;

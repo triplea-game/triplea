@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -233,7 +234,8 @@ public class PoliticsPanel extends ActionPanel {
     return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
   }
 
-  private static final class PoliticalActionComparator implements Comparator<PoliticalActionAttachment> {
+  private static final class PoliticalActionComparator implements Comparator<PoliticalActionAttachment>, Serializable {
+    private static final long serialVersionUID = -383223878890794945L;
     private final GameData gameData;
     private final PlayerID player;
 

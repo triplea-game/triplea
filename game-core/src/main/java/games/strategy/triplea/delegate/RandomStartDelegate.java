@@ -248,7 +248,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
 
-  static class UnitCostComparator implements Comparator<Unit> {
+  static class UnitCostComparator implements Comparator<Unit>, Serializable {
+    private static final long serialVersionUID = 4097951137933868531L;
     private final IntegerMap<UnitType> costs;
 
     public UnitCostComparator(final IntegerMap<UnitType> costs) {
