@@ -30,6 +30,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
@@ -727,7 +729,7 @@ public final class GameParser {
         for (final String s : isDisplayedFor.split(":")) {
           final PlayerID player = data.getPlayerList().getPlayerId(s);
           if (player == null) {
-            throw new GameParseException("Parse resources could not find player: " + s);
+            throw newGameParseException("Parse resources could not find player: " + s);
           }
           players.add(player);
         }
@@ -1238,30 +1240,36 @@ public final class GameParser {
       throws GameParseException {
     final ArrayList<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
-      // find the setter
-      final String name = current.getAttribute("name");
-      if (name.length() == 0) {
-        throw newGameParseException("Option name with 0 length");
+      // decapitalize the property name for backwards compatibility
+      final String name = decapitalize(current.getAttribute("name"));
+      if (name.isEmpty()) {
+        throw newGameParseException("Option name with zero length");
       }
-      // find the value
+
       final String value = current.getAttribute("value");
       final String count = current.getAttribute("count");
       final String itemValues = (count.length() > 0 ? count + ":" : "") + value;
       try {
         attachment.getProperty(name)
-            .orElseThrow(() -> new GameParseException(String.format(
+            .orElseThrow(() -> newGameParseException(String.format(
                 "Missing property definition for option '%s' in attachment '%s'",
                 name, attachment.getName())))
             .setValue(itemValues);
       } catch (final GameParseException e) {
         throw e;
       } catch (final Exception e) {
-        throw new GameParseException("Unexpected Exception while setting values for attachment" + attachment, e);
+        throw newGameParseException("Unexpected Exception while setting values for attachment" + attachment, e);
       }
 
       options.add(Tuple.of(name, itemValues));
     }
     return options;
+  }
+
+  @VisibleForTesting
+  static String decapitalize(final String value) {
+    return ((value.length() > 0) ? value.substring(0, 1).toLowerCase() : "")
+        + ((value.length() > 1) ? value.substring(1) : "");
   }
 
   private void parseInitialization(final Node root) throws GameParseException {
