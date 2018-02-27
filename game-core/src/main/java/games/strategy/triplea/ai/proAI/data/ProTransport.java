@@ -8,7 +8,6 @@ import java.util.Set;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class ProTransport {
