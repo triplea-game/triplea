@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -591,7 +592,7 @@ public class BattleDisplay extends JPanel {
     for (int column = 0; column < table.getColumnCount(); column++) {
       boolean hasData = false;
       for (int row = 0; row < table.getRowCount(); row++) {
-        hasData |= (table.getValueAt(row, column) != TableData.NULL);
+        hasData |= (!Objects.equals(table.getValueAt(row, column), TableData.NULL));
       }
       if (!hasData) {
         table.getColumnModel().getColumn(column).setPreferredWidth(8);

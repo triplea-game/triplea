@@ -398,7 +398,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private boolean unitsChanged(final Tuple<Territory, List<Unit>> newUnits) {
-    return newUnits != currentUnits
+    return !Objects.equals(newUnits, currentUnits)
         && (newUnits == null
             || currentUnits == null
             || !newUnits.getFirst().equals(currentUnits.getFirst())

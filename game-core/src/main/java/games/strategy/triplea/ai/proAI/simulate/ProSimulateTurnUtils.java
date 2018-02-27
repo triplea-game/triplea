@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
@@ -172,7 +173,7 @@ public class ProSimulateTurnUtils {
           CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       friendlyTerritories.add(t);
       for (final Territory item : friendlyTerritories) {
-        if (item.getOwner() == terrOrigOwner) {
+        if (Objects.equals(item.getOwner(), terrOrigOwner)) {
           continue;
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);

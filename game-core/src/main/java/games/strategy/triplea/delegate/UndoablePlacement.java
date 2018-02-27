@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -57,7 +58,7 @@ public class UndoablePlacement extends AbstractUndoableMove {
 
   @Override
   public final String getMoveLabel() {
-    if (m_producerTerritory != m_placeTerritory) {
+    if (!Objects.equals(m_producerTerritory, m_placeTerritory)) {
       return m_producerTerritory.getName() + " -> " + m_placeTerritory.getName();
     }
     return m_placeTerritory.getName();
@@ -75,7 +76,7 @@ public class UndoablePlacement extends AbstractUndoableMove {
 
   @Override
   public String toString() {
-    if (m_producerTerritory != m_placeTerritory) {
+    if (!Objects.equals(m_producerTerritory, m_placeTerritory)) {
       return m_producerTerritory.getName() + " produces in " + m_placeTerritory.getName() + ": "
           + MyFormatter.unitsToTextNoOwner(m_units);
     }

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -251,7 +252,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *         or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
-    if (t1 == t2) {
+    if (Objects.equals(t1, t2)) {
       return new Route(t1);
     }
     if (getNeighbors(t1, cond).contains(t2)) {
@@ -300,7 +301,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Route getCompositeRoute(final Territory t1, final Territory t2,
       final Map<Predicate<Territory>, Integer> matches) {
-    if (t1 == t2) {
+    if (Objects.equals(t1, t2)) {
       return new Route(t1);
     }
     final Predicate<Territory> allCond = t -> matches.keySet().stream().anyMatch(p -> p.test(t));

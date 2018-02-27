@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -188,7 +189,7 @@ final class ProTechAi {
             }
             if (!t4.equals(waterCheck)) {
               final Route seaRoute = getMaxSeaRoute(data, t4, waterCheck, enemyPlayer, maxTransportDistance);
-              if (seaRoute == null || seaRoute.getEnd() == null || seaRoute.getEnd() != waterCheck) {
+              if (seaRoute == null || seaRoute.getEnd() == null || !Objects.equals(seaRoute.getEnd(), waterCheck)) {
                 continue;
               }
             }
@@ -268,7 +269,7 @@ final class ProTechAi {
       }
     }
     for (final PlayerID enemyPlayerCandidate : enemyPlayers) {
-      if (enemyPlayer != enemyPlayerCandidate) {
+      if (!Objects.equals(enemyPlayer, enemyPlayerCandidate)) {
         // give 40% of other players...this is will affect a lot of decisions by AI
         maxStrength += enemyPlayerAttackMap.get(enemyPlayerCandidate) * 0.40F;
       }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -80,7 +81,7 @@ public class ProductionRepairPanel extends JPanel {
   public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!(parent == owner)) {
+    if (!(Objects.equals(parent, owner))) {
       dialog = null;
     }
     if (dialog == null) {

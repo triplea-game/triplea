@@ -3,6 +3,7 @@ package games.strategy.triplea.util;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Objects;
 
 /**
  * Implementation of {@link InvocationHandler} that delegates the {@link Object#equals(Object)},
@@ -19,7 +20,7 @@ public class WrappedInvocationHandler implements InvocationHandler {
   }
 
   private boolean wrappedEquals(final Object other) {
-    if (other == this) {
+    if (Objects.equals(other, this)) {
       return true;
     }
     if (Proxy.isProxyClass(other.getClass()) && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler) {

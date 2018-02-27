@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
@@ -133,7 +134,7 @@ public class ClipPlayer {
 
   public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
-    if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
+    if (clipPlayer == null || !Objects.equals(clipPlayer.resourceLoader, resourceLoader)) {
       // make a new clip player with our new resource loader
       clipPlayer = new ClipPlayer(resourceLoader);
     }

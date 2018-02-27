@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -508,8 +509,9 @@ public class HistoryLog extends JFrame {
       boolean isConvoyOrLand = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       if (!place.isWater()
-          || place.isWater() && ta != null && OriginalOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID
-              && OriginalOwnerTracker.getOriginalOwner(place) == player && place.getOwner().equals(player)) {
+          || place.isWater() && ta != null && !Objects
+          .equals(OriginalOwnerTracker.getOriginalOwner(place), PlayerID.NULL_PLAYERID)
+              && Objects.equals(OriginalOwnerTracker.getOriginalOwner(place), player) && place.getOwner().equals(player)) {
         isConvoyOrLand = true;
       }
       if (place.getOwner().equals(player) && isConvoyOrLand) {

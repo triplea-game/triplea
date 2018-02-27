@@ -659,7 +659,7 @@ public class GameDataExporter {
         return false;
       }
       final Connection con = (Connection) o;
-      return (territory1 == con.territory1 && territory2 == con.territory2);
+      return (Objects.equals(territory1, con.territory1) && Objects.equals(territory2, con.territory2));
     }
   }
 

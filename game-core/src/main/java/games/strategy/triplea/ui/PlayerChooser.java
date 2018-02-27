@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -97,7 +98,7 @@ public class PlayerChooser extends JOptionPane {
     public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
         final boolean isSelected, final boolean cellHasFocus) {
       super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
-      if (uiContext == null || value == PlayerID.NULL_PLAYERID) {
+      if (uiContext == null || Objects.equals(value, PlayerID.NULL_PLAYERID)) {
         setIcon(new ImageIcon(Util.createImage(32, 32, true)));
       } else {
         setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerID) value)));

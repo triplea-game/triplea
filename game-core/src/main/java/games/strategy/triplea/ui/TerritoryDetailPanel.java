@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -106,7 +107,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     PlayerID currentPlayer = null;
     for (final UnitCategory item : units) {
       // seperate players with a seperator
-      if (item.getOwner() != currentPlayer) {
+      if (!Objects.equals(item.getOwner(), currentPlayer)) {
         currentPlayer = item.getOwner();
         panel.add(Box.createVerticalStrut(15));
       }

@@ -129,7 +129,7 @@ public class DownloadFileDescription {
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs == null || getClass() != rhs.getClass()) {
+    if (rhs == null || !Objects.equals(getClass(), rhs.getClass())) {
       return false;
     }
     final DownloadFileDescription other = (DownloadFileDescription) rhs;

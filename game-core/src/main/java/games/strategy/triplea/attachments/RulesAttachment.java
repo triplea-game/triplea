@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
@@ -110,7 +111,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         }
       } else {
         for (final PlayerID otherPlayer : playersToSearch) {
-          if (otherPlayer == player) {
+          if (Objects.equals(otherPlayer, player)) {
             continue;
           }
           ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);

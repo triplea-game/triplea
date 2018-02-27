@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -119,7 +120,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
 
       for (final PlayerID otherPlayer : playersToSearch) {
-        if (otherPlayer == player) {
+        if (Objects.equals(otherPlayer, player)) {
           continue;
         }
         ta = (TriggerAttachment) otherPlayer.getAttachment(nameOfAttachment);
@@ -307,7 +308,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (trigger == null) {
       throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
     }
-    if (trigger == this) {
+    if (Objects.equals(trigger, this)) {
       throw new GameParseException("Cannot have a trigger activate itself!" + thisErrorMsg());
     }
     String options = value;
