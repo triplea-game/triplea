@@ -845,7 +845,7 @@ public class TripleAFrame extends MainGameFrame {
     final int choice =
         EventThreadJOptionPane.showOptionDialog(this, sb.toString(), "Air cannot land", JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE, null, options, cancel, getUiContext().getCountDownLatchHandler());
-    return choice == 1;
+    return choice == JOptionPane.NO_OPTION;
   }
 
   public boolean getOkToLetUnitsDie(final Collection<Territory> unitsCantFight, final boolean movePhase) {
@@ -853,19 +853,18 @@ public class TripleAFrame extends MainGameFrame {
       return true;
     }
     messageAndDialogThreadPool.waitForAll();
-    final StringBuilder buf = new StringBuilder("Units in the following territories will die: ");
-    Joiner.on(' ').appendTo(buf, unitsCantFight.stream()
+    final String message = unitsCantFight.stream()
         .map(DefaultNamed::getName)
-        .collect(Collectors.toList()));
+        .collect(Collectors.joining(" ", "Units in the following territories will die: ", ""));
     final String ok = movePhase ? "Done Moving" : "Kill Units";
     final String cancel = movePhase ? "Keep Moving" : "Change Placement";
     final String[] options = {cancel, ok};
     this.mapPanel.centerOn(unitsCantFight.iterator().next());
-    final int choice = EventThreadJOptionPane.showOptionDialog(this, buf.toString(),
+    final int choice = EventThreadJOptionPane.showOptionDialog(this, message,
         "Units cannot fight", JOptionPane.YES_NO_OPTION,
         JOptionPane.WARNING_MESSAGE, null, options, cancel,
         getUiContext().getCountDownLatchHandler());
-    return choice == 1;
+    return choice == JOptionPane.NO_OPTION;
   }
 
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
