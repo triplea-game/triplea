@@ -1,9 +1,9 @@
-### Engine version:
+### Engine version
 <!-- you can find this on the TripleA launch window when it first loads, top left -->
 
-### My Operating System:
+### My Operating System
 
-### Map name:
+### Map name
 
 ### Can you describe how to trigger the error? (eg: what sequence of actions will recreate it?)
 
@@ -11,7 +11,7 @@
 
 ### Instead of this error, what should have happened?
 
-### Any additional information that may help:
+### Any additional information that may help
 
 <!--
 Attach a Zipped Save Game
