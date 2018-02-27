@@ -119,7 +119,7 @@ public class UserControllerIntegrationTest {
   }
 
   private static String md5Crypt(final String value) {
-    return Md5Crypt.cryptSensitive(value, Md5Crypt.newSalt());
+    return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
   }
 
   private static String obfuscate(final String string) {

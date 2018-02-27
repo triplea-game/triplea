@@ -60,7 +60,7 @@ public final class MacFinder {
   }
 
   private static String getHashedMacAddress(final String macAddress) {
-    return Md5Crypt.cryptInsensitive(macAddress, HASHED_MAC_ADDRESS_SALT);
+    return Md5Crypt.hash(macAddress, HASHED_MAC_ADDRESS_SALT);
   }
 
   private static String getMacAddress() {

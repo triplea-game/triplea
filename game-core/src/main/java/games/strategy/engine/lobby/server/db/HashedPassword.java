@@ -31,7 +31,7 @@ public final class HashedPassword {
   }
 
   public boolean isMd5Crypted() {
-    return Md5Crypt.isLegalEncryptedPassword(value);
+    return Md5Crypt.isLegalHashedValue(value);
   }
 
   /**
