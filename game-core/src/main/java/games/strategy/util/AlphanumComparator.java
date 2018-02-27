@@ -1,5 +1,6 @@
 package games.strategy.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -13,7 +14,9 @@ import java.util.Comparator;
  * Use the static "sort" method from the java.tools.Collections class:
  * Collections.sort(your list, new AlphanumComparator());
  */
-public class AlphanumComparator implements Comparator<String> {
+public class AlphanumComparator implements Comparator<String>, Serializable {
+  private static final long serialVersionUID = 2885360470032673881L;
+
   private static boolean isDigit(final char ch) {
     return ch >= 48 && ch <= 57;
   }

@@ -1,5 +1,6 @@
 package games.strategy.triplea.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import games.strategy.engine.data.GameData;
@@ -8,7 +9,8 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
 
-public class PlayerOrderComparator implements Comparator<PlayerID> {
+public class PlayerOrderComparator implements Comparator<PlayerID>, Serializable {
+  private static final long serialVersionUID = -6271054939349383653L;
   private final GameData gameData;
 
   public PlayerOrderComparator(final GameData data) {
