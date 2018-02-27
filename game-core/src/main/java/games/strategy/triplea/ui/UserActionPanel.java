@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.util.ResourceCollectionUtils;
@@ -87,7 +88,7 @@ public class UserActionPanel extends ActionPanel {
     this.firstRun = firstRun;
 
     validUserActions = new ArrayList<>(userActionsDelegate.getValidActions());
-    Collections.sort(validUserActions, new UserActionComparator());
+    validUserActions.sort(Comparator.comparing(DefaultAttachment::getName));
     if (validUserActions.isEmpty()) {
       // No Valid User actions, do nothing
       return null;
@@ -250,15 +251,5 @@ public class UserActionPanel extends ActionPanel {
     final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? ""
         : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
-  }
-
-  private static final class UserActionComparator implements Comparator<UserActionAttachment> {
-    @Override
-    public int compare(final UserActionAttachment uaa1, final UserActionAttachment uaa2) {
-      if (uaa1.equals(uaa2)) {
-        return 0;
-      }
-      return uaa1.getName().compareTo(uaa2.getName());
-    }
   }
 }

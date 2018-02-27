@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import games.strategy.engine.data.GameData;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.DrawableComparator;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
@@ -124,7 +123,7 @@ public class Tile {
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
-    Collections.sort(contents, new DrawableComparator());
+    contents.sort(Comparator.comparingInt(IDrawable::getLevel));
     for (final IDrawable drawable : contents) {
       drawable.draw(bounds, data, g, mapData, unscaled, scaled);
     }

@@ -176,7 +176,14 @@ public class ProductionPanel extends JPanel {
     if (resourceCollection != null) {
       final IntegerMap<Resource> resources = resourceCollection.getResourcesCopy();
       int count = 0;
-      for (final Resource resource : data.getResourceList().getResources()) {
+      List<Resource> resourcesInOrder = new ArrayList<>();
+      data.acquireReadLock();
+      try {
+        resourcesInOrder = data.getResourceList().getResources();
+      } finally {
+        data.releaseReadLock();
+      }
+      for (final Resource resource : resourcesInOrder) {
         if (!resource.isDisplayedFor(id)) {
           continue;
         }

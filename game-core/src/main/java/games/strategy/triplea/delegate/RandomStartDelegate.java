@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -72,15 +71,15 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     this.currentPickingPlayer = s.m_currentPickingPlayer;
   }
 
-  protected void setupBoard() {
+  private void setupBoard() {
     final GameData data = getData();
     final boolean randomTerritories = Properties.getTerritoriesAreAssignedRandomly(data);
     final Predicate<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
     final Predicate<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
         CollectionUtils.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
-    final List<PlayerID> playersCanPick = new ArrayList<>();
-    playersCanPick.addAll(CollectionUtils.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
+    final List<PlayerID> playersCanPick =
+        new ArrayList<>(CollectionUtils.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
     // we need a main event
     if (!playersCanPick.isEmpty()) {
       bridge.getHistoryWriter().startEvent("Assigning Territories");
@@ -105,7 +104,8 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         i++;
         final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(currentPickingPlayer, data);
         final List<Unit> units = new ArrayList<>(currentPickingPlayer.getUnits().getUnits());
-        Collections.sort(units, new UnitCostComparator(costs));
+
+        units.sort(Comparator.comparingInt(unit -> costs.getInt(unit.getType())));
         final Set<Unit> unitsToPlace = new HashSet<>();
         unitsToPlace.add(units.get(0));
         picked = allPickableTerritories.get(pos % allPickableTerritories.size());
@@ -208,7 +208,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     }
   }
 
-  protected PlayerID getNextPlayer(final List<PlayerID> playersCanPick, final PlayerID currentPlayer) {
+  private static PlayerID getNextPlayer(final List<PlayerID> playersCanPick, final PlayerID currentPlayer) {
     int index = playersCanPick.indexOf(currentPlayer);
     if (index == -1) {
       return null;
@@ -223,7 +223,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   /**
    * Returns a new Predicate returning true for all pickable territories.
    */
-  public Predicate<Territory> getTerritoryPickableMatch() {
+  private static Predicate<Territory> getTerritoryPickableMatch() {
     return Matches.territoryIsLand()
         .and(Matches.territoryIsNotImpassable())
         .and(Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID))
@@ -231,33 +231,14 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   }
 
   private static Predicate<PlayerID> getPlayerCanPickMatch() {
-    return player -> {
-      if (player == null || player.equals(PlayerID.NULL_PLAYERID)) {
-        return false;
-      }
-      if (player.getUnits().isEmpty()) {
-        return false;
-      }
-      return !player.getIsDisabled();
-    };
+    return player -> player != null
+        && !player.equals(PlayerID.NULL_PLAYERID)
+        && !player.getUnits().isEmpty()
+        && !player.getIsDisabled();
   }
 
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return null;
-  }
-
-
-  static class UnitCostComparator implements Comparator<Unit> {
-    private final IntegerMap<UnitType> costs;
-
-    public UnitCostComparator(final IntegerMap<UnitType> costs) {
-      this.costs = costs;
-    }
-
-    @Override
-    public int compare(final Unit u1, final Unit u2) {
-      return costs.getInt(u1.getType()) - costs.getInt(u2.getType());
-    }
   }
 }
