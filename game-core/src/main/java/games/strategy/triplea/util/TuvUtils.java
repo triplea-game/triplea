@@ -177,11 +177,7 @@ public class TuvUtils {
         result.put(p, average);
         continue;
       }
-      Map<UnitType, ResourceCollection> current = result.get(p);
-      if (current == null) {
-        current = new LinkedHashMap<>();
-        result.put(p, current);
-      }
+      final Map<UnitType, ResourceCollection> current = result.computeIfAbsent(p, k -> new LinkedHashMap<>());
       for (final ProductionRule rule : frontier.getRules()) {
         if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
             || rule.getCosts().isEmpty()) {
@@ -263,20 +259,12 @@ public class TuvUtils {
       final int totalProduced = unitMap.totalValues();
       if (totalProduced == 1) {
         final UnitType ut = units.iterator().next();
-        List<ResourceCollection> current = backups.get(ut);
-        if (current == null) {
-          current = new ArrayList<>();
-          backups.put(ut, current);
-        }
+        final List<ResourceCollection> current = backups.computeIfAbsent(ut, k -> new ArrayList<>());
         current.add(costPerGroup);
       } else if (totalProduced > 1) {
         costPerGroup.discount((double) 1 / (double) totalProduced);
         for (final UnitType ut : units) {
-          List<ResourceCollection> current = backups.get(ut);
-          if (current == null) {
-            current = new ArrayList<>();
-            backups.put(ut, current);
-          }
+          final List<ResourceCollection> current = backups.computeIfAbsent(ut, k -> new ArrayList<>());
           current.add(costPerGroup);
         }
       }
