@@ -108,6 +108,7 @@ public class MapPanel extends ImageScrollerLargeView {
     scale = uiContext.getScale();
     routeDrawer = new MapRouteDrawer(this, uiContext.getMapData());
     smallMapImageManager = new SmallMapImageManager(smallView, uiContext.getMapImage().getSmallMapImage(), tileManager);
+    movementFuelCost = new ResourceCollection(data);
     setGameData(data);
 
     setCursor(uiContext.getCursor());

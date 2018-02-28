@@ -329,7 +329,8 @@ public class MapRouteDrawer {
       final ResourceCollection movementFuelCost, final ResourceImageFactory resourceImageFactory) {
 
     // Create and configure image
-    final String unitMovementLeft = (maxMovement == null || maxMovement.trim().length() == 0) ? "" : "/" + maxMovement;
+    final String unitMovementLeft =
+        (maxMovement == null || maxMovement.trim().length() == 0) ? "" : "/" + maxMovement;
     final int imageWidth = findMovementLeftImageWidth(curMovement, unitMovementLeft, movementFuelCost);
     final BufferedImage image = new BufferedImage(imageWidth, MESSAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
     final Graphics2D graphics = image.createGraphics();
@@ -338,14 +339,14 @@ public class MapRouteDrawer {
     final FontMetrics fontMetrics = graphics.getFontMetrics();
 
     // Draw background
-    graphics.setColor(new Color(255, 250, 220));
+    graphics.setColor(new Color(220, 220, 220));
     final int rectHeight = MESSAGE_HEIGHT - 2;
     graphics.fillRoundRect(0, 0, imageWidth - 2, rectHeight, rectHeight, rectHeight);
     graphics.setColor(Color.BLACK);
     graphics.drawRoundRect(0, 0, imageWidth - 2, rectHeight, rectHeight, rectHeight);
 
     // Draw current movement
-    graphics.setColor(new Color(255, 120, 0));
+    graphics.setColor(new Color(180, 60, 0));
     final boolean hasEnoughMovement = !unitMovementLeft.isEmpty();
     final int textWidthOffset = fontMetrics.stringWidth(curMovement) / 2;
     graphics.drawString(
@@ -373,6 +374,7 @@ public class MapRouteDrawer {
       }
     }
 
+    graphics.dispose();
     return image;
   }
 
@@ -397,6 +399,7 @@ public class MapRouteDrawer {
       }
     }
 
+    tempGraphics.dispose();
     return imageWidth;
   }
 

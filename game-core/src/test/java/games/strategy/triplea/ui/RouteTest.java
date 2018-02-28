@@ -21,7 +21,6 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -88,7 +87,7 @@ public class RouteTest {
     final Graphics2D mockGraphics = mock(Graphics2D.class);
     when(mockShape.contains(any(Point2D.class))).thenReturn(true);
     final ResourceCollection mockResourceCollection = mock(ResourceCollection.class);
-    when(mockResourceCollection.getResourcesCopy()).thenReturn(new IntegerMap<Resource>());
+    when(mockResourceCollection.getResourcesCopy()).thenReturn(new IntegerMap<>());
     final ResourceImageFactory mockResourceImageFactory = mock(ResourceImageFactory.class);
     routeDrawer.drawRoute(mockGraphics, dummyRouteDescription, "2", mockResourceCollection, mockResourceImageFactory);
     verify(mockGraphics, atLeastOnce()).fill(any(Shape.class));
