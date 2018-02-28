@@ -20,7 +20,7 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooserModel;
-import games.strategy.triplea.ai.proAI.ProAi;
+import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 
 public class GameSelectorModel extends Observable {
