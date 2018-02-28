@@ -10,6 +10,7 @@ import games.strategy.util.IntegerMap;
  */
 public class ResourceImageFactory extends AbstractImageFactory {
 
+  public static int IMAGE_SIZE = 20;
   private static final String FILE_NAME_BASE = "resources/";
 
   public ResourceImageFactory() {}

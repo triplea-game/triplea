@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
@@ -20,8 +21,11 @@ import java.util.function.Function;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
 
@@ -36,8 +40,13 @@ public class MapRouteDrawer {
    * Too low values make the Path look edgy, too high values will cause lag and rendering errors
    * because the distance between the drawing segments is shorter than 2 pixels
    */
-  public static final double DETAIL_LEVEL = 1.0;
-  private static final int arrowLength = 4;
+  private static final double DETAIL_LEVEL = 1.0;
+  private static final int ARROW_LENGTH = 4;
+  private static final int MESSAGE_HEIGHT = 26;
+  private static final int MESSAGE_PADDING = 15;
+  private static final int MESSAGE_TEXT_Y = 18;
+  private static final int MESSAGE_TEXT_SPACING = 5;
+  private static final Font MESSAGE_FONT = new Font("Dialog", Font.BOLD, 16);
 
   private final RouteCalculator routeCalculator;
   private final MapData mapData;
@@ -57,7 +66,8 @@ public class MapRouteDrawer {
   /**
    * Draws the route to the screen.
    */
-  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final String maxMovement) {
+  public void drawRoute(final Graphics2D graphics, final RouteDescription routeDescription, final String maxMovement,
+      final ResourceCollection movementFuelCost, final ResourceImageFactory resourceImageFactory) {
     final Route route = routeDescription.getRoute();
     if (route == null) {
       return;
@@ -78,11 +88,11 @@ public class MapRouteDrawer {
         drawDirectPath(graphics, points[0], points[points.length - 1]);
       }
       if (tooFewPoints && !tooFewTerritories) {
-        drawMoveLength(graphics, points, numTerritories, maxMovement);
+        drawMoveLength(graphics, points, numTerritories, maxMovement, movementFuelCost, resourceImageFactory);
       }
     } else {
       drawCurvedPath(graphics, points);
-      drawMoveLength(graphics, points, numTerritories, maxMovement);
+      drawMoveLength(graphics, points, numTerritories, maxMovement, movementFuelCost, resourceImageFactory);
     }
     drawJoints(graphics, points);
     drawCustomCursor(graphics, routeDescription, points[points.length - 1]);
@@ -143,7 +153,7 @@ public class MapRouteDrawer {
     final Point2D[] points = routeCalculator.getTranslatedRoute(start, end);
     for (final Point2D[] newPoints : routeCalculator.getAllPoints(points)) {
       drawTransformedShape(graphics, new Line2D.Float(newPoints[0], newPoints[1]));
-      if (newPoints[0].distance(newPoints[1]) > arrowLength) {
+      if (newPoints[0].distance(newPoints[1]) > ARROW_LENGTH) {
         drawArrow(graphics, newPoints[0], newPoints[1]);
       }
     }
@@ -250,15 +260,14 @@ public class MapRouteDrawer {
    * @param maxMovement The String indicating how man
    */
   private void drawMoveLength(final Graphics2D graphics, final Point2D[] points, final int numTerritories,
-      final String maxMovement) {
-    final Point2D cursorPos = points[points.length - 1];
-    final String unitMovementLeft =
-        maxMovement == null || maxMovement.trim().length() == 0 ? ""
-            : "    /" + maxMovement;
-    final BufferedImage movementImage = new BufferedImage(50, 20, BufferedImage.TYPE_INT_ARGB);
-    createMovementLeftImage(movementImage, String.valueOf(numTerritories - 1), unitMovementLeft);
+      final String maxMovement, final ResourceCollection movementFuelCost,
+      final ResourceImageFactory resourceImageFactory) {
 
+    final BufferedImage movementImage =
+        createMovementLeftImage(String.valueOf(numTerritories - 1), maxMovement, movementFuelCost,
+            resourceImageFactory);
     final int textXOffset = -movementImage.getWidth() / 2;
+    final Point2D cursorPos = points[points.length - 1];
     final double deltaY = cursorPos.getY() - points[numTerritories - 2].getY();
     final int textYOffset = deltaY > 0 ? movementImage.getHeight() : movementImage.getHeight() * -2;
     for (final Point2D[] cursorPositions : routeCalculator.getAllPoints(cursorPos)) {
@@ -304,7 +313,7 @@ public class MapRouteDrawer {
     final List<Point2D[]> finishingPoints = routeCalculator.getAllPoints(
         new Point2D.Double(xcoords[xcoords.length - 1], ycoords[ycoords.length - 1]),
         points[points.length - 1]);
-    final boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > arrowLength;
+    final boolean hasArrowEnoughSpace = points[points.length - 2].distance(points[points.length - 1]) > ARROW_LENGTH;
     for (final Point2D[] finishingPointArray : finishingPoints) {
       drawTransformedShape(graphics, new Line2D.Double(finishingPointArray[0], finishingPointArray[1]));
       if (hasArrowEnoughSpace) {
@@ -314,28 +323,81 @@ public class MapRouteDrawer {
   }
 
   /**
-   * This draws how many moves are left on the given {@linkplain BufferedImage}
-   *
-   * @param image The Image to be drawn on
-   * @param curMovement How many territories the unit traveled so far
-   * @param maxMovement How many territories is allowed to travel. Is empty when the unit traveled too far
+   * This draws current moves, max moves, and fuel cost.
    */
-  private static void createMovementLeftImage(final BufferedImage image, final String curMovement,
-      final String maxMovement) {
-    final Graphics2D textG2D = image.createGraphics();
-    textG2D.setColor(Color.YELLOW);
-    textG2D.setFont(new Font("Dialog", Font.BOLD, 20));
-    final int textThicknessOffset = textG2D.getFontMetrics().stringWidth(curMovement) / 2;
-    final boolean distanceTooBig = maxMovement.isEmpty();
-    textG2D.drawString(
+  private static BufferedImage createMovementLeftImage(final String curMovement, final String maxMovement,
+      final ResourceCollection movementFuelCost, final ResourceImageFactory resourceImageFactory) {
+
+    // Create and configure image
+    final String unitMovementLeft = (maxMovement == null || maxMovement.trim().length() == 0) ? "" : "/" + maxMovement;
+    final int imageWidth = findMovementLeftImageWidth(curMovement, unitMovementLeft, movementFuelCost);
+    final BufferedImage image = new BufferedImage(imageWidth, MESSAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D graphics = image.createGraphics();
+    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    graphics.setFont(MESSAGE_FONT);
+    final FontMetrics fontMetrics = graphics.getFontMetrics();
+
+    // Draw background
+    graphics.setColor(new Color(255, 250, 220));
+    final int rectHeight = MESSAGE_HEIGHT - 2;
+    graphics.fillRoundRect(0, 0, imageWidth - 2, rectHeight, rectHeight, rectHeight);
+    graphics.setColor(Color.BLACK);
+    graphics.drawRoundRect(0, 0, imageWidth - 2, rectHeight, rectHeight, rectHeight);
+
+    // Draw current movement
+    graphics.setColor(new Color(255, 120, 0));
+    final boolean hasEnoughMovement = !unitMovementLeft.isEmpty();
+    final int textWidthOffset = fontMetrics.stringWidth(curMovement) / 2;
+    graphics.drawString(
         curMovement,
-        distanceTooBig ? image.getWidth() / 2 - textThicknessOffset : 10,
-        image.getHeight());
-    if (!distanceTooBig) {
-      textG2D.setColor(new Color(33, 0, 127));
-      textG2D.setFont(new Font("Dialog", Font.BOLD, 16));
-      textG2D.drawString(maxMovement, 10, image.getHeight());
+        !hasEnoughMovement ? (image.getWidth() / 2 - textWidthOffset) : MESSAGE_PADDING,
+        MESSAGE_TEXT_Y);
+
+    // If has enough movement, draw remaining movement and fuel costs
+    if (hasEnoughMovement) {
+      int x = MESSAGE_PADDING + fontMetrics.stringWidth(curMovement);
+      graphics.setColor(new Color(0, 0, 140));
+      graphics.drawString(unitMovementLeft, x, MESSAGE_TEXT_Y);
+      x += fontMetrics.stringWidth(unitMovementLeft) + MESSAGE_TEXT_SPACING;
+      graphics.setColor(new Color(200, 0, 0));
+      for (final Resource resource : movementFuelCost.getResourcesCopy().keySet()) {
+        try {
+          resourceImageFactory.getIcon(resource, false).paintIcon(null, graphics, x, 2);
+        } catch (final IllegalStateException e) {
+          graphics.drawString(resource.getName().substring(0, 1), x, MESSAGE_TEXT_Y);
+        }
+        x += ResourceImageFactory.IMAGE_SIZE;
+        final String quantity = "(-" + movementFuelCost.getQuantity(resource) + ")";
+        graphics.drawString(quantity, x, MESSAGE_TEXT_Y);
+        x += fontMetrics.stringWidth(quantity) + MESSAGE_TEXT_SPACING;
+      }
     }
+
+    return image;
+  }
+
+  private static int findMovementLeftImageWidth(final String curMovement, final String unitMovementLeft,
+      final ResourceCollection movementFuelCost) {
+
+    // Create temp graphics to calculate necessary image width based on font sizes
+    final BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D tempGraphics = tempImage.createGraphics();
+    tempGraphics.setFont(MESSAGE_FONT);
+    final FontMetrics fontMetrics = tempGraphics.getFontMetrics();
+
+    // Determine widths of each element to draw
+    int imageWidth = 2 * MESSAGE_PADDING;
+    imageWidth += fontMetrics.stringWidth(curMovement);
+    if (!unitMovementLeft.isEmpty()) {
+      imageWidth += fontMetrics.stringWidth(unitMovementLeft);
+      for (final Resource resource : movementFuelCost.getResourcesCopy().keySet()) {
+        imageWidth += MESSAGE_TEXT_SPACING;
+        imageWidth += fontMetrics.stringWidth("(-" + movementFuelCost.getQuantity(resource) + ")");
+        imageWidth += ResourceImageFactory.IMAGE_SIZE;
+      }
+    }
+
+    return imageWidth;
   }
 
   /**
@@ -347,13 +409,13 @@ public class MapRouteDrawer {
   private static Shape createArrowTipShape(final double angle) {
     final int arrowOffset = 1;
     final Polygon arrowPolygon = new Polygon();
-    arrowPolygon.addPoint(arrowOffset - arrowLength, arrowLength / 2);
+    arrowPolygon.addPoint(arrowOffset - ARROW_LENGTH, ARROW_LENGTH / 2);
     arrowPolygon.addPoint(arrowOffset, 0);
-    arrowPolygon.addPoint(arrowOffset - arrowLength, arrowLength / -2);
+    arrowPolygon.addPoint(arrowOffset - ARROW_LENGTH, ARROW_LENGTH / -2);
 
 
     final AffineTransform transform = new AffineTransform();
-    transform.scale(arrowLength, arrowLength);
+    transform.scale(ARROW_LENGTH, ARROW_LENGTH);
     transform.rotate(angle);
 
     return transform.createTransformedShape(arrowPolygon);

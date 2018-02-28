@@ -42,6 +42,7 @@ import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -89,6 +90,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final TileManager tileManager;
   private BufferedImage mouseShadowImage = null;
   private String movementLeftForCurrentUnits = "";
+  private ResourceCollection movementFuelCost;
   private final UiContext uiContext;
   private final BlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
@@ -568,7 +570,9 @@ public class MapPanel extends ImageScrollerLargeView {
       g2d.drawImage(mouseShadowImage, t, this);
     }
     if (routeDescription != null) {
-      routeDrawer.drawRoute(g2d, routeDescription, movementLeftForCurrentUnits);
+      routeDrawer.drawRoute(g2d, routeDescription, movementLeftForCurrentUnits, movementFuelCost,
+          uiContext.getResourceImageFactory());
+
     }
     // used to keep strong references to what is on the screen so it wont be garbage collected
     // other references to the images are weak references
@@ -748,6 +752,11 @@ public class MapPanel extends ImageScrollerLargeView {
         .getMinAndMaxMovementLeft(CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate()));
     movementLeftForCurrentUnits =
         movementLeft.getFirst() + (movementLeft.getSecond() > movementLeft.getFirst() ? "+" : "");
+
+    movementFuelCost = Route.getMovementFuelCostCharge(units, routeDescription.getRoute(),
+        units.iterator().next().getOwner(), gameData);
+
+
     final Set<UnitCategory> categories = UnitSeperator.categorize(units);
     final int iconWidth = uiContext.getUnitImageFactory().getUnitImageWidth();
     final int horizontalSpace = 5;
