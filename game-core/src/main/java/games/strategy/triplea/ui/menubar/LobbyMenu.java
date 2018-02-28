@@ -39,6 +39,7 @@ import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.Md5Crypt;
 
 /**
  * The lobby client menu bar.
@@ -310,7 +311,7 @@ public final class LobbyMenu extends JMenuBar {
         + Strings.nullToEmpty(manager.updateUser(
             panel.getUserName(),
             panel.getEmail(),
-            games.strategy.util.Md5Crypt.crypt(panel.getPassword())))
+            Md5Crypt.hashPassword(panel.getPassword(), Md5Crypt.newSalt())))
         + Strings.nullToEmpty(manager.updateUser(
             panel.getUserName(),
             panel.getEmail(),

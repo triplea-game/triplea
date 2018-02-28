@@ -50,6 +50,7 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Interruptibles;
+import games.strategy.util.Md5Crypt;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
 
@@ -231,16 +232,11 @@ public class HeadlessGameServer {
   }
 
   public String getSalt() {
-    final String encryptedPassword = md5Crypt(System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, ""));
-    return games.strategy.util.Md5Crypt.getSalt(encryptedPassword);
+    return Md5Crypt.newSalt();
   }
 
-  private static String md5Crypt(final String value) {
-    return games.strategy.util.Md5Crypt.crypt(value);
-  }
-
-  private static String md5Crypt(final String value, final String salt) {
-    return games.strategy.util.Md5Crypt.crypt(value, salt);
+  private static String hashPassword(final String password, final String salt) {
+    return Md5Crypt.hashPassword(password, salt);
   }
 
   public String remoteShutdown(final String hashedPassword, final String salt) {
@@ -249,8 +245,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = md5Crypt(localPassword, salt);
-    if (encryptedPassword.equals(hashedPassword)) {
+    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
       new Thread(() -> {
         System.out.println("Remote Shutdown Initiated.");
         System.exit(0);
@@ -267,8 +262,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = md5Crypt(localPassword, salt);
-    if (encryptedPassword.equals(hashedPassword)) {
+    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
       final ServerGame serverGame = game;
       if (serverGame != null) {
         new Thread(() -> {
@@ -295,8 +289,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = md5Crypt(localPassword, salt);
-    if (encryptedPassword.equals(hashedPassword)) {
+    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
       final IChatPanel chat = getServerModel().getChatPanel();
       if (chat == null || chat.getAllText() == null) {
         return "Empty or null chat";
@@ -314,10 +307,9 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = md5Crypt(localPassword, salt);
     // (48 hours max)
     final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
-    if (encryptedPassword.equals(hashedPassword)) {
+    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
@@ -359,8 +351,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = md5Crypt(localPassword, salt);
-    if (encryptedPassword.equals(hashedPassword)) {
+    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
@@ -398,10 +389,9 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    final String encryptedPassword = md5Crypt(localPassword, salt);
     // milliseconds (30 days max)
     final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
-    if (encryptedPassword.equals(hashedPassword)) {
+    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;

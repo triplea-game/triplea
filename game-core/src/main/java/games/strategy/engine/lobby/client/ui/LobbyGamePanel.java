@@ -32,6 +32,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Md5Crypt;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
@@ -306,7 +307,7 @@ class LobbyGamePanel extends JPanel {
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
-    final String hashedPassword = md5Crypt(password, salt);
+    final String hashedPassword = hashPassword(password, salt);
     final String response = controller.getChatLogHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     final JTextPane textPane = new JTextPane();
     textPane.setEditable(false);
@@ -321,8 +322,8 @@ class LobbyGamePanel extends JPanel {
     JOptionPane.showMessageDialog(null, scroll, "Bot Chat Log", JOptionPane.INFORMATION_MESSAGE);
   }
 
-  private static String md5Crypt(final String value, final String salt) {
-    return games.strategy.util.Md5Crypt.crypt(value, salt);
+  private static String hashPassword(final String password, final String salt) {
+    return Md5Crypt.hashPassword(password, salt);
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {
@@ -379,7 +380,7 @@ class LobbyGamePanel extends JPanel {
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
-    final String hashedPassword = md5Crypt(password, salt);
+    final String hashedPassword = hashPassword(password, salt);
     final String response =
         controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
     JOptionPane.showMessageDialog(null, (response == null
@@ -419,7 +420,7 @@ class LobbyGamePanel extends JPanel {
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
-    final String hashedPassword = md5Crypt(password, salt);
+    final String hashedPassword = hashPassword(password, salt);
     final String response =
         controller.bootPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
     JOptionPane.showMessageDialog(null, (response == null
@@ -471,7 +472,7 @@ class LobbyGamePanel extends JPanel {
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
-    final String hashedPassword = md5Crypt(password, salt);
+    final String hashedPassword = hashPassword(password, salt);
     final String response =
         controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
     JOptionPane.showMessageDialog(null, (response == null
@@ -506,7 +507,7 @@ class LobbyGamePanel extends JPanel {
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
-    final String hashedPassword = md5Crypt(password, salt);
+    final String hashedPassword = hashPassword(password, salt);
     final String response = controller.stopGameHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     JOptionPane.showMessageDialog(null,
         (response == null ? "Successfully attempted stop of current game on host" : "Failed: " + response));
@@ -539,7 +540,7 @@ class LobbyGamePanel extends JPanel {
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
-    final String hashedPassword = md5Crypt(password, salt);
+    final String hashedPassword = hashPassword(password, salt);
     final String response = controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     JOptionPane.showMessageDialog(null,
         (response == null ? "Successfully attempted to shut down host" : "Failed: " + response));

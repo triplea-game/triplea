@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.server;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -14,6 +13,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.lobby.server.db.HashedPassword;
@@ -33,10 +33,6 @@ public class ModeratorControllerIntegrationTest {
   private ConnectionChangeListener connectionChangeListener;
   private INode adminNode;
 
-  private static String md5Crypt(final String value) {
-    return games.strategy.util.Md5Crypt.crypt(value);
-  }
-
   private static String newHashedMacAddress() {
     final byte[] bytes = new byte[6];
     new Random().nextBytes(bytes);
@@ -51,7 +47,7 @@ public class ModeratorControllerIntegrationTest {
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
     final UserController userController = new UserController();
-    userController.createUser(dbUser, new HashedPassword(md5Crypt(adminName)));
+    userController.createUser(dbUser, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
     userController.makeAdmin(dbUser);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
@@ -73,21 +69,6 @@ public class ModeratorControllerIntegrationTest {
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
     moderatorController.boot(booted);
     assertTrue(connectionChangeListener.getRemoved().contains(booted));
-  }
-
-  @Test
-  public void testCantResetAdminPassword() {
-    MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = md5Crypt("" + System.currentTimeMillis());
-    assertNotNull(moderatorController.setPassword(adminNode, newPassword));
-  }
-
-  @Test
-  public void testResetUserPasswordUnknownUser() throws UnknownHostException {
-    MessageContext.setSenderNodeForThread(adminNode);
-    final String newPassword = md5Crypt("" + System.currentTimeMillis());
-    final INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
-    assertNotNull(moderatorController.setPassword(node, newPassword));
   }
 
   @Test

@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 
 import games.strategy.engine.framework.startup.login.Md5CryptAuthenticator.ChallengePropertyNames;
 import games.strategy.engine.framework.startup.login.Md5CryptAuthenticator.ResponsePropertyNames;
+import games.strategy.util.Md5Crypt;
 
 public final class Md5CryptAuthenticatorTest {
   private static final String PASSWORD = "←PASSWORD↑WITH→UNICODE↓CHARS";
@@ -83,7 +84,7 @@ public final class Md5CryptAuthenticatorTest {
   @Test
   public void newResponse_ShouldIncludeResponseWhenChallengeContainsSalt() throws Exception {
     final Map<String, String> challenge = ImmutableMap.of(
-        ChallengePropertyNames.SALT, games.strategy.util.Md5Crypt.newSalt());
+        ChallengePropertyNames.SALT, Md5Crypt.newSalt());
 
     final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 

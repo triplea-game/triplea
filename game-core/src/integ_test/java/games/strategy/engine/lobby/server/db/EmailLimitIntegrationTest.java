@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.google.common.base.Strings;
 
@@ -45,10 +46,10 @@ public class EmailLimitIntegrationTest {
 
   private static void createAccountWithEmail(final String email) throws SQLException {
     try (PreparedStatement ps =
-        connection.prepareStatement("insert into ta_users (username, email, password) values (?, ?, ?)")) {
+        connection.prepareStatement("insert into ta_users (username, email, bcrypt_password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);
-      ps.setString(3, games.strategy.util.Md5Crypt.crypt("password"));
+      ps.setString(3, BCrypt.hashpw("password", BCrypt.gensalt()));
       ps.execute();
     }
   }

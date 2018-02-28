@@ -18,6 +18,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
 public class UserControllerIntegrationTest {
@@ -118,7 +119,7 @@ public class UserControllerIntegrationTest {
   }
 
   private static String md5Crypt(final String value) {
-    return games.strategy.util.Md5Crypt.crypt(value);
+    return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
   }
 
   private static String obfuscate(final String string) {

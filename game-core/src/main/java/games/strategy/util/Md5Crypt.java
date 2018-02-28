@@ -9,50 +9,54 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A collection of methods for using the FreeBSD MD5-crypt password encryption algorithm.
+ * A collection of methods for using the FreeBSD MD5-crypt hash algorithm.
  *
  * @see https://www.usenix.org/legacyurl/md5-crypt
  * @see https://www.systutorials.com/docs/linux/man/n-md5crypt/
- *
- * @deprecated Use SHA512(fast) or BCrypt(secure) in the future instead
- *             (kept for backwards compatibility)
  */
-@Deprecated
 public final class Md5Crypt {
   private static final String MAGIC = "$1$";
-  private static final Pattern ENCRYPTED_PASSWORD_PATTERN =
+  private static final Pattern HASHED_VALUE_PATTERN =
       Pattern.compile("^" + MAGIC.replace("$", "\\$") + "([\\.\\/a-zA-Z0-9]{1,8})\\$([\\.\\/a-zA-Z0-9]{22})$");
   private static final byte[] EMPTY_KEY_BYTES = new byte[0];
 
   private Md5Crypt() {}
 
   /**
-   * Encrypts the specified password using a new random salt.
+   * Hashes the specified password using the specified salt.
    *
-   * @param password The password to be encrypted.
-   *
-   * @return The encrypted password.
-   */
-  public static String crypt(final String password) {
-    checkNotNull(password);
-
-    return crypt(password, newSalt());
-  }
-
-  /**
-   * Encrypts the specified password using the specified salt.
-   *
-   * @param password The password to be encrypted.
+   * @param password The password to be hashed.
    * @param salt The salt. May begin with {@code $1$} and end with {@code $} followed by any number of characters.
    *        No more than eight characters will be used. If empty, a new random salt will be used.
    *
-   * @return The encrypted password.
+   * @return The hashed password.
+   *
+   * @deprecated MD5-crypt is not secure for hashing sensitive information, such as passwords. Use a different hashing
+   *             algorithm, such as bcrypt.
    */
-  public static String crypt(final String password, final String salt) {
-    checkNotNull(password);
+  @Deprecated
+  public static String hashPassword(final String password, final String salt) {
+    return hash(password, salt);
+  }
+
+  /**
+   * Hashes the specified value using the specified salt.
+   *
+   * <p>
+   * <b>WARNING:</b> This method should not be used to hash sensitive information.
+   * </p>
+   *
+   * @param value The value to be hashed.
+   * @param salt The salt. May begin with {@code $1$} and end with {@code $} followed by any number of characters.
+   *        No more than eight characters will be used. If empty, a new random salt will be used.
+   *
+   * @return The hashed value.
+   */
+  public static String hash(final String value, final String salt) {
+    checkNotNull(value);
     checkNotNull(salt);
 
-    return md5Crypt(password.getBytes(StandardCharsets.UTF_8), MAGIC + normalizeSalt(salt));
+    return md5Crypt(value.getBytes(StandardCharsets.UTF_8), MAGIC + normalizeSalt(salt));
   }
 
   private static String normalizeSalt(final String salt) {
@@ -67,7 +71,7 @@ public final class Md5Crypt {
   }
 
   /**
-   * Creates a new random salt that can be passed to {@link #crypt(String, String)}.
+   * Creates a new random salt that can be passed to {@link #hash(String, String)}.
    *
    * @return A new random salt.
    */
@@ -76,51 +80,51 @@ public final class Md5Crypt {
   }
 
   /**
-   * Gets the hash for the specified encrypted password.
+   * Gets the hash for the specified hashed value.
    *
-   * @param encryptedPassword The encrypted password from a previous call to {@link #crypt(String, String)} whose hash
-   *        is to be returned.
+   * @param hashedValue The hashed value from a previous call to {@link #hash(String, String)} whose hash is to be
+   *        returned.
    *
-   * @return The hash for the specified encrypted password.
+   * @return The hash for the specified hashed value.
    *
-   * @throws IllegalArgumentException If {@code encryptedPassword} is not an MD5-crypted password.
+   * @throws IllegalArgumentException If {@code hashedValue} is not an MD5-crypt hashed value.
    */
-  public static String getHash(final String encryptedPassword) {
-    checkNotNull(encryptedPassword);
+  public static String getHash(final String hashedValue) {
+    checkNotNull(hashedValue);
 
-    final Matcher matcher = ENCRYPTED_PASSWORD_PATTERN.matcher(encryptedPassword);
-    checkArgument(matcher.matches(), "'" + encryptedPassword + "' is not an MD5-crypted password");
+    final Matcher matcher = HASHED_VALUE_PATTERN.matcher(hashedValue);
+    checkArgument(matcher.matches(), "'" + hashedValue + "' is not an MD5-crypt hashed value");
     return matcher.group(2);
   }
 
   /**
-   * Gets the salt for the specified encrypted password.
+   * Gets the salt for the specified hashed value.
    *
-   * @param encryptedPassword The encrypted password from a previous call to {@link #crypt(String, String)} whose salt
-   *        is to be returned.
+   * @param hashedValue The hashed value from a previous call to {@link #hash(String, String)} whose salt is to be
+   *        returned.
    *
-   * @return The salt for the specified encrypted password.
+   * @return The salt for the specified hashed value.
    *
-   * @throws IllegalArgumentException If {@code encryptedPassword} is not an MD5-crypted password.
+   * @throws IllegalArgumentException If {@code hashedValue} is not an MD5-crypt hashed value.
    */
-  public static String getSalt(final String encryptedPassword) {
-    checkNotNull(encryptedPassword);
+  public static String getSalt(final String hashedValue) {
+    checkNotNull(hashedValue);
 
-    final Matcher matcher = ENCRYPTED_PASSWORD_PATTERN.matcher(encryptedPassword);
-    checkArgument(matcher.matches(), "'" + encryptedPassword + "' is not an MD5-crypted password");
+    final Matcher matcher = HASHED_VALUE_PATTERN.matcher(hashedValue);
+    checkArgument(matcher.matches(), "'" + hashedValue + "' is not an MD5-crypt hashed value");
     return matcher.group(1);
   }
 
   /**
-   * Indicates the specified value is a legal MD5-crypted password.
+   * Indicates the specified value is a legal MD5-crypt hashed value.
    *
    * @param value The value to test.
    *
-   * @return {@code true} if the specified value is a legal MD5-crypted password; otherwise {@code false}.
+   * @return {@code true} if the specified value is a legal MD5-crypt hashed value; otherwise {@code false}.
    */
-  public static boolean isLegalEncryptedPassword(final String value) {
+  public static boolean isLegalHashedValue(final String value) {
     checkNotNull(value);
 
-    return ENCRYPTED_PASSWORD_PATTERN.matcher(value).matches();
+    return HASHED_VALUE_PATTERN.matcher(value).matches();
   }
 }
