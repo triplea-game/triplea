@@ -27,17 +27,15 @@ public final class LobbyPropertyReader {
   }
 
   public int getPort() {
-    return Integer.parseInt(propertyReader.readProperty(PropertyKeys.PORT));
+    return propertyReader.readIntegerPropertyOrDefault(PropertyKeys.PORT, DefaultValues.PORT);
   }
 
   public String getPostgresDatabase() {
-    final String value = propertyReader.readProperty(PropertyKeys.POSTGRES_DATABASE);
-    return !value.isEmpty() ? value : DefaultValues.POSTGRES_DATABASE;
+    return propertyReader.readPropertyOrDefault(PropertyKeys.POSTGRES_DATABASE, DefaultValues.POSTGRES_DATABASE);
   }
 
   public String getPostgresHost() {
-    final String value = propertyReader.readProperty(PropertyKeys.POSTGRES_HOST);
-    return !value.isEmpty() ? value : DefaultValues.POSTGRES_HOST;
+    return propertyReader.readPropertyOrDefault(PropertyKeys.POSTGRES_HOST, DefaultValues.POSTGRES_HOST);
   }
 
   public String getPostgresPassword() {
@@ -45,8 +43,7 @@ public final class LobbyPropertyReader {
   }
 
   public int getPostgresPort() {
-    final String value = propertyReader.readProperty(PropertyKeys.POSTGRES_PORT);
-    return !value.isEmpty() ? Integer.parseInt(value) : DefaultValues.POSTGRES_PORT;
+    return propertyReader.readIntegerPropertyOrDefault(PropertyKeys.POSTGRES_PORT, DefaultValues.POSTGRES_PORT);
   }
 
   public String getPostgresUser() {
@@ -54,7 +51,7 @@ public final class LobbyPropertyReader {
   }
 
   public boolean isMaintenanceMode() {
-    return Boolean.parseBoolean(propertyReader.readProperty(PropertyKeys.MAINTENANCE_MODE));
+    return propertyReader.readBooleanPropertyOrDefault(PropertyKeys.MAINTENANCE_MODE, DefaultValues.MAINTENANCE_MODE);
   }
 
   /**
@@ -73,6 +70,8 @@ public final class LobbyPropertyReader {
 
   @VisibleForTesting
   interface DefaultValues {
+    boolean MAINTENANCE_MODE = false;
+    int PORT = 3304;
     String POSTGRES_DATABASE = "ta_users";
     String POSTGRES_HOST = "localhost";
     int POSTGRES_PORT = 5432;
