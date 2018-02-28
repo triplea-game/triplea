@@ -2,6 +2,9 @@ package games.strategy.engine.config;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Reads properties from a source.
  */
@@ -70,7 +73,12 @@ public interface PropertyReader {
       try {
         return Integer.parseInt(value);
       } catch (final NumberFormatException e) {
-        // malformed value will return default value below
+        Logger.getLogger(PropertyReader.class.getName()).log(
+            Level.WARNING,
+            String.format(
+                "property '%s' has a value ('%s') that is not an integer; using default value (%d) instead",
+                key, value, defaultValue),
+            e);
       }
     }
 
