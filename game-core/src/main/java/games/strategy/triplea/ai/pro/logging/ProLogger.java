@@ -4,8 +4,6 @@ import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
-import games.strategy.triplea.ai.proAI.logging.ProLogSettings;
-
 /**
  * Class to log messages to log window and console.
  */

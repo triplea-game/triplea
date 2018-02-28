@@ -27,7 +27,6 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 
-import games.strategy.triplea.ai.proAI.logging.ProLogSettings;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
