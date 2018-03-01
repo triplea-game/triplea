@@ -1815,6 +1815,14 @@
     <br>
     Ultimate World Variants
     <br>Includes several Ultimate World Variants including FFAs
+- mapName: House of Habsburg
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/house_of_habsburg
+  version: 0.1
+  description: |
+    <br>
+    House of Habsburg
+    <br>A game on a large map of Europe in the year 1650. Feedback is welcome
 - mapName: Map Making Tutorial
   url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
   version: 1
