@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -170,19 +171,20 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("canalName", MutableProperty.ofString(this::setCanalName, this::getCanalName, this::resetCanalName))
         .put("landTerritories",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<Territory>>() {},
                 this::setLandTerritories,
                 this::setLandTerritories,
                 this::getLandTerritories,
                 this::resetLandTerritories))
         .put("excludedUnits",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setExcludedUnits,
                 this::setExcludedUnits,
                 this::getExcludedUnits,

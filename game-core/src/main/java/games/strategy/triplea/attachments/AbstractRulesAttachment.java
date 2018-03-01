@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -435,39 +436,43 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("countEach", MutableProperty.ofReadOnlyBoolean(this::getCountEach))
-        .put("eachMultiple", MutableProperty.ofReadOnlyInteger(this::getEachMultiple))
+        .put("countEach", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getCountEach))
+        .put("eachMultiple", MutableProperty.ofReadOnly(TypeToken.of(Integer.class), this::getEachMultiple))
         .put("players",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("objectiveValue",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setObjectiveValue,
                 this::setObjectiveValue,
                 this::getObjectiveValue,
                 this::resetObjectiveValue))
         .put("uses",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("turns",
             MutableProperty.of(
-                Map.class,
+                new TypeToken<Map<Integer, Integer>>() {},
                 this::setTurns,
                 this::setTurns,
                 this::getTurns,
                 this::resetTurns))
         .put("switch",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setSwitch,
                 this::setSwitch,
                 this::getSwitch,
@@ -477,7 +482,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                 this::setGameProperty,
                 this::getGameProperty,
                 this::resetGameProperty))
-        .put("rounds", MutableProperty.of(String.class, this::setRounds, this::setRounds))
+        .put("rounds", MutableProperty.ofWriteOnlyString(this::setRounds))
         .build();
   }
 }

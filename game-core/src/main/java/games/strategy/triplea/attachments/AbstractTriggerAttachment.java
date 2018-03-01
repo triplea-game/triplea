@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.CompositeChange;
@@ -310,17 +311,20 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("uses",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("usedThisRound",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,
@@ -332,14 +336,14 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
                 this::resetNotification))
         .put("when",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<Tuple<String, String>>>() {},
                 this::setWhen,
                 this::setWhen,
                 this::getWhen,
                 this::resetWhen))
         .put("trigger",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<RulesAttachment>>() {},
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");
                 },

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -199,32 +200,33 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("combatDefenseEffect",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setCombatDefenseEffect,
                 this::setCombatDefenseEffect,
                 this::getCombatDefenseEffect,
                 this::resetCombatDefenseEffect))
         .put("combatOffenseEffect",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setCombatOffenseEffect,
                 this::setCombatOffenseEffect,
                 this::getCombatOffenseEffect,
                 this::resetCombatOffenseEffect))
         .put("noBlitz",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<UnitType>>() {},
                 this::setNoBlitz,
                 this::setNoBlitz,
                 this::getNoBlitz,
                 this::resetNoBlitz))
         .put("unitsNotAllowed",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<UnitType>>() {},
                 this::setUnitsNotAllowed,
                 this::setUnitsNotAllowed,
                 this::getUnitsNotAllowed,

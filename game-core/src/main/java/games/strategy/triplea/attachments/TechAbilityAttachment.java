@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -1085,164 +1086,173 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("attackBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setAttackBonus,
                 this::setAttackBonus,
                 this::getAttackBonus,
                 this::resetAttackBonus))
         .put("defenseBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setDefenseBonus,
                 this::setDefenseBonus,
                 this::getDefenseBonus,
                 this::resetDefenseBonus))
         .put("movementBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setMovementBonus,
                 this::setMovementBonus,
                 this::getMovementBonus,
                 this::resetMovementBonus))
         .put("radarBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setRadarBonus,
                 this::setRadarBonus,
                 this::getRadarBonus,
                 this::resetRadarBonus))
         .put("airAttackBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setAirAttackBonus,
                 this::setAirAttackBonus,
                 this::getAirAttackBonus,
                 this::resetAirAttackBonus))
         .put("airDefenseBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setAirDefenseBonus,
                 this::setAirDefenseBonus,
                 this::getAirDefenseBonus,
                 this::resetAirDefenseBonus))
         .put("productionBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setProductionBonus,
                 this::setProductionBonus,
                 this::getProductionBonus,
                 this::resetProductionBonus))
         .put("minimumTerritoryValueForProductionBonus",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::setMinimumTerritoryValueForProductionBonus,
                 this::getMinimumTerritoryValueForProductionBonus,
                 this::resetMinimumTerritoryValueForProductionBonus))
         .put("repairDiscount",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setRepairDiscount,
                 this::setRepairDiscount,
                 this::getRepairDiscount,
                 this::resetRepairDiscount))
         .put("warBondDiceSides",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setWarBondDiceSides,
                 this::setWarBondDiceSides,
                 this::getWarBondDiceSides,
                 this::resetWarBondDiceSides))
         .put("warBondDiceNumber",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setWarBondDiceNumber,
                 this::setWarBondDiceNumber,
                 this::getWarBondDiceNumber,
                 this::resetWarBondDiceNumber))
         .put("rocketDiceNumber",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setRocketDiceNumber,
                 this::setRocketDiceNumber,
                 this::getRocketDiceNumber,
                 this::resetRocketDiceNumber))
         .put("rocketDistance",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setRocketDistance,
                 this::setRocketDistance,
                 this::getRocketDistance,
                 this::resetRocketDistance))
         .put("rocketNumberPerTerritory",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setRocketNumberPerTerritory,
                 this::setRocketNumberPerTerritory,
                 this::getRocketNumberPerTerritory,
                 this::resetRocketNumberPerTerritory))
         .put("unitAbilitiesGained",
             MutableProperty.of(
-                Map.class,
+                new TypeToken<Map<UnitType, Set<String>>>() {},
                 this::setUnitAbilitiesGained,
                 this::setUnitAbilitiesGained,
                 this::getUnitAbilitiesGained,
                 this::resetUnitAbilitiesGained))
         .put("airborneForces",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setAirborneForces,
                 this::setAirborneForces,
                 this::getAirborneForces,
                 this::resetAirborneForces))
         .put("airborneCapacity",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setAirborneCapacity,
                 this::setAirborneCapacity,
                 this::getAirborneCapacity,
                 this::resetAirborneCapacity))
         .put("airborneTypes",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setAirborneTypes,
                 this::setAirborneTypes,
                 this::getAirborneTypes,
                 this::resetAirborneTypes))
         .put("airborneDistance",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAirborneDistance,
                 this::setAirborneDistance,
                 this::getAirborneDistance,
                 this::resetAirborneDistance))
         .put("airborneBases",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setAirborneBases,
                 this::setAirborneBases,
                 this::getAirborneBases,
                 this::resetAirborneBases))
         .put("airborneTargettedByAA",
             MutableProperty.of(
-                Map.class,
+                new TypeToken<Map<String, Set<UnitType>>>() {},
                 this::setAirborneTargettedByAA,
                 this::setAirborneTargettedByAA,
                 this::getAirborneTargettedByAA,
                 this::resetAirborneTargettedByAA))
         .put("attackRollsBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setAttackRollsBonus,
                 this::setAttackRollsBonus,
                 this::getAttackRollsBonus,
                 this::resetAttackRollsBonus))
         .put("defenseRollsBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setDefenseRollsBonus,
                 this::setDefenseRollsBonus,
                 this::getDefenseRollsBonus,
                 this::resetDefenseRollsBonus))
         .put("bombingBonus",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,

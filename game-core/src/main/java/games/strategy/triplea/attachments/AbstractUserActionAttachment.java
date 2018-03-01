@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -210,6 +211,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
@@ -219,26 +221,29 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
                 this::getText,
                 this::resetText))
         .put("costPU",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setCostPU,
                 this::setCostPU,
                 this::getCostPU,
                 this::resetCostPU))
         .put("attemptsPerTurn",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAttemptsPerTurn,
                 this::setAttemptsPerTurn,
                 this::getAttemptsPerTurn,
                 this::resetAttemptsPerTurn))
         .put("attemptsLeftThisTurn",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAttemptsLeftThisTurn,
                 this::setAttemptsLeftThisTurn,
                 this::getAttemptsLeftThisTurn,
                 this::resetAttemptsLeftThisTurn))
         .put("actionAccept",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setActionAccept,
                 this::setActionAccept,
                 this::getActionAccept,

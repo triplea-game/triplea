@@ -4,25 +4,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.function.Supplier;
 
+import com.google.common.reflect.TypeToken;
+
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.
  *
- * @param <T> The type of the field to set, get and reset.
+ * @param <T> The type of the property value.
  */
 public final class MutableProperty<T> {
-  private final Class<T> type;
+  private final TypeToken<T> typeToken;
   private final ThrowingConsumer<T, Exception> setter;
   private final ThrowingConsumer<String, Exception> stringSetter;
   private final Supplier<T> getter;
   private final Runnable resetter;
 
   private MutableProperty(
-      final Class<T> type,
+      final TypeToken<T> typeToken,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    this.type = checkNotNull(type);
+    this.typeToken = checkNotNull(typeToken);
     this.setter = checkNotNull(setter);
     this.stringSetter = checkNotNull(stringSetter);
     this.getter = checkNotNull(getter);
@@ -92,11 +94,13 @@ public final class MutableProperty<T> {
   }
 
   private T cast(final Object value) throws InvalidValueException {
+    @SuppressWarnings("unchecked")
+    final Class<T> type = (Class<T>) typeToken.getRawType();
     try {
       return type.cast(value);
     } catch (final ClassCastException e) {
       throw new InvalidValueException(
-          String.format("expected value of type '%s' but was '%s'", type, value.getClass()),
+          String.format("expected value of type '%s' but was '%s'", typeToken, value.getClass().getName()),
           e);
     }
   }
@@ -109,145 +113,48 @@ public final class MutableProperty<T> {
     resetter.run();
   }
 
-  /**
-   * Convenience method to create an instance of this interface.
-   */
   public static <T> MutableProperty<T> of(
-      final Class<T> type,
+      final TypeToken<T> typeToken,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    return new MutableProperty<>(type, setter, stringSetter, getter, resetter);
+    return new MutableProperty<>(typeToken, setter, stringSetter, getter, resetter);
   }
 
-  /**
-   * Convenience method to create an instance of this interface with no resetter.
-   */
-  public static <T> MutableProperty<T> of(
-      final Class<T> type,
-      final ThrowingConsumer<T, Exception> setter,
-      final ThrowingConsumer<String, Exception> stringSetter,
+  public static <T> MutableProperty<T> ofReadOnly(
+      final TypeToken<T> typeToken,
       final Supplier<T> getter) {
-    return of(type, setter, stringSetter, getter, noResetter());
+    return of(typeToken, noSetter(), noStringSetter(), getter, noResetter());
   }
 
-  /**
-   * Convenience method to create an instance of this interface that only gets.
-   */
-  public static <T> MutableProperty<T> of(final Class<T> type, final Supplier<T> getter) {
-    return of(type, noSetter(), noStringSetter(), getter, noResetter());
-  }
-
-  /**
-   * Convenience method to create an instance of this interface that only sets, but doesn't reset.
-   */
-  public static <T> MutableProperty<T> of(
-      final Class<T> type,
+  public static <T> MutableProperty<T> ofWriteOnly(
+      final TypeToken<T> typeToken,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(type, setter, stringSetter, noGetter(), noResetter());
+    return of(typeToken, setter, stringSetter, noGetter(), noResetter());
   }
 
-  /**
-   * Convenience method to create a generic read-write Boolean instance of this interface.
-   */
-  public static MutableProperty<Boolean> ofBoolean(
-      final ThrowingConsumer<Boolean, Exception> setter,
-      final ThrowingConsumer<String, Exception> stringSetter,
-      final Supplier<Boolean> getter,
-      final Runnable resetter) {
-    return of(Boolean.class, setter, stringSetter, getter, resetter);
+  public static <T> MutableProperty<T> ofSimple(
+      final TypeToken<T> typeToken,
+      final ThrowingConsumer<T, Exception> setter,
+      final Supplier<T> getter) {
+    return of(typeToken, setter, noStringSetter(), getter, noResetter());
   }
 
-  /**
-   * Convenience method to create a generic read-only Boolean instance of this interface.
-   */
-  public static MutableProperty<Boolean> ofReadOnlyBoolean(final Supplier<Boolean> getter) {
-    return of(Boolean.class, noSetter(), noStringSetter(), getter, noResetter());
+  public static <T> MutableProperty<T> ofReadOnlySimple(final TypeToken<T> typeToken, final Supplier<T> getter) {
+    return ofSimple(typeToken, noSetter(), getter);
   }
 
-  /**
-   * Convenience method to create a generic write-only Boolean instance of this interface.
-   */
-  public static MutableProperty<Boolean> ofWriteOnlyBoolean(
-      final ThrowingConsumer<Boolean, Exception> setter,
-      final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(Boolean.class, setter, stringSetter, noGetter(), noResetter());
-  }
-
-  /**
-   * Convenience method to create a generic read-write Integer instance of this interface.
-   */
-  public static MutableProperty<Integer> ofInteger(
-      final ThrowingConsumer<Integer, Exception> setter,
-      final ThrowingConsumer<String, Exception> stringSetter,
-      final Supplier<Integer> getter,
-      final Runnable resetter) {
-    return of(Integer.class, setter, stringSetter, getter, resetter);
-  }
-
-  /**
-   * Convenience method to create a generic read-only Integer instance of this interface.
-   */
-  public static MutableProperty<Integer> ofReadOnlyInteger(final Supplier<Integer> getter) {
-    return of(Integer.class, noSetter(), noStringSetter(), getter, noResetter());
-  }
-
-  /**
-   * Convenience method to create a generic String instance of this interface.
-   */
   public static MutableProperty<String> ofString(
       final ThrowingConsumer<String, Exception> setter,
       final Supplier<String> getter,
       final Runnable resetter) {
-    return of(String.class, setter, setter, getter, resetter);
+    return of(TypeToken.of(String.class), setter, setter, getter, resetter);
   }
 
-  /**
-   * Convenience method to create an instance of this interface that just contains a direct
-   * setter and getter. And no support for Strings as secondary setter.
-   */
-  public static <T> MutableProperty<T> ofSimple(
-      final Class<T> type,
-      final ThrowingConsumer<T, Exception> setter,
-      final Supplier<T> getter) {
-    return of(type, setter, noStringSetter(), getter, noResetter());
-  }
-
-  /**
-   * Convenience method to create an instance of this interface that just contains a
-   * getter. And no support for setters of any kind.
-   */
-  public static <T> MutableProperty<T> ofSimple(final Class<T> type, final Supplier<T> getter) {
-    return ofSimple(type, noSetter(), getter);
-  }
-
-  /**
-   * Convenience method to create an instance of this interface that just contains a direct
-   * setter and getter for a Boolean. And no support for Strings as secondary setter.
-   */
-  public static MutableProperty<Boolean> ofSimpleBoolean(
-      final ThrowingConsumer<Boolean, Exception> setter,
-      final Supplier<Boolean> getter) {
-    return of(Boolean.class, setter, noStringSetter(), getter, noResetter());
-  }
-
-  /**
-   * Convenience method to create an instance of this interface that just contains a direct
-   * setter and getter for an Integer. And no support for Strings as secondary setter.
-   */
-  public static MutableProperty<Integer> ofSimpleInteger(
-      final ThrowingConsumer<Integer, Exception> setter,
-      final Supplier<Integer> getter) {
-    return of(Integer.class, setter, noStringSetter(), getter, noResetter());
-  }
-
-  /**
-   * Convenience method to create an instance of this interface that only sets via the string value.
-   */
   public static MutableProperty<String> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(String.class, noSetter(), stringSetter, noGetter(), noResetter());
+    return ofString(stringSetter, noGetter(), noResetter());
   }
 
   /**

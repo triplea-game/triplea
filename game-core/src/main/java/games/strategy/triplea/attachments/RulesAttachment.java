@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
@@ -1165,34 +1166,35 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("techs",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<TechAdvance>>() {},
                 this::setTechs,
                 this::setTechs,
                 this::getTechs,
                 this::resetTechs))
         .put("techCount",
-            MutableProperty.ofReadOnlyInteger(this::getTechCount))
+            MutableProperty.ofReadOnly(TypeToken.of(Integer.class), this::getTechCount))
         .put("relationship",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<String>>() {},
                 this::setRelationship,
                 this::setRelationship,
                 this::getRelationship,
                 this::resetRelationship))
         .put("atWarPlayers",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<PlayerID>>() {},
                 this::setAtWarPlayers,
                 this::setAtWarPlayers,
                 this::getAtWarPlayers,
                 this::resetAtWarPlayers))
         .put("atWarCount",
-            MutableProperty.ofReadOnlyInteger(this::getAtWarCount))
+            MutableProperty.ofReadOnly(TypeToken.of(Integer.class), this::getAtWarCount))
         .put("destroyedTUV",
             MutableProperty.ofString(
                 this::setDestroyedTUV,
@@ -1200,77 +1202,77 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 this::resetDestroyedTUV))
         .put("battle",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<Tuple<String, List<Territory>>>>() {},
                 this::setBattle,
                 this::setBattle,
                 this::getBattle,
                 this::resetBattle))
         .put("alliedOwnershipTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setAlliedOwnershipTerritories,
                 this::setAlliedOwnershipTerritories,
                 this::getAlliedOwnershipTerritories,
                 this::resetAlliedOwnershipTerritories))
         .put("directOwnershipTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setDirectOwnershipTerritories,
                 this::setDirectOwnershipTerritories,
                 this::getDirectOwnershipTerritories,
                 this::resetDirectOwnershipTerritories))
         .put("alliedExclusionTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setAlliedExclusionTerritories,
                 this::setAlliedExclusionTerritories,
                 this::getAlliedExclusionTerritories,
                 this::resetAlliedExclusionTerritories))
         .put("directExclusionTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setDirectExclusionTerritories,
                 this::setDirectExclusionTerritories,
                 this::getDirectExclusionTerritories,
                 this::resetDirectExclusionTerritories))
         .put("enemyExclusionTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setEnemyExclusionTerritories,
                 this::setEnemyExclusionTerritories,
                 this::getEnemyExclusionTerritories,
                 this::resetEnemyExclusionTerritories))
         .put("enemySurfaceExclusionTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setEnemySurfaceExclusionTerritories,
                 this::setEnemySurfaceExclusionTerritories,
                 this::getEnemySurfaceExclusionTerritories,
                 this::resetEnemySurfaceExclusionTerritories))
         .put("directPresenceTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setDirectPresenceTerritories,
                 this::setDirectPresenceTerritories,
                 this::getDirectPresenceTerritories,
                 this::resetDirectPresenceTerritories))
         .put("alliedPresenceTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setAlliedPresenceTerritories,
                 this::setAlliedPresenceTerritories,
                 this::getAlliedPresenceTerritories,
                 this::resetAlliedPresenceTerritories))
         .put("enemyPresenceTerritories",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setEnemyPresenceTerritories,
                 this::setEnemyPresenceTerritories,
                 this::getEnemyPresenceTerritories,
                 this::resetEnemyPresenceTerritories))
         .put("unitPresence",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<String>>() {},
                 this::setUnitPresence,
                 this::setUnitPresence,
                 this::getUnitPresence,

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -421,33 +422,36 @@ public class UnitSupportAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("unitType",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
-        .put("offence", MutableProperty.ofReadOnlyBoolean(this::getOffence))
-        .put("defence", MutableProperty.ofReadOnlyBoolean(this::getDefence))
-        .put("roll", MutableProperty.ofReadOnlyBoolean(this::getRoll))
-        .put("strength", MutableProperty.ofReadOnlyBoolean(this::getStrength))
+        .put("offence", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getOffence))
+        .put("defence", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getDefence))
+        .put("roll", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getRoll))
+        .put("strength", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getStrength))
         .put("bonus",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setBonus,
                 this::setBonus,
                 this::getBonus,
                 this::resetBonus))
         .put("number",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setNumber,
                 this::setNumber,
                 this::getNumber,
                 this::resetNumber))
-        .put("allied", MutableProperty.ofReadOnlyBoolean(this::getAllied))
-        .put("enemy", MutableProperty.ofReadOnlyBoolean(this::getEnemy))
+        .put("allied", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getAllied))
+        .put("enemy", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getEnemy))
         .put("bonusType",
             MutableProperty.ofString(
                 this::setBonusType,
@@ -455,13 +459,14 @@ public class UnitSupportAttachment extends DefaultAttachment {
                 this::resetBonusType))
         .put("players",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("impArtTech",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setImpArtTech,
                 this::setImpArtTech,
                 this::getImpArtTech,

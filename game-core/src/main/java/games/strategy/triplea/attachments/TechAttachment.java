@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -425,91 +426,106 @@ public class TechAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("techCost",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setTechCost,
                 this::setTechCost,
                 this::getTechCost,
                 this::resetTechCost))
         .put("heavyBomber",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setHeavyBomber,
                 this::setHeavyBomber,
                 this::getHeavyBomber,
                 this::resetHeavyBomber))
         .put("longRangeAir",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setLongRangeAir,
                 this::setLongRangeAir,
                 this::getLongRangeAir,
                 this::resetLongRangeAir))
         .put("jetPower",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setJetPower,
                 this::setJetPower,
                 this::getJetPower,
                 this::resetJetPower))
         .put("rocket",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setRocket,
                 this::setRocket,
                 this::getRocket,
                 this::resetRocket))
         .put("industrialTechnology",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIndustrialTechnology,
                 this::setIndustrialTechnology,
                 this::getIndustrialTechnology,
                 this::resetIndustrialTechnology))
         .put("superSub",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setSuperSub,
                 this::setSuperSub,
                 this::getSuperSub,
                 this::resetSuperSub))
         .put("destroyerBombard",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setDestroyerBombard,
                 this::setDestroyerBombard,
                 this::getDestroyerBombard,
                 this::resetDestroyerBombard))
         .put("improvedArtillerySupport",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setImprovedArtillerySupport,
                 this::setImprovedArtillerySupport,
                 this::getImprovedArtillerySupport,
                 this::resetImprovedArtillerySupport))
         .put("paratroopers",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setParatroopers,
                 this::setParatroopers,
                 this::getParatroopers,
                 this::resetParatroopers))
         .put("increasedFactoryProduction",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIncreasedFactoryProduction,
                 this::setIncreasedFactoryProduction,
                 this::getIncreasedFactoryProduction,
                 this::resetIncreasedFactoryProduction))
         .put("warBonds",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setWarBonds,
                 this::setWarBonds,
                 this::getWarBonds,
                 this::resetWarBonds))
         .put("mechanizedInfantry",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setMechanizedInfantry,
                 this::setMechanizedInfantry,
                 this::getMechanizedInfantry,
                 this::resetMechanizedInfantry))
         .put("aARadar",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setAARadar,
                 this::setAARadar,
                 this::getAARadar,
                 this::resetAARadar))
         .put("shipyards",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setShipyards,
                 this::setShipyards,
                 this::getShipyards,

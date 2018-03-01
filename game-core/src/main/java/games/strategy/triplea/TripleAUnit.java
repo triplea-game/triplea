@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -518,92 +519,108 @@ public class TripleAUnit extends Unit {
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("transportedBy",
             MutableProperty.ofSimple(
-                TripleAUnit.class,
+                TypeToken.of(TripleAUnit.class),
                 this::setTransportedBy,
                 this::getTransportedBy))
         .put("unloaded",
             MutableProperty.ofSimple(
-                List.class,
+                new TypeToken<List<Unit>>() {},
                 this::setUnloaded,
                 this::getUnloaded))
         .put("wasLoadedThisTurn",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setWasLoadedThisTurn,
                 this::getWasLoadedThisTurn))
         .put("unloadedTo",
             MutableProperty.ofSimple(
-                Territory.class,
+                TypeToken.of(Territory.class),
                 this::setUnloadedTo,
                 this::getUnloadedTo))
         .put("wasUnloadedInCombatPhase",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setWasUnloadedInCombatPhase,
                 this::getWasUnloadedInCombatPhase))
         .put("alreadyMoved",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
+                TypeToken.of(Integer.class),
                 this::setAlreadyMoved,
                 this::getAlreadyMoved))
         .put("bonusMovement",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
+                TypeToken.of(Integer.class),
                 this::setBonusMovement,
                 this::getBonusMovement))
         .put("unitDamage",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
+                TypeToken.of(Integer.class),
                 this::setUnitDamage,
                 this::getUnitDamage))
         .put("submerged",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setSubmerged,
                 this::getSubmerged))
         .put("originalOwner",
             MutableProperty.ofSimple(
-                PlayerID.class,
+                TypeToken.of(PlayerID.class),
                 this::setOriginalOwner,
                 this::getOriginalOwner))
         .put("wasInCombat",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setWasInCombat,
                 this::getWasInCombat))
         .put("wasLoadedAfterCombat",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setWasLoadedAfterCombat,
                 this::getWasLoadedAfterCombat))
         .put("wasAmphibious",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setWasAmphibious,
                 this::getWasAmphibious))
         .put("originatedFrom",
             MutableProperty.ofSimple(
-                Territory.class,
+                TypeToken.of(Territory.class),
                 this::setOriginatedFrom,
                 this::getOriginatedFrom))
         .put("wasScrambled",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setWasScrambled,
                 this::getWasScrambled))
         .put("maxScrambleCount",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
+                TypeToken.of(Integer.class),
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount))
         .put("wasInAirBattle",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setWasInAirBattle,
                 this::getWasInAirBattle))
         .put("disabled",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setDisabled,
                 this::getDisabled))
         .put("launched",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
+                TypeToken.of(Integer.class),
                 this::setLaunched,
                 this::getLaunched))
         .put("airborne",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
+                TypeToken.of(Boolean.class),
                 this::setAirborne,
                 this::getAirborne))
         .build();

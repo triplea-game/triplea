@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -3510,10 +3511,12 @@ public class UnitAttachment extends DefaultAttachment {
 
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("isAir",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsAir,
                 this::setIsAir,
                 this::getIsAir,
@@ -3525,275 +3528,316 @@ public class UnitAttachment extends DefaultAttachment {
             MutableProperty.ofWriteOnlyString(
                 this::setIsParatroop))
         .put("isSea",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsSea,
                 this::setIsSea,
                 this::getIsSea,
                 this::resetIsSea))
         .put("movement",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMovement,
                 this::setMovement,
                 this::getMovement,
                 this::resetMovement))
         .put("canBlitz",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanBlitz,
                 this::setCanBlitz,
                 this::getCanBlitz,
                 this::resetCanBlitz))
         .put("isKamikaze",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsKamikaze,
                 this::setIsKamikaze,
                 this::getIsKamikaze,
                 this::resetIsKamikaze))
         .put("canInvadeOnlyFrom",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setCanInvadeOnlyFrom,
                 this::setCanInvadeOnlyFrom,
                 this::getCanInvadeOnlyFrom,
                 this::resetCanInvadeOnlyFrom))
         .put("fuelCost",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<Resource>>() {},
                 this::setFuelCost,
                 this::setFuelCost,
                 this::getFuelCost,
                 this::resetFuelCost))
         .put("canNotMoveDuringCombatMove",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanNotMoveDuringCombatMove,
                 this::setCanNotMoveDuringCombatMove,
                 this::getCanNotMoveDuringCombatMove,
                 this::resetCanNotMoveDuringCombatMove))
         .put("movementLimit",
             MutableProperty.of(
-                Tuple.class,
+                new TypeToken<Tuple<Integer, String>>() {},
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put("attack",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAttack,
                 this::setAttack,
                 this::getAttack,
                 this::resetAttack))
         .put("defense",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setDefense,
                 this::setDefense,
                 this::getDefense,
                 this::resetDefense))
         .put("isInfrastructure",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsInfrastructure,
                 this::setIsInfrastructure,
                 this::getIsInfrastructure,
                 this::resetIsInfrastructure))
         .put("canBombard",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanBombard,
                 this::setCanBombard,
                 this::getCanBombard,
                 this::resetCanBombard))
         .put("bombard",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setBombard,
                 this::setBombard,
                 this::getBombard,
                 this::resetBombard))
         .put("isSub",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsSub,
                 this::setIsSub,
                 this::getIsSub,
                 this::resetIsSub))
         .put("isDestroyer",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsDestroyer,
                 this::setIsDestroyer,
                 this::getIsDestroyer,
                 this::resetIsDestroyer))
         .put("artillery",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setArtillery,
                 this::setArtillery,
                 this::getArtillery,
                 this::resetArtillery))
         .put("artillerySupportable",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setArtillerySupportable,
                 this::setArtillerySupportable,
                 this::getArtillerySupportable,
                 this::resetArtillerySupportable))
         .put("unitSupportCount",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setUnitSupportCount,
                 this::setUnitSupportCount,
                 this::getUnitSupportCount,
                 this::resetUnitSupportCount))
         .put("isMarine",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setIsMarine,
                 this::setIsMarine,
                 this::getIsMarine,
                 this::resetIsMarine))
         .put("isSuicide",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsSuicide,
                 this::setIsSuicide,
                 this::getIsSuicide,
                 this::resetIsSuicide))
         .put("isSuicideOnHit",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsSuicideOnHit,
                 this::setIsSuicideOnHit,
                 this::getIsSuicideOnHit,
                 this::resetIsSuicideOnHit))
         .put("attackingLimit",
             MutableProperty.of(
-                Tuple.class,
+                new TypeToken<Tuple<Integer, String>>() {},
                 this::setAttackingLimit,
                 this::setAttackingLimit,
                 this::getAttackingLimit,
                 this::resetAttackingLimit))
         .put("attackRolls",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAttackRolls,
                 this::setAttackRolls,
                 this::getAttackRolls,
                 this::resetAttackRolls))
         .put("defenseRolls",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setDefenseRolls,
                 this::setDefenseRolls,
                 this::getDefenseRolls,
                 this::resetDefenseRolls))
         .put("chooseBestRoll",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setChooseBestRoll,
                 this::setChooseBestRoll,
                 this::getChooseBestRoll,
                 this::resetChooseBestRoll))
         .put("isCombatTransport",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsCombatTransport,
                 this::setIsCombatTransport,
                 this::getIsCombatTransport,
                 this::resetIsCombatTransport))
         .put("transportCapacity",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setTransportCapacity,
                 this::setTransportCapacity,
                 this::getTransportCapacity,
                 this::resetTransportCapacity))
         .put("transportCost",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setTransportCost,
                 this::setTransportCost,
                 this::getTransportCost,
                 this::resetTransportCost))
         .put("carrierCapacity",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setCarrierCapacity,
                 this::setCarrierCapacity,
                 this::getCarrierCapacity,
                 this::resetCarrierCapacity))
         .put("carrierCost",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setCarrierCost,
                 this::setCarrierCost,
                 this::getCarrierCost,
                 this::resetCarrierCost))
         .put("isAirTransport",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsAirTransport,
                 this::setIsAirTransport,
                 this::getIsAirTransport,
                 this::resetIsAirTransport))
         .put("isAirTransportable",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsAirTransportable,
                 this::setIsAirTransportable,
                 this::getIsAirTransportable,
                 this::resetIsAirTransportable))
         .put("isInfantry",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsInfantry,
                 this::setIsInfantry,
                 this::getIsInfantry,
                 this::resetIsInfantry))
         .put("isLandTransport",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsLandTransport,
                 this::setIsLandTransport,
                 this::getIsLandTransport,
                 this::resetIsLandTransport))
         .put("isLandTransportable",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsLandTransportable,
                 this::setIsLandTransportable,
                 this::getIsLandTransportable,
                 this::resetIsLandTransportable))
         .put("isAAforCombatOnly",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsAAforCombatOnly,
                 this::setIsAAforCombatOnly,
                 this::getIsAAforCombatOnly,
                 this::resetIsAAforCombatOnly))
         .put("isAAforBombingThisUnitOnly",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsAAforBombingThisUnitOnly,
                 this::setIsAAforBombingThisUnitOnly,
                 this::getIsAAforBombingThisUnitOnly,
                 this::resetIsAAforBombingThisUnitOnly))
         .put("isAAforFlyOverOnly",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsAAforFlyOverOnly,
                 this::setIsAAforFlyOverOnly,
                 this::getIsAAforFlyOverOnly,
                 this::resetIsAAforFlyOverOnly))
         .put("isRocket",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsRocket,
                 this::setIsRocket,
                 this::getIsRocket,
                 this::resetIsRocket))
         .put("attackAA",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAttackAA,
                 this::setAttackAA,
                 this::getAttackAA,
                 this::resetAttackAA))
         .put("offensiveAttackAA",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setOffensiveAttackAA,
                 this::setOffensiveAttackAA,
                 this::getOffensiveAttackAA,
                 this::resetOffensiveAttackAA))
         .put("attackAAmaxDieSides",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAttackAAmaxDieSides,
                 this::setAttackAAmaxDieSides,
                 this::getAttackAAmaxDieSides,
                 this::resetAttackAAmaxDieSides))
         .put("offensiveAttackAAmaxDieSides",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setOffensiveAttackAAmaxDieSides,
                 this::setOffensiveAttackAAmaxDieSides,
                 this::getOffensiveAttackAAmaxDieSides,
                 this::resetOffensiveAttackAAmaxDieSides))
         .put("maxAAattacks",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxAAattacks,
                 this::setMaxAAattacks,
                 this::getMaxAAattacks,
                 this::resetMaxAAattacks))
         .put("maxRoundsAA",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxRoundsAA,
                 this::setMaxRoundsAA,
                 this::getMaxRoundsAA,
@@ -3805,143 +3849,161 @@ public class UnitAttachment extends DefaultAttachment {
                 this::resetTypeAA))
         .put("targetsAA",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setTargetsAA,
                 this::setTargetsAA,
                 this::getTargetsAA,
                 this::resetTargetsAA))
         .put("mayOverStackAA",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setMayOverStackAA,
                 this::setMayOverStackAA,
                 this::getMayOverStackAA,
                 this::resetMayOverStackAA))
         .put("damageableAA",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setDamageableAA,
                 this::setDamageableAA,
                 this::getDamageableAA,
                 this::resetDamageableAA))
         .put("willNotFireIfPresent",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setWillNotFireIfPresent,
                 this::setWillNotFireIfPresent,
                 this::getWillNotFireIfPresent,
                 this::resetWillNotFireIfPresent))
         .put("isStrategicBomber",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsStrategicBomber,
                 this::setIsStrategicBomber,
                 this::getIsStrategicBomber,
                 this::resetIsStrategicBomber))
         .put("bombingMaxDieSides",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setBombingMaxDieSides,
                 this::setBombingMaxDieSides,
                 this::getBombingMaxDieSides,
                 this::resetBombingMaxDieSides))
         .put("bombingBonus",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,
                 this::resetBombingBonus))
         .put("canIntercept",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanIntercept,
                 this::setCanIntercept,
                 this::getCanIntercept,
                 this::resetCanIntercept))
         .put("canEscort",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanEscort,
                 this::setCanEscort,
                 this::getCanEscort,
                 this::resetCanEscort))
         .put("canAirBattle",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanAirBattle,
                 this::setCanAirBattle,
                 this::getCanAirBattle,
                 this::resetCanAirBattle))
         .put("airDefense",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAirDefense,
                 this::setAirDefense,
                 this::getAirDefense,
                 this::resetAirDefense))
         .put("airAttack",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setAirAttack,
                 this::setAirAttack,
                 this::getAirAttack,
                 this::resetAirAttack))
         .put("bombingTargets",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setBombingTargets,
                 this::setBombingTargets,
                 this::getBombingTargets,
                 this::resetBombingTargets))
         .put("canProduceUnits",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanProduceUnits,
                 this::setCanProduceUnits,
                 this::getCanProduceUnits,
                 this::resetCanProduceUnits))
         .put("canProduceXUnits",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setCanProduceXUnits,
                 this::setCanProduceXUnits,
                 this::getCanProduceXUnits,
                 this::resetCanProduceXUnits))
         .put("createsUnitsList",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setCreatesUnitsList,
                 this::setCreatesUnitsList,
                 this::getCreatesUnitsList,
                 this::resetCreatesUnitsList))
         .put("createsResourcesList",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<Resource>>() {},
                 this::setCreatesResourcesList,
                 this::setCreatesResourcesList,
                 this::getCreatesResourcesList,
                 this::resetCreatesResourcesList))
         .put("hitPoints",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setHitPoints,
                 this::setHitPoints,
                 this::getHitPoints,
                 this::resetHitPoints))
         .put("canBeDamaged",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanBeDamaged,
                 this::setCanBeDamaged,
                 this::getCanBeDamaged,
                 this::resetCanBeDamaged))
         .put("maxDamage",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxDamage,
                 this::setMaxDamage,
                 this::getMaxDamage,
                 this::resetMaxDamage))
         .put("maxOperationalDamage",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxOperationalDamage,
                 this::setMaxOperationalDamage,
                 this::getMaxOperationalDamage,
                 this::resetMaxOperationalDamage))
         .put("canDieFromReachingMaxDamage",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanDieFromReachingMaxDamage,
                 this::setCanDieFromReachingMaxDamage,
                 this::getCanDieFromReachingMaxDamage,
                 this::resetCanDieFromReachingMaxDamage))
         .put("isConstruction",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsConstruction,
                 this::setIsConstruction,
                 this::getIsConstruction,
@@ -3952,207 +4014,218 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getConstructionType,
                 this::resetConstructionType))
         .put("constructionsPerTerrPerTypePerTurn",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setConstructionsPerTerrPerTypePerTurn,
                 this::setConstructionsPerTerrPerTypePerTurn,
                 this::getConstructionsPerTerrPerTypePerTurn,
                 this::resetConstructionsPerTerrPerTypePerTurn))
         .put("maxConstructionsPerTypePerTerr",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxConstructionsPerTypePerTerr,
                 this::setMaxConstructionsPerTypePerTerr,
                 this::getMaxConstructionsPerTypePerTerr,
                 this::resetMaxConstructionsPerTypePerTerr))
         .put("canOnlyBePlacedInTerritoryValuedAtX",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setCanOnlyBePlacedInTerritoryValuedAtX,
                 this::setCanOnlyBePlacedInTerritoryValuedAtX,
                 this::getCanOnlyBePlacedInTerritoryValuedAtX,
                 this::resetCanOnlyBePlacedInTerritoryValuedAtX))
         .put("requiresUnits",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<String[]>>() {},
                 this::setRequiresUnits,
                 this::setRequiresUnits,
                 this::getRequiresUnits,
                 this::resetRequiresUnits))
         .put("consumesUnits",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setConsumesUnits,
                 this::setConsumesUnits,
                 this::getConsumesUnits,
                 this::resetConsumesUnits))
         .put("requiresUnitsToMove",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<String[]>>() {},
                 this::setRequiresUnitsToMove,
                 this::setRequiresUnitsToMove,
                 this::getRequiresUnitsToMove,
                 this::resetRequiresUnitsToMove))
         .put("unitPlacementRestrictions",
             MutableProperty.of(
-                String[].class,
+                TypeToken.of(String[].class),
                 this::setUnitPlacementRestrictions,
                 this::setUnitPlacementRestrictions,
                 this::getUnitPlacementRestrictions,
                 this::resetUnitPlacementRestrictions))
         .put("maxBuiltPerPlayer",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxBuiltPerPlayer,
                 this::setMaxBuiltPerPlayer,
                 this::getMaxBuiltPerPlayer,
                 this::resetMaxBuiltPerPlayer))
         .put("placementLimit",
             MutableProperty.of(
-                Tuple.class,
+                new TypeToken<Tuple<Integer, String>>() {},
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
         .put("canScramble",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setCanScramble,
                 this::setCanScramble,
                 this::getCanScramble,
                 this::resetCanScramble))
         .put("isAirBase",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsAirBase,
                 this::setIsAirBase,
                 this::getIsAirBase,
                 this::resetIsAirBase))
         .put("maxScrambleDistance",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxScrambleDistance,
                 this::setMaxScrambleDistance,
                 this::getMaxScrambleDistance,
                 this::resetMaxScrambleDistance))
         .put("maxScrambleCount",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setMaxScrambleCount,
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount,
                 this::resetMaxScrambleCount))
         .put("blockade",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setBlockade,
                 this::setBlockade,
                 this::getBlockade,
                 this::resetBlockade))
         .put("repairsUnits",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setRepairsUnits,
                 this::setRepairsUnits,
                 this::getRepairsUnits,
                 this::resetRepairsUnits))
         .put("givesMovement",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<UnitType>>() {},
                 this::setGivesMovement,
                 this::setGivesMovement,
                 this::getGivesMovement,
                 this::resetGivesMovement))
         .put("destroyedWhenCapturedBy",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<Tuple<String, PlayerID>>>() {},
                 this::setDestroyedWhenCapturedBy,
                 this::setDestroyedWhenCapturedBy,
                 this::getDestroyedWhenCapturedBy,
                 this::resetDestroyedWhenCapturedBy))
         .put("whenHitPointsDamagedChangesInto",
             MutableProperty.of(
-                Map.class,
+                new TypeToken<Map<Integer, Tuple<Boolean, UnitType>>>() {},
                 this::setWhenHitPointsDamagedChangesInto,
                 this::setWhenHitPointsDamagedChangesInto,
                 this::getWhenHitPointsDamagedChangesInto,
                 this::resetWhenHitPointsDamagedChangesInto))
         .put("whenHitPointsRepairedChangesInto",
             MutableProperty.of(
-                Map.class,
+                new TypeToken<Map<Integer, Tuple<Boolean, UnitType>>>() {},
                 this::setWhenHitPointsRepairedChangesInto,
                 this::setWhenHitPointsRepairedChangesInto,
                 this::getWhenHitPointsRepairedChangesInto,
                 this::resetWhenHitPointsRepairedChangesInto))
         .put("whenCapturedChangesInto",
             MutableProperty.of(
-                Map.class,
+                new TypeToken<Map<String, Tuple<String, IntegerMap<UnitType>>>>() {},
                 this::setWhenCapturedChangesInto,
                 this::setWhenCapturedChangesInto,
                 this::getWhenCapturedChangesInto,
                 this::resetWhenCapturedChangesInto))
         .put("whenCapturedSustainsDamage",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setWhenCapturedSustainsDamage,
                 this::setWhenCapturedSustainsDamage,
                 this::getWhenCapturedSustainsDamage,
                 this::resetWhenCapturedSustainsDamage))
         .put("canBeCapturedOnEnteringBy",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setCanBeCapturedOnEnteringBy,
                 this::setCanBeCapturedOnEnteringBy,
                 this::getCanBeCapturedOnEnteringBy,
                 this::resetCanBeCapturedOnEnteringBy))
         .put("canBeGivenByTerritoryTo",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setCanBeGivenByTerritoryTo,
                 this::setCanBeGivenByTerritoryTo,
                 this::getCanBeGivenByTerritoryTo,
                 this::resetCanBeGivenByTerritoryTo))
         .put("whenCombatDamaged",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>>() {},
                 this::setWhenCombatDamaged,
                 this::setWhenCombatDamaged,
                 this::getWhenCombatDamaged,
                 this::resetWhenCombatDamaged))
         .put("receivesAbilityWhenWith",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<String>>() {},
                 this::setReceivesAbilityWhenWith,
                 this::setReceivesAbilityWhenWith,
                 this::getReceivesAbilityWhenWith,
                 this::resetReceivesAbilityWhenWith))
         .put("special",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<String>>() {},
                 this::setSpecial,
                 this::setSpecial,
                 this::getSpecial,
                 this::resetSpecial))
         .put("tuv",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setTuv,
                 this::setTuv,
                 this::getTuv,
                 this::resetTuv))
         .put("isFactory",
-            MutableProperty.ofWriteOnlyBoolean(
+            MutableProperty.ofWriteOnly(
+                TypeToken.of(Boolean.class),
                 this::setIsFactory,
                 this::setIsFactory))
         .put("isAA",
-            MutableProperty.ofWriteOnlyBoolean(
+            MutableProperty.ofWriteOnly(
+                TypeToken.of(Boolean.class),
                 this::setIsAA,
                 this::setIsAA))
         .put("destroyedWhenCapturedFrom",
-            MutableProperty.of(
-                String.class,
-                this::setDestroyedWhenCapturedFrom,
+            MutableProperty.ofWriteOnlyString(
                 this::setDestroyedWhenCapturedFrom))
         .put("unitPlacementOnlyAllowedIn",
-            MutableProperty.of(
-                String.class,
-                this::setUnitPlacementOnlyAllowedIn,
+            MutableProperty.ofWriteOnlyString(
                 this::setUnitPlacementOnlyAllowedIn))
         .put("isAAmovement",
-            MutableProperty.ofWriteOnlyBoolean(
+            MutableProperty.ofWriteOnly(
+                TypeToken.of(Boolean.class),
                 this::setIsAAmovement,
                 this::setIsAAmovement))
         .put("isTwoHit",
-            MutableProperty.ofWriteOnlyBoolean(
+            MutableProperty.ofWriteOnly(
+                TypeToken.of(Boolean.class),
                 this::setIsTwoHit,
                 this::setIsTwoHit))
         .build();

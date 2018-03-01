@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -397,11 +398,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("conditions",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<RulesAttachment>>() {},
                 this::setConditions,
                 this::setConditions,
                 this::getConditions,
@@ -412,7 +414,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                 this::getConditionType,
                 this::resetConditionType))
         .put("invert",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setInvert,
                 this::setInvert,
                 this::getInvert,
@@ -423,13 +426,15 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                 this::getChance,
                 this::resetChance))
         .put("chanceIncrementOnFailure",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setChanceIncrementOnFailure,
                 this::setChanceIncrementOnFailure,
                 this::getChanceIncrementOnFailure,
                 this::resetChanceIncrementOnFailure))
         .put("chanceDecrementOnSuccess",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setChanceDecrementOnSuccess,
                 this::setChanceDecrementOnSuccess,
                 this::getChanceDecrementOnSuccess,

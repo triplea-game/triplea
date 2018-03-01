@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -596,103 +597,110 @@ public class PlayerAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("vps",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setVps,
                 this::setVps,
                 this::getVps,
                 this::resetVps))
         .put("captureVps",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setCaptureVps,
                 this::setCaptureVps,
                 this::getCaptureVps,
                 this::resetCaptureVps))
         .put("retainCapitalNumber",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setRetainCapitalNumber,
                 this::setRetainCapitalNumber,
                 this::getRetainCapitalNumber,
                 this::resetRetainCapitalNumber))
         .put("retainCapitalProduceNumber",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setRetainCapitalProduceNumber,
                 this::setRetainCapitalProduceNumber,
                 this::getRetainCapitalProduceNumber,
                 this::resetRetainCapitalProduceNumber))
         .put("giveUnitControl",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setGiveUnitControl,
                 this::setGiveUnitControl,
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
         .put("captureUnitOnEnteringBy",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("shareTechnology",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setShareTechnology,
                 this::setShareTechnology,
                 this::getShareTechnology,
                 this::resetShareTechnology))
         .put("helpPayTechCost",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<PlayerID>>() {},
                 this::setHelpPayTechCost,
                 this::setHelpPayTechCost,
                 this::getHelpPayTechCost,
                 this::resetHelpPayTechCost))
         .put("destroysPUs",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setDestroysPUs,
                 this::setDestroysPUs,
                 this::getDestroysPUs,
                 this::resetDestroysPUs))
         .put("immuneToBlockade",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setImmuneToBlockade,
                 this::setImmuneToBlockade,
                 this::getImmuneToBlockade,
                 this::resetImmuneToBlockade))
         .put("suicideAttackResources",
             MutableProperty.of(
-                IntegerMap.class,
+                new TypeToken<IntegerMap<Resource>>() {},
                 this::setSuicideAttackResources,
                 this::setSuicideAttackResources,
                 this::getSuicideAttackResources,
                 this::resetSuicideAttackResources))
         .put("suicideAttackTargets",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<UnitType>>() {},
                 this::setSuicideAttackTargets,
                 this::setSuicideAttackTargets,
                 this::getSuicideAttackTargets,
                 this::resetSuicideAttackTargets))
         .put("placementLimit",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<Triple<Integer, String, Set<UnitType>>>>() {},
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
         .put("movementLimit",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<Triple<Integer, String, Set<UnitType>>>>() {},
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put("attackingLimit",
             MutableProperty.of(
-                Set.class,
+                new TypeToken<Set<Triple<Integer, String, Set<UnitType>>>>() {},
                 this::setAttackingLimit,
                 this::setAttackingLimit,
                 this::getAttackingLimit,

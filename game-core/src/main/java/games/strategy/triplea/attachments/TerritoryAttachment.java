@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -823,6 +824,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   public void validate(final GameData data) {}
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("capital",
@@ -831,13 +833,15 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::getCapital,
                 this::resetCapital))
         .put("originalFactory",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setOriginalFactory,
                 this::setOriginalFactory,
                 this::getOriginalFactory,
                 this::resetOriginalFactory))
         .put("production",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setProduction,
                 this::setProduction,
                 this::getProduction,
@@ -846,98 +850,106 @@ public class TerritoryAttachment extends DefaultAttachment {
             MutableProperty.ofWriteOnlyString(
                 this::setProductionOnly))
         .put("victoryCity",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setVictoryCity,
                 this::setVictoryCity,
                 this::getVictoryCity,
                 this::resetVictoryCity))
         .put("isImpassable",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setIsImpassable,
                 this::setIsImpassable,
                 this::getIsImpassable,
                 this::resetIsImpassable))
         .put("originalOwner",
             MutableProperty.of(
-                PlayerID.class,
+                TypeToken.of(PlayerID.class),
                 this::setOriginalOwner,
                 this::setOriginalOwner,
                 this::getOriginalOwner,
                 this::resetOriginalOwner))
         .put("convoyRoute",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setConvoyRoute,
                 this::setConvoyRoute,
                 this::getConvoyRoute,
                 this::resetConvoyRoute))
         .put("convoyAttached",
             MutableProperty.of(
-                HashSet.class,
+                new TypeToken<HashSet<Territory>>() {},
                 this::setConvoyAttached,
                 this::setConvoyAttached,
                 this::getConvoyAttached,
                 this::resetConvoyAttached))
         .put("changeUnitOwners",
             MutableProperty.of(
-                ArrayList.class,
+                new TypeToken<ArrayList<PlayerID>>() {},
                 this::setChangeUnitOwners,
                 this::setChangeUnitOwners,
                 this::getChangeUnitOwners,
                 this::resetChangeUnitOwners))
         .put("captureUnitOnEnteringBy",
             MutableProperty.of(
-                ArrayList.class,
+                new TypeToken<ArrayList<PlayerID>>() {},
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("navalBase",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setNavalBase,
                 this::setNavalBase,
                 this::getNavalBase,
                 this::resetNavalBase))
         .put("airBase",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setAirBase,
                 this::setAirBase,
                 this::getAirBase,
                 this::resetAirBase))
         .put("kamikazeZone",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setKamikazeZone,
                 this::setKamikazeZone,
                 this::getKamikazeZone,
                 this::resetKamikazeZone))
         .put("unitProduction",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
+                TypeToken.of(Integer.class),
                 this::setUnitProduction,
                 this::setUnitProduction,
                 this::getUnitProduction,
                 this::resetUnitProduction))
         .put("blockadeZone",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
+                TypeToken.of(Boolean.class),
                 this::setBlockadeZone,
                 this::setBlockadeZone,
                 this::getBlockadeZone,
                 this::resetBlockadeZone))
         .put("territoryEffect",
             MutableProperty.of(
-                ArrayList.class,
+                new TypeToken<ArrayList<TerritoryEffect>>() {},
                 this::setTerritoryEffect,
                 this::setTerritoryEffect,
                 this::getTerritoryEffect,
                 this::resetTerritoryEffect))
         .put("whenCapturedByGoesTo",
             MutableProperty.of(
-                ArrayList.class,
+                new TypeToken<ArrayList<String>>() {},
                 this::setWhenCapturedByGoesTo,
                 this::setWhenCapturedByGoesTo,
                 this::getWhenCapturedByGoesTo,
                 this::resetWhenCapturedByGoesTo))
         .put("resources",
             MutableProperty.of(
-                ResourceCollection.class,
+                TypeToken.of(ResourceCollection.class),
                 this::setResources,
                 this::setResources,
                 this::getResources,

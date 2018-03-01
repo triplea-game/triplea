@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -152,12 +153,13 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @Override
+  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("relationshipChange",
             MutableProperty.of(
-                List.class,
+                new TypeToken<List<String>>() {},
                 this::setRelationshipChange,
                 this::setRelationshipChange,
                 this::getRelationshipChange,
