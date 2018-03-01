@@ -1815,7 +1815,16 @@
     <br>
     Ultimate World Variants
     <br>Includes several Ultimate World Variants including FFAs
-- mapName: Map Making Tutorial
+-- mapName: House of Habsburg
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/house_of_habsburg/archive/master.zip
+  version: 1
+  img:
+  description: |
+    <br>
+    House of Habsburg
+    <br>Large map of Europe set in the 1600s
+ mapName: Map Making Tutorial
   url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
   version: 1
   mapType: MAP_TOOL
