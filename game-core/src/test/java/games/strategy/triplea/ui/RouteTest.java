@@ -21,9 +21,12 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.util.IntegerMap;
 
 public class RouteTest {
   private final Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
@@ -83,7 +86,10 @@ public class RouteTest {
     final Shape mockShape = mock(Shape.class);
     final Graphics2D mockGraphics = mock(Graphics2D.class);
     when(mockShape.contains(any(Point2D.class))).thenReturn(true);
-    routeDrawer.drawRoute(mockGraphics, dummyRouteDescription, "2");
+    final ResourceCollection mockResourceCollection = mock(ResourceCollection.class);
+    when(mockResourceCollection.getResourcesCopy()).thenReturn(new IntegerMap<>());
+    final ResourceImageFactory mockResourceImageFactory = mock(ResourceImageFactory.class);
+    routeDrawer.drawRoute(mockGraphics, dummyRouteDescription, "2", mockResourceCollection, mockResourceImageFactory);
     verify(mockGraphics, atLeastOnce()).fill(any(Shape.class));
     verify(mockGraphics, atLeastOnce()).draw(any(Shape.class));
     verify(mockedMapPanel, atLeastOnce()).getXOffset();// Those methods are needed
