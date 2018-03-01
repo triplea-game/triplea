@@ -89,35 +89,35 @@
   img: https://raw.githubusercontent.com/triplea-maps/total_world_war/master/description/TripleA_total_world_war_mini.png
   description: |
     <br><em><b style="font-size: x-large;">Created by Rolf Larsson and Hepster</b></em>
-    <br>	
+    <br>
     <br><em><b style="font-size: large;">Map and Mechanics by Rolf Larsson and Hepster</b></em>
     <br><em><b style="font-size: large;">Graphics by Hepster</b></em>
-    <br>	
-    <br>	
-    <br>	
-    <b><em>December 1941</em></b>	
-    <br>	
+    <br>
+    <br>
+    <br>
+    <b><em>December 1941</em></b>
+    <br>
     <b>The brutal winter conditions have stalled all actions of the rampaging Wehrmacht just short of Moscow.
     <br>Stalin has organized Russian elite troops from Siberia in preparation for a massive counterattack.
     <br>Japan is determined to rule the Pacific and gain access to the resources needed by force.
     <br>The Imperial Fleet has maneuvered undetected and is now in position to attack Pearl Harbor.
     <br>Roosevelt eager to enter the war for the Allies, will get his Casus Belli at the cost of thousands of American sailors lives.
     <br>China is fighting for its very survival in desperate hopes of repelling the Japanese occupation of its homeland.
-    <br>Italy is determined to restore a Romanesque dominion in the Mediterranean Sea and Africa, while British forces struggle to try 
+    <br>Italy is determined to restore a Romanesque dominion in the Mediterranean Sea and Africa, while British forces struggle to try
     <br>to hold on to their territories across the globe.
     <br>The events in December 1941 turn the scattered regional conflicts into a Total World War for the 2nd time.</b>
-    <br>	
-    <br>	
-    <b>There is a detailed manual included within the map zip. If you do not know how to get to it, you can download it here:</b>
+    <br>
+    <br>
+    <b>There is a detailed manual included within the map zip. If you do not know how to get to it, you can download it here:
     <br>https://github.com/triplea-maps/total_world_war/raw/master/TWW_lossy_new.pdf</b>
     <br>
     <b>This manual is also accessible within the game using the help tab.</b>
-    <br>	
+    <br>
     <br><b>Triplea 1.9.0.0.9464 is required to play T.W.W. 2.8.0.3.BETA</b>
     <br><b>Triplea (stable release) 1.9.0.0.7621 is minimum version required to play T.W.W. 2.7.7.2.</b>
-    <br>	
+    <br>
     <p style="font-size: x-large;"><b><em>Features</em></b></p>
-    <br>	
+    <br>
     <ul>
       <li><b>Terrain - modifications for unit values and abilities</b></li>
       <li><b>A real technology tree and research system</b></li>
@@ -137,9 +137,9 @@
       <li><b>Historical events (Pearl Harbour, Battle of Java Sea, etc) and historically accurate setup as much as possible while making the game playable for either side!</b></li>
       <li><b>and many more...</b></li>
     </ul>
-    <br>	
+    <br>
     <p style="font-size: x-large;"><b><em>Nations and Turn order</em></b></p>
-    <br>	
+    <br>
     <ul>
       <li><b>Germany</b> (Vichy France, Danube Axis, Finland)</li>
       <li><b>Russia</b></li>
@@ -153,7 +153,7 @@
       <li><b>Usa</b></li>
       <li><b>Turkey</b> (Neutral-AI as long as not allied)</li>
     </ul>
-    <br>	
+    <br>
     <br><b>Minor Nations (those in brackets like Finland) have their own territories which generate income and production, but their forces are transferred, controlled and moved by their associated Major power (Germany).</b>
     <br><b>This creates a unique gameplay experience where the Major powers have limited ability to exploit production capacity in far flung regions that were underdeveloped and were limited to the use of their own local resources.</b>
     <br>
@@ -458,7 +458,7 @@
     <br>Grow your population, build cities and factories, expand militarily, and use diplomacy to advance your
     <br>nation to supremacy.  Develop nuclear capabilities, control the seas, and use canals to out-manuever your
     <br>enemies.  Units fight and move differently depending on terrain.  Use generals and admirals.
-    <br>Neutral units control most of the land at the start, some are very difficult to defeat.  
+    <br>Neutral units control most of the land at the start, some are very difficult to defeat.
     <br>In addition to resources from gaining territory, use merchant ships to gain income from trade.
     <br>
     <br>
@@ -1856,4 +1856,4 @@
     <br>
     <br>Global 40 House Rules. Adds House Rules using Technologies. Also adds Canada that was created by simon 33. Canada does not currently work with the new Techs.
     <br>
- 
+
