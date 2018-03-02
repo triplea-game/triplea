@@ -18,7 +18,6 @@ import games.strategy.triplea.settings.ClientSetting;
 public class TripleAApplicationTest {
 
   static {
-    System.setProperty("java.awt.headless", String.valueOf(true));
     System.setProperty("testfx.robot", "glass");
     System.setProperty("testfx.headless", String.valueOf(true));
     System.setProperty("prism.order", "sw");
