@@ -1,9 +1,5 @@
 package games.strategy.engine.auto.update;
 
-import static games.strategy.engine.framework.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 
@@ -11,26 +7,7 @@ import com.google.common.base.Strings;
 
 import games.strategy.triplea.settings.ClientSetting;
 
-
-
-class UpdateCheckDecision {
-
-  static boolean shouldRun() {
-    if (System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")) {
-      return false;
-    }
-    if (System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")) {
-      return false;
-    }
-
-    if (System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
-      return false;
-    }
-
-    return true;
-  }
-
-
+class UpdatedMapsCheck {
 
   public static boolean shouldRunMapUpdateCheck() {
     // check at most once per month
@@ -50,5 +27,4 @@ class UpdateCheckDecision {
     ClientSetting.flush();
     return true;
   }
-
 }

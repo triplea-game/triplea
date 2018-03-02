@@ -13,9 +13,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.EventThreadJOptionPane;
 
 class EngineVersionCheck {
-  /**
-   * Returns true if we are out of date or this is the first time this triplea has ever been run.
-   */
   static void checkForLatestEngineVersionOut() {
     try {
       final boolean firstTimeThisVersion = ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY.booleanValue();

@@ -1,6 +1,9 @@
 package games.strategy.engine.auto.update;
 
+import static games.strategy.engine.framework.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.framework.map.download.MapDownloadController;
 
@@ -16,7 +19,7 @@ public class UpdateChecks {
 
 
   private static void checkForUpdates() {
-    if (!UpdateCheckDecision.shouldRun()) {
+    if (!shouldRun()) {
       return;
     }
 
@@ -26,11 +29,27 @@ public class UpdateChecks {
       return;
     }
 
-    TutorialMapDecision.checkForTutorialMap();
+    TutorialMapCheck.checkForTutorialMap();
     EngineVersionCheck.checkForLatestEngineVersionOut();
 
-    if (UpdateCheckDecision.shouldRunMapUpdateCheck()) {
+    if (UpdatedMapsCheck.shouldRunMapUpdateCheck()) {
       MapDownloadController.checkDownloadedMapsAreLatest();
     }
   }
+
+  private static boolean shouldRun() {
+    if (System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")) {
+      return false;
+    }
+    if (System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")) {
+      return false;
+    }
+
+    if (System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
+      return false;
+    }
+
+    return true;
+  }
+
 }

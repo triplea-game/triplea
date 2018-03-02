@@ -5,7 +5,7 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.ui.SwingComponents;
 
-public class TutorialMapDecision {
+public class TutorialMapCheck {
   static void checkForTutorialMap() {
     final MapDownloadController mapDownloadController = ClientContext.mapDownloadController();
     final boolean promptToDownloadTutorialMap = mapDownloadController.shouldPromptToDownloadTutorialMap();
