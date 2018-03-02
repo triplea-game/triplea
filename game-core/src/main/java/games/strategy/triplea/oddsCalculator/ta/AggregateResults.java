@@ -1,6 +1,5 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,8 +14,7 @@ import games.strategy.util.Tuple;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AggregateResults implements Serializable {
-  private static final long serialVersionUID = -556699626060414738L;
+public class AggregateResults {
   // can be empty!
   private final List<BattleResults> results;
   @Getter
