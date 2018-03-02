@@ -55,6 +55,7 @@ import games.strategy.debug.ErrorMessage;
 import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
+import games.strategy.engine.auto.health.check.LocalSystemChecker;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -146,6 +147,7 @@ public class GameRunner {
       });
 
       showMainFrame();
+      LocalSystemChecker.launch();
       UpdateChecks.launch();
     }
   }

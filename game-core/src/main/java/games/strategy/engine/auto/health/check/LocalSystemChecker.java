@@ -4,17 +4,37 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
+import games.strategy.debug.ClientLogger;
+
 /**
  * This class runs a set of local system checks, like access network, and create a temp file.
  * Each check is always run, and this class records the results of those checks.
  */
 public final class LocalSystemChecker {
+
+  public static void launch() {
+    new Thread(LocalSystemChecker::checkLocalSystem).start();
+  }
+
+  private static void checkLocalSystem() {
+    final LocalSystemChecker localSystemChecker = new LocalSystemChecker();
+    final Collection<Exception> exceptions = localSystemChecker.getExceptions();
+    if (!exceptions.isEmpty()) {
+      final String msg = String.format(
+          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
+          exceptions.size(), localSystemChecker.getStatusMessage());
+      ClientLogger.logError(msg);
+    }
+  }
+
 
   private final Set<SystemCheck> systemChecks;
 
@@ -54,12 +74,13 @@ public final class LocalSystemChecker {
   /** Return any exceptions encountered while running each check. */
   public Set<Exception> getExceptions() {
     return systemChecks.stream()
-        .filter(systemCheck -> systemCheck.getException().isPresent())
-        .map(systemCheck -> systemCheck.getException().get())
+        .map(SystemCheck::getException)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .collect(Collectors.toSet());
   }
 
-  public String getStatusMessage() {
+  private String getStatusMessage() {
     return systemChecks.stream()
         .map(systemCheck -> systemCheck.getResultMessage() + "\n")
         .collect(Collectors.joining());
