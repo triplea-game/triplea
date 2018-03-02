@@ -5,6 +5,9 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.ui.SwingComponents;
 
+/**
+ * Encapsulated logic of checking for and prompting if the tutorial map should be downloaded.
+ */
 public class TutorialMapCheck {
   static void checkForTutorialMap() {
     final MapDownloadController mapDownloadController = ClientContext.mapDownloadController();
