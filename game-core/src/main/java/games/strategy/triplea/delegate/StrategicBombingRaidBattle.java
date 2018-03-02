@@ -90,7 +90,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   protected void updateDefendingUnits() {
     // fill in defenders
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+        TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     final Predicate<Unit> defenders = Matches.enemyUnit(m_attacker, m_data)
         .and(Matches.unitCanBeDamaged()
             .or(Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
@@ -179,16 +179,16 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     BattleCalculator.sortPreBattle(m_attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+        TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     m_defendingAA = m_battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
-    m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
+    m_AAtypes = UnitAttachment.getAllOfTypeAas(m_defendingAA);
     // reverse since stacks are in reverse order
     Collections.reverse(m_AAtypes);
     final boolean hasAa = m_defendingAA.size() > 0;
     m_steps = new ArrayList<>();
     if (hasAa) {
-      for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_defendingAA)) {
+      for (final String typeAa : UnitAttachment.getAllOfTypeAas(m_defendingAA)) {
         m_steps.add(typeAa + AA_GUNS_FIRE_SUFFIX);
         m_steps.add(SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
         m_steps.add(REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
@@ -200,7 +200,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (hasAa) {
       // global1940 rules - each target type fires an AA shot against the planes bombing it
       steps.addAll(m_targets.entrySet().stream()
-          .filter(entry -> entry.getKey().getUnitAttachment().getIsAAforBombingThisUnitOnly())
+          .filter(entry -> entry.getKey().getUnitAttachment().getIsAaForBombingThisUnitOnly())
           .map(Entry::getValue)
           .map(FireAA::new)
           .collect(Collectors.toList()));
@@ -352,9 +352,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(m_defendingAA, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
-            UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(m_data);
+            UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAa(m_data);
         final Set<UnitType> airborneTypesTargettedToo =
-            TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa);
+            TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data).get(currentTypeAa);
         if (determineAttackers) {
           validAttackingUnitsForThisRoll = CollectionUtils.getMatches(m_attackingUnits,
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)

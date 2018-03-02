@@ -69,11 +69,11 @@ public class DiceRoll implements Externalizable {
     int chosenDiceSize = diceSize;
     for (final Unit u : defendingEnemyAa) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
-      int uaDiceSides = defending ? ua.getAttackAAmaxDieSides() : ua.getOffensiveAttackAAmaxDieSides();
+      int uaDiceSides = defending ? ua.getAttackAaMaxDieSides() : ua.getOffensiveAttackAaMaxDieSides();
       if (uaDiceSides < 1) {
         uaDiceSides = diceSize;
       }
-      int attack = defending ? ua.getAttackAA(u.getOwner()) : ua.getOffensiveAttackAA(u.getOwner());
+      int attack = defending ? ua.getAttackAa(u.getOwner()) : ua.getOffensiveAttackAa(u.getOwner());
       if (attack > uaDiceSides) {
         attack = uaDiceSides;
       }
@@ -99,13 +99,13 @@ public class DiceRoll implements Externalizable {
     int totalAAattacksSurplus = 0;
     for (final Unit aa : defendingEnemyAa) {
       final UnitAttachment ua = UnitAttachment.get(aa.getType());
-      if (ua.getMaxAAattacks() == -1) {
+      if (ua.getMaxAaAttacks() == -1) {
         totalAAattacksNormal = validAttackingUnitsForThisRoll.size();
       } else {
-        if (ua.getMayOverStackAA()) {
-          totalAAattacksSurplus += ua.getMaxAAattacks();
+        if (ua.getMayOverStackAa()) {
+          totalAAattacksSurplus += ua.getMaxAaAttacks();
         } else {
-          totalAAattacksNormal += ua.getMaxAAattacks();
+          totalAAattacksNormal += ua.getMaxAaAttacks();
         }
       }
     }
@@ -146,7 +146,7 @@ public class DiceRoll implements Externalizable {
     final int chosenDiceSizeForAll = attackThenDiceSidesForAll.getSecond();
     int hits = 0;
     final List<Die> sortedDice = new ArrayList<>();
-    final String typeAa = UnitAttachment.get(defendingAa.get(0).getType()).getTypeAA();
+    final String typeAa = UnitAttachment.get(defendingAa.get(0).getType()).getTypeAa();
     // LOW LUCK
     final Triple<Integer, Integer, Boolean> triple = getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
         null, null, defending, defendingAa, validAttackingUnitsForThisRoll, data, false);
@@ -257,7 +257,7 @@ public class DiceRoll implements Externalizable {
     while (i < runningMaximum && normalAAiter.hasNext()) {
       final Unit aaGun = normalAAiter.next();
       // should be > 0 at this point
-      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks();
+      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAaAttacks();
       final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
       if (hitAt < hitAtForInfinite) {
         continue;
@@ -299,7 +299,7 @@ public class DiceRoll implements Externalizable {
     while (i < runningMaximum && overstackAAiter.hasNext()) {
       final Unit aaGun = overstackAAiter.next();
       // should be > 0 at this point
-      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAAattacks();
+      int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAaAttacks();
       // zero based, so subtract 1
       final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
       while (i < runningMaximum && numAttacks > 0) {

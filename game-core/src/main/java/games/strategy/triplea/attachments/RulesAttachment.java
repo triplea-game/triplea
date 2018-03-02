@@ -152,7 +152,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDestroyedTUV(final String value) throws GameParseException {
+  public void setDestroyedTuv(final String value) throws GameParseException {
     if (value == null) {
       m_destroyedTUV = null;
       return;
@@ -173,11 +173,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_destroyedTUV = value;
   }
 
-  public String getDestroyedTUV() {
+  public String getDestroyedTuv() {
     return m_destroyedTUV;
   }
 
-  public void resetDestroyedTUV() {
+  public void resetDestroyedTuv() {
     m_destroyedTUV = null;
   }
 
@@ -1192,9 +1192,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             MutableProperty.ofReadOnly(this::getAtWarCount))
         .put("destroyedTUV",
             MutableProperty.ofString(
-                this::setDestroyedTUV,
-                this::getDestroyedTUV,
-                this::resetDestroyedTUV))
+                this::setDestroyedTuv,
+                this::getDestroyedTuv,
+                this::resetDestroyedTuv))
         .put("battle",
             MutableProperty.of(
                 this::setBattle,

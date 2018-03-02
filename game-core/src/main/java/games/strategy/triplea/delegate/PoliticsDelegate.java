@@ -244,9 +244,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void notifyMoney(final PoliticalActionAttachment paa, final boolean enough) {
     if (enough) {
-      sendNotification("Charging " + paa.getCostPU() + " PU's to perform this action");
+      sendNotification("Charging " + paa.getCostPu() + " PU's to perform this action");
     } else {
-      sendNotification("You don't have ennough money, you need " + paa.getCostPU() + " PU's to perform this action");
+      sendNotification("You don't have ennough money, you need " + paa.getCostPu() + " PU's to perform this action");
     }
   }
 
@@ -258,7 +258,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void chargeForAction(final PoliticalActionAttachment paa) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
-    final int cost = paa.getCostPU();
+    final int cost = paa.getCostPu();
     if (cost > 0) {
       // don't notify user of spending money anymore
       // notifyMoney(paa, true);
@@ -282,7 +282,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private boolean checkEnoughMoney(final PoliticalActionAttachment paa) {
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
-    final int cost = paa.getCostPU();
+    final int cost = paa.getCostPu();
     final int has = bridge.getPlayerId().getResources().getQuantity(pus);
     return has >= cost;
   }

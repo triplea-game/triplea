@@ -444,7 +444,7 @@ public class GameDataTestUtil {
   }
 
   static void givePlayerRadar(final PlayerID player) {
-    TechAttachment.get(player).setAARadar(Boolean.TRUE.toString());
+    TechAttachment.get(player).setAaRadar(Boolean.TRUE.toString());
   }
 
   /**

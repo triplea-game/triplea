@@ -115,7 +115,7 @@ public class AiPoliticalUtils {
   }
 
   private static boolean isFree(final PoliticalActionAttachment nextAction) {
-    return nextAction.getCostPU() <= 0;
+    return nextAction.getCostPu() <= 0;
   }
 
   private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player,
@@ -123,6 +123,6 @@ public class AiPoliticalUtils {
     // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable
     // price.
     final float production = AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
-    return production >= 21 && (nextAction.getCostPU()) <= ((production / 10));
+    return production >= 21 && (nextAction.getCostPu()) <= ((production / 10));
   }
 }

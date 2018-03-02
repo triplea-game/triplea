@@ -146,7 +146,7 @@ public class WW2V3Year41Test {
         DiceRoll.rollAa(
             CollectionUtils.getMatches(planes,
                 Matches
-                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
+                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
@@ -177,7 +177,7 @@ public class WW2V3Year41Test {
         DiceRoll.rollAa(
             CollectionUtils.getMatches(planes,
                 Matches
-                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
+                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
@@ -211,7 +211,7 @@ public class WW2V3Year41Test {
         DiceRoll.rollAa(
             CollectionUtils.getMatches(planes,
                 Matches
-                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(gameData))),
+                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
     assertEquals(roll.getHits(), 2);
     // make sure we rolled once

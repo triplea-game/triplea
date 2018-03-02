@@ -253,11 +253,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     canFire.addAll(m_defendingUnits);
     canFire.addAll(m_defendingWaitingToDie);
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+        TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     m_defendingAA = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForCombatOnly(), m_round, true, m_data));
     // comes ordered alphabetically
-    m_defendingAAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA);
+    m_defendingAAtypes = UnitAttachment.getAllOfTypeAas(m_defendingAA);
     // stacks are backwards
     Collections.reverse(m_defendingAAtypes);
   }
@@ -270,7 +270,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_offensiveAA = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(m_defendingUnits,
         new HashMap<>(), m_defender, Matches.unitIsAaForCombatOnly(), m_round, false, m_data));
     // comes ordered alphabetically
-    m_offensiveAAtypes = UnitAttachment.getAllOfTypeAAs(m_offensiveAA);
+    m_offensiveAAtypes = UnitAttachment.getAllOfTypeAas(m_offensiveAA);
     // stacks are backwards
     Collections.reverse(m_offensiveAAtypes);
   }
@@ -444,14 +444,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   List<String> determineStepStrings(final boolean showFirstRun) {
     final List<String> steps = new ArrayList<>();
     if (canFireOffensiveAa()) {
-      for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_offensiveAA)) {
+      for (final String typeAa : UnitAttachment.getAllOfTypeAas(m_offensiveAA)) {
         steps.add(m_attacker.getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(m_defender.getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
         steps.add(m_defender.getName() + REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
       }
     }
     if (canFireDefendingAa()) {
-      for (final String typeAa : UnitAttachment.getAllOfTypeAAs(m_defendingAA)) {
+      for (final String typeAa : UnitAttachment.getAllOfTypeAas(m_defendingAA)) {
         steps.add(m_defender.getName() + " " + typeAa + AA_GUNS_FIRE_SUFFIX);
         steps.add(m_attacker.getName() + SELECT_PREFIX + typeAa + CASUALTIES_SUFFIX);
         steps.add(m_attacker.getName() + REMOVE_PREFIX + typeAa + CASUALTIES_SUFFIX);
@@ -2077,9 +2077,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final List<Collection<Unit>> firingGroups = createFiringUnitGroups(currentAaUnits);
         for (final Collection<Unit> currentPossibleAa : firingGroups) {
           final Set<UnitType> targetUnitTypesForThisTypeAa =
-              UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(m_data);
+              UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAa(m_data);
           final Set<UnitType> airborneTypesTargettedToo =
-              m_defending ? TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAa)
+              m_defending ? TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data).get(currentTypeAa)
                   : new HashSet<>();
           final Collection<Unit> validAttackingUnitsForThisRoll = CollectionUtils.getMatches(
               (m_defending ? m_attackingUnits : m_defendingUnits), Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)

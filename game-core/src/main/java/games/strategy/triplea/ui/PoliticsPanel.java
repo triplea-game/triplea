@@ -224,7 +224,7 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   private static String getActionButtonText(final PoliticalActionAttachment paa) {
-    final String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
+    final String costString = paa.getCostPu() == 0 ? "" : "[" + paa.getCostPu() + " PU] ";
     return costString + PoliticsText.getInstance().getButtonText(paa.getText());
   }
 

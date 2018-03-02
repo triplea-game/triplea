@@ -787,7 +787,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setAirborneTargettedByAA(final String value) throws GameParseException {
+  public void setAirborneTargettedByAa(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 2) {
       throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
@@ -800,21 +800,21 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirborneTargettedByAA(final Map<String, Set<UnitType>> value) {
+  public void setAirborneTargettedByAa(final Map<String, Set<UnitType>> value) {
     m_airborneTargettedByAA = value;
   }
 
-  public Map<String, Set<UnitType>> getAirborneTargettedByAA() {
+  public Map<String, Set<UnitType>> getAirborneTargettedByAa() {
     return m_airborneTargettedByAA;
   }
 
-  public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player,
+  public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAa(final PlayerID player,
       final GameData data) {
     final HashMap<String, HashSet<UnitType>> airborneTargettedByAa = new HashMap<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {
-        final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAA();
+        final Map<String, Set<UnitType>> mapAa = taa.getAirborneTargettedByAa();
         if (mapAa != null && !mapAa.isEmpty()) {
           for (final Entry<String, Set<UnitType>> entry : mapAa.entrySet()) {
             final HashSet<UnitType> current = airborneTargettedByAa.getOrDefault(entry.getKey(), new HashSet<>());
@@ -827,11 +827,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneTargettedByAa;
   }
 
-  public void clearAirborneTargettedByAA() {
+  public void clearAirborneTargettedByAa() {
     m_airborneTargettedByAA.clear();
   }
 
-  public void resetAirborneTargettedByAA() {
+  public void resetAirborneTargettedByAa() {
     m_airborneTargettedByAA = new HashMap<>();
   }
 
@@ -1209,10 +1209,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
                 this::resetAirborneBases))
         .put("airborneTargettedByAA",
             MutableProperty.of(
-                this::setAirborneTargettedByAA,
-                this::setAirborneTargettedByAA,
-                this::getAirborneTargettedByAA,
-                this::resetAirborneTargettedByAA))
+                this::setAirborneTargettedByAa,
+                this::setAirborneTargettedByAa,
+                this::getAirborneTargettedByAa,
+                this::resetAirborneTargettedByAa))
         .put("attackRollsBonus",
             MutableProperty.of(
                 this::setAttackRollsBonus,

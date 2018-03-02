@@ -2213,117 +2213,117 @@ public class UnitAttachment extends DefaultAttachment {
 
   // Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
-  public void setIsAA(final String s) throws GameParseException {
-    setIsAA(getBool(s));
+  public void setIsAa(final String s) throws GameParseException {
+    setIsAa(getBool(s));
   }
 
   // Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
-  public void setIsAA(final Boolean s) throws GameParseException {
-    setIsAAforCombatOnly(s);
-    setIsAAforBombingThisUnitOnly(s);
-    setIsAAforFlyOverOnly(s);
-    setIsAAmovement(s);
+  public void setIsAa(final Boolean s) throws GameParseException {
+    setIsAaForCombatOnly(s);
+    setIsAaForBombingThisUnitOnly(s);
+    setIsAaForFlyOverOnly(s);
+    setIsAaMovement(s);
     setIsRocket(s);
     setIsInfrastructure(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttackAA(final String s) {
+  public void setAttackAa(final String s) {
     m_attackAA = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttackAA(final Integer s) {
+  public void setAttackAa(final Integer s) {
     m_attackAA = s;
   }
 
-  public int getAttackAA() {
+  public int getAttackAa() {
     return m_attackAA;
   }
 
-  public int getAttackAA(final PlayerID player) {
+  public int getAttackAa(final PlayerID player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
     // does not divide
     // perfectly into attackAAmaxDieSides
-    return Math.max(0, Math.min(getAttackAAmaxDieSides(),
+    return Math.max(0, Math.min(getAttackAaMaxDieSides(),
         m_attackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
   }
 
-  public void resetAttackAA() {
+  public void resetAttackAa() {
     m_attackAA = 1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOffensiveAttackAA(final String s) {
+  public void setOffensiveAttackAa(final String s) {
     m_offensiveAttackAA = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOffensiveAttackAA(final Integer s) {
+  public void setOffensiveAttackAa(final Integer s) {
     m_offensiveAttackAA = s;
   }
 
-  public int getOffensiveAttackAA() {
+  public int getOffensiveAttackAa() {
     return m_offensiveAttackAA;
   }
 
-  public int getOffensiveAttackAA(final PlayerID player) {
+  public int getOffensiveAttackAa(final PlayerID player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
     // does not divide
     // perfectly into attackAAmaxDieSides
-    return Math.max(0, Math.min(getOffensiveAttackAAmaxDieSides(),
+    return Math.max(0, Math.min(getOffensiveAttackAaMaxDieSides(),
         m_offensiveAttackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
   }
 
-  public void resetOffensiveAttackAA() {
+  public void resetOffensiveAttackAa() {
     m_offensiveAttackAA = 1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttackAAmaxDieSides(final String s) {
+  public void setAttackAaMaxDieSides(final String s) {
     m_attackAAmaxDieSides = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttackAAmaxDieSides(final Integer s) {
+  public void setAttackAaMaxDieSides(final Integer s) {
     m_attackAAmaxDieSides = s;
   }
 
-  public int getAttackAAmaxDieSides() {
+  public int getAttackAaMaxDieSides() {
     if (m_attackAAmaxDieSides < 0) {
       return getData().getDiceSides();
     }
     return m_attackAAmaxDieSides;
   }
 
-  public void resetAttackAAmaxDieSides() {
+  public void resetAttackAaMaxDieSides() {
     m_attackAAmaxDieSides = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOffensiveAttackAAmaxDieSides(final String s) {
+  public void setOffensiveAttackAaMaxDieSides(final String s) {
     m_offensiveAttackAAmaxDieSides = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOffensiveAttackAAmaxDieSides(final Integer s) {
+  public void setOffensiveAttackAaMaxDieSides(final Integer s) {
     m_offensiveAttackAAmaxDieSides = s;
   }
 
-  public int getOffensiveAttackAAmaxDieSides() {
+  public int getOffensiveAttackAaMaxDieSides() {
     if (m_offensiveAttackAAmaxDieSides < 0) {
       return getData().getDiceSides();
     }
     return m_offensiveAttackAAmaxDieSides;
   }
 
-  public void resetOffensiveAttackAAmaxDieSides() {
+  public void resetOffensiveAttackAaMaxDieSides() {
     m_offensiveAttackAAmaxDieSides = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMaxAAattacks(final String s) throws GameParseException {
+  public void setMaxAaAttacks(final String s) throws GameParseException {
     final int attacks = getInt(s);
     if (attacks < -1) {
       throw new GameParseException("maxAAattacks must be positive (or -1 for attacking all) " + thisErrorMsg());
@@ -2332,20 +2332,20 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMaxAAattacks(final Integer s) {
+  public void setMaxAaAttacks(final Integer s) {
     m_maxAAattacks = s;
   }
 
-  public int getMaxAAattacks() {
+  public int getMaxAaAttacks() {
     return m_maxAAattacks;
   }
 
-  public void resetMaxAAattacks() {
+  public void resetMaxAaAttacks() {
     m_maxAAattacks = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMaxRoundsAA(final String s) throws GameParseException {
+  public void setMaxRoundsAa(final String s) throws GameParseException {
     final int attacks = getInt(s);
     if (attacks < -1) {
       throw new GameParseException("maxRoundsAA must be positive (or -1 for infinite) " + thisErrorMsg());
@@ -2354,105 +2354,105 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMaxRoundsAA(final Integer s) {
+  public void setMaxRoundsAa(final Integer s) {
     m_maxRoundsAA = s;
   }
 
-  public int getMaxRoundsAA() {
+  public int getMaxRoundsAa() {
     return m_maxRoundsAA;
   }
 
-  public void resetMaxRoundsAA() {
+  public void resetMaxRoundsAa() {
     m_maxRoundsAA = 1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMayOverStackAA(final String s) {
+  public void setMayOverStackAa(final String s) {
     m_mayOverStackAA = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMayOverStackAA(final Boolean s) {
+  public void setMayOverStackAa(final Boolean s) {
     m_mayOverStackAA = s;
   }
 
-  public boolean getMayOverStackAA() {
+  public boolean getMayOverStackAa() {
     return m_mayOverStackAA;
   }
 
-  public void resetMayOverStackAA() {
+  public void resetMayOverStackAa() {
     m_mayOverStackAA = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDamageableAA(final String s) {
+  public void setDamageableAa(final String s) {
     m_damageableAA = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDamageableAA(final Boolean s) {
+  public void setDamageableAa(final Boolean s) {
     m_damageableAA = s;
   }
 
-  public boolean getDamageableAA() {
+  public boolean getDamageableAa() {
     return m_damageableAA;
   }
 
-  public void resetDamageableAA() {
+  public void resetDamageableAa() {
     m_damageableAA = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsAAforCombatOnly(final String s) {
+  public void setIsAaForCombatOnly(final String s) {
     m_isAAforCombatOnly = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsAAforCombatOnly(final Boolean s) {
+  public void setIsAaForCombatOnly(final Boolean s) {
     m_isAAforCombatOnly = s;
   }
 
-  public boolean getIsAAforCombatOnly() {
+  public boolean getIsAaForCombatOnly() {
     return m_isAAforCombatOnly;
   }
 
-  public void resetIsAAforCombatOnly() {
+  public void resetIsAaForCombatOnly() {
     m_isAAforCombatOnly = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsAAforBombingThisUnitOnly(final String s) {
+  public void setIsAaForBombingThisUnitOnly(final String s) {
     m_isAAforBombingThisUnitOnly = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsAAforBombingThisUnitOnly(final Boolean s) {
+  public void setIsAaForBombingThisUnitOnly(final Boolean s) {
     m_isAAforBombingThisUnitOnly = s;
   }
 
-  public boolean getIsAAforBombingThisUnitOnly() {
+  public boolean getIsAaForBombingThisUnitOnly() {
     return m_isAAforBombingThisUnitOnly;
   }
 
-  public void resetIsAAforBombingThisUnitOnly() {
+  public void resetIsAaForBombingThisUnitOnly() {
     m_isAAforBombingThisUnitOnly = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsAAforFlyOverOnly(final String s) {
+  public void setIsAaForFlyOverOnly(final String s) {
     m_isAAforFlyOverOnly = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsAAforFlyOverOnly(final Boolean s) {
+  public void setIsAaForFlyOverOnly(final Boolean s) {
     m_isAAforFlyOverOnly = s;
   }
 
-  public boolean getIsAAforFlyOverOnly() {
+  public boolean getIsAaForFlyOverOnly() {
     return m_isAAforFlyOverOnly;
   }
 
-  public void resetIsAAforFlyOverOnly() {
+  public void resetIsAaForFlyOverOnly() {
     m_isAAforFlyOverOnly = false;
   }
 
@@ -2475,22 +2475,22 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTypeAA(final String s) {
+  public void setTypeAa(final String s) {
     m_typeAA = s;
   }
 
-  public String getTypeAA() {
+  public String getTypeAa() {
     return m_typeAA;
   }
 
-  public void resetTypeAA() {
+  public void resetTypeAa() {
     m_typeAA = "AA";
   }
 
-  public static List<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified) {
+  public static List<String> getAllOfTypeAas(final Collection<Unit> aaUnitsAlreadyVerified) {
     final Set<String> aaSet = new HashSet<>();
     for (final Unit u : aaUnitsAlreadyVerified) {
-      aaSet.add(UnitAttachment.get(u.getType()).getTypeAA());
+      aaSet.add(UnitAttachment.get(u.getType()).getTypeAa());
     }
     final List<String> aaTypes = new ArrayList<>(aaSet);
     Collections.sort(aaTypes);
@@ -2501,7 +2501,7 @@ public class UnitAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTargetsAA(final String value) throws GameParseException {
+  public void setTargetsAa(final String value) throws GameParseException {
     if (value == null) {
       m_targetsAA = null;
       return;
@@ -2520,15 +2520,15 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTargetsAA(final Set<UnitType> value) {
+  public void setTargetsAa(final Set<UnitType> value) {
     m_targetsAA = value;
   }
 
-  public Set<UnitType> getTargetsAA() {
+  public Set<UnitType> getTargetsAa() {
     return m_targetsAA;
   }
 
-  public Set<UnitType> getTargetsAA(final GameData data) {
+  public Set<UnitType> getTargetsAa(final GameData data) {
     if (m_targetsAA != null) {
       return m_targetsAA;
     }
@@ -2537,11 +2537,11 @@ public class UnitAttachment extends DefaultAttachment {
         .collect(Collectors.toSet());
   }
 
-  public void clearTargetsAA() {
+  public void clearTargetsAa() {
     m_targetsAA.clear();
   }
 
-  public void resetTargetsAA() {
+  public void resetTargetsAa() {
     m_targetsAA = null;
   }
 
@@ -2578,12 +2578,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
-  public void setIsAAmovement(final String s) throws GameParseException {
-    setIsAAmovement(getBool(s));
+  public void setIsAaMovement(final String s) throws GameParseException {
+    setIsAaMovement(getBool(s));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
-  public void setIsAAmovement(final boolean s) throws GameParseException {
+  public void setIsAaMovement(final boolean s) throws GameParseException {
     setCanNotMoveDuringCombatMove(s);
     if (s) {
       setMovementLimit(Integer.MAX_VALUE + ":allied");
@@ -2761,7 +2761,7 @@ public class UnitAttachment extends DefaultAttachment {
       return Integer.MAX_VALUE;
     }
     int max = stackingLimit.getFirst();
-    if (max == Integer.MAX_VALUE && (ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly())) {
+    if (max == Integer.MAX_VALUE && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())) {
       // under certain rules (classic rules) there can only be 1 aa gun in a territory.
       if (!(Properties.getWW2V2(data) || Properties.getWW2V3(data)
           || Properties.getMultipleAaPerTerritory(data))) {
@@ -3163,35 +3163,35 @@ public class UnitAttachment extends DefaultAttachment {
         stats.append("Each movement point, ");
       }
     }
-    if ((getIsAAforCombatOnly() || getIsAAforBombingThisUnitOnly() || getIsAAforFlyOverOnly())
-        && (getAttackAA(player) > 0 || getOffensiveAttackAA(player) > 0)) {
-      if (getOffensiveAttackAA(player) > 0) {
-        stats.append(getOffensiveAttackAA(player)).append("/").append(
-            getOffensiveAttackAAmaxDieSides() != -1 ? getOffensiveAttackAAmaxDieSides() : getData().getDiceSides())
+    if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly())
+        && (getAttackAa(player) > 0 || getOffensiveAttackAa(player) > 0)) {
+      if (getOffensiveAttackAa(player) > 0) {
+        stats.append(getOffensiveAttackAa(player)).append("/").append(
+            getOffensiveAttackAaMaxDieSides() != -1 ? getOffensiveAttackAaMaxDieSides() : getData().getDiceSides())
             .append(" att ");
       }
-      if (getAttackAA(player) > 0) {
-        stats.append(getAttackAA(player)).append("/")
-            .append(getAttackAAmaxDieSides() != -1 ? getAttackAAmaxDieSides() : getData().getDiceSides())
+      if (getAttackAa(player) > 0) {
+        stats.append(getAttackAa(player)).append("/")
+            .append(getAttackAaMaxDieSides() != -1 ? getAttackAaMaxDieSides() : getData().getDiceSides())
             .append(" def ");
       }
-      if (getIsAAforCombatOnly() && getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()) {
-        stats.append(getTypeAA()).append(", ");
-      } else if (getIsAAforCombatOnly() && getIsAAforFlyOverOnly()
+      if (getIsAaForCombatOnly() && getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()) {
+        stats.append(getTypeAa()).append(", ");
+      } else if (getIsAaForCombatOnly() && getIsAaForFlyOverOnly()
           && !Properties.getAaTerritoryRestricted(getData())) {
-        stats.append(getTypeAA()).append(" for Combat & Move Through, ");
-      } else if (getIsAAforBombingThisUnitOnly() && getIsAAforFlyOverOnly()
+        stats.append(getTypeAa()).append(" for Combat & Move Through, ");
+      } else if (getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()
           && !Properties.getAaTerritoryRestricted(getData())) {
-        stats.append(getTypeAA()).append(" for Raids & Move Through, ");
-      } else if (getIsAAforCombatOnly()) {
-        stats.append(getTypeAA()).append(" for Combat, ");
-      } else if (getIsAAforBombingThisUnitOnly()) {
-        stats.append(getTypeAA()).append(" for Raids, ");
-      } else if (getIsAAforFlyOverOnly()) {
-        stats.append(getTypeAA()).append(" for Move Through, ");
+        stats.append(getTypeAa()).append(" for Raids & Move Through, ");
+      } else if (getIsAaForCombatOnly()) {
+        stats.append(getTypeAa()).append(" for Combat, ");
+      } else if (getIsAaForBombingThisUnitOnly()) {
+        stats.append(getTypeAa()).append(" for Raids, ");
+      } else if (getIsAaForFlyOverOnly()) {
+        stats.append(getTypeAa()).append(" for Move Through, ");
       }
-      if (getMaxAAattacks() > -1) {
-        stats.append(getMaxAAattacks()).append(" ").append(getTypeAA()).append(" Attacks, ");
+      if (getMaxAaAttacks() > -1) {
+        stats.append(getMaxAaAttacks()).append(" ").append(getTypeAa()).append(" Attacks, ");
       }
     }
     if (getIsRocket() && playerHasRockets(player)) {
@@ -3448,7 +3448,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (getMovementLimit() != null) {
       if (getMovementLimit().getFirst() == Integer.MAX_VALUE
-          && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
+          && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
@@ -3460,7 +3460,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (getAttackingLimit() != null) {
       if (getAttackingLimit().getFirst() == Integer.MAX_VALUE
-          && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
+          && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
@@ -3472,7 +3472,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (getPlacementLimit() != null) {
       if (getPlacementLimit().getFirst() == Integer.MAX_VALUE
-          && (getIsAAforBombingThisUnitOnly() || getIsAAforCombatOnly())
+          && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
@@ -3736,22 +3736,22 @@ public class UnitAttachment extends DefaultAttachment {
                 this::resetIsLandTransportable))
         .put("isAAforCombatOnly",
             MutableProperty.of(
-                this::setIsAAforCombatOnly,
-                this::setIsAAforCombatOnly,
-                this::getIsAAforCombatOnly,
-                this::resetIsAAforCombatOnly))
+                this::setIsAaForCombatOnly,
+                this::setIsAaForCombatOnly,
+                this::getIsAaForCombatOnly,
+                this::resetIsAaForCombatOnly))
         .put("isAAforBombingThisUnitOnly",
             MutableProperty.of(
-                this::setIsAAforBombingThisUnitOnly,
-                this::setIsAAforBombingThisUnitOnly,
-                this::getIsAAforBombingThisUnitOnly,
-                this::resetIsAAforBombingThisUnitOnly))
+                this::setIsAaForBombingThisUnitOnly,
+                this::setIsAaForBombingThisUnitOnly,
+                this::getIsAaForBombingThisUnitOnly,
+                this::resetIsAaForBombingThisUnitOnly))
         .put("isAAforFlyOverOnly",
             MutableProperty.of(
-                this::setIsAAforFlyOverOnly,
-                this::setIsAAforFlyOverOnly,
-                this::getIsAAforFlyOverOnly,
-                this::resetIsAAforFlyOverOnly))
+                this::setIsAaForFlyOverOnly,
+                this::setIsAaForFlyOverOnly,
+                this::getIsAaForFlyOverOnly,
+                this::resetIsAaForFlyOverOnly))
         .put("isRocket",
             MutableProperty.of(
                 this::setIsRocket,
@@ -3760,63 +3760,63 @@ public class UnitAttachment extends DefaultAttachment {
                 this::resetIsRocket))
         .put("attackAA",
             MutableProperty.of(
-                this::setAttackAA,
-                this::setAttackAA,
-                this::getAttackAA,
-                this::resetAttackAA))
+                this::setAttackAa,
+                this::setAttackAa,
+                this::getAttackAa,
+                this::resetAttackAa))
         .put("offensiveAttackAA",
             MutableProperty.of(
-                this::setOffensiveAttackAA,
-                this::setOffensiveAttackAA,
-                this::getOffensiveAttackAA,
-                this::resetOffensiveAttackAA))
+                this::setOffensiveAttackAa,
+                this::setOffensiveAttackAa,
+                this::getOffensiveAttackAa,
+                this::resetOffensiveAttackAa))
         .put("attackAAmaxDieSides",
             MutableProperty.of(
-                this::setAttackAAmaxDieSides,
-                this::setAttackAAmaxDieSides,
-                this::getAttackAAmaxDieSides,
-                this::resetAttackAAmaxDieSides))
+                this::setAttackAaMaxDieSides,
+                this::setAttackAaMaxDieSides,
+                this::getAttackAaMaxDieSides,
+                this::resetAttackAaMaxDieSides))
         .put("offensiveAttackAAmaxDieSides",
             MutableProperty.of(
-                this::setOffensiveAttackAAmaxDieSides,
-                this::setOffensiveAttackAAmaxDieSides,
-                this::getOffensiveAttackAAmaxDieSides,
-                this::resetOffensiveAttackAAmaxDieSides))
+                this::setOffensiveAttackAaMaxDieSides,
+                this::setOffensiveAttackAaMaxDieSides,
+                this::getOffensiveAttackAaMaxDieSides,
+                this::resetOffensiveAttackAaMaxDieSides))
         .put("maxAAattacks",
             MutableProperty.of(
-                this::setMaxAAattacks,
-                this::setMaxAAattacks,
-                this::getMaxAAattacks,
-                this::resetMaxAAattacks))
+                this::setMaxAaAttacks,
+                this::setMaxAaAttacks,
+                this::getMaxAaAttacks,
+                this::resetMaxAaAttacks))
         .put("maxRoundsAA",
             MutableProperty.of(
-                this::setMaxRoundsAA,
-                this::setMaxRoundsAA,
-                this::getMaxRoundsAA,
-                this::resetMaxRoundsAA))
+                this::setMaxRoundsAa,
+                this::setMaxRoundsAa,
+                this::getMaxRoundsAa,
+                this::resetMaxRoundsAa))
         .put("typeAA",
             MutableProperty.ofString(
-                this::setTypeAA,
-                this::getTypeAA,
-                this::resetTypeAA))
+                this::setTypeAa,
+                this::getTypeAa,
+                this::resetTypeAa))
         .put("targetsAA",
             MutableProperty.of(
-                this::setTargetsAA,
-                this::setTargetsAA,
-                this::getTargetsAA,
-                this::resetTargetsAA))
+                this::setTargetsAa,
+                this::setTargetsAa,
+                this::getTargetsAa,
+                this::resetTargetsAa))
         .put("mayOverStackAA",
             MutableProperty.of(
-                this::setMayOverStackAA,
-                this::setMayOverStackAA,
-                this::getMayOverStackAA,
-                this::resetMayOverStackAA))
+                this::setMayOverStackAa,
+                this::setMayOverStackAa,
+                this::getMayOverStackAa,
+                this::resetMayOverStackAa))
         .put("damageableAA",
             MutableProperty.of(
-                this::setDamageableAA,
-                this::setDamageableAA,
-                this::getDamageableAA,
-                this::resetDamageableAA))
+                this::setDamageableAa,
+                this::setDamageableAa,
+                this::getDamageableAa,
+                this::resetDamageableAa))
         .put("willNotFireIfPresent",
             MutableProperty.of(
                 this::setWillNotFireIfPresent,
@@ -4110,8 +4110,8 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsFactory))
         .put("isAA",
             MutableProperty.<Boolean>ofWriteOnly(
-                this::setIsAA,
-                this::setIsAA))
+                this::setIsAa,
+                this::setIsAa))
         .put("destroyedWhenCapturedFrom",
             MutableProperty.ofWriteOnlyString(
                 this::setDestroyedWhenCapturedFrom))
@@ -4120,8 +4120,8 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setUnitPlacementOnlyAllowedIn))
         .put("isAAmovement",
             MutableProperty.<Boolean>ofWriteOnly(
-                this::setIsAAmovement,
-                this::setIsAAmovement))
+                this::setIsAaMovement,
+                this::setIsAaMovement))
         .put("isTwoHit",
             MutableProperty.<Boolean>ofWriteOnly(
                 this::setIsTwoHit,

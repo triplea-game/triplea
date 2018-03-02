@@ -61,7 +61,7 @@ public final class UserActionPanelTest {
 
   private UserActionAttachment createUserActionWithCost(final int costInPUs) {
     final UserActionAttachment userAction = new UserActionAttachment("userAction", mock(Attachable.class), data);
-    userAction.setCostPU(costInPUs);
+    userAction.setCostPu(costInPUs);
     return userAction;
   }
 

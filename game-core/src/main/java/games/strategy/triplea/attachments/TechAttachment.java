@@ -273,16 +273,16 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAARadar(final String s) {
+  public void setAaRadar(final String s) {
     aARadar = getBool(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAARadar(final Boolean s) {
+  public void setAaRadar(final Boolean s) {
     aARadar = s;
   }
 
-  public void resetAARadar() {
+  public void resetAaRadar() {
     aARadar = false;
   }
 
@@ -353,7 +353,7 @@ public class TechAttachment extends DefaultAttachment {
     return mechanizedInfantry;
   }
 
-  public boolean getAARadar() {
+  public boolean getAaRadar() {
     return aARadar;
   }
 
@@ -504,10 +504,10 @@ public class TechAttachment extends DefaultAttachment {
                 this::resetMechanizedInfantry))
         .put("aARadar",
             MutableProperty.of(
-                this::setAARadar,
-                this::setAARadar,
-                this::getAARadar,
-                this::resetAARadar))
+                this::setAaRadar,
+                this::setAaRadar,
+                this::getAaRadar,
+                this::resetAaRadar))
         .put("shipyards",
             MutableProperty.of(
                 this::setShipyards,
