@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
@@ -18,7 +20,6 @@ import lombok.Setter;
  * A container for the results of multiple battle simulation runs.
  */
 public class AggregateResults {
-  // can be empty!
   private final List<BattleResults> results;
   @Getter
   @Setter
@@ -41,9 +42,9 @@ public class AggregateResults {
   }
 
   /**
-   * This could be null if we have zero results.
+   * @return {@code null} if we have zero results.
    */
-  public BattleResults getBattleResultsClosestToAverage() {
+  public @Nullable BattleResults getBattleResultsClosestToAverage() {
     double closestBattleDif = Integer.MAX_VALUE;
     BattleResults closestBattle = null;
     for (final BattleResults result : results) {
@@ -54,24 +55,21 @@ public class AggregateResults {
         closestBattle = result;
       }
     }
-    // can be null!
     return closestBattle;
   }
 
   public List<Unit> getAverageAttackingUnitsRemaining() {
-    // can be null!
     final BattleResults result = getBattleResultsClosestToAverage();
     return result == null ? new ArrayList<>() : result.getRemainingAttackingUnits();
   }
 
   public List<Unit> getAverageDefendingUnitsRemaining() {
-    // can be null!
     final BattleResults result = getBattleResultsClosestToAverage();
     return result == null ? new ArrayList<>() : result.getRemainingDefendingUnits();
   }
 
   double getAverageAttackingUnitsLeft() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
@@ -86,7 +84,7 @@ public class AggregateResults {
    */
   public Tuple<Double, Double> getAverageTuvOfUnitsLeftOver(final IntegerMap<UnitType> attackerCostsForTuv,
       final IntegerMap<UnitType> defenderCostsForTuv) {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return Tuple.of(0.0, 0.0);
     }
     double attackerTuv = 0;
@@ -100,7 +98,7 @@ public class AggregateResults {
 
   public double getAverageTuvSwing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
       final Collection<Unit> defenders, final GameData data) {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, data);
@@ -115,7 +113,7 @@ public class AggregateResults {
   }
 
   double getAverageAttackingUnitsLeftWhenAttackerWon() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
@@ -133,7 +131,7 @@ public class AggregateResults {
   }
 
   double getAverageDefendingUnitsLeft() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
@@ -144,7 +142,7 @@ public class AggregateResults {
   }
 
   double getAverageDefendingUnitsLeftWhenDefenderWon() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
@@ -162,7 +160,7 @@ public class AggregateResults {
   }
 
   public double getAttackerWinPercent() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
@@ -175,7 +173,7 @@ public class AggregateResults {
   }
 
   double getDefenderWinPercent() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
@@ -188,7 +186,7 @@ public class AggregateResults {
   }
 
   public double getAverageBattleRoundsFought() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
@@ -203,7 +201,7 @@ public class AggregateResults {
   }
 
   double getDrawPercent() {
-    if (results.isEmpty()) { // can be empty!
+    if (results.isEmpty()) {
       return 0.0;
     }
     double count = 0;
