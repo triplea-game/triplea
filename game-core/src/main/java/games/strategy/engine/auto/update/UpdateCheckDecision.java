@@ -1,8 +1,8 @@
 package games.strategy.engine.auto.update;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_SERVER;
+import static games.strategy.engine.framework.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;

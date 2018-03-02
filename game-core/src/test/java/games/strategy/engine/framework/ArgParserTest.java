@@ -1,8 +1,9 @@
 package games.strategy.engine.framework;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.MAP_FOLDER;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_MAP_DOWNLOAD;
+import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
+
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

@@ -1,10 +1,10 @@
 package games.strategy.engine.framework.startup.mc;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_HOST;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_PORT;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_STARTED;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
 import java.awt.Component;
 import java.io.IOException;

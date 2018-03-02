@@ -1,6 +1,6 @@
 package games.strategy.engine.auto.update;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_GAME;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 
 import games.strategy.engine.framework.map.download.MapDownloadController;
 

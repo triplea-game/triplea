@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.ui;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_HOSTED_BY;
-import static games.strategy.engine.framework.ArgParser.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 
 import java.io.File;
 
