@@ -54,7 +54,10 @@ public class UpdateChecks {
 
     checkForTutorialMap();
     checkForLatestEngineVersionOut();
-    MapDownloadController.checkDownloadedMapsAreLatest();
+
+    if (UpdateCheckDecision.shouldRunMapUpdateCheck()) {
+      MapDownloadController.checkDownloadedMapsAreLatest();
+    }
   }
 
   /**
