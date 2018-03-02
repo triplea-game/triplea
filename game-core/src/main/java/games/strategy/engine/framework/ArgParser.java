@@ -35,7 +35,7 @@ public final class ArgParser {
    * @return Return true if all args were valid and accepted, false otherwise.
    */
   public boolean handleCommandLineArgs(final String[] args) {
-    resetTransientClientSettings();
+    ClientSetting.MAP_FOLDER_OVERRIDE.save(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue);
     final Options options = getOptions();
     final CommandLineParser parser = new DefaultParser();
     try {
@@ -86,20 +86,6 @@ public final class ArgParser {
     // See https://github.com/triplea-game/triplea/pull/2574 for more information
     options.addOption(Option.builder("console").build());
     return options;
-  }
-
-  /**
-   * Resets any client settings that may be set via the command line but whose value should not persist between runs.
-   *
-   * <p>
-   * For example, if the user specified a setting via the command line during the previous run, the value of that
-   * setting will be persisted. If the user does not specify the setting via the command line during the next run, the
-   * previous value will still be available and used during the current run even though it should technically be
-   * reported as "not set."
-   * </p>
-   */
-  private static void resetTransientClientSettings() {
-    ClientSetting.MAP_FOLDER_OVERRIDE.save(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue);
   }
 
   private boolean setSystemPropertyOrClientSetting(
