@@ -1,4 +1,4 @@
-package games.strategy.engine.framework;
+package games.strategy.engine.auto.update;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -23,7 +23,7 @@ import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 
-public class EngineVersionProperties {
+class EngineVersionProperties {
   private static final String TRIPLEA_VERSION_LINK =
       "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
   private final Version latestVersionOut;
@@ -41,7 +41,8 @@ public class EngineVersionProperties {
     changelogLink = props.getProperty("CHANGELOG", UrlConstants.RELEASE_NOTES.toString());
   }
 
-  public static EngineVersionProperties contactServerForEngineVersionProperties() {
+
+  static EngineVersionProperties contactServerForEngineVersionProperties() {
     // sourceforge sometimes takes a long while to return results
     // so run a couple requests in parallel, starting with delays to try and get a response quickly
     final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
@@ -103,7 +104,7 @@ public class EngineVersionProperties {
             + "</body></html>";
   }
 
-  public Component getOutOfDateComponent() {
+  Component getOutOfDateComponent() {
     final JPanel panel = new JPanel(new BorderLayout());
     final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage());
     intro.setEditable(false);

@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.EngineVersionProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.EventThreadJOptionPane;
 
