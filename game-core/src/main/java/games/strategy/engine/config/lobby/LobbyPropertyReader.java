@@ -27,19 +27,31 @@ public final class LobbyPropertyReader {
   }
 
   public int getPort() {
-    return Integer.parseInt(propertyReader.readProperty(PropertyKeys.PORT));
+    return propertyReader.readIntegerPropertyOrDefault(PropertyKeys.PORT, DefaultValues.PORT);
   }
 
-  public String getPostgresUser() {
-    return propertyReader.readProperty(PropertyKeys.POSTGRES_USER);
+  public String getPostgresDatabase() {
+    return propertyReader.readPropertyOrDefault(PropertyKeys.POSTGRES_DATABASE, DefaultValues.POSTGRES_DATABASE);
+  }
+
+  public String getPostgresHost() {
+    return propertyReader.readPropertyOrDefault(PropertyKeys.POSTGRES_HOST, DefaultValues.POSTGRES_HOST);
   }
 
   public String getPostgresPassword() {
     return propertyReader.readProperty(PropertyKeys.POSTGRES_PASSWORD);
   }
 
+  public int getPostgresPort() {
+    return propertyReader.readIntegerPropertyOrDefault(PropertyKeys.POSTGRES_PORT, DefaultValues.POSTGRES_PORT);
+  }
+
+  public String getPostgresUser() {
+    return propertyReader.readProperty(PropertyKeys.POSTGRES_USER);
+  }
+
   public boolean isMaintenanceMode() {
-    return Boolean.parseBoolean(propertyReader.readProperty(PropertyKeys.MAINTENANCE_MODE));
+    return propertyReader.readBooleanPropertyOrDefault(PropertyKeys.MAINTENANCE_MODE, DefaultValues.MAINTENANCE_MODE);
   }
 
   /**
@@ -49,7 +61,19 @@ public final class LobbyPropertyReader {
   public interface PropertyKeys {
     String MAINTENANCE_MODE = "maintenance_mode";
     String PORT = "port";
-    String POSTGRES_USER = "postgres_user";
+    String POSTGRES_DATABASE = "postgres_database";
+    String POSTGRES_HOST = "postgres_host";
     String POSTGRES_PASSWORD = "postgres_password";
+    String POSTGRES_PORT = "postgres_port";
+    String POSTGRES_USER = "postgres_user";
+  }
+
+  @VisibleForTesting
+  interface DefaultValues {
+    boolean MAINTENANCE_MODE = false;
+    int PORT = 3304;
+    String POSTGRES_DATABASE = "ta_users";
+    String POSTGRES_HOST = "localhost";
+    int POSTGRES_PORT = 5432;
   }
 }

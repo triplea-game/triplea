@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -136,8 +137,10 @@ public final class LobbyLoginValidatorTest {
     }
 
     final void givenMaintenanceModeIsEnabled() {
-      when(propertyReader.readProperty(LobbyPropertyReader.PropertyKeys.MAINTENANCE_MODE))
-          .thenReturn(Boolean.TRUE.toString());
+      when(propertyReader.readBooleanPropertyOrDefault(
+          eq(LobbyPropertyReader.PropertyKeys.MAINTENANCE_MODE),
+          anyBoolean()))
+              .thenReturn(true);
     }
 
     private void givenNoMacIsBanned() {
