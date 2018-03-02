@@ -99,8 +99,7 @@ public final class ArgParser {
    * </p>
    */
   private static void resetTransientClientSettings() {
-    Arrays.asList(ClientSetting.MAP_FOLDER_OVERRIDE).stream()
-        .forEach(setting -> setting.save(setting.defaultValue));
+    ClientSetting.MAP_FOLDER_OVERRIDE.save(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue);
   }
 
   private boolean setSystemPropertyOrClientSetting(
