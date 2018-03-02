@@ -45,31 +45,29 @@ public class UpdateChecks {
   }
 
   private static void checkForUpdates() {
-    new Thread(() -> {
-      if (System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")) {
-        return;
-      }
-      if (System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")) {
-        return;
-      }
-      if (System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
-        return;
-      }
+    if (System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")) {
+      return;
+    }
+    if (System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")) {
+      return;
+    }
+    if (System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")) {
+      return;
+    }
 
-      // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
-      final String fileName = System.getProperty(TRIPLEA_GAME, "");
-      if (fileName.trim().length() > 0) {
-        return;
-      }
+    // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+    final String fileName = System.getProperty(TRIPLEA_GAME, "");
+    if (fileName.trim().length() > 0) {
+      return;
+    }
 
-      boolean busy = checkForTutorialMap();
-      if (!busy) {
-        busy = checkForLatestEngineVersionOut();
-      }
-      if (!busy) {
-        checkForUpdatedMaps();
-      }
-    }, "Checking Latest TripleA Engine Version").start();
+    boolean busy = checkForTutorialMap();
+    if (!busy) {
+      busy = checkForLatestEngineVersionOut();
+    }
+    if (!busy) {
+      checkForUpdatedMaps();
+    }
   }
 
   /**
