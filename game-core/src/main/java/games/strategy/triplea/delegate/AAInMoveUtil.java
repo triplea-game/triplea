@@ -87,18 +87,18 @@ class AAInMoveUtil implements Serializable {
     }
     final PlayerID movingPlayer = movingPlayer(units);
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
+        TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, getData());
     final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
         airborneTechTargetsAllowed, movingPlayer, Matches.unitIsAaForFlyOverOnly(), 1, true, getData()));
     // comes ordered alphabetically already
-    final List<String> aaTypes = UnitAttachment.getAllOfTypeAAs(defendingAa);
+    final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // stacks are backwards
     Collections.reverse(aaTypes);
     for (final String currentTypeAa : aaTypes) {
       final Collection<Unit> currentPossibleAa =
           CollectionUtils.getMatches(defendingAa, Matches.unitIsAaOfTypeAa(currentTypeAa));
       final Set<UnitType> targetUnitTypesForThisTypeAa =
-          UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAA(getData());
+          UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAa(getData());
       final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAa);
       final Collection<Unit> validTargetedUnitsForThisRoll =
           CollectionUtils.getMatches(units, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
@@ -195,7 +195,7 @@ class AAInMoveUtil implements Serializable {
     // look at the units being moved to determine allies and enemies
     final PlayerID movingPlayer = movingPlayer(units);
     final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, data);
+        TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, data);
     // don't iterate over the end
     // that will be a battle
     // and handled else where in this tangled mess

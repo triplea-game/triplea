@@ -126,6 +126,6 @@ public final class TechTracker {
   }
 
   public static boolean hasAaRadar(final PlayerID player) {
-    return TechAttachment.get(player).getAARadar();
+    return TechAttachment.get(player).getAaRadar();
   }
 }

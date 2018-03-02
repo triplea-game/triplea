@@ -152,7 +152,7 @@ class ProPoliticsAi {
               .test(action)) {
             continue;
           }
-          if (action.getCostPU() > 0 && action.getCostPU() > player.getResources().getQuantity(Constants.PUS)) {
+          if (action.getCostPu() > 0 && action.getCostPu() > player.getResources().getQuantity(Constants.PUS)) {
             continue;
           }
           i++;

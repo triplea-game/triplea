@@ -25,6 +25,6 @@ final class AARadarAdvance extends TechAdvance {
 
   @Override
   public boolean hasTech(final TechAttachment ta) {
-    return ta.getAARadar();
+    return ta.getAaRadar();
   }
 }

@@ -645,7 +645,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
               .test(action)) {
             continue;
           }
-          if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS)) {
+          if (action.getCostPu() > 0 && action.getCostPu() > id.getResources().getQuantity(Constants.PUS)) {
             continue;
           }
           i++;

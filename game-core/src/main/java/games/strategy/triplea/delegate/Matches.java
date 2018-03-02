@@ -595,23 +595,23 @@ public final class Matches {
         return false;
       }
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      final Set<UnitType> targetsAa = ua.getTargetsAA(obj.getData());
+      final Set<UnitType> targetsAa = ua.getTargetsAa(obj.getData());
       for (final Unit u : targets) {
         if (targetsAa.contains(u.getType())) {
           return true;
         }
       }
       return targets.stream()
-          .anyMatch(unitIsAirborne().and(unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA()))));
+          .anyMatch(unitIsAirborne().and(unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAa()))));
     };
   }
 
   static Predicate<Unit> unitIsAaOfTypeAa(final String typeAa) {
-    return obj -> UnitAttachment.get(obj.getType()).getTypeAA().matches(typeAa);
+    return obj -> UnitAttachment.get(obj.getType()).getTypeAa().matches(typeAa);
   }
 
   static Predicate<Unit> unitAaShotDamageableInsteadOfKillingInstantly() {
-    return obj -> UnitAttachment.get(obj.getType()).getDamageableAA();
+    return obj -> UnitAttachment.get(obj.getType()).getDamageableAa();
   }
 
   private static Predicate<Unit> unitIsAaThatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent) {
@@ -628,7 +628,7 @@ public final class Matches {
 
   private static Predicate<UnitType> unitTypeIsAaThatCanFireOnRound(final int battleRoundNumber) {
     return obj -> {
-      final int maxRoundsAa = UnitAttachment.get(obj).getMaxRoundsAA();
+      final int maxRoundsAa = UnitAttachment.get(obj).getMaxRoundsAa();
       return maxRoundsAa < 0 || maxRoundsAa >= battleRoundNumber;
     };
   }
@@ -651,7 +651,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeIsAaForCombatOnly() {
-    return obj -> UnitAttachment.get(obj).getIsAAforCombatOnly();
+    return obj -> UnitAttachment.get(obj).getIsAaForCombatOnly();
   }
 
   static Predicate<Unit> unitIsAaForCombatOnly() {
@@ -659,7 +659,7 @@ public final class Matches {
   }
 
   public static Predicate<UnitType> unitTypeIsAaForBombingThisUnitOnly() {
-    return obj -> UnitAttachment.get(obj).getIsAAforBombingThisUnitOnly();
+    return obj -> UnitAttachment.get(obj).getIsAaForBombingThisUnitOnly();
   }
 
   public static Predicate<Unit> unitIsAaForBombingThisUnitOnly() {
@@ -667,7 +667,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeIsAaForFlyOverOnly() {
-    return obj -> UnitAttachment.get(obj).getIsAAforFlyOverOnly();
+    return obj -> UnitAttachment.get(obj).getIsAaForFlyOverOnly();
   }
 
   static Predicate<Unit> unitIsAaForFlyOverOnly() {
@@ -677,7 +677,7 @@ public final class Matches {
   public static Predicate<UnitType> unitTypeIsAaForAnything() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj);
-      return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.getIsAAforFlyOverOnly();
+      return ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly() || ua.getIsAaForFlyOverOnly();
     };
   }
 
@@ -690,7 +690,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeMaxAaAttacksIsInfinite() {
-    return obj -> UnitAttachment.get(obj).getMaxAAattacks() == -1;
+    return obj -> UnitAttachment.get(obj).getMaxAaAttacks() == -1;
   }
 
   static Predicate<Unit> unitMaxAaAttacksIsInfinite() {
@@ -698,7 +698,7 @@ public final class Matches {
   }
 
   private static Predicate<UnitType> unitTypeMayOverStackAa() {
-    return obj -> UnitAttachment.get(obj).getMayOverStackAA();
+    return obj -> UnitAttachment.get(obj).getMayOverStackAa();
   }
 
   static Predicate<Unit> unitMayOverStackAa() {
@@ -708,14 +708,14 @@ public final class Matches {
   static Predicate<Unit> unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      return ua.getAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+      return ua.getAttackAa(obj.getOwner()) > 0 && ua.getMaxAaAttacks() != 0;
     };
   }
 
   static Predicate<Unit> unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      return ua.getOffensiveAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+      return ua.getOffensiveAttackAa(obj.getOwner()) > 0 && ua.getMaxAaAttacks() != 0;
     };
   }
 
@@ -2064,7 +2064,7 @@ public final class Matches {
 
   public static Predicate<PoliticalActionAttachment> politicalActionHasCostBetween(final int greaterThanEqualTo,
       final int lessThanEqualTo) {
-    return paa -> paa.getCostPU() >= greaterThanEqualTo && paa.getCostPU() <= lessThanEqualTo;
+    return paa -> paa.getCostPu() >= greaterThanEqualTo && paa.getCostPu() <= lessThanEqualTo;
   }
 
   static Predicate<Unit> unitCanOnlyPlaceInOriginalTerritories() {

@@ -79,23 +79,23 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    *        the amount you need to pay to perform the action.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCostPU(final String s) {
+  public void setCostPu(final String s) {
     m_costPU = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCostPU(final Integer s) {
+  public void setCostPu(final Integer s) {
     m_costPU = s;
   }
 
   /**
    * @return The amount you need to pay to perform the action.
    */
-  public int getCostPU() {
+  public int getCostPu() {
     return m_costPU;
   }
 
-  public void resetCostPU() {
+  public void resetCostPu() {
     m_costPU = 0;
   }
 
@@ -220,10 +220,10 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
                 this::resetText))
         .put("costPU",
             MutableProperty.of(
-                this::setCostPU,
-                this::setCostPU,
-                this::getCostPU,
-                this::resetCostPU))
+                this::setCostPu,
+                this::setCostPu,
+                this::getCostPu,
+                this::resetCostPu))
         .put("attemptsPerTurn",
             MutableProperty.of(
                 this::setAttemptsPerTurn,

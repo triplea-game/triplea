@@ -259,7 +259,7 @@ public class DiceRollTest {
                 CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
-                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
+                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertThat(hit.getHits(), is(1));
     // aa missses at 1 (0 based)
@@ -270,7 +270,7 @@ public class DiceRollTest {
                 CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
-                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
+                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 1 should hit, and nothing should be rolled
@@ -282,7 +282,7 @@ public class DiceRollTest {
                 CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
-                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
+                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertThat(hitNoRoll.getHits(), is(1));
   }
@@ -308,7 +308,7 @@ public class DiceRollTest {
                 CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
-                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
+                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
                 aaGunList, bridge, westRussia, true);
     assertThat(hit.getHits(), is(1));
   }
@@ -325,7 +325,7 @@ public class DiceRollTest {
     GameDataTestUtil.addTo(finnland, aaGunList);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     List<Unit> fighterList = fighterType.create(1, russians);
-    TechAttachment.get(germans).setAARadar("true");
+    TechAttachment.get(germans).setAaRadar("true");
     final ITestDelegateBridge bridge = getDelegateBridge(russians);
     // aa radar hits at 1 (0 based)
     bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
@@ -334,7 +334,7 @@ public class DiceRollTest {
             .rollAa(
                 CollectionUtils.getMatches(fighterList,
                     Matches.unitIsOfTypes(
-                        UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
+                        UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
                 aaGunList, bridge, finnland, true);
     assertThat(hit.getHits(), is(1));
     // aa missses at 2 (0 based)
@@ -345,7 +345,7 @@ public class DiceRollTest {
                 CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
-                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
+                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
                 aaGunList, bridge, finnland, true);
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 2 should hit, and nothing should be rolled
@@ -357,7 +357,7 @@ public class DiceRollTest {
                 CollectionUtils.getMatches(fighterList,
                     Matches
                         .unitIsOfTypes(
-                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(gameData))),
+                            UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
                 aaGunList, bridge, finnland, true);
     assertThat(hitNoRoll.getHits(), is(2));
   }

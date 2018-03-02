@@ -152,7 +152,7 @@ public class UserActionPanel extends ActionPanel {
 
   @VisibleForTesting
   static boolean canSpendResourcesOnUserActions(final Collection<UserActionAttachment> userActions) {
-    return userActions.stream().anyMatch(userAction -> userAction.getCostPU() > 0);
+    return userActions.stream().anyMatch(userAction -> userAction.getCostPu() > 0);
   }
 
   private JPanel getUserActionButtonPanel(final JDialog parent) {
@@ -197,7 +197,7 @@ public class UserActionPanel extends ActionPanel {
 
   @VisibleForTesting
   static boolean canPlayerAffordUserAction(final PlayerID player, final UserActionAttachment userAction) {
-    return userAction.getCostPU() <= player.getResources().getQuantity(Constants.PUS);
+    return userAction.getCostPu() <= player.getResources().getQuantity(Constants.PUS);
   }
 
   private static Dimension getUserActionScrollPanePreferredSize(final JScrollPane scrollPane) {
@@ -243,7 +243,7 @@ public class UserActionPanel extends ActionPanel {
   }
 
   private static String getActionButtonText(final UserActionAttachment paa) {
-    final String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
+    final String costString = paa.getCostPu() == 0 ? "" : "[" + paa.getCostPu() + " PU] ";
     return costString + UserActionText.getInstance().getButtonText(paa.getText());
   }
 

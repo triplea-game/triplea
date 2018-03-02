@@ -96,7 +96,7 @@ public class BattleCalculatorTest {
             .rollAa(
                 CollectionUtils.getMatches(planes,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
+                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
                 defendingAa, bridge, territory("Germany", data), true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
@@ -124,7 +124,7 @@ public class BattleCalculatorTest {
             .rollAa(
                 CollectionUtils.getMatches(planes,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
+                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
                 defendingAa, bridge, territory("Germany", data), true);
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
@@ -167,7 +167,7 @@ public class BattleCalculatorTest {
             .rollAa(
                 CollectionUtils.getMatches(planes,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
+                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
                 defendingAa, bridge, territory("Germany", data), true);
     final Collection<Unit> casualties =
         BattleCalculator.getAaCasualties(false, planes, planes, defendingAa, defendingAa, roll, bridge, germans(data),
@@ -206,7 +206,7 @@ public class BattleCalculatorTest {
             .rollAa(
                 CollectionUtils.getMatches(planes,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
+                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
                 defendingAa, bridge, territory("Germany", data), true);
     final Collection<Unit> casualties =
         BattleCalculator.getAaCasualties(false, planes, planes, defendingAa, defendingAa, roll, bridge, germans(data),
@@ -236,7 +236,7 @@ public class BattleCalculatorTest {
             .rollAa(
                 CollectionUtils.getMatches(planes,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
+                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
                 defendingAa, bridge, territory("Germany", data), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
@@ -270,7 +270,7 @@ public class BattleCalculatorTest {
             .rollAa(
                 CollectionUtils.getMatches(planes,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
+                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
                 defendingAa, bridge, territory("Germany", data), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
@@ -301,7 +301,7 @@ public class BattleCalculatorTest {
             .rollAa(
                 CollectionUtils.getMatches(planes,
                     Matches
-                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAA(data))),
+                        .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
                 defendingAa, bridge, territory("Germany", data), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());

@@ -133,7 +133,7 @@ public class ExtendedStats extends StatPanel {
       if (ta.getMechanizedInfantry()) {
         count++;
       }
-      if (ta.getAARadar()) {
+      if (ta.getAaRadar()) {
         count++;
       }
       if (ta.getShipyards()) {
