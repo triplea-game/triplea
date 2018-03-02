@@ -49,7 +49,7 @@ public class MapDownloadController {
    * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
    * not recognized.
    */
-  public boolean checkDownloadedMapsAreLatest() {
+  public static boolean checkDownloadedMapsAreLatest() {
     try {
       if (!shouldRun()) {
         return false;

@@ -54,7 +54,7 @@ public class UpdateChecks {
 
     checkForTutorialMap();
     checkForLatestEngineVersionOut();
-    checkForUpdatedMaps();
+    MapDownloadController.checkDownloadedMapsAreLatest();
   }
 
   /**
@@ -108,10 +108,4 @@ public class UpdateChecks {
       DownloadMapsWindow.showDownloadMapsWindowAndDownload("Tutorial");
     });
   }
-
-  private static void checkForUpdatedMaps() {
-    final MapDownloadController downloadController = ClientContext.mapDownloadController();
-    downloadController.checkDownloadedMapsAreLatest();
-  }
-
 }
