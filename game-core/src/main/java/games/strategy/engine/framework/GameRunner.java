@@ -58,6 +58,7 @@ import games.strategy.debug.ErrorMessage;
 import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
+import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -151,6 +152,7 @@ public class GameRunner {
       });
 
       showMainFrame();
+      UpdateChecks.launch();
       new Thread(GameRunner::checkLocalSystem).start();
       new Thread(GameRunner::checkForUpdates).start();
     }
