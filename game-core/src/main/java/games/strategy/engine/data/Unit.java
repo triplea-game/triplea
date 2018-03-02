@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
@@ -151,16 +150,14 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("owner",
             MutableProperty.ofSimple(
-                TypeToken.of(PlayerID.class),
                 this::setOwner,
                 this::getOwner))
-        .put("uid", MutableProperty.ofReadOnlySimple(TypeToken.of(GUID.class), this::getId))
+        .put("uid", MutableProperty.ofReadOnlySimple(this::getId))
         .put("hits",
             MutableProperty.ofSimple(
-                TypeToken.of(Integer.class),
                 this::setHits,
                 this::getHits))
-        .put("type", MutableProperty.ofReadOnlySimple(TypeToken.of(UnitType.class), this::getType))
+        .put("type", MutableProperty.ofReadOnlySimple(this::getType))
         .build();
   }
 }

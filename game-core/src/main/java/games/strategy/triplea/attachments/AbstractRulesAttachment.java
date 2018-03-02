@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.reflect.TypeToken;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -436,43 +435,37 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  @SuppressWarnings("serial")
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("countEach", MutableProperty.ofReadOnly(TypeToken.of(Boolean.class), this::getCountEach))
-        .put("eachMultiple", MutableProperty.ofReadOnly(TypeToken.of(Integer.class), this::getEachMultiple))
+        .put("countEach", MutableProperty.ofReadOnly(this::getCountEach))
+        .put("eachMultiple", MutableProperty.ofReadOnly(this::getEachMultiple))
         .put("players",
             MutableProperty.of(
-                new TypeToken<List<PlayerID>>() {},
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("objectiveValue",
             MutableProperty.of(
-                TypeToken.of(Integer.class),
                 this::setObjectiveValue,
                 this::setObjectiveValue,
                 this::getObjectiveValue,
                 this::resetObjectiveValue))
         .put("uses",
             MutableProperty.of(
-                TypeToken.of(Integer.class),
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("turns",
             MutableProperty.of(
-                new TypeToken<Map<Integer, Integer>>() {},
                 this::setTurns,
                 this::setTurns,
                 this::getTurns,
                 this::resetTurns))
         .put("switch",
             MutableProperty.of(
-                TypeToken.of(Boolean.class),
                 this::setSwitch,
                 this::setSwitch,
                 this::getSwitch,

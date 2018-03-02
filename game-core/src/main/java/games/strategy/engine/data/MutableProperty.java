@@ -4,27 +4,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.function.Supplier;
 
-import com.google.common.reflect.TypeToken;
-
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.
  *
  * @param <T> The type of the property value.
  */
 public final class MutableProperty<T> {
-  private final TypeToken<T> typeToken;
   private final ThrowingConsumer<T, Exception> setter;
   private final ThrowingConsumer<String, Exception> stringSetter;
   private final Supplier<T> getter;
   private final Runnable resetter;
 
   private MutableProperty(
-      final TypeToken<T> typeToken,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    this.typeToken = checkNotNull(typeToken);
     this.setter = checkNotNull(setter);
     this.stringSetter = checkNotNull(stringSetter);
     this.getter = checkNotNull(getter);
@@ -89,20 +84,18 @@ public final class MutableProperty<T> {
     if (value instanceof String) {
       setStringValue((String) value);
     } else {
-      setTypedValue(cast(value));
+      try {
+        setTypedValue(cast(value));
+      } catch (final ClassCastException e) {
+        // NB: this will also catch ClassCastExceptions thrown by setTypedValue that may have nothing to do with "value"
+        throw new InvalidValueException("value has wrong type", e);
+      }
     }
   }
 
-  private T cast(final Object value) throws InvalidValueException {
-    @SuppressWarnings("unchecked")
-    final Class<T> type = (Class<T>) typeToken.getRawType();
-    try {
-      return type.cast(value);
-    } catch (final ClassCastException e) {
-      throw new InvalidValueException(
-          String.format("expected value of type '%s' but was '%s'", typeToken, value.getClass().getName()),
-          e);
-    }
+  @SuppressWarnings("unchecked")
+  private T cast(final Object value) {
+    return (T) value;
   }
 
   public T getValue() {
@@ -114,43 +107,36 @@ public final class MutableProperty<T> {
   }
 
   public static <T> MutableProperty<T> of(
-      final TypeToken<T> typeToken,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter,
       final Supplier<T> getter,
       final Runnable resetter) {
-    return new MutableProperty<>(typeToken, setter, stringSetter, getter, resetter);
+    return new MutableProperty<>(setter, stringSetter, getter, resetter);
   }
 
-  public static <T> MutableProperty<T> ofReadOnly(
-      final TypeToken<T> typeToken,
-      final Supplier<T> getter) {
-    return of(typeToken, noSetter(), noStringSetter(), getter, noResetter());
+  public static <T> MutableProperty<T> ofReadOnly(final Supplier<T> getter) {
+    return of(noSetter(), noStringSetter(), getter, noResetter());
   }
 
   public static <T> MutableProperty<T> ofWriteOnly(
-      final TypeToken<T> typeToken,
       final ThrowingConsumer<T, Exception> setter,
       final ThrowingConsumer<String, Exception> stringSetter) {
-    return of(typeToken, setter, stringSetter, noGetter(), noResetter());
+    return of(setter, stringSetter, noGetter(), noResetter());
   }
 
-  public static <T> MutableProperty<T> ofSimple(
-      final TypeToken<T> typeToken,
-      final ThrowingConsumer<T, Exception> setter,
-      final Supplier<T> getter) {
-    return of(typeToken, setter, noStringSetter(), getter, noResetter());
+  public static <T> MutableProperty<T> ofSimple(final ThrowingConsumer<T, Exception> setter, final Supplier<T> getter) {
+    return of(setter, noStringSetter(), getter, noResetter());
   }
 
-  public static <T> MutableProperty<T> ofReadOnlySimple(final TypeToken<T> typeToken, final Supplier<T> getter) {
-    return ofSimple(typeToken, noSetter(), getter);
+  public static <T> MutableProperty<T> ofReadOnlySimple(final Supplier<T> getter) {
+    return ofSimple(noSetter(), getter);
   }
 
   public static MutableProperty<String> ofString(
       final ThrowingConsumer<String, Exception> setter,
       final Supplier<String> getter,
       final Runnable resetter) {
-    return of(TypeToken.of(String.class), setter, setter, getter, resetter);
+    return of(setter, setter, getter, resetter);
   }
 
   public static MutableProperty<String> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
