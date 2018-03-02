@@ -61,19 +61,15 @@ public class UpdateChecks {
       return;
     }
 
-    boolean busy = checkForTutorialMap();
-    if (!busy) {
-      busy = checkForLatestEngineVersionOut();
-    }
-    if (!busy) {
-      checkForUpdatedMaps();
-    }
+    checkForTutorialMap();
+    checkForLatestEngineVersionOut();
+    checkForUpdatedMaps();
   }
 
   /**
    * Returns true if we are out of date or this is the first time this triplea has ever been run.
    */
-  private static boolean checkForLatestEngineVersionOut() {
+  private static void checkForLatestEngineVersionOut() {
     try {
       final boolean firstTimeThisVersion = ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY.booleanValue();
       // check at most once per 2 days (but still allow a 'first run message' for a new version of triplea)
@@ -85,7 +81,7 @@ public class UpdateChecks {
       if (!firstTimeThisVersion && lastCheckTime.trim().length() > 0) {
         final String[] yearDay = lastCheckTime.split(":");
         if (Integer.parseInt(yearDay[0]) >= year && Integer.parseInt(yearDay[1]) + 1 >= day) {
-          return false;
+          return;
         }
       }
 
@@ -94,26 +90,24 @@ public class UpdateChecks {
 
       final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
       if (latestEngineOut == null) {
-        return false;
+        return;
       }
       if (ClientContext.engineVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
                 "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));
-        return true;
       }
     } catch (final Exception e) {
       ClientLogger.logError("Error while checking for engine updates", e);
     }
-    return false;
   }
 
-  private static boolean checkForTutorialMap() {
+  private static void checkForTutorialMap() {
     final MapDownloadController mapDownloadController = ClientContext.mapDownloadController();
     final boolean promptToDownloadTutorialMap = mapDownloadController.shouldPromptToDownloadTutorialMap();
     mapDownloadController.preventPromptToDownloadTutorialMap();
     if (!promptToDownloadTutorialMap) {
-      return false;
+      return;
     }
 
     final String message = "<html>Would you like to download the tutorial map?<br><br>"
@@ -122,7 +116,6 @@ public class UpdateChecks {
     SwingComponents.promptUser("Welcome to TripleA", message, () -> {
       DownloadMapsWindow.showDownloadMapsWindowAndDownload("Tutorial");
     });
-    return true;
   }
 
   private static void checkForUpdatedMaps() {
