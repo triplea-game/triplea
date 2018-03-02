@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.systemcheck;
+package games.strategy.engine.auto.health.check;
 
 import java.io.File;
 import java.io.IOException;

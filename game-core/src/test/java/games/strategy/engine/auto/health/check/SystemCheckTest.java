@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.systemcheck;
+package games.strategy.engine.auto.health.check;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
