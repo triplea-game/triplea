@@ -2610,49 +2610,42 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         .putAll(super.getPropertyMap())
         .put("frontier",
             MutableProperty.of(
-                ProductionFrontier.class,
                 this::setFrontier,
                 this::setFrontier,
                 this::getFrontier,
                 this::resetFrontier))
         .put("productionRule",
             MutableProperty.of(
-                List.class,
                 this::setProductionRule,
                 this::setProductionRule,
                 this::getProductionRule,
                 this::resetProductionRule))
         .put("tech",
             MutableProperty.of(
-                List.class,
                 this::setTech,
                 this::setTech,
                 this::getTech,
                 this::resetTech))
         .put("availableTech",
             MutableProperty.of(
-                Map.class,
                 this::setAvailableTech,
                 this::setAvailableTech,
                 this::getAvailableTech,
                 this::resetAvailableTech))
         .put("placement",
             MutableProperty.of(
-                Map.class,
                 this::setPlacement,
                 this::setPlacement,
                 this::getPlacement,
                 this::resetPlacement))
         .put("removeUnits",
             MutableProperty.of(
-                Map.class,
                 this::setRemoveUnits,
                 this::setRemoveUnits,
                 this::getRemoveUnits,
                 this::resetRemoveUnits))
         .put("purchase",
             MutableProperty.of(
-                IntegerMap.class,
                 this::setPurchase,
                 this::setPurchase,
                 this::getPurchase,
@@ -2663,21 +2656,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 this::getResource,
                 this::resetResource))
         .put("resourceCount",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setResourceCount,
                 this::setResourceCount,
                 this::getResourceCount,
                 this::resetResourceCount))
         .put("support",
             MutableProperty.of(
-                Map.class,
                 this::setSupport,
                 this::setSupport,
                 this::getSupport,
                 this::resetSupport))
         .put("relationshipChange",
             MutableProperty.of(
-                List.class,
                 this::setRelationshipChange,
                 this::setRelationshipChange,
                 this::getRelationshipChange,
@@ -2689,119 +2680,102 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                 this::resetVictory))
         .put("activateTrigger",
             MutableProperty.of(
-                List.class,
                 this::setActivateTrigger,
                 this::setActivateTrigger,
                 this::getActivateTrigger,
                 this::resetActivateTrigger))
         .put("changeOwnership",
             MutableProperty.of(
-                List.class,
                 this::setChangeOwnership,
                 this::setChangeOwnership,
                 this::getChangeOwnership,
                 this::resetChangeOwnership))
         .put("unitType",
             MutableProperty.of(
-                List.class,
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
         .put("unitAttachmentName",
             MutableProperty.of(
-                Tuple.class,
                 this::setUnitAttachmentName,
                 this::setUnitAttachmentName,
                 this::getUnitAttachmentName,
                 this::resetUnitAttachmentName))
         .put("unitProperty",
             MutableProperty.of(
-                List.class,
                 this::setUnitProperty,
                 this::setUnitProperty,
                 this::getUnitProperty,
                 this::resetUnitProperty))
         .put("territories",
             MutableProperty.of(
-                List.class,
                 this::setTerritories,
                 this::setTerritories,
                 this::getTerritories,
                 this::resetTerritories))
         .put("territoryAttachmentName",
             MutableProperty.of(
-                Tuple.class,
                 this::setTerritoryAttachmentName,
                 this::setTerritoryAttachmentName,
                 this::getTerritoryAttachmentName,
                 this::resetTerritoryAttachmentName))
         .put("territoryProperty",
             MutableProperty.of(
-                List.class,
                 this::setTerritoryProperty,
                 this::setTerritoryProperty,
                 this::getTerritoryProperty,
                 this::resetTerritoryProperty))
         .put("players",
             MutableProperty.of(
-                List.class,
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("playerAttachmentName",
             MutableProperty.of(
-                Tuple.class,
                 this::setPlayerAttachmentName,
                 this::setPlayerAttachmentName,
                 this::getPlayerAttachmentName,
                 this::resetPlayerAttachmentName))
         .put("playerProperty",
             MutableProperty.of(
-                List.class,
                 this::setPlayerProperty,
                 this::setPlayerProperty,
                 this::getPlayerProperty,
                 this::resetPlayerProperty))
         .put("relationshipTypes",
             MutableProperty.of(
-                List.class,
                 this::setRelationshipTypes,
                 this::setRelationshipTypes,
                 this::getRelationshipTypes,
                 this::resetRelationshipTypes))
         .put("relationshipTypeAttachmentName",
             MutableProperty.of(
-                Tuple.class,
                 this::setRelationshipTypeAttachmentName,
                 this::setRelationshipTypeAttachmentName,
                 this::getRelationshipTypeAttachmentName,
                 this::resetRelationshipTypeAttachmentName))
         .put("relationshipTypeProperty",
             MutableProperty.of(
-                List.class,
                 this::setRelationshipTypeProperty,
                 this::setRelationshipTypeProperty,
                 this::getRelationshipTypeProperty,
                 this::resetRelationshipTypeProperty))
         .put("territoryEffects",
             MutableProperty.of(
-                List.class,
                 this::setTerritoryEffects,
                 this::setTerritoryEffects,
                 this::getTerritoryEffects,
                 this::resetTerritoryEffects))
         .put("territoryEffectAttachmentName",
             MutableProperty.of(
-                Tuple.class,
                 this::setTerritoryEffectAttachmentName,
                 this::setTerritoryEffectAttachmentName,
                 this::getTerritoryEffectAttachmentName,
                 this::resetTerritoryEffectAttachmentName))
         .put("territoryEffectProperty",
             MutableProperty.of(
-                List.class,
                 this::setTerritoryEffectProperty,
                 this::setTerritoryEffectProperty,
                 this::getTerritoryEffectProperty,

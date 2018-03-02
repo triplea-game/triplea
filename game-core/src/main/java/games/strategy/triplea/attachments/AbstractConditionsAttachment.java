@@ -401,7 +401,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("conditions",
             MutableProperty.of(
-                List.class,
                 this::setConditions,
                 this::setConditions,
                 this::getConditions,
@@ -412,7 +411,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                 this::getConditionType,
                 this::resetConditionType))
         .put("invert",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setInvert,
                 this::setInvert,
                 this::getInvert,
@@ -423,13 +422,13 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                 this::getChance,
                 this::resetChance))
         .put("chanceIncrementOnFailure",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setChanceIncrementOnFailure,
                 this::setChanceIncrementOnFailure,
                 this::getChanceIncrementOnFailure,
                 this::resetChanceIncrementOnFailure))
         .put("chanceDecrementOnSuccess",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setChanceDecrementOnSuccess,
                 this::setChanceDecrementOnSuccess,
                 this::getChanceDecrementOnSuccess,

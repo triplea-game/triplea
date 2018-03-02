@@ -425,91 +425,91 @@ public class TechAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("techCost",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setTechCost,
                 this::setTechCost,
                 this::getTechCost,
                 this::resetTechCost))
         .put("heavyBomber",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setHeavyBomber,
                 this::setHeavyBomber,
                 this::getHeavyBomber,
                 this::resetHeavyBomber))
         .put("longRangeAir",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setLongRangeAir,
                 this::setLongRangeAir,
                 this::getLongRangeAir,
                 this::resetLongRangeAir))
         .put("jetPower",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setJetPower,
                 this::setJetPower,
                 this::getJetPower,
                 this::resetJetPower))
         .put("rocket",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setRocket,
                 this::setRocket,
                 this::getRocket,
                 this::resetRocket))
         .put("industrialTechnology",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setIndustrialTechnology,
                 this::setIndustrialTechnology,
                 this::getIndustrialTechnology,
                 this::resetIndustrialTechnology))
         .put("superSub",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setSuperSub,
                 this::setSuperSub,
                 this::getSuperSub,
                 this::resetSuperSub))
         .put("destroyerBombard",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setDestroyerBombard,
                 this::setDestroyerBombard,
                 this::getDestroyerBombard,
                 this::resetDestroyerBombard))
         .put("improvedArtillerySupport",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setImprovedArtillerySupport,
                 this::setImprovedArtillerySupport,
                 this::getImprovedArtillerySupport,
                 this::resetImprovedArtillerySupport))
         .put("paratroopers",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setParatroopers,
                 this::setParatroopers,
                 this::getParatroopers,
                 this::resetParatroopers))
         .put("increasedFactoryProduction",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setIncreasedFactoryProduction,
                 this::setIncreasedFactoryProduction,
                 this::getIncreasedFactoryProduction,
                 this::resetIncreasedFactoryProduction))
         .put("warBonds",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setWarBonds,
                 this::setWarBonds,
                 this::getWarBonds,
                 this::resetWarBonds))
         .put("mechanizedInfantry",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setMechanizedInfantry,
                 this::setMechanizedInfantry,
                 this::getMechanizedInfantry,
                 this::resetMechanizedInfantry))
         .put("aARadar",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setAARadar,
                 this::setAARadar,
                 this::getAARadar,
                 this::resetAARadar))
         .put("shipyards",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setShipyards,
                 this::setShipyards,
                 this::getShipyards,

@@ -438,36 +438,34 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("countEach", MutableProperty.ofReadOnlyBoolean(this::getCountEach))
-        .put("eachMultiple", MutableProperty.ofReadOnlyInteger(this::getEachMultiple))
+        .put("countEach", MutableProperty.ofReadOnly(this::getCountEach))
+        .put("eachMultiple", MutableProperty.ofReadOnly(this::getEachMultiple))
         .put("players",
             MutableProperty.of(
-                List.class,
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("objectiveValue",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setObjectiveValue,
                 this::setObjectiveValue,
                 this::getObjectiveValue,
                 this::resetObjectiveValue))
         .put("uses",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("turns",
             MutableProperty.of(
-                Map.class,
                 this::setTurns,
                 this::setTurns,
                 this::getTurns,
                 this::resetTurns))
         .put("switch",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setSwitch,
                 this::setSwitch,
                 this::getSwitch,
@@ -477,7 +475,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
                 this::setGameProperty,
                 this::getGameProperty,
                 this::resetGameProperty))
-        .put("rounds", MutableProperty.of(String.class, this::setRounds, this::setRounds))
+        .put("rounds", MutableProperty.ofWriteOnlyString(this::setRounds))
         .build();
   }
 }

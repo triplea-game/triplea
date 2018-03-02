@@ -425,29 +425,28 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("unitType",
             MutableProperty.of(
-                Set.class,
                 this::setUnitType,
                 this::setUnitType,
                 this::getUnitType,
                 this::resetUnitType))
-        .put("offence", MutableProperty.ofReadOnlyBoolean(this::getOffence))
-        .put("defence", MutableProperty.ofReadOnlyBoolean(this::getDefence))
-        .put("roll", MutableProperty.ofReadOnlyBoolean(this::getRoll))
-        .put("strength", MutableProperty.ofReadOnlyBoolean(this::getStrength))
+        .put("offence", MutableProperty.ofReadOnly(this::getOffence))
+        .put("defence", MutableProperty.ofReadOnly(this::getDefence))
+        .put("roll", MutableProperty.ofReadOnly(this::getRoll))
+        .put("strength", MutableProperty.ofReadOnly(this::getStrength))
         .put("bonus",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setBonus,
                 this::setBonus,
                 this::getBonus,
                 this::resetBonus))
         .put("number",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setNumber,
                 this::setNumber,
                 this::getNumber,
                 this::resetNumber))
-        .put("allied", MutableProperty.ofReadOnlyBoolean(this::getAllied))
-        .put("enemy", MutableProperty.ofReadOnlyBoolean(this::getEnemy))
+        .put("allied", MutableProperty.ofReadOnly(this::getAllied))
+        .put("enemy", MutableProperty.ofReadOnly(this::getEnemy))
         .put("bonusType",
             MutableProperty.ofString(
                 this::setBonusType,
@@ -455,13 +454,12 @@ public class UnitSupportAttachment extends DefaultAttachment {
                 this::resetBonusType))
         .put("players",
             MutableProperty.of(
-                List.class,
                 this::setPlayers,
                 this::setPlayers,
                 this::getPlayers,
                 this::resetPlayers))
         .put("impArtTech",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setImpArtTech,
                 this::setImpArtTech,
                 this::getImpArtTech,

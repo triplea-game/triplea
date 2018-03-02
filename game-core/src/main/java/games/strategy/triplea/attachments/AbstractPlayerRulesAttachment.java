@@ -345,68 +345,66 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
                 this::resetMovementRestrictionType))
         .put("movementRestrictionTerritories",
             MutableProperty.of(
-                String[].class,
                 this::setMovementRestrictionTerritories,
                 this::setMovementRestrictionTerritories,
                 this::getMovementRestrictionTerritories,
                 this::resetMovementRestrictionTerritories))
         .put("placementAnyTerritory",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setPlacementAnyTerritory,
                 this::setPlacementAnyTerritory,
                 this::getPlacementAnyTerritory,
                 this::resetPlacementAnyTerritory))
         .put("placementAnySeaZone",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setPlacementAnySeaZone,
                 this::setPlacementAnySeaZone,
                 this::getPlacementAnySeaZone,
                 this::resetPlacementAnySeaZone))
         .put("placementCapturedTerritory",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setPlacementCapturedTerritory,
                 this::setPlacementCapturedTerritory,
                 this::getPlacementCapturedTerritory,
                 this::resetPlacementCapturedTerritory))
         .put("unlimitedProduction",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setUnlimitedProduction,
                 this::setUnlimitedProduction,
                 this::getUnlimitedProduction,
                 this::resetUnlimitedProduction))
         .put("placementInCapitalRestricted",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setPlacementInCapitalRestricted,
                 this::setPlacementInCapitalRestricted,
                 this::getPlacementInCapitalRestricted,
                 this::resetPlacementInCapitalRestricted))
         .put("dominatingFirstRoundAttack",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setDominatingFirstRoundAttack,
                 this::setDominatingFirstRoundAttack,
                 this::getDominatingFirstRoundAttack,
                 this::resetDominatingFirstRoundAttack))
         .put("negateDominatingFirstRoundAttack",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setNegateDominatingFirstRoundAttack,
                 this::setNegateDominatingFirstRoundAttack,
                 this::getNegateDominatingFirstRoundAttack,
                 this::resetNegateDominatingFirstRoundAttack))
         .put("productionPerXTerritories",
             MutableProperty.of(
-                IntegerMap.class,
                 this::setProductionPerXTerritories,
                 this::setProductionPerXTerritories,
                 this::getProductionPerXTerritories,
                 this::resetProductionPerXTerritories))
         .put("placementPerTerritory",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setPlacementPerTerritory,
                 this::setPlacementPerTerritory,
                 this::getPlacementPerTerritory,
                 this::resetPlacementPerTerritory))
         .put("maxPlacePerTerritory",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setMaxPlacePerTerritory,
                 this::setMaxPlacePerTerritory,
                 this::getMaxPlacePerTerritory,

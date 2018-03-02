@@ -157,7 +157,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
         .putAll(super.getPropertyMap())
         .put("relationshipChange",
             MutableProperty.of(
-                List.class,
                 this::setRelationshipChange,
                 this::setRelationshipChange,
                 this::getRelationshipChange,

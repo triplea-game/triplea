@@ -219,26 +219,25 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
                 this::getText,
                 this::resetText))
         .put("costPU",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setCostPU,
                 this::setCostPU,
                 this::getCostPU,
                 this::resetCostPU))
         .put("attemptsPerTurn",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setAttemptsPerTurn,
                 this::setAttemptsPerTurn,
                 this::getAttemptsPerTurn,
                 this::resetAttemptsPerTurn))
         .put("attemptsLeftThisTurn",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setAttemptsLeftThisTurn,
                 this::setAttemptsLeftThisTurn,
                 this::getAttemptsLeftThisTurn,
                 this::resetAttemptsLeftThisTurn))
         .put("actionAccept",
             MutableProperty.of(
-                List.class,
                 this::setActionAccept,
                 this::setActionAccept,
                 this::getActionAccept,

@@ -831,13 +831,13 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::getCapital,
                 this::resetCapital))
         .put("originalFactory",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setOriginalFactory,
                 this::setOriginalFactory,
                 this::getOriginalFactory,
                 this::resetOriginalFactory))
         .put("production",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setProduction,
                 this::setProduction,
                 this::getProduction,
@@ -846,98 +846,91 @@ public class TerritoryAttachment extends DefaultAttachment {
             MutableProperty.ofWriteOnlyString(
                 this::setProductionOnly))
         .put("victoryCity",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setVictoryCity,
                 this::setVictoryCity,
                 this::getVictoryCity,
                 this::resetVictoryCity))
         .put("isImpassable",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setIsImpassable,
                 this::setIsImpassable,
                 this::getIsImpassable,
                 this::resetIsImpassable))
         .put("originalOwner",
             MutableProperty.of(
-                PlayerID.class,
                 this::setOriginalOwner,
                 this::setOriginalOwner,
                 this::getOriginalOwner,
                 this::resetOriginalOwner))
         .put("convoyRoute",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setConvoyRoute,
                 this::setConvoyRoute,
                 this::getConvoyRoute,
                 this::resetConvoyRoute))
         .put("convoyAttached",
             MutableProperty.of(
-                HashSet.class,
                 this::setConvoyAttached,
                 this::setConvoyAttached,
                 this::getConvoyAttached,
                 this::resetConvoyAttached))
         .put("changeUnitOwners",
             MutableProperty.of(
-                ArrayList.class,
                 this::setChangeUnitOwners,
                 this::setChangeUnitOwners,
                 this::getChangeUnitOwners,
                 this::resetChangeUnitOwners))
         .put("captureUnitOnEnteringBy",
             MutableProperty.of(
-                ArrayList.class,
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("navalBase",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setNavalBase,
                 this::setNavalBase,
                 this::getNavalBase,
                 this::resetNavalBase))
         .put("airBase",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setAirBase,
                 this::setAirBase,
                 this::getAirBase,
                 this::resetAirBase))
         .put("kamikazeZone",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setKamikazeZone,
                 this::setKamikazeZone,
                 this::getKamikazeZone,
                 this::resetKamikazeZone))
         .put("unitProduction",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setUnitProduction,
                 this::setUnitProduction,
                 this::getUnitProduction,
                 this::resetUnitProduction))
         .put("blockadeZone",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setBlockadeZone,
                 this::setBlockadeZone,
                 this::getBlockadeZone,
                 this::resetBlockadeZone))
         .put("territoryEffect",
             MutableProperty.of(
-                ArrayList.class,
                 this::setTerritoryEffect,
                 this::setTerritoryEffect,
                 this::getTerritoryEffect,
                 this::resetTerritoryEffect))
         .put("whenCapturedByGoesTo",
             MutableProperty.of(
-                ArrayList.class,
                 this::setWhenCapturedByGoesTo,
                 this::setWhenCapturedByGoesTo,
                 this::getWhenCapturedByGoesTo,
                 this::resetWhenCapturedByGoesTo))
         .put("resources",
             MutableProperty.of(
-                ResourceCollection.class,
                 this::setResources,
                 this::setResources,
                 this::getResources,

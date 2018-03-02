@@ -523,87 +523,82 @@ public class TripleAUnit extends Unit {
         .putAll(super.getPropertyMap())
         .put("transportedBy",
             MutableProperty.ofSimple(
-                TripleAUnit.class,
                 this::setTransportedBy,
                 this::getTransportedBy))
         .put("unloaded",
             MutableProperty.ofSimple(
-                List.class,
                 this::setUnloaded,
                 this::getUnloaded))
         .put("wasLoadedThisTurn",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setWasLoadedThisTurn,
                 this::getWasLoadedThisTurn))
         .put("unloadedTo",
             MutableProperty.ofSimple(
-                Territory.class,
                 this::setUnloadedTo,
                 this::getUnloadedTo))
         .put("wasUnloadedInCombatPhase",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setWasUnloadedInCombatPhase,
                 this::getWasUnloadedInCombatPhase))
         .put("alreadyMoved",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
                 this::setAlreadyMoved,
                 this::getAlreadyMoved))
         .put("bonusMovement",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
                 this::setBonusMovement,
                 this::getBonusMovement))
         .put("unitDamage",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
                 this::setUnitDamage,
                 this::getUnitDamage))
         .put("submerged",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setSubmerged,
                 this::getSubmerged))
         .put("originalOwner",
             MutableProperty.ofSimple(
-                PlayerID.class,
                 this::setOriginalOwner,
                 this::getOriginalOwner))
         .put("wasInCombat",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setWasInCombat,
                 this::getWasInCombat))
         .put("wasLoadedAfterCombat",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setWasLoadedAfterCombat,
                 this::getWasLoadedAfterCombat))
         .put("wasAmphibious",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setWasAmphibious,
                 this::getWasAmphibious))
         .put("originatedFrom",
             MutableProperty.ofSimple(
-                Territory.class,
                 this::setOriginatedFrom,
                 this::getOriginatedFrom))
         .put("wasScrambled",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setWasScrambled,
                 this::getWasScrambled))
         .put("maxScrambleCount",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount))
         .put("wasInAirBattle",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setWasInAirBattle,
                 this::getWasInAirBattle))
         .put("disabled",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setDisabled,
                 this::getDisabled))
         .put("launched",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
                 this::setLaunched,
                 this::getLaunched))
         .put("airborne",
-            MutableProperty.ofSimpleBoolean(
+            MutableProperty.ofSimple(
                 this::setAirborne,
                 this::getAirborne))
         .build();

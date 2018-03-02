@@ -12,7 +12,7 @@ import games.strategy.engine.data.MutableProperty.InvalidValueException;
 public final class MutablePropertyTest {
   @Test
   public void setValue_ShouldThrowExceptionWhenValueHasWrongType() {
-    final MutableProperty<Integer> mutableProperty = MutableProperty.ofSimple(Integer.class, value -> {
+    final MutableProperty<Integer> mutableProperty = MutableProperty.ofSimple(value -> {
     }, () -> 42);
 
     final Exception e = assertThrows(InvalidValueException.class, () -> mutableProperty.setValue(new Object()));

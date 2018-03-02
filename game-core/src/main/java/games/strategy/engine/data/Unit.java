@@ -150,15 +150,14 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("owner",
             MutableProperty.ofSimple(
-                PlayerID.class,
                 this::setOwner,
                 this::getOwner))
-        .put("uid", MutableProperty.ofSimple(GUID.class, this::getId))
+        .put("uid", MutableProperty.ofReadOnlySimple(this::getId))
         .put("hits",
-            MutableProperty.ofSimpleInteger(
+            MutableProperty.ofSimple(
                 this::setHits,
                 this::getHits))
-        .put("type", MutableProperty.ofSimple(UnitType.class, this::getType))
+        .put("type", MutableProperty.ofReadOnlySimple(this::getType))
         .build();
   }
 }

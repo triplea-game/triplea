@@ -599,100 +599,91 @@ public class PlayerAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("vps",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setVps,
                 this::setVps,
                 this::getVps,
                 this::resetVps))
         .put("captureVps",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setCaptureVps,
                 this::setCaptureVps,
                 this::getCaptureVps,
                 this::resetCaptureVps))
         .put("retainCapitalNumber",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setRetainCapitalNumber,
                 this::setRetainCapitalNumber,
                 this::getRetainCapitalNumber,
                 this::resetRetainCapitalNumber))
         .put("retainCapitalProduceNumber",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setRetainCapitalProduceNumber,
                 this::setRetainCapitalProduceNumber,
                 this::getRetainCapitalProduceNumber,
                 this::resetRetainCapitalProduceNumber))
         .put("giveUnitControl",
             MutableProperty.of(
-                List.class,
                 this::setGiveUnitControl,
                 this::setGiveUnitControl,
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
         .put("captureUnitOnEnteringBy",
             MutableProperty.of(
-                List.class,
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
         .put("shareTechnology",
             MutableProperty.of(
-                List.class,
                 this::setShareTechnology,
                 this::setShareTechnology,
                 this::getShareTechnology,
                 this::resetShareTechnology))
         .put("helpPayTechCost",
             MutableProperty.of(
-                List.class,
                 this::setHelpPayTechCost,
                 this::setHelpPayTechCost,
                 this::getHelpPayTechCost,
                 this::resetHelpPayTechCost))
         .put("destroysPUs",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setDestroysPUs,
                 this::setDestroysPUs,
                 this::getDestroysPUs,
                 this::resetDestroysPUs))
         .put("immuneToBlockade",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setImmuneToBlockade,
                 this::setImmuneToBlockade,
                 this::getImmuneToBlockade,
                 this::resetImmuneToBlockade))
         .put("suicideAttackResources",
             MutableProperty.of(
-                IntegerMap.class,
                 this::setSuicideAttackResources,
                 this::setSuicideAttackResources,
                 this::getSuicideAttackResources,
                 this::resetSuicideAttackResources))
         .put("suicideAttackTargets",
             MutableProperty.of(
-                Set.class,
                 this::setSuicideAttackTargets,
                 this::setSuicideAttackTargets,
                 this::getSuicideAttackTargets,
                 this::resetSuicideAttackTargets))
         .put("placementLimit",
             MutableProperty.of(
-                Set.class,
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
         .put("movementLimit",
             MutableProperty.of(
-                Set.class,
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
         .put("attackingLimit",
             MutableProperty.of(
-                Set.class,
                 this::setAttackingLimit,
                 this::setAttackingLimit,
                 this::getAttackingLimit,

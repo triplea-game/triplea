@@ -314,13 +314,13 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("uses",
-            MutableProperty.ofInteger(
+            MutableProperty.of(
                 this::setUses,
                 this::setUses,
                 this::getUses,
                 this::resetUses))
         .put("usedThisRound",
-            MutableProperty.ofBoolean(
+            MutableProperty.of(
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,
@@ -332,14 +332,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
                 this::resetNotification))
         .put("when",
             MutableProperty.of(
-                List.class,
                 this::setWhen,
                 this::setWhen,
                 this::getWhen,
                 this::resetWhen))
         .put("trigger",
             MutableProperty.of(
-                List.class,
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");
                 },
