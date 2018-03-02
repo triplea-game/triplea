@@ -38,7 +38,7 @@ public final class LocalSystemChecker {
 
   private final Set<SystemCheck> systemChecks;
 
-  public LocalSystemChecker() {
+  private LocalSystemChecker() {
     this(ImmutableSet.of(defaultNetworkCheck(), defaultFileSystemCheck()));
   }
 
@@ -64,6 +64,7 @@ public final class LocalSystemChecker {
   private static SystemCheck defaultFileSystemCheck() {
     return new SystemCheck("Can create temporary files (check disk usage, file permissions)", () -> {
       try {
+        // TODO: check that file is actually created and deleted
         File.createTempFile("prefix", "suffix").delete();
       } catch (final IOException e) {
         throw new RuntimeException(e);
@@ -82,7 +83,7 @@ public final class LocalSystemChecker {
 
   private String getStatusMessage() {
     return systemChecks.stream()
-        .map(systemCheck -> systemCheck.getResultMessage() + "\n")
-        .collect(Collectors.joining());
+        .map(SystemCheck::getResultMessage)
+        .collect(Collectors.joining("\n"));
   }
 }
