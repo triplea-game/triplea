@@ -1,17 +1,11 @@
 package games.strategy.engine.framework;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * A collection of all CLI related constants.
  */
-
 public class CliProperties {
   private CliProperties() {}
 
-  // argument options below:
   public static final String GAME_HOST_CONSOLE = "triplea.game.host.console";
   public static final String TRIPLEA_GAME = "triplea.game";
   public static final String TRIPLEA_MAP_DOWNLOAD = "triplea.map.download";
@@ -35,19 +29,4 @@ public class CliProperties {
   public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
 
   public static final String MAP_FOLDER = "mapFolder";
-
-
-
-  public static Set<String> headlessProperties() {
-    return new HashSet<>(Arrays.asList(TRIPLEA_GAME, GAME_HOST_CONSOLE,
-        TRIPLEA_SERVER, TRIPLEA_PORT,
-        TRIPLEA_NAME, LOBBY_HOST, LOBBY_PORT,
-        LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, LOBBY_GAME_SUPPORT_EMAIL,
-        LOBBY_GAME_SUPPORT_PASSWORD, LOBBY_GAME_RECONNECTION,
-        TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
-        MAP_FOLDER));
-  }
-
-
-
 }

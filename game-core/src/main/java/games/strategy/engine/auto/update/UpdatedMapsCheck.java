@@ -9,7 +9,7 @@ import games.strategy.triplea.settings.ClientSetting;
 
 class UpdatedMapsCheck {
 
-  public static boolean shouldRunMapUpdateCheck() {
+  static boolean shouldRunMapUpdateCheck() {
     // check at most once per month
     final LocalDateTime locaDateTime = LocalDateTime.now();
     final int year = locaDateTime.get(ChronoField.YEAR);

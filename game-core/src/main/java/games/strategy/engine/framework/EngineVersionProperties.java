@@ -28,7 +28,6 @@ public class EngineVersionProperties {
       "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
   private final Version latestVersionOut;
   private final String link;
-  private final String linkAlt;
   private final String changelogLink;
 
   private EngineVersionProperties() {
@@ -38,8 +37,7 @@ public class EngineVersionProperties {
   private EngineVersionProperties(final Properties props) {
     latestVersionOut =
         new Version(props.getProperty("LATEST", ClientContext.engineVersion().toStringFull()));
-    link = props.getProperty("LINK", UrlConstants.TRIPLEA_WEBSITE.toString());
-    linkAlt = props.getProperty("LINK_ALT", UrlConstants.DOWNLOAD_WEBSITE.toString());
+    link = props.getProperty("LINK", UrlConstants.DOWNLOAD_WEBSITE.toString());
     changelogLink = props.getProperty("CHANGELOG", UrlConstants.RELEASE_NOTES.toString());
   }
 
@@ -85,26 +83,12 @@ public class EngineVersionProperties {
     return latestVersionOut;
   }
 
-  String getLinkToDownloadLatestVersion() {
-    return link;
-  }
-
-  String getLinkAltToDownloadLatestVersion() {
-    return linkAlt;
-  }
-
-  String getChangeLogLink() {
-    return changelogLink;
-  }
-
   private String getOutOfDateMessage() {
     return "<html>" + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
         + "<br />Your current version: " + ClientContext.engineVersion().getExactVersion()
         + "<br />Latest version available for download: " + getLatestVersionOut()
-        + "<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion()
-        + "\">" + getLinkToDownloadLatestVersion() + "</a>"
-        + "<br />Backup Mirror: <a class=\"external\" href=\"" + getLinkAltToDownloadLatestVersion()
-        + "\">" + getLinkAltToDownloadLatestVersion() + "</a>"
+        + "<br /><br />Click to download: <a class=\"external\" href=\"" + link
+        + "\">" + link + "</a>"
         + "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of "
         + "TripleA."
         + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your "
@@ -114,8 +98,8 @@ public class EngineVersionProperties {
   }
 
   private String getOutOfDateReleaseUpdates() {
-    return "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">"
-            + getChangeLogLink() + "</a><br />"
+    return "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + changelogLink + "\">"
+            + changelogLink + "</a><br />"
             + "</body></html>";
   }
 
