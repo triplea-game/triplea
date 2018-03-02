@@ -70,11 +70,8 @@ public class MapDownloadController {
     final Optional<Version> downloadedVersion = getDownloadedVersion(download.getMapName(), downloadedMaps);
 
     final AtomicBoolean mapOutOfDate = new AtomicBoolean(false);
-    latestVersion.ifPresent(latest -> {
-      downloadedVersion.ifPresent(downloaded -> {
-        mapOutOfDate.set(latest.isGreaterThan(downloaded));
-      });
-    });
+    latestVersion.ifPresent(latest -> downloadedVersion.ifPresent(
+        downloaded -> mapOutOfDate.set(latest.isGreaterThan(downloaded))));
     return mapOutOfDate.get();
   }
 
