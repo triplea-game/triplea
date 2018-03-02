@@ -14,6 +14,9 @@ import games.strategy.util.Tuple;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * A container for the results of multiple battle simulation runs.
+ */
 public class AggregateResults {
   // can be empty!
   private final List<BattleResults> results;
