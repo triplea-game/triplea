@@ -3,7 +3,6 @@ package games.strategy.triplea.attachments;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 
@@ -15,41 +14,12 @@ import games.strategy.engine.delegate.IDelegateBridge;
  */
 public interface ICondition extends IAttachment {
   /**
-   * Only accepts RulesAttachments, and this is on purpose.
-   */
-  void setConditions(final String conditions) throws GameParseException;
-
-  /**
    * Returns attached RulesAttachments.
    * Yes, this should be RulesAttachment, not ICondition. The reason being that you can ONLY attach RulesAttachments to
    * a class that
    * implements ICondition.
    */
   List<RulesAttachment> getConditions();
-
-  void clearConditions();
-
-  void resetConditions();
-
-  void setConditionType(final String s) throws GameParseException;
-
-  void resetConditionType();
-
-  /**
-   * Modifies the attached conditions, with things like AND, OR, XOR, or requiring a specific number of attached
-   * conditions to be true (like
-   * exactly 3, or 4-6 only).
-   */
-  String getConditionType();
-
-  void setInvert(final String s);
-
-  void resetInvert();
-
-  /**
-   * Logical negation of the entire condition.
-   */
-  boolean getInvert();
 
   /**
    * Tests if the attachment, as a whole, is satisfied. This includes and takes account of all conditions that make up

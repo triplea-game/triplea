@@ -58,7 +58,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
-  @Override
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setConditions(final String conditions) throws GameParseException {
     final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
@@ -90,17 +89,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_conditions;
   }
 
-  @Override
-  public void clearConditions() {
-    m_conditions.clear();
-  }
-
-  @Override
-  public void resetConditions() {
+  protected void resetConditions() {
     m_conditions = new ArrayList<>();
   }
 
-  @Override
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setInvert(final String s) {
     setInvert(getBool(s));
@@ -111,17 +103,14 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_invert = s;
   }
 
-  @Override
   public boolean getInvert() {
     return m_invert;
   }
 
-  @Override
   public void resetInvert() {
     m_invert = false;
   }
 
-  @Override
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setConditionType(final String value) throws GameParseException {
     String s = value;
@@ -152,12 +141,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_conditionType = s;
   }
 
-  @Override
   public String getConditionType() {
     return m_conditionType;
   }
 
-  @Override
   public void resetConditionType() {
     m_conditionType = AND;
   }
@@ -186,8 +173,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (testedConditions.containsKey(this)) {
       return testedConditions.get(this);
     }
-    return areConditionsMet(new ArrayList<>(this.getConditions()), testedConditions,
-        this.getConditionType()) != this.getInvert();
+    return areConditionsMet(new ArrayList<>(getConditions()), testedConditions, getConditionType()) != getInvert();
   }
 
   /**
