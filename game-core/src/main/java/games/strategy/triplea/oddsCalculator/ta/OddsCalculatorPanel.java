@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -430,12 +429,12 @@ class OddsCalculatorPanel extends JPanel {
           CollectionUtils.getMatches(defenders.get(), Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
       final int attackersTotal = mainCombatAttackers.size();
       final int defendersTotal = mainCombatDefenders.size();
-      defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " /" + defendersTotal);
-      attackerLeft.setText(formatValue(results.get().getAverageAttackingUnitsLeft()) + " /" + attackersTotal);
+      defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
+      attackerLeft.setText(formatValue(results.get().getAverageAttackingUnitsLeft()) + " / " + attackersTotal);
       defenderLeftWhenDefenderWon
-          .setText(formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon()) + " /" + defendersTotal);
+          .setText(formatValue(results.get().getAverageDefendingUnitsLeftWhenDefenderWon()) + " / " + defendersTotal);
       attackerLeftWhenAttackerWon
-          .setText(formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon()) + " /" + attackersTotal);
+          .setText(formatValue(results.get().getAverageAttackingUnitsLeftWhenAttackerWon()) + " / " + attackersTotal);
       roundsAverage.setText("" + formatValue(results.get().getAverageBattleRoundsFought()));
       try {
         data.acquireReadLock();
@@ -445,18 +444,16 @@ class OddsCalculatorPanel extends JPanel {
         data.releaseReadLock();
       }
       count.setText(results.get().getRollCount() + "");
-      time.setText(formatValue(results.get().getTime() / 1000.0) + "s");
+      time.setText(formatValue(results.get().getTime() / 1000.0) + " s");
     }
   }
 
-  String formatPercentage(final double percentage) {
-    final NumberFormat format = new DecimalFormat("%");
-    return format.format(percentage);
+  private static String formatPercentage(final double percentage) {
+    return new DecimalFormat("#%").format(percentage);
   }
 
-  String formatValue(final double value) {
-    final NumberFormat format = new DecimalFormat("#0.##");
-    return format.format(value);
+  private static String formatValue(final double value) {
+    return new DecimalFormat("#0.##").format(value);
   }
 
   private void updateDefender(List<Unit> units) {
