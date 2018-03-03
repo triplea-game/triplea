@@ -29,7 +29,7 @@ public class PropertiesSelector {
   public static Object getButton(final JComponent parent, final String title,
       final List<IEditableProperty> properties, final Object... buttonOptions) {
     final Supplier<Object> action = () -> showDialog(parent, title, properties, buttonOptions);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .orElse(JOptionPane.UNINITIALIZED_VALUE);
   }
 

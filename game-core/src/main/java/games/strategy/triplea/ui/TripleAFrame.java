@@ -893,17 +893,18 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     final Supplier<TechResultsDisplay> action = () -> new TechResultsDisplay(msg, uiContext, data);
-    messageAndDialogThreadPool.submit(() -> Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
-        .ifPresent(display -> EventThreadJOptionPane.showOptionDialog(
-            TripleAFrame.this,
-            display,
-            "Tech roll",
-            JOptionPane.OK_OPTION,
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            new String[] {"OK"},
-            "OK",
-            getUiContext().getCountDownLatchHandler())));
+    messageAndDialogThreadPool
+        .submit(() -> Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
+            .ifPresent(display -> EventThreadJOptionPane.showOptionDialog(
+                TripleAFrame.this,
+                display,
+                "Tech roll",
+                JOptionPane.OK_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                new String[] {"OK"},
+                "OK",
+                getUiContext().getCountDownLatchHandler())));
   }
 
   public boolean getStrategicBombingRaid(final Territory location) {
@@ -950,7 +951,7 @@ public class TripleAFrame extends MainGameFrame {
       panel.add(scroll, BorderLayout.CENTER);
       return Tuple.of(panel, list);
     };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .map(comps -> {
           final JPanel panel = comps.getFirst();
           final JList<?> list = comps.getSecond();
@@ -1009,7 +1010,7 @@ public class TripleAFrame extends MainGameFrame {
     messageAndDialogThreadPool.waitForAll();
     final Supplier<DiceChooser> action =
         () -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .map(chooser -> {
           do {
             EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
@@ -1047,7 +1048,7 @@ public class TripleAFrame extends MainGameFrame {
       panel.add(scroll, BorderLayout.CENTER);
       return Tuple.of(panel, list);
     };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .map(comps -> {
           final JPanel panel = comps.getFirst();
           final JList<?> list = comps.getSecond();
@@ -1396,7 +1397,7 @@ public class TripleAFrame extends MainGameFrame {
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
       return (selection == 0) ? list.getSelectedValue() : null;
     };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .orElse(null);
   }
 
