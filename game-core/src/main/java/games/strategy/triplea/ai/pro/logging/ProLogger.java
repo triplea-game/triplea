@@ -7,7 +7,8 @@ import javax.annotation.Nullable;
 /**
  * Class to log messages to log window and console.
  */
-public class ProLogger {
+public final class ProLogger {
+  private ProLogger() {}
 
   public static void warn(final String message) {
     log(Level.WARNING, message);
