@@ -77,12 +77,12 @@ public final class LookAndFeel {
   /**
    * Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be used.
    *
-   * @param lookAndFeelName Value that is sent to UIManager for new look and feel setting.
    * @throws IllegalStateException If this method is not called from the EDT.
    */
-  public static void setupLookAndFeel(final String lookAndFeelName) {
+  public static void setupLookAndFeel() {
     checkState(SwingUtilities.isEventDispatchThread());
 
+    final String lookAndFeelName = ClientSetting.LOOK_AND_FEEL_PREF.value();
     try {
       UIManager.setLookAndFeel(lookAndFeelName);
     } catch (final Throwable t) {
@@ -94,9 +94,5 @@ public final class LookAndFeel {
         }
       }
     }
-  }
-
-  public static void setupLookAndFeel() {
-    setupLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
   }
 }

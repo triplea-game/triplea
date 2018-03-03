@@ -68,8 +68,7 @@ public enum ClientSetting implements GameSetting {
 
   LOBBY_LAST_USED_PORT,
 
-  LOOK_AND_FEEL_PREF(getDefaultLookAndFeelClassName(),
-      games.strategy.engine.framework.lookandfeel.LookAndFeel::setupLookAndFeel),
+  LOOK_AND_FEEL_PREF,
 
   MAP_EDGE_SCROLL_SPEED(30),
 
@@ -206,13 +205,6 @@ public enum ClientSetting implements GameSetting {
           + "or ClientSetting#setPreferences() in test code?");
     }
     return preferences;
-  }
-
-  private static String getDefaultLookAndFeelClassName() {
-    // stay consistent with mac look and feel if we are on a mac
-    return SystemProperties.isMac()
-        ? UIManager.getSystemLookAndFeelClassName()
-        : SubstanceGraphiteLookAndFeel.class.getName();
   }
 
   public static void showSettingsWindow() {
