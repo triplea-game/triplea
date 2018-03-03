@@ -3,21 +3,20 @@ package games.strategy.triplea.settings;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.annotation.Nullable;
-import javax.swing.UIManager;
-
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
-import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
 
@@ -94,11 +93,7 @@ public enum ClientSetting implements GameSetting {
 
   SHOW_BETA_FEATURES(false),
 
-  SHOW_CONSOLE_ALWAYS(false, saveValue -> {
-    if (saveValue.equals("true")) {
-      ErrorConsole.showConsole();
-    }
-  }),
+  SHOW_CONSOLE_ALWAYS(false),
 
   TEST_LOBBY_HOST,
 
@@ -137,23 +132,13 @@ public enum ClientSetting implements GameSetting {
   DICE_SERVER_FOR_PBEM_GAMES;
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
-
-  private final Consumer<String> onSaveAction;
-
+  private final List<Consumer<String>> onSaveAction = new ArrayList<>();
   public final String defaultValue;
 
-  ClientSetting(final String defaultValue, final Consumer<String> onSaveAction) {
-    this.defaultValue = defaultValue;
-    this.onSaveAction = onSaveAction;
-  }
 
-  ClientSetting(final boolean defaultVAlue, final Consumer<String> onSaveAction) {
-    this(String.valueOf(defaultVAlue), onSaveAction);
-  }
 
   ClientSetting(final String defaultValue) {
-    this(defaultValue, newValue -> {
-    });
+    this.defaultValue = defaultValue;
   }
 
   ClientSetting() {
@@ -197,16 +182,11 @@ public enum ClientSetting implements GameSetting {
     preferencesRef.set(null);
   }
 
-  private static Preferences getPreferences() {
-    final @Nullable Preferences preferences = preferencesRef.get();
-    if (preferences == null) {
-      throw new IllegalStateException("ClientSetting framework has not been initialized. "
-          + "Did you forget to call ClientSetting#initialize() in production code "
-          + "or ClientSetting#setPreferences() in test code?");
-    }
-    return preferences;
+  public void addSaveListener(Consumer<String> saveListener) {
+    onSaveAction.add(saveListener);
   }
 
+(??)
   public static void showSettingsWindow() {
     SettingsWindow.INSTANCE.open();
   }
@@ -223,6 +203,14 @@ public enum ClientSetting implements GameSetting {
     }
   }
 
+  private static Preferences getPreferences() {
+    return Optional.ofNullable(preferencesRef.get())
+        .orElseThrow(() -> new IllegalStateException("ClientSetting framework has not been initialized. "
+            + "Did you forget to call ClientSetting#initialize() in production code "
+            + "or ClientSetting#setPreferences() in test code?"));
+  }
+
+
   @Override
   public boolean isSet() {
     return !value().trim().isEmpty();
@@ -230,7 +218,7 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void save(final String newValue) {
-    onSaveAction.accept(newValue);
+    onSaveAction.forEach(saveAction -> saveAction.accept(newValue));
     getPreferences().put(name(), newValue);
   }
 

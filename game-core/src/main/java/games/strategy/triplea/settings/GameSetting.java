@@ -1,5 +1,7 @@
 package games.strategy.triplea.settings;
 
+import java.util.function.Consumer;
+
 /**
  * Basic save/read API for a 'game setting'. Generally these will be values the user can modify over the
  * course of the game, either directly or indirectly. For example, default window size may saved here,
@@ -38,4 +40,6 @@ public interface GameSetting {
   }
 
   void resetAndFlush();
+
+  void addSaveListener(Consumer<String> listener);
 }
