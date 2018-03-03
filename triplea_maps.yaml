@@ -1819,7 +1819,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/house_of_habsburg/archive/master.zip
   version: 1
-  img:
+  img:https://github.com/triplea-maps/house_of_habsburg/blob/master/description/MapThumbnail.jpeghttps://github.com/triplea-maps/house_of_habsburg/blob/master/description/MapThumbnail.jpeg
   description: |
     <br>
     House of Habsburg
