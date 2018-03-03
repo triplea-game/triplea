@@ -23,42 +23,31 @@ public final class ProLogSettings implements Serializable {
   private static final long serialVersionUID = -984294698285587329L;
   private static final String PROGRAM_SETTINGS = "Program Settings";
 
-  private static ProLogSettings lastSettings = null;
-
   private boolean logHistoryLimited = true;
   private int logHistoryLimit = 5;
   private boolean loggingEnabled = true;
   private Level loggingLevel = Level.FINEST;
 
   static ProLogSettings loadSettings() {
-    if (lastSettings == null) {
-      ProLogSettings result = new ProLogSettings();
-      try {
-        final byte[] pool = Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
-        if (pool != null) {
-          result = IoUtils.readFromMemory(pool, is -> {
-            try (ObjectInputStream ois = new ObjectInputStream(is)) {
-              return (ProLogSettings) ois.readObject();
-            } catch (final ClassNotFoundException e) {
-              throw new IOException(e);
-            }
-          });
-        }
-      } catch (final Exception ex) {
-        ClientLogger.logQuietly("Failed to load pro AI log settings", ex);
+    try {
+      final byte[] pool = Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
+      if (pool != null) {
+        return IoUtils.readFromMemory(pool, is -> {
+          try (ObjectInputStream ois = new ObjectInputStream(is)) {
+            return (ProLogSettings) ois.readObject();
+          } catch (final ClassNotFoundException e) {
+            throw new IOException(e);
+          }
+        });
       }
-      if (result == null) {
-        result = new ProLogSettings();
-      }
-      lastSettings = result;
-      return result;
+    } catch (final Exception ex) {
+      ClientLogger.logQuietly("Failed to load pro AI log settings", ex);
     }
 
-    return lastSettings;
+    return new ProLogSettings();
   }
 
   static void saveSettings(final ProLogSettings settings) {
-    lastSettings = settings;
     try {
       final byte[] bytes = IoUtils.writeToMemory(os -> {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(os)) {
