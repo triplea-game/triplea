@@ -263,12 +263,12 @@ class ProLogWindow extends JDialog {
    * Loads the settings provided and displays it in this settings window.
    */
   private void loadSettings(final ProLogSettings settings) {
-    enableAiLogging.setSelected(settings.isLoggingEnabled());
-    if (settings.getLoggingLevel().equals(Level.FINE)) {
+    enableAiLogging.setSelected(settings.isLogEnabled());
+    if (settings.getLogLevel().equals(Level.FINE)) {
       logDepth.setSelectedIndex(0);
-    } else if (settings.getLoggingLevel().equals(Level.FINER)) {
+    } else if (settings.getLogLevel().equals(Level.FINER)) {
       logDepth.setSelectedIndex(1);
-    } else if (settings.getLoggingLevel().equals(Level.FINEST)) {
+    } else if (settings.getLogLevel().equals(Level.FINEST)) {
       logDepth.setSelectedIndex(2);
     }
     limitLogHistoryCheckBox.setSelected(settings.isLogHistoryLimited());
@@ -277,13 +277,13 @@ class ProLogWindow extends JDialog {
 
   ProLogSettings createSettings() {
     final ProLogSettings settings = new ProLogSettings();
-    settings.setLoggingEnabled(enableAiLogging.isSelected());
+    settings.setLogEnabled(enableAiLogging.isSelected());
     if (logDepth.getSelectedIndex() == 0) {
-      settings.setLoggingLevel(Level.FINE);
+      settings.setLogLevel(Level.FINE);
     } else if (logDepth.getSelectedIndex() == 1) {
-      settings.setLoggingLevel(Level.FINER);
+      settings.setLogLevel(Level.FINER);
     } else if (logDepth.getSelectedIndex() == 2) {
-      settings.setLoggingLevel(Level.FINEST);
+      settings.setLogLevel(Level.FINEST);
     }
     settings.setLogHistoryLimited(limitLogHistoryCheckBox.isSelected());
     settings.setLogHistoryLimit(Integer.parseInt(limitLogHistoryToSpinner.getValue().toString()));
@@ -414,9 +414,9 @@ class ProLogWindow extends JDialog {
   private void trimLogRoundPanels() {
     final ProLogSettings proLogSettings = ProLogSettings.loadSettings();
     // If we're logging and we have trimming enabled, or if we have logging turned off
-    if (!proLogSettings.isLoggingEnabled() || proLogSettings.isLogHistoryLimited()) {
+    if (!proLogSettings.isLogEnabled() || proLogSettings.isLogHistoryLimited()) {
       final int maxHistoryRounds;
-      if (proLogSettings.isLoggingEnabled()) {
+      if (proLogSettings.isLogEnabled()) {
         maxHistoryRounds = proLogSettings.getLogHistoryLimit();
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1

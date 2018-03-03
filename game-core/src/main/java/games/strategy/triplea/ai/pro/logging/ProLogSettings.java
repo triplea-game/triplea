@@ -20,13 +20,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public final class ProLogSettings implements Serializable {
-  private static final long serialVersionUID = -984294698285587329L;
+  private static final long serialVersionUID = 5532153908942939829L;
   private static final String PROGRAM_SETTINGS = "Program Settings";
 
   private boolean logHistoryLimited = true;
   private int logHistoryLimit = 5;
-  private boolean loggingEnabled = true;
-  private Level loggingLevel = Level.FINEST;
+  private boolean logEnabled = true;
+  private Level logLevel = Level.FINEST;
 
   static ProLogSettings loadSettings() {
     try {
