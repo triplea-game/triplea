@@ -83,7 +83,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitType(final String names) throws GameParseException {
+  private void setUnitType(final String names) throws GameParseException {
     if (names == null) {
       m_unitType = null;
       return;
@@ -100,16 +100,16 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitType(final Set<UnitType> value) {
+  private void setUnitType(final Set<UnitType> value) {
     m_unitType = value;
   }
 
-  public void resetUnitType() {
+  private void resetUnitType() {
     m_unitType = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setFaction(final String faction) throws GameParseException {
+  private void setFaction(final String faction) throws GameParseException {
     m_faction = faction;
     if (faction == null) {
       resetFaction();
@@ -129,17 +129,17 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  public String getFaction() {
+  private String getFaction() {
     return m_faction;
   }
 
-  public void resetFaction() {
+  private void resetFaction() {
     m_allied = false;
     m_enemy = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSide(final String side) throws GameParseException {
+  private void setSide(final String side) throws GameParseException {
     if (side == null) {
       resetSide();
       return;
@@ -159,18 +159,18 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_side = side;
   }
 
-  public String getSide() {
+  private String getSide() {
     return m_side;
   }
 
-  public void resetSide() {
+  private void resetSide() {
     m_side = null;
     m_offence = false;
     m_defence = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDice(final String dice) throws GameParseException {
+  private void setDice(final String dice) throws GameParseException {
     if (dice == null) {
       resetDice();
       return;
@@ -190,46 +190,46 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_dice = dice;
   }
 
-  public String getDice() {
+  private String getDice() {
     return m_dice;
   }
 
-  public void resetDice() {
+  private void resetDice() {
     m_dice = null;
     m_roll = false;
     m_strength = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBonus(final String bonus) {
+  private void setBonus(final String bonus) {
     m_bonus = getInt(bonus);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBonus(final Integer bonus) {
+  private void setBonus(final Integer bonus) {
     m_bonus = bonus;
   }
 
-  public void resetBonus() {
+  private void resetBonus() {
     m_bonus = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNumber(final String number) {
+  private void setNumber(final String number) {
     m_number = getInt(number);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNumber(final Integer number) {
+  private void setNumber(final Integer number) {
     m_number = number;
   }
 
-  public void resetNumber() {
+  private void resetNumber() {
     m_number = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBonusType(final String type) {
+  private void setBonusType(final String type) {
     if (type == null) {
       m_bonusType = null;
       return;
@@ -237,7 +237,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_bonusType = type;
   }
 
-  public void resetBonusType() {
+  private void resetBonusType() {
     m_bonusType = null;
   }
 
@@ -245,7 +245,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setPlayers(final String names) throws GameParseException {
+  private void setPlayers(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
       final PlayerID player = getData().getPlayerList().getPlayerId(element);
@@ -257,7 +257,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayers(final List<PlayerID> value) {
+  private void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
 
@@ -269,21 +269,21 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_players.clear();
   }
 
-  public void resetPlayers() {
+  private void resetPlayers() {
     m_players = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setImpArtTech(final String tech) {
+  private void setImpArtTech(final String tech) {
     m_impArtTech = getBool(tech);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setImpArtTech(final Boolean tech) {
+  private void setImpArtTech(final Boolean tech) {
     m_impArtTech = tech;
   }
 
-  public void resetImpArtTech() {
+  private void resetImpArtTech() {
     m_impArtTech = false;
   }
 

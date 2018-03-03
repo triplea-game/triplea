@@ -284,7 +284,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setActivateTrigger(final String value) throws GameParseException {
+  private void setActivateTrigger(final String value) throws GameParseException {
     // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
     final String[] s = value.split(":");
     if (s.length != 6) {
@@ -325,11 +325,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setActivateTrigger(final List<Tuple<String, String>> value) {
+  private void setActivateTrigger(final List<Tuple<String, String>> value) {
     m_activateTrigger = value;
   }
 
-  public List<Tuple<String, String>> getActivateTrigger() {
+  private List<Tuple<String, String>> getActivateTrigger() {
     return m_activateTrigger;
   }
 
@@ -337,12 +337,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_activateTrigger.clear();
   }
 
-  public void resetActivateTrigger() {
+  private void resetActivateTrigger() {
     m_activateTrigger = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setFrontier(final String s) throws GameParseException {
+  private void setFrontier(final String s) throws GameParseException {
     if (s == null) {
       m_frontier = null;
       return;
@@ -355,15 +355,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setFrontier(final ProductionFrontier value) {
+  private void setFrontier(final ProductionFrontier value) {
     m_frontier = value;
   }
 
-  public ProductionFrontier getFrontier() {
+  private ProductionFrontier getFrontier() {
     return m_frontier;
   }
 
-  public void resetFrontier() {
+  private void resetFrontier() {
     m_frontier = null;
   }
 
@@ -371,7 +371,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setProductionRule(final String prop) throws GameParseException {
+  private void setProductionRule(final String prop) throws GameParseException {
     if (prop == null) {
       m_productionRule = null;
       return;
@@ -397,11 +397,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProductionRule(final List<String> value) {
+  private void setProductionRule(final List<String> value) {
     m_productionRule = value;
   }
 
-  public List<String> getProductionRule() {
+  List<String> getProductionRule() {
     return m_productionRule;
   }
 
@@ -409,30 +409,30 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_productionRule.clear();
   }
 
-  public void resetProductionRule() {
+  private void resetProductionRule() {
     m_productionRule = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setResourceCount(final String s) {
+  private void setResourceCount(final String s) {
     m_resourceCount = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setResourceCount(final Integer s) {
+  private void setResourceCount(final Integer s) {
     m_resourceCount = s;
   }
 
-  public int getResourceCount() {
+  private int getResourceCount() {
     return m_resourceCount;
   }
 
-  public void resetResourceCount() {
+  private void resetResourceCount() {
     m_resourceCount = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setVictory(final String s) {
+  private void setVictory(final String s) {
     if (s == null) {
       m_victory = null;
       return;
@@ -440,11 +440,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_victory = s;
   }
 
-  public String getVictory() {
+  private String getVictory() {
     return m_victory;
   }
 
-  public void resetVictory() {
+  private void resetVictory() {
     m_victory = null;
   }
 
@@ -452,7 +452,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTech(final String techs) throws GameParseException {
+  private void setTech(final String techs) throws GameParseException {
     for (final String subString : techs.split(":")) {
       TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(subString);
       if (ta == null) {
@@ -466,11 +466,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTech(final List<TechAdvance> value) {
+  private void setTech(final List<TechAdvance> value) {
     m_tech = value;
   }
 
-  public List<TechAdvance> getTech() {
+  private List<TechAdvance> getTech() {
     return m_tech;
   }
 
@@ -478,7 +478,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_tech.clear();
   }
 
-  public void resetTech() {
+  private void resetTech() {
     m_tech = new ArrayList<>();
   }
 
@@ -486,7 +486,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setAvailableTech(final String techs) throws GameParseException {
+  private void setAvailableTech(final String techs) throws GameParseException {
     if (techs == null) {
       m_availableTech = null;
       return;
@@ -523,11 +523,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
+  private void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
     m_availableTech = value;
   }
 
-  public Map<String, Map<TechAdvance, Boolean>> getAvailableTech() {
+  private Map<String, Map<TechAdvance, Boolean>> getAvailableTech() {
     return m_availableTech;
   }
 
@@ -535,7 +535,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_availableTech.clear();
   }
 
-  public void resetAvailableTech() {
+  private void resetAvailableTech() {
     m_availableTech = null;
   }
 
@@ -543,7 +543,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setSupport(final String sup) throws GameParseException {
+  private void setSupport(final String sup) throws GameParseException {
     if (sup == null) {
       m_support = null;
       return;
@@ -573,11 +573,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSupport(final Map<String, Boolean> value) {
+  private void setSupport(final Map<String, Boolean> value) {
     m_support = value;
   }
 
-  public Map<String, Boolean> getSupport() {
+  private Map<String, Boolean> getSupport() {
     return m_support;
   }
 
@@ -585,12 +585,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_support.clear();
   }
 
-  public void resetSupport() {
+  private void resetSupport() {
     m_support = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setResource(final String s) throws GameParseException {
+  private void setResource(final String s) throws GameParseException {
     if (s == null) {
       m_resource = null;
       return;
@@ -602,11 +602,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_resource = s;
   }
 
-  public String getResource() {
+  private String getResource() {
     return m_resource;
   }
 
-  public void resetResource() {
+  private void resetResource() {
     m_resource = null;
   }
 
@@ -614,7 +614,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setRelationshipChange(final String relChange) throws GameParseException {
+  private void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = relChange.split(":");
     if (s.length != 4) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
@@ -643,11 +643,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipChange(final List<String> value) {
+  private void setRelationshipChange(final List<String> value) {
     m_relationshipChange = value;
   }
 
-  public List<String> getRelationshipChange() {
+  private List<String> getRelationshipChange() {
     return m_relationshipChange;
   }
 
@@ -655,7 +655,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_relationshipChange.clear();
   }
 
-  public void resetRelationshipChange() {
+  private void resetRelationshipChange() {
     m_relationshipChange = new ArrayList<>();
   }
 
@@ -663,7 +663,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setUnitType(final String names) throws GameParseException {
+  private void setUnitType(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
@@ -675,11 +675,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitType(final List<UnitType> value) {
+  private void setUnitType(final List<UnitType> value) {
     m_unitType = value;
   }
 
-  public List<UnitType> getUnitType() {
+  private List<UnitType> getUnitType() {
     return m_unitType;
   }
 
@@ -687,12 +687,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_unitType.clear();
   }
 
-  public void resetUnitType() {
+  private void resetUnitType() {
     m_unitType = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitAttachmentName(final String name) throws GameParseException {
+  private void setUnitAttachmentName(final String name) throws GameParseException {
     if (name == null) {
       m_unitAttachmentName = null;
       return;
@@ -722,18 +722,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitAttachmentName(final Tuple<String, String> value) {
+  private void setUnitAttachmentName(final Tuple<String, String> value) {
     m_unitAttachmentName = value;
   }
 
-  public Tuple<String, String> getUnitAttachmentName() {
+  private Tuple<String, String> getUnitAttachmentName() {
     if (m_unitAttachmentName == null) {
       return Tuple.of("UnitAttachment", Constants.UNIT_ATTACHMENT_NAME);
     }
     return m_unitAttachmentName;
   }
 
-  public void resetUnitAttachmentName() {
+  private void resetUnitAttachmentName() {
     m_unitAttachmentName = null;
   }
 
@@ -741,7 +741,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setUnitProperty(final String prop) {
+  private void setUnitProperty(final String prop) {
     if (prop == null) {
       m_unitProperty = null;
       return;
@@ -756,11 +756,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitProperty(final List<Tuple<String, String>> value) {
+  private void setUnitProperty(final List<Tuple<String, String>> value) {
     m_unitProperty = value;
   }
 
-  public List<Tuple<String, String>> getUnitProperty() {
+  private List<Tuple<String, String>> getUnitProperty() {
     return m_unitProperty;
   }
 
@@ -768,7 +768,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_unitProperty.clear();
   }
 
-  public void resetUnitProperty() {
+  private void resetUnitProperty() {
     m_unitProperty = null;
   }
 
@@ -776,7 +776,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTerritories(final String names) throws GameParseException {
+  private void setTerritories(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
       final Territory terr = getData().getMap().getTerritory(element);
@@ -788,11 +788,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritories(final List<Territory> value) {
+  private void setTerritories(final List<Territory> value) {
     m_territories = value;
   }
 
-  public List<Territory> getTerritories() {
+  private List<Territory> getTerritories() {
     return m_territories;
   }
 
@@ -800,12 +800,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territories.clear();
   }
 
-  public void resetTerritories() {
+  private void resetTerritories() {
     m_territories = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryAttachmentName(final String name) throws GameParseException {
+  private void setTerritoryAttachmentName(final String name) throws GameParseException {
     if (name == null) {
       m_territoryAttachmentName = null;
       return;
@@ -835,18 +835,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryAttachmentName(final Tuple<String, String> value) {
+  private void setTerritoryAttachmentName(final Tuple<String, String> value) {
     m_territoryAttachmentName = value;
   }
 
-  public Tuple<String, String> getTerritoryAttachmentName() {
+  private Tuple<String, String> getTerritoryAttachmentName() {
     if (m_territoryAttachmentName == null) {
       return Tuple.of("TerritoryAttachment", Constants.TERRITORY_ATTACHMENT_NAME);
     }
     return m_territoryAttachmentName;
   }
 
-  public void resetTerritoryAttachmentName() {
+  private void resetTerritoryAttachmentName() {
     m_territoryAttachmentName = null;
   }
 
@@ -854,7 +854,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTerritoryProperty(final String prop) {
+  private void setTerritoryProperty(final String prop) {
     if (prop == null) {
       m_territoryProperty = null;
       return;
@@ -869,11 +869,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryProperty(final List<Tuple<String, String>> value) {
+  private void setTerritoryProperty(final List<Tuple<String, String>> value) {
     m_territoryProperty = value;
   }
 
-  public List<Tuple<String, String>> getTerritoryProperty() {
+  private List<Tuple<String, String>> getTerritoryProperty() {
     return m_territoryProperty;
   }
 
@@ -881,7 +881,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territoryProperty.clear();
   }
 
-  public void resetTerritoryProperty() {
+  private void resetTerritoryProperty() {
     m_territoryProperty = null;
   }
 
@@ -889,7 +889,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setPlayers(final String names) throws GameParseException {
+  private void setPlayers(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
       final PlayerID player = getData().getPlayerList().getPlayerId(element);
@@ -901,11 +901,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayers(final List<PlayerID> value) {
+  private void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
 
-  public List<PlayerID> getPlayers() {
+  private List<PlayerID> getPlayers() {
     return m_players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : m_players;
   }
 
@@ -913,12 +913,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_players.clear();
   }
 
-  public void resetPlayers() {
+  private void resetPlayers() {
     m_players = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayerAttachmentName(final String name) throws GameParseException {
+  private void setPlayerAttachmentName(final String name) throws GameParseException {
     if (name == null) {
       m_playerAttachmentName = null;
       return;
@@ -964,18 +964,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayerAttachmentName(final Tuple<String, String> value) {
+  private void setPlayerAttachmentName(final Tuple<String, String> value) {
     m_playerAttachmentName = value;
   }
 
-  public Tuple<String, String> getPlayerAttachmentName() {
+  private Tuple<String, String> getPlayerAttachmentName() {
     if (m_playerAttachmentName == null) {
       return Tuple.of("PlayerAttachment", Constants.PLAYER_ATTACHMENT_NAME);
     }
     return m_playerAttachmentName;
   }
 
-  public void resetPlayerAttachmentName() {
+  private void resetPlayerAttachmentName() {
     m_playerAttachmentName = null;
   }
 
@@ -983,7 +983,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setPlayerProperty(final String prop) {
+  private void setPlayerProperty(final String prop) {
     if (prop == null) {
       m_playerProperty = null;
       return;
@@ -998,11 +998,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlayerProperty(final List<Tuple<String, String>> value) {
+  private void setPlayerProperty(final List<Tuple<String, String>> value) {
     m_playerProperty = value;
   }
 
-  public List<Tuple<String, String>> getPlayerProperty() {
+  private List<Tuple<String, String>> getPlayerProperty() {
     return m_playerProperty;
   }
 
@@ -1010,7 +1010,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_playerProperty.clear();
   }
 
-  public void resetPlayerProperty() {
+  private void resetPlayerProperty() {
     m_playerProperty = null;
   }
 
@@ -1018,7 +1018,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setRelationshipTypes(final String names) throws GameParseException {
+  private void setRelationshipTypes(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
       final RelationshipType relation = getData().getRelationshipTypeList().getRelationshipType(element);
@@ -1030,11 +1030,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipTypes(final List<RelationshipType> value) {
+  private void setRelationshipTypes(final List<RelationshipType> value) {
     m_relationshipTypes = value;
   }
 
-  public List<RelationshipType> getRelationshipTypes() {
+  private List<RelationshipType> getRelationshipTypes() {
     return m_relationshipTypes;
   }
 
@@ -1042,12 +1042,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_relationshipTypes.clear();
   }
 
-  public void resetRelationshipTypes() {
+  private void resetRelationshipTypes() {
     m_relationshipTypes = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipTypeAttachmentName(final String name) throws GameParseException {
+  private void setRelationshipTypeAttachmentName(final String name) throws GameParseException {
     if (name == null) {
       m_relationshipTypeAttachmentName = null;
       return;
@@ -1075,18 +1075,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipTypeAttachmentName(final Tuple<String, String> value) {
+  private void setRelationshipTypeAttachmentName(final Tuple<String, String> value) {
     m_relationshipTypeAttachmentName = value;
   }
 
-  public Tuple<String, String> getRelationshipTypeAttachmentName() {
+  private Tuple<String, String> getRelationshipTypeAttachmentName() {
     if (m_relationshipTypeAttachmentName == null) {
       return Tuple.of("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
     }
     return m_relationshipTypeAttachmentName;
   }
 
-  public void resetRelationshipTypeAttachmentName() {
+  private void resetRelationshipTypeAttachmentName() {
     m_relationshipTypeAttachmentName = null;
   }
 
@@ -1094,7 +1094,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setRelationshipTypeProperty(final String prop) {
+  private void setRelationshipTypeProperty(final String prop) {
     if (prop == null) {
       m_relationshipTypeProperty = null;
       return;
@@ -1110,11 +1110,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipTypeProperty(final List<Tuple<String, String>> value) {
+  private void setRelationshipTypeProperty(final List<Tuple<String, String>> value) {
     m_relationshipTypeProperty = value;
   }
 
-  public List<Tuple<String, String>> getRelationshipTypeProperty() {
+  private List<Tuple<String, String>> getRelationshipTypeProperty() {
     return m_relationshipTypeProperty;
   }
 
@@ -1122,7 +1122,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_relationshipTypeProperty.clear();
   }
 
-  public void resetRelationshipTypeProperty() {
+  private void resetRelationshipTypeProperty() {
     m_relationshipTypeProperty = null;
   }
 
@@ -1130,7 +1130,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTerritoryEffects(final String names) throws GameParseException {
+  private void setTerritoryEffects(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
       final TerritoryEffect effect = getData().getTerritoryEffectList().get(element);
@@ -1142,11 +1142,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryEffects(final List<TerritoryEffect> value) {
+  private void setTerritoryEffects(final List<TerritoryEffect> value) {
     m_territoryEffects = value;
   }
 
-  public List<TerritoryEffect> getTerritoryEffects() {
+  private List<TerritoryEffect> getTerritoryEffects() {
     return m_territoryEffects;
   }
 
@@ -1154,12 +1154,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territoryEffects.clear();
   }
 
-  public void resetTerritoryEffects() {
+  private void resetTerritoryEffects() {
     m_territoryEffects = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryEffectAttachmentName(final String name) throws GameParseException {
+  private void setTerritoryEffectAttachmentName(final String name) throws GameParseException {
     if (name == null) {
       m_territoryEffectAttachmentName = null;
       return;
@@ -1187,18 +1187,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryEffectAttachmentName(final Tuple<String, String> value) {
+  private void setTerritoryEffectAttachmentName(final Tuple<String, String> value) {
     m_territoryEffectAttachmentName = value;
   }
 
-  public Tuple<String, String> getTerritoryEffectAttachmentName() {
+  private Tuple<String, String> getTerritoryEffectAttachmentName() {
     if (m_territoryEffectAttachmentName == null) {
       return Tuple.of("TerritoryEffectAttachment", Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
     }
     return m_territoryEffectAttachmentName;
   }
 
-  public void resetTerritoryEffectAttachmentName() {
+  private void resetTerritoryEffectAttachmentName() {
     m_territoryEffectAttachmentName = null;
   }
 
@@ -1206,7 +1206,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTerritoryEffectProperty(final String prop) {
+  private void setTerritoryEffectProperty(final String prop) {
     if (prop == null) {
       m_territoryEffectProperty = null;
       return;
@@ -1222,11 +1222,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryEffectProperty(final List<Tuple<String, String>> value) {
+  private void setTerritoryEffectProperty(final List<Tuple<String, String>> value) {
     m_territoryEffectProperty = value;
   }
 
-  public List<Tuple<String, String>> getTerritoryEffectProperty() {
+  private List<Tuple<String, String>> getTerritoryEffectProperty() {
     return m_territoryEffectProperty;
   }
 
@@ -1234,7 +1234,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_territoryEffectProperty.clear();
   }
 
-  public void resetTerritoryEffectProperty() {
+  private void resetTerritoryEffectProperty() {
     m_territoryEffectProperty = null;
   }
 
@@ -1243,7 +1243,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setPlacement(final String place) throws GameParseException {
+  private void setPlacement(final String place) throws GameParseException {
     if (place == null) {
       m_placement = null;
       return;
@@ -1287,11 +1287,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlacement(final Map<Territory, IntegerMap<UnitType>> value) {
+  private void setPlacement(final Map<Territory, IntegerMap<UnitType>> value) {
     m_placement = value;
   }
 
-  public Map<Territory, IntegerMap<UnitType>> getPlacement() {
+  private Map<Territory, IntegerMap<UnitType>> getPlacement() {
     return m_placement;
   }
 
@@ -1299,7 +1299,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_placement.clear();
   }
 
-  public void resetPlacement() {
+  private void resetPlacement() {
     m_placement = null;
   }
 
@@ -1307,7 +1307,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setRemoveUnits(final String value) throws GameParseException {
+  private void setRemoveUnits(final String value) throws GameParseException {
     if (value == null) {
       m_removeUnits = null;
       return;
@@ -1368,11 +1368,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value) {
+  private void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value) {
     m_removeUnits = value;
   }
 
-  public Map<Territory, IntegerMap<UnitType>> getRemoveUnits() {
+  private Map<Territory, IntegerMap<UnitType>> getRemoveUnits() {
     return m_removeUnits;
   }
 
@@ -1380,7 +1380,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_removeUnits.clear();
   }
 
-  public void resetRemoveUnits() {
+  private void resetRemoveUnits() {
     m_removeUnits = null;
   }
 
@@ -1388,7 +1388,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setPurchase(final String place) throws GameParseException {
+  private void setPurchase(final String place) throws GameParseException {
     if (place == null) {
       m_purchase = null;
       return;
@@ -1422,11 +1422,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPurchase(final IntegerMap<UnitType> value) {
+  private void setPurchase(final IntegerMap<UnitType> value) {
     m_purchase = value;
   }
 
-  public IntegerMap<UnitType> getPurchase() {
+  private IntegerMap<UnitType> getPurchase() {
     return m_purchase;
   }
 
@@ -1434,7 +1434,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_purchase.clear();
   }
 
-  public void resetPurchase() {
+  private void resetPurchase() {
     m_purchase = null;
   }
 
@@ -1442,7 +1442,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setChangeOwnership(final String value) throws GameParseException {
+  private void setChangeOwnership(final String value) throws GameParseException {
     // territory:oldOwner:newOwner:booleanConquered
     // can have "all" for territory and "any" for oldOwner
     final String[] s = value.split(":");
@@ -1471,11 +1471,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChangeOwnership(final List<String> value) {
+  private void setChangeOwnership(final List<String> value) {
     m_changeOwnership = value;
   }
 
-  public List<String> getChangeOwnership() {
+  private List<String> getChangeOwnership() {
     return m_changeOwnership;
   }
 
@@ -1483,7 +1483,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     m_changeOwnership.clear();
   }
 
-  public void resetChangeOwnership() {
+  private void resetChangeOwnership() {
     m_changeOwnership = new ArrayList<>();
   }
 

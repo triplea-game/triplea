@@ -86,7 +86,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setPlacementLimit(final String value) throws GameParseException {
+  private void setPlacementLimit(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 3) {
       throw new GameParseException("placementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
@@ -114,11 +114,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setPlacementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
+  private void setPlacementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     m_placementLimit = value;
   }
 
-  public Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit() {
+  private Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit() {
     return m_placementLimit;
   }
 
@@ -126,7 +126,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_placementLimit.clear();
   }
 
-  public void resetPlacementLimit() {
+  private void resetPlacementLimit() {
     m_placementLimit = new HashSet<>();
   }
 
@@ -134,7 +134,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setMovementLimit(final String value) throws GameParseException {
+  private void setMovementLimit(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 3) {
       throw new GameParseException("movementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
@@ -162,11 +162,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setMovementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
+  private void setMovementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     m_movementLimit = value;
   }
 
-  public Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit() {
+  private Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit() {
     return m_movementLimit;
   }
 
@@ -174,7 +174,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_movementLimit.clear();
   }
 
-  public void resetMovementLimit() {
+  private void resetMovementLimit() {
     m_movementLimit = new HashSet<>();
   }
 
@@ -182,7 +182,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setAttackingLimit(final String value) throws GameParseException {
+  private void setAttackingLimit(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 3) {
       throw new GameParseException("attackingLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
@@ -210,11 +210,11 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttackingLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
+  private void setAttackingLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
     m_attackingLimit = value;
   }
 
-  public Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
+  private Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
     return m_attackingLimit;
   }
 
@@ -222,7 +222,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_attackingLimit.clear();
   }
 
-  public void resetAttackingLimit() {
+  private void resetAttackingLimit() {
     m_attackingLimit = new HashSet<>();
   }
 
@@ -280,7 +280,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setSuicideAttackTargets(final String value) throws GameParseException {
+  private void setSuicideAttackTargets(final String value) throws GameParseException {
     if (value == null) {
       m_suicideAttackTargets = null;
       return;
@@ -299,7 +299,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSuicideAttackTargets(final Set<UnitType> value) {
+  private void setSuicideAttackTargets(final Set<UnitType> value) {
     m_suicideAttackTargets = value;
   }
 
@@ -311,7 +311,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_suicideAttackTargets.clear();
   }
 
-  public void resetSuicideAttackTargets() {
+  private void resetSuicideAttackTargets() {
     m_suicideAttackTargets = null;
   }
 
@@ -319,7 +319,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setSuicideAttackResources(final String value) throws GameParseException {
+  private void setSuicideAttackResources(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length != 2) {
       throw new GameParseException("suicideAttackResources must have exactly 2 fields" + thisErrorMsg());
@@ -336,7 +336,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setSuicideAttackResources(final IntegerMap<Resource> value) {
+  private void setSuicideAttackResources(final IntegerMap<Resource> value) {
     m_suicideAttackResources = value;
   }
 
@@ -348,17 +348,17 @@ public class PlayerAttachment extends DefaultAttachment {
     m_suicideAttackResources.clear();
   }
 
-  public void resetSuicideAttackResources() {
+  private void resetSuicideAttackResources() {
     m_suicideAttackResources = new IntegerMap<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setVps(final String value) {
+  private void setVps(final String value) {
     m_vps = getInt(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setVps(final Integer value) {
+  private void setVps(final Integer value) {
     m_vps = value;
   }
 
@@ -366,17 +366,17 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_vps;
   }
 
-  public void resetVps() {
+  private void resetVps() {
     m_vps = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCaptureVps(final String value) {
+  private void setCaptureVps(final String value) {
     m_captureVps = getInt(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCaptureVps(final Integer value) {
+  private void setCaptureVps(final Integer value) {
     m_captureVps = value;
   }
 
@@ -384,17 +384,17 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_captureVps;
   }
 
-  public void resetCaptureVps() {
+  private void resetCaptureVps() {
     m_captureVps = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRetainCapitalNumber(final String value) {
+  private void setRetainCapitalNumber(final String value) {
     m_retainCapitalNumber = getInt(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRetainCapitalNumber(final Integer value) {
+  private void setRetainCapitalNumber(final Integer value) {
     m_retainCapitalNumber = value;
   }
 
@@ -402,25 +402,25 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_retainCapitalNumber;
   }
 
-  public void resetRetainCapitalNumber() {
+  private void resetRetainCapitalNumber() {
     m_retainCapitalNumber = 1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRetainCapitalProduceNumber(final String value) {
+  private void setRetainCapitalProduceNumber(final String value) {
     m_retainCapitalProduceNumber = getInt(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRetainCapitalProduceNumber(final Integer value) {
+  private void setRetainCapitalProduceNumber(final Integer value) {
     m_retainCapitalProduceNumber = value;
   }
 
-  public int getRetainCapitalProduceNumber() {
+  int getRetainCapitalProduceNumber() {
     return m_retainCapitalProduceNumber;
   }
 
-  public void resetRetainCapitalProduceNumber() {
+  private void resetRetainCapitalProduceNumber() {
     m_retainCapitalProduceNumber = 1;
   }
 
@@ -428,7 +428,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setGiveUnitControl(final String value) throws GameParseException {
+  private void setGiveUnitControl(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
@@ -441,7 +441,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setGiveUnitControl(final List<PlayerID> value) {
+  private void setGiveUnitControl(final List<PlayerID> value) {
     m_giveUnitControl = value;
   }
 
@@ -453,7 +453,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_giveUnitControl.clear();
   }
 
-  public void resetGiveUnitControl() {
+  private void resetGiveUnitControl() {
     m_giveUnitControl = new ArrayList<>();
   }
 
@@ -461,7 +461,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
+  private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
@@ -474,7 +474,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
+  private void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
     m_captureUnitOnEnteringBy = value;
   }
 
@@ -486,7 +486,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_captureUnitOnEnteringBy.clear();
   }
 
-  public void resetCaptureUnitOnEnteringBy() {
+  private void resetCaptureUnitOnEnteringBy() {
     m_captureUnitOnEnteringBy = new ArrayList<>();
   }
 
@@ -494,7 +494,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setShareTechnology(final String value) throws GameParseException {
+  private void setShareTechnology(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
@@ -507,7 +507,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setShareTechnology(final List<PlayerID> value) {
+  private void setShareTechnology(final List<PlayerID> value) {
     m_shareTechnology = value;
   }
 
@@ -519,7 +519,7 @@ public class PlayerAttachment extends DefaultAttachment {
     m_shareTechnology.clear();
   }
 
-  public void resetShareTechnology() {
+  private void resetShareTechnology() {
     m_shareTechnology = new ArrayList<>();
   }
 
@@ -527,7 +527,7 @@ public class PlayerAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setHelpPayTechCost(final String value) throws GameParseException {
+  private void setHelpPayTechCost(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
@@ -540,7 +540,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setHelpPayTechCost(final List<PlayerID> value) {
+  private void setHelpPayTechCost(final List<PlayerID> value) {
     m_helpPayTechCost = value;
   }
 
@@ -552,17 +552,17 @@ public class PlayerAttachment extends DefaultAttachment {
     m_helpPayTechCost.clear();
   }
 
-  public void resetHelpPayTechCost() {
+  private void resetHelpPayTechCost() {
     m_helpPayTechCost = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDestroysPUs(final String value) {
+  private void setDestroysPUs(final String value) {
     m_destroysPUs = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setDestroysPUs(final Boolean value) {
+  private void setDestroysPUs(final Boolean value) {
     m_destroysPUs = value;
   }
 
@@ -570,17 +570,17 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_destroysPUs;
   }
 
-  public void resetDestroysPUs() {
+  private void resetDestroysPUs() {
     m_destroysPUs = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setImmuneToBlockade(final String value) {
+  private void setImmuneToBlockade(final String value) {
     m_immuneToBlockade = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setImmuneToBlockade(final Boolean value) {
+  private void setImmuneToBlockade(final Boolean value) {
     m_immuneToBlockade = value;
   }
 
@@ -588,7 +588,7 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_immuneToBlockade;
   }
 
-  public void resetImmuneToBlockade() {
+  private void resetImmuneToBlockade() {
     m_immuneToBlockade = false;
   }
 
