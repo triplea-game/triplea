@@ -11,6 +11,7 @@ import com.google.common.base.MoreObjects;
 import games.strategy.debug.ClientLogger;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
+import games.strategy.util.function.ThrowingSupplier;
 
 /**
  * The login preferences for a lobby user.
@@ -45,7 +46,7 @@ public final class LobbyLoginPreferences {
   @VisibleForTesting
   static LobbyLoginPreferences load(
       final Preferences preferences,
-      final CredentialManagerFactory credentialManagerFactory) {
+      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
     final String legacyUserName = preferences.get(PreferenceKeys.LEGACY_USER_NAME, "");
     final Credentials credentials = unprotectCredentials(
         new Credentials(
@@ -65,12 +66,12 @@ public final class LobbyLoginPreferences {
 
   private static Credentials unprotectCredentials(
       final Credentials credentials,
-      final CredentialManagerFactory credentialManagerFactory) {
+      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
     if (!credentials.isProtected) {
       return credentials;
     }
 
-    try (CredentialManager credentialManager = credentialManagerFactory.create()) {
+    try (CredentialManager credentialManager = credentialManagerFactory.get()) {
       return new Credentials(
           credentials.userName.isEmpty() ? "" : credentialManager.unprotectToString(credentials.userName),
           credentials.password.isEmpty() ? "" : credentialManager.unprotectToString(credentials.password),
@@ -89,7 +90,9 @@ public final class LobbyLoginPreferences {
   }
 
   @VisibleForTesting
-  void save(final Preferences preferences, final CredentialManagerFactory credentialManagerFactory) {
+  void save(
+      final Preferences preferences,
+      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
     final Credentials credentials = protectCredentials(
         new Credentials(userName, password, false),
         credentialManagerFactory);
@@ -115,10 +118,10 @@ public final class LobbyLoginPreferences {
 
   private static Credentials protectCredentials(
       final Credentials credentials,
-      final CredentialManagerFactory credentialManagerFactory) {
+      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
     assert !credentials.isProtected;
 
-    try (CredentialManager credentialManager = credentialManagerFactory.create()) {
+    try (CredentialManager credentialManager = credentialManagerFactory.get()) {
       return new Credentials(
           credentialManager.protect(credentials.userName),
           credentialManager.protect(credentials.password),
@@ -170,12 +173,6 @@ public final class LobbyLoginPreferences {
     String CREDENTIALS_SAVED = "LOBBY_CREDENTIALS_SAVED";
     String PASSWORD = "LOBBY_PASSWORD";
     String USER_NAME = "LOBBY_USER_NAME";
-  }
-
-  @FunctionalInterface
-  @VisibleForTesting
-  interface CredentialManagerFactory {
-    CredentialManager create() throws CredentialManagerException;
   }
 
   @Immutable

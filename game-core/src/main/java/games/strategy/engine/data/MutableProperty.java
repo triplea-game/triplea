@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.function.Supplier;
 
+import games.strategy.util.function.ThrowingConsumer;
+
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.
  *
@@ -141,17 +143,6 @@ public final class MutableProperty<T> {
 
   public static MutableProperty<String> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
     return ofString(stringSetter, noGetter(), noResetter());
-  }
-
-  /**
-   * A Consumer capable of throwing an exception.
-   *
-   * @param <T> The type of Object to consume.
-   * @param <E> The type of Throwable to throw.
-   */
-  @FunctionalInterface
-  public interface ThrowingConsumer<T, E extends Throwable> {
-    void accept(T object) throws E;
   }
 
   /**

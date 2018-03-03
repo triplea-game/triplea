@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
+import games.strategy.util.function.ThrowingConsumer;
 
 /**
  * Superclass for fixtures that test a moderator service controller.
@@ -43,11 +44,11 @@ public abstract class AbstractModeratorServiceControllerTestCase {
   protected static void assertUserEquals(
       final User expected,
       final String userQuerySql,
-      final PreparedStatementInitializer preparedStatementInitializer,
+      final ThrowingConsumer<PreparedStatement, SQLException> preparedStatementInitializer,
       final String unknownUserMessage) {
     try (Connection conn = Database.getPostgresConnection();
         PreparedStatement ps = conn.prepareStatement(userQuerySql)) {
-      preparedStatementInitializer.initialize(ps);
+      preparedStatementInitializer.accept(ps);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           assertEquals(expected.getUsername(), rs.getString(1));
@@ -62,20 +63,5 @@ public abstract class AbstractModeratorServiceControllerTestCase {
     } catch (final SQLException e) {
       fail("user query failed", e);
     }
-  }
-
-  /**
-   * Initializes the parameters of a {@link PreparedStatement}.
-   */
-  @FunctionalInterface
-  protected interface PreparedStatementInitializer {
-    /**
-     * Initializes the parameters of the specified prepared statement.
-     *
-     * @param ps The prepared statement to initialize.
-     *
-     * @throws SQLException If an error occurs while initializing the prepared statement.
-     */
-    void initialize(PreparedStatement ps) throws SQLException;
   }
 }

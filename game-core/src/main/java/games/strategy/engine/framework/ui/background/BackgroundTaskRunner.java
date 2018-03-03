@@ -14,6 +14,8 @@ import javax.swing.SwingWorker;
 
 import com.google.common.base.Throwables;
 
+import games.strategy.util.function.ThrowingSupplier;
+
 /**
  * Provides methods for running tasks in the background to avoid blocking the UI.
  */
@@ -146,23 +148,5 @@ public final class BackgroundTaskRunner {
     }
 
     return resultRef.get();
-  }
-
-  /**
-   * A supplier of results that may throw an exception.
-   *
-   * @param <T> The type of the supplied result.
-   * @param <E> The type of exception that may be thrown by the supplier.
-   */
-  @FunctionalInterface
-  public interface ThrowingSupplier<T, E extends Exception> {
-    /**
-     * Gets the result.
-     *
-     * @return The result.
-     *
-     * @throws E If an error occurs while getting the result.
-     */
-    T get() throws E;
   }
 }

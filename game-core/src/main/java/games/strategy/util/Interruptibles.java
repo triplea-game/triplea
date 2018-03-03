@@ -5,8 +5,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+
+import games.strategy.util.function.ThrowingRunnable;
+import games.strategy.util.function.ThrowingSupplier;
 
 /**
  * A collection of methods that assist working with operations that may be interrupted but it is typically awkward to
@@ -35,7 +37,7 @@ public final class Interruptibles {
    * @return {@code true} if the operation completed without interruption; otherwise {@code false} if the current thread
    *         was interrupted while waiting for the operation to complete.
    */
-  public static boolean await(final InterruptibleRunnable runnable) {
+  public static boolean await(final ThrowingRunnable<InterruptedException> runnable) {
     checkNotNull(runnable);
 
     return awaitResult(() -> {
@@ -70,7 +72,7 @@ public final class Interruptibles {
    *         will contain the operation's result (a {@code null} result is modeled as an empty result); if the operation
    *         was interrupted, {@code completed} will be {@code false} and {@code result} will be empty.
    */
-  public static <T> Result<T> awaitResult(final InterruptibleSupplier<T> supplier) {
+  public static <T> Result<T> awaitResult(final ThrowingSupplier</* @Nullable */ T, InterruptedException> supplier) {
     checkNotNull(supplier);
 
     try {
@@ -123,37 +125,6 @@ public final class Interruptibles {
    */
   public static boolean sleep(final long millis, final int nanos) {
     return await(() -> Thread.sleep(millis, nanos));
-  }
-
-  /**
-   * An interruptible action that does not supply a result.
-   */
-  @FunctionalInterface
-  public interface InterruptibleRunnable {
-    /**
-     * Invokes the action.
-     *
-     * @throws InterruptedException If the current thread is interrupted while waiting for the action to complete.
-     */
-    void run() throws InterruptedException;
-  }
-
-  /**
-   * An interruptible supplier of results.
-   *
-   * @param <T> The type of the result.
-   */
-  @FunctionalInterface
-  public interface InterruptibleSupplier<T> {
-    /**
-     * Gets the result.
-     *
-     * @return The result.
-     *
-     * @throws InterruptedException If the current thread is interrupted while waiting for the supplier to complete.
-     */
-    @Nullable
-    T get() throws InterruptedException;
   }
 
   /**

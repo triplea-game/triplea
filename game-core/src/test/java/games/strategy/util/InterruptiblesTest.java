@@ -18,7 +18,7 @@ import org.mockito.Mock;
 
 import com.example.mockito.MockitoExtension;
 
-import games.strategy.util.Interruptibles.InterruptibleRunnable;
+import games.strategy.util.function.ThrowingRunnable;
 
 @ExtendWith(MockitoExtension.class)
 public final class InterruptiblesTest {
@@ -30,7 +30,8 @@ public final class InterruptiblesTest {
   @Nested
   public final class AwaitTest {
     @Test
-    public void shouldReturnTrueWhenCompleted(@Mock final InterruptibleRunnable runnable) throws Exception {
+    public void shouldReturnTrueWhenCompleted(@Mock final ThrowingRunnable<InterruptedException> runnable)
+        throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 
       verify(runnable).run();
