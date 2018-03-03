@@ -11,18 +11,24 @@ import java.util.prefs.Preferences;
 import games.strategy.debug.ClientLogger;
 import games.strategy.io.IoUtils;
 import games.strategy.triplea.ai.pro.ProAi;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Class to manage log settings.
  */
-public class ProLogSettings implements Serializable {
-  private static final long serialVersionUID = 2696071717784800413L;
-  public boolean limitLogHistory = true;
-  public int limitLogHistoryTo = 5;
-  public boolean enableAiLogging = true;
-  public Level aiLoggingDepth = Level.FINEST;
-  private static ProLogSettings lastSettings = null;
+@Getter
+@Setter
+public final class ProLogSettings implements Serializable {
+  private static final long serialVersionUID = -984294698285587329L;
   private static final String PROGRAM_SETTINGS = "Program Settings";
+
+  private static ProLogSettings lastSettings = null;
+
+  private boolean logHistoryLimited = true;
+  private int logHistoryLimit = 5;
+  private boolean loggingEnabled = true;
+  private Level loggingLevel = Level.FINEST;
 
   static ProLogSettings loadSettings() {
     if (lastSettings == null) {
