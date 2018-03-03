@@ -24,11 +24,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   private static final long serialVersionUID = 3569461523853104614L;
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 
-
-  public AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
-    super(name, attachable, gameData);
-  }
-
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
   protected String m_text = "";
   // cost in PU to attempt this action
@@ -47,6 +42,10 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // set "actionAccept" to "UK" so UK can accept this action to go through.
   protected List<PlayerID> m_actionAccept = new ArrayList<>();
 
+  protected AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    super(name, attachable, gameData);
+  }
+
   /**
    * @return true if there is no condition to this action or if the condition is satisfied.
    */
@@ -59,7 +58,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    *        the Key that is used in politicstext.properties or other .properties for all the texts
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setText(final String text) {
+  private void setText(final String text) {
     m_text = text;
   }
 
@@ -70,7 +69,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     return m_text;
   }
 
-  public void resetText() {
+  private void resetText() {
     m_text = "";
   }
 
@@ -79,7 +78,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    *        the amount you need to pay to perform the action.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCostPu(final String s) {
+  private void setCostPu(final String s) {
     m_costPU = getInt(s);
   }
 
@@ -95,7 +94,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     return m_costPU;
   }
 
-  public void resetCostPu() {
+  private void resetCostPu() {
     m_costPU = 0;
   }
 
@@ -103,7 +102,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setActionAccept(final String value) throws GameParseException {
+  private void setActionAccept(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
@@ -116,7 +115,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setActionAccept(final List<PlayerID> value) {
+  private void setActionAccept(final List<PlayerID> value) {
     m_actionAccept = value;
   }
 
@@ -131,7 +130,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     m_actionAccept.clear();
   }
 
-  public void resetActionAccept() {
+  private void resetActionAccept() {
     m_actionAccept = new ArrayList<>();
   }
 
@@ -140,13 +139,13 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    *        the amount of times you can try this Action per Round.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttemptsPerTurn(final String s) {
+  private void setAttemptsPerTurn(final String s) {
     m_attemptsPerTurn = getInt(s);
     setAttemptsLeftThisTurn(m_attemptsPerTurn);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAttemptsPerTurn(final Integer s) {
+  private void setAttemptsPerTurn(final Integer s) {
     m_attemptsPerTurn = s;
     setAttemptsLeftThisTurn(m_attemptsPerTurn);
   }
@@ -154,11 +153,11 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   /**
    * @return The amount of times you can try this Action per Round.
    */
-  public int getAttemptsPerTurn() {
+  private int getAttemptsPerTurn() {
     return m_attemptsPerTurn;
   }
 
-  public void resetAttemptsPerTurn() {
+  private void resetAttemptsPerTurn() {
     m_attemptsPerTurn = 1;
   }
 
@@ -167,23 +166,23 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    *        left this turn.
    */
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setAttemptsLeftThisTurn(final int attempts) {
+  private void setAttemptsLeftThisTurn(final int attempts) {
     m_attemptsLeftThisTurn = attempts;
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setAttemptsLeftThisTurn(final String attempts) {
+  private void setAttemptsLeftThisTurn(final String attempts) {
     setAttemptsLeftThisTurn(getInt(attempts));
   }
 
   /**
    * @return attempts that are left this turn.
    */
-  public int getAttemptsLeftThisTurn() {
+  private int getAttemptsLeftThisTurn() {
     return m_attemptsLeftThisTurn;
   }
 
-  public void resetAttemptsLeftThisTurn() {
+  private void resetAttemptsLeftThisTurn() {
     m_attemptsLeftThisTurn = 1;
   }
 

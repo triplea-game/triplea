@@ -101,7 +101,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_archeType;
   }
 
-  public void resetArcheType() {
+  private void resetArcheType() {
     m_archeType = ARCHETYPE_WAR;
   }
 
@@ -114,11 +114,11 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    *        should be "true", "false" or "default"
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanMoveAirUnitsOverOwnedLand(final String canFlyOver) {
+  private void setCanMoveAirUnitsOverOwnedLand(final String canFlyOver) {
     m_canMoveAirUnitsOverOwnedLand = canFlyOver;
   }
 
-  public String getCanMoveAirUnitsOverOwnedLand() {
+  private String getCanMoveAirUnitsOverOwnedLand() {
     return m_canMoveAirUnitsOverOwnedLand;
   }
 
@@ -136,16 +136,16 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_TRUE);
   }
 
-  public void resetCanMoveAirUnitsOverOwnedLand() {
+  private void resetCanMoveAirUnitsOverOwnedLand() {
     m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanMoveLandUnitsOverOwnedLand(final String canFlyOver) {
+  private void setCanMoveLandUnitsOverOwnedLand(final String canFlyOver) {
     m_canMoveLandUnitsOverOwnedLand = canFlyOver;
   }
 
-  public String getCanMoveLandUnitsOverOwnedLand() {
+  private String getCanMoveLandUnitsOverOwnedLand() {
     return m_canMoveLandUnitsOverOwnedLand;
   }
 
@@ -156,16 +156,16 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
   }
 
-  public void resetCanMoveLandUnitsOverOwnedLand() {
+  private void resetCanMoveLandUnitsOverOwnedLand() {
     m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanLandAirUnitsOnOwnedLand(final String canLandAir) {
+  private void setCanLandAirUnitsOnOwnedLand(final String canLandAir) {
     m_canLandAirUnitsOnOwnedLand = canLandAir;
   }
 
-  public String getCanLandAirUnitsOnOwnedLand() {
+  private String getCanLandAirUnitsOnOwnedLand() {
     return m_canLandAirUnitsOnOwnedLand;
   }
 
@@ -177,16 +177,16 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canLandAirUnitsOnOwnedLand.equals(PROPERTY_TRUE);
   }
 
-  public void resetCanLandAirUnitsOnOwnedLand() {
+  private void resetCanLandAirUnitsOnOwnedLand() {
     m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanTakeOverOwnedTerritory(final String canTakeOver) {
+  private void setCanTakeOverOwnedTerritory(final String canTakeOver) {
     m_canTakeOverOwnedTerritory = canTakeOver;
   }
 
-  public String getCanTakeOverOwnedTerritory() {
+  private String getCanTakeOverOwnedTerritory() {
     return m_canTakeOverOwnedTerritory;
   }
 
@@ -198,12 +198,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canTakeOverOwnedTerritory.equals(PROPERTY_TRUE);
   }
 
-  public void resetCanTakeOverOwnedTerritory() {
+  private void resetCanTakeOverOwnedTerritory() {
     m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUpkeepCost(final String integerCost) throws GameParseException {
+  private void setUpkeepCost(final String integerCost) throws GameParseException {
     if (integerCost.equals(PROPERTY_DEFAULT)) {
       m_upkeepCost = PROPERTY_DEFAULT;
     } else {
@@ -235,12 +235,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_upkeepCost;
   }
 
-  public void resetUpkeepCost() {
+  private void resetUpkeepCost() {
     m_upkeepCost = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAlliancesCanChainTogether(final String value) throws GameParseException {
+  private void setAlliancesCanChainTogether(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
       throw new GameParseException("alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
@@ -248,7 +248,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     m_alliancesCanChainTogether = value;
   }
 
-  public String getAlliancesCanChainTogether() {
+  private String getAlliancesCanChainTogether() {
     return m_alliancesCanChainTogether;
   }
 
@@ -259,12 +259,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
   }
 
-  public void resetAlliancesCanChainTogether() {
+  private void resetAlliancesCanChainTogether() {
     m_alliancesCanChainTogether = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsDefaultWarPosition(final String value) throws GameParseException {
+  private void setIsDefaultWarPosition(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
       throw new GameParseException("isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE
           + " or " + PROPERTY_TRUE + thisErrorMsg());
@@ -272,7 +272,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     m_isDefaultWarPosition = value;
   }
 
-  public String getIsDefaultWarPosition() {
+  private String getIsDefaultWarPosition() {
     return m_isDefaultWarPosition;
   }
 
@@ -283,12 +283,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_isDefaultWarPosition.equals(PROPERTY_TRUE);
   }
 
-  public void resetIsDefaultWarPosition() {
+  private void resetIsDefaultWarPosition() {
     m_isDefaultWarPosition = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setGivesBackOriginalTerritories(final String value) throws GameParseException {
+  private void setGivesBackOriginalTerritories(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
       throw new GameParseException("givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
@@ -296,7 +296,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     m_givesBackOriginalTerritories = value;
   }
 
-  public String getGivesBackOriginalTerritories() {
+  private String getGivesBackOriginalTerritories() {
     return m_givesBackOriginalTerritories;
   }
 
@@ -307,12 +307,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_givesBackOriginalTerritories.equals(PROPERTY_TRUE);
   }
 
-  public void resetGivesBackOriginalTerritories() {
+  private void resetGivesBackOriginalTerritories() {
     m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanMoveIntoDuringCombatMove(final String value) throws GameParseException {
+  private void setCanMoveIntoDuringCombatMove(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
       throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
@@ -320,7 +320,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     m_canMoveIntoDuringCombatMove = value;
   }
 
-  public String getCanMoveIntoDuringCombatMove() {
+  private String getCanMoveIntoDuringCombatMove() {
     return m_canMoveIntoDuringCombatMove;
   }
 
@@ -332,12 +332,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canMoveIntoDuringCombatMove.equals(PROPERTY_TRUE);
   }
 
-  public void resetCanMoveIntoDuringCombatMove() {
+  private void resetCanMoveIntoDuringCombatMove() {
     m_canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanMoveThroughCanals(final String value) throws GameParseException {
+  private void setCanMoveThroughCanals(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
       throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
@@ -345,7 +345,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     m_canMoveThroughCanals = value;
   }
 
-  public String getCanMoveThroughCanals() {
+  private String getCanMoveThroughCanals() {
     return m_canMoveThroughCanals;
   }
 
@@ -357,12 +357,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_canMoveThroughCanals.equals(PROPERTY_TRUE);
   }
 
-  public void resetCanMoveThroughCanals() {
+  private void resetCanMoveThroughCanals() {
     m_canMoveThroughCanals = PROPERTY_DEFAULT;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRocketsCanFlyOver(final String value) throws GameParseException {
+  private void setRocketsCanFlyOver(final String value) throws GameParseException {
     if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE))) {
       throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
@@ -370,7 +370,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     m_rocketsCanFlyOver = value;
   }
 
-  public String getRocketsCanFlyOver() {
+  private String getRocketsCanFlyOver() {
     return m_rocketsCanFlyOver;
   }
 
@@ -382,7 +382,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
     return m_rocketsCanFlyOver.equals(PROPERTY_TRUE);
   }
 
-  public void resetRocketsCanFlyOver() {
+  private void resetRocketsCanFlyOver() {
     m_rocketsCanFlyOver = PROPERTY_DEFAULT;
   }
 

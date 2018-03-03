@@ -57,7 +57,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
    * (same as one in TriggerAttachment)
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setActivateTrigger(final String value) throws GameParseException {
+  private void setActivateTrigger(final String value) throws GameParseException {
     // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
     final String[] s = value.split(":");
     if (s.length != 6) {
@@ -95,11 +95,11 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setActivateTrigger(final List<Tuple<String, String>> value) {
+  private void setActivateTrigger(final List<Tuple<String, String>> value) {
     m_activateTrigger = value;
   }
 
-  public List<Tuple<String, String>> getActivateTrigger() {
+  private List<Tuple<String, String>> getActivateTrigger() {
     return m_activateTrigger;
   }
 
@@ -107,7 +107,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     m_activateTrigger.clear();
   }
 
-  public void resetActivateTrigger() {
+  private void resetActivateTrigger() {
     m_activateTrigger = new ArrayList<>();
   }
 

@@ -78,7 +78,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setRelationshipChange(final String relChange) throws GameParseException {
+  private void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = relChange.split(":");
     if (s.length != 3) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
@@ -100,7 +100,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setRelationshipChange(final List<String> value) {
+  private void setRelationshipChange(final List<String> value) {
     m_relationshipChange = value;
   }
 
@@ -112,7 +112,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     m_relationshipChange.clear();
   }
 
-  public void resetRelationshipChange() {
+  private void resetRelationshipChange() {
     m_relationshipChange = new ArrayList<>();
   }
 

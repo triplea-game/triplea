@@ -230,7 +230,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setResources(final String value) throws GameParseException {
+  private void setResources(final String value) throws GameParseException {
     if (value == null) {
       m_resources = null;
       return;
@@ -251,7 +251,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setResources(final ResourceCollection value) {
+  private void setResources(final ResourceCollection value) {
     m_resources = value;
   }
 
@@ -263,17 +263,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_resources = new ResourceCollection(getData());
   }
 
-  public void resetResources() {
+  private void resetResources() {
     m_resources = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsImpassable(final String value) {
+  private void setIsImpassable(final String value) {
     setIsImpassable(getBool(value));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setIsImpassable(final boolean value) {
+  private void setIsImpassable(final boolean value) {
     m_isImpassable = value;
   }
 
@@ -281,7 +281,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_isImpassable;
   }
 
-  public void resetIsImpassable() {
+  private void resetIsImpassable() {
     m_isImpassable = false;
   }
 
@@ -306,17 +306,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_capital;
   }
 
-  public void resetCapital() {
+  private void resetCapital() {
     m_capital = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setVictoryCity(final String value) {
+  private void setVictoryCity(final String value) {
     setVictoryCity(getInt(value));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setVictoryCity(final int value) {
+  private void setVictoryCity(final int value) {
     m_victoryCity = value;
   }
 
@@ -324,17 +324,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_victoryCity;
   }
 
-  public void resetVictoryCity() {
+  private void resetVictoryCity() {
     m_victoryCity = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOriginalFactory(final String value) {
+  private void setOriginalFactory(final String value) {
     setOriginalFactory(getBool(value));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOriginalFactory(final boolean value) {
+  private void setOriginalFactory(final boolean value) {
     m_originalFactory = value;
   }
 
@@ -342,7 +342,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_originalFactory;
   }
 
-  public void resetOriginalFactory() {
+  private void resetOriginalFactory() {
     m_originalFactory = false;
   }
 
@@ -352,7 +352,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * used when parsing game XML since it passes string values.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProduction(final String value) {
+  private void setProduction(final String value) {
     m_production = getInt(value);
     // do NOT remove. unitProduction should always default to production
     m_unitProduction = m_production;
@@ -364,7 +364,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * used when working with game history since it passes Integer values.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setProduction(final Integer value) {
+  private void setProduction(final Integer value) {
     m_production = value;
     // do NOT remove. unitProduction should always default to production
     m_unitProduction = m_production;
@@ -373,7 +373,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   /**
    * Resets production and unitProduction (or just "production" in a map xml) of a territory to the default value.
    */
-  public void resetProduction() {
+  private void resetProduction() {
     m_production = 0;
     // do NOT remove. unitProduction should always default to production
     m_unitProduction = m_production;
@@ -383,22 +383,22 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Sets only m_production.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
-  public void setProductionOnly(final String value) {
+  private void setProductionOnly(final String value) {
     m_production = getInt(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitProduction(final String value) {
+  private void setUnitProduction(final String value) {
     setUnitProduction(getInt(value));
   }
 
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitProduction(final int value) {
+  private void setUnitProduction(final int value) {
     m_unitProduction = value;
   }
 
-  public void resetUnitProduction() {
+  private void resetUnitProduction() {
     m_unitProduction = 0;
   }
 
@@ -412,7 +412,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setOriginalOwner(final String player) throws GameParseException {
+  private void setOriginalOwner(final String player) throws GameParseException {
     if (player == null) {
       m_originalOwner = null;
     }
@@ -427,17 +427,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_originalOwner;
   }
 
-  public void resetOriginalOwner() {
+  private void resetOriginalOwner() {
     m_originalOwner = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setConvoyRoute(final String value) {
+  private void setConvoyRoute(final String value) {
     m_convoyRoute = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setConvoyRoute(final Boolean value) {
+  private void setConvoyRoute(final Boolean value) {
     m_convoyRoute = value;
   }
 
@@ -445,7 +445,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_convoyRoute;
   }
 
-  public void resetConvoyRoute() {
+  private void resetConvoyRoute() {
     m_convoyRoute = false;
   }
 
@@ -453,7 +453,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setChangeUnitOwners(final String value) throws GameParseException {
+  private void setChangeUnitOwners(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
@@ -468,7 +468,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChangeUnitOwners(final ArrayList<PlayerID> value) {
+  private void setChangeUnitOwners(final ArrayList<PlayerID> value) {
     m_changeUnitOwners = value;
   }
 
@@ -480,7 +480,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_changeUnitOwners.clear();
   }
 
-  public void resetChangeUnitOwners() {
+  private void resetChangeUnitOwners() {
     m_changeUnitOwners = new ArrayList<>();
   }
 
@@ -488,7 +488,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
+  private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
@@ -501,7 +501,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value) {
+  private void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value) {
     m_captureUnitOnEnteringBy = value;
   }
 
@@ -513,7 +513,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_captureUnitOnEnteringBy.clear();
   }
 
-  public void resetCaptureUnitOnEnteringBy() {
+  private void resetCaptureUnitOnEnteringBy() {
     m_captureUnitOnEnteringBy = new ArrayList<>();
   }
 
@@ -521,7 +521,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setWhenCapturedByGoesTo(final String value) throws GameParseException {
+  private void setWhenCapturedByGoesTo(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length != 2) {
       throw new GameParseException(
@@ -537,7 +537,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhenCapturedByGoesTo(final ArrayList<String> value) {
+  private void setWhenCapturedByGoesTo(final ArrayList<String> value) {
     m_whenCapturedByGoesTo = value;
   }
 
@@ -549,7 +549,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_whenCapturedByGoesTo.clear();
   }
 
-  public void resetWhenCapturedByGoesTo() {
+  private void resetWhenCapturedByGoesTo() {
     m_whenCapturedByGoesTo = new ArrayList<>();
   }
 
@@ -557,7 +557,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setTerritoryEffect(final String value) throws GameParseException {
+  private void setTerritoryEffect(final String value) throws GameParseException {
     final String[] s = value.split(":");
     for (final String name : s) {
       final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
@@ -570,7 +570,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setTerritoryEffect(final ArrayList<TerritoryEffect> value) {
+  private void setTerritoryEffect(final ArrayList<TerritoryEffect> value) {
     m_territoryEffect = value;
   }
 
@@ -582,7 +582,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_territoryEffect.clear();
   }
 
-  public void resetTerritoryEffect() {
+  private void resetTerritoryEffect() {
     m_territoryEffect = new ArrayList<>();
   }
 
@@ -590,7 +590,7 @@ public class TerritoryAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setConvoyAttached(final String value) throws GameParseException {
+  private void setConvoyAttached(final String value) throws GameParseException {
     if (value.length() <= 0) {
       return;
     }
@@ -604,7 +604,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setConvoyAttached(final HashSet<Territory> value) {
+  private void setConvoyAttached(final HashSet<Territory> value) {
     m_convoyAttached = value;
   }
 
@@ -616,17 +616,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_convoyAttached.clear();
   }
 
-  public void resetConvoyAttached() {
+  private void resetConvoyAttached() {
     m_convoyAttached = new HashSet<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNavalBase(final String value) {
+  private void setNavalBase(final String value) {
     m_navalBase = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNavalBase(final Boolean value) {
+  private void setNavalBase(final Boolean value) {
     m_navalBase = value;
   }
 
@@ -634,17 +634,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_navalBase;
   }
 
-  public void resetNavalBase() {
+  private void resetNavalBase() {
     m_navalBase = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirBase(final String value) {
+  private void setAirBase(final String value) {
     m_airBase = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setAirBase(final Boolean value) {
+  private void setAirBase(final Boolean value) {
     m_airBase = value;
   }
 
@@ -652,17 +652,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_airBase;
   }
 
-  public void resetAirBase() {
+  private void resetAirBase() {
     m_airBase = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setKamikazeZone(final String value) {
+  private void setKamikazeZone(final String value) {
     m_kamikazeZone = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setKamikazeZone(final Boolean value) {
+  private void setKamikazeZone(final Boolean value) {
     m_kamikazeZone = value;
   }
 
@@ -670,17 +670,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_kamikazeZone;
   }
 
-  public void resetKamikazeZone() {
+  private void resetKamikazeZone() {
     m_kamikazeZone = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBlockadeZone(final String value) {
+  private void setBlockadeZone(final String value) {
     m_blockadeZone = getBool(value);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBlockadeZone(final Boolean value) {
+  private void setBlockadeZone(final Boolean value) {
     m_blockadeZone = value;
   }
 
@@ -688,7 +688,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_blockadeZone;
   }
 
-  public void resetBlockadeZone() {
+  private void resetBlockadeZone() {
     m_blockadeZone = false;
   }
 

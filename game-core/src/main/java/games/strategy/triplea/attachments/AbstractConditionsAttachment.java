@@ -51,7 +51,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   // if chance succeeds, we should decrement the chance by x
   protected int m_chanceDecrementOnSuccess = 0;
 
-  public AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  protected AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
@@ -81,7 +81,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setConditions(final List<RulesAttachment> value) {
+  private void setConditions(final List<RulesAttachment> value) {
     m_conditions = value;
   }
 
@@ -107,7 +107,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setInvert(final boolean s) {
+  private void setInvert(final boolean s) {
     m_invert = s;
   }
 
@@ -285,7 +285,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChance(final String chance) throws GameParseException {
+  protected void setChance(final String chance) throws GameParseException {
     final String[] s = chance.split(":");
     try {
       final int i = getInt(s[0]);
@@ -305,11 +305,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   /**
    * @return The number you need to roll to get the action to succeed format "1:10" for 10% chance.
    */
-  public String getChance() {
+  private String getChance() {
     return m_chance;
   }
 
-  public void resetChance() {
+  private void resetChance() {
     m_chance = DEFAULT_CHANCE;
   }
 
@@ -322,12 +322,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceIncrementOnFailure(final String value) {
+  private void setChanceIncrementOnFailure(final String value) {
     setChanceIncrementOnFailure(getInt(value));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceIncrementOnFailure(final int value) {
+  private void setChanceIncrementOnFailure(final int value) {
     m_chanceIncrementOnFailure = value;
   }
 
@@ -335,17 +335,17 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chanceIncrementOnFailure;
   }
 
-  public void resetChanceIncrementOnFailure() {
+  private void resetChanceIncrementOnFailure() {
     m_chanceIncrementOnFailure = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceDecrementOnSuccess(final String value) {
+  private void setChanceDecrementOnSuccess(final String value) {
     setChanceDecrementOnSuccess(getInt(value));
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setChanceDecrementOnSuccess(final int value) {
+  private void setChanceDecrementOnSuccess(final int value) {
     m_chanceDecrementOnSuccess = value;
   }
 
@@ -353,7 +353,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chanceDecrementOnSuccess;
   }
 
-  public void resetChanceDecrementOnSuccess() {
+  private void resetChanceDecrementOnSuccess() {
     m_chanceDecrementOnSuccess = 0;
   }
 

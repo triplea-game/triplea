@@ -64,7 +64,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCanalName(final String name) {
+  private void setCanalName(final String name) {
     if (name == null) {
       m_canalName = null;
       return;
@@ -76,12 +76,12 @@ public class CanalAttachment extends DefaultAttachment {
     return m_canalName;
   }
 
-  public void resetCanalName() {
+  private void resetCanalName() {
     m_canalName = null;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setLandTerritories(final String landTerritories) {
+  private void setLandTerritories(final String landTerritories) {
     if (landTerritories == null) {
       m_landTerritories = null;
       return;
@@ -98,7 +98,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setLandTerritories(final Set<Territory> value) {
+  private void setLandTerritories(final Set<Territory> value) {
     m_landTerritories = value;
   }
 
@@ -106,7 +106,7 @@ public class CanalAttachment extends DefaultAttachment {
     return m_landTerritories;
   }
 
-  public void resetLandTerritories() {
+  private void resetLandTerritories() {
     m_landTerritories = null;
   }
 
@@ -114,7 +114,7 @@ public class CanalAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setExcludedUnits(final String value) {
+  private void setExcludedUnits(final String value) {
     if (value == null) {
       m_excludedUnits = null;
       return;
@@ -139,7 +139,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setExcludedUnits(final Set<UnitType> value) {
+  private void setExcludedUnits(final Set<UnitType> value) {
     m_excludedUnits = value;
   }
 
@@ -155,7 +155,7 @@ public class CanalAttachment extends DefaultAttachment {
     m_excludedUnits.clear();
   }
 
-  public void resetExcludedUnits() {
+  private void resetExcludedUnits() {
     m_excludedUnits = null;
   }
 

@@ -40,7 +40,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   private String m_notification = null;
   private List<Tuple<String, String>> m_when = new ArrayList<>();
 
-  public AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  protected AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
@@ -66,7 +66,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    */
   @Deprecated
   @GameProperty(xmlProperty = true, gameProperty = false, adds = true)
-  public void setTrigger(final String conditions) throws GameParseException {
+  private void setTrigger(final String conditions) throws GameParseException {
     setConditions(conditions);
   }
 
@@ -74,7 +74,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
   @Deprecated
-  public List<RulesAttachment> getTrigger() {
+  private List<RulesAttachment> getTrigger() {
     return getConditions();
   }
 
@@ -90,17 +90,17 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
   @Deprecated
-  public void resetTrigger() {
+  private void resetTrigger() {
     resetConditions();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUses(final String s) {
+  private void setUses(final String s) {
     m_uses = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUses(final Integer u) {
+  private void setUses(final Integer u) {
     m_uses = u;
   }
 
@@ -110,7 +110,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setUsedThisRound(final String s) {
+  private void setUsedThisRound(final String s) {
     m_usedThisRound = getBool(s);
   }
 
@@ -120,15 +120,15 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setUsedThisRound(final Boolean usedThisRound) {
+  private void setUsedThisRound(final Boolean usedThisRound) {
     m_usedThisRound = usedThisRound;
   }
 
-  public boolean getUsedThisRound() {
+  protected boolean getUsedThisRound() {
     return m_usedThisRound;
   }
 
-  public void resetUsedThisRound() {
+  private void resetUsedThisRound() {
     m_usedThisRound = false;
   }
 
@@ -136,7 +136,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return m_uses;
   }
 
-  public void resetUses() {
+  private void resetUses() {
     m_uses = -1;
   }
 
@@ -144,7 +144,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setWhen(final String when) throws GameParseException {
+  private void setWhen(final String when) throws GameParseException {
     final String[] s = when.split(":");
     if (s.length != 2) {
       throw new GameParseException("when must exist in 2 parts: \"before/after:stepName\"." + thisErrorMsg());
@@ -156,11 +156,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setWhen(final List<Tuple<String, String>> value) {
+  private void setWhen(final List<Tuple<String, String>> value) {
     m_when = value;
   }
 
-  public List<Tuple<String, String>> getWhen() {
+  protected List<Tuple<String, String>> getWhen() {
     return m_when;
   }
 
@@ -168,12 +168,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_when.clear();
   }
 
-  public void resetWhen() {
+  private void resetWhen() {
     m_when = new ArrayList<>();
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNotification(final String notification) {
+  private void setNotification(final String notification) {
     if (notification == null) {
       m_notification = null;
       return;
@@ -181,11 +181,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_notification = notification;
   }
 
-  public String getNotification() {
+  protected String getNotification() {
     return m_notification;
   }
 
-  public void resetNotification() {
+  private void resetNotification() {
     m_notification = null;
   }
 

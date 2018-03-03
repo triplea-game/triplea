@@ -52,16 +52,16 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setCombatDefenseEffect(final String combatDefenseEffect) throws GameParseException {
+  private void setCombatDefenseEffect(final String combatDefenseEffect) throws GameParseException {
     setCombatEffect(combatDefenseEffect, true);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCombatDefenseEffect(final IntegerMap<UnitType> value) {
+  private void setCombatDefenseEffect(final IntegerMap<UnitType> value) {
     m_combatDefenseEffect = value;
   }
 
-  public IntegerMap<UnitType> getCombatDefenseEffect() {
+  private IntegerMap<UnitType> getCombatDefenseEffect() {
     return new IntegerMap<>(m_combatDefenseEffect);
   }
 
@@ -69,7 +69,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_combatDefenseEffect.clear();
   }
 
-  public void resetCombatDefenseEffect() {
+  private void resetCombatDefenseEffect() {
     m_combatDefenseEffect = new IntegerMap<>();
   }
 
@@ -77,16 +77,16 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException {
+  private void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException {
     setCombatEffect(combatOffenseEffect, false);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setCombatOffenseEffect(final IntegerMap<UnitType> value) {
+  private void setCombatOffenseEffect(final IntegerMap<UnitType> value) {
     m_combatOffenseEffect = value;
   }
 
-  public IntegerMap<UnitType> getCombatOffenseEffect() {
+  private IntegerMap<UnitType> getCombatOffenseEffect() {
     return new IntegerMap<>(m_combatOffenseEffect);
   }
 
@@ -94,7 +94,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_combatOffenseEffect.clear();
   }
 
-  public void resetCombatOffenseEffect() {
+  private void resetCombatOffenseEffect() {
     m_combatOffenseEffect = new IntegerMap<>();
   }
 
@@ -129,7 +129,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
+  private void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
     final String[] s = noBlitzUnitTypes.split(":");
     if (s.length < 1) {
       throw new GameParseException("noBlitz must have at least one unitType" + thisErrorMsg());
@@ -144,7 +144,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setNoBlitz(final List<UnitType> value) {
+  private void setNoBlitz(final List<UnitType> value) {
     m_noBlitz = value;
   }
 
@@ -156,7 +156,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_noBlitz.clear();
   }
 
-  public void resetNoBlitz() {
+  private void resetNoBlitz() {
     m_noBlitz = new ArrayList<>();
   }
 
@@ -164,7 +164,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {
+  private void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {
     final String[] s = unitsNotAllowedUnitTypes.split(":");
     if (s.length < 1) {
       throw new GameParseException("unitsNotAllowed must have at least one unitType" + thisErrorMsg());
@@ -179,7 +179,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setUnitsNotAllowed(final List<UnitType> value) {
+  private void setUnitsNotAllowed(final List<UnitType> value) {
     m_unitsNotAllowed = value;
   }
 
@@ -191,7 +191,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_unitsNotAllowed.clear();
   }
 
-  public void resetUnitsNotAllowed() {
+  private void resetUnitsNotAllowed() {
     m_unitsNotAllowed = new ArrayList<>();
   }
 
