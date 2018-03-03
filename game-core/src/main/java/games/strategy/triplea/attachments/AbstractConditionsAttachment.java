@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -98,8 +99,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_invert;
   }
 
+  @VisibleForTesting
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setConditionType(final String value) throws GameParseException {
+  void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
     if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
       final String[] split = uppercaseValue.split("-");
