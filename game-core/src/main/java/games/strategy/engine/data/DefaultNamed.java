@@ -42,7 +42,7 @@ public class DefaultNamed extends GameDataComponent implements Named {
   }
 
   private static void logSerializationWarning() {
-    ClientLogger.logQuietly("Warning: serialization de-serializatoin error, m_name in DefaultNamed.java is null.");
+    ClientLogger.logQuietly("Warning: serialization de-serialization error, m_name in DefaultNamed.java is null.");
   }
 
   @Override
