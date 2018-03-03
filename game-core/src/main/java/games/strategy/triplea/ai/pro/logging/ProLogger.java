@@ -7,7 +7,8 @@ import javax.annotation.Nullable;
 /**
  * Class to log messages to log window and console.
  */
-public class ProLogger {
+public final class ProLogger {
+  private ProLogger() {}
 
   public static void warn(final String message) {
     log(Level.WARNING, message);
@@ -50,10 +51,11 @@ public class ProLogger {
    * Just keep these things in mind while adding new logging code.
    */
   public static void log(final Level level, final String message, final @Nullable Throwable t) {
-    if (!ProLogSettings.loadSettings().EnableAILogging) {
+    final ProLogSettings settings = ProLogSettings.loadSettings();
+    if (!settings.isLogEnabled()) {
       return; // Skip displaying to settings window if settings window option is turned off
     }
-    final Level logDepth = ProLogSettings.loadSettings().AILoggingDepth;
+    final Level logDepth = settings.getLogLevel();
     if (logDepth.equals(Level.FINE) && (level.equals(Level.FINER) || level.equals(Level.FINEST))) {
       return; // If the settings window log depth is a higher level than this messages, skip
     }
