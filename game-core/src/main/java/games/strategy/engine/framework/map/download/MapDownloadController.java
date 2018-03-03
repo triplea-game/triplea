@@ -1,8 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -26,28 +23,13 @@ public class MapDownloadController {
 
   public MapDownloadController() {}
 
+
   /**
    * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
    * not recognized.
    */
-  public boolean checkDownloadedMapsAreLatest() {
+  public static boolean checkDownloadedMapsAreLatest() {
     try {
-      // check at most once per month
-      final LocalDateTime locaDateTime = LocalDateTime.now();
-      final int year = locaDateTime.get(ChronoField.YEAR);
-      final int month = locaDateTime.get(ChronoField.MONTH_OF_YEAR);
-      // format year:month
-      final String lastCheckTime = ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.value();
-      if (!Strings.nullToEmpty(lastCheckTime).trim().isEmpty()) {
-        final String[] yearMonth = lastCheckTime.split(":");
-        if (Integer.parseInt(yearMonth[0]) >= year && Integer.parseInt(yearMonth[1]) >= month) {
-          return false;
-        }
-      }
-
-      ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES.save(year + ":" + month);
-      ClientSetting.flush();
-
       final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
       if (!outOfDateMapNames.isEmpty()) {
@@ -88,11 +70,8 @@ public class MapDownloadController {
     final Optional<Version> downloadedVersion = getDownloadedVersion(download.getMapName(), downloadedMaps);
 
     final AtomicBoolean mapOutOfDate = new AtomicBoolean(false);
-    latestVersion.ifPresent(latest -> {
-      downloadedVersion.ifPresent(downloaded -> {
-        mapOutOfDate.set(latest.isGreaterThan(downloaded));
-      });
-    });
+    latestVersion.ifPresent(latest -> downloadedVersion.ifPresent(
+        downloaded -> mapOutOfDate.set(latest.isGreaterThan(downloaded))));
     return mapOutOfDate.get();
   }
 

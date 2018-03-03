@@ -1,7 +1,5 @@
 package games.strategy.engine.lobby.server;
 
-import static games.strategy.engine.framework.ArgParser.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -12,6 +10,7 @@ import java.util.Optional;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
+import games.strategy.engine.framework.CliProperties;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
@@ -57,8 +56,9 @@ public class GameDescription implements Externalizable, Cloneable {
   private boolean passworded;
   private String engineVersion;
   private String gameVersion;
-  private String botSupportEmail =
-      HeadlessGameServer.getInstance() != null ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "";
+  private String botSupportEmail = (HeadlessGameServer.getInstance() != null)
+          ? System.getProperty(CliProperties.LOBBY_GAME_SUPPORT_EMAIL, "")
+          : "";
 
   // if you add a field, add it to write/read object as well for Externalizable
   public GameDescription() {}
