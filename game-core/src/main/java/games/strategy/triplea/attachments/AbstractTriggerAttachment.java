@@ -82,14 +82,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
   @Deprecated
-  public void clearTrigger() {
-    clearConditions();
-  }
-
-  /**
-   * @deprecated please use setConditions, getConditions, clearConditions, instead.
-   */
-  @Deprecated
   private void resetTrigger() {
     resetConditions();
   }
@@ -162,10 +154,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   protected List<Tuple<String, String>> getWhen() {
     return m_when;
-  }
-
-  public void clearWhen() {
-    m_when.clear();
   }
 
   private void resetWhen() {

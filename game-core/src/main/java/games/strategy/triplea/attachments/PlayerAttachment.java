@@ -122,10 +122,6 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_placementLimit;
   }
 
-  public void clearPlacementLimit() {
-    m_placementLimit.clear();
-  }
-
   private void resetPlacementLimit() {
     m_placementLimit = new HashSet<>();
   }
@@ -170,10 +166,6 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_movementLimit;
   }
 
-  public void clearMovementLimit() {
-    m_movementLimit.clear();
-  }
-
   private void resetMovementLimit() {
     m_movementLimit = new HashSet<>();
   }
@@ -216,10 +208,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   private Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
     return m_attackingLimit;
-  }
-
-  public void clearAttackingLimit() {
-    m_attackingLimit.clear();
   }
 
   private void resetAttackingLimit() {
@@ -307,10 +295,6 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_suicideAttackTargets;
   }
 
-  public void clearSuicideAttackTargets() {
-    m_suicideAttackTargets.clear();
-  }
-
   private void resetSuicideAttackTargets() {
     m_suicideAttackTargets = null;
   }
@@ -342,10 +326,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   public IntegerMap<Resource> getSuicideAttackResources() {
     return m_suicideAttackResources;
-  }
-
-  public void clearSuicideAttackResources() {
-    m_suicideAttackResources.clear();
   }
 
   private void resetSuicideAttackResources() {
@@ -449,10 +429,6 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_giveUnitControl;
   }
 
-  public void clearGiveUnitControl() {
-    m_giveUnitControl.clear();
-  }
-
   private void resetGiveUnitControl() {
     m_giveUnitControl = new ArrayList<>();
   }
@@ -480,10 +456,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   public List<PlayerID> getCaptureUnitOnEnteringBy() {
     return m_captureUnitOnEnteringBy;
-  }
-
-  public void clearCaptureUnitOnEnteringBy() {
-    m_captureUnitOnEnteringBy.clear();
   }
 
   private void resetCaptureUnitOnEnteringBy() {
@@ -515,10 +487,6 @@ public class PlayerAttachment extends DefaultAttachment {
     return m_shareTechnology;
   }
 
-  public void clearShareTechnology() {
-    m_shareTechnology.clear();
-  }
-
   private void resetShareTechnology() {
     m_shareTechnology = new ArrayList<>();
   }
@@ -546,10 +514,6 @@ public class PlayerAttachment extends DefaultAttachment {
 
   public List<PlayerID> getHelpPayTechCost() {
     return m_helpPayTechCost;
-  }
-
-  public void clearHelpPayTechCost() {
-    m_helpPayTechCost.clear();
   }
 
   private void resetHelpPayTechCost() {

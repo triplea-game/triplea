@@ -65,10 +65,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     return new IntegerMap<>(m_combatDefenseEffect);
   }
 
-  public void clearCombatDefenseEffect() {
-    m_combatDefenseEffect.clear();
-  }
-
   private void resetCombatDefenseEffect() {
     m_combatDefenseEffect = new IntegerMap<>();
   }
@@ -88,10 +84,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   private IntegerMap<UnitType> getCombatOffenseEffect() {
     return new IntegerMap<>(m_combatOffenseEffect);
-  }
-
-  public void clearCombatOffenseEffect() {
-    m_combatOffenseEffect.clear();
   }
 
   private void resetCombatOffenseEffect() {
@@ -152,10 +144,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     return new ArrayList<>(m_noBlitz);
   }
 
-  public void clearNoBlitz() {
-    m_noBlitz.clear();
-  }
-
   private void resetNoBlitz() {
     m_noBlitz = new ArrayList<>();
   }
@@ -185,10 +173,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   public List<UnitType> getUnitsNotAllowed() {
     return new ArrayList<>(m_unitsNotAllowed);
-  }
-
-  public void clearUnitsNotAllowed() {
-    m_unitsNotAllowed.clear();
   }
 
   private void resetUnitsNotAllowed() {

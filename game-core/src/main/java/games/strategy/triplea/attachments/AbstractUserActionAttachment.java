@@ -126,10 +126,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     return m_actionAccept;
   }
 
-  public void clearActionAccept() {
-    m_actionAccept.clear();
-  }
-
   private void resetActionAccept() {
     m_actionAccept = new ArrayList<>();
   }

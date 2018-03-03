@@ -400,10 +400,6 @@ public class UnitAttachment extends DefaultAttachment {
     return m_canBeGivenByTerritoryTo;
   }
 
-  public void clearCanBeGivenByTerritoryTo() {
-    m_canBeGivenByTerritoryTo.clear();
-  }
-
   private void resetCanBeGivenByTerritoryTo() {
     m_canBeGivenByTerritoryTo = new ArrayList<>();
   }
@@ -431,10 +427,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public List<PlayerID> getCanBeCapturedOnEnteringBy() {
     return m_canBeCapturedOnEnteringBy;
-  }
-
-  public void clearCanBeCapturedOnEnteringBy() {
-    m_canBeCapturedOnEnteringBy.clear();
   }
 
   private void resetCanBeCapturedOnEnteringBy() {
@@ -473,10 +465,6 @@ public class UnitAttachment extends DefaultAttachment {
     return m_whenHitPointsDamagedChangesInto;
   }
 
-  public void clearWhenHitPointsDamagedChangesInto() {
-    m_whenHitPointsDamagedChangesInto.clear();
-  }
-
   private void resetWhenHitPointsDamagedChangesInto() {
     m_whenHitPointsDamagedChangesInto = new HashMap<>();
   }
@@ -511,10 +499,6 @@ public class UnitAttachment extends DefaultAttachment {
       resetWhenHitPointsRepairedChangesInto(); // TODO: Can remove for incompatible release
     }
     return m_whenHitPointsRepairedChangesInto;
-  }
-
-  public void clearWhenHitPointsRepairedChangesInto() {
-    m_whenHitPointsRepairedChangesInto.clear();
   }
 
   private void resetWhenHitPointsRepairedChangesInto() {
@@ -561,10 +545,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public Map<String, Tuple<String, IntegerMap<UnitType>>> getWhenCapturedChangesInto() {
     return m_whenCapturedChangesInto;
-  }
-
-  public void clearWhenCapturedChangesInto() {
-    m_whenCapturedChangesInto.clear();
   }
 
   private void resetWhenCapturedChangesInto() {
@@ -631,10 +611,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public List<Tuple<String, PlayerID>> getDestroyedWhenCapturedBy() {
     return m_destroyedWhenCapturedBy;
-  }
-
-  public void clearDestroyedWhenCapturedBy() {
-    m_destroyedWhenCapturedBy.clear();
   }
 
   private void resetDestroyedWhenCapturedBy() {
@@ -945,10 +921,6 @@ public class UnitAttachment extends DefaultAttachment {
     return m_repairsUnits;
   }
 
-  public void clearRepairsUnits() {
-    m_repairsUnits.clear();
-  }
-
   private void resetRepairsUnits() {
     m_repairsUnits = new IntegerMap<>();
   }
@@ -974,10 +946,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public Set<String> getSpecial() {
     return m_special;
-  }
-
-  public void clearSpecial() {
-    m_special.clear();
   }
 
   private void resetSpecial() {
@@ -1040,10 +1008,6 @@ public class UnitAttachment extends DefaultAttachment {
     return m_requiresUnits;
   }
 
-  public void clearRequiresUnits() {
-    m_requiresUnits.clear();
-  }
-
   private void resetRequiresUnits() {
     m_requiresUnits = new ArrayList<>();
   }
@@ -1073,10 +1037,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public List<String[]> getRequiresUnitsToMove() {
     return m_requiresUnitsToMove;
-  }
-
-  public void clearRequiresUnitsToMove() {
-    m_requiresUnitsToMove.clear();
   }
 
   private void resetRequiresUnitsToMove() {
@@ -1119,10 +1079,6 @@ public class UnitAttachment extends DefaultAttachment {
     return m_whenCombatDamaged;
   }
 
-  public void clearWhenCombatDamaged() {
-    m_whenCombatDamaged.clear();
-  }
-
   private void resetWhenCombatDamaged() {
     m_whenCombatDamaged = new ArrayList<>();
   }
@@ -1142,10 +1098,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public List<String> getReceivesAbilityWhenWith() {
     return m_receivesAbilityWhenWith;
-  }
-
-  public void clearReceivesAbilityWhenWith() {
-    m_receivesAbilityWhenWith.clear();
   }
 
   private void resetReceivesAbilityWhenWith() {
@@ -1951,10 +1903,6 @@ public class UnitAttachment extends DefaultAttachment {
     return m_givesMovement;
   }
 
-  public void clearGivesMovement() {
-    m_givesMovement.clear();
-  }
-
   private void resetGivesMovement() {
     m_givesMovement = new IntegerMap<>();
   }
@@ -1988,10 +1936,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public IntegerMap<UnitType> getConsumesUnits() {
     return m_consumesUnits;
-  }
-
-  public void clearConsumesUnits() {
-    m_consumesUnits.clear();
   }
 
   private void resetConsumesUnits() {
@@ -2029,10 +1973,6 @@ public class UnitAttachment extends DefaultAttachment {
     return m_createsUnitsList;
   }
 
-  public void clearCreatesUnitsList() {
-    m_createsUnitsList.clear();
-  }
-
   private void resetCreatesUnitsList() {
     m_createsUnitsList = new IntegerMap<>();
   }
@@ -2064,10 +2004,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public IntegerMap<Resource> getCreatesResourcesList() {
     return m_createsResourcesList;
-  }
-
-  public void clearCreatesResourcesList() {
-    m_createsResourcesList.clear();
   }
 
   private void resetCreatesResourcesList() {
@@ -2103,10 +2039,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public IntegerMap<Resource> getFuelCost() {
     return m_fuelCost;
-  }
-
-  public void clearFuelCost() {
-    m_fuelCost.clear();
   }
 
   private void resetFuelCost() {
@@ -2185,10 +2117,6 @@ public class UnitAttachment extends DefaultAttachment {
       return m_bombingTargets;
     }
     return new HashSet<>(data.getUnitTypeList().getAllUnitTypes());
-  }
-
-  public void clearBombingTargets() {
-    m_bombingTargets.clear();
   }
 
   private void resetBombingTargets() {
@@ -2537,10 +2465,6 @@ public class UnitAttachment extends DefaultAttachment {
         .collect(Collectors.toSet());
   }
 
-  public void clearTargetsAa() {
-    m_targetsAA.clear();
-  }
-
   private void resetTargetsAa() {
     m_targetsAA = null;
   }
@@ -2567,10 +2491,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public Set<UnitType> getWillNotFireIfPresent() {
     return m_willNotFireIfPresent;
-  }
-
-  public void clearWillNotFireIfPresent() {
-    m_willNotFireIfPresent.clear();
   }
 
   private void resetWillNotFireIfPresent() {

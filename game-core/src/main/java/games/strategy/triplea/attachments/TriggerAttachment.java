@@ -333,10 +333,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_activateTrigger;
   }
 
-  public void clearActivateTrigger() {
-    m_activateTrigger.clear();
-  }
-
   private void resetActivateTrigger() {
     m_activateTrigger = new ArrayList<>();
   }
@@ -405,10 +401,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_productionRule;
   }
 
-  public void clearProductionRule() {
-    m_productionRule.clear();
-  }
-
   private void resetProductionRule() {
     m_productionRule = null;
   }
@@ -474,10 +466,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_tech;
   }
 
-  public void clearTech() {
-    m_tech.clear();
-  }
-
   private void resetTech() {
     m_tech = new ArrayList<>();
   }
@@ -531,10 +519,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_availableTech;
   }
 
-  public void clearAvailableTech() {
-    m_availableTech.clear();
-  }
-
   private void resetAvailableTech() {
     m_availableTech = null;
   }
@@ -579,10 +563,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private Map<String, Boolean> getSupport() {
     return m_support;
-  }
-
-  public void clearSupport() {
-    m_support.clear();
   }
 
   private void resetSupport() {
@@ -651,10 +631,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_relationshipChange;
   }
 
-  public void clearRelationshipChange() {
-    m_relationshipChange.clear();
-  }
-
   private void resetRelationshipChange() {
     m_relationshipChange = new ArrayList<>();
   }
@@ -681,10 +657,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private List<UnitType> getUnitType() {
     return m_unitType;
-  }
-
-  public void clearUnitType() {
-    m_unitType.clear();
   }
 
   private void resetUnitType() {
@@ -764,10 +736,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_unitProperty;
   }
 
-  public void clearUnitProperty() {
-    m_unitProperty.clear();
-  }
-
   private void resetUnitProperty() {
     m_unitProperty = null;
   }
@@ -794,10 +762,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private List<Territory> getTerritories() {
     return m_territories;
-  }
-
-  public void clearTerritories() {
-    m_territories.clear();
   }
 
   private void resetTerritories() {
@@ -877,10 +841,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_territoryProperty;
   }
 
-  public void clearTerritoryProperty() {
-    m_territoryProperty.clear();
-  }
-
   private void resetTerritoryProperty() {
     m_territoryProperty = null;
   }
@@ -907,10 +867,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private List<PlayerID> getPlayers() {
     return m_players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : m_players;
-  }
-
-  public void clearPlayers() {
-    m_players.clear();
   }
 
   private void resetPlayers() {
@@ -1006,10 +962,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_playerProperty;
   }
 
-  public void clearPlayerProperty() {
-    m_playerProperty.clear();
-  }
-
   private void resetPlayerProperty() {
     m_playerProperty = null;
   }
@@ -1036,10 +988,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private List<RelationshipType> getRelationshipTypes() {
     return m_relationshipTypes;
-  }
-
-  public void clearRelationshipTypes() {
-    m_relationshipTypes.clear();
   }
 
   private void resetRelationshipTypes() {
@@ -1118,10 +1066,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_relationshipTypeProperty;
   }
 
-  public void clearRelationshipTypeProperty() {
-    m_relationshipTypeProperty.clear();
-  }
-
   private void resetRelationshipTypeProperty() {
     m_relationshipTypeProperty = null;
   }
@@ -1148,10 +1092,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private List<TerritoryEffect> getTerritoryEffects() {
     return m_territoryEffects;
-  }
-
-  public void clearTerritoryEffects() {
-    m_territoryEffects.clear();
   }
 
   private void resetTerritoryEffects() {
@@ -1230,10 +1170,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_territoryEffectProperty;
   }
 
-  public void clearTerritoryEffectProperty() {
-    m_territoryEffectProperty.clear();
-  }
-
   private void resetTerritoryEffectProperty() {
     m_territoryEffectProperty = null;
   }
@@ -1293,10 +1229,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private Map<Territory, IntegerMap<UnitType>> getPlacement() {
     return m_placement;
-  }
-
-  public void clearPlacement() {
-    m_placement.clear();
   }
 
   private void resetPlacement() {
@@ -1376,10 +1308,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_removeUnits;
   }
 
-  public void clearRemoveUnits() {
-    m_removeUnits.clear();
-  }
-
   private void resetRemoveUnits() {
     m_removeUnits = null;
   }
@@ -1430,10 +1358,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return m_purchase;
   }
 
-  public void clearPurchase() {
-    m_purchase.clear();
-  }
-
   private void resetPurchase() {
     m_purchase = null;
   }
@@ -1477,10 +1401,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private List<String> getChangeOwnership() {
     return m_changeOwnership;
-  }
-
-  public void clearChangeOwnership() {
-    m_changeOwnership.clear();
   }
 
   private void resetChangeOwnership() {

@@ -1,7 +1,7 @@
 package games.strategy.triplea.attachments;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
@@ -65,12 +65,12 @@ public interface ICondition extends IAttachment {
    * testing the
    * conditions the first time.
    */
-  boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge bridge);
+  boolean isSatisfied(Map<ICondition, Boolean> testedConditions, final IDelegateBridge bridge);
 
   /**
    * HashMap&lt;ICondition, Boolean> testedConditions must be filled with completed tests of all conditions already, or
    * this will give you
    * errors.
    */
-  boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions);
+  boolean isSatisfied(Map<ICondition, Boolean> testedConditions);
 }

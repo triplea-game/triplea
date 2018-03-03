@@ -259,10 +259,6 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_resources;
   }
 
-  public void clearResources() {
-    m_resources = new ResourceCollection(getData());
-  }
-
   private void resetResources() {
     m_resources = null;
   }
@@ -476,10 +472,6 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_changeUnitOwners;
   }
 
-  public void clearChangeUnitOwners() {
-    m_changeUnitOwners.clear();
-  }
-
   private void resetChangeUnitOwners() {
     m_changeUnitOwners = new ArrayList<>();
   }
@@ -507,10 +499,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public ArrayList<PlayerID> getCaptureUnitOnEnteringBy() {
     return m_captureUnitOnEnteringBy;
-  }
-
-  public void clearCaptureUnitOnEnteringBy() {
-    m_captureUnitOnEnteringBy.clear();
   }
 
   private void resetCaptureUnitOnEnteringBy() {
@@ -545,10 +533,6 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_whenCapturedByGoesTo;
   }
 
-  public void clearWhenCapturedByGoesTo() {
-    m_whenCapturedByGoesTo.clear();
-  }
-
   private void resetWhenCapturedByGoesTo() {
     m_whenCapturedByGoesTo = new ArrayList<>();
   }
@@ -576,10 +560,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public ArrayList<TerritoryEffect> getTerritoryEffect() {
     return m_territoryEffect;
-  }
-
-  public void clearTerritoryEffect() {
-    m_territoryEffect.clear();
   }
 
   private void resetTerritoryEffect() {
@@ -610,10 +590,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public HashSet<Territory> getConvoyAttached() {
     return m_convoyAttached;
-  }
-
-  public void clearConvoyAttached() {
-    m_convoyAttached.clear();
   }
 
   private void resetConvoyAttached() {

@@ -167,7 +167,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * been tested.
    */
   @Override
-  public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions) {
+  public boolean isSatisfied(final Map<ICondition, Boolean> testedConditions) {
     return isSatisfied(testedConditions, null);
   }
 
@@ -178,7 +178,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    */
   @Override
   public boolean isSatisfied(
-      final HashMap<ICondition, Boolean> testedConditions,
+      final Map<ICondition, Boolean> testedConditions,
       final IDelegateBridge delegateBridge) {
     if (testedConditions == null) {
       throw new IllegalStateException("testedCondititions cannot be null");
@@ -240,7 +240,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * no testing of conditions done in this method.
    */
   public static boolean areConditionsMet(final List<ICondition> rulesToTest,
-      final HashMap<ICondition, Boolean> testedConditions, final String conditionType) {
+      final Map<ICondition, Boolean> testedConditions, final String conditionType) {
     boolean met = false;
     if (conditionType.equals("AND")) {
       for (final ICondition c : rulesToTest) {
