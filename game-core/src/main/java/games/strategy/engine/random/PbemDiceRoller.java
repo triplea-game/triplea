@@ -68,7 +68,7 @@ public class PbemDiceRoller implements IRandomSource {
       dialog.roll();
       return dialog.getDiceRoll();
     };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .orElseGet(() -> new int[0]);
   }
 

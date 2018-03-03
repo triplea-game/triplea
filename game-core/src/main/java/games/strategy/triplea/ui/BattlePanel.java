@@ -282,7 +282,7 @@ public class BattlePanel extends ActionPanel {
       final Collection<Territory> territories, final boolean noneAvailable) {
     final Supplier<BombardComponent> action =
         () -> new BombardComponent(unit, unitTerritory, territories, noneAvailable);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .map(comp -> {
           int option = JOptionPane.NO_OPTION;
           while (option != JOptionPane.OK_OPTION) {
@@ -403,7 +403,7 @@ public class BattlePanel extends ActionPanel {
           new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
       return response;
     };
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWait(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .orElse(null);
   }
 

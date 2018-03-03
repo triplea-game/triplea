@@ -82,7 +82,7 @@ public final class SwingAction {
   public static void invokeAndWait(final Runnable action) throws InterruptedException {
     checkNotNull(action);
 
-    invokeAndWait(() -> {
+    invokeAndWaitResult(() -> {
       action.run();
       return null;
     });
@@ -102,7 +102,7 @@ public final class SwingAction {
    * @throws RuntimeException If the action throws an unchecked exception.
    * @throws InterruptedException If the current thread is interrupted while waiting for the action to complete.
    */
-  public static <T> T invokeAndWait(final Supplier<T> action) throws InterruptedException {
+  public static <T> T invokeAndWaitResult(final Supplier<T> action) throws InterruptedException {
     checkNotNull(action);
 
     if (SwingUtilities.isEventDispatchThread()) {
