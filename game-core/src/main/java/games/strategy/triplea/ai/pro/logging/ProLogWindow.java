@@ -263,30 +263,30 @@ class ProLogWindow extends JDialog {
    * Loads the settings provided and displays it in this settings window.
    */
   private void loadSettings(final ProLogSettings settings) {
-    enableAiLogging.setSelected(settings.EnableAILogging);
-    if (settings.AILoggingDepth.equals(Level.FINE)) {
+    enableAiLogging.setSelected(settings.enableAiLogging);
+    if (settings.aiLoggingDepth.equals(Level.FINE)) {
       logDepth.setSelectedIndex(0);
-    } else if (settings.AILoggingDepth.equals(Level.FINER)) {
+    } else if (settings.aiLoggingDepth.equals(Level.FINER)) {
       logDepth.setSelectedIndex(1);
-    } else if (settings.AILoggingDepth.equals(Level.FINEST)) {
+    } else if (settings.aiLoggingDepth.equals(Level.FINEST)) {
       logDepth.setSelectedIndex(2);
     }
-    limitLogHistoryCheckBox.setSelected(settings.LimitLogHistory);
-    limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
+    limitLogHistoryCheckBox.setSelected(settings.limitLogHistory);
+    limitLogHistoryToSpinner.setValue(settings.limitLogHistoryTo);
   }
 
   ProLogSettings createSettings() {
     final ProLogSettings settings = new ProLogSettings();
-    settings.EnableAILogging = enableAiLogging.isSelected();
+    settings.enableAiLogging = enableAiLogging.isSelected();
     if (logDepth.getSelectedIndex() == 0) {
-      settings.AILoggingDepth = Level.FINE;
+      settings.aiLoggingDepth = Level.FINE;
     } else if (logDepth.getSelectedIndex() == 1) {
-      settings.AILoggingDepth = Level.FINER;
+      settings.aiLoggingDepth = Level.FINER;
     } else if (logDepth.getSelectedIndex() == 2) {
-      settings.AILoggingDepth = Level.FINEST;
+      settings.aiLoggingDepth = Level.FINEST;
     }
-    settings.LimitLogHistory = limitLogHistoryCheckBox.isSelected();
-    settings.LimitLogHistoryTo = Integer.parseInt(limitLogHistoryToSpinner.getValue().toString());
+    settings.limitLogHistory = limitLogHistoryCheckBox.isSelected();
+    settings.limitLogHistoryTo = Integer.parseInt(limitLogHistoryToSpinner.getValue().toString());
     return settings;
   }
 
@@ -413,10 +413,10 @@ class ProLogWindow extends JDialog {
 
   private void trimLogRoundPanels() {
     // If we're logging and we have trimming enabled, or if we have logging turned off
-    if (!ProLogSettings.loadSettings().EnableAILogging || ProLogSettings.loadSettings().LimitLogHistory) {
+    if (!ProLogSettings.loadSettings().enableAiLogging || ProLogSettings.loadSettings().limitLogHistory) {
       final int maxHistoryRounds;
-      if (ProLogSettings.loadSettings().EnableAILogging) {
-        maxHistoryRounds = ProLogSettings.loadSettings().LimitLogHistoryTo;
+      if (ProLogSettings.loadSettings().enableAiLogging) {
+        maxHistoryRounds = ProLogSettings.loadSettings().limitLogHistoryTo;
       } else {
         maxHistoryRounds = 1; // If we're not logging, trim to 1
       }

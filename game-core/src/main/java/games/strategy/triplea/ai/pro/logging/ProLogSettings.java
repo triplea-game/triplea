@@ -17,10 +17,10 @@ import games.strategy.triplea.ai.pro.ProAi;
  */
 public class ProLogSettings implements Serializable {
   private static final long serialVersionUID = 2696071717784800413L;
-  public boolean LimitLogHistory = true;
-  public int LimitLogHistoryTo = 5;
-  public boolean EnableAILogging = true;
-  public Level AILoggingDepth = Level.FINEST;
+  public boolean limitLogHistory = true;
+  public int limitLogHistoryTo = 5;
+  public boolean enableAiLogging = true;
+  public Level aiLoggingDepth = Level.FINEST;
   private static ProLogSettings lastSettings = null;
   private static final String PROGRAM_SETTINGS = "Program Settings";
 
