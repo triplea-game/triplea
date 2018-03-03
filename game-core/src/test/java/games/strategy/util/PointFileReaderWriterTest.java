@@ -12,6 +12,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -29,14 +30,18 @@ import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 
 import games.strategy.io.IoUtils;
+import games.strategy.util.function.ThrowingConsumer;
+import games.strategy.util.function.ThrowingFunction;
 
 public final class PointFileReaderWriterTest {
-  private static <R> R readFromString(final IoUtils.InputStreamFunction<R> function, final String content)
+  private static <R> R readFromString(
+      final ThrowingFunction<InputStream, R, IOException> function,
+      final String content)
       throws Exception {
     return IoUtils.readFromMemory(content.getBytes(StandardCharsets.UTF_8), function);
   }
 
-  private static String writeToString(final IoUtils.OutputStreamConsumer consumer) throws Exception {
+  private static String writeToString(final ThrowingConsumer<OutputStream, IOException> consumer) throws Exception {
     return new String(IoUtils.writeToMemory(consumer), StandardCharsets.UTF_8);
   }
 

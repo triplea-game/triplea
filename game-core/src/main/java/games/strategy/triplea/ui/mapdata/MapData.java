@@ -40,6 +40,8 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import games.strategy.util.function.ThrowingFunction;
+import games.strategy.util.function.ThrowingSupplier;
 
 /**
  * contains data about the territories useful for drawing.
@@ -162,7 +164,7 @@ public class MapData implements Closeable {
       decorations = loadDecorations();
       territoryNameImages = territoryNameImages();
 
-      try (InputStream inputStream = requiredResource(MAP_PROPERTIES).newInputStream()) {
+      try (InputStream inputStream = requiredResource(MAP_PROPERTIES).get()) {
         mapProperties.load(inputStream);
       } catch (final Exception e) {
         ClientLogger.logQuietly("Error reading map.properties", e);
@@ -174,46 +176,40 @@ public class MapData implements Closeable {
     }
   }
 
-  private InputStreamFactory optionalResource(final String path) {
+  private ThrowingSupplier<InputStream, IOException> optionalResource(final String path) {
     return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
         .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
   }
 
-  private InputStreamFactory requiredResource(final String path) {
+  private ThrowingSupplier<InputStream, IOException> requiredResource(final String path) {
     return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
         .orElseThrow(() -> new FileNotFoundException(path));
   }
 
-  private static Map<String, Point> readPointsOneToOne(final InputStreamFactory inputStreamFactory) throws IOException {
+  private static Map<String, Point> readPointsOneToOne(
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
+      throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToOne);
   }
 
-  private static Map<String, List<Point>> readPointsOneToMany(final InputStreamFactory inputStreamFactory)
+  private static Map<String, List<Point>> readPointsOneToMany(
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
       throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToMany);
   }
 
-  private static Map<String, List<Polygon>> readPolygonsOneToMany(final InputStreamFactory inputStreamFactory)
+  private static Map<String, List<Polygon>> readPolygonsOneToMany(
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
       throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPolygons);
   }
 
   private static <R> R runWithInputStream(
-      final InputStreamFactory inputStreamFactory,
-      final InputStreamReader<R> reader) throws IOException {
-    try (InputStream is = inputStreamFactory.newInputStream()) {
-      return reader.read(is);
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory,
+      final ThrowingFunction<InputStream, R, IOException> reader) throws IOException {
+    try (InputStream is = inputStreamFactory.get()) {
+      return reader.apply(is);
     }
-  }
-
-  @FunctionalInterface
-  private interface InputStreamFactory {
-    InputStream newInputStream() throws IOException;
-  }
-
-  @FunctionalInterface
-  private interface InputStreamReader<R> {
-    R read(InputStream is) throws IOException;
   }
 
   @Override
