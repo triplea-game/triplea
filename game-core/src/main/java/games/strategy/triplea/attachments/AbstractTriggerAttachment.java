@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
@@ -82,26 +83,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
   @Deprecated
-  public void clearTrigger() {
-    clearConditions();
-  }
-
-  /**
-   * @deprecated please use setConditions, getConditions, clearConditions, instead.
-   */
-  @Deprecated
   private void resetTrigger() {
     resetConditions();
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setUses(final String s) {
-    m_uses = getInt(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setUses(final Integer u) {
-    m_uses = u;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -136,10 +119,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return m_uses;
   }
 
-  private void resetUses() {
-    m_uses = -1;
-  }
-
   /**
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
@@ -162,10 +141,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   protected List<Tuple<String, String>> getWhen() {
     return m_when;
-  }
-
-  public void clearWhen() {
-    m_when.clear();
   }
 
   private void resetWhen() {
@@ -314,11 +289,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
         .put("uses",
-            MutableProperty.of(
-                this::setUses,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setUses,
                 this::getUses,
-                this::resetUses))
+                () -> -1))
         .put("usedThisRound",
             MutableProperty.of(
                 this::setUsedThisRound,

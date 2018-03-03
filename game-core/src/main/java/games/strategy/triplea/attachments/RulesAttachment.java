@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -232,10 +231,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_battle;
   }
 
-  public void clearBattle() {
-    m_battle.clear();
-  }
-
   private void resetBattle() {
     m_battle = new ArrayList<>();
   }
@@ -283,10 +278,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   private List<String> getRelationship() {
     return m_relationship;
-  }
-
-  public void clearRelationship() {
-    m_relationship.clear();
   }
 
   private void resetRelationship() {
@@ -538,10 +529,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_unitPresence;
   }
 
-  public void clearUnitPresence() {
-    m_unitPresence.clear();
-  }
-
   private void resetUnitPresence() {
     m_unitPresence = new IntegerMap<>();
   }
@@ -644,7 +631,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions) {
+  public boolean isSatisfied(final Map<ICondition, Boolean> testedConditions) {
     checkNotNull(testedConditions);
     checkState(testedConditions.containsKey(this));
 
@@ -652,7 +639,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public boolean isSatisfied(HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
+  public boolean isSatisfied(Map<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
     if (testedConditions != null) {
       if (testedConditions.containsKey(this)) {
         return testedConditions.get(this);

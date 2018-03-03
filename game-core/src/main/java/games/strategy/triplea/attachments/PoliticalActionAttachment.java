@@ -108,10 +108,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     return m_relationshipChange;
   }
 
-  public void clearRelationshipChange() {
-    m_relationshipChange.clear();
-  }
-
   private void resetRelationshipChange() {
     m_relationshipChange = new ArrayList<>();
   }

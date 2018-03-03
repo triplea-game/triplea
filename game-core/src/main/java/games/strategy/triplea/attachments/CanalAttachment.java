@@ -151,10 +151,6 @@ public class CanalAttachment extends DefaultAttachment {
     return m_excludedUnits;
   }
 
-  public void clearExcludedUnits() {
-    m_excludedUnits.clear();
-  }
-
   private void resetExcludedUnits() {
     m_excludedUnits = null;
   }

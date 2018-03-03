@@ -159,10 +159,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     return m_productionPerXTerritories;
   }
 
-  public void clearProductionPerXTerritories() {
-    m_productionPerXTerritories.clear();
-  }
-
   private void resetProductionPerXTerritories() {
     m_productionPerXTerritories = new IntegerMap<>();
   }

@@ -86,10 +86,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return m_players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : m_players;
   }
 
-  public void clearPlayers() {
-    m_players.clear();
-  }
-
   private void resetPlayers() {
     m_players = new ArrayList<>();
   }
@@ -108,7 +104,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setObjectiveValue(final Integer value) {
+  private void setObjectiveValue(final int value) {
     m_objectiveValue = value;
   }
 
@@ -163,7 +159,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setUses(final Integer u) {
+  private void setUses(final int u) {
     m_uses = u;
   }
 

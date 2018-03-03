@@ -30,10 +30,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
-  // Do Not Export
   private boolean m_offence = false;
   @InternalDoNotExport
-  // Do Not Export
   private boolean m_defence = false;
   @InternalDoNotExport
   private boolean m_roll = false;
@@ -89,8 +87,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       return;
     }
     m_unitType = new HashSet<>();
-    final String[] s = names.split(":");
-    for (final String element : s) {
+    for (final String element : names.split(":")) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
       if (type == null) {
         throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
@@ -117,8 +114,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
     m_allied = false;
     m_enemy = false;
-    final String[] s = faction.split(":");
-    for (final String element : s) {
+    for (final String element : faction.split(":")) {
       if (element.equalsIgnoreCase("allied")) {
         m_allied = true;
       } else if (element.equalsIgnoreCase("enemy")) {
@@ -146,8 +142,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
     m_defence = false;
     m_offence = false;
-    final String[] s = side.split(":");
-    for (final String element : s) {
+    for (final String element : side.split(":")) {
       if (element.equalsIgnoreCase("defence")) {
         m_defence = true;
       } else if (element.equalsIgnoreCase("offence")) {
@@ -177,8 +172,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
     m_roll = false;
     m_strength = false;
-    final String[] s = dice.split(":");
-    for (final String element : s) {
+    for (final String element : dice.split(":")) {
       if (element.equalsIgnoreCase("roll")) {
         m_roll = true;
       } else if (element.equalsIgnoreCase("strength")) {
@@ -206,7 +200,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setBonus(final Integer bonus) {
+  private void setBonus(final int bonus) {
     m_bonus = bonus;
   }
 
@@ -220,7 +214,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setNumber(final Integer number) {
+  private void setNumber(final int number) {
     m_number = number;
   }
 
@@ -230,10 +224,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setBonusType(final String type) {
-    if (type == null) {
-      m_bonusType = null;
-      return;
-    }
     m_bonusType = type;
   }
 
@@ -279,7 +269,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setImpArtTech(final Boolean tech) {
+  private void setImpArtTech(final boolean tech) {
     m_impArtTech = tech;
   }
 
@@ -341,22 +331,14 @@ public class UnitSupportAttachment extends DefaultAttachment {
     final String attachmentName =
         (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD) + type.getName();
     final UnitSupportAttachment rule = new UnitSupportAttachment(attachmentName, type, data);
-    rule.setBonus("1");
+    rule.setBonus(1);
     rule.setBonusType(Constants.OLD_ART_RULE_NAME);
     rule.setDice("strength");
     rule.setFaction("allied");
-    rule.setImpArtTech("true");
-    if (first) {
-      rule.setNumber("0");
-    } else {
-      rule.setNumber("1");
-    }
+    rule.setImpArtTech(true);
+    rule.setNumber(first ? 0 : 1);
     rule.setSide("offence");
-    if (first) {
-      rule.addUnitTypes(Collections.singleton(type));
-    } else {
-      rule.addUnitTypes(getTargets(data));
-    }
+    rule.addUnitTypes(first ? Collections.singleton(type) : getTargets(data));
     if (!first) {
       rule.setPlayers(new ArrayList<>(data.getPlayerList().getPlayers()));
     }

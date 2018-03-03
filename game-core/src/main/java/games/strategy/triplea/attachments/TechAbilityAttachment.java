@@ -198,10 +198,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return sumIntegerMap(TechAbilityAttachment::getAttackBonus, ut, player, data);
   }
 
-  public void clearAttackBonus() {
-    m_attackBonus.clear();
-  }
-
   private void resetAttackBonus() {
     m_attackBonus = new IntegerMap<>();
   }
@@ -225,10 +221,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   static int getDefenseBonus(final UnitType ut, final PlayerID player, final GameData data) {
     return sumIntegerMap(TechAbilityAttachment::getDefenseBonus, ut, player, data);
-  }
-
-  public void clearDefenseBonus() {
-    m_defenseBonus.clear();
   }
 
   private void resetDefenseBonus() {
@@ -256,10 +248,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return sumIntegerMap(TechAbilityAttachment::getMovementBonus, ut, player, data);
   }
 
-  public void clearMovementBonus() {
-    m_movementBonus.clear();
-  }
-
   private void resetMovementBonus() {
     m_movementBonus = new IntegerMap<>();
   }
@@ -283,10 +271,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   static int getRadarBonus(final UnitType ut, final PlayerID player, final GameData data) {
     return sumIntegerMap(TechAbilityAttachment::getRadarBonus, ut, player, data);
-  }
-
-  public void clearRadarBonus() {
-    m_radarBonus.clear();
   }
 
   private void resetRadarBonus() {
@@ -314,10 +298,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return sumIntegerMap(TechAbilityAttachment::getAirAttackBonus, ut, player, data);
   }
 
-  public void clearAirAttackBonus() {
-    m_airAttackBonus.clear();
-  }
-
   private void resetAirAttackBonus() {
     m_airAttackBonus = new IntegerMap<>();
   }
@@ -343,10 +323,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return sumIntegerMap(TechAbilityAttachment::getAirDefenseBonus, ut, player, data);
   }
 
-  public void clearAirDefenseBonus() {
-    m_airDefenseBonus.clear();
-  }
-
   private void resetAirDefenseBonus() {
     m_airDefenseBonus = new IntegerMap<>();
   }
@@ -370,10 +346,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public static int getProductionBonus(final UnitType ut, final PlayerID player, final GameData data) {
     return sumIntegerMap(TechAbilityAttachment::getProductionBonus, ut, player, data);
-  }
-
-  public void clearProductionBonus() {
-    m_productionBonus.clear();
   }
 
   private void resetProductionBonus() {
@@ -514,10 +486,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return rocketDiceNumber;
   }
 
-  public void clearRocketDiceNumber() {
-    m_rocketDiceNumber.clear();
-  }
-
   private void resetRocketDiceNumber() {
     m_rocketDiceNumber = new IntegerMap<>();
   }
@@ -614,10 +582,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .anyMatch(filterForAbility::equals);
   }
 
-  public void clearUnitAbilitiesGained() {
-    m_unitAbilitiesGained.clear();
-  }
-
   private void resetUnitAbilitiesGained() {
     m_unitAbilitiesGained = new HashMap<>();
   }
@@ -677,10 +641,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneCapacity;
   }
 
-  public void clearAirborneCapacity() {
-    m_airborneCapacity.clear();
-  }
-
   private void resetAirborneCapacity() {
     m_airborneCapacity = new IntegerMap<>();
   }
@@ -711,10 +671,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .map(TechAbilityAttachment::getAirborneTypes)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
-  }
-
-  public void clearAirborneTypes() {
-    m_airborneTypes.clear();
   }
 
   private void resetAirborneTypes() {
@@ -775,10 +731,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
         .collect(Collectors.toSet());
   }
 
-  public void clearAirborneBases() {
-    m_airborneBases.clear();
-  }
-
   private void resetAirborneBases() {
     m_airborneBases = new HashSet<>();
   }
@@ -827,10 +779,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneTargettedByAa;
   }
 
-  public void clearAirborneTargettedByAa() {
-    m_airborneTargettedByAA.clear();
-  }
-
   private void resetAirborneTargettedByAa() {
     m_airborneTargettedByAA = new HashMap<>();
   }
@@ -854,10 +802,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   static int getAttackRollsBonus(final UnitType ut, final PlayerID player, final GameData data) {
     return sumIntegerMap(TechAbilityAttachment::getAttackRollsBonus, ut, player, data);
-  }
-
-  public void clearAttackRollsBonus() {
-    m_attackRollsBonus.clear();
   }
 
   private void resetAttackRollsBonus() {
@@ -906,16 +850,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return sumIntegerMap(TechAbilityAttachment::getBombingBonus, ut, player, data);
   }
 
-  public void clearDefenseRollsBonus() {
-    m_defenseRollsBonus.clear();
-  }
-
   private void resetDefenseRollsBonus() {
     m_defenseRollsBonus = new IntegerMap<>();
-  }
-
-  public void clearBombingBonus() {
-    m_bombingBonus.clear();
   }
 
   private void resetBombingBonus() {

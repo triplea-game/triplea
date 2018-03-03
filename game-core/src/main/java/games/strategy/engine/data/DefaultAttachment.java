@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
@@ -52,14 +53,10 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     checkNotNull(namedAttachable);
     checkNotNull(attachmentName);
     checkNotNull(attachmentType);
-
-    final T attachment = attachmentType.cast(namedAttachable.getAttachment(attachmentName));
-    if (attachment == null) {
-      throw new IllegalStateException(String.format("No attachment named '%s' of type '%s' for object named '%s'",
-          attachmentName, attachmentType, namedAttachable.getName()));
-    }
-
-    return attachment;
+    return Optional.ofNullable(attachmentType.cast(namedAttachable.getAttachment(attachmentName)))
+        .orElseThrow(
+            () -> new IllegalStateException(String.format("No attachment named '%s' of type '%s' for object named '%s'",
+                attachmentName, attachmentType, namedAttachable.getName())));
   }
 
   /**
@@ -81,25 +78,13 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return true;
     } else if (value.equalsIgnoreCase(Constants.PROPERTY_FALSE)) {
       return false;
-    } else {
-      throw new IllegalArgumentException("Attachments: " + value + " is not a valid boolean");
     }
-  }
+    throw new IllegalArgumentException("Attachments: " + value + " is not a valid boolean");
 
-  protected static IllegalArgumentException getSetterExceptionMessage(final DefaultAttachment failingObject,
-      final String propertyName, final String givenValue, final String... allowedValues) {
-    final StringBuilder sb = new StringBuilder();
-    sb.append(failingObject.getClass().getName()).append(": ").append(failingObject.getName()).append(": property ")
-        .append(propertyName).append(" must be either ");
-    sb.append(allowedValues[0]);
-    for (int i = 1; i < allowedValues.length; ++i) {
-      sb.append(" or ").append(allowedValues[i]);
-    }
-    return new IllegalArgumentException(sb + " ([Not Allowed] Given: " + givenValue + ")");
   }
 
   protected String thisErrorMsg() {
-    return "   for: " + this.toString();
+    return "   for: " + toString();
   }
 
   /**
@@ -153,10 +138,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
     final DefaultAttachment other = (DefaultAttachment) obj;
@@ -167,16 +149,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
     } else if (!m_attachedTo.toString().equals(other.m_attachedTo.toString())) {
       return false;
     }
-    // else if (!m_attachedTo.equals(other.m_attachedTo)) // m_attachedTo does not override equals, so we should not
-    // test it
-    // return false;
-    if (m_name == null) {
-      if (other.m_name != null) {
-        return false;
-      }
-    } else if (!m_name.equals(other.m_name)) {
-      return false;
-    }
-    return this.toString().equals(other.toString());
+    return Objects.equals(m_name, other.m_name) || this.toString().equals(other.toString());
   }
 }

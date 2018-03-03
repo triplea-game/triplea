@@ -22,9 +22,7 @@ public final class FakeAttachment implements IAttachment {
   private final String name;
 
   public FakeAttachment(final String name) {
-    checkNotNull(name);
-
-    this.name = name;
+    this.name = checkNotNull(name);
   }
 
   @Override
@@ -34,9 +32,7 @@ public final class FakeAttachment implements IAttachment {
     } else if (!(obj instanceof FakeAttachment)) {
       return false;
     }
-
-    final FakeAttachment other = (FakeAttachment) obj;
-    return Objects.equals(name, other.name);
+    return Objects.equals(name, ((FakeAttachment) obj).name);
   }
 
   @Override

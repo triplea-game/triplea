@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -71,11 +72,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * can be null.
    */
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setOwner(PlayerID player) {
-    if (player == null) {
-      player = PlayerID.NULL_PLAYERID;
-    }
-    m_owner = player;
+  public void setOwner(final PlayerID player) {
+    m_owner = Optional.ofNullable(player).orElse(PlayerID.NULL_PLAYERID);
   }
 
   @Override

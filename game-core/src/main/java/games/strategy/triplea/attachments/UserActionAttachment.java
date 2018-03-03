@@ -103,10 +103,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     return m_activateTrigger;
   }
 
-  public void clearActivateTrigger() {
-    m_activateTrigger.clear();
-  }
-
   private void resetActivateTrigger() {
     m_activateTrigger = new ArrayList<>();
   }

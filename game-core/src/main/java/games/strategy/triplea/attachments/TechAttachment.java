@@ -398,27 +398,17 @@ public class TechAttachment extends DefaultAttachment {
     return genericTech;
   }
 
-  public void clearGenericTech() {
-    genericTech.clear();
-  }
-
   @Override
   public void validate(final GameData data) {}
 
   public static boolean isMechanizedInfantry(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getMechanizedInfantry();
+    return ta != null && ta.getMechanizedInfantry();
   }
 
   public static boolean isAirTransportable(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getParatroopers();
+    return ta != null && ta.getParatroopers();
   }
 
   @Override
