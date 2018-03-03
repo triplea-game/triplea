@@ -333,21 +333,12 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setVps(final String value) {
-    m_vps = getInt(value);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setVps(final Integer value) {
+  private void setVps(final int value) {
     m_vps = value;
   }
 
   public int getVps() {
     return m_vps;
-  }
-
-  private void resetVps() {
-    m_vps = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -563,11 +554,11 @@ public class PlayerAttachment extends DefaultAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .put("vps",
-            MutableProperty.of(
-                this::setVps,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setVps,
                 this::getVps,
-                this::resetVps))
+                () -> 0))
         .put("captureVps",
             MutableProperty.of(
                 this::setCaptureVps,

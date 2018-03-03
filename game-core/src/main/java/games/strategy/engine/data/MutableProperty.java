@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.function.Supplier;
 
 import games.strategy.util.function.ThrowingConsumer;
+import games.strategy.util.function.ThrowingFunction;
 
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.
@@ -143,6 +144,20 @@ public final class MutableProperty<T> {
 
   public static MutableProperty<String> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
     return ofString(stringSetter, noGetter(), noResetter());
+  }
+
+  public static <T> MutableProperty<T> ofMapper(
+      final ThrowingFunction<String, T, Exception> mapper,
+      final ThrowingConsumer<T, Exception> setter,
+      final Supplier<T> getter,
+      final Supplier<T> defaultValue) {
+    return new MutableProperty<>(setter, o -> setter.accept(mapper.apply(o)), getter, () -> {
+      try {
+        setter.accept(defaultValue.get());
+      } catch (final Exception e) {
+        throw new IllegalStateException("Unexpected Error while resetting value", e);
+      }
+    });
   }
 
   /**

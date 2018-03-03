@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -552,21 +553,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setWhenCapturedSustainsDamage(final String s) {
-    m_whenCapturedSustainsDamage = getInt(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setWhenCapturedSustainsDamage(final Integer s) {
+  private void setWhenCapturedSustainsDamage(final int s) {
     m_whenCapturedSustainsDamage = s;
   }
 
   public int getWhenCapturedSustainsDamage() {
     return m_whenCapturedSustainsDamage;
-  }
-
-  private void resetWhenCapturedSustainsDamage() {
-    m_whenCapturedSustainsDamage = 0;
   }
 
   /**
@@ -1295,21 +1287,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setTransportCapacity(final String s) {
-    m_transportCapacity = getInt(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setTransportCapacity(final Integer s) {
+  private void setTransportCapacity(final int s) {
     m_transportCapacity = s;
   }
 
   public int getTransportCapacity() {
     return m_transportCapacity;
-  }
-
-  private void resetTransportCapacity() {
-    m_transportCapacity = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
@@ -1323,26 +1306,12 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setHitPoints(final String s) {
-    m_hitPoints = getInt(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setHitPoints(final Integer value) {
+  private void setHitPoints(final int value) {
     m_hitPoints = value;
   }
 
   public int getHitPoints() {
     return m_hitPoints;
-  }
-
-  private void resetHitPoints() {
-    m_hitPoints = 1;
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setTransportCost(final String s) {
-    m_transportCost = getInt(s);
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1352,10 +1321,6 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getTransportCost() {
     return m_transportCost;
-  }
-
-  private void resetTransportCost() {
-    m_transportCost = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1483,22 +1448,14 @@ public class UnitAttachment extends DefaultAttachment {
         "Resetting Artillery Support Count (UnitAttachment) is not allowed, please use Support Attachments instead.");
   }
 
+  @VisibleForTesting
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setBombard(final String s) {
-    m_bombard = getInt(s);
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setBombard(final Integer s) {
+  public void setBombard(final int s) {
     m_bombard = s;
   }
 
   public int getBombard() {
     return m_bombard > 0 ? m_bombard : m_attack;
-  }
-
-  private void resetBombard() {
-    m_bombard = -1;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -3516,11 +3473,11 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getCanBombard,
                 this::resetCanBombard))
         .put("bombard",
-            MutableProperty.of(
-                this::setBombard,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setBombard,
                 this::getBombard,
-                this::resetBombard))
+                () -> -1))
         .put("isSub",
             MutableProperty.of(
                 this::setIsSub,
@@ -3600,17 +3557,17 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getIsCombatTransport,
                 this::resetIsCombatTransport))
         .put("transportCapacity",
-            MutableProperty.of(
-                this::setTransportCapacity,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setTransportCapacity,
                 this::getTransportCapacity,
-                this::resetTransportCapacity))
+                () -> -1))
         .put("transportCost",
-            MutableProperty.of(
-                this::setTransportCost,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setTransportCost,
                 this::getTransportCost,
-                this::resetTransportCost))
+                () -> -1))
         .put("carrierCapacity",
             MutableProperty.of(
                 this::setCarrierCapacity,
@@ -3821,11 +3778,11 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getCreatesResourcesList,
                 this::resetCreatesResourcesList))
         .put("hitPoints",
-            MutableProperty.of(
-                this::setHitPoints,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setHitPoints,
                 this::getHitPoints,
-                this::resetHitPoints))
+                () -> 1))
         .put("canBeDamaged",
             MutableProperty.of(
                 this::setCanBeDamaged,
@@ -3982,11 +3939,11 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getWhenCapturedChangesInto,
                 this::resetWhenCapturedChangesInto))
         .put("whenCapturedSustainsDamage",
-            MutableProperty.of(
-                this::setWhenCapturedSustainsDamage,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setWhenCapturedSustainsDamage,
                 this::getWhenCapturedSustainsDamage,
-                this::resetWhenCapturedSustainsDamage))
+                () -> 0))
         .put("canBeCapturedOnEnteringBy",
             MutableProperty.of(
                 this::setCanBeCapturedOnEnteringBy,

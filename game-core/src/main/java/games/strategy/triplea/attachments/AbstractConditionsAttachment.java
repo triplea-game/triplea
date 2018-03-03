@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -60,22 +61,17 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   public void setConditions(final String conditions) throws GameParseException {
+    if (m_conditions == null) {
+      m_conditions = new ArrayList<>();
+    }
     final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
     for (final String subString : conditions.split(":")) {
-      RulesAttachment condition = null;
-      for (final PlayerID p : playerIDs) {
-        condition = (RulesAttachment) p.getAttachment(subString);
-        if (condition != null) {
-          break;
-        }
-      }
-      if (condition == null) {
-        throw new GameParseException("Could not find rule. name:" + subString + thisErrorMsg());
-      }
-      if (m_conditions == null) {
-        m_conditions = new ArrayList<>();
-      }
-      m_conditions.add(condition);
+      m_conditions.add(playerIDs.stream()
+          .map(p -> p.getAttachment(subString))
+          .map(RulesAttachment.class::cast)
+          .filter(Objects::nonNull)
+          .findAny()
+          .orElseThrow(() -> new GameParseException("Could not find rule. name:" + subString + thisErrorMsg())));
     }
   }
 
@@ -94,51 +90,26 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setInvert(final String s) {
-    setInvert(getBool(s));
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setInvert(final boolean s) {
     m_invert = s;
   }
 
-  public boolean getInvert() {
+  private boolean getInvert() {
     return m_invert;
-  }
-
-  public void resetInvert() {
-    m_invert = false;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setConditionType(final String value) throws GameParseException {
-    String s = value;
-    if (s.equalsIgnoreCase("AND")) {
-      s = AND;
-    } else if (s.equalsIgnoreCase("OR")) {
-      s = OR;
-    } else if (s.equalsIgnoreCase("XOR")) {
-      s = XOR;
-    } else {
-      final String[] nums = s.split("-");
-      if (nums.length == 1) {
-        if (Integer.parseInt(nums[0]) < 0) {
-          throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
-              + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
-        }
-      } else if (nums.length == 2) {
-        if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0
-            || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1]))) {
-          throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
-              + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
-        }
-      } else {
-        throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
-            + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
+    final String uppercaseValue = value.toUpperCase();
+    if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
+      final String[] split = uppercaseValue.split("-");
+      if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
+        m_conditionType = uppercaseValue;
+        return;
       }
     }
-    m_conditionType = s;
+    throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
+        + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
   }
 
   public String getConditionType() {
@@ -228,14 +199,14 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static boolean areConditionsMet(final List<ICondition> rulesToTest,
       final Map<ICondition, Boolean> testedConditions, final String conditionType) {
     boolean met = false;
-    if (conditionType.equals("AND")) {
+    if (conditionType.equals(AND)) {
       for (final ICondition c : rulesToTest) {
         met = testedConditions.get(c);
         if (!met) {
           break;
         }
       }
-    } else if (conditionType.equals("OR")) {
+    } else if (conditionType.equals(OR)) {
       for (final ICondition c : rulesToTest) {
         met = testedConditions.get(c);
         if (met) {
@@ -308,11 +279,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setChanceIncrementOnFailure(final String value) {
-    setChanceIncrementOnFailure(getInt(value));
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setChanceIncrementOnFailure(final int value) {
     m_chanceIncrementOnFailure = value;
   }
@@ -321,9 +287,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chanceIncrementOnFailure;
   }
 
-  private void resetChanceIncrementOnFailure() {
-    m_chanceIncrementOnFailure = 0;
-  }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setChanceDecrementOnSuccess(final String value) {
@@ -337,10 +300,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 
   public int getChanceDecrementOnSuccess() {
     return m_chanceDecrementOnSuccess;
-  }
-
-  private void resetChanceDecrementOnSuccess() {
-    m_chanceDecrementOnSuccess = 0;
   }
 
   public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge delegateBridge,
@@ -397,28 +356,28 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
                 this::getConditionType,
                 this::resetConditionType))
         .put("invert",
-            MutableProperty.of(
-                this::setInvert,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
                 this::setInvert,
                 this::getInvert,
-                this::resetInvert))
+                () -> false))
         .put("chance",
             MutableProperty.ofString(
                 this::setChance,
                 this::getChance,
                 this::resetChance))
         .put("chanceIncrementOnFailure",
-            MutableProperty.of(
-                this::setChanceIncrementOnFailure,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setChanceIncrementOnFailure,
                 this::getChanceIncrementOnFailure,
-                this::resetChanceIncrementOnFailure))
+                () -> 0))
         .put("chanceDecrementOnSuccess",
-            MutableProperty.of(
-                this::setChanceDecrementOnSuccess,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setChanceDecrementOnSuccess,
                 this::getChanceDecrementOnSuccess,
-                this::resetChanceDecrementOnSuccess))
+                () -> 0))
         .build();
   }
 }

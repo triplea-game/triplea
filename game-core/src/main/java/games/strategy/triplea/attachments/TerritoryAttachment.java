@@ -307,21 +307,12 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setVictoryCity(final String value) {
-    setVictoryCity(getInt(value));
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setVictoryCity(final int value) {
     m_victoryCity = value;
   }
 
   public int getVictoryCity() {
     return m_victoryCity;
-  }
-
-  private void resetVictoryCity() {
-    m_victoryCity = 0;
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -384,18 +375,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setUnitProduction(final String value) {
-    setUnitProduction(getInt(value));
-  }
-
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUnitProduction(final int value) {
     m_unitProduction = value;
-  }
-
-  private void resetUnitProduction() {
-    m_unitProduction = 0;
   }
 
   /**
@@ -822,11 +803,11 @@ public class TerritoryAttachment extends DefaultAttachment {
             MutableProperty.ofWriteOnlyString(
                 this::setProductionOnly))
         .put("victoryCity",
-            MutableProperty.of(
-                this::setVictoryCity,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setVictoryCity,
                 this::getVictoryCity,
-                this::resetVictoryCity))
+                () -> 0))
         .put("isImpassable",
             MutableProperty.of(
                 this::setIsImpassable,
@@ -882,11 +863,11 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::getKamikazeZone,
                 this::resetKamikazeZone))
         .put("unitProduction",
-            MutableProperty.of(
-                this::setUnitProduction,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getInt,
                 this::setUnitProduction,
                 this::getUnitProduction,
-                this::resetUnitProduction))
+                () -> 0))
         .put("blockadeZone",
             MutableProperty.of(
                 this::setBlockadeZone,

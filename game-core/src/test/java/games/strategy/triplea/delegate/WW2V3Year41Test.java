@@ -1050,7 +1050,7 @@ public class WW2V3Year41Test {
     while (ddIter.hasNext()) {
       final Unit unit = ddIter.next();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      ua.setBombard("3");
+      ua.setBombard(3);
     }
     // start the battle phase, this will ask the user to bombard
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
