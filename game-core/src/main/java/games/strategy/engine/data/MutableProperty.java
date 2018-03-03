@@ -146,6 +146,13 @@ public final class MutableProperty<T> {
     return ofString(stringSetter, noGetter(), noResetter());
   }
 
+  /**
+   * A special convinience method trying to keep everything slightly more functional.
+   * Instead of specifying 2 setters, one getter and a resetter with this method
+   * only one setter, one getter, a function mapping a String to the setters type
+   * and a Supplier supplying the default value that's getting fed in again using the setter
+   * are required. This keeps stuff more readable and more testable.
+   */
   public static <T> MutableProperty<T> ofMapper(
       final ThrowingFunction<String, T, Exception> mapper,
       final ThrowingConsumer<T, Exception> setter,
@@ -154,6 +161,8 @@ public final class MutableProperty<T> {
     return new MutableProperty<>(setter, o -> setter.accept(mapper.apply(o)), getter, () -> {
       try {
         setter.accept(defaultValue.get());
+      } catch (final RuntimeException e) {
+        throw e;
       } catch (final Exception e) {
         throw new IllegalStateException("Unexpected Error while resetting value", e);
       }

@@ -30,10 +30,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
-  // Do Not Export
   private boolean m_offence = false;
   @InternalDoNotExport
-  // Do Not Export
   private boolean m_defence = false;
   @InternalDoNotExport
   private boolean m_roll = false;
@@ -337,7 +335,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     rule.setBonusType(Constants.OLD_ART_RULE_NAME);
     rule.setDice("strength");
     rule.setFaction("allied");
-    rule.setImpArtTech(String.valueOf(true));
+    rule.setImpArtTech(true);
     rule.setNumber(first ? 0 : 1);
     rule.setSide("offence");
     rule.addUnitTypes(first ? Collections.singleton(type) : getTargets(data));

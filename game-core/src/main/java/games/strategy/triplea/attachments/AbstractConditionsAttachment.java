@@ -60,7 +60,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    */
   @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-  public void setConditions(final String conditions) throws GameParseException {
+  protected void setConditions(final String conditions) throws GameParseException {
     if (m_conditions == null) {
       m_conditions = new ArrayList<>();
     }
@@ -99,7 +99,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  public void setConditionType(final String value) throws GameParseException {
+  private void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
     if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
       final String[] split = uppercaseValue.split("-");
@@ -112,11 +112,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
   }
 
-  public String getConditionType() {
+  private String getConditionType() {
     return m_conditionType;
   }
 
-  public void resetConditionType() {
+  private void resetConditionType() {
     m_conditionType = AND;
   }
 
