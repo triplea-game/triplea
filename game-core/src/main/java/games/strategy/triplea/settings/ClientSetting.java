@@ -180,6 +180,7 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void addSaveListener(final Consumer<String> saveListener) {
+    Preconditions.checkNotNull(saveListener);
     onSaveActions.add(saveListener);
   }
 
