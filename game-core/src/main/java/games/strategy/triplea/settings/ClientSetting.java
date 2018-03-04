@@ -170,8 +170,7 @@ public enum ClientSetting implements GameSetting {
    * </p>
    */
   public static void initialize() {
-    setPreferences(
-        Preconditions.checkNotNull(Preferences.userNodeForPackage(ClientSetting.class)));
+    setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
   }
 
   @VisibleForTesting
