@@ -338,6 +338,7 @@ final class SelectionComponentFactory {
   static <T> Supplier<SelectionComponent<JComponent>> selectionBox(
       final ClientSetting clientSetting,
       final List<T> availableOptions,
+      final T selectedOption,
       final Function<T, ?> renderFunction) {
     return () -> new AlwaysValidInputSelectionComponent() {
       final JComboBox<T> comboBox = getCombobox();
@@ -345,6 +346,7 @@ final class SelectionComponentFactory {
       private JComboBox<T> getCombobox() {
         final JComboBox<T> comboBox = new JComboBox<>();
         availableOptions.forEach(comboBox::addItem);
+        comboBox.setSelectedItem(selectedOption);
         comboBox.setRenderer(new DefaultListCellRenderer() {
           private static final long serialVersionUID = -3094995494539073655L;
 

@@ -14,6 +14,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
@@ -82,7 +83,9 @@ public class TripleA implements IGameLoader {
     }
 
     if (display != null) {
-      game.removeDisplay(display);
+      if (game != null) {
+        game.removeDisplay(display);
+      }
       display.shutDown();
       display = null;
     }
@@ -116,6 +119,7 @@ public class TripleA implements IGameLoader {
     } else {
       SwingAction.invokeAndWait(() -> {
         final TripleAFrame frame = new TripleAFrame(game, localPlayers);
+        LookAndFeelSwingFrameListener.register(frame);
         display = new TripleADisplay(frame);
         game.addDisplay(display);
         soundChannel = new DefaultSoundChannel(localPlayers);

@@ -1,19 +1,18 @@
 package games.strategy.triplea.settings;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
@@ -132,10 +131,9 @@ public enum ClientSetting implements GameSetting {
   DICE_SERVER_FOR_PBEM_GAMES;
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
-  private final List<Consumer<String>> onSaveAction = new ArrayList<>();
+
   public final String defaultValue;
-
-
+  private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
 
   ClientSetting(final String defaultValue) {
     this.defaultValue = defaultValue;
@@ -157,7 +155,6 @@ public enum ClientSetting implements GameSetting {
     this(String.valueOf(defaultValue));
   }
 
-
   /**
    * Initializes the client settings framework.
    *
@@ -167,14 +164,8 @@ public enum ClientSetting implements GameSetting {
    * </p>
    */
   public static void initialize() {
-    setPreferences(Preferences.userNodeForPackage(ClientSetting.class));
-  }
-
-  @VisibleForTesting
-  static void setPreferences(final Preferences preferences) {
-    checkNotNull(preferences);
-
-    preferencesRef.set(preferences);
+    setPreferences(
+        Preconditions.checkNotNull(Preferences.userNodeForPackage(ClientSetting.class)));
   }
 
   @VisibleForTesting
@@ -182,11 +173,16 @@ public enum ClientSetting implements GameSetting {
     preferencesRef.set(null);
   }
 
-  public void addSaveListener(Consumer<String> saveListener) {
-    onSaveAction.add(saveListener);
+  @Override
+  public void addSaveListener(final Consumer<String> saveListener) {
+    onSaveActions.add(saveListener);
   }
 
-(??)
+  @Override
+  public void removeSaveListener(final Consumer<String> saveListener) {
+    onSaveActions.remove(saveListener);
+  }
+
   public static void showSettingsWindow() {
     SettingsWindow.INSTANCE.open();
   }
@@ -210,6 +206,10 @@ public enum ClientSetting implements GameSetting {
             + "or ClientSetting#setPreferences() in test code?"));
   }
 
+  @VisibleForTesting
+  static void setPreferences(final Preferences preferences) {
+    preferencesRef.set(preferences);
+  }
 
   @Override
   public boolean isSet() {
@@ -218,7 +218,7 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void save(final String newValue) {
-    onSaveAction.forEach(saveAction -> saveAction.accept(newValue));
+    onSaveActions.forEach(saveAction -> saveAction.accept(newValue));
     getPreferences().put(name(), newValue);
   }
 
@@ -236,6 +236,7 @@ public enum ClientSetting implements GameSetting {
   }
 
   @Override
+  @Nonnull
   public String value() {
     return Strings.nullToEmpty(getPreferences().get(name(), defaultValue));
   }

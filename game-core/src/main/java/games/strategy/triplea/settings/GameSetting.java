@@ -42,4 +42,6 @@ public interface GameSetting {
   void resetAndFlush();
 
   void addSaveListener(Consumer<String> listener);
+
+  void removeSaveListener(Consumer<String> listener);
 }

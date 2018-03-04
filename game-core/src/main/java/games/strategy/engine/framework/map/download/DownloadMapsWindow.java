@@ -35,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Interruptibles;
@@ -168,6 +169,7 @@ public class DownloadMapsWindow extends JFrame {
 
       window = new DownloadMapsWindow(mapNames, downloads);
       SwingComponents.addWindowClosedListener(window, this::uninitialize);
+      LookAndFeelSwingFrameListener.register(window);
       state = State.INITIALIZED;
 
       show();
