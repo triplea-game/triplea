@@ -10,6 +10,9 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.annotation.Nonnull;
+import javax.swing.UIManager;
+
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -66,7 +69,10 @@ public enum ClientSetting implements GameSetting {
 
   LOBBY_LAST_USED_PORT,
 
-  LOOK_AND_FEEL_PREF,
+  LOOK_AND_FEEL_PREF(
+      SystemProperties.isMac()
+          ? UIManager.getSystemLookAndFeelClassName()
+          : SubstanceGraphiteLookAndFeel.class.getName()),
 
   MAP_EDGE_SCROLL_SPEED(30),
 
