@@ -224,7 +224,7 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void save(final String newValue) {
-    onSaveActions.forEach(saveAction -> saveAction.accept(newValue));
+    onSaveActions.forEach(saveAction -> saveAction.accept(Strings.nullToEmpty(newValue)));
     getPreferences().put(name(), newValue);
   }
 
