@@ -31,7 +31,7 @@ ext {
     rootFilesDir = file("$buildDir/rootFiles")
 }
 
-version="1.0.0"
+version = System.getenv('LOBBY_VERSION') ?: "dev";
 
 sourceSets {
     integTest {
