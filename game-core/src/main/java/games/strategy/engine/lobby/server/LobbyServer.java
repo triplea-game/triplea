@@ -10,7 +10,6 @@ import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.util.Version;
 
 public class LobbyServer {
@@ -20,7 +19,7 @@ public class LobbyServer {
   private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
   private final Messengers messengers;
 
-  private LobbyServer(final int port) {
+  LobbyServer(final int port) {
     final IServerMessenger server;
     try {
       server = new ServerMessenger(ADMIN_USERNAME, port);
@@ -45,21 +44,5 @@ public class LobbyServer {
 
     // now we are open for business
     server.setAcceptNewConnections(true);
-  }
-
-  /**
-   * Launches a lobby instance.
-   * Lobby stays running until the process is killed or the lobby is shutdown.
-   */
-  public static void main(final String[] args) {
-    try {
-      ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-      final int port = LobbyContext.lobbyPropertyReader().getPort();
-      logger.info("Trying to listen on port:" + port);
-      new LobbyServer(port);
-      logger.info("Lobby started");
-    } catch (final Exception ex) {
-      logger.log(Level.SEVERE, ex.toString(), ex);
-    }
   }
 }
