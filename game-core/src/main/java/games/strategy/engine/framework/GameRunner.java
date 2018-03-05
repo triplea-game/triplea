@@ -59,6 +59,7 @@ import games.strategy.engine.auto.health.check.LocalSystemChecker;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -154,6 +155,7 @@ public class GameRunner {
 
   private static JFrame newMainFrame() {
     final JFrame frame = new JFrame("TripleA");
+    LookAndFeelSwingFrameListener.register(frame);
 
     frame.add(new MainPanel(setupPanelModel));
     frame.pack();

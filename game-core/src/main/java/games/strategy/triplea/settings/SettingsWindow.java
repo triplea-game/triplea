@@ -37,13 +37,22 @@ import swinglib.JTextAreaBuilder;
  * one tab per non-hidden {@code SettingType}.
  * All data needed to render the settings UI is pulled from the {@code ClientSetting} enum.
  */
-enum SettingsWindow {
+public enum SettingsWindow {
   INSTANCE;
 
   private @Nullable JDialog dialog;
   private @Nullable JTabbedPane tabbedPane;
   private final List<SettingType> settingTypes = Collections.unmodifiableList(Arrays.asList(SettingType.values()));
 
+
+  public static void updateLookAndFeel() {
+    Optional.ofNullable(INSTANCE.dialog).ifPresent(SwingUtilities::updateComponentTreeUI);
+    Optional.ofNullable(INSTANCE.tabbedPane).ifPresent(SwingUtilities::updateComponentTreeUI);
+  }
+
+  /**
+   * Disposes window and nulls out references.
+   */
   public void close() {
     if (dialog != null) {
       dialog.dispose();
@@ -53,6 +62,9 @@ enum SettingsWindow {
     }
   }
 
+  /**
+   * Opens the settings Swing window.
+   */
   public void open() {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     if (dialog == null) {

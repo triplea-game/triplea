@@ -1,5 +1,6 @@
 package games.strategy.debug;
 
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
@@ -10,6 +11,15 @@ import games.strategy.util.Interruptibles;
 public final class ErrorConsole extends GenericConsole {
   private static final long serialVersionUID = -3489030525309243438L;
   private static ErrorConsole console;
+
+
+  static {
+    ClientSetting.SHOW_CONSOLE_ALWAYS.addSaveListener(newValue -> {
+      if (newValue.equals(String.valueOf(true))) {
+        ErrorConsole.showConsole();
+      }
+    });
+  }
 
   private ErrorConsole() {
     super("TripleA Console");

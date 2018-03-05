@@ -74,8 +74,10 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       SelectionComponentFactory.selectionBox(
           ClientSetting.LOOK_AND_FEEL_PREF,
           LookAndFeel.getLookAndFeelAvailableList(),
+          ClientSetting.LOOK_AND_FEEL_PREF.value(),
           s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", "")),
-      "Adjust the UI theme for the game, requires a restart to take effect"),
+      "Updates UI theme for TripleA.\n"
+          + "WARNING: restart all running TripleA instances after changing this setting to avoid system instability."),
 
   MAP_EDGE_SCROLL_SPEED_BINDING(
       "Map Scroll Speed",

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -41,11 +42,25 @@ import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.SettingsWindow;
 
 /**
  * Provides methods for working with the Swing Look-And-Feel.
  */
 public final class LookAndFeel {
+  static {
+    ClientSetting.LOOK_AND_FEEL_PREF.addSaveListener(newValue -> {
+      setupLookAndFeel(newValue);
+      SettingsWindow.updateLookAndFeel();
+      JOptionPane.showMessageDialog(
+          null,
+          "Look and feel changes can cause instability.\n"
+              + "Please restart all running TripleA instances.",
+          "Close TripleA and Restart",
+          JOptionPane.WARNING_MESSAGE);
+    });
+  }
+
   private LookAndFeel() {}
 
   /**
@@ -80,10 +95,13 @@ public final class LookAndFeel {
    * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void setupLookAndFeel() {
-    checkState(SwingUtilities.isEventDispatchThread());
+    setupLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
+  }
 
+  private static void setupLookAndFeel(final String lookAndFeelName) {
+    checkState(SwingUtilities.isEventDispatchThread());
     try {
-      UIManager.setLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
+      UIManager.setLookAndFeel(lookAndFeelName);
     } catch (final Throwable t) {
       if (!SystemProperties.isMac()) {
         try {

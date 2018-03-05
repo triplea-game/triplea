@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 
@@ -29,6 +30,7 @@ public abstract class GenericConsole extends JFrame {
 
   protected GenericConsole(final String title) {
     super(title);
+    LookAndFeelSwingFrameListener.register(this);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout());
     textArea.setLineWrap(true);

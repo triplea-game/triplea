@@ -1,18 +1,21 @@
 package games.strategy.triplea.settings;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.File;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.swing.UIManager;
 
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
@@ -66,7 +69,10 @@ public enum ClientSetting implements GameSetting {
 
   LOBBY_LAST_USED_PORT,
 
-  LOOK_AND_FEEL_PREF(getDefaultLookAndFeelClassName()),
+  LOOK_AND_FEEL_PREF(
+      SystemProperties.isMac()
+          ? UIManager.getSystemLookAndFeelClassName()
+          : SubstanceGraphiteLookAndFeel.class.getName()),
 
   MAP_EDGE_SCROLL_SPEED(30),
 
@@ -133,13 +139,14 @@ public enum ClientSetting implements GameSetting {
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
   public final String defaultValue;
-
-  ClientSetting() {
-    this("");
-  }
+  private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
 
   ClientSetting(final String defaultValue) {
     this.defaultValue = defaultValue;
+  }
+
+  ClientSetting() {
+    this("");
   }
 
   ClientSetting(final File file) {
@@ -167,32 +174,19 @@ public enum ClientSetting implements GameSetting {
   }
 
   @VisibleForTesting
-  static void setPreferences(final Preferences preferences) {
-    checkNotNull(preferences);
-
-    preferencesRef.set(preferences);
-  }
-
-  @VisibleForTesting
   static void resetPreferences() {
     preferencesRef.set(null);
   }
 
-  private static Preferences getPreferences() {
-    final @Nullable Preferences preferences = preferencesRef.get();
-    if (preferences == null) {
-      throw new IllegalStateException("ClientSetting framework has not been initialized. "
-          + "Did you forget to call ClientSetting#initialize() in production code "
-          + "or ClientSetting#setPreferences() in test code?");
-    }
-    return preferences;
+  @Override
+  public void addSaveListener(final Consumer<String> saveListener) {
+    Preconditions.checkNotNull(saveListener);
+    onSaveActions.add(saveListener);
   }
 
-  private static String getDefaultLookAndFeelClassName() {
-    // stay consistent with mac look and feel if we are on a mac
-    return SystemProperties.isMac()
-        ? UIManager.getSystemLookAndFeelClassName()
-        : SubstanceGraphiteLookAndFeel.class.getName();
+  @Override
+  public void removeSaveListener(final Consumer<String> saveListener) {
+    onSaveActions.remove(saveListener);
   }
 
   public static void showSettingsWindow() {
@@ -211,6 +205,18 @@ public enum ClientSetting implements GameSetting {
     }
   }
 
+  private static Preferences getPreferences() {
+    return Optional.ofNullable(preferencesRef.get())
+        .orElseThrow(() -> new IllegalStateException("ClientSetting framework has not been initialized. "
+            + "Did you forget to call ClientSetting#initialize() in production code "
+            + "or ClientSetting#setPreferences() in test code?"));
+  }
+
+  @VisibleForTesting
+  static void setPreferences(final Preferences preferences) {
+    preferencesRef.set(preferences);
+  }
+
   @Override
   public boolean isSet() {
     return !value().trim().isEmpty();
@@ -218,7 +224,13 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void save(final String newValue) {
-    getPreferences().put(name(), newValue);
+    onSaveActions.forEach(saveAction -> saveAction.accept(Strings.nullToEmpty(newValue)));
+
+    if (newValue == null) {
+      getPreferences().remove(name());
+    } else {
+      getPreferences().put(name(), newValue);
+    }
   }
 
   public static void save(final String key, final String value) {
@@ -235,6 +247,7 @@ public enum ClientSetting implements GameSetting {
   }
 
   @Override
+  @Nonnull
   public String value() {
     return Strings.nullToEmpty(getPreferences().get(name(), defaultValue));
   }
