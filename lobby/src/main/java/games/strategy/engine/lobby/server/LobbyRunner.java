@@ -5,6 +5,9 @@ import java.util.logging.Logger;
 
 import games.strategy.sound.ClipPlayer;
 
+/**
+ * A 'main' class to launch the lobby server.
+ */
 public class LobbyRunner {
   private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
 
