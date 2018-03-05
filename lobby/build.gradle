@@ -134,8 +134,7 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
-task generateZipReleases(group: 'release', dependsOn: [lobbyServer]) {}
-
+task release(group: 'release', dependsOn: [lobbyServer]) {}
 
 check {
     dependsOn 'junitPlatformTest', 'integTest'
