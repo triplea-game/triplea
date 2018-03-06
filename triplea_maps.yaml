@@ -1827,12 +1827,12 @@
 - mapName: House of Habsburg
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/house_of_habsburg/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/house_of_habsburg/master/description/MapThumbnail.jpeg
   description: |
     <br>
-    House of Habsburg
-    <br>Large map of Europe set in the 1600s
+    House of Habsburg Beta Version
+    <br>Large map of Europe set in the 1500s
 - mapName: Map Making Tutorial
   url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
   version: 1
