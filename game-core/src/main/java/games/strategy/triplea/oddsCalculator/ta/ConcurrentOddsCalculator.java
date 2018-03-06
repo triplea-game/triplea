@@ -54,10 +54,17 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private final Object mutexSetGameData = new Object();
   // do not let multiple calculations or setting calc data happen at same time
   private final Object mutexCalcIsRunning = new Object();
+  private final Runnable dataLoadedAction;
 
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
+    this(threadNamePrefix, () -> {
+    });
+  }
+
+  ConcurrentOddsCalculator(final String threadNamePrefix, final Runnable dataLoadedAction) {
     executor = Executors.newFixedThreadPool(MAX_THREADS,
         new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
+    this.dataLoadedAction = dataLoadedAction;
   }
 
   @Override
@@ -179,6 +186,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     } else {
       // should make sure that all workers have their game data set before we can call calculate and other things
       isDataSet = true;
+      dataLoadedAction.run();
     }
     // allow setting new data to take place if it is waiting on us
     latchWorkerThreadsCreation.countDown();
