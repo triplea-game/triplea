@@ -54,7 +54,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   private final Object mutexSetGameData = new Object();
   // do not let multiple calculations or setting calc data happen at same time
   private final Object mutexCalcIsRunning = new Object();
-  private final List<OddsCalculatorListener> listeners = new ArrayList<>();
 
   public ConcurrentOddsCalculator(final String threadNamePrefix) {
     executor = Executors.newFixedThreadPool(MAX_THREADS,
@@ -180,7 +179,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     } else {
       // should make sure that all workers have their game data set before we can call calculate and other things
       isDataSet = true;
-      notifyListenersGameDataIsSet();
     }
     // allow setting new data to take place if it is waiting on us
     latchWorkerThreadsCreation.countDown();
@@ -194,9 +192,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     cancelCurrentOperation = Integer.MIN_VALUE / 2;
     cancel();
     executor.shutdown();
-    synchronized (listeners) {
-      listeners.clear();
-    }
   }
 
   private void awaitLatch() {
@@ -406,28 +401,6 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   public void cancel() {
     for (final OddsCalculator worker : workers) {
       worker.cancel();
-    }
-  }
-
-  @Override
-  public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (listeners) {
-      listeners.add(listener);
-    }
-  }
-
-  @Override
-  public void removeOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (listeners) {
-      listeners.remove(listener);
-    }
-  }
-
-  private void notifyListenersGameDataIsSet() {
-    synchronized (listeners) {
-      for (final OddsCalculatorListener listener : listeners) {
-        listener.dataReady();
-      }
     }
   }
 }

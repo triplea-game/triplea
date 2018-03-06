@@ -14,7 +14,6 @@ import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorListener;
 
 public class FastOddsEstimator implements IOddsCalculator {
 
@@ -75,63 +74,34 @@ public class FastOddsEstimator implements IOddsCalculator {
   }
 
   @Override
-  public void setKeepOneAttackingLandUnit(final boolean bool) {
-
-  }
+  public void setKeepOneAttackingLandUnit(final boolean bool) {}
 
   @Override
-  public void setAmphibious(final boolean bool) {
-
-  }
+  public void setAmphibious(final boolean bool) {}
 
   @Override
-  public void setRetreatAfterRound(final int value) {
-
-  }
+  public void setRetreatAfterRound(final int value) {}
 
   @Override
-  public void setRetreatAfterXUnitsLeft(final int value) {
-
-  }
+  public void setRetreatAfterXUnitsLeft(final int value) {}
 
   @Override
-  public void setRetreatWhenOnlyAirLeft(final boolean value) {
-
-  }
+  public void setRetreatWhenOnlyAirLeft(final boolean value) {}
 
   @Override
-  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {
-
-  }
+  public void setAttackerOrderOfLosses(final String attackerOrderOfLosses) {}
 
   @Override
-  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {
-
-  }
+  public void setDefenderOrderOfLosses(final String defenderOrderOfLosses) {}
 
   @Override
-  public void cancel() {
-
-  }
+  public void cancel() {}
 
   @Override
-  public void shutdown() {
-
-  }
+  public void shutdown() {}
 
   @Override
   public int getThreadCount() {
     return 1;
   }
-
-  @Override
-  public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
-
-  }
-
-  @Override
-  public void removeOddsCalculatorListener(final OddsCalculatorListener listener) {
-
-  }
-
 }

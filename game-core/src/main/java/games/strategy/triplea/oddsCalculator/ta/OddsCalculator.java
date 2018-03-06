@@ -80,7 +80,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private volatile boolean isDataSet = false;
   private volatile boolean isCalcSet = false;
   private volatile boolean isRunning = false;
-  private final List<OddsCalculatorListener> listeners = new ArrayList<>();
 
   public OddsCalculator(final GameData data) {
     this(data, false);
@@ -90,7 +89,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
     if (data != null) {
       isDataSet = true;
-      notifyListenersGameDataIsSet();
     }
   }
 
@@ -111,10 +109,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     bombardingUnits = new ArrayList<>();
     territoryEffects = new ArrayList<>();
     runCount = 0;
-    if (data != null) {
-      isDataSet = true;
-      notifyListenersGameDataIsSet();
-    }
+    isDataSet = data != null;
   }
 
   /**
@@ -261,9 +256,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   @Override
   public void shutdown() {
     cancel();
-    synchronized (listeners) {
-      listeners.clear();
-    }
   }
 
   @Override
@@ -348,28 +340,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     }
     Collections.reverse(order);
     return order;
-  }
-
-  @Override
-  public void addOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (listeners) {
-      listeners.add(listener);
-    }
-  }
-
-  @Override
-  public void removeOddsCalculatorListener(final OddsCalculatorListener listener) {
-    synchronized (listeners) {
-      listeners.remove(listener);
-    }
-  }
-
-  private void notifyListenersGameDataIsSet() {
-    synchronized (listeners) {
-      for (final OddsCalculatorListener listener : listeners) {
-        listener.dataReady();
-      }
-    }
   }
 
   private static class DummyDelegateBridge implements IDelegateBridge {
