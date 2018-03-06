@@ -41,9 +41,6 @@ public class AggregateResults {
     return results;
   }
 
-  /**
-   * @return {@code null} if we have zero results.
-   */
   private Optional<BattleResults> getBattleResultsClosestToAverage() {
     return results.stream()
         .min(Comparator.comparingDouble(
