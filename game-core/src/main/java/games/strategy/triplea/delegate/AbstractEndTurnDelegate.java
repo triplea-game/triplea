@@ -35,7 +35,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.ObjectiveDummyDelegateBridge;
 import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
@@ -61,7 +60,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
 
   /**
    * Find estimated income for given player. This only takes into account income from territories,
-   * units, and NOs. It ignores blockades, war bonds, triggers, relationship upkeep, and bonus income.
+   * units, NOs, and triggers. It ignores blockades, war bonds, relationship upkeep, and bonus income.
    */
   public static IntegerMap<Resource> findEstimatedIncome(final PlayerID player, final GameData data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
@@ -78,11 +77,10 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
     }
 
-    // Add unit generated resources and NOs
+    // Add unit generated resources, NOs, and triggers
     resources.add(EndTurnDelegate.findUnitCreatedResources(player, data));
-    final IDelegateBridge bridge = new ObjectiveDummyDelegateBridge(data);
-    final int pusFromNationalObjectives = EndTurnDelegate.findNationalObjectivePus(player, data, bridge);
-    resources.add(new Resource(Constants.PUS, data), pusFromNationalObjectives);
+    resources.add(EndTurnDelegate.findNationalObjectiveAndTriggerResources(player, data));
+
     return resources;
   }
 
