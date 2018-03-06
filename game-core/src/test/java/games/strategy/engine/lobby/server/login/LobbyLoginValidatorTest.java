@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,7 +29,7 @@ import org.mockito.Mock;
 import com.example.mockito.MockitoExtension;
 import com.google.common.collect.ImmutableMap;
 
-import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.MemoryPropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.TestUserUtils;
@@ -66,8 +65,7 @@ public final class LobbyLoginValidatorTest {
     @Mock
     private BannedUsernameDao bannedUsernameDao;
 
-    @Mock
-    private PropertyReader propertyReader;
+    private final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();
 
     @Mock
     private UserDao userDao;
@@ -87,7 +85,7 @@ public final class LobbyLoginValidatorTest {
     @BeforeEach
     public void setUp() throws IOException, GeneralSecurityException {
       lobbyLoginValidator = new LobbyLoginValidator(
-          new LobbyPropertyReader(propertyReader),
+          new LobbyPropertyReader(memoryPropertyReader),
           badWordDao,
           bannedMacDao,
           bannedUsernameDao,
@@ -137,10 +135,7 @@ public final class LobbyLoginValidatorTest {
     }
 
     final void givenMaintenanceModeIsEnabled() {
-      when(propertyReader.readBooleanPropertyOrDefault(
-          eq(LobbyPropertyReader.PropertyKeys.MAINTENANCE_MODE),
-          anyBoolean()))
-              .thenReturn(true);
+      memoryPropertyReader.setProperty(LobbyPropertyReader.PropertyKeys.MAINTENANCE_MODE, String.valueOf(true));
     }
 
     private void givenNoMacIsBanned() {
