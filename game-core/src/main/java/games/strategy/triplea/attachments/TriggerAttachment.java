@@ -2296,23 +2296,29 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Returns projected resource income for satisfied triggers. Should pass dummy bridge in.
+   */
   public static IntegerMap<Resource> findResourceIncome(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge) {
     return triggerResourceChange(satisfiedTriggers, bridge, null, null, true, true, true, true, new StringBuilder());
   }
 
+  /**
+   * Triggers all resource changes based on satisfied triggers and returns string summary of the changes.
+   */
   public static String triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
-    final StringBuilder strbuf = new StringBuilder();
+    final StringBuilder endOfTurnReport = new StringBuilder();
     triggerResourceChange(satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
-        strbuf);
-    return strbuf.toString();
+        endOfTurnReport);
+    return endOfTurnReport.toString();
   }
 
   private static IntegerMap<Resource> triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen, final StringBuilder strbuf) {
+      final boolean testUses, final boolean testChance, final boolean testWhen, final StringBuilder endOfTurnReport) {
     final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = CollectionUtils.getMatches(satisfiedTriggers, resourceMatch());
     if (testWhen) {
@@ -2348,7 +2354,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + " met a national objective for an additional " + t.getResourceCount() + " " + t.getResource()
               + "; end with " + total + " " + t.getResource();
           bridge.getHistoryWriter().startEvent(puMessage);
-          strbuf.append(puMessage).append(" <br />");
+          endOfTurnReport.append(puMessage).append(" <br />");
         }
       }
     }

@@ -230,12 +230,14 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         testNationalObjectivesAndTriggers(player, data, bridge, triggers, objectives);
 
     // Find triggers value
-    IntegerMap<Resource> resources = new IntegerMap<>();
+    final IntegerMap<Resource> resources;
     final boolean useTriggers = Properties.getTriggers(data);
     if (useTriggers && !triggers.isEmpty()) {
       final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
           CollectionUtils.getMatches(triggers, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
       resources = TriggerAttachment.findResourceIncome(toFireTestedAndSatisfied, bridge);
+    } else {
+      resources = new IntegerMap<>();
     }
 
     // Find national objectives value
