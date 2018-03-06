@@ -109,10 +109,9 @@ public class UnitComparator {
    */
   public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units, final Route route,
       final PlayerID player) {
-    return Comparator
-        .<Unit, TripleAUnit>comparing(
-            unit -> TripleAUnit.get(unit).getTransportedBy(),
-            Comparator.nullsLast(getUnloadableTransportsComparator(units, route, player, false)))
+    return Comparator.comparing(TripleAUnit::get,
+        Comparator.comparing(TripleAUnit::getTransportedBy,
+            Comparator.nullsLast(getUnloadableTransportsComparator(units, route, player, false))))
         .thenComparing(getMovableUnitsComparator(units, route));
   }
 
