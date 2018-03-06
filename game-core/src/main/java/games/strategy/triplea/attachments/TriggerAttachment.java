@@ -2296,9 +2296,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  public static IntegerMap<Resource> findResourceIncome(final Set<TriggerAttachment> satisfiedTriggers,
+      final IDelegateBridge bridge) {
+    return triggerResourceChange(satisfiedTriggers, bridge, null, null, true, true, true, true, new StringBuilder());
+  }
+
   public static String triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
+    final StringBuilder strbuf = new StringBuilder();
+    triggerResourceChange(satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
+        strbuf);
+    return strbuf.toString();
+  }
+
+  private static IntegerMap<Resource> triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers,
+      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+      final boolean testUses, final boolean testChance, final boolean testWhen, final StringBuilder strbuf) {
     final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = CollectionUtils.getMatches(satisfiedTriggers, resourceMatch());
     if (testWhen) {
@@ -2307,7 +2321,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (testUses) {
       trigs = CollectionUtils.getMatches(trigs, availableUses);
     }
-    final StringBuilder strbuf = new StringBuilder();
+    final IntegerMap<Resource> resources = new IntegerMap<>();
     for (final TriggerAttachment t : trigs) {
       if (testChance && !t.testChance(bridge)) {
         continue;
@@ -2322,6 +2336,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           if (t.getResource().equals(Constants.PUS)) {
             toAdd *= Properties.getPuMultiplier(data);
           }
+          resources.add(data.getResourceList().getResource(t.getResource()), toAdd);
           int total = player.getResources().getQuantity(t.getResource()) + toAdd;
           if (total < 0) {
             toAdd -= total;
@@ -2337,7 +2352,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         }
       }
     }
-    return strbuf.toString();
+    return resources;
   }
 
   public static void triggerActivateTriggerOther(final HashMap<ICondition, Boolean> testedConditionsSoFar,
