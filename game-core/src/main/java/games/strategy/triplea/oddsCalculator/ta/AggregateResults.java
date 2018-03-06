@@ -2,9 +2,9 @@ package games.strategy.triplea.oddsCalculator.ta;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
-
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -44,39 +44,32 @@ public class AggregateResults {
   /**
    * @return {@code null} if we have zero results.
    */
-  public @Nullable BattleResults getBattleResultsClosestToAverage() {
-    double closestBattleDif = Integer.MAX_VALUE;
-    BattleResults closestBattle = null;
-    for (final BattleResults result : results) {
-      double dif = Math.abs(result.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft());
-      dif += Math.abs(result.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft());
-      if (dif < closestBattleDif) {
-        closestBattleDif = dif;
-        closestBattle = result;
-      }
-    }
-    return closestBattle;
+  private Optional<BattleResults> getBattleResultsClosestToAverage() {
+    return results.stream()
+        .min(Comparator.comparingDouble(
+            result -> Math.abs(result.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft())
+                + Math.abs(result.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft())));
   }
 
   public List<Unit> getAverageAttackingUnitsRemaining() {
-    final BattleResults result = getBattleResultsClosestToAverage();
-    return result == null ? new ArrayList<>() : result.getRemainingAttackingUnits();
+    return getBattleResultsClosestToAverage()
+        .map(BattleResults::getRemainingAttackingUnits)
+        .orElseGet(ArrayList::new);
   }
 
   public List<Unit> getAverageDefendingUnitsRemaining() {
-    final BattleResults result = getBattleResultsClosestToAverage();
-    return result == null ? new ArrayList<>() : result.getRemainingDefendingUnits();
+    return getBattleResultsClosestToAverage()
+        .map(BattleResults::getRemainingDefendingUnits)
+        .orElseGet(ArrayList::new);
   }
 
   double getAverageAttackingUnitsLeft() {
     if (results.isEmpty()) {
       return 0.0;
     }
-    double count = 0;
-    for (final BattleResults result : results) {
-      count += result.getAttackingCombatUnitsLeft();
-    }
-    return count / results.size();
+    return results.stream()
+        .mapToDouble(BattleResults::getAttackingCombatUnitsLeft)
+        .sum() / (double) results.size();
   }
 
   /**
@@ -134,11 +127,9 @@ public class AggregateResults {
     if (results.isEmpty()) {
       return 0.0;
     }
-    double count = 0;
-    for (final BattleResults result : results) {
-      count += result.getDefendingCombatUnitsLeft();
-    }
-    return count / results.size();
+    return results.stream()
+        .mapToInt(BattleResults::getDefendingCombatUnitsLeft)
+        .sum() / (double) results.size();
   }
 
   double getAverageDefendingUnitsLeftWhenDefenderWon() {
@@ -163,36 +154,27 @@ public class AggregateResults {
     if (results.isEmpty()) {
       return 0.0;
     }
-    double count = 0;
-    for (final BattleResults result : results) {
-      if (result.attackerWon()) {
-        count++;
-      }
-    }
-    return count / results.size();
+    return results.stream()
+        .filter(BattleResults::attackerWon)
+        .count() / (double) results.size();
   }
 
   double getDefenderWinPercent() {
     if (results.isEmpty()) {
       return 0.0;
     }
-    double count = 0;
-    for (final BattleResults result : results) {
-      if (result.defenderWon()) {
-        count++;
-      }
-    }
-    return count / results.size();
+    return results.stream()
+        .filter(BattleResults::defenderWon)
+        .count() / (double) results.size();
   }
 
   public double getAverageBattleRoundsFought() {
     if (results.isEmpty()) {
       return 0.0;
     }
-    double count = 0;
-    for (final BattleResults result : results) {
-      count += result.getBattleRoundsFought();
-    }
+    final double count = results.stream()
+        .mapToInt(BattleResults::getBattleRoundsFought)
+        .sum();
     if (count == 0) {
       // If this is a 'fake' aggregate result, return 1.0
       return 1.0;
@@ -204,13 +186,9 @@ public class AggregateResults {
     if (results.isEmpty()) {
       return 0.0;
     }
-    double count = 0;
-    for (final BattleResults result : results) {
-      if (result.draw()) {
-        count++;
-      }
-    }
-    return count / results.size();
+    return results.stream()
+        .filter(BattleResults::draw)
+        .count() / (double) results.size();
   }
 
   public int getRollCount() {
