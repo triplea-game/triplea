@@ -63,7 +63,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   ConcurrentOddsCalculator(final String threadNamePrefix, final Runnable dataLoadedAction) {
     executor = Executors.newFixedThreadPool(MAX_THREADS,
-        new DaemonThreadFactory(true, threadNamePrefix + " ConcurrentOddsCalculator Worker"));
+        new DaemonThreadFactory(threadNamePrefix + " ConcurrentOddsCalculator Worker"));
     this.dataLoadedAction = dataLoadedAction;
   }
 

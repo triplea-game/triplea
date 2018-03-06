@@ -125,7 +125,6 @@ class OddsCalculatorPanel extends JPanel {
   private String defenderOrderOfLosses = null;
   private Territory location = null;
   private JList<String> territoryEffectsJList;
-  private final WidgetChangedListener listenerPlayerUnitsPanel = this::setWidgetActivation;
 
   OddsCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location,
       final Window parent) {
@@ -276,8 +275,8 @@ class OddsCalculatorPanel extends JPanel {
     if (territoryEffectsJList != null) {
       territoryEffectsJList.addListSelectionListener(e -> setWidgetActivation());
     }
-    attackingUnitsPanel.addChangeListener(listenerPlayerUnitsPanel);
-    defendingUnitsPanel.addChangeListener(listenerPlayerUnitsPanel);
+    attackingUnitsPanel.addChangeListener(this::setWidgetActivation);
+    defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
   }
 
   private boolean isAmphibiousBattle() {
