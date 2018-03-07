@@ -3016,9 +3016,6 @@ public class UnitAttachment extends DefaultAttachment {
    */
   public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHtml,
       final boolean includeAttachedToName) {
-    // displays everything in a very short form, in English rather than as xml stuff
-    // shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr,
-    // m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
     final StringBuilder stats = new StringBuilder();
     final UnitType unitType = (UnitType) this.getAttachedTo();
     if (includeAttachedToName && unitType != null) {
