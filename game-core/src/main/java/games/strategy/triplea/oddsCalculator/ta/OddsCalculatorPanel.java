@@ -776,7 +776,6 @@ class OddsCalculatorPanel extends JPanel {
     private boolean isLand = true;
     private List<UnitCategory> categories = null;
     private final List<WidgetChangedListener> listeners = new ArrayList<>();
-    private final WidgetChangedListener listenerUnitPanel = () -> notifyListeners();
 
     PlayerUnitsPanel(final GameData data, final UiContext uiContext, final boolean defender) {
       this.data = data;
@@ -854,7 +853,7 @@ class OddsCalculatorPanel extends JPanel {
       for (final UnitCategory category : categories) {
         if (predicate.test(category.getType())) {
           final UnitPanel upanel = new UnitPanel(uiContext, category, costs);
-          upanel.addChangeListener(listenerUnitPanel);
+          upanel.addChangeListener(this::notifyListeners);
           add(upanel);
         }
       }
@@ -940,14 +939,13 @@ class OddsCalculatorPanel extends JPanel {
     private final UnitCategory category;
     private final ScrollableTextField textField;
     private final List<WidgetChangedListener> listeners = new CopyOnWriteArrayList<>();
-    private final ScrollableTextFieldListener listenerTextField = field -> notifyListeners();
 
     UnitPanel(final UiContext uiContext, final UnitCategory category, final IntegerMap<UnitType> costs) {
       this.category = category;
       this.uiContext = uiContext;
       textField = new ScrollableTextField(0, 512);
       textField.setShowMaxAndMin(false);
-      textField.addChangeListener(listenerTextField);
+      textField.addChangeListener(field -> notifyListeners());
 
       final String toolTipText = "<html>" + category.getType().getName() + ":  " + costs.getInt(category.getType())
           + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; " + category.getType().getTooltip(category.getOwner())

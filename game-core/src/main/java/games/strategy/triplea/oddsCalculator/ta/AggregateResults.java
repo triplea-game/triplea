@@ -66,7 +66,7 @@ public class AggregateResults {
     }
     return results.stream()
         .mapToDouble(BattleResults::getAttackingCombatUnitsLeft)
-        .sum() / (double) results.size();
+        .sum() / results.size();
   }
 
   /**
@@ -125,8 +125,8 @@ public class AggregateResults {
       return 0.0;
     }
     return results.stream()
-        .mapToInt(BattleResults::getDefendingCombatUnitsLeft)
-        .sum() / (double) results.size();
+        .mapToDouble(BattleResults::getDefendingCombatUnitsLeft)
+        .sum() / results.size();
   }
 
   double getAverageDefendingUnitsLeftWhenDefenderWon() {
@@ -169,14 +169,14 @@ public class AggregateResults {
     if (results.isEmpty()) {
       return 0.0;
     }
-    final double count = results.stream()
+    final long count = results.stream()
         .mapToInt(BattleResults::getBattleRoundsFought)
         .sum();
     if (count == 0) {
       // If this is a 'fake' aggregate result, return 1.0
       return 1.0;
     }
-    return count / results.size();
+    return count / (double) results.size();
   }
 
   double getDrawPercent() {
