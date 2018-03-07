@@ -43,9 +43,9 @@ public class MapRouteDrawer {
   private static final double DETAIL_LEVEL = 1.0;
   private static final int ARROW_LENGTH = 4;
   private static final int MESSAGE_HEIGHT = 26;
-  private static final int MESSAGE_PADDING = 15;
+  private static final int MESSAGE_PADDING = 8;
   private static final int MESSAGE_TEXT_Y = 18;
-  private static final int MESSAGE_TEXT_SPACING = 5;
+  private static final int MESSAGE_TEXT_SPACING = 6;
   private static final Font MESSAGE_FONT = new Font("Dialog", Font.BOLD, 16);
 
   private final RouteCalculator routeCalculator;
@@ -346,7 +346,7 @@ public class MapRouteDrawer {
     graphics.drawRoundRect(0, 0, imageWidth - 2, rectHeight, rectHeight, rectHeight);
 
     // Draw current movement
-    graphics.setColor(new Color(180, 60, 0));
+    graphics.setColor(new Color(0, 0, 200));
     final boolean hasEnoughMovement = !unitMovementLeft.isEmpty();
     final int textWidthOffset = fontMetrics.stringWidth(curMovement) / 2;
     graphics.drawString(
@@ -357,7 +357,7 @@ public class MapRouteDrawer {
     // If has enough movement, draw remaining movement and fuel costs
     if (hasEnoughMovement) {
       int x = MESSAGE_PADDING + fontMetrics.stringWidth(curMovement);
-      graphics.setColor(new Color(0, 0, 140));
+      graphics.setColor(new Color(0, 0, 200));
       graphics.drawString(unitMovementLeft, x, MESSAGE_TEXT_Y);
       x += fontMetrics.stringWidth(unitMovementLeft) + MESSAGE_TEXT_SPACING;
       graphics.setColor(new Color(200, 0, 0));
@@ -368,7 +368,7 @@ public class MapRouteDrawer {
           graphics.drawString(resource.getName().substring(0, 1), x, MESSAGE_TEXT_Y);
         }
         x += ResourceImageFactory.IMAGE_SIZE;
-        final String quantity = "(-" + movementFuelCost.getQuantity(resource) + ")";
+        final String quantity = "-" + movementFuelCost.getQuantity(resource);
         graphics.drawString(quantity, x, MESSAGE_TEXT_Y);
         x += fontMetrics.stringWidth(quantity) + MESSAGE_TEXT_SPACING;
       }
@@ -394,7 +394,7 @@ public class MapRouteDrawer {
       imageWidth += fontMetrics.stringWidth(unitMovementLeft);
       for (final Resource resource : movementFuelCost.getResourcesCopy().keySet()) {
         imageWidth += MESSAGE_TEXT_SPACING;
-        imageWidth += fontMetrics.stringWidth("(-" + movementFuelCost.getQuantity(resource) + ")");
+        imageWidth += fontMetrics.stringWidth("-" + movementFuelCost.getQuantity(resource));
         imageWidth += ResourceImageFactory.IMAGE_SIZE;
       }
     }
