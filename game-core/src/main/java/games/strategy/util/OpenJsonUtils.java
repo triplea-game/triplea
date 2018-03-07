@@ -17,7 +17,7 @@ import com.github.openjson.JSONObject;
 /**
  * A collection of methods that extend the functionality of the Open JSON library.
  *
- * @see https://github.com/openjson/openjson
+ * @see <a href="https://github.com/openjson/openjson">https://github.com/openjson/openjson</a>
  */
 public final class OpenJsonUtils {
   private OpenJsonUtils() {}

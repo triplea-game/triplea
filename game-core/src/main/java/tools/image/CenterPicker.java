@@ -263,27 +263,14 @@ public class CenterPicker extends JFrame {
   }
 
   /**
-   * java.lang.String findTerritoryName(java.awt.Point)
-   * Finds a land territory name or
-   * some sea zone name.
+   * Finds a land territory name or some sea zone name.
    *
-   * @param java
-   *        .awt.point p a point on the map
+   * @param p A point on the map.
    */
   private String findTerritoryName(final Point p) {
     return Util.findTerritoryName(p, polygons, "unknown");
   }
 
-  /**
-   * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
-   *
-   * @param java
-   *        .awt.Point point a point clicked by mouse
-   * @param java
-   *        .lang.boolean ctrlDown true if ctrl key was hit
-   * @param java
-   *        .lang.boolean rightMouse true if the right mouse button was hit
-   */
   private void mouseEvent(final Point point, final boolean rightMouse) {
     if (!rightMouse) {
       String name = findTerritoryName(point);

@@ -195,7 +195,7 @@ public class MapRouteDrawer {
    * Creates a {@linkplain Point2D} Array out of a {@linkplain RouteDescription} and a {@linkplain MapData} object.
    *
    * @param routeDescription {@linkplain RouteDescription} containing the Route information
-   * @param mapData {@linkplain MapData} Object containing Information about the Map Coordinates
+   *
    * @return The {@linkplain Point2D} array specified by the {@linkplain RouteDescription} and {@linkplain MapData}
    *         objects
    */

@@ -268,17 +268,6 @@ public class AutoPlacementFinder {
     return (unitsScale != null) ? unitsScale : "1";
   }
 
-  /**
-   * java.tools.List getPlacementsStartingAtMiddle(java.tools.Collection, java.awt.Rectangle, java.awt.Point)
-   *
-   * @param java
-   *        .tools.Collection
-   * @param java
-   *        .awt.Rectangle
-   * @param java
-   *        .awt.Point
-   * @return java.tools.List
-   */
   static List<Point> getPlacementsStartingAtMiddle(final Collection<Polygon> countryPolygons, final Rectangle bounding,
       final Point center) {
     final List<Rectangle2D> placementRects = new ArrayList<>();
@@ -324,20 +313,6 @@ public class AutoPlacementFinder {
     return placementPoints;
   }
 
-  /**
-   * java.tools.List getPlacementsStartingAtTopLeft(java.tools.Collection, java.awt.Rectangle, java.awt.Point,
-   * java.tools.Collection)
-   *
-   * @param java
-   *        .tools.Collection
-   * @param java
-   *        .awt.Rectangle
-   * @param java
-   *        .awt.Point
-   * @param java
-   *        .tools.Collection
-   * @return java.tools.List
-   */
   static List<Point> getPlacementsStartingAtTopLeft(final Collection<Polygon> countryPolygons, final Rectangle bounding,
       final Point center, final Collection<Polygon> containedCountryPolygons) {
     final List<Rectangle2D> placementRects = new ArrayList<>();
@@ -359,27 +334,6 @@ public class AutoPlacementFinder {
     return placementPoints;
   }
 
-  /**
-   * isPlacement(java.tools.Collection, java.tools.Collection, java.tools.List, java.tools.List,
-   * java.awt.geom.Rectangle2D,
-   * java.lang.int,
-   * java.lang.int)
-   *
-   * @param java
-   *        .tools.Collection countryPolygons
-   * @param java
-   *        .tools.Collection containedCountryPolygons polygons of countries contained with ourselves
-   * @param java
-   *        .tools.List placementRects
-   * @param java
-   *        .tools.List placementPoints
-   * @param java
-   *        .awt.geom.Rectangle2D place
-   * @param java
-   *        .lang.int x
-   * @param java
-   *        .lang.int y
-   */
   private static void isPlacement(final Collection<Polygon> countryPolygons,
       final Collection<Polygon> containedCountryPolygons, final List<Rectangle2D> placementRects,
       final List<Point> placementPoints, final Rectangle2D place, final int x, final int y) {
@@ -395,15 +349,7 @@ public class AutoPlacementFinder {
   }
 
   /**
-   * java.lang.boolean containedIn(java.awt.geom.Rectangle2D, java.tools.Collection)
-   * Function to test if the given 2D rectangle
-   * is contained in any of the given shapes
-   * in the collection.
-   *
-   * @param java
-   *        .awt.geom.Rectangle2D r
-   * @param java
-   *        .tools.Collection shapes
+   * Function to test if the given 2D rectangle is contained in any of the given shapes in the collection.
    */
   private static boolean containedIn(final Rectangle2D r, final Collection<Polygon> shapes) {
     for (final Shape item : shapes) {
@@ -415,15 +361,7 @@ public class AutoPlacementFinder {
   }
 
   /**
-   * java.lang.boolean intersectsOneOf(java.awt.geom.Rectangle2D, java.tools.Collection)
-   * Function to test if the given 2D rectangle
-   * intersects any of the shapes given in the
-   * collection.
-   *
-   * @param java
-   *        .awt.geom.Rectangle2D r
-   * @param java
-   *        .tools.Collection shapes
+   * Function to test if the given 2D rectangle intersects any of the shapes given in the collection.
    */
   private static boolean intersectsOneOf(final Rectangle2D r, final Collection<? extends Shape> shapes) {
     if (shapes.isEmpty()) {

@@ -442,9 +442,6 @@ public class ServerGame extends AbstractGame {
     return GameDataFileUtils.addExtension(baseFileName);
   }
 
-  /**
-   * @return true if the step should autosave.
-   */
   private void endStep() {
     delegateExecutionManager.enterDelegateExecution();
     try {

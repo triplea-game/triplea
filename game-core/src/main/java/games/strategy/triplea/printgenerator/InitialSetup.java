@@ -16,11 +16,6 @@ public class InitialSetup {
 
   InitialSetup() {}
 
-  /**
-   * @param GameData
-   *        data.
-   * @param boolean useOriginalState
-   */
   protected void run(final PrintGenerationData printData, final boolean useOriginalState) {
     final GameData gameData = printData.getData();
     if (useOriginalState) {

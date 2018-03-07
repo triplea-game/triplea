@@ -345,12 +345,9 @@ public class DecorationPlacer extends JFrame {
   } // end constructor
 
   /**
-   * createImage(java.lang.String)
-   * creates the image map and makes sure
-   * it is properly loaded.
+   * Creates the image map and makes sure it is properly loaded.
    *
-   * @param java
-   *        .lang.String mapName the path of image map
+   * @param mapName The path of image map.
    */
   private static Image createImage(final String mapName) {
     final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -358,13 +355,6 @@ public class DecorationPlacer extends JFrame {
     return image;
   }
 
-  /**
-   * javax.swing.JPanel createMainPanel()
-   * Creates the main panel and returns
-   * a JPanel object.
-   *
-   * @return javax.swing.JPanel the panel to return
-   */
   private JPanel createMainPanel() {
     final JPanel imagePanel = new JPanel() {
       private static final long serialVersionUID = -7130828419508975924L;
@@ -686,14 +676,6 @@ public class DecorationPlacer extends JFrame {
     }
   }
 
-  /**
-   * mouseEvent(java.lang.boolean, java.lang.boolean)
-   *
-   * @param java
-   *        .lang.boolean ctrlDown true if ctrl key was hit
-   * @param java
-   *        .lang.boolean rightMouse true if the right mouse button was hit
-   */
   private void mouseEvent(final boolean ctrlDown, final boolean rightMouse) {
     if (cheapMutex) {
       return;
