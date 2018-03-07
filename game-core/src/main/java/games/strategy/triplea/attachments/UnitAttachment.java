@@ -3009,6 +3009,11 @@ public class UnitAttachment extends DefaultAttachment {
         + "  tuv:" + m_tuv;
   }
 
+  /**
+   * Displays all unit options in a short description form that's user friendly rather than as XML.
+   * Shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr,
+   * m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy.
+   */
   public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHtml,
       final boolean includeAttachedToName) {
     // displays everything in a very short form, in English rather than as xml stuff
