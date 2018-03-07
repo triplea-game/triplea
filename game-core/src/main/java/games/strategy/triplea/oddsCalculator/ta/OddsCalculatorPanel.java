@@ -10,8 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -73,7 +71,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
-import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.WidgetChangedListener;
 import games.strategy.util.CollectionUtils;
@@ -127,7 +124,6 @@ class OddsCalculatorPanel extends JPanel {
   private String defenderOrderOfLosses = null;
   private Territory location = null;
   private JList<String> territoryEffectsJList;
-  private final WidgetChangedListener listenerPlayerUnitsPanel = () -> setWidgetActivation();
 
   OddsCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location,
       final Window parent) {
@@ -171,17 +167,10 @@ class OddsCalculatorPanel extends JPanel {
       updateDefender(null);
       updateAttacker(null);
     }
-    if (OddsCalculatorPanel.percentageOfFreeMemoryAvailable() < 0.4) {
-      System.gc();
-      System.runFinalization();
-      System.gc();
-    }
-    calculator = new ConcurrentOddsCalculator("BtlCalc Panel");
-
-    calculator.addOddsCalculatorListener(() -> {
+    calculator = new ConcurrentOddsCalculator("BtlCalc Panel", () -> SwingUtilities.invokeLater(() -> {
       calculateButton.setText("Calculate Odds");
       calculateButton.setEnabled(true);
-    });
+    }));
 
     calculator.setGameData(data);
     setWidgetActivation();
@@ -196,19 +185,6 @@ class OddsCalculatorPanel extends JPanel {
     } catch (final Exception e) {
       ClientLogger.logQuietly("Failed to shut down odds calculator", e);
     }
-  }
-
-  private static double percentageOfFreeMemoryAvailable() {
-    final Runtime runtime = Runtime.getRuntime();
-    final long maxMemory = runtime.maxMemory();
-    final long memoryAvailable = Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
-    return (((double) memoryAvailable) / ((double) maxMemory));
-  }
-
-  private static long freeMemoryAvailable() {
-    final Runtime runtime = Runtime.getRuntime();
-    final long maxMemory = runtime.maxMemory();
-    return Math.min(maxMemory, maxMemory - (runtime.totalMemory() - runtime.freeMemory()));
   }
 
   private PlayerID getDefender() {
@@ -256,25 +232,6 @@ class OddsCalculatorPanel extends JPanel {
       updateAttacker(null);
       setWidgetActivation();
     });
-    calculateButton.addMouseMotionListener(new MouseMotionListener() {
-      @Override
-      public void mouseDragged(final MouseEvent e) {}
-
-      @Override
-      public void mouseMoved(final MouseEvent e) {
-        final String memoryAvailable = "<br/>Percentage of memory available: "
-            + String.format("%.2f", (percentageOfFreeMemoryAvailable() * 100)) + "% <br/>Free memory available: "
-            + (freeMemoryAvailable() / (1024 * 1024)) + "MB <br/>Maximum allowed memory: "
-            + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB </html>";
-        if (calculateButton.isEnabled()) {
-          calculateButton.setToolTipText("<html>Data copying finished. " + memoryAvailable);
-        } else {
-          calculateButton.setToolTipText("<html>If this is taking forever to enable, it means "
-              + "<br/>you do not have enough memory to copy the data quickly! "
-              + "<br/>Consider increasing the max memory for TripleA. " + memoryAvailable);
-        }
-      }
-    });
     calculateButton.addActionListener(e -> updateStats());
     closeButton.addActionListener(e -> {
       attackerOrderOfLosses = null;
@@ -317,8 +274,8 @@ class OddsCalculatorPanel extends JPanel {
     if (territoryEffectsJList != null) {
       territoryEffectsJList.addListSelectionListener(e -> setWidgetActivation());
     }
-    attackingUnitsPanel.addChangeListener(listenerPlayerUnitsPanel);
-    defendingUnitsPanel.addChangeListener(listenerPlayerUnitsPanel);
+    attackingUnitsPanel.addChangeListener(this::setWidgetActivation);
+    defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
   }
 
   private boolean isAmphibiousBattle() {
@@ -818,7 +775,6 @@ class OddsCalculatorPanel extends JPanel {
     private boolean isLand = true;
     private List<UnitCategory> categories = null;
     private final List<WidgetChangedListener> listeners = new ArrayList<>();
-    private final WidgetChangedListener listenerUnitPanel = () -> notifyListeners();
 
     PlayerUnitsPanel(final GameData data, final UiContext uiContext, final boolean defender) {
       this.data = data;
@@ -896,7 +852,7 @@ class OddsCalculatorPanel extends JPanel {
       for (final UnitCategory category : categories) {
         if (predicate.test(category.getType())) {
           final UnitPanel upanel = new UnitPanel(uiContext, category, costs);
-          upanel.addChangeListener(listenerUnitPanel);
+          upanel.addChangeListener(this::notifyListeners);
           add(upanel);
         }
       }
@@ -982,14 +938,13 @@ class OddsCalculatorPanel extends JPanel {
     private final UnitCategory category;
     private final ScrollableTextField textField;
     private final List<WidgetChangedListener> listeners = new CopyOnWriteArrayList<>();
-    private final ScrollableTextFieldListener listenerTextField = field -> notifyListeners();
 
     UnitPanel(final UiContext uiContext, final UnitCategory category, final IntegerMap<UnitType> costs) {
       this.category = category;
       this.uiContext = uiContext;
       textField = new ScrollableTextField(0, 512);
       textField.setShowMaxAndMin(false);
-      textField.addChangeListener(listenerTextField);
+      textField.addChangeListener(field -> notifyListeners());
 
       final String toolTipText = "<html>" + category.getType().getName() + ":  " + costs.getInt(category.getType())
           + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; " + category.getType().getTooltip(category.getOwner())
@@ -1136,7 +1091,7 @@ class OddsCalculatorPanel extends JPanel {
     }
 
     private void layoutComponents() {
-      this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
       final JLabel instructions = new JLabel("<html>Here you can specify the 'Order of Losses' (OOL) for each side."
           + "<br />Damageable units will be damanged first always. If the player label is red, your OOL is invalid."
           + "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text "
@@ -1160,26 +1115,26 @@ class OddsCalculatorPanel extends JPanel {
           + "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then "
           + "all other units casualty.</html>");
       instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(instructions);
-      this.add(Box.createVerticalStrut(30));
+      add(instructions);
+      add(Box.createVerticalStrut(30));
       attackerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(attackerLabel);
+      add(attackerLabel);
       final JPanel attackerUnits = getUnitButtonPanel(attackerCategories, attackerTextField);
       attackerUnits.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(attackerUnits);
+      add(attackerUnits);
       attackerTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(attackerTextField);
-      this.add(Box.createVerticalStrut(30));
+      add(attackerTextField);
+      add(Box.createVerticalStrut(30));
       defenderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(defenderLabel);
+      add(defenderLabel);
       final JPanel defenderUnits = getUnitButtonPanel(defenderCategories, defenderTextField);
       defenderUnits.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(defenderUnits);
+      add(defenderUnits);
       defenderTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(defenderTextField);
-      this.add(Box.createVerticalStrut(10));
+      add(defenderTextField);
+      add(Box.createVerticalStrut(10));
       clear.setAlignmentX(Component.CENTER_ALIGNMENT);
-      this.add(clear);
+      add(clear);
     }
 
     private JPanel getUnitButtonPanel(final List<UnitCategory> categories, final JTextField textField) {
