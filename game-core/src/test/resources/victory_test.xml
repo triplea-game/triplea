@@ -1896,7 +1896,8 @@
                          <option name="defense" value="3"/>
                          <option name="fuelCost" value="Fuel" count="1"/>
                          <option name="fuelCost" value="PUs" count="1"/>
-
+                         <option name="fuelFlatCost" value="Fuel" count="1"/>
+                         <option name="fuelFlatCost" value="Ore" count="2"/>
                 </attachment>
 
                 <!-- Fighter -->
