@@ -71,7 +71,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
-import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.WidgetChangedListener;
 import games.strategy.util.CollectionUtils;
