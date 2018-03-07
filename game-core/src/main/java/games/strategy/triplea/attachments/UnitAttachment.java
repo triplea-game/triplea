@@ -84,6 +84,7 @@ public class UnitAttachment extends DefaultAttachment {
   // and if empty it allows you to invade from all
   private String[] m_canInvadeOnlyFrom = null;
   private IntegerMap<Resource> m_fuelCost = new IntegerMap<>();
+  private IntegerMap<Resource> m_fuelFlatCost = new IntegerMap<>();
   private boolean m_canNotMoveDuringCombatMove = false;
   private Tuple<Integer, String> m_movementLimit = null;
   // combat related
@@ -2002,6 +2003,41 @@ public class UnitAttachment extends DefaultAttachment {
     m_fuelCost = new IntegerMap<>();
   }
 
+  /**
+   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+   */
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+  private void setFuelFlatCost(final String value) throws GameParseException {
+    final String[] s = value.split(":");
+    if (s.length != 2) {
+      throw new GameParseException("fuelFlatCost must have two fields" + thisErrorMsg());
+    }
+    final String resourceToProduce = s[1];
+    // validate that this resource exists in the xml
+    final Resource r = getData().getResourceList().getResource(resourceToProduce);
+    if (r == null) {
+      throw new GameParseException("fuelFlatCost: No resource called:" + resourceToProduce + thisErrorMsg());
+    }
+    final int n = getInt(s[0]);
+    if (n < 0) {
+      throw new GameParseException("fuelFlatCost must have positive values" + thisErrorMsg());
+    }
+    m_fuelFlatCost.put(r, n);
+  }
+
+  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+  private void setFuelFlatCost(final IntegerMap<Resource> value) {
+    m_fuelFlatCost = value;
+  }
+
+  public IntegerMap<Resource> getFuelFlatCost() {
+    return m_fuelFlatCost;
+  }
+
+  private void resetFuelFlatCost() {
+    m_fuelFlatCost = new IntegerMap<>();
+  }
+
   @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setBombingBonus(final String s) {
     m_bombingBonus = getInt(s);
@@ -2895,6 +2931,8 @@ public class UnitAttachment extends DefaultAttachment {
             ? (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString())
             : "null")
         + "  fuelCost:" + (m_fuelCost != null ? (m_fuelCost.size() == 0 ? "empty" : m_fuelCost.toString()) : "null")
+        + "  fuelFlatCost:"
+        + (m_fuelFlatCost != null ? (m_fuelFlatCost.size() == 0 ? "empty" : m_fuelFlatCost.toString()) : "null")
         + "  isInfrastructure:" + m_isInfrastructure + "  isConstruction:" + m_isConstruction + "  constructionType:"
         + m_constructionType + "  constructionsPerTerrPerTypePerTurn:" + m_constructionsPerTerrPerTypePerTurn
         + "  maxConstructionsPerTypePerTerr:" + m_maxConstructionsPerTypePerTerr + "  destroyedWhenCapturedBy:"
@@ -2971,11 +3009,13 @@ public class UnitAttachment extends DefaultAttachment {
         + "  tuv:" + m_tuv;
   }
 
+  /**
+   * Displays all unit options in a short description form that's user friendly rather than as XML.
+   * Shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr,
+   * m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy.
+   */
   public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHtml,
       final boolean includeAttachedToName) {
-    // displays everything in a very short form, in English rather than as xml stuff
-    // shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr,
-    // m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy
     final StringBuilder stats = new StringBuilder();
     final UnitType unitType = (UnitType) this.getAttachedTo();
     if (includeAttachedToName && unitType != null) {
@@ -3038,6 +3078,17 @@ public class UnitAttachment extends DefaultAttachment {
           stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
         stats.append("Each movement point, ");
+      }
+    }
+    if (getFuelFlatCost() != null && getFuelFlatCost().size() > 0) {
+      if (getFuelFlatCost().size() > 4) {
+        stats.append("Uses ").append(m_fuelFlatCost.totalValues()).append(" Resources Each turn if moved, ");
+      } else {
+        stats.append("Uses ");
+        for (final Entry<Resource, Integer> entry : getFuelFlatCost().entrySet()) {
+          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
+        }
+        stats.append("Each turn if moved, ");
       }
     }
     if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly())
@@ -3436,6 +3487,12 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setFuelCost,
                 this::getFuelCost,
                 this::resetFuelCost))
+        .put("fuelFlatCost",
+            MutableProperty.of(
+                this::setFuelFlatCost,
+                this::setFuelFlatCost,
+                this::getFuelFlatCost,
+                this::resetFuelFlatCost))
         .put("canNotMoveDuringCombatMove",
             MutableProperty.of(
                 this::setCanNotMoveDuringCombatMove,

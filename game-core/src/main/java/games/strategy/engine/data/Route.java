@@ -404,11 +404,14 @@ public class Route implements Serializable, Iterable<Territory> {
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     col.add(ua.getFuelCost());
     col.multiply(getMovementCost(unit));
+    if (Matches.unitHasNotMoved().test(unit)) {
+      col.add(ua.getFuelFlatCost());
+    }
     return col;
   }
 
   public static ResourceCollection getMovementFuelCostCharge(final Collection<Unit> unitsAll, final Route route,
-      final PlayerID currentPlayer, final GameData data /* , final boolean mustFight */) {
+      final PlayerID currentPlayer, final GameData data) {
     final Set<Unit> units = new HashSet<>(unitsAll);
 
     units.removeAll(CollectionUtils.getMatches(unitsAll,

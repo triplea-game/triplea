@@ -159,23 +159,38 @@ public class VictoryTest {
   @Test
   public void testFuelUseMotorized() {
     gameData.performChange(ChangeFactory.changeOwner(kenya, italians));
+    gameData.performChange(ChangeFactory.changeOwner(britishCongo, italians));
+    gameData.performChange(ChangeFactory.changeOwner(frenchEastAfrica, italians));
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final int fuelAmount = italians.getResources().getQuantity("Fuel");
     final int puAmount = italians.getResources().getQuantity("PUs");
+    final int oreAmount = italians.getResources().getQuantity("Ore");
+
     moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
-    assertEquals(fuelAmount - 1, italians.getResources().getQuantity("Fuel"));
+    assertEquals(fuelAmount - 2, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
+    assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
+
     gameData.performChange(ChangeFactory.addUnits(kenya, armour.create(1, italians)));
     moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
-    assertEquals(fuelAmount - 1, italians.getResources().getQuantity("Fuel"));
+    assertEquals(fuelAmount - 2, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
+    assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
+
+    moveDelegate.move(britishCongo.getUnits().getUnits(), gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
+    assertEquals(fuelAmount - 3, italians.getResources().getQuantity("Fuel"));
+    assertEquals(puAmount - 2, italians.getResources().getQuantity("PUs"));
+    assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
+
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(5, italians)));
     moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
-    assertEquals(fuelAmount - 6, italians.getResources().getQuantity("Fuel"));
-    assertEquals(puAmount - 6, italians.getResources().getQuantity("PUs"));
+    assertEquals(fuelAmount - 13, italians.getResources().getQuantity("Fuel"));
+    assertEquals(puAmount - 7, italians.getResources().getQuantity("PUs"));
+    assertEquals(oreAmount - 12, italians.getResources().getQuantity("Ore"));
+
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(50, italians)));
     final String error =
         moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
