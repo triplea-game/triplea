@@ -502,19 +502,12 @@ public class PlacementPicker extends JFrame {
   }
 
   /**
-   * mouseEvent(java.awt.Point, java.lang.boolean, java.lang.boolean)
-   * Usage:
-   * left button start in territory
-   * left button + control, add point
-   * right button and ctrl write
-   * right button remove last
-   *
-   * @param java
-   *        .awt.Point point a point clicked by mouse
-   * @param java
-   *        .lang.boolean ctrlDown true if ctrl key was hit
-   * @param java
-   *        .lang.boolean rightMouse true if the right mouse button was hit
+   * <ul>
+   * <li>Left button: Start in territory.</li>
+   * <li>Left button + control: Add point.</li>
+   * <li>Right button and ctrl: Write.</li>
+   * <li>Right button: Remove last.</li>
+   * </ul>
    */
   private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
     if (!rightMouse && !ctrlDown) {

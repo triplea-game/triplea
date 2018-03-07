@@ -246,11 +246,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * finds a cached instance of the give type. If a cached version is not available a new one is created
+   * Finds a cached instance of the same type as the given instance. If a cached version is not available,
+   * {@code instance} is returned.
    *
-   * @param theClassType
-   *        the type of class
-   * @return a IBean either loaded from the cache or created
+   * @param instance The instance whose type is searched for in the cache.
+   *
+   * @return A IBean loaded from the cache or {@code instance} if a cached version is not available.
    */
   private static <T extends IBean> T useCacheIfAvailable(final T instance) {
     @SuppressWarnings("unchecked")

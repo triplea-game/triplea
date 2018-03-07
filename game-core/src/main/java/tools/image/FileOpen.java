@@ -10,16 +10,6 @@ import games.strategy.engine.framework.system.SystemProperties;
 public class FileOpen {
   private File file = null;
 
-  /**
-   * Default Constructor.
-   *
-   * @param title The title of the JFileChooser.
-   * @exception java.lang.Exception
-   *            ex
-   *            Creates a file selection dialog starting at the current
-   *            working directory. Filters out all non-txt files and
-   *            handles possible file load errors.
-   */
   public FileOpen(final String title) {
     this(title, ".txt", ".gif", ".png");
   }

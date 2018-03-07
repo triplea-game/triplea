@@ -53,10 +53,8 @@ public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
   /**
-   * @param deselectNumber
-   *        adds or removes 10 units (used to remove 1/deselectNumber of total units (useful for splitting large
-   *        armies), but changed it
-   *        after feedback).
+   * Adds or removes 10 units (used to remove 1/deselectNumber of total units (useful for splitting large armies), but
+   * changed it after feedback).
    */
   private static final int deselectNumber = 10;
   // access only through getter and setter!

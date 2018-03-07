@@ -32,10 +32,12 @@ import swinglib.JScrollPaneBuilder;
 import swinglib.JTextAreaBuilder;
 
 /**
- * UI window with controls to update game settings and preferences, {@see ClientSetting}.
+ * UI window with controls to update game settings and preferences.
  * Settings are grouped by type, the window consists of a TabbedPane and in it we load
  * one tab per non-hidden {@code SettingType}.
  * All data needed to render the settings UI is pulled from the {@code ClientSetting} enum.
+ *
+ * @see ClientSetting
  */
 public enum SettingsWindow {
   INSTANCE;

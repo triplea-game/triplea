@@ -489,16 +489,11 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   /**
    * It is the AI's turn to purchase units.
    *
-   * @param purcahseForBid
-   *        - is this a bid purchase, or a normal purchase
-   * @param pusToSpend
-   *        - how many PUs we have to spend
-   * @param purchaseDelegate
-   *        - the purchase delgate to buy things with
-   * @param data
-   *        - the GameData
-   * @param player
-   *        - the player to buy for
+   * @param purchaseForBid Is this a bid purchase, or a normal purchase.
+   * @param pusToSpend How many PUs we have to spend.
+   * @param purchaseDelegate The purchase delegate to buy things with.
+   * @param data The GameData.
+   * @param player The player to buy for.
    */
   protected abstract void purchase(boolean purchaseForBid, int pusToSpend, IPurchaseDelegate purchaseDelegate,
       GameData data, PlayerID player);

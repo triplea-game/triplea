@@ -1,6 +1,5 @@
 package games.strategy.engine.random;
 
-import java.io.ObjectStreamException;
 import java.util.Objects;
 
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
@@ -86,8 +85,6 @@ public class InternalDiceServer implements IRemoteDiceServer {
    * PlainRandomSource is not serializable.
    *
    * @return a new InternalDiceServer
-   * @throws ObjectStreamException
-   *         should never occur (unless runtime exceptions is thrown from constructor)
    */
   public Object readResolve() {
     return new InternalDiceServer();

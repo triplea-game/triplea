@@ -97,7 +97,9 @@ public final class GridBagHelper {
 
 
   /**
-   * Adds many components in one go, a convenience api {@see add}.
+   * Adds many components in one go, a convenience API.
+   *
+   * @see #add(Component)
    */
   public void addAll(final Component... children) {
     Preconditions.checkArgument(children.length > 0);

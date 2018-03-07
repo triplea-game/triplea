@@ -11,8 +11,10 @@ import java.util.regex.Pattern;
 /**
  * A collection of methods for using the FreeBSD MD5-crypt hash algorithm.
  *
- * @see https://www.usenix.org/legacyurl/md5-crypt
- * @see https://www.systutorials.com/docs/linux/man/n-md5crypt/
+ * @see <a href="https://www.usenix.org/legacyurl/md5-crypt">https://www.usenix.org/legacyurl/md5-crypt</a>
+ * @see <a href="https://www.systutorials.com/docs/linux/man/n-md5crypt/">
+ *      https://www.systutorials.com/docs/linux/man/n-md5crypt/
+ *      </a>
  */
 public final class Md5Crypt {
   private static final String MAGIC = "$1$";
