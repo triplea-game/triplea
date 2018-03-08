@@ -434,12 +434,10 @@ public class Route implements Serializable, Iterable<Territory> {
               .and(Matches.isUnitAllied(player, data))
               .and(Matches.unitCanLandOnCarrier()));
       canLandOnCarrierUnits.addAll(CollectionUtils.getMatches(units,
-          Matches.unitIsOwnedBy(player)
-              .and(Matches.unitCanLandOnCarrier())));
+          Matches.unitIsOwnedBy(player).and(Matches.unitCanLandOnCarrier())));
       unitsToChargeFuelCosts.removeAll(AirMovementValidator.whatAirCanLandOnTheseCarriers(
           CollectionUtils.getMatches(units, Matches.unitIsCarrier()),
-          canLandOnCarrierUnits,
-          route.getStart()));
+          canLandOnCarrierUnits, route.getStart()));
     }
 
     // Remove dependent units

@@ -1914,6 +1914,8 @@
                          <option name="canEscort" value="true"/>
                          <option name="airDefense" value="2"/>
                          <option name="airAttack" value="2"/>
+                         <option name="fuelCost" value="Fuel" count="1"/>
+                         <option name="fuelFlatCost" value="Fuel" count="2"/>
                 </attachment>
 
                 <attachment name="unitAttachment" attachTo="jp_fighter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
@@ -2037,6 +2039,7 @@
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
                          <option name="blockade" value="1"/>
+                         <option name="fuelCost" value="Fuel" count="1"/>                        
                 </attachment>
 
                 <!-- Super_Carrier -->
@@ -4444,7 +4447,7 @@
                         <resourceGiven player="Italians" resource="PUs" quantity="16"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
 
-                        <resourceGiven player="Italians" resource="Fuel" quantity="20"/>
+                        <resourceGiven player="Italians" resource="Fuel" quantity="50"/>
                         <resourceGiven player="Italians" resource="Ore" quantity="20"/>
 
                 </resourceInitialize>
