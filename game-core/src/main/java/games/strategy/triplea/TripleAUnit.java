@@ -56,6 +56,7 @@ public class TripleAUnit extends Unit {
   public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
   public static final String LAUNCHED = "launched";
   public static final String AIRBORNE = "airborne";
+  public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
   // the transport that is currently transporting us
   private TripleAUnit m_transportedBy = null;
   // the units we have unloaded this turn
@@ -90,6 +91,8 @@ public class TripleAUnit extends Unit {
   private int m_launched = 0;
   // was this unit airborne and launched this turn
   private boolean m_airborne = false;
+  // was charged flat fuel cost already this turn
+  private boolean m_chargedFlatFuelCost = false;
 
   public static TripleAUnit get(final Unit u) {
     return (TripleAUnit) u;
@@ -296,6 +299,15 @@ public class TripleAUnit extends Unit {
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setAirborne(final boolean value) {
     m_airborne = value;
+  }
+
+  public boolean getChargedFlatFuelCost() {
+    return m_chargedFlatFuelCost;
+  }
+
+  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
+  private void setChargedFlatFuelCost(final boolean value) {
+    m_chargedFlatFuelCost = value;
   }
 
   @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
@@ -601,6 +613,10 @@ public class TripleAUnit extends Unit {
             MutableProperty.ofSimple(
                 this::setAirborne,
                 this::getAirborne))
+        .put("chargedFlatFuelCost",
+            MutableProperty.ofSimple(
+                this::setChargedFlatFuelCost,
+                this::getChargedFlatFuelCost))
         .build();
   }
 }
