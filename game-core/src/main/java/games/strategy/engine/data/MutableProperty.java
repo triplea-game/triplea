@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import games.strategy.util.function.ThrowingConsumer;
 import games.strategy.util.function.ThrowingFunction;
 
@@ -81,9 +83,7 @@ public final class MutableProperty<T> {
    *
    * @throws InvalidValueException If the new property value is invalid.
    */
-  public void setValue(final Object value) throws InvalidValueException {
-    // TODO: do we need to allow null values? if so, document it; if not, add precondition check
-
+  public void setValue(final @Nullable Object value) throws InvalidValueException {
     if (value instanceof String) {
       setStringValue((String) value);
     } else {
