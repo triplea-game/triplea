@@ -33,6 +33,9 @@ import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.PredicateBuilder;
 
+/**
+ * Used to move units and make changes to game state.
+ */
 public class MovePerformer implements Serializable {
   private static final long serialVersionUID = 3752242292777658310L;
   private transient AbstractMoveDelegate moveDelegate;
