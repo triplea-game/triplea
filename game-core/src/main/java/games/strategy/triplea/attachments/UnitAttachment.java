@@ -2031,6 +2031,10 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<Resource> getFuelFlatCost() {
+    // TODO: remove for incompatible release
+    if (m_fuelFlatCost == null) {
+      m_fuelFlatCost = new IntegerMap<>();
+    }
     return m_fuelFlatCost;
   }
 
