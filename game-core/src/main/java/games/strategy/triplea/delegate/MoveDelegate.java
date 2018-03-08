@@ -307,6 +307,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
       if (taUnit.getWasAmphibious()) {
         change.add(ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.UNLOADED_AMPHIBIOUS));
       }
+      if (taUnit.getChargedFlatFuelCost()) {
+        change.add(ChangeFactory.unitPropertyChange(u, Boolean.FALSE, TripleAUnit.CHARGED_FLAT_FUEL_COST));
+      }
     }
     return change;
   }
