@@ -497,7 +497,12 @@ public class AirMovementValidator {
     return max;
   }
 
-  private static Collection<Unit> whatAirCanLandOnTheseCarriers(final Collection<Unit> carriers,
+  /**
+   * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
+   * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special
+   * properties and restrictions. So should pass allied/cargo fighters in and have them first in the list.
+   */
+  public static Collection<Unit> whatAirCanLandOnTheseCarriers(final Collection<Unit> carriers,
       final Collection<Unit> airUnits, final Territory territoryUnitsAreIn) {
     final Collection<Unit> airThatCanLandOnThem = new ArrayList<>();
     for (final Unit carrier : carriers) {
@@ -654,8 +659,7 @@ public class AirMovementValidator {
   /**
    * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
    * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special
-   * properties and
-   * restrictions.
+   * properties and restrictions.
    */
   public static int carrierCapacity(final Collection<Unit> units, final Territory territoryUnitsAreCurrentlyIn) {
     int sum = 0;
@@ -668,8 +672,7 @@ public class AirMovementValidator {
   /**
    * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
    * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special
-   * properties and
-   * restrictions.
+   * properties and restrictions.
    */
   public static int carrierCapacity(final Unit unit, final Territory territoryUnitsAreCurrentlyIn) {
     if (Matches.unitIsCarrier().test(unit)) {
