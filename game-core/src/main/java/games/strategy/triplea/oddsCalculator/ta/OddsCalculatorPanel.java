@@ -1,13 +1,11 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
@@ -15,19 +13,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -38,38 +28,29 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionFrontier;
-import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
+import games.strategy.triplea.odds.calculator.OrderOfLossesInputPanel;
+import games.strategy.triplea.odds.calculator.PlayerUnitsPanel;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
-import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
@@ -758,413 +739,5 @@ class OddsCalculatorPanel extends JPanel {
       }
     }
     return false;
-  }
-
-  private static final class PlayerUnitsPanel extends JPanel {
-    private static final long serialVersionUID = -1206338960403314681L;
-    private final GameData data;
-    private final UiContext uiContext;
-    private final boolean defender;
-    private boolean isLand = true;
-    private List<UnitCategory> categories = null;
-    private final List<Runnable> listeners = new ArrayList<>();
-
-    PlayerUnitsPanel(final GameData data, final UiContext uiContext, final boolean defender) {
-      this.data = data;
-      this.uiContext = uiContext;
-      this.defender = defender;
-      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    }
-
-    void clear() {
-      for (final Component c : getComponents()) {
-        final UnitPanel panel = (UnitPanel) c;
-        panel.setCount(0);
-      }
-    }
-
-    List<Unit> getUnits() {
-      final List<Unit> allUnits = new ArrayList<>();
-      for (final Component c : getComponents()) {
-        final UnitPanel panel = (UnitPanel) c;
-        allUnits.addAll(panel.getUnits());
-      }
-      return allUnits;
-    }
-
-    List<UnitCategory> getCategories() {
-      return categories;
-    }
-
-    void init(final PlayerID id, final List<Unit> units, final boolean land) {
-      isLand = land;
-      categories = new ArrayList<>(categorize(id, units));
-      categories.sort(Comparator.comparing(UnitCategory::getType, (ut1, ut2) -> {
-        final UnitAttachment u1 = UnitAttachment.get(ut1);
-        final UnitAttachment u2 = UnitAttachment.get(ut2);
-        // For land battles, sort by land, air, can't combat move (AA), bombarding
-        if (land) {
-          if (u1.getIsSea() != u2.getIsSea()) {
-            return u1.getIsSea() ? 1 : -1;
-          }
-          final boolean u1CanNotCombatMove =
-              Matches.unitTypeCanNotMoveDuringCombatMove().test(ut1) || !Matches.unitTypeCanMove(id).test(ut1);
-          final boolean u2CanNotCombatMove =
-              Matches.unitTypeCanNotMoveDuringCombatMove().test(ut2) || !Matches.unitTypeCanMove(id).test(ut2);
-          if (u1CanNotCombatMove != u2CanNotCombatMove) {
-            return u1CanNotCombatMove ? 1 : -1;
-          }
-          if (u1.getIsAir() != u2.getIsAir()) {
-            return u1.getIsAir() ? 1 : -1;
-          }
-        } else {
-          if (u1.getIsSea() != u2.getIsSea()) {
-            return u1.getIsSea() ? -1 : 1;
-          }
-        }
-        return u1.getName().compareTo(u2.getName());
-      }));
-      removeAll();
-      final Predicate<UnitType> predicate;
-      if (land) {
-        if (defender) {
-          predicate = Matches.unitTypeIsNotSea();
-        } else {
-          predicate = Matches.unitTypeIsNotSea().or(Matches.unitTypeCanBombard(id));
-        }
-      } else {
-        predicate = Matches.unitTypeIsSeaOrAir();
-      }
-      final IntegerMap<UnitType> costs;
-      try {
-        data.acquireReadLock();
-        costs = TuvUtils.getCostsForTuv(id, data);
-      } finally {
-        data.releaseReadLock();
-      }
-      for (final UnitCategory category : categories) {
-        if (predicate.test(category.getType())) {
-          final UnitPanel upanel = new UnitPanel(uiContext, category, costs);
-          upanel.addChangeListener(this::notifyListeners);
-          add(upanel);
-        }
-      }
-      invalidate();
-      validate();
-      revalidate();
-      getParent().invalidate();
-    }
-
-    /**
-     * Get all unit type categories that can be in combat first in the order of the player's
-     * production frontier and then any unit types the player owns on the map. Then populate the list
-     * of units into the categories.
-     */
-    private Set<UnitCategory> categorize(final PlayerID id, final List<Unit> units) {
-
-      // Get all unit types from production frontier and player unit types on the map
-      final Set<UnitCategory> categories = new LinkedHashSet<>();
-      for (final UnitType t : getUnitTypes(id)) {
-        final UnitCategory category = new UnitCategory(t, id);
-        categories.add(category);
-      }
-
-      // Populate units into each category then add any remaining categories (damaged units, etc)
-      final Set<UnitCategory> unitCategories = UnitSeperator.categorize(units);
-      for (final UnitCategory category : categories) {
-        for (final UnitCategory unitCategory : unitCategories) {
-          if (category.equals(unitCategory)) {
-            category.getUnits().addAll(unitCategory.getUnits());
-          }
-        }
-      }
-      categories.addAll(unitCategories);
-
-      return categories;
-    }
-
-    /**
-     * Return all the unit types available for the given player. A unit type is
-     * available if the unit can be purchased or if a player has one on the map.
-     */
-    private Collection<UnitType> getUnitTypes(final PlayerID player) {
-      Collection<UnitType> unitTypes = new LinkedHashSet<>();
-      final ProductionFrontier frontier = player.getProductionFrontier();
-      if (frontier != null) {
-        for (final ProductionRule rule : frontier) {
-          for (final NamedAttachable type : rule.getResults().keySet()) {
-            if (type instanceof UnitType) {
-              unitTypes.add((UnitType) type);
-            }
-          }
-        }
-      }
-      for (final Territory t : data.getMap()) {
-        for (final Unit u : t.getUnits()) {
-          if (u.getOwner().equals(player)) {
-            unitTypes.add(u.getType());
-          }
-        }
-      }
-
-      // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
-      unitTypes = CollectionUtils.getMatches(unitTypes,
-          Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
-
-      return unitTypes;
-    }
-
-    void addChangeListener(final Runnable listener) {
-      listeners.add(listener);
-    }
-
-    private void notifyListeners() {
-      listeners.forEach(Runnable::run);
-    }
-  }
-
-  private static final class UnitPanel extends JPanel {
-    private static final long serialVersionUID = 1509643150038705671L;
-    private final UiContext uiContext;
-    private final UnitCategory category;
-    private final ScrollableTextField textField;
-    private final List<Runnable> listeners = new ArrayList<>();
-
-    UnitPanel(final UiContext uiContext, final UnitCategory category, final IntegerMap<UnitType> costs) {
-      this.category = category;
-      this.uiContext = uiContext;
-      textField = new ScrollableTextField(0, 512);
-      textField.setShowMaxAndMin(false);
-      textField.addChangeListener(field -> notifyListeners());
-
-      final String toolTipText = "<html>" + category.getType().getName() + ":  " + costs.getInt(category.getType())
-          + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; " + category.getType().getTooltip(category.getOwner())
-          + "</html>";
-      setCount(category.getUnits().size());
-      setLayout(new GridBagLayout());
-
-
-      final Optional<Image> img =
-          this.uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
-              category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-
-      final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
-      label.setToolTipText(toolTipText);
-      add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, 0, 10), 0, 0));
-      add(textField, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, 0, 0), 0, 0));
-    }
-
-    List<Unit> getUnits() {
-      final List<Unit> units = category.getType().create(textField.getValue(), category.getOwner(), true);
-      if (!units.isEmpty()) {
-        // creating the unit just makes it, we want to make sure it is damaged if the category says it is damaged
-        if (category.getHitPoints() > 1 && category.getDamaged() > 0) {
-          // we do not need to use bridge and change factory here because this is not sent over the network. these are
-          // just some temporary
-          // units for the battle calc.
-          for (final Unit u : units) {
-            u.setHits(category.getDamaged());
-          }
-        }
-        if (category.getDisabled() && Matches.unitTypeCanBeDamaged().test(category.getType())) {
-          // add 1 because it is the max operational damage and we want to disable it
-          final int unitDamage = Math.max(0, 1 + UnitAttachment.get(category.getType()).getMaxOperationalDamage());
-          for (final Unit u : units) {
-            ((TripleAUnit) u).setUnitDamage(unitDamage);
-          }
-        }
-      }
-      return units;
-    }
-
-    void setCount(final int value) {
-      textField.setValue(value);
-    }
-
-    void addChangeListener(final Runnable listener) {
-      listeners.add(listener);
-    }
-
-    private void notifyListeners() {
-      listeners.forEach(Runnable::run);
-    }
-  }
-
-  private static final class OrderOfLossesInputPanel extends JPanel {
-    private static final long serialVersionUID = 8815617685388156219L;
-    private final GameData data;
-    private final UiContext uiContext;
-    private final List<UnitCategory> attackerCategories;
-    private final List<UnitCategory> defenderCategories;
-    private final JTextField attackerTextField;
-    private final JTextField defenderTextField;
-    private final JLabel attackerLabel = new JLabel("Attacker Units:");
-    private final JLabel defenderLabel = new JLabel("Defender Units:");
-    private final JButton clear;
-    private final boolean land;
-
-    OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder,
-        final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories, final boolean land,
-        final UiContext uiContext, final GameData data) {
-      this.data = data;
-      this.uiContext = uiContext;
-      this.land = land;
-      this.attackerCategories = attackerCategories;
-      this.defenderCategories = defenderCategories;
-      attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
-      attackerTextField.getDocument().addDocumentListener(new DocumentListener() {
-        @Override
-        public void insertUpdate(final DocumentEvent e) {
-          if (!OddsCalculator.isValidOrderOfLoss(attackerTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-            attackerLabel.setForeground(Color.red);
-          } else {
-            attackerLabel.setForeground(null);
-          }
-        }
-
-        @Override
-        public void removeUpdate(final DocumentEvent e) {
-          if (!OddsCalculator.isValidOrderOfLoss(attackerTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-            attackerLabel.setForeground(Color.red);
-          } else {
-            attackerLabel.setForeground(null);
-          }
-        }
-
-        @Override
-        public void changedUpdate(final DocumentEvent e) {
-          if (!OddsCalculator.isValidOrderOfLoss(attackerTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-            attackerLabel.setForeground(Color.red);
-          } else {
-            attackerLabel.setForeground(null);
-          }
-        }
-      });
-      defenderTextField = new JTextField(defenderOrder == null ? "" : defenderOrder);
-      defenderTextField.getDocument().addDocumentListener(new DocumentListener() {
-        @Override
-        public void insertUpdate(final DocumentEvent e) {
-          if (!OddsCalculator.isValidOrderOfLoss(defenderTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-            defenderLabel.setForeground(Color.red);
-          } else {
-            defenderLabel.setForeground(null);
-          }
-        }
-
-        @Override
-        public void removeUpdate(final DocumentEvent e) {
-          if (!OddsCalculator.isValidOrderOfLoss(defenderTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-            defenderLabel.setForeground(Color.red);
-          } else {
-            defenderLabel.setForeground(null);
-          }
-        }
-
-        @Override
-        public void changedUpdate(final DocumentEvent e) {
-          if (!OddsCalculator.isValidOrderOfLoss(defenderTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-            defenderLabel.setForeground(Color.red);
-          } else {
-            defenderLabel.setForeground(null);
-          }
-        }
-      });
-      clear = new JButton("Clear");
-      clear.addActionListener(e -> {
-        attackerTextField.setText("");
-        defenderTextField.setText("");
-      });
-      layoutComponents();
-    }
-
-    private void layoutComponents() {
-      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-      final JLabel instructions = new JLabel("<html>Here you can specify the 'Order of Losses' (OOL) for each side."
-          + "<br />Damageable units will be damanged first always. If the player label is red, your OOL is invalid."
-          + "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text "
-          + "line."
-          + "<br />Then, during combat, casualties will be chosen starting on the LEFT side of your OOL." + "<br />"
-          + OddsCalculator.OOL_SEPARATOR + " separates unit types." + "<br />" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR
-          + " is in front of the unit type and describes the number of units." + "<br />" + OddsCalculator.OOL_ALL
-          + " means all units of that type." + "<br />Examples:" + "<br />" + OddsCalculator.OOL_ALL
-          + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry" + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL
-          + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "artillery" + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL
-          + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
-          + "<br />The above will take all infantry, then all artillery, then all fighters, then all other units as "
-          + "casualty."
-          + "<br /><br />1" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry" + OddsCalculator.OOL_SEPARATOR + "2"
-          + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "artillery" + OddsCalculator.OOL_SEPARATOR + "6"
-          + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
-          + "<br />The above will take 1 infantry, then 2 artillery, then 6 fighters, then all other units as casualty."
-          + "<br /><br />" + OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry"
-          + OddsCalculator.OOL_SEPARATOR + OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "fighter"
-          + OddsCalculator.OOL_SEPARATOR + "1" + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + "infantry"
-          + "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then "
-          + "all other units casualty.</html>");
-      instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(instructions);
-      add(Box.createVerticalStrut(30));
-      attackerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(attackerLabel);
-      final JPanel attackerUnits = getUnitButtonPanel(attackerCategories, attackerTextField);
-      attackerUnits.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(attackerUnits);
-      attackerTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(attackerTextField);
-      add(Box.createVerticalStrut(30));
-      defenderLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(defenderLabel);
-      final JPanel defenderUnits = getUnitButtonPanel(defenderCategories, defenderTextField);
-      defenderUnits.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(defenderUnits);
-      defenderTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(defenderTextField);
-      add(Box.createVerticalStrut(10));
-      clear.setAlignmentX(Component.CENTER_ALIGNMENT);
-      add(clear);
-    }
-
-    private JPanel getUnitButtonPanel(final List<UnitCategory> categories, final JTextField textField) {
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-      if (categories != null) {
-        final Set<UnitType> typesUsed = new HashSet<>();
-        for (final UnitCategory category : categories) {
-          // no duplicates or infrastructure allowed. no sea if land, no land if sea.
-          if (typesUsed.contains(category.getType()) || Matches.unitTypeIsInfrastructure().test(category.getType())
-              || (land && Matches.unitTypeIsSea().test(category.getType()))
-              || (!land && Matches.unitTypeIsLand().test(category.getType()))) {
-            continue;
-          }
-          final String unitName =
-              OddsCalculator.OOL_ALL + OddsCalculator.OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
-          final String toolTipText = "<html>" + category.getType().getName() + ":  "
-              + category.getType().getTooltip(category.getOwner()) + "</html>";
-          final Optional<Image> img =
-              uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
-                  category.hasDamageOrBombingUnitDamage(), category.getDisabled());
-          if (img.isPresent()) {
-            final JButton button = new JButton(new ImageIcon(img.get()));
-            button.setToolTipText(toolTipText);
-            button.addActionListener(e -> textField
-                .setText((textField.getText().length() > 0 ? (textField.getText() + OddsCalculator.OOL_SEPARATOR) : "")
-                    + unitName));
-            panel.add(button);
-          }
-          typesUsed.add(category.getType());
-        }
-      }
-      return panel;
-    }
-
-    String getAttackerOrder() {
-      return attackerTextField.getText();
-    }
-
-    String getDefenderOrder() {
-      return defenderTextField.getText();
-    }
   }
 }
