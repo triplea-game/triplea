@@ -181,7 +181,6 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
       final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, battleTracker);
       battle.setHeadless(true);
-      battle.isAmphibious();
       battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
           (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
       bridge1.setBattle(battle);
