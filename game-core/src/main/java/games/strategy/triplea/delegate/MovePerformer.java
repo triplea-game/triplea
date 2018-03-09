@@ -33,6 +33,9 @@ import games.strategy.triplea.util.TransportUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.PredicateBuilder;
 
+/**
+ * Used to move units and make changes to game state.
+ */
 public class MovePerformer implements Serializable {
   private static final long serialVersionUID = 3752242292777658310L;
   private transient AbstractMoveDelegate moveDelegate;
@@ -163,7 +166,7 @@ public class MovePerformer implements Serializable {
         if (Properties.getUseFuelCost(data)) {
           // markFuelCostResourceChange must be done
           // before we load/unload units
-          change.add(markFuelCostResourceChange(units, route, id, data));
+          change.add(Route.getFuelChanges(units, route, id, data));
         }
         markTransportsMovement(arrived, transporting, route);
         if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
@@ -294,12 +297,6 @@ public class MovePerformer implements Serializable {
     return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)
         .or(Matches.territoryHasNonSubmergedEnemyUnits(id, data))
         .or(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
-  }
-
-  private static Change markFuelCostResourceChange(final Collection<Unit> units, final Route route, final PlayerID id,
-      final GameData data) {
-    return ChangeFactory.removeResourceCollection(id,
-        Route.getMovementFuelCostCharge(units, route, id, data));
   }
 
   private Change markMovementChange(final Collection<Unit> units, final Route route, final PlayerID id) {

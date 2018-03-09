@@ -27,6 +27,7 @@ import games.strategy.util.IntegerMap;
 public class VictoryTest {
   private GameData gameData;
   private PlayerID italians;
+  private PlayerID germans;
   private ITestDelegateBridge testBridge;
 
   private IntegerMap<Resource> italianResources;
@@ -35,16 +36,21 @@ public class VictoryTest {
   private Territory kenya;
   private UnitType motorized;
   private UnitType armour;
+  private UnitType fighter;
+  private UnitType carrier;
   private Territory frenchEastAfrica;
   private Territory frenchWestAfrica;
   private Territory angloEgypt;
   private Territory libya;
+  private Territory sz29;
+  private Territory sz30;
   private MoveDelegate moveDelegate;
 
   @BeforeEach
   public void setUp() throws Exception {
     gameData = TestMapGameData.VICTORY_TEST.getGameData();
     italians = GameDataTestUtil.italians(gameData);
+    germans = GameDataTestUtil.germans(gameData);
     testBridge = GameDataTestUtil.getDelegateBridge(italians, gameData);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
@@ -61,11 +67,14 @@ public class VictoryTest {
     kenya = gameData.getMap().getTerritory("Kenya");
     motorized = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MOTORIZED);
     armour = GameDataTestUtil.armour(gameData);
+    fighter = GameDataTestUtil.fighter(gameData);
+    carrier = GameDataTestUtil.carrier(gameData);
     frenchEastAfrica = gameData.getMap().getTerritory("French Equatorial Africa");
     frenchWestAfrica = gameData.getMap().getTerritory("French West Africa");
     angloEgypt = gameData.getMap().getTerritory("Anglo Egypt");
     libya = gameData.getMap().getTerritory("Libya");
-
+    sz29 = gameData.getMap().getTerritory("29 Sea Zone");
+    sz30 = gameData.getMap().getTerritory("30 Sea Zone");
   }
 
   @Test
@@ -157,11 +166,10 @@ public class VictoryTest {
   }
 
   @Test
-  public void testFuelUseMotorized() {
+  public void testFuelCostAndFuelFlatCost() {
     gameData.performChange(ChangeFactory.changeOwner(kenya, italians));
     gameData.performChange(ChangeFactory.changeOwner(britishCongo, italians));
     gameData.performChange(ChangeFactory.changeOwner(frenchEastAfrica, italians));
-    gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
     testBridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -169,6 +177,7 @@ public class VictoryTest {
     final int puAmount = italians.getResources().getQuantity("PUs");
     final int oreAmount = italians.getResources().getQuantity("Ore");
 
+    gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
     moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(fuelAmount - 2, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
@@ -196,6 +205,59 @@ public class VictoryTest {
         moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertTrue(error.startsWith("Not enough resources to perform this move"));
     moveDelegate.end();
+  }
+
+  @Test
+  public void testFuelForCarriers() {
+    testBridge.setStepName("CombatMove");
+    moveDelegate.setDelegateBridgeAndPlayer(testBridge);
+    moveDelegate.start();
+    final int fuelAmount = italians.getResources().getQuantity("Fuel");
+
+    // Combat move where air is always charged fuel
+    gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
+    gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(2, italians)));
+    moveDelegate.move(sz29.getUnits().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    assertEquals(fuelAmount - 7, italians.getResources().getQuantity("Fuel"));
+
+    // Rest of the cases use non-combat move
+    moveDelegate.end();
+    testBridge.setStepName("NonCombatMove");
+    moveDelegate.setDelegateBridgeAndPlayer(testBridge);
+    moveDelegate.start();
+
+    // Non-combat move where air isn't charged fuel
+    gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
+    gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(2, italians)));
+    moveDelegate.move(sz29.getUnits().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    assertEquals(fuelAmount - 8, italians.getResources().getQuantity("Fuel"));
+    gameData.performChange(ChangeFactory.removeUnits(sz30, sz30.getUnits()));
+
+    // Move onto carrier, move with carrier, move off carrier
+    gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
+    gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(1, italians)));
+    gameData.performChange(ChangeFactory.addUnits(sz30, fighter.create(1, italians)));
+    moveDelegate.move(sz30.getUnits().getUnits(), gameData.getMap().getRoute(sz30, sz29));
+    assertEquals(fuelAmount - 11, italians.getResources().getQuantity("Fuel"));
+    moveDelegate.move(sz29.getUnits().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    assertEquals(fuelAmount - 12, italians.getResources().getQuantity("Fuel"));
+    moveDelegate.move(sz30.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(sz30, sz29));
+    assertEquals(fuelAmount - 16, italians.getResources().getQuantity("Fuel"));
+    gameData.performChange(ChangeFactory.removeUnits(sz29, sz29.getUnits()));
+    gameData.performChange(ChangeFactory.removeUnits(sz30, sz30.getUnits()));
+
+    // Too many fighters for carrier
+    gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
+    gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(3, italians)));
+    moveDelegate.move(sz29.getUnits().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    assertEquals(fuelAmount - 20, italians.getResources().getQuantity("Fuel"));
+
+    // Allied and owned fighters
+    gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(2, italians)));
+    gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(2, italians)));
+    gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(3, germans)));
+    moveDelegate.move(sz29.getUnits().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    assertEquals(fuelAmount - 25, italians.getResources().getQuantity("Fuel"));
   }
 
   @Test

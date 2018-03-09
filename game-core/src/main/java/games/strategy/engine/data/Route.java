@@ -11,10 +11,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.AirMovementValidator;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
+import games.strategy.util.Tuple;
 
 /**
  * A route between two territories.
@@ -396,31 +400,78 @@ public class Route implements Serializable, Iterable<Territory> {
     return movementLeft;
   }
 
-  private ResourceCollection getMovementFuelCostCharge(final Unit unit, final GameData data) {
-    final ResourceCollection col = new ResourceCollection(data);
-    if (Matches.unitIsBeingTransported().test(unit)) {
-      return col;
+  public static Change getFuelChanges(final Collection<Unit> units, final Route route, final PlayerID player,
+      final GameData data) {
+    final CompositeChange changes = new CompositeChange();
+    final Tuple<ResourceCollection, Set<Unit>> tuple =
+        Route.getFuelCostsAndUnitsChargedFlatFuelCost(units, route, player, data);
+    changes.add(ChangeFactory.removeResourceCollection(player, tuple.getFirst()));
+    for (final Unit unit : tuple.getSecond()) {
+      changes.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.CHARGED_FLAT_FUEL_COST));
     }
-    final UnitAttachment ua = UnitAttachment.get(unit.getType());
-    col.add(ua.getFuelCost());
-    col.multiply(getMovementCost(unit));
-    if (Matches.unitHasNotMoved().test(unit)) {
-      col.add(ua.getFuelFlatCost());
-    }
-    return col;
+    return changes;
   }
 
-  public static ResourceCollection getMovementFuelCostCharge(final Collection<Unit> unitsAll, final Route route,
-      final PlayerID currentPlayer, final GameData data) {
-    final Set<Unit> units = new HashSet<>(unitsAll);
+  public static ResourceCollection getMovementFuelCostCharge(final Collection<Unit> units, final Route route,
+      final PlayerID player, final GameData data) {
+    return Route.getFuelCostsAndUnitsChargedFlatFuelCost(units, route, player, data).getFirst();
+  }
 
-    units.removeAll(CollectionUtils.getMatches(unitsAll,
-        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(unitsAll, currentPlayer, data, true)));
-    final ResourceCollection movementCharge = new ResourceCollection(data);
-    for (final Unit unit : units) {
-      movementCharge.add(route.getMovementFuelCostCharge(unit, data));
+  /**
+   * Find fuel costs and which units are to be charged flat fuel costs. Ignores dependent units
+   * and if non-combat then ignores air units moving with carrier.
+   */
+  private static Tuple<ResourceCollection, Set<Unit>> getFuelCostsAndUnitsChargedFlatFuelCost(
+      final Collection<Unit> units, final Route route, final PlayerID player, final GameData data) {
+    final Set<Unit> unitsToChargeFuelCosts = new HashSet<>(units);
+
+    // If non-combat then remove air units moving with a carrier
+    if (GameStepPropertiesHelper.isNonCombatMove(data, true)) {
+
+      // Add allied air first so that the carriers take them into account before owned air
+      final List<Unit> canLandOnCarrierUnits = CollectionUtils.getMatches(units,
+          Matches.unitIsOwnedBy(player).negate()
+              .and(Matches.isUnitAllied(player, data))
+              .and(Matches.unitCanLandOnCarrier()));
+      canLandOnCarrierUnits.addAll(CollectionUtils.getMatches(units,
+          Matches.unitIsOwnedBy(player).and(Matches.unitCanLandOnCarrier())));
+      unitsToChargeFuelCosts.removeAll(AirMovementValidator.whatAirCanLandOnTheseCarriers(
+          CollectionUtils.getMatches(units, Matches.unitIsCarrier()),
+          canLandOnCarrierUnits, route.getStart()));
     }
-    return movementCharge;
+
+    // Remove dependent units
+    unitsToChargeFuelCosts.removeAll(CollectionUtils.getMatches(units,
+        Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, data, true)));
+
+    // Find fuel cost and whether to charge flat fuel cost
+    final ResourceCollection movementCharge = new ResourceCollection(data);
+    final Set<Unit> unitsChargedFlatFuelCost = new HashSet<>();
+    for (final Unit unit : unitsToChargeFuelCosts) {
+      final Tuple<ResourceCollection, Boolean> tuple = route.getFuelCostsAndIfChargedFlatFuelCost(unit, data);
+      movementCharge.add(tuple.getFirst());
+      if (tuple.getSecond()) {
+        unitsChargedFlatFuelCost.add(unit);
+      }
+    }
+    return Tuple.of(movementCharge, unitsChargedFlatFuelCost);
+  }
+
+  private Tuple<ResourceCollection, Boolean> getFuelCostsAndIfChargedFlatFuelCost(final Unit unit,
+      final GameData data) {
+    final ResourceCollection resources = new ResourceCollection(data);
+    boolean chargedFlatFuelCost = false;
+    if (Matches.unitIsBeingTransported().test(unit)) {
+      return Tuple.of(resources, chargedFlatFuelCost);
+    }
+    final UnitAttachment ua = UnitAttachment.get(unit.getType());
+    resources.add(ua.getFuelCost());
+    resources.multiply(getMovementCost(unit));
+    if (Matches.unitHasNotBeenChargedFlatFuelCost().test(unit)) {
+      resources.add(ua.getFuelFlatCost());
+      chargedFlatFuelCost = true;
+    }
+    return Tuple.of(resources, chargedFlatFuelCost);
   }
 
   public static Route create(final List<Route> routes) {

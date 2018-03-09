@@ -202,6 +202,10 @@ public final class Matches {
     return unitHasMoved().negate();
   }
 
+  public static Predicate<Unit> unitHasNotBeenChargedFlatFuelCost() {
+    return unit -> !TripleAUnit.get(unit).getChargedFlatFuelCost();
+  }
+
   static Predicate<Unit> unitCanAttack(final PlayerID id) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
