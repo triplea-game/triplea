@@ -77,7 +77,6 @@ import games.strategy.util.IntegerMap;
 class OddsCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
   private static final String NO_EFFECTS = "*None*";
-  private final Window parent;
   private final JLabel attackerWin = new JLabel();
   private final JLabel defenderWin = new JLabel();
   private final JLabel draw = new JLabel();
@@ -92,12 +91,7 @@ class OddsCalculatorPanel extends JPanel {
   private final IntTextField numRuns = new IntTextField();
   private final IntTextField retreatAfterXRounds = new IntTextField();
   private final IntTextField retreatAfterXUnitsLeft = new IntTextField();
-  private final JPanel resultsPanel = new JPanel();
   private final JButton calculateButton = new JButton("Pls Wait, Copying Data...");
-  private final JButton clearButton = new JButton("Clear");
-  private final JButton closeButton = new JButton("Close");
-  private final JButton swapSidesButton = new JButton("Swap Sides");
-  private final JButton orderOfLossesButton = new JButton("Order Of Losses");
   private final JCheckBox keepOneAttackingLandUnitCheckBox = new JCheckBox("One attacking land must live");
   private final JCheckBox amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
   private final JCheckBox landBattleCheckBox = new JCheckBox("Land Battle");
@@ -128,7 +122,6 @@ class OddsCalculatorPanel extends JPanel {
     this.data = data;
     this.uiContext = uiContext;
     this.location = location;
-    this.parent = parent;
     calculateButton.setEnabled(false);
     data.acquireReadLock();
     try {
@@ -209,10 +202,12 @@ class OddsCalculatorPanel extends JPanel {
     defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
         + "include Bombarding sea units for land battles.");
     setLayout(new BorderLayout());
+
     final JPanel main = new JPanel();
     main.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
     add(main, BorderLayout.CENTER);
     main.setLayout(new BorderLayout());
+
     final JPanel attackAndDefend = new JPanel();
     attackAndDefend.setLayout(new GridBagLayout());
     final int gap = 20;
@@ -255,6 +250,7 @@ class OddsCalculatorPanel extends JPanel {
     attackAndDefend.add(defenderScroll, new GridBagConstraints(2, row0, 2, 1, 1, 1, GridBagConstraints.NORTH,
         GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
     main.add(attackAndDefend, BorderLayout.CENTER);
+
     final JPanel resultsText = new JPanel();
     resultsText.setLayout(new GridBagLayout());
     int row1 = 0;
@@ -282,6 +278,7 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
     resultsText.add(calculateButton, new GridBagConstraints(0, row1++, 2, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(20, 60, 0, 100), 0, 0));
+    final JButton clearButton = new JButton("Clear");
     resultsText.add(clearButton, new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(6, 60, 0, 0), 0, 0));
     resultsText.add(new JLabel("Run Count:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
@@ -314,6 +311,7 @@ class OddsCalculatorPanel extends JPanel {
     resultsText.add(time, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
     row2++;
+    final JButton swapSidesButton = new JButton("Swap Sides");
     resultsText.add(swapSidesButton, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.BOTH, new Insets(6, 10, 0, 100), 0, 0));
     resultsText.add(numRuns, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -323,6 +321,8 @@ class OddsCalculatorPanel extends JPanel {
     resultsText.add(retreatAfterXUnitsLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
     row1 = row2;
+
+    final JButton orderOfLossesButton = new JButton("Order Of Losses");
     resultsText.add(orderOfLossesButton, new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
     if (territoryEffectsJList != null) {
@@ -338,6 +338,8 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
     resultsText.add(landBattleCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
+
+    final JPanel resultsPanel = new JPanel();
     resultsPanel.add(resultsText);
     resultsPanel.setBorder(BorderFactory.createEmptyBorder());
     final JScrollPane resultsScroll = new JScrollPane(resultsPanel);
@@ -347,10 +349,12 @@ class OddsCalculatorPanel extends JPanel {
     resultsScrollDimensions.width += 22;
     resultsScroll.setPreferredSize(resultsScrollDimensions);
     main.add(resultsScroll, BorderLayout.EAST);
+
     final JPanel south = new JPanel();
     south.setLayout(new BorderLayout());
     final JPanel buttons = new JPanel();
     buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+    final JButton closeButton = new JButton("Close");
     buttons.add(closeButton);
     south.add(buttons, BorderLayout.SOUTH);
     add(south, BorderLayout.SOUTH);
