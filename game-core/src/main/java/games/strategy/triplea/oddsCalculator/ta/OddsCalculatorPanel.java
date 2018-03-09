@@ -208,73 +208,153 @@ class OddsCalculatorPanel extends JPanel {
         + "include Bombarding sea units for land battles.");
     defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
         + "include Bombarding sea units for land battles.");
-    layoutComponents();
-    setupListeners();
-    // use the one passed, not the one we found:
-    if (location != null) {
-      data.acquireReadLock();
-      try {
-        landBattleCheckBox.setSelected(!location.isWater());
-        // default to the current player
-        if (data.getSequence().getStep().getPlayerId() != null
-            && !data.getSequence().getStep().getPlayerId().isNull()) {
-          attackerCombo.setSelectedItem(data.getSequence().getStep().getPlayerId());
-        }
-        if (!location.isWater()) {
-          defenderCombo.setSelectedItem(location.getOwner());
-        } else {
-          // we need to find out the defender for sea zones
-          for (final PlayerID player : location.getUnits().getPlayersWithUnits()) {
-            if (player != getAttacker() && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
-              defenderCombo.setSelectedItem(player);
-              break;
-            }
-          }
-        }
-        updateDefender(location.getUnits().getMatches(Matches.alliedUnit(getDefender(), data)));
-        updateAttacker(location.getUnits().getMatches(Matches.alliedUnit(getAttacker(), data)));
-      } finally {
-        data.releaseReadLock();
-      }
-    } else {
-      landBattleCheckBox.setSelected(true);
-      defenderCombo.setSelectedItem(data.getPlayerList().getPlayers().iterator().next());
-      updateDefender(null);
-      updateAttacker(null);
+    setLayout(new BorderLayout());
+    final JPanel main = new JPanel();
+    main.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+    add(main, BorderLayout.CENTER);
+    main.setLayout(new BorderLayout());
+    final JPanel attackAndDefend = new JPanel();
+    attackAndDefend.setLayout(new GridBagLayout());
+    final int gap = 20;
+    int row0 = 0;
+    attackAndDefend.add(new JLabel("Attacker: "), new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap, gap, 0), 0, 0));
+    attackAndDefend.add(attackerCombo, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
+    attackAndDefend.add(new JLabel("Defender: "), new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap, gap, 0), 0, 0));
+    attackAndDefend.add(defenderCombo, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
+    row0++;
+    attackAndDefend.add(attackerUnitsTotalNumber, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
+    attackAndDefend.add(attackerUnitsTotalTuv, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
+    attackAndDefend.add(defenderUnitsTotalNumber, new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
+    attackAndDefend.add(defenderUnitsTotalTuv, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
+    row0++;
+    attackAndDefend.add(attackerUnitsTotalHitpoints, new GridBagConstraints(0, row0, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
+    attackAndDefend.add(attackerUnitsTotalPower, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
+    attackAndDefend.add(defenderUnitsTotalHitpoints, new GridBagConstraints(2, row0, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
+    attackAndDefend.add(defenderUnitsTotalPower, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
+    row0++;
+    final JScrollPane attackerScroll = new JScrollPane(attackingUnitsPanel);
+    attackerScroll.setBorder(null);
+    attackerScroll.getViewport().setBorder(null);
+    final JScrollPane defenderScroll = new JScrollPane(defendingUnitsPanel);
+    defenderScroll.setBorder(null);
+    defenderScroll.getViewport().setBorder(null);
+    attackAndDefend.add(attackerScroll, new GridBagConstraints(0, row0, 2, 1, 1, 1, GridBagConstraints.NORTH,
+        GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
+    attackAndDefend.add(defenderScroll, new GridBagConstraints(2, row0, 2, 1, 1, 1, GridBagConstraints.NORTH,
+        GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
+    main.add(attackAndDefend, BorderLayout.CENTER);
+    final JPanel resultsText = new JPanel();
+    resultsText.setLayout(new GridBagLayout());
+    int row1 = 0;
+    resultsText.add(new JLabel("Attacker Wins:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Draw:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Defender Wins:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Ave. Defender Units Left:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Units Left If Def Won:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Ave. Attacker Units Left:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Units Left If Att Won:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Average TUV Swing:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Average Rounds:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Simulation Count:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(15, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Time:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    resultsText.add(calculateButton, new GridBagConstraints(0, row1++, 2, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.BOTH, new Insets(20, 60, 0, 100), 0, 0));
+    resultsText.add(clearButton, new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.BOTH, new Insets(6, 60, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Run Count:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(20, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Retreat After Round:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+    resultsText.add(new JLabel("Retreat When X Units Left:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+    int row2 = 0;
+    resultsText.add(attackerWin, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+    resultsText.add(draw, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+    resultsText.add(defenderWin, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+    resultsText.add(defenderLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
+    resultsText.add(defenderLeftWhenDefenderWon, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+    resultsText.add(attackerLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
+    resultsText.add(attackerLeftWhenAttackerWon, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+    resultsText.add(averageChangeInTuv, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
+    resultsText.add(roundsAverage, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+    resultsText.add(count, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(15, 10, 0, 0), 0, 0));
+    resultsText.add(time, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+    row2++;
+    resultsText.add(swapSidesButton, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.BOTH, new Insets(6, 10, 0, 100), 0, 0));
+    resultsText.add(numRuns, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(20, 10, 0, 0), 0, 0));
+    resultsText.add(retreatAfterXRounds, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+    resultsText.add(retreatAfterXUnitsLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+    row1 = row2;
+    resultsText.add(orderOfLossesButton, new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
+    if (territoryEffectsJList != null) {
+      resultsText.add(new JScrollPane(territoryEffectsJList),
+          new GridBagConstraints(0, row1, 1, territoryEffectsJList.getVisibleRowCount(), 0, 0,
+              GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
     }
-    calculator = new ConcurrentOddsCalculator("BtlCalc Panel", () -> SwingUtilities.invokeLater(() -> {
-      calculateButton.setText("Calculate Odds");
-      calculateButton.setEnabled(true);
-    }));
+    resultsText.add(retreatWhenOnlyAirLeftCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 5), 0, 0));
+    resultsText.add(keepOneAttackingLandUnitCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
+    resultsText.add(amphibiousCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
+    resultsText.add(landBattleCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
+    resultsPanel.add(resultsText);
+    resultsPanel.setBorder(BorderFactory.createEmptyBorder());
+    final JScrollPane resultsScroll = new JScrollPane(resultsPanel);
+    resultsScroll.setBorder(BorderFactory.createEmptyBorder());
+    final Dimension resultsScrollDimensions = resultsScroll.getPreferredSize();
+    // add some so that we don't have double scroll bars appear when only one is needed
+    resultsScrollDimensions.width += 22;
+    resultsScroll.setPreferredSize(resultsScrollDimensions);
+    main.add(resultsScroll, BorderLayout.EAST);
+    final JPanel south = new JPanel();
+    south.setLayout(new BorderLayout());
+    final JPanel buttons = new JPanel();
+    buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+    buttons.add(closeButton);
+    south.add(buttons, BorderLayout.SOUTH);
+    add(south, BorderLayout.SOUTH);
 
-    calculator.setGameData(data);
-    setWidgetActivation();
-    revalidate();
-  }
-
-  void shutdown() {
-    try {
-      // use this if not using a static calc, so that we gc the calc and shutdown all threads.
-      // must be shutdown, as it has a thread pool per each instance.
-      calculator.shutdown();
-    } catch (final Exception e) {
-      ClientLogger.logQuietly("Failed to shut down odds calculator", e);
-    }
-  }
-
-  private PlayerID getDefender() {
-    return (PlayerID) defenderCombo.getSelectedItem();
-  }
-
-  private PlayerID getAttacker() {
-    return (PlayerID) attackerCombo.getSelectedItem();
-  }
-
-  private PlayerID getSwapSides() {
-    return (PlayerID) swapSidesCombo.getSelectedItem();
-  }
-
-  private void setupListeners() {
     defenderCombo.addActionListener(e -> {
       data.acquireReadLock();
       try {
@@ -351,7 +431,73 @@ class OddsCalculatorPanel extends JPanel {
     }
     attackingUnitsPanel.addChangeListener(this::setWidgetActivation);
     defendingUnitsPanel.addChangeListener(this::setWidgetActivation);
+
+
+
+    // use the one passed, not the one we found:
+    if (location != null) {
+      data.acquireReadLock();
+      try {
+        landBattleCheckBox.setSelected(!location.isWater());
+        // default to the current player
+        if (data.getSequence().getStep().getPlayerId() != null
+            && !data.getSequence().getStep().getPlayerId().isNull()) {
+          attackerCombo.setSelectedItem(data.getSequence().getStep().getPlayerId());
+        }
+        if (!location.isWater()) {
+          defenderCombo.setSelectedItem(location.getOwner());
+        } else {
+          // we need to find out the defender for sea zones
+          for (final PlayerID player : location.getUnits().getPlayersWithUnits()) {
+            if (player != getAttacker() && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
+              defenderCombo.setSelectedItem(player);
+              break;
+            }
+          }
+        }
+        updateDefender(location.getUnits().getMatches(Matches.alliedUnit(getDefender(), data)));
+        updateAttacker(location.getUnits().getMatches(Matches.alliedUnit(getAttacker(), data)));
+      } finally {
+        data.releaseReadLock();
+      }
+    } else {
+      landBattleCheckBox.setSelected(true);
+      defenderCombo.setSelectedItem(data.getPlayerList().getPlayers().iterator().next());
+      updateDefender(null);
+      updateAttacker(null);
+    }
+    calculator = new ConcurrentOddsCalculator("BtlCalc Panel", () -> SwingUtilities.invokeLater(() -> {
+      calculateButton.setText("Calculate Odds");
+      calculateButton.setEnabled(true);
+    }));
+
+    calculator.setGameData(data);
+    setWidgetActivation();
+    revalidate();
   }
+
+  void shutdown() {
+    try {
+      // use this if not using a static calc, so that we gc the calc and shutdown all threads.
+      // must be shutdown, as it has a thread pool per each instance.
+      calculator.shutdown();
+    } catch (final Exception e) {
+      ClientLogger.logQuietly("Failed to shut down odds calculator", e);
+    }
+  }
+
+  private PlayerID getDefender() {
+    return (PlayerID) defenderCombo.getSelectedItem();
+  }
+
+  private PlayerID getAttacker() {
+    return (PlayerID) attackerCombo.getSelectedItem();
+  }
+
+  private PlayerID getSwapSides() {
+    return (PlayerID) swapSidesCombo.getSelectedItem();
+  }
+
 
   private boolean isAmphibiousBattle() {
     return (landBattleCheckBox.isSelected() && amphibiousCheckBox.isSelected());
@@ -525,156 +671,6 @@ class OddsCalculatorPanel extends JPanel {
     throw new IllegalStateException("No enemies or non-allies for :" + player);
   }
 
-  private void layoutComponents() {
-    setLayout(new BorderLayout());
-    final JPanel main = new JPanel();
-    main.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-    add(main, BorderLayout.CENTER);
-    main.setLayout(new BorderLayout());
-    final JPanel attackAndDefend = new JPanel();
-    attackAndDefend.setLayout(new GridBagLayout());
-    final int gap = 20;
-    int row0 = 0;
-    attackAndDefend.add(new JLabel("Attacker: "), new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap, gap, 0), 0, 0));
-    attackAndDefend.add(attackerCombo, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
-    attackAndDefend.add(new JLabel("Defender: "), new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap, gap, 0), 0, 0));
-    attackAndDefend.add(defenderCombo, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
-    row0++;
-    attackAndDefend.add(attackerUnitsTotalNumber, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
-    attackAndDefend.add(attackerUnitsTotalTuv, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
-    attackAndDefend.add(defenderUnitsTotalNumber, new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
-    attackAndDefend.add(defenderUnitsTotalTuv, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap / 2, 0, gap * 2), 0, 0));
-    row0++;
-    attackAndDefend.add(attackerUnitsTotalHitpoints, new GridBagConstraints(0, row0, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
-    attackAndDefend.add(attackerUnitsTotalPower, new GridBagConstraints(1, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
-    attackAndDefend.add(defenderUnitsTotalHitpoints, new GridBagConstraints(2, row0, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
-    attackAndDefend.add(defenderUnitsTotalPower, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
-    row0++;
-    final JScrollPane attackerScroll = new JScrollPane(attackingUnitsPanel);
-    attackerScroll.setBorder(null);
-    attackerScroll.getViewport().setBorder(null);
-    final JScrollPane defenderScroll = new JScrollPane(defendingUnitsPanel);
-    defenderScroll.setBorder(null);
-    defenderScroll.getViewport().setBorder(null);
-    attackAndDefend.add(attackerScroll, new GridBagConstraints(0, row0, 2, 1, 1, 1, GridBagConstraints.NORTH,
-        GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
-    attackAndDefend.add(defenderScroll, new GridBagConstraints(2, row0, 2, 1, 1, 1, GridBagConstraints.NORTH,
-        GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
-    main.add(attackAndDefend, BorderLayout.CENTER);
-    final JPanel resultsText = new JPanel();
-    resultsText.setLayout(new GridBagLayout());
-    int row1 = 0;
-    resultsText.add(new JLabel("Attacker Wins:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Draw:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Defender Wins:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Ave. Defender Units Left:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Units Left If Def Won:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Ave. Attacker Units Left:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Units Left If Att Won:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Average TUV Swing:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Average Rounds:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Simulation Count:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(15, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Time:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    resultsText.add(calculateButton, new GridBagConstraints(0, row1++, 2, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.BOTH, new Insets(20, 60, 0, 100), 0, 0));
-    resultsText.add(clearButton, new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.BOTH, new Insets(6, 60, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Run Count:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(20, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Retreat After Round:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Retreat When X Units Left:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
-        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-    int row2 = 0;
-    resultsText.add(attackerWin, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    resultsText.add(draw, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    resultsText.add(defenderWin, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    resultsText.add(defenderLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
-    resultsText.add(defenderLeftWhenDefenderWon, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
-        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    resultsText.add(attackerLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
-    resultsText.add(attackerLeftWhenAttackerWon, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
-        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    resultsText.add(averageChangeInTuv, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(6, 10, 0, 0), 0, 0));
-    resultsText.add(roundsAverage, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    resultsText.add(count, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(15, 10, 0, 0), 0, 0));
-    resultsText.add(time, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-    row2++;
-    resultsText.add(swapSidesButton, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.BOTH, new Insets(6, 10, 0, 100), 0, 0));
-    resultsText.add(numRuns, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(20, 10, 0, 0), 0, 0));
-    resultsText.add(retreatAfterXRounds, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
-    resultsText.add(retreatAfterXUnitsLeft, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
-    row1 = row2;
-    resultsText.add(orderOfLossesButton, new GridBagConstraints(0, row1++, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
-    if (territoryEffectsJList != null) {
-      resultsText.add(new JScrollPane(territoryEffectsJList),
-          new GridBagConstraints(0, row1, 1, territoryEffectsJList.getVisibleRowCount(), 0, 0,
-              GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(10, 15, 0, 0), 0, 0));
-    }
-    resultsText.add(retreatWhenOnlyAirLeftCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
-        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 5), 0, 0));
-    resultsText.add(keepOneAttackingLandUnitCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0,
-        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
-    resultsText.add(amphibiousCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
-    resultsText.add(landBattleCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
-    resultsPanel.add(resultsText);
-    resultsPanel.setBorder(BorderFactory.createEmptyBorder());
-    final JScrollPane resultsScroll = new JScrollPane(resultsPanel);
-    resultsScroll.setBorder(BorderFactory.createEmptyBorder());
-    final Dimension resultsScrollDimensions = resultsScroll.getPreferredSize();
-    // add some so that we don't have double scroll bars appear when only one is needed
-    resultsScrollDimensions.width += 22;
-    resultsScroll.setPreferredSize(resultsScrollDimensions);
-    main.add(resultsScroll, BorderLayout.EAST);
-    final JPanel south = new JPanel();
-    south.setLayout(new BorderLayout());
-    final JPanel buttons = new JPanel();
-    buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
-    buttons.add(closeButton);
-    south.add(buttons, BorderLayout.SOUTH);
-    add(south, BorderLayout.SOUTH);
-  }
-
-
   private void setResultsToBlank() {
     final String blank = "------";
     attackerWin.setText(blank);
@@ -690,7 +686,7 @@ class OddsCalculatorPanel extends JPanel {
     time.setText(blank);
   }
 
-  void setWidgetActivation() {
+  private void setWidgetActivation() {
     keepOneAttackingLandUnitCheckBox.setEnabled(landBattleCheckBox.isSelected());
     amphibiousCheckBox.setEnabled(landBattleCheckBox.isSelected());
     final boolean isLand = isLand();
