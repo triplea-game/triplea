@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
@@ -72,7 +71,6 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.SwingComponents;
-import games.strategy.ui.WidgetChangedListener;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
@@ -774,7 +772,7 @@ class OddsCalculatorPanel extends JPanel {
     private final boolean defender;
     private boolean isLand = true;
     private List<UnitCategory> categories = null;
-    private final List<WidgetChangedListener> listeners = new ArrayList<>();
+    private final List<Runnable> listeners = new ArrayList<>();
 
     PlayerUnitsPanel(final GameData data, final UiContext uiContext, final boolean defender) {
       this.data = data;
@@ -921,14 +919,12 @@ class OddsCalculatorPanel extends JPanel {
       return unitTypes;
     }
 
-    void addChangeListener(final WidgetChangedListener listener) {
+    void addChangeListener(final Runnable listener) {
       listeners.add(listener);
     }
 
     private void notifyListeners() {
-      for (final WidgetChangedListener listener : listeners) {
-        listener.widgetChanged();
-      }
+      listeners.forEach(Runnable::run);
     }
   }
 
@@ -937,7 +933,7 @@ class OddsCalculatorPanel extends JPanel {
     private final UiContext uiContext;
     private final UnitCategory category;
     private final ScrollableTextField textField;
-    private final List<WidgetChangedListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<Runnable> listeners = new ArrayList<>();
 
     UnitPanel(final UiContext uiContext, final UnitCategory category, final IntegerMap<UnitType> costs) {
       this.category = category;
@@ -992,14 +988,12 @@ class OddsCalculatorPanel extends JPanel {
       textField.setValue(value);
     }
 
-    void addChangeListener(final WidgetChangedListener listener) {
+    void addChangeListener(final Runnable listener) {
       listeners.add(listener);
     }
 
     private void notifyListeners() {
-      for (final WidgetChangedListener listener : listeners) {
-        listener.widgetChanged();
-      }
+      listeners.forEach(Runnable::run);
     }
   }
 
