@@ -105,11 +105,11 @@ class OddsCalculatorPanel extends JPanel {
   private final UiContext uiContext;
   private final GameData data;
   private final IOddsCalculator calculator;
-  private PlayerUnitsPanel attackingUnitsPanel;
-  private PlayerUnitsPanel defendingUnitsPanel;
-  private JComboBox<PlayerID> attackerCombo;
-  private JComboBox<PlayerID> defenderCombo;
-  private JComboBox<PlayerID> swapSidesCombo;
+  private final PlayerUnitsPanel attackingUnitsPanel;
+  private final PlayerUnitsPanel defendingUnitsPanel;
+  private final JComboBox<PlayerID> attackerCombo;
+  private final JComboBox<PlayerID> defenderCombo;
+  private final JComboBox<PlayerID> swapSidesCombo;
   private final JLabel attackerUnitsTotalNumber = new JLabel();
   private final JLabel defenderUnitsTotalNumber = new JLabel();
   private final JLabel attackerUnitsTotalTuv = new JLabel();
@@ -121,7 +121,7 @@ class OddsCalculatorPanel extends JPanel {
   private String attackerOrderOfLosses = null;
   private String defenderOrderOfLosses = null;
   private Territory location = null;
-  private JList<String> territoryEffectsJList;
+  private final JList<String> territoryEffectsJList;
 
   OddsCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location,
       final Window parent) {
@@ -130,7 +130,84 @@ class OddsCalculatorPanel extends JPanel {
     this.location = location;
     this.parent = parent;
     calculateButton.setEnabled(false);
-    createComponents();
+    data.acquireReadLock();
+    try {
+      final Collection<PlayerID> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
+      if (doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, data)) {
+        playerList.add(PlayerID.NULL_PLAYERID);
+      }
+      attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
+      defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
+      swapSidesCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
+      final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
+      if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
+        territoryEffectsJList = null;
+      } else {
+        final List<String> effectNames = new ArrayList<>();
+        effectNames.add(NO_EFFECTS);
+        effectNames.addAll(allTerritoryEffects.keySet());
+        territoryEffectsJList = new JList<>(SwingComponents.newListModel(effectNames));
+        territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
+        // equal to the amount of space left (number of remaining items on the right)
+        territoryEffectsJList.setVisibleRowCount(4);
+        if (location != null) {
+          final Collection<TerritoryEffect> currentEffects = TerritoryEffectHelper.getEffects(location);
+          if (!currentEffects.isEmpty()) {
+            final int[] selectedIndexes = new int[currentEffects.size()];
+            int currentIndex = 0;
+            for (final TerritoryEffect te : currentEffects) {
+              selectedIndexes[currentIndex] = effectNames.indexOf(te.getName());
+              currentIndex++;
+            }
+            territoryEffectsJList.setSelectedIndices(selectedIndexes);
+          }
+        }
+      }
+    } finally {
+      data.releaseReadLock();
+    }
+    defenderCombo.setRenderer(new PlayerRenderer());
+    attackerCombo.setRenderer(new PlayerRenderer());
+    swapSidesCombo.setRenderer(new PlayerRenderer());
+    defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
+    attackingUnitsPanel = new PlayerUnitsPanel(data, uiContext, false);
+    numRuns.setColumns(4);
+    numRuns.setMin(1);
+    numRuns.setMax(20000);
+
+    final int simulationCount = Properties.getLowLuck(data)
+        ? ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK.intValue()
+        : ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE.intValue();
+    numRuns.setValue(simulationCount);
+    retreatAfterXRounds.setColumns(4);
+    retreatAfterXRounds.setMin(-1);
+    retreatAfterXRounds.setMax(1000);
+    retreatAfterXRounds.setValue(-1);
+    retreatAfterXRounds.setToolTipText("-1 means never.");
+    retreatAfterXUnitsLeft.setColumns(4);
+    retreatAfterXUnitsLeft.setMin(-1);
+    retreatAfterXUnitsLeft.setMax(1000);
+    retreatAfterXUnitsLeft.setValue(-1);
+    retreatAfterXUnitsLeft.setToolTipText("-1 means never. If positive and 'retreat when only air left' is also "
+        + "selected, then we will retreat when X of non-air units is left.");
+    setResultsToBlank();
+    defenderLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include "
+        + "Bombarding sea units for land battles.");
+    attackerLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include "
+        + "Bombarding sea units for land battles.");
+    defenderLeftWhenDefenderWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and "
+        + "does not include Bombarding sea units for land battles.");
+    attackerLeftWhenAttackerWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and "
+        + "does not include Bombarding sea units for land battles.");
+    averageChangeInTuv.setToolTipText("TUV Swing does not include captured AA guns and other infrastructure, and "
+        + "does not include Bombarding sea units for land battles.");
+    retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units "
+        + "left' is positive we will retreat when x of non-air is left too.");
+    attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
+        + "include Bombarding sea units for land battles.");
+    defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
+        + "include Bombarding sea units for land battles.");
     layoutComponents();
     setupListeners();
     // use the one passed, not the one we found:
@@ -597,86 +674,6 @@ class OddsCalculatorPanel extends JPanel {
     add(south, BorderLayout.SOUTH);
   }
 
-  private void createComponents() {
-    data.acquireReadLock();
-    try {
-      final Collection<PlayerID> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
-      if (doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, data)) {
-        playerList.add(PlayerID.NULL_PLAYERID);
-      }
-      attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
-      defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
-      swapSidesCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
-      final Map<String, TerritoryEffect> allTerritoryEffects = data.getTerritoryEffectList();
-      if (allTerritoryEffects == null || allTerritoryEffects.isEmpty()) {
-        territoryEffectsJList = null;
-      } else {
-        final List<String> effectNames = new ArrayList<>();
-        effectNames.add(NO_EFFECTS);
-        effectNames.addAll(allTerritoryEffects.keySet());
-        territoryEffectsJList = new JList<>(SwingComponents.newListModel(effectNames));
-        territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
-        // equal to the amount of space left (number of remaining items on the right)
-        territoryEffectsJList.setVisibleRowCount(4);
-        if (location != null) {
-          final Collection<TerritoryEffect> currentEffects = TerritoryEffectHelper.getEffects(location);
-          if (!currentEffects.isEmpty()) {
-            final int[] selectedIndexes = new int[currentEffects.size()];
-            int currentIndex = 0;
-            for (final TerritoryEffect te : currentEffects) {
-              selectedIndexes[currentIndex] = effectNames.indexOf(te.getName());
-              currentIndex++;
-            }
-            territoryEffectsJList.setSelectedIndices(selectedIndexes);
-          }
-        }
-      }
-    } finally {
-      data.releaseReadLock();
-    }
-    defenderCombo.setRenderer(new PlayerRenderer());
-    attackerCombo.setRenderer(new PlayerRenderer());
-    swapSidesCombo.setRenderer(new PlayerRenderer());
-    defendingUnitsPanel = new PlayerUnitsPanel(data, uiContext, true);
-    attackingUnitsPanel = new PlayerUnitsPanel(data, uiContext, false);
-    numRuns.setColumns(4);
-    numRuns.setMin(1);
-    numRuns.setMax(20000);
-
-    final int simulationCount = Properties.getLowLuck(data)
-        ? ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK.intValue()
-        : ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE.intValue();
-    numRuns.setValue(simulationCount);
-    retreatAfterXRounds.setColumns(4);
-    retreatAfterXRounds.setMin(-1);
-    retreatAfterXRounds.setMax(1000);
-    retreatAfterXRounds.setValue(-1);
-    retreatAfterXRounds.setToolTipText("-1 means never.");
-    retreatAfterXUnitsLeft.setColumns(4);
-    retreatAfterXUnitsLeft.setMin(-1);
-    retreatAfterXUnitsLeft.setMax(1000);
-    retreatAfterXUnitsLeft.setValue(-1);
-    retreatAfterXUnitsLeft.setToolTipText("-1 means never. If positive and 'retreat when only air left' is also "
-        + "selected, then we will retreat when X of non-air units is left.");
-    setResultsToBlank();
-    defenderLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include "
-        + "Bombarding sea units for land battles.");
-    attackerLeft.setToolTipText("Units Left does not include AA guns and other infrastructure, and does not include "
-        + "Bombarding sea units for land battles.");
-    defenderLeftWhenDefenderWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and "
-        + "does not include Bombarding sea units for land battles.");
-    attackerLeftWhenAttackerWon.setToolTipText("Units Left does not include AA guns and other infrastructure, and "
-        + "does not include Bombarding sea units for land battles.");
-    averageChangeInTuv.setToolTipText("TUV Swing does not include captured AA guns and other infrastructure, and "
-        + "does not include Bombarding sea units for land battles.");
-    retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units "
-        + "left' is positive we will retreat when x of non-air is left too.");
-    attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
-        + "include Bombarding sea units for land battles.");
-    defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
-        + "include Bombarding sea units for land battles.");
-  }
 
   private void setResultsToBlank() {
     final String blank = "------";
