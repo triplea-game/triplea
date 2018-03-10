@@ -16,7 +16,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
@@ -74,10 +73,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     return paa;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = relChange.split(":");
     if (s.length != 3) {
@@ -99,7 +94,6 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     m_relationshipChange.add(relChange);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setRelationshipChange(final List<String> value) {
     m_relationshipChange = value;
   }

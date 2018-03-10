@@ -14,7 +14,6 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
@@ -63,7 +62,6 @@ public class CanalAttachment extends DefaultAttachment {
     return getAttachment(t, nameOfAttachment, CanalAttachment.class);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setCanalName(final String name) {
     if (name == null) {
       m_canalName = null;
@@ -80,7 +78,6 @@ public class CanalAttachment extends DefaultAttachment {
     m_canalName = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setLandTerritories(final String landTerritories) {
     if (landTerritories == null) {
       m_landTerritories = null;
@@ -97,7 +94,6 @@ public class CanalAttachment extends DefaultAttachment {
     m_landTerritories = terrs;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setLandTerritories(final Set<Territory> value) {
     m_landTerritories = value;
   }
@@ -110,10 +106,6 @@ public class CanalAttachment extends DefaultAttachment {
     m_landTerritories = null;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setExcludedUnits(final String value) {
     if (value == null) {
       m_excludedUnits = null;
@@ -138,7 +130,6 @@ public class CanalAttachment extends DefaultAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setExcludedUnits(final Set<UnitType> value) {
     m_excludedUnits = value;
   }

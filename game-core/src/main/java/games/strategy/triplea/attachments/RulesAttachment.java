@@ -26,7 +26,6 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -150,7 +149,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return natObjs;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDestroyedTuv(final String value) throws GameParseException {
     if (value == null) {
       m_destroyedTUV = null;
@@ -180,10 +178,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_destroyedTUV = null;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setBattle(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 5) {
@@ -222,7 +216,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setBattle(final List<Tuple<String, List<Territory>>> value) {
     m_battle = value;
   }
@@ -237,11 +230,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   /**
    * Condition to check if a certain relationship exists between 2 players.
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    *
    * @param value should be a string containing: "player:player:relationship"
    */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setRelationship(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length < 3 || s.length > 4) {
@@ -271,7 +262,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_relationship.add((s.length == 3) ? (value + ":-1") : value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setRelationship(final List<String> value) {
     m_relationship = value;
   }
@@ -284,7 +274,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_relationship = new ArrayList<>();
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAlliedOwnershipTerritories(final String value) {
     if (value == null) {
       m_alliedOwnershipTerritories = null;
@@ -294,7 +283,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_alliedOwnershipTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAlliedOwnershipTerritories(final String[] value) {
     m_alliedOwnershipTerritories = value;
   }
@@ -308,7 +296,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   // exclusion types = controlled, controlledNoWater, original, all, or list
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAlliedExclusionTerritories(final String value) {
     if (value == null) {
       m_alliedExclusionTerritories = null;
@@ -318,7 +305,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_alliedExclusionTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAlliedExclusionTerritories(final String[] value) {
     m_alliedExclusionTerritories = value;
   }
@@ -331,7 +317,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_alliedExclusionTerritories = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDirectExclusionTerritories(final String value) {
     if (value == null) {
       m_directExclusionTerritories = null;
@@ -341,7 +326,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_directExclusionTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDirectExclusionTerritories(final String[] value) {
     m_directExclusionTerritories = value;
   }
@@ -355,7 +339,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   // exclusion types = original or list
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setEnemyExclusionTerritories(final String value) {
     if (value == null) {
       m_enemyExclusionTerritories = null;
@@ -365,7 +348,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_enemyExclusionTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setEnemyExclusionTerritories(final String[] value) {
     m_enemyExclusionTerritories = value;
   }
@@ -378,7 +360,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_enemyExclusionTerritories = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDirectPresenceTerritories(final String value) {
     if (value == null) {
       m_directPresenceTerritories = null;
@@ -388,7 +369,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_directPresenceTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDirectPresenceTerritories(final String[] value) {
     m_directPresenceTerritories = value;
   }
@@ -401,7 +381,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_directPresenceTerritories = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAlliedPresenceTerritories(final String value) {
     if (value == null) {
       m_alliedPresenceTerritories = null;
@@ -411,7 +390,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_alliedPresenceTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAlliedPresenceTerritories(final String[] value) {
     m_alliedPresenceTerritories = value;
   }
@@ -424,7 +402,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_alliedPresenceTerritories = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setEnemyPresenceTerritories(final String value) {
     if (value == null) {
       m_enemyPresenceTerritories = null;
@@ -434,7 +411,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_enemyPresenceTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setEnemyPresenceTerritories(final String[] value) {
     m_enemyPresenceTerritories = value;
   }
@@ -448,7 +424,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   // exclusion types = original or list
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setEnemySurfaceExclusionTerritories(final String value) {
     if (value == null) {
       m_enemySurfaceExclusionTerritories = null;
@@ -458,7 +433,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_enemySurfaceExclusionTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setEnemySurfaceExclusionTerritories(final String[] value) {
     m_enemySurfaceExclusionTerritories = value;
   }
@@ -471,7 +445,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_enemySurfaceExclusionTerritories = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDirectOwnershipTerritories(final String value) {
     if (value == null) {
       m_directOwnershipTerritories = null;
@@ -481,7 +454,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     validateNames(m_directOwnershipTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDirectOwnershipTerritories(final String[] value) {
     m_directOwnershipTerritories = value;
   }
@@ -494,10 +466,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_directOwnershipTerritories = null;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setUnitPresence(String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 1) {
@@ -520,7 +488,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_unitPresence.put(value, n);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUnitPresence(final IntegerMap<String> value) {
     m_unitPresence = value;
   }
@@ -541,7 +508,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return m_techCount;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAtWarPlayers(final String players) throws GameParseException {
     if (players == null) {
       m_atWarPlayers = null;
@@ -571,7 +537,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAtWarPlayers(final Set<PlayerID> value) {
     m_atWarPlayers = value;
   }
@@ -584,7 +549,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_atWarPlayers = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setTechs(final String newTechs) throws GameParseException {
     if (newTechs == null) {
       m_techs = null;
@@ -617,7 +581,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setTechs(final List<TechAdvance> value) {
     m_techs = value;
   }

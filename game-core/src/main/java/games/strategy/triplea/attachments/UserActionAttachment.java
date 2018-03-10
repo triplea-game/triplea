@@ -16,7 +16,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
@@ -52,11 +51,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     return getAttachment(player, nameOfAttachment, UserActionAttachment.class);
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   * (same as one in TriggerAttachment)
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setActivateTrigger(final String value) throws GameParseException {
     // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
     final String[] s = value.split(":");
@@ -94,7 +88,6 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     m_activateTrigger.add(Tuple.of(s[0], options));
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setActivateTrigger(final List<Tuple<String, String>> value) {
     m_activateTrigger = value;
   }

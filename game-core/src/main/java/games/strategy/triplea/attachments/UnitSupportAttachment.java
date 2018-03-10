@@ -19,7 +19,6 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
@@ -80,7 +79,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUnitType(final String names) throws GameParseException {
     if (names == null) {
       m_unitType = null;
@@ -96,7 +94,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUnitType(final Set<UnitType> value) {
     m_unitType = value;
   }
@@ -105,7 +102,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_unitType = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setFaction(final String faction) throws GameParseException {
     m_faction = faction;
     if (faction == null) {
@@ -134,7 +130,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_enemy = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setSide(final String side) throws GameParseException {
     if (side == null) {
       resetSide();
@@ -164,7 +159,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_defence = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDice(final String dice) throws GameParseException {
     if (dice == null) {
       resetDice();
@@ -194,12 +188,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_strength = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setBonus(final String bonus) {
     m_bonus = getInt(bonus);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setBonus(final int bonus) {
     m_bonus = bonus;
   }
@@ -208,12 +200,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_bonus = 0;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setNumber(final String number) {
     m_number = getInt(number);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setNumber(final int number) {
     m_number = number;
   }
@@ -222,7 +212,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_number = 0;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setBonusType(final String type) {
     m_bonusType = type;
   }
@@ -231,10 +220,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_bonusType = null;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setPlayers(final String names) throws GameParseException {
     final String[] s = names.split(":");
     for (final String element : s) {
@@ -246,7 +231,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
@@ -263,12 +247,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     m_players = new ArrayList<>();
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setImpArtTech(final String tech) {
     m_impArtTech = getBool(tech);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setImpArtTech(final boolean tech) {
     m_impArtTech = tech;
   }
