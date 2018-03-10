@@ -13,9 +13,6 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
 public class AggregateEstimate extends AggregateResults {
-
-  private static final long serialVersionUID = -3139949663921560523L;
-
   private final int battleRoundsFought;
   private final double winPercentage;
   private final List<Unit> remainingAttackingUnits;
