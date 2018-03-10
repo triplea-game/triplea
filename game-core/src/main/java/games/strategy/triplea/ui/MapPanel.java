@@ -92,7 +92,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private String movementLeftForCurrentUnits = "";
   private ResourceCollection movementFuelCost;
   private final UiContext uiContext;
-  private final BlockingQueue<Tile> undrawnTiles = new LinkedBlockingQueue<>();
+  private final BlockingQueue<Tuple<Tile, GameData>> pendingDrawOperations = new LinkedBlockingQueue<>();
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
@@ -216,7 +216,7 @@ public class MapPanel extends ImageScrollerLargeView {
     uiContext.addActive(() -> {
       // super.deactivate
       deactivate();
-      clearUndrawn();
+      clearPendingDrawOperations();
       backgroundDrawer.stop();
     });
   }
@@ -426,7 +426,7 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData = data;
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(techUpdateListener);
-    clearUndrawn();
+    clearPendingDrawOperations();
     tileManager.resetTiles(gameData, uiContext.getMapData());
   }
 
@@ -610,19 +610,19 @@ public class MapPanel extends ImageScrollerLargeView {
     // when we are this far away, dont force the tiles to stay in memroy
     updateUndrawnTiles(undrawnTiles, 513, false);
     updateUndrawnTiles(undrawnTiles, 767, false);
-    clearUndrawn();
-    this.undrawnTiles.addAll(undrawnTiles);
+    clearPendingDrawOperations();
+    undrawnTiles.forEach(tile -> pendingDrawOperations.add(Tuple.of(tile, data)));
     stopWatch.done();
   }
 
-  private void clearUndrawn() {
+  private void clearPendingDrawOperations() {
     for (int i = 0; i < 3; i++) {
       try {
         // several bug reports indicate that
         // clear can throw an exception
         // http://sourceforge.net/tracker/index.php?func=detail&aid=1832130&group_id=44492&atid=439737
         // ignore
-        undrawnTiles.clear();
+        pendingDrawOperations.clear();
         return;
       } catch (final Exception e) {
         e.printStackTrace(System.out);
@@ -839,9 +839,10 @@ public class MapPanel extends ImageScrollerLargeView {
     public void run() {
       while (running) {
         try {
-          final Tile tile = undrawnTiles.poll(2, TimeUnit.SECONDS);
-          if (tile != null) {
-            final GameData data = MapPanel.this.getData();
+          final Tuple<Tile, GameData> drawOperation = pendingDrawOperations.poll(2, TimeUnit.SECONDS);
+          if (drawOperation != null) {
+            final Tile tile = drawOperation.getFirst();
+            final GameData data = drawOperation.getSecond();
             data.acquireReadLock();
             try {
               tile.getImage(data, MapPanel.this.getUiContext().getMapData());
