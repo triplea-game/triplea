@@ -8,7 +8,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
 public class TestAttachment extends DefaultAttachment {
@@ -39,7 +38,6 @@ public class TestAttachment extends DefaultAttachment {
   @Override
   public void setName(final String name) {}
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setValue(final String value) {
     m_value = value;
   }

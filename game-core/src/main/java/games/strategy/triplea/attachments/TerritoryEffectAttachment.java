@@ -15,7 +15,6 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
@@ -48,15 +47,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     return getAttachment(te, nameOfAttachment, TerritoryEffectAttachment.class);
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setCombatDefenseEffect(final String combatDefenseEffect) throws GameParseException {
     setCombatEffect(combatDefenseEffect, true);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setCombatDefenseEffect(final IntegerMap<UnitType> value) {
     m_combatDefenseEffect = value;
   }
@@ -69,15 +63,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_combatDefenseEffect = new IntegerMap<>();
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException {
     setCombatEffect(combatOffenseEffect, false);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setCombatOffenseEffect(final IntegerMap<UnitType> value) {
     m_combatOffenseEffect = value;
   }
@@ -117,10 +106,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     return defending ? m_combatDefenseEffect.getInt(type) : m_combatOffenseEffect.getInt(type);
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
     final String[] s = noBlitzUnitTypes.split(":");
     if (s.length < 1) {
@@ -135,7 +120,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setNoBlitz(final List<UnitType> value) {
     m_noBlitz = value;
   }
@@ -148,10 +132,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     m_noBlitz = new ArrayList<>();
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {
     final String[] s = unitsNotAllowedUnitTypes.split(":");
     if (s.length < 1) {
@@ -166,7 +146,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUnitsNotAllowed(final List<UnitType> value) {
     m_unitsNotAllowed = value;
   }

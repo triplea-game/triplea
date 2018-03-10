@@ -12,7 +12,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -57,7 +56,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * @param text
    *        the Key that is used in politicstext.properties or other .properties for all the texts
    */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setText(final String text) {
     m_text = text;
   }
@@ -77,12 +75,10 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * @param s
    *        the amount you need to pay to perform the action.
    */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setCostPu(final String s) {
     m_costPU = getInt(s);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setCostPu(final Integer s) {
     m_costPU = s;
   }
@@ -98,10 +94,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     m_costPU = 0;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setActionAccept(final String value) throws GameParseException {
     final String[] temp = value.split(":");
     for (final String name : temp) {
@@ -114,7 +106,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setActionAccept(final List<PlayerID> value) {
     m_actionAccept = value;
   }
@@ -134,13 +125,11 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * @param s
    *        the amount of times you can try this Action per Round.
    */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAttemptsPerTurn(final String s) {
     m_attemptsPerTurn = getInt(s);
     setAttemptsLeftThisTurn(m_attemptsPerTurn);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setAttemptsPerTurn(final Integer s) {
     m_attemptsPerTurn = s;
     setAttemptsLeftThisTurn(m_attemptsPerTurn);
@@ -161,12 +150,10 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * @param attempts
    *        left this turn.
    */
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setAttemptsLeftThisTurn(final int attempts) {
     m_attemptsLeftThisTurn = attempts;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setAttemptsLeftThisTurn(final String attempts) {
     setAttemptsLeftThisTurn(getInt(attempts));
   }

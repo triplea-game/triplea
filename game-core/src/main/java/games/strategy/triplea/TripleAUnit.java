@@ -17,7 +17,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -106,7 +105,6 @@ public class TripleAUnit extends Unit {
     return m_transportedBy;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setTransportedBy(final TripleAUnit transportedBy) {
     m_transportedBy = transportedBy;
   }
@@ -137,7 +135,6 @@ public class TripleAUnit extends Unit {
     return m_unloaded;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setUnloaded(final List<Unit> unloaded) {
     if (unloaded == null || unloaded.isEmpty()) {
       m_unloaded = Collections.emptyList();
@@ -150,7 +147,6 @@ public class TripleAUnit extends Unit {
     return m_wasLoadedThisTurn;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setWasLoadedThisTurn(final boolean value) {
     m_wasLoadedThisTurn = value;
   }
@@ -159,7 +155,6 @@ public class TripleAUnit extends Unit {
     return m_unloadedTo;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setUnloadedTo(final Territory unloadedTo) {
     m_unloadedTo = unloadedTo;
   }
@@ -168,7 +163,6 @@ public class TripleAUnit extends Unit {
     return m_originatedFrom;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setOriginatedFrom(final Territory t) {
     m_originatedFrom = t;
   }
@@ -177,7 +171,6 @@ public class TripleAUnit extends Unit {
     return m_wasUnloadedInCombatPhase;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setWasUnloadedInCombatPhase(final boolean value) {
     m_wasUnloadedInCombatPhase = value;
   }
@@ -186,12 +179,10 @@ public class TripleAUnit extends Unit {
     return m_alreadyMoved;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setAlreadyMoved(final int alreadyMoved) {
     m_alreadyMoved = alreadyMoved;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setBonusMovement(final int bonusMovement) {
     m_bonusMovement = bonusMovement;
   }
@@ -233,7 +224,6 @@ public class TripleAUnit extends Unit {
     return m_unitDamage;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setUnitDamage(final int unitDamage) {
     m_unitDamage = unitDamage;
   }
@@ -242,7 +232,6 @@ public class TripleAUnit extends Unit {
     return m_submerged;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setSubmerged(final boolean submerged) {
     m_submerged = submerged;
   }
@@ -251,7 +240,6 @@ public class TripleAUnit extends Unit {
     return m_originalOwner;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setOriginalOwner(final PlayerID originalOwner) {
     m_originalOwner = originalOwner;
   }
@@ -260,7 +248,6 @@ public class TripleAUnit extends Unit {
     return m_wasInCombat;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setWasInCombat(final boolean value) {
     m_wasInCombat = value;
   }
@@ -269,7 +256,6 @@ public class TripleAUnit extends Unit {
     return m_wasScrambled;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setWasScrambled(final boolean value) {
     m_wasScrambled = value;
   }
@@ -278,7 +264,6 @@ public class TripleAUnit extends Unit {
     return m_maxScrambleCount;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setMaxScrambleCount(final int value) {
     m_maxScrambleCount = value;
   }
@@ -287,7 +272,6 @@ public class TripleAUnit extends Unit {
     return m_launched;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setLaunched(final int value) {
     m_launched = value;
   }
@@ -296,7 +280,6 @@ public class TripleAUnit extends Unit {
     return m_airborne;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setAirborne(final boolean value) {
     m_airborne = value;
   }
@@ -305,12 +288,10 @@ public class TripleAUnit extends Unit {
     return m_chargedFlatFuelCost;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setChargedFlatFuelCost(final boolean value) {
     m_chargedFlatFuelCost = value;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setWasInAirBattle(final boolean value) {
     m_wasInAirBattle = value;
   }
@@ -323,7 +304,6 @@ public class TripleAUnit extends Unit {
     return m_wasLoadedAfterCombat;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setWasLoadedAfterCombat(final boolean value) {
     m_wasLoadedAfterCombat = value;
   }
@@ -336,7 +316,6 @@ public class TripleAUnit extends Unit {
     return m_wasAmphibious;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setWasAmphibious(final boolean value) {
     m_wasAmphibious = value;
   }
@@ -345,7 +324,6 @@ public class TripleAUnit extends Unit {
     return m_disabled;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setDisabled(final boolean value) {
     m_disabled = value;
   }

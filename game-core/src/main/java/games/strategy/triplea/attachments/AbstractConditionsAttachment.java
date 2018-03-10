@@ -18,7 +18,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -57,10 +56,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     super(name, attachable, gameData);
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   protected void setConditions(final String conditions) throws GameParseException {
     if (m_conditions == null) {
       m_conditions = new ArrayList<>();
@@ -76,7 +71,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setConditions(final List<RulesAttachment> value) {
     m_conditions = value;
   }
@@ -90,7 +84,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     m_conditions = new ArrayList<>();
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setInvert(final boolean s) {
     m_invert = s;
   }
@@ -100,7 +93,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   @VisibleForTesting
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
     if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
@@ -243,7 +235,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return met;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   protected void setChance(final String chance) throws GameParseException {
     final String[] s = chance.split(":");
     try {
@@ -280,7 +271,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return getInt(getChance().split(":")[1]);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setChanceIncrementOnFailure(final int value) {
     m_chanceIncrementOnFailure = value;
   }
@@ -289,13 +279,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return m_chanceIncrementOnFailure;
   }
 
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-  private void setChanceDecrementOnSuccess(final String value) {
-    setChanceDecrementOnSuccess(getInt(value));
-  }
-
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setChanceDecrementOnSuccess(final int value) {
     m_chanceDecrementOnSuccess = value;
   }

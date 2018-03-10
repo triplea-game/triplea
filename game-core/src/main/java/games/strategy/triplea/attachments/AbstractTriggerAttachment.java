@@ -15,7 +15,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -60,13 +59,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
    * DO NOT REMOVE THIS (or else you will break a lot of older xmls)
    *
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
   @Deprecated
-  @GameProperty(xmlProperty = true, gameProperty = false, adds = true)
   private void setTrigger(final String conditions) throws GameParseException {
     setConditions(conditions);
   }
@@ -87,22 +84,18 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     resetConditions();
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   public void setUses(final int u) {
     m_uses = u;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setUsedThisRound(final String s) {
     m_usedThisRound = getBool(s);
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setUsedThisRound(final boolean usedThisRound) {
     m_usedThisRound = usedThisRound;
   }
 
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   private void setUsedThisRound(final Boolean usedThisRound) {
     m_usedThisRound = usedThisRound;
   }
@@ -119,10 +112,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return m_uses;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setWhen(final String when) throws GameParseException {
     final String[] s = when.split(":");
     if (s.length != 2) {
@@ -134,7 +123,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_when.add(Tuple.of(s[0], s[1]));
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setWhen(final List<Tuple<String, String>> value) {
     m_when = value;
   }
@@ -147,7 +135,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_when = new ArrayList<>();
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setNotification(final String notification) {
     if (notification == null) {
       m_notification = null;

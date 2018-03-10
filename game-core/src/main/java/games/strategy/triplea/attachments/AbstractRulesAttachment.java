@@ -19,7 +19,6 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
@@ -62,10 +61,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     super(name, attachable, gameData);
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setPlayers(final String names) throws GameParseException {
     final PlayerList pl = getData().getPlayerList();
     for (final String p : names.split(":")) {
@@ -77,7 +72,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlayers(final List<PlayerID> value) {
     m_players = value;
   }
@@ -91,19 +85,16 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   @Override
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   protected void setChance(final String chance) throws GameParseException {
     throw new GameParseException(
         "chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions"
             + thisErrorMsg());
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setObjectiveValue(final String value) {
     m_objectiveValue = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setObjectiveValue(final int value) {
     m_objectiveValue = value;
   }
@@ -153,12 +144,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     return m_countEach;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUses(final String s) {
     m_uses = getInt(s);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUses(final int u) {
     m_uses = u;
   }
@@ -176,12 +165,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_uses = -1;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setSwitch(final String value) {
     m_switch = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setSwitch(final Boolean value) {
     m_switch = value;
   }
@@ -194,7 +181,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_switch = true;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setGameProperty(final String value) {
     m_gameProperty = value;
   }
@@ -214,7 +200,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     m_gameProperty = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false, virtual = true)
   private void setRounds(final String rounds) throws GameParseException {
     if (rounds == null) {
       m_turns = null;
@@ -247,12 +232,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     }
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setTurns(final String turns) throws GameParseException {
     setRounds(turns);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setTurns(final Map<Integer, Integer> value) {
     m_turns = value;
   }

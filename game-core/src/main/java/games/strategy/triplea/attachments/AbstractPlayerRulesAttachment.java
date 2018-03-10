@@ -10,7 +10,6 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
@@ -79,7 +78,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     return rulesAttachment;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setMovementRestrictionTerritories(final String value) {
     if (value == null) {
       m_movementRestrictionTerritories = null;
@@ -89,7 +87,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     validateNames(m_movementRestrictionTerritories);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setMovementRestrictionTerritories(final String[] value) {
     m_movementRestrictionTerritories = value;
   }
@@ -102,7 +99,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_movementRestrictionTerritories = null;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setMovementRestrictionType(final String value) throws GameParseException {
     if (value == null) {
       m_movementRestrictionType = null;
@@ -122,10 +118,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_movementRestrictionType = null;
   }
 
-  /**
-   * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-   */
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = true)
   private void setProductionPerXTerritories(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
@@ -150,7 +142,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_productionPerXTerritories.put(ut, n);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setProductionPerXTerritories(final IntegerMap<UnitType> value) {
     m_productionPerXTerritories = value;
   }
@@ -163,12 +154,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_productionPerXTerritories = new IntegerMap<>();
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementPerTerritory(final String value) {
     m_placementPerTerritory = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementPerTerritory(final Integer value) {
     m_placementPerTerritory = value;
   }
@@ -181,12 +170,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_placementPerTerritory = -1;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setMaxPlacePerTerritory(final String value) {
     m_maxPlacePerTerritory = getInt(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setMaxPlacePerTerritory(final Integer value) {
     m_maxPlacePerTerritory = value;
   }
@@ -199,12 +186,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_maxPlacePerTerritory = -1;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementAnyTerritory(final String value) {
     m_placementAnyTerritory = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementAnyTerritory(final Boolean value) {
     m_placementAnyTerritory = value;
   }
@@ -217,12 +202,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_placementAnyTerritory = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementAnySeaZone(final String value) {
     m_placementAnySeaZone = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementAnySeaZone(final Boolean value) {
     m_placementAnySeaZone = value;
   }
@@ -235,12 +218,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_placementAnySeaZone = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementCapturedTerritory(final String value) {
     m_placementCapturedTerritory = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementCapturedTerritory(final Boolean value) {
     m_placementCapturedTerritory = value;
   }
@@ -253,12 +234,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_placementCapturedTerritory = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementInCapitalRestricted(final String value) {
     m_placementInCapitalRestricted = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setPlacementInCapitalRestricted(final Boolean value) {
     m_placementInCapitalRestricted = value;
   }
@@ -271,12 +250,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_placementInCapitalRestricted = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUnlimitedProduction(final String value) {
     m_unlimitedProduction = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setUnlimitedProduction(final Boolean value) {
     m_unlimitedProduction = value;
   }
@@ -289,12 +266,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_unlimitedProduction = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDominatingFirstRoundAttack(final String value) {
     m_dominatingFirstRoundAttack = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setDominatingFirstRoundAttack(final Boolean value) {
     m_dominatingFirstRoundAttack = value;
   }
@@ -307,12 +282,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     m_dominatingFirstRoundAttack = false;
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setNegateDominatingFirstRoundAttack(final String value) {
     m_negateDominatingFirstRoundAttack = getBool(value);
   }
 
-  @GameProperty(xmlProperty = true, gameProperty = true, adds = false)
   private void setNegateDominatingFirstRoundAttack(final Boolean value) {
     m_negateDominatingFirstRoundAttack = value;
   }

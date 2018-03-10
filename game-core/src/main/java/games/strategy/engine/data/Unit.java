@@ -6,12 +6,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
 
-import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attachments.UnitAttachment;
 
+/**
+ * Remember to always use a {@code ChangeFactory} change over an {@code IDelegateBridge} for any changes to game data,
+ * or any change that should go over the network.
+ */
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
   private PlayerID m_owner;
@@ -58,21 +63,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return m_hits;
   }
 
-  /**
-   * Remember to always use a ChangeFactory change over an IDelegate Bridge for any changes to game data, or any change
-   * that should go over
-   * the network.
-   */
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
   public void setHits(final int hits) {
     m_hits = hits;
   }
 
-  /**
-   * can be null.
-   */
-  @GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-  public void setOwner(final PlayerID player) {
+  public void setOwner(final @Nullable PlayerID player) {
     m_owner = Optional.ofNullable(player).orElse(PlayerID.NULL_PLAYERID);
   }
 
