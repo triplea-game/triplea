@@ -359,7 +359,7 @@ class EditPanel extends ActionPanel {
           currentDamageMap.put(u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage",
-            getData(), getMap().getUiContext(), -1, true, true, null);
+            getMap().getUiContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Hit Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -409,7 +409,7 @@ class EditPanel extends ActionPanel {
                   ((TripleAUnit) u).getUnitDamage()));
         }
         final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage",
-            getData(), getMap().getUiContext(), -1, true, true, null);
+            getMap().getUiContext(), -1, true, true, null);
         final JScrollPane scroll = new JScrollPane(unitPanel);
         final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Bombing Damage",
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);

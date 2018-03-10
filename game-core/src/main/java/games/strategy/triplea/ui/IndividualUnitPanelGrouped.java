@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
@@ -40,7 +39,6 @@ public class IndividualUnitPanelGrouped extends JPanel {
   private int max = 0;
   private final boolean showMinAndMax;
   private final JTextArea title;
-  private final GameData gameData;
   private final UiContext uiContext;
   private final Map<String, Collection<Unit>> unitsToChooseFrom;
   private final Collection<Tuple<String, IndividualUnitPanel>> entries =
@@ -56,10 +54,9 @@ public class IndividualUnitPanelGrouped extends JPanel {
    * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each
    * unit.
    */
-  public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom, final GameData data,
+  public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom,
       final UiContext uiContext, final String title, final int maxTotal, final boolean showMinAndMax,
       final boolean showSelectAll) {
-    gameData = data;
     this.uiContext = uiContext;
     setMaxAndShowMaxButton(maxTotal);
     this.showMinAndMax = showMinAndMax;
@@ -127,7 +124,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
       chooserTitle.setFont(new Font("Arial", Font.BOLD, 12));
       panelChooser.add(chooserTitle);
       panelChooser.add(new JLabel(" "));
-      final IndividualUnitPanel chooser = new IndividualUnitPanel(possibleTargets, miniTitle, gameData, uiContext,
+      final IndividualUnitPanel chooser = new IndividualUnitPanel(possibleTargets, miniTitle, uiContext,
           max, showMinAndMax, showSelectAll, textFieldListener);
       this.entries.add(Tuple.of(miniTitle, chooser));
       panelChooser.add(chooser);
