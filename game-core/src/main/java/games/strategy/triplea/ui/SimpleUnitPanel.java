@@ -104,7 +104,7 @@ public class SimpleUnitPanel extends JPanel {
         label.setIcon(icon.get());
       }
     } else if (unit instanceof Resource) {
-      label.setIcon(uiContext.getResourceImageFactory().getIcon((Resource) unit, true));
+      label.setIcon(uiContext.getResourceImageFactory().getIcon(unit, true));
     }
     add(label);
   }

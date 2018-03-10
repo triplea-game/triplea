@@ -1133,7 +1133,7 @@ public class TripleAFrame extends MainGameFrame {
       }
       mapPanel.centerOn(data.getMap().getTerritory(possibleUnitsToAttackStringForm.keySet().iterator().next()));
       final IndividualUnitPanelGrouped unitPanel = new IndividualUnitPanelGrouped(possibleUnitsToAttackStringForm,
-          data, uiContext, "Select Units to Suicide Attack using " + attackResourceToken.getName(),
+          uiContext, "Select Units to Suicide Attack using " + attackResourceToken.getName(),
           maxNumberOfAttacksAllowed, true, false);
       unitPanels.add(unitPanel);
       final String optionAttack = "Attack";

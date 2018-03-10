@@ -85,7 +85,7 @@ public class BattleRecord implements Serializable {
   }
 
   @SerializationProxySupport
-  public Object writeReplace(final Object write) {
+  public Object writeReplace(@SuppressWarnings("unused") final Object write) {
     return new SerializationProxy(this);
   }
 

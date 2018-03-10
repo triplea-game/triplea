@@ -3160,13 +3160,13 @@ public class UnitAttachment extends DefaultAttachment {
    * @deprecated does nothing, kept to avoid breaking maps, do not remove.
    */
   @Deprecated
-  private void setIsParatroop(final String s) {}
+  private void setIsParatroop(@SuppressWarnings("unused") final String s) {}
 
   /**
    * @deprecated does nothing, used to keep compatibility with older xml files, do not remove.
    */
   @Deprecated
-  private void setIsMechanized(final String s) {}
+  private void setIsMechanized(@SuppressWarnings("unused") final String s) {}
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
