@@ -8,6 +8,8 @@ import java.util.Map;
 
 import games.strategy.engine.delegate.IDelegate;
 
+// TODO: Upon next incompatible release, replace this class with Map<String, IDelegate> and mark the
+// corresponding field in GameData as transient.
 public class DelegateList extends GameDataComponent implements Iterable<IDelegate> {
   private static final long serialVersionUID = 4156921032854553312L;
   private Map<String, IDelegate> m_delegates = new HashMap<>();
