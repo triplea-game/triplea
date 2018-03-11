@@ -29,6 +29,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public class AutoPlacementFinder {
@@ -51,7 +52,12 @@ public class AutoPlacementFinder {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
   }
 
+  /**
+   * Entry point for the Automatic Placement Finder tool.
+   */
   public static void main(final String[] args) {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the AutoPlacementFinder, it will create a place.txt file for you. "

@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import tools.image.FileOpen;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -26,7 +27,12 @@ public class ImageShrinker {
   private static File mapFolderLocation = null;
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder"; // TODO: find other duplications of this value.
 
+  /**
+   * Entry point for the Image Shrinker tool.
+   */
   public static void main(final String[] args) throws Exception {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ImageShrinker, it will create a smallMap.jpeg file for you. "

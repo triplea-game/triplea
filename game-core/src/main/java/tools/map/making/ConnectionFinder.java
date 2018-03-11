@@ -33,6 +33,7 @@ import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -57,7 +58,12 @@ public class ConnectionFinder {
   // default 32, or if LINE_THICKNESS is given 16 x linethickness
   private static double minOverlap = 32.0;
 
+  /**
+   * Entry point for the Connection Finder tool.
+   */
   public static void main(final String[] args) {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ConnectionFinder. "

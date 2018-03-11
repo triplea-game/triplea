@@ -45,6 +45,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -79,6 +80,8 @@ public class PolygonGrabber extends JFrame {
    * @param args The command line arguments.
    */
   public static void main(final String[] args) {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
