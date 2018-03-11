@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -212,16 +211,5 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     } catch (final IllegalStateException ignored) {
       return getFieldIncludingFromSuperClasses(type, propertyName, false);
     }
-  }
-
-  public static void main(final String[] args) {
-    final MapProperties mapProperties = new MapProperties();
-    final List<MapPropertyWrapper<?>> properties = createProperties(mapProperties);
-    final PropertiesUi ui = createPropertiesUi(properties, true);
-    final JFrame frame = new JFrame();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.getContentPane().add(ui);
-    frame.pack();
-    frame.setVisible(true);
   }
 }
