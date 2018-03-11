@@ -55,6 +55,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -118,7 +119,12 @@ public class DecorationPlacer extends JFrame {
   private static boolean cheapMutex = false;
   private static boolean showPointNames = false;
 
+  /**
+   * Entry point for the Decoration Placer tool.
+   */
   public static void main(final String[] args) {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");

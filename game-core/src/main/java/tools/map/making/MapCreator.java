@@ -29,7 +29,6 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;
@@ -39,6 +38,7 @@ import tools.image.PolygonGrabber;
 import tools.image.ReliefImageBreaker;
 import tools.image.TileImageBreaker;
 import tools.image.TileImageReconstructor;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -75,7 +75,7 @@ public class MapCreator extends JFrame {
    * Entry point for the map-making utilities application.
    */
   public static void main(final String[] args) throws InterruptedException {
-    ClientSetting.initialize();
+    ToolApplication.initialize();
 
     SwingAction.invokeAndWait(() -> {
       LookAndFeel.setupLookAndFeel();

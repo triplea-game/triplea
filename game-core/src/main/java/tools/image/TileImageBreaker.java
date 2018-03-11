@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import games.strategy.triplea.ui.screen.TileManager;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -37,15 +38,14 @@ public class TileImageBreaker {
       "TileImageBreaker Log\r\n\r\n", "", "TileImageBreaker Log", null, 500, 300, true, 1, null);
 
   /**
-   * main(java.lang.String[] args)
    * Main program begins here. Creates a new instance of ReliefImageBreaker
    * and calls createMaps() method to start the computations.
    *
    * @param args The command line parameters.
-   * @exception java.lang.Exception
-   *            throws
    */
   public static void main(final String[] args) throws Exception {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the TileImageBreaker, it will create the map image tiles file for you. "

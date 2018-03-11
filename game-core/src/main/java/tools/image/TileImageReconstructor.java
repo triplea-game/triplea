@@ -28,6 +28,7 @@ import javax.swing.filechooser.FileFilter;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -44,7 +45,12 @@ public class TileImageReconstructor {
   private static int sizeY = -1;
   private static Map<String, List<Polygon>> polygons = new HashMap<>();
 
+  /**
+   * Entry point for the Tile Image Reconstructor tool.
+   */
   public static void main(final String[] args) throws Exception {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>"

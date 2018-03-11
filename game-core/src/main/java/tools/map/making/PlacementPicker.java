@@ -50,6 +50,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public class PlacementPicker extends JFrame {
@@ -85,7 +86,6 @@ public class PlacementPicker extends JFrame {
   }
 
   /**
-   * main(java.lang.String[])
    * Main program begins here.
    * Asks the user to select the map then runs the
    * the actual placement picker program.
@@ -93,6 +93,8 @@ public class PlacementPicker extends JFrame {
    * @param args the command line arguments
    */
   public static void main(final String[] args) {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the PlacementPicker, it will create a place.txt file for you. "

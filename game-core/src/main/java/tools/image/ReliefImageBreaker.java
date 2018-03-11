@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 import tools.map.making.ImageIoCompletionWatcher;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -46,6 +47,8 @@ public class ReliefImageBreaker {
    * Creates a new instance of ReliefImageBreaker and calls createMaps() method to start the computations.
    */
   public static void main(final String[] args) throws Exception {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ReliefImageBreaker, it is no longer used. "

@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public class CenterPicker extends JFrame {
@@ -55,7 +56,6 @@ public class CenterPicker extends JFrame {
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 
   /**
-   * main(java.lang.String[])
    * Main program begins here.
    * Asks the user to select the map then runs the
    * the actual picker.
@@ -63,6 +63,8 @@ public class CenterPicker extends JFrame {
    * @param args The command line arguments.
    */
   public static void main(final String[] args) {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");

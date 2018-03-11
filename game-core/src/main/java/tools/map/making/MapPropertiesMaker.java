@@ -54,6 +54,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -83,6 +84,8 @@ public class MapPropertiesMaker extends JFrame {
    * Entry point for the Map Properties Maker tool.
    */
   public static void main(final String[] args) {
+    ToolApplication.initialize();
+
     handleCommandLineArgs(args);
     // JOptionPane.showMessageDialog(null, new JLabel("<html>" + "This is the MapPropertiesMaker, it will create a
     // map.properties file for
