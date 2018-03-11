@@ -75,7 +75,7 @@ public class MapCreator extends JFrame {
   /**
    * Entry point for the map-making utilities application.
    */
-  public static void main(final String[] args) throws InterruptedException {
+  public static void main(final String[] args) throws Exception {
     ToolApplication.initialize();
 
     SwingAction.invokeAndWait(() -> {
