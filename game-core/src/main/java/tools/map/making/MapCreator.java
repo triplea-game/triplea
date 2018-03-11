@@ -30,6 +30,7 @@ import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.function.ThrowingConsumer;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;
 import tools.image.DecorationPlacer;
@@ -297,83 +298,43 @@ public class MapCreator extends JFrame {
     panel2.add(Box.createVerticalStrut(30));
     final JButton mapPropertiesMakerButton = new JButton("Run the Map Properties Maker");
     mapPropertiesMakerButton.addActionListener(SwingAction.of("Run the Map Properties Maker", e -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(MapPropertiesMaker.class);
-      } else {
-        new Thread(() -> MapPropertiesMaker.main(new String[0])).start();
-      }
+      runUtility(MapPropertiesMaker.class, MapPropertiesMaker::main);
     }));
     panel2.add(mapPropertiesMakerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton centerPickerButton = new JButton("Run the Center Picker");
     centerPickerButton.addActionListener(SwingAction.of("Run the Center Picker", e -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(CenterPicker.class);
-      } else {
-        new Thread(() -> CenterPicker.main(new String[0])).start();
-      }
+      runUtility(CenterPicker.class, CenterPicker::main);
     }));
     panel2.add(centerPickerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton polygonGrabberButton = new JButton("Run the Polygon Grabber");
     polygonGrabberButton.addActionListener(SwingAction.of("Run the Polygon Grabber", e -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(PolygonGrabber.class);
-      } else {
-        new Thread(() -> PolygonGrabber.main(new String[0])).start();
-      }
+      runUtility(PolygonGrabber.class, PolygonGrabber::main);
     }));
     panel2.add(polygonGrabberButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton autoPlacerButton = new JButton("Run the Automatic Placement Finder");
     autoPlacerButton.addActionListener(SwingAction.of("Run the Automatic Placement Finder", e -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(AutoPlacementFinder.class);
-      } else {
-        new Thread(() -> AutoPlacementFinder.main(new String[0])).start();
-      }
+      runUtility(AutoPlacementFinder.class, AutoPlacementFinder::main);
     }));
     panel2.add(autoPlacerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton placementPickerButton = new JButton("Run the Placement Picker");
     placementPickerButton.addActionListener(SwingAction.of("Run the Placement Picker", e -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(PlacementPicker.class);
-      } else {
-        new Thread(() -> PlacementPicker.main(new String[0])).start();
-      }
+      runUtility(PlacementPicker.class, PlacementPicker::main);
     }));
     panel2.add(placementPickerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton tileBreakerButton = new JButton("Run the Tile Image Breaker");
     tileBreakerButton.addActionListener(SwingAction.of("Run the Tile Image Breaker", event -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(TileImageBreaker.class);
-      } else {
-        new Thread(() -> {
-          try {
-            TileImageBreaker.main(new String[0]);
-          } catch (final Exception e) {
-            ToolLogger.error("Failed to run tile image breaker", e);
-          }
-        }).start();
-      }
+      runUtility(TileImageBreaker.class, TileImageBreaker::main);
     }));
     panel2.add(tileBreakerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton decorationPlacerButton = new JButton("Run the Decoration Placer");
     decorationPlacerButton.addActionListener(SwingAction.of("Run the Decoration Placer", event -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(DecorationPlacer.class);
-      } else {
-        new Thread(() -> {
-          try {
-            DecorationPlacer.main(new String[0]);
-          } catch (final Exception e) {
-            ToolLogger.error("Failed to run decoration placer", e);
-          }
-        }).start();
-      }
+      runUtility(DecorationPlacer.class, DecorationPlacer::main);
     }));
     panel2.add(decorationPlacerButton);
     panel2.add(Box.createVerticalStrut(30));
@@ -389,17 +350,7 @@ public class MapCreator extends JFrame {
     panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
     connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", event -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(ConnectionFinder.class);
-      } else {
-        new Thread(() -> {
-          try {
-            ConnectionFinder.main(new String[0]);
-          } catch (final Exception e) {
-            ToolLogger.error("Failed to run connection finder", e);
-          }
-        }).start();
-      }
+      runUtility(ConnectionFinder.class, ConnectionFinder::main);
     }));
     panel3.add(connectionFinderButton);
     panel3.add(Box.createVerticalStrut(30));
@@ -414,57 +365,34 @@ public class MapCreator extends JFrame {
     panel4.add(Box.createVerticalStrut(30));
     final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
     reliefBreakerButton.addActionListener(SwingAction.of("Run the Relief Image Breaker", event -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(ReliefImageBreaker.class);
-      } else {
-        new Thread(() -> {
-          try {
-            ReliefImageBreaker.main(new String[0]);
-          } catch (final Exception e) {
-            ToolLogger.error("Failed to run relief image breaker", e);
-          }
-        }).start();
-      }
+      runUtility(ReliefImageBreaker.class, ReliefImageBreaker::main);
     }));
     panel4.add(reliefBreakerButton);
     panel4.add(Box.createVerticalStrut(30));
     final JButton imageShrinkerButton = new JButton("Run the Image Shrinker");
     imageShrinkerButton.addActionListener(SwingAction.of("Run the Image Shrinker", event -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(ImageShrinker.class);
-      } else {
-        new Thread(() -> {
-          try {
-            ImageShrinker.main(new String[0]);
-          } catch (final Exception e) {
-            ToolLogger.error("Failed to run image shrinker", e);
-          }
-        }).start();
-      }
+      runUtility(ImageShrinker.class, ImageShrinker::main);
     }));
     panel4.add(imageShrinkerButton);
     panel4.add(Box.createVerticalStrut(30));
     final JButton tileImageReconstructorButton = new JButton("Run the Tile Image Reconstructor");
     tileImageReconstructorButton.addActionListener(SwingAction.of("Run the Tile Image Reconstructor", event -> {
-      if (runUtilitiesAsSeperateProcesses) {
-        runUtility(TileImageReconstructor.class);
-      } else {
-        new Thread(() -> {
-          try {
-            TileImageReconstructor.main(new String[0]);
-          } catch (final Exception e) {
-            ToolLogger.error("Failed to run tile image reconstructor", e);
-          }
-        }).start();
-      }
-
+      runUtility(TileImageReconstructor.class, TileImageReconstructor::main);
     }));
     panel4.add(tileImageReconstructorButton);
     panel4.add(Box.createVerticalStrut(30));
     panel4.validate();
   }
 
-  private static void runUtility(final Class<?> javaClass) {
+  private static void runUtility(final Class<?> type, final ThrowingConsumer<String[], Exception> entryPoint) {
+    if (runUtilitiesAsSeperateProcesses) {
+      runUtilityInSeparateProcess(type);
+    } else {
+      runUtilityInSameProcess(type, entryPoint);
+    }
+  }
+
+  private static void runUtilityInSeparateProcess(final Class<?> type) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands, memoryInBytes);
     if (mapFolderLocation != null && mapFolderLocation.exists()) {
@@ -474,9 +402,22 @@ public class MapCreator extends JFrame {
     commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + unitZoom);
     commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + unitWidth);
     commands.add("-D" + TRIPLEA_UNIT_HEIGHT + "=" + unitHeight);
-    commands.add(javaClass.getName());
+    commands.add(type.getName());
     ProcessRunnerUtil.exec(commands);
     // example: java -classpath triplea.jar -Dtriplea.map.folder="C:/Users" tools/image/CenterPicker
   }
 
+  private static void runUtilityInSameProcess(
+      final Class<?> type,
+      final ThrowingConsumer<String[], Exception> entryPoint) {
+    new Thread(() -> {
+      try {
+        entryPoint.accept(new String[0]);
+      } catch (final RuntimeException e) {
+        throw e;
+      } catch (final Exception e) {
+        ToolLogger.error("Failed to run utility: " + type.getName(), e);
+      }
+    }).start();
+  }
 }
