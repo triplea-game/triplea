@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import games.strategy.triplea.ui.screen.TileManager;
@@ -34,16 +35,19 @@ import tools.util.ToolLogger;
 /**
  * For taking a folder of basetiles and putting them back together into an image.
  */
-public class TileImageReconstructor {
-  private static String baseTileLocation = null;
-  private static String imageSaveLocation = null;
-  private static File mapFolderLocation = null;
+public final class TileImageReconstructor {
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-  private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
+
+  private String baseTileLocation = null;
+  private String imageSaveLocation = null;
+  private File mapFolderLocation = null;
+  private final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
       "TileImageReconstructor Log\r\n\r\n", "", "TileImageReconstructor Log", null, 500, 300, true, 1, null);
-  private static int sizeX = -1;
-  private static int sizeY = -1;
-  private static Map<String, List<Polygon>> polygons = new HashMap<>();
+  private int sizeX = -1;
+  private int sizeY = -1;
+  private Map<String, List<Polygon>> polygons = new HashMap<>();
+
+  private TileImageReconstructor() {}
 
   /**
    * Entry point for the Tile Image Reconstructor tool.
@@ -51,6 +55,10 @@ public class TileImageReconstructor {
   public static void main(final String[] args) throws Exception {
     ToolApplication.initialize();
 
+    SwingUtilities.invokeAndWait(() -> new TileImageReconstructor().run(args));
+  }
+
+  private void run(final String[] args) {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>"
@@ -67,7 +75,6 @@ public class TileImageReconstructor {
     if (baseTileLocation == null) {
       ToolLogger.info("You need to select a folder where the basetiles are for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
       return;
     }
     final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, mapFolderLocation,
@@ -89,7 +96,6 @@ public class TileImageReconstructor {
     if (imageSaveLocation == null) {
       ToolLogger.info("You need to choose a name and location for your image file for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
       return;
     }
     final String width = JOptionPane.showInputDialog(null, "Enter the map image's full width in pixels:");
@@ -111,7 +117,6 @@ public class TileImageReconstructor {
     if (sizeX <= 0 || sizeY <= 0) {
       ToolLogger.info("Map dimensions must be greater than zero for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
       return;
     }
     if (JOptionPane.showConfirmDialog(null,
@@ -125,7 +130,7 @@ public class TileImageReconstructor {
             polygons = PointFileReaderWriter.readOneToManyPolygons(in);
           } catch (final IOException e) {
             ToolLogger.error("Failed to load polygons: " + polyName, e);
-            System.exit(0);
+            return;
           }
         }
       } catch (final Exception e) {
@@ -135,7 +140,7 @@ public class TileImageReconstructor {
     createMap();
   }
 
-  private static void createMap() {
+  private void createMap() {
     textOptionPane.show();
     final GraphicsConfiguration localGraphicSystem =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
@@ -178,7 +183,6 @@ public class TileImageReconstructor {
     textOptionPane.countDown();
     textOptionPane.dispose();
     JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
-    System.exit(0);
   }
 
   private static String getValue(final String arg) {
@@ -189,7 +193,7 @@ public class TileImageReconstructor {
     return arg.substring(index + 1);
   }
 
-  private static void handleCommandLineArgs(final String[] args) {
+  private void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
       final String value;
