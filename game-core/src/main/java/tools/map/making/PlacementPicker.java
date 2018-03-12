@@ -53,35 +53,23 @@ import tools.image.FileSave;
 import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
-public class PlacementPicker extends JFrame {
-  private static final long serialVersionUID = 953019978051420881L;
-  private final JCheckBoxMenuItem showAllModeItem;
-  private final JCheckBoxMenuItem showOverflowModeItem;
-  private final JCheckBoxMenuItem showIncompleteModeItem;
-  private static boolean showAllMode = false;
-  private static boolean showOverflowMode = false;
-  private static boolean showIncompleteMode = false;
-  private static int incompleteNum = 1;
-  private Point currentSquare;
-  private Image image;
-  private final JLabel locationLabel = new JLabel();
-  private Map<String, List<Polygon>> polygons = new HashMap<>();
-  private Map<String, List<Point>> placements;
-  private List<Point> currentPlacements;
-  private String currentCountry;
-  private static int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static boolean placeDimensionsSet = false;
-  private static double unitZoomPercent = 1;
-  private static int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static File mapFolderLocation = null;
+public final class PlacementPicker {
   private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
   private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
   private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
 
-  public static String[] getProperties() {
+  private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private boolean placeDimensionsSet = false;
+  private double unitZoomPercent = 1;
+  private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private File mapFolderLocation = null;
+
+  private PlacementPicker() {}
+
+  private static String[] getProperties() {
     return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
   }
 
@@ -92,9 +80,19 @@ public class PlacementPicker extends JFrame {
    *
    * @param args the command line arguments
    */
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws Exception {
     ToolApplication.initialize();
 
+    SwingUtilities.invokeAndWait(() -> {
+      try {
+        new PlacementPicker().run(args);
+      } catch (final IOException e) {
+        ToolLogger.error("failed to run placement picker", e);
+      }
+    });
+  }
+
+  private void run(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the PlacementPicker, it will create a place.txt file for you. "
@@ -127,426 +125,441 @@ public class PlacementPicker extends JFrame {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
-      final PlacementPicker picker = new PlacementPicker(mapName);
-      picker.setSize(800, 600);
-      picker.setLocationRelativeTo(null);
-      picker.setVisible(true);
+      final PlacementPickerFrame frame = new PlacementPickerFrame(mapName);
+      frame.setSize(800, 600);
+      frame.setLocationRelativeTo(null);
+      frame.setVisible(true);
     } else {
       ToolLogger.info("No Image Map Selected. Shutting down.");
-      System.exit(0);
     }
   } // end main
 
-  /**
-   * Constructor PlacementPicker(java.lang.String)
-   * Setus up all GUI components, initializes variables with
-   * default or needed values, and prepares the map for user
-   * commands.
-   *
-   * @param mapName Name of map file.
-   */
-  public PlacementPicker(final String mapName) {
-    super("Placement Picker");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    if (!placeDimensionsSet) {
-      try {
-        File file = null;
-        if (mapFolderLocation != null && mapFolderLocation.exists()) {
-          file = new File(mapFolderLocation, "map.properties");
-        }
-        if (file == null || !file.exists()) {
-          file = new File(new File(mapName).getParent() + File.separator + "map.properties");
-        }
-        if (file.exists()) {
-          double scale = unitZoomPercent;
-          int width = unitWidth;
-          int height = unitHeight;
-          boolean found = false;
-          final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
-          final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
-          final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
-          try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
-            while (scanner.hasNextLine()) {
-              final String line = scanner.nextLine();
-              if (line.contains(scaleProperty)) {
-                try {
-                  scale =
-                      Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
-                  found = true;
-                } catch (final NumberFormatException ex) {
-                  // ignore malformed input
-                }
-              }
-              if (line.contains(widthProperty)) {
-                try {
-                  width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
-                  found = true;
-                } catch (final NumberFormatException ex) {
-                  // ignore malformed input
-                }
-              }
-              if (line.contains(heightProperty)) {
-                try {
-                  height =
-                      Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
-                  found = true;
-                } catch (final NumberFormatException ex) {
-                  // ignore malformed input
-                }
-              }
-            }
-          }
-          if (found) {
-            final int result = JOptionPane.showConfirmDialog(new JPanel(),
-                "A map.properties file was found in the map's folder, "
-                    + "\r\n do you want to use the file to supply the info for the placement box size? "
-                    + "\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height + ",    Result = ("
-                    + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")",
-                "File Suggestion", 1);
+  private final class PlacementPickerFrame extends JFrame {
+    private static final long serialVersionUID = 953019978051420881L;
 
-            if (result == 0) {
-              unitZoomPercent = scale;
-              placeWidth = (int) (unitZoomPercent * width);
-              placeHeight = (int) (unitZoomPercent * height);
-              placeDimensionsSet = true;
+    private final JCheckBoxMenuItem showAllModeItem;
+    private final JCheckBoxMenuItem showOverflowModeItem;
+    private final JCheckBoxMenuItem showIncompleteModeItem;
+    private boolean showAllMode = false;
+    private boolean showOverflowMode = false;
+    private boolean showIncompleteMode = false;
+    private int incompleteNum = 1;
+    private Point currentSquare;
+    private Image image;
+    private final JLabel locationLabel = new JLabel();
+    private Map<String, List<Polygon>> polygons = new HashMap<>();
+    private Map<String, List<Point>> placements;
+    private List<Point> currentPlacements;
+    private String currentCountry;
+
+    /**
+     * Setus up all GUI components, initializes variables with
+     * default or needed values, and prepares the map for user
+     * commands.
+     *
+     * @param mapName Name of map file.
+     */
+    PlacementPickerFrame(final String mapName) throws IOException {
+      super("Placement Picker");
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      if (!placeDimensionsSet) {
+        try {
+          File file = null;
+          if (mapFolderLocation != null && mapFolderLocation.exists()) {
+            file = new File(mapFolderLocation, "map.properties");
+          }
+          if (file == null || !file.exists()) {
+            file = new File(new File(mapName).getParent() + File.separator + "map.properties");
+          }
+          if (file.exists()) {
+            double scale = unitZoomPercent;
+            int width = unitWidth;
+            int height = unitHeight;
+            boolean found = false;
+            final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
+            final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+            final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
+            try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
+              while (scanner.hasNextLine()) {
+                final String line = scanner.nextLine();
+                if (line.contains(scaleProperty)) {
+                  try {
+                    scale =
+                        Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
+                    found = true;
+                  } catch (final NumberFormatException ex) {
+                    // ignore malformed input
+                  }
+                }
+                if (line.contains(widthProperty)) {
+                  try {
+                    width =
+                        Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
+                    found = true;
+                  } catch (final NumberFormatException ex) {
+                    // ignore malformed input
+                  }
+                }
+                if (line.contains(heightProperty)) {
+                  try {
+                    height =
+                        Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
+                    found = true;
+                  } catch (final NumberFormatException ex) {
+                    // ignore malformed input
+                  }
+                }
+              }
+            }
+            if (found) {
+              final int result = JOptionPane.showConfirmDialog(new JPanel(),
+                  "A map.properties file was found in the map's folder, "
+                      + "\r\n do you want to use the file to supply the info for the placement box size? "
+                      + "\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height + ",    Result = ("
+                      + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")",
+                  "File Suggestion", 1);
+
+              if (result == 0) {
+                unitZoomPercent = scale;
+                placeWidth = (int) (unitZoomPercent * width);
+                placeHeight = (int) (unitZoomPercent * height);
+                placeDimensionsSet = true;
+              }
             }
           }
+        } catch (final Exception e) {
+          ToolLogger.error("Failed to initialize from map properties", e);
         }
-      } catch (final Exception e) {
-        ToolLogger.error("Failed to initialize from map properties", e);
       }
-    }
-    if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
-        "Placement Box Size already set (" + placeWidth + "x" + placeHeight + "), "
-            + "do you wish to continue with this?\r\n"
-            + "Select Yes to continue, Select No to override and change the size.",
-        "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
-      try {
-        final String result = getUnitsScale();
+      if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
+          "Placement Box Size already set (" + placeWidth + "x" + placeHeight + "), "
+              + "do you wish to continue with this?\r\n"
+              + "Select Yes to continue, Select No to override and change the size.",
+          "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1) {
         try {
-          unitZoomPercent = Double.parseDouble(result.toLowerCase());
-        } catch (final NumberFormatException ex) {
-          // ignore malformed input
-        }
-        final String width = JOptionPane.showInputDialog(null,
-            "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
-        if (width != null) {
+          final String result = getUnitsScale();
           try {
-            placeWidth = (int) (unitZoomPercent * Integer.parseInt(width));
+            unitZoomPercent = Double.parseDouble(result.toLowerCase());
           } catch (final NumberFormatException ex) {
             // ignore malformed input
           }
-        }
-        final String height = JOptionPane.showInputDialog(null,
-            "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
-        if (height != null) {
-          try {
-            placeHeight = (int) (unitZoomPercent * Integer.parseInt(height));
-          } catch (final NumberFormatException ex) {
-            // ignore malformed input
+          final String width = JOptionPane.showInputDialog(null,
+              "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+          if (width != null) {
+            try {
+              placeWidth = (int) (unitZoomPercent * Integer.parseInt(width));
+            } catch (final NumberFormatException ex) {
+              // ignore malformed input
+            }
           }
+          final String height = JOptionPane.showInputDialog(null,
+              "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+          if (height != null) {
+            try {
+              placeHeight = (int) (unitZoomPercent * Integer.parseInt(height));
+            } catch (final NumberFormatException ex) {
+              // ignore malformed input
+            }
+          }
+          placeDimensionsSet = true;
+        } catch (final Exception e) {
+          ToolLogger.error("Failed to initialize from user input", e);
         }
-        placeDimensionsSet = true;
-      } catch (final Exception e) {
-        ToolLogger.error("Failed to initialize from user input", e);
       }
-    }
-    File file = null;
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
-      file = new File(mapFolderLocation, "polygons.txt");
-    }
-    if (file == null || !file.exists()) {
-      file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
-    }
-    if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
-        "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?",
-        "File Suggestion", 1) == 0) {
-      try (InputStream is = new FileInputStream(file.getPath())) {
-        ToolLogger.info("Polygons : " + file.getPath());
-        polygons = PointFileReaderWriter.readOneToManyPolygons(is);
-      } catch (final IOException e) {
-        ToolLogger.error("Failed to load polygons: " + file.getAbsolutePath(), e);
-        System.exit(0);
+      File file = null;
+      if (mapFolderLocation != null && mapFolderLocation.exists()) {
+        file = new File(mapFolderLocation, "polygons.txt");
       }
-    } else {
-      ToolLogger.info("Select the Polygons file");
-      final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
-      if (polyPath != null) {
-        ToolLogger.info("Polygons : " + polyPath);
-        try (InputStream is = new FileInputStream(polyPath)) {
+      if (file == null || !file.exists()) {
+        file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
+      }
+      if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
+          "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?",
+          "File Suggestion", 1) == 0) {
+        try (InputStream is = new FileInputStream(file.getPath())) {
+          ToolLogger.info("Polygons : " + file.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          ToolLogger.error("Failed to load polygons: " + polyPath, e);
-          System.exit(0);
+          ToolLogger.error("Failed to load polygons: " + file.getAbsolutePath());
+          throw e;
         }
       } else {
-        ToolLogger.info("Polygons file not given. Will run regardless");
-      }
-    }
-    createImage(mapName);
-    final JPanel imagePanel = createMainPanel();
-    /*
-     * Add a mouse listener to show
-     * X : Y coordinates on the lower
-     * left corner of the screen.
-     */
-    imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
-      @Override
-      public void mouseMoved(final MouseEvent e) {
-        locationLabel.setText("x:" + e.getX() + " y:" + e.getY());
-        currentSquare = new Point(e.getPoint());
-        repaint();
-      }
-    });
-    /*
-     * Add a mouse listener to monitor
-     * for right mouse button being
-     * clicked.
-     */
-    imagePanel.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
-      }
-    });
-    // set up the image panel size dimensions ...etc
-    imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-    imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-    imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-    // set up the layout manager
-    this.getContentPane().setLayout(new BorderLayout());
-    this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
-    this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
-    // set up the actions
-    final Action openAction = SwingAction.of("Load Placements", e -> loadPlacements());
-    openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
-    final Action saveAction = SwingAction.of("Save Placements", e -> savePlacements());
-    saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Placements To File");
-    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
-    exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
-    // set up the menu items
-    final JMenuItem openItem = new JMenuItem(openAction);
-    openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-    final JMenuItem saveItem = new JMenuItem(saveAction);
-    saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-    final JMenuItem exitItem = new JMenuItem(exitAction);
-    // set up the menu bar
-    final JMenuBar menuBar = new JMenuBar();
-    setJMenuBar(menuBar);
-    final JMenu fileMenu = new JMenu("File");
-    fileMenu.setMnemonic('F');
-    fileMenu.add(openItem);
-    fileMenu.add(saveItem);
-    fileMenu.addSeparator();
-    fileMenu.add(exitItem);
-    showAllMode = false;
-    showOverflowMode = false;
-    showIncompleteMode = false;
-    incompleteNum = 1;
-    showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
-    showAllModeItem.addActionListener(event -> {
-      showAllMode = showAllModeItem.getState();
-      repaint();
-    });
-    showOverflowModeItem = new JCheckBoxMenuItem("Show Overflow Mode", false);
-    showOverflowModeItem.addActionListener(event -> {
-      showOverflowMode = showOverflowModeItem.getState();
-      repaint();
-    });
-    showIncompleteModeItem = new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
-    showIncompleteModeItem.addActionListener(event -> {
-      if (showIncompleteModeItem.getState()) {
-        final String num = JOptionPane.showInputDialog(null,
-            "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
-        try {
-          incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
-        } catch (final Exception ex) {
-          incompleteNum = 1;
+        ToolLogger.info("Select the Polygons file");
+        final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
+        if (polyPath != null) {
+          ToolLogger.info("Polygons : " + polyPath);
+          try (InputStream is = new FileInputStream(polyPath)) {
+            polygons = PointFileReaderWriter.readOneToManyPolygons(is);
+          } catch (final IOException e) {
+            ToolLogger.error("Failed to load polygons: " + polyPath);
+            throw e;
+          }
+        } else {
+          ToolLogger.info("Polygons file not given. Will run regardless");
         }
       }
-      showIncompleteMode = showIncompleteModeItem.getState();
-      repaint();
-    });
-    final JMenu editMenu = new JMenu("Edit");
-    editMenu.setMnemonic('E');
-    editMenu.add(showAllModeItem);
-    editMenu.add(showOverflowModeItem);
-    editMenu.add(showIncompleteModeItem);
-    menuBar.add(fileMenu);
-    menuBar.add(editMenu);
-  } // end constructor
+      createImage(mapName);
+      final JPanel imagePanel = createMainPanel();
+      /*
+       * Add a mouse listener to show
+       * X : Y coordinates on the lower
+       * left corner of the screen.
+       */
+      imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
+        @Override
+        public void mouseMoved(final MouseEvent e) {
+          locationLabel.setText("x:" + e.getX() + " y:" + e.getY());
+          currentSquare = new Point(e.getPoint());
+          repaint();
+        }
+      });
+      /*
+       * Add a mouse listener to monitor
+       * for right mouse button being
+       * clicked.
+       */
+      imagePanel.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+          mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
+        }
+      });
+      // set up the image panel size dimensions ...etc
+      imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+      imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+      imagePanel.setMaximumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
+      // set up the layout manager
+      this.getContentPane().setLayout(new BorderLayout());
+      this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
+      this.getContentPane().add(locationLabel, BorderLayout.SOUTH);
+      // set up the actions
+      final Action openAction = SwingAction.of("Load Placements", e -> loadPlacements());
+      openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
+      final Action saveAction = SwingAction.of("Save Placements", e -> savePlacements());
+      saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Placements To File");
+      final Action exitAction = SwingAction.of("Exit", e -> {
+        setVisible(false);
+        dispose();
+      });
+      exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+      // set up the menu items
+      final JMenuItem openItem = new JMenuItem(openAction);
+      openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+      final JMenuItem saveItem = new JMenuItem(saveAction);
+      saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+      final JMenuItem exitItem = new JMenuItem(exitAction);
+      // set up the menu bar
+      final JMenuBar menuBar = new JMenuBar();
+      setJMenuBar(menuBar);
+      final JMenu fileMenu = new JMenu("File");
+      fileMenu.setMnemonic('F');
+      fileMenu.add(openItem);
+      fileMenu.add(saveItem);
+      fileMenu.addSeparator();
+      fileMenu.add(exitItem);
+      showAllMode = false;
+      showOverflowMode = false;
+      showIncompleteMode = false;
+      incompleteNum = 1;
+      showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
+      showAllModeItem.addActionListener(event -> {
+        showAllMode = showAllModeItem.getState();
+        repaint();
+      });
+      showOverflowModeItem = new JCheckBoxMenuItem("Show Overflow Mode", false);
+      showOverflowModeItem.addActionListener(event -> {
+        showOverflowMode = showOverflowModeItem.getState();
+        repaint();
+      });
+      showIncompleteModeItem = new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
+      showIncompleteModeItem.addActionListener(event -> {
+        if (showIncompleteModeItem.getState()) {
+          final String num = JOptionPane.showInputDialog(null,
+              "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
+          try {
+            incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
+          } catch (final Exception ex) {
+            incompleteNum = 1;
+          }
+        }
+        showIncompleteMode = showIncompleteModeItem.getState();
+        repaint();
+      });
+      final JMenu editMenu = new JMenu("Edit");
+      editMenu.setMnemonic('E');
+      editMenu.add(showAllModeItem);
+      editMenu.add(showOverflowModeItem);
+      editMenu.add(showIncompleteModeItem);
+      menuBar.add(fileMenu);
+      menuBar.add(editMenu);
+    } // end constructor
 
-  /**
-   * createImage(java.lang.String)
-   * creates the image map and makes sure
-   * it is properly loaded.
-   *
-   * @param mapName
-   *        .lang.String mapName the path of image map
-   */
-  private void createImage(final String mapName) {
-    image = Toolkit.getDefaultToolkit().createImage(mapName);
-    Util.ensureImageLoaded(image);
-  }
+    /**
+     * creates the image map and makes sure
+     * it is properly loaded.
+     *
+     * @param mapName The path of image map.
+     */
+    private void createImage(final String mapName) {
+      image = Toolkit.getDefaultToolkit().createImage(mapName);
+      Util.ensureImageLoaded(image);
+    }
 
-  /**
-   * javax.swing.JPanel createMainPanel()
-   * Creates the main panel and returns
-   * a JPanel object.
-   *
-   * @return javax.swing.JPanel the panel to return
-   */
-  private JPanel createMainPanel() {
-    final JPanel imagePanel = new JPanel() {
-      private static final long serialVersionUID = -3941975573431195136L;
+    /**
+     * Creates the main panel and returns
+     * a JPanel object.
+     *
+     * @return The panel to return.
+     */
+    private JPanel createMainPanel() {
+      final JPanel imagePanel = new JPanel() {
+        private static final long serialVersionUID = -3941975573431195136L;
 
-      @Override
-      public void paint(final Graphics g) {
-        // super.paint(g);
-        g.drawImage(image, 0, 0, this);
-        if (showAllMode) {
-          g.setColor(Color.yellow);
-          for (final Entry<String, List<Point>> entry : placements.entrySet()) {
-            if (entry.getKey().equals(currentCountry) && currentPlacements != null
-                && !currentPlacements.isEmpty()) {
-              continue;
-            }
-            final Iterator<Point> pointIter = entry.getValue().iterator();
-            while (pointIter.hasNext()) {
-              final Point item = pointIter.next();
-              g.fillRect(item.x, item.y, placeWidth, placeHeight);
-              if (showOverflowMode && !pointIter.hasNext()) {
-                g.setColor(Color.gray);
-                g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
-                g.setColor(Color.yellow);
+        @Override
+        public void paint(final Graphics g) {
+          // super.paint(g);
+          g.drawImage(image, 0, 0, this);
+          if (showAllMode) {
+            g.setColor(Color.yellow);
+            for (final Entry<String, List<Point>> entry : placements.entrySet()) {
+              if (entry.getKey().equals(currentCountry) && currentPlacements != null
+                  && !currentPlacements.isEmpty()) {
+                continue;
+              }
+              final Iterator<Point> pointIter = entry.getValue().iterator();
+              while (pointIter.hasNext()) {
+                final Point item = pointIter.next();
+                g.fillRect(item.x, item.y, placeWidth, placeHeight);
+                if (showOverflowMode && !pointIter.hasNext()) {
+                  g.setColor(Color.gray);
+                  g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+                  g.setColor(Color.yellow);
+                }
               }
             }
           }
-        }
-        if (showIncompleteMode) {
-          g.setColor(Color.green);
-          final Set<String> territories = new HashSet<>(polygons.keySet());
-          final Iterator<String> terrIter = territories.iterator();
-          while (terrIter.hasNext()) {
-            final String terr = terrIter.next();
-            final List<Point> points = placements.get(terr);
-            if (points != null && points.size() >= incompleteNum) {
-              terrIter.remove();
+          if (showIncompleteMode) {
+            g.setColor(Color.green);
+            final Set<String> territories = new HashSet<>(polygons.keySet());
+            final Iterator<String> terrIter = territories.iterator();
+            while (terrIter.hasNext()) {
+              final String terr = terrIter.next();
+              final List<Point> points = placements.get(terr);
+              if (points != null && points.size() >= incompleteNum) {
+                terrIter.remove();
+              }
+            }
+            for (final String terr : territories) {
+              final List<Polygon> polys = polygons.get(terr);
+              if (polys == null || polys.isEmpty()) {
+                continue;
+              }
+              for (final Polygon poly : polys) {
+                g.fillPolygon(poly);
+              }
             }
           }
-          for (final String terr : territories) {
-            final List<Polygon> polys = polygons.get(terr);
-            if (polys == null || polys.isEmpty()) {
-              continue;
-            }
-            for (final Polygon poly : polys) {
-              g.fillPolygon(poly);
+          g.setColor(Color.red);
+          if (currentSquare != null) {
+            g.drawRect(currentSquare.x, currentSquare.y, placeWidth, placeHeight);
+          }
+          if (currentPlacements == null) {
+            return;
+          }
+          final Iterator<Point> pointIter = currentPlacements.iterator();
+          while (pointIter.hasNext()) {
+            final Point item = pointIter.next();
+            g.fillRect(item.x, item.y, placeWidth, placeHeight);
+            if (showOverflowMode && !pointIter.hasNext()) {
+              g.setColor(Color.gray);
+              g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+              g.setColor(Color.red);
             }
           }
+        } // paint
+      };
+      return imagePanel;
+    }
+
+    /**
+     * Saves the placements to disk.
+     */
+    private void savePlacements() {
+      final String fileName =
+          new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
+      if (fileName == null) {
+        return;
+      }
+      try (OutputStream out = new FileOutputStream(fileName)) {
+        PointFileReaderWriter.writeOneToMany(out, placements);
+        ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
+      } catch (final IOException e) {
+        ToolLogger.error("Failed to write placements: " + fileName, e);
+      }
+    }
+
+    /**
+     * Loads a pre-defined file with map placement points.
+     */
+    private void loadPlacements() {
+      ToolLogger.info("Load a placement file");
+      final String placeName = new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getPathString();
+      if (placeName == null) {
+        return;
+      }
+      try (InputStream in = new FileInputStream(placeName)) {
+        placements = PointFileReaderWriter.readOneToMany(in);
+      } catch (final IOException e) {
+        ToolLogger.error("Failed to load placements: " + placeName, e);
+      }
+      repaint();
+    }
+
+    /**
+     * <ul>
+     * <li>Left button: Start in territory.</li>
+     * <li>Left button + control: Add point.</li>
+     * <li>Right button and ctrl: Write.</li>
+     * <li>Right button: Remove last.</li>
+     * </ul>
+     */
+    private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
+      if (!rightMouse && !ctrlDown) {
+        currentCountry = Util.findTerritoryName(point, polygons, "there be dragons");
+        // If there isn't an existing array, create one
+        if (placements == null || placements.get(currentCountry) == null) {
+          currentPlacements = new ArrayList<>();
+        } else {
+          currentPlacements = new ArrayList<>(placements.get(currentCountry));
         }
-        g.setColor(Color.red);
-        if (currentSquare != null) {
-          g.drawRect(currentSquare.x, currentSquare.y, placeWidth, placeHeight);
+        JOptionPane.showMessageDialog(this, currentCountry);
+      } else if (!rightMouse && ctrlDown) {
+        if (currentPlacements != null) {
+          currentPlacements.add(point);
         }
-        if (currentPlacements == null) {
-          return;
-        }
-        final Iterator<Point> pointIter = currentPlacements.iterator();
-        while (pointIter.hasNext()) {
-          final Point item = pointIter.next();
-          g.fillRect(item.x, item.y, placeWidth, placeHeight);
-          if (showOverflowMode && !pointIter.hasNext()) {
-            g.setColor(Color.gray);
-            g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
-            g.setColor(Color.red);
+      } else if (rightMouse && ctrlDown) {
+        if (currentPlacements != null) {
+          // If there isn't an existing hashmap, create one
+          if (placements == null) {
+            placements = new HashMap<>();
           }
+          placements.put(currentCountry, currentPlacements);
+          currentPlacements = new ArrayList<>();
+          ToolLogger.info("done:" + currentCountry);
         }
-      } // paint
-    };
-    return imagePanel;
-  }
-
-  /**
-   * savePlacements()
-   * Saves the placements to disk.
-   */
-  private void savePlacements() {
-    final String fileName =
-        new FileSave("Where To Save place.txt ?", "place.txt", mapFolderLocation).getPathString();
-    if (fileName == null) {
-      return;
-    }
-    try (OutputStream out = new FileOutputStream(fileName)) {
-      PointFileReaderWriter.writeOneToMany(out, placements);
-      ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
-    } catch (final IOException e) {
-      ToolLogger.error("Failed to write placements: " + fileName, e);
-    }
-  }
-
-  /**
-   * loadPlacements()
-   * Loads a pre-defined file with map placement points.
-   */
-  private void loadPlacements() {
-    ToolLogger.info("Load a placement file");
-    final String placeName = new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getPathString();
-    if (placeName == null) {
-      return;
-    }
-    try (InputStream in = new FileInputStream(placeName)) {
-      placements = PointFileReaderWriter.readOneToMany(in);
-    } catch (final IOException e) {
-      ToolLogger.error("Failed to load placements: " + placeName, e);
-      System.exit(0);
-    }
-    repaint();
-  }
-
-  /**
-   * <ul>
-   * <li>Left button: Start in territory.</li>
-   * <li>Left button + control: Add point.</li>
-   * <li>Right button and ctrl: Write.</li>
-   * <li>Right button: Remove last.</li>
-   * </ul>
-   */
-  private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse) {
-    if (!rightMouse && !ctrlDown) {
-      currentCountry = Util.findTerritoryName(point, polygons, "there be dragons");
-      // If there isn't an existing array, create one
-      if (placements == null || placements.get(currentCountry) == null) {
-        currentPlacements = new ArrayList<>();
-      } else {
-        currentPlacements = new ArrayList<>(placements.get(currentCountry));
-      }
-      JOptionPane.showMessageDialog(this, currentCountry);
-    } else if (!rightMouse && ctrlDown) {
-      if (currentPlacements != null) {
-        currentPlacements.add(point);
-      }
-    } else if (rightMouse && ctrlDown) {
-      if (currentPlacements != null) {
-        // If there isn't an existing hashmap, create one
-        if (placements == null) {
-          placements = new HashMap<>();
+      } else if (rightMouse) {
+        if (currentPlacements != null && !currentPlacements.isEmpty()) {
+          currentPlacements.remove(currentPlacements.size() - 1);
         }
-        placements.put(currentCountry, currentPlacements);
-        currentPlacements = new ArrayList<>();
-        ToolLogger.info("done:" + currentCountry);
       }
-    } else if (rightMouse) {
-      if (currentPlacements != null && !currentPlacements.isEmpty()) {
-        currentPlacements.remove(currentPlacements.size() - 1);
-      }
+      repaint();
     }
-    repaint();
-  }
 
-  private static String getUnitsScale() {
-    final String unitsScale = JOptionPane.showInputDialog(null,
-        "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
-    return (unitsScale != null) ? unitsScale : "1";
+    private String getUnitsScale() {
+      final String unitsScale = JOptionPane.showInputDialog(null,
+          "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
+      return (unitsScale != null) ? unitsScale : "1";
+    }
   }
 
   private static String getValue(final String arg) {
@@ -557,7 +570,7 @@ public class PlacementPicker extends JFrame {
     return arg.substring(index + 1);
   }
 
-  private static void handleCommandLineArgs(final String[] args) {
+  private void handleCommandLineArgs(final String[] args) {
     final String[] properties = getProperties();
     if (args.length == 1) {
       final String value;
