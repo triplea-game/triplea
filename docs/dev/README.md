@@ -63,6 +63,10 @@ Plugins:
 Lombok:
  - requires annotation processing to be turned on (settings > 'annotation processing')
 
+# Docker
+
+Docker images that may be useful during development and testing are available [here](https://github.com/triplea-game/triplea/tree/master/.docker).
+
 # Team Communication
 
 *Github Issues*: https://github.com/triplea-game/triplea/issues
