@@ -104,8 +104,6 @@ public final class DecorationPlacer {
    * Entry point for the Decoration Placer tool.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> {
       try {
         new DecorationPlacer().run(args);
@@ -116,6 +114,7 @@ public final class DecorationPlacer {
   }
 
   private void run(final String[] args) throws IOException {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");

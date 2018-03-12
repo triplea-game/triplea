@@ -66,12 +66,11 @@ public final class ConnectionFinder {
    * Entry point for the Connection Finder tool.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> new ConnectionFinder().run(args));
   }
 
   private void run(final String[] args) {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ConnectionFinder. "

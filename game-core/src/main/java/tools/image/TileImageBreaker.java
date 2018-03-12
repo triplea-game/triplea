@@ -48,8 +48,6 @@ public final class TileImageBreaker {
    * @param args The command line parameters.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> {
       try {
         new TileImageBreaker().run(args);
@@ -60,6 +58,7 @@ public final class TileImageBreaker {
   }
 
   private void run(final String[] args) throws IOException {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the TileImageBreaker, it will create the map image tiles file for you. "

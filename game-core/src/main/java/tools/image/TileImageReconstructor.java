@@ -53,12 +53,11 @@ public final class TileImageReconstructor {
    * Entry point for the Tile Image Reconstructor tool.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> new TileImageReconstructor().run(args));
   }
 
   private void run(final String[] args) {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>"

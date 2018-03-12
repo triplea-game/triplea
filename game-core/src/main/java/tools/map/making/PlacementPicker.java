@@ -81,8 +81,6 @@ public final class PlacementPicker {
    * @param args the command line arguments
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> {
       try {
         new PlacementPicker().run(args);
@@ -93,6 +91,7 @@ public final class PlacementPicker {
   }
 
   private void run(final String[] args) throws IOException {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the PlacementPicker, it will create a place.txt file for you. "

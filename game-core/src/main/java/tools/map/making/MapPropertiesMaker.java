@@ -86,12 +86,11 @@ public final class MapPropertiesMaker {
    * Entry point for the Map Properties Maker tool.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> new MapPropertiesMaker().run(args));
   }
 
   private void run(final String[] args) {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     if (mapFolderLocation == null) {
       ToolLogger.info("Select the map folder");

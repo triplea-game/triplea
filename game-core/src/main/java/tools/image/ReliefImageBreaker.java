@@ -51,8 +51,6 @@ public final class ReliefImageBreaker {
    * Entry point for the Relief Image Breaker tool.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> {
       try {
         new ReliefImageBreaker().run(args);
@@ -63,6 +61,7 @@ public final class ReliefImageBreaker {
   }
 
   private void run(final String[] args) throws IOException {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ReliefImageBreaker, it is no longer used. "

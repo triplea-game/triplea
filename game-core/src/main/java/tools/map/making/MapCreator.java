@@ -25,7 +25,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import games.strategy.engine.framework.ProcessRunnerUtil;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -76,10 +75,8 @@ public class MapCreator extends JFrame {
    * Entry point for the map-making utilities application.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingAction.invokeAndWait(() -> {
-      LookAndFeel.setupLookAndFeel();
+      ToolApplication.initialize();
 
       final MapCreator creator = new MapCreator();
       creator.setSize(800, 600);

@@ -70,8 +70,6 @@ public final class PolygonGrabber {
    * @param args The command line arguments.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> {
       try {
         new PolygonGrabber().run(args);
@@ -82,6 +80,7 @@ public final class PolygonGrabber {
   }
 
   private void run(final String[] args) throws IOException {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");

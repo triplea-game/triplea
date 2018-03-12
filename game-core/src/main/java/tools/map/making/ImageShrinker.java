@@ -36,8 +36,6 @@ public final class ImageShrinker {
    * Entry point for the Image Shrinker tool.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> {
       try {
         new ImageShrinker().run(args);
@@ -48,6 +46,7 @@ public final class ImageShrinker {
   }
 
   private void run(final String[] args) throws IOException {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ImageShrinker, it will create a smallMap.jpeg file for you. "

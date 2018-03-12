@@ -60,12 +60,11 @@ public final class AutoPlacementFinder {
    * Entry point for the Automatic Placement Finder tool.
    */
   public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
-
     SwingUtilities.invokeAndWait(() -> new AutoPlacementFinder().run(args));
   }
 
   private void run(final String[] args) {
+    ToolApplication.initialize();
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the AutoPlacementFinder, it will create a place.txt file for you. "
