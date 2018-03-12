@@ -87,7 +87,7 @@ class ProCombatMoveAi {
     for (final ProTerritory patd : attackOptions) {
       clearedTerritories.add(patd.getTerritory());
     }
-    territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<>());
+    territoryManager.populateEnemyAttackOptions(clearedTerritories, clearedTerritories);
     Set<Territory> territoriesToCheck = new HashSet<>(clearedTerritories);
     territoriesToCheck.addAll(ProData.myUnitTerritories);
     Map<Territory, Double> territoryValueMap =
@@ -109,6 +109,7 @@ class ProCombatMoveAi {
             .addAll(data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
       }
     }
+    possibleTransportTerritories.addAll(clearedTerritories);
     territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<>(possibleTransportTerritories));
     territoriesToCheck = new HashSet<>(clearedTerritories);
     territoriesToCheck.addAll(ProData.myUnitTerritories);
