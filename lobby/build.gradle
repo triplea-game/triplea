@@ -33,16 +33,6 @@ ext {
 
 version = System.getenv('LOBBY_VERSION') ?: "dev";
 
-sourceSets {
-    integTest {
-        java.srcDir 'src/integ_test/java'
-        resources.srcDir 'src/integ_test/resources'
-
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testCompileOnly + configurations.testRuntime
-        runtimeClasspath = output + compileClasspath + configurations.junitPlatform
-    }
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -83,17 +73,6 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
     testRuntime 'org.junit.platform:junit-platform-launcher:1.0.2'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
-}
-
-task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = 'Runs the integration tests.'
-
-    classpath = sourceSets.integTest.runtimeClasspath
-    main = 'org.junit.platform.console.ConsoleLauncher'
-    args '--details', 'none'
-    args '--reports-dir', "$buildDir/integ-test-results/junit-platform"
-    args '--scan-classpath', sourceSets.integTest.output.classesDirs[0]
 }
 
 task jacocoRootReport(type: JacocoReport) {
@@ -137,18 +116,13 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
 task release(group: 'release', dependsOn: [lobbyServer]) {}
 
 check {
-    dependsOn 'junitPlatformTest', 'integTest'
+    dependsOn 'junitPlatformTest'
 }
 
 checkstyle {
     toolVersion = "8.0"
     configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
     configProperties = [samedir: configFile.parent]
-}
-
-checkstyleIntegTest {
-    maxWarnings = 0
-    source sourceSets.integTest.output.resourcesDir
 }
 
 checkstyleMain {
