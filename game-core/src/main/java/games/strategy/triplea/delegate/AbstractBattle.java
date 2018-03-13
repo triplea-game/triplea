@@ -20,13 +20,10 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.battle.data.BattleRules;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
-import lombok.AccessLevel;
-import lombok.Getter;
 
 abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
@@ -63,10 +60,6 @@ abstract class AbstractBattle implements IBattle {
 
   protected final GameData m_data;
 
-
-  @Getter(AccessLevel.PROTECTED)
-  private final BattleRules battleRules;
-
   AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data) {
     m_battleTracker = battleTracker;
@@ -77,8 +70,6 @@ abstract class AbstractBattle implements IBattle {
     m_battleType = battleType;
     m_data = data;
     m_defender = findDefender(battleSite, attacker, data);
-
-    battleRules = new BattleRules(m_data, m_isBombingRun, m_battleSite, m_attacker);
     // Make sure that if any of the incoming data is null, we are still OK
     // (tests and mockbattle use null for a lot of this stuff)
   }

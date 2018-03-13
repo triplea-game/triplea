@@ -62,7 +62,12 @@ public class AirBattle extends AbstractBattle {
   }
 
   public void updateDefendingUnits() {
-    m_defendingUnits = getBattleRules().defendingUnits();
+    // fill in defenders
+    if (m_isBombingRun) {
+      m_defendingUnits = m_battleSite.getUnits().getMatches(defendingBombingRaidInterceptors(m_attacker, m_data));
+    } else {
+      m_defendingUnits = m_battleSite.getUnits().getMatches(defendingGroundSeaBattleInterceptors(m_attacker, m_data));
+    }
   }
 
   @Override
