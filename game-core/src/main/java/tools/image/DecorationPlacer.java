@@ -124,11 +124,11 @@ public final class DecorationPlacer {
     }
     if (mapName != null) {
       ToolLogger.info("Map : " + mapName);
-      final DecorationPlacerFrame picker = new DecorationPlacerFrame(mapName);
-      picker.setSize(800, 600);
-      picker.setLocationRelativeTo(null);
-      picker.setVisible(true);
-      JOptionPane.showMessageDialog(picker,
+      final DecorationPlacerFrame frame = new DecorationPlacerFrame(mapName);
+      frame.setSize(800, 600);
+      frame.setLocationRelativeTo(null);
+      frame.setVisible(true);
+      JOptionPane.showMessageDialog(frame,
           new JLabel("<html>"
               + "This is the DecorationPlacer, it will create a text file for you containing the points to place "
               + "images at. "
@@ -168,7 +168,7 @@ public final class DecorationPlacer {
               + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all currently image points, use "
               + "'Load Image Points'."
               + "</html>"));
-      picker.loadImagesAndPoints();
+      frame.loadImagesAndPoints();
     } else {
       ToolLogger.info("No Image Map Selected. Shutting down.");
     }
