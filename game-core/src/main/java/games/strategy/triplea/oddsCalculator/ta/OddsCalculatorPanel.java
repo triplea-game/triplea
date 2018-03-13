@@ -403,10 +403,10 @@ class OddsCalculatorPanel extends JPanel {
           landBattleCheckBox.isSelected(), uiContext, data);
       if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(OddsCalculatorPanel.this, oolPanel,
           "Create Order Of Losses for each side", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
-        if (OddsCalculator.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
+        if (OrderOfLossesInputPanel.isValidOrderOfLoss(oolPanel.getAttackerOrder(), data)) {
           attackerOrderOfLosses = oolPanel.getAttackerOrder();
         }
-        if (OddsCalculator.isValidOrderOfLoss(oolPanel.getDefenderOrder(), data)) {
+        if (OrderOfLossesInputPanel.isValidOrderOfLoss(oolPanel.getDefenderOrder(), data)) {
           defenderOrderOfLosses = oolPanel.getDefenderOrder();
         }
       }
