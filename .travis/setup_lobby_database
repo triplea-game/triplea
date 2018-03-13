@@ -15,6 +15,6 @@ echo "create database $DB_NAME" | psql -h localhost -U postgres
 # Run the sql from every file in 'config/lobby/db' in order by file name
 while read migration_file; do
   psql -h localhost -U postgres -d $DB_NAME < "$migration_file"
-done < <(find  config/lobby/db/ -type f | sort -n)
+done < <(find  lobby/db/ -type f | sort -n)
 
 
