@@ -581,44 +581,42 @@ public class MoveValidator {
       // Land transports can either:
       // 1. Transport units on a 1-to-1 basis (have no capacity set)
       // 2. Transport like sea transports using capacity and cost
-      final Predicate<Unit> hasEnoughMovementForRoute;
+      data.acquireReadLock();
       try {
-        data.acquireReadLock();
-        hasEnoughMovementForRoute = Matches.unitHasEnoughMovementForRoute(route);
-      } finally {
-        data.releaseReadLock();
-      }
-      int numLandTransportsWithoutCapacity = getNumLandTransportsWithoutCapacity(units, player);
-      final IntegerMap<Unit> landTransportsWithCapacity = getLandTransportsWithCapacity(units, player);
-      moveTest = TransportUtils.sortByTransportCostDescending(moveTest);
-      for (final Unit unit : moveTest) {
-        if (!hasEnoughMovementForRoute.test(unit)) {
-          boolean unitOk = false;
-          if (Matches.unitIsOwnedBy(player).negate().test(unit) && Matches.alliedUnit(player, data).test(unit)
-              && Matches.unitTypeCanLandOnCarrier().test(unit.getType())
-              && moveTest.stream().anyMatch(Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
-            // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
-            // (shouldn't it be a dependent in this case??)
-            unitOk = true;
-          } else if (Matches.unitHasNotMoved().test(unit) && Matches.unitIsLandTransportable().test(unit)) {
-            if (numLandTransportsWithoutCapacity > 0) {
-              numLandTransportsWithoutCapacity--;
+        int numLandTransportsWithoutCapacity = getNumLandTransportsWithoutCapacity(units, player);
+        final IntegerMap<Unit> landTransportsWithCapacity = getLandTransportsWithCapacity(units, player);
+        moveTest = TransportUtils.sortByTransportCostDescending(moveTest);
+        for (final Unit unit : moveTest) {
+          if (!Matches.unitHasEnoughMovementForRoute(route).test(unit)) {
+            boolean unitOk = false;
+            if (Matches.unitIsOwnedBy(player).negate().test(unit) && Matches.alliedUnit(player, data).test(unit)
+                && Matches.unitTypeCanLandOnCarrier().test(unit.getType())
+                && moveTest.stream().anyMatch(Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
+              // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
+              // (shouldn't it be a dependent in this case??)
               unitOk = true;
-            } else {
-              for (final Unit transport : landTransportsWithCapacity.keySet()) {
-                final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
-                if (cost <= landTransportsWithCapacity.getInt(transport)) {
-                  landTransportsWithCapacity.add(transport, -cost);
-                  unitOk = true;
-                  break;
+            } else if (Matches.unitHasNotMoved().test(unit) && Matches.unitIsLandTransportable().test(unit)) {
+              if (numLandTransportsWithoutCapacity > 0) {
+                numLandTransportsWithoutCapacity--;
+                unitOk = true;
+              } else {
+                for (final Unit transport : landTransportsWithCapacity.keySet()) {
+                  final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+                  if (cost <= landTransportsWithCapacity.getInt(transport)) {
+                    landTransportsWithCapacity.add(transport, -cost);
+                    unitOk = true;
+                    break;
+                  }
                 }
               }
             }
-          }
-          if (!unitOk) {
-            result.addDisallowedUnit("Not all units have enough movement", unit);
+            if (!unitOk) {
+              result.addDisallowedUnit("Not all units have enough movement", unit);
+            }
           }
         }
+      } finally {
+        data.releaseReadLock();
       }
 
       // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
