@@ -143,7 +143,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       // rather than sending out email for each roll
       httpPost.addHeader("X-Triplea-Game-UUID", gameUuid);
       final String host = m_props.getProperty("host");
-      final int port = Integer.parseInt(m_props.getProperty("port", "80"));
+      final int port = Integer.parseInt(m_props.getProperty("port", "-1"));
       final String scheme = m_props.getProperty("scheme", "http");
       final HttpHost hostConfig = new HttpHost(host, port, scheme);
       HttpProxy.addProxy(httpPost);
