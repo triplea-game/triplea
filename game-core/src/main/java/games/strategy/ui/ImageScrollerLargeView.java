@@ -247,16 +247,6 @@ public class ImageScrollerLargeView extends JComponent {
     model.set(x, y);
   }
 
-  protected void setTopLeftNoWrap(int x, int y) {
-    if (x < 0) {
-      x = 0;
-    }
-    if (y < 0) {
-      y = 0;
-    }
-    model.set(x, y);
-  }
-
   public int getImageWidth() {
     return model.getMaxWidth();
   }
@@ -267,10 +257,6 @@ public class ImageScrollerLargeView extends JComponent {
 
   public void addScrollListener(final ScrollListener s) {
     scrollListeners.add(s);
-  }
-
-  public void removeScrollListener(final ScrollListener s) {
-    scrollListeners.remove(s);
   }
 
   private void notifyScollListeners() {
