@@ -1,5 +1,7 @@
 package tools.image;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
@@ -36,8 +38,6 @@ import tools.util.ToolLogger;
  * For taking a folder of basetiles and putting them back together into an image.
  */
 public final class TileImageReconstructor {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-
   private String baseTileLocation = null;
   private String imageSaveLocation = null;
   private File mapFolderLocation = null;

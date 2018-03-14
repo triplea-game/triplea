@@ -1,5 +1,10 @@
 package tools.map.making;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_ZOOM;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -68,11 +73,6 @@ import tools.util.ToolLogger;
  * show other, optional, fields.
  */
 public final class MapPropertiesMaker {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-  private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
-  private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
-  private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
-
   private File mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
 

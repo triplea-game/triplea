@@ -1,5 +1,7 @@
 package tools.image;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
@@ -37,8 +39,6 @@ import tools.util.ToolLogger;
  * sea zone images directory must be renamed to "seazone
  */
 public final class ReliefImageBreaker {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-
   private String location = null;
   private final JFrame observer = new JFrame();
   private boolean seaZoneOnly;

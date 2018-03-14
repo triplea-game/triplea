@@ -1,5 +1,10 @@
 package tools.map.making;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_ZOOM;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -46,10 +51,6 @@ import tools.util.ToolLogger;
  */
 public class MapCreator extends JFrame {
   private static final long serialVersionUID = 3593102638082774498L;
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-  private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
-  private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
-  private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
   private static long memoryInBytes = Runtime.getRuntime().maxMemory();
   private static File mapFolderLocation = null;
   private static double unitZoom = 0.75;
@@ -66,10 +67,6 @@ public class MapCreator extends JFrame {
   final JPanel panel2 = new JPanel();
   final JPanel panel3 = new JPanel();
   final JPanel panel4 = new JPanel();
-
-  public static String[] getProperties() {
-    return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
-  }
 
   /**
    * Entry point for the map-making utilities application.

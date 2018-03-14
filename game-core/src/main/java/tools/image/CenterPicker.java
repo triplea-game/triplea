@@ -1,5 +1,7 @@
 package tools.image;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -44,8 +46,6 @@ import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public final class CenterPicker {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-
   private File mapFolderLocation = null;
 
   private CenterPicker() {}

@@ -1,5 +1,7 @@
 package tools.image;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -94,8 +96,6 @@ import tools.util.ToolLogger;
  * option to 'Save Current And Keep On Map And Load New'. To reset all currently image points, use 'Load Image Points'.
  */
 public final class DecorationPlacer {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-
   private File mapFolderLocation = null;
 
   private DecorationPlacer() {}

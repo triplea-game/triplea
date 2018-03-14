@@ -1,5 +1,7 @@
 package tools.map.making;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -26,8 +28,6 @@ import tools.util.ToolLogger;
  * Takes an image and shrinks it. Used for making small images.
  */
 public final class ImageShrinker {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder"; // TODO: find other duplications of this value.
-
   private File mapFolderLocation = null;
 
   private ImageShrinker() {}

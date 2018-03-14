@@ -1,5 +1,7 @@
 package tools.map.making;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -45,7 +47,6 @@ import tools.util.ToolLogger;
  */
 // TODO: get this moved to its own package tree
 public final class ConnectionFinder {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
   private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
   private static final String MIN_OVERLAP = "triplea.map.minOverlap";

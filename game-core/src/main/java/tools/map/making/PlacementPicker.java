@@ -1,5 +1,10 @@
 package tools.map.making;
 
+import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
+import static tools.util.ToolArguments.TRIPLEA_UNIT_ZOOM;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -54,11 +59,6 @@ import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public final class PlacementPicker {
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-  private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
-  private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
-  private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
-
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private boolean placeDimensionsSet = false;
