@@ -7,8 +7,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -36,7 +34,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.RootPaneContainer;
@@ -162,29 +159,6 @@ public class SwingComponents {
       group.add(radioButton);
     }
     return group;
-  }
-
-
-  /**
-   * Adds a focus listener to a given component and executes a given action when focus is lost.
-   */
-  public static void addTextFieldFocusLostListener(final JTextField component, final Runnable focusLostListener) {
-    addFocusLostListener(component, focusLostListener);
-    component.addActionListener(e -> focusLostListener.run());
-  }
-
-  private static void addFocusLostListener(final JComponent component, final Runnable focusLostListener) {
-    component.addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(final FocusEvent e) {
-
-      }
-
-      @Override
-      public void focusLost(final FocusEvent e) {
-        focusLostListener.run();
-      }
-    });
   }
 
   public enum KeyboardCode {

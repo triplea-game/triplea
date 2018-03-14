@@ -28,10 +28,6 @@ public class ImageScrollModel extends Observable {
     updateListeners();
   }
 
-  public void setMaxBounds(final Dimension mapDimensions) {
-    setMaxBounds(mapDimensions.width, mapDimensions.height);
-  }
-
   void setBoxDimensions(final int maxX, final int maxy) {
     boxWidth = maxX;
     boxHeight = maxy;
