@@ -1,10 +1,5 @@
 package tools.map.making;
 
-import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_ZOOM;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -41,6 +36,7 @@ import tools.image.PolygonGrabber;
 import tools.image.ReliefImageBreaker;
 import tools.image.TileImageBreaker;
 import tools.image.TileImageReconstructor;
+import tools.util.ToolArguments;
 
 /**
  * A frame that will run the different map making utilities we have.
@@ -184,7 +180,7 @@ public class MapCreator extends JFrame {
         final File mapFolder = new File(path);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
-          System.setProperty(TRIPLEA_MAP_FOLDER, mapFolderLocation.getPath());
+          System.setProperty(ToolArguments.MAP_FOLDER, mapFolderLocation.getPath());
         }
       }
     }));
@@ -202,7 +198,7 @@ public class MapCreator extends JFrame {
       public void focusLost(final FocusEvent e) {
         try {
           unitZoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
-          System.setProperty(TRIPLEA_UNIT_ZOOM, "" + unitZoom);
+          System.setProperty(ToolArguments.UNIT_ZOOM, "" + unitZoom);
         } catch (final Exception ex) {
           // ignore malformed input
         }
@@ -222,7 +218,7 @@ public class MapCreator extends JFrame {
       public void focusLost(final FocusEvent e) {
         try {
           unitWidth = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
-          System.setProperty(TRIPLEA_UNIT_WIDTH, "" + unitWidth);
+          System.setProperty(ToolArguments.UNIT_WIDTH, "" + unitWidth);
         } catch (final Exception ex) {
           // ignore malformed input
         }
@@ -242,7 +238,7 @@ public class MapCreator extends JFrame {
       public void focusLost(final FocusEvent e) {
         try {
           unitHeight = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
-          System.setProperty(TRIPLEA_UNIT_HEIGHT, "" + unitHeight);
+          System.setProperty(ToolArguments.UNIT_HEIGHT, "" + unitHeight);
         } catch (final Exception ex) {
           // ignore malformed input
         }

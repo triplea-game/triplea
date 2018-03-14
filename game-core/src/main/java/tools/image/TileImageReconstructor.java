@@ -1,7 +1,6 @@
 package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
-import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -32,6 +31,7 @@ import javax.swing.filechooser.FileFilter;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
@@ -197,7 +197,7 @@ public final class TileImageReconstructor {
     // arg can only be the map folder location.
     if (args.length == 1) {
       final String value;
-      if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
+      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {
         value = args[0];
@@ -213,7 +213,7 @@ public final class TileImageReconstructor {
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {

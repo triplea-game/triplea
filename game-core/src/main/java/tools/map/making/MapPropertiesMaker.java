@@ -1,10 +1,6 @@
 package tools.map.making;
 
 import static com.google.common.base.Preconditions.checkState;
-import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_ZOOM;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -61,6 +57,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
@@ -79,7 +76,8 @@ public final class MapPropertiesMaker {
   private MapPropertiesMaker() {}
 
   private static String[] getProperties() {
-    return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
+    return new String[] {ToolArguments.MAP_FOLDER, ToolArguments.UNIT_ZOOM, ToolArguments.UNIT_WIDTH,
+        ToolArguments.UNIT_HEIGHT};
   }
 
   /**
@@ -100,7 +98,7 @@ public final class MapPropertiesMaker {
         final File mapFolder = new File(path);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
-          System.setProperty(TRIPLEA_MAP_FOLDER, mapFolderLocation.getPath());
+          System.setProperty(ToolArguments.MAP_FOLDER, mapFolderLocation.getPath());
         }
       }
     }
@@ -404,14 +402,16 @@ public final class MapPropertiesMaker {
         ToolLogger.info("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          ToolLogger.info("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
-              + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
-              + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+          ToolLogger.info("Arguments\r\n" + "   "
+              + ToolArguments.MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+              + ToolArguments.UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   "
+              + ToolArguments.UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
+              + ToolArguments.UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
       }
     }
     // now account for anything set by -D
-    final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+    final String folderString = System.getProperty(ToolArguments.MAP_FOLDER);
     if (folderString != null && folderString.length() > 0) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
@@ -420,7 +420,7 @@ public final class MapPropertiesMaker {
         ToolLogger.info("Could not find directory: " + folderString);
       }
     }
-    final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
+    final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
         mapProperties.setUnitsScale(Double.parseDouble(zoomString));
@@ -429,7 +429,7 @@ public final class MapPropertiesMaker {
         ToolLogger.error("Not a decimal percentage: " + zoomString);
       }
     }
-    final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
+    final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
     if (widthString != null && widthString.length() > 0) {
       try {
         final int unitWidth = Integer.parseInt(widthString);
@@ -440,7 +440,7 @@ public final class MapPropertiesMaker {
         ToolLogger.error("Not an integer: " + widthString);
       }
     }
-    final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
+    final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
     if (heightString != null && heightString.length() > 0) {
       try {
         final int unitHeight = Integer.parseInt(heightString);

@@ -1,10 +1,6 @@
 package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
-import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
-import static tools.util.ToolArguments.TRIPLEA_UNIT_ZOOM;
 
 import java.awt.Point;
 import java.awt.Polygon;
@@ -36,6 +32,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.PointFileReaderWriter;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 public final class AutoPlacementFinder {
@@ -53,7 +50,8 @@ public final class AutoPlacementFinder {
   private AutoPlacementFinder() {}
 
   private static String[] getProperties() {
-    return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
+    return new String[] {ToolArguments.MAP_FOLDER, ToolArguments.UNIT_ZOOM, ToolArguments.UNIT_WIDTH,
+        ToolArguments.UNIT_HEIGHT};
   }
 
   /**
@@ -399,39 +397,39 @@ public final class AutoPlacementFinder {
     final String[] properties = getProperties();
     if (args.length == 1) {
       final String value;
-      if (args[0].startsWith(TRIPLEA_UNIT_ZOOM)) {
+      if (args[0].startsWith(ToolArguments.UNIT_ZOOM)) {
         value = getValue(args[0]);
       } else {
         value = args[0];
       }
       try {
         Double.parseDouble(value);
-        System.setProperty(TRIPLEA_UNIT_ZOOM, value);
+        System.setProperty(ToolArguments.UNIT_ZOOM, value);
       } catch (final Exception ex) {
         // ignore malformed input
       }
     } else if (args.length == 2) {
       final String value0;
-      if (args[0].startsWith(TRIPLEA_UNIT_WIDTH)) {
+      if (args[0].startsWith(ToolArguments.UNIT_WIDTH)) {
         value0 = getValue(args[0]);
       } else {
         value0 = args[0];
       }
       try {
         Integer.parseInt(value0);
-        System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
+        System.setProperty(ToolArguments.UNIT_WIDTH, value0);
       } catch (final Exception ex) {
         // ignore malformed input
       }
       final String value1;
-      if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
+      if (args[0].startsWith(ToolArguments.UNIT_HEIGHT)) {
         value1 = getValue(args[1]);
       } else {
         value1 = args[1];
       }
       try {
         Integer.parseInt(value1);
-        System.setProperty(TRIPLEA_UNIT_HEIGHT, value1);
+        System.setProperty(ToolArguments.UNIT_HEIGHT, value1);
       } catch (final Exception ex) {
         // ignore malformed input
       }
@@ -457,13 +455,15 @@ public final class AutoPlacementFinder {
         ToolLogger.info("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          ToolLogger.info("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
-              + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
-              + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+          ToolLogger.info("Arguments\r\n" + "   "
+              + ToolArguments.MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+              + ToolArguments.UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   "
+              + ToolArguments.UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
+              + ToolArguments.UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
       }
     }
-    final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+    final String folderString = System.getProperty(ToolArguments.MAP_FOLDER);
     if (folderString != null && folderString.length() > 0) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
@@ -472,7 +472,7 @@ public final class AutoPlacementFinder {
         ToolLogger.info("Could not find directory: " + folderString);
       }
     }
-    final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
+    final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
@@ -482,7 +482,7 @@ public final class AutoPlacementFinder {
         ToolLogger.error("Not a decimal percentage: " + zoomString);
       }
     }
-    final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
+    final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
     if (widthString != null && widthString.length() > 0) {
       try {
         unitWidth = Integer.parseInt(widthString);
@@ -492,7 +492,7 @@ public final class AutoPlacementFinder {
         ToolLogger.error("Not an integer: " + widthString);
       }
     }
-    final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
+    final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
     if (heightString != null && heightString.length() > 0) {
       try {
         unitHeight = Integer.parseInt(heightString);

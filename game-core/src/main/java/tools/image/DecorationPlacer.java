@@ -1,7 +1,6 @@
 package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
-import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -58,6 +57,7 @@ import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
@@ -783,7 +783,7 @@ public final class DecorationPlacer {
     // arg can only be the map folder location.
     if (args.length == 1) {
       final String value;
-      if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
+      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {
         value = args[0];
@@ -799,7 +799,7 @@ public final class DecorationPlacer {
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {

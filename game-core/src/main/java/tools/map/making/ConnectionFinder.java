@@ -1,7 +1,6 @@
 package tools.map.making;
 
 import static com.google.common.base.Preconditions.checkState;
-import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 
 import java.awt.Dimension;
 import java.awt.Polygon;
@@ -37,6 +36,7 @@ import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
@@ -395,7 +395,7 @@ public final class ConnectionFinder {
   private void handleCommandLineArgs(final String[] args) {
     for (final String arg : args) {
       final String value = getValue(arg);
-      if (arg.startsWith(TRIPLEA_MAP_FOLDER)) {
+      if (arg.startsWith(ToolArguments.MAP_FOLDER)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
@@ -418,7 +418,7 @@ public final class ConnectionFinder {
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
