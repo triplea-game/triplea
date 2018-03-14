@@ -1,5 +1,6 @@
 package tools.map.making;
 
+import static com.google.common.base.Preconditions.checkState;
 import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
 import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
@@ -60,7 +61,6 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -83,14 +83,15 @@ public final class MapPropertiesMaker {
   }
 
   /**
-   * Entry point for the Map Properties Maker tool.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeAndWait(() -> new MapPropertiesMaker().run(args));
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    new MapPropertiesMaker().runInternal(args);
   }
 
-  private void run(final String[] args) {
-    ToolApplication.initialize();
+  private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
     if (mapFolderLocation == null) {
       ToolLogger.info("Select the map folder");

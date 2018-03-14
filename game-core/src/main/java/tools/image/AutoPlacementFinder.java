@@ -1,5 +1,6 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
 import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
 import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
@@ -35,7 +36,6 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.PointFileReaderWriter;
-import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public final class AutoPlacementFinder {
@@ -57,14 +57,15 @@ public final class AutoPlacementFinder {
   }
 
   /**
-   * Entry point for the Automatic Placement Finder tool.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeAndWait(() -> new AutoPlacementFinder().run(args));
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    new AutoPlacementFinder().runInternal(args);
   }
 
-  private void run(final String[] args) {
-    ToolApplication.initialize();
+  private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the AutoPlacementFinder, it will create a place.txt file for you. "

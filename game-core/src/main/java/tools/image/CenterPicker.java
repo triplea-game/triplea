@@ -1,5 +1,6 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
 import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 
 import java.awt.BorderLayout;
@@ -42,7 +43,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
-import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public final class CenterPicker {
@@ -51,24 +51,19 @@ public final class CenterPicker {
   private CenterPicker() {}
 
   /**
-   * Main program begins here.
-   * Asks the user to select the map then runs the
-   * the actual picker.
-   *
-   * @param args The command line arguments.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      try {
-        new CenterPicker().run(args);
-      } catch (final IOException e) {
-        ToolLogger.error("failed to run center picker", e);
-      }
-    });
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    try {
+      new CenterPicker().runInternal(args);
+    } catch (final IOException e) {
+      ToolLogger.error("failed to run center picker", e);
+    }
   }
 
-  private void run(final String[] args) throws IOException {
-    ToolApplication.initialize();
+  private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     ToolLogger.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");

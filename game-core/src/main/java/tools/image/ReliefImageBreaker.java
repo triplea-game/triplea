@@ -1,5 +1,6 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
 import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 
 import java.awt.AlphaComposite;
@@ -27,7 +28,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 import tools.map.making.ImageIoCompletionWatcher;
-import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -48,20 +48,19 @@ public final class ReliefImageBreaker {
   private ReliefImageBreaker() {}
 
   /**
-   * Entry point for the Relief Image Breaker tool.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      try {
-        new ReliefImageBreaker().run(args);
-      } catch (final IOException e) {
-        ToolLogger.error("failed to run relief image breaker", e);
-      }
-    });
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    try {
+      new ReliefImageBreaker().runInternal(args);
+    } catch (final IOException e) {
+      ToolLogger.error("failed to run relief image breaker", e);
+    }
   }
 
-  private void run(final String[] args) throws IOException {
-    ToolApplication.initialize();
+  private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ReliefImageBreaker, it is no longer used. "

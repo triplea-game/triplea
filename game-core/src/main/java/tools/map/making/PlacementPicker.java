@@ -1,5 +1,6 @@
 package tools.map.making;
 
+import static com.google.common.base.Preconditions.checkState;
 import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 import static tools.util.ToolArguments.TRIPLEA_UNIT_HEIGHT;
 import static tools.util.ToolArguments.TRIPLEA_UNIT_WIDTH;
@@ -55,7 +56,6 @@ import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 public final class PlacementPicker {
@@ -74,24 +74,19 @@ public final class PlacementPicker {
   }
 
   /**
-   * Main program begins here.
-   * Asks the user to select the map then runs the
-   * the actual placement picker program.
-   *
-   * @param args the command line arguments
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      try {
-        new PlacementPicker().run(args);
-      } catch (final IOException e) {
-        ToolLogger.error("failed to run placement picker", e);
-      }
-    });
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    try {
+      new PlacementPicker().runInternal(args);
+    } catch (final IOException e) {
+      ToolLogger.error("failed to run placement picker", e);
+    }
   }
 
-  private void run(final String[] args) throws IOException {
-    ToolApplication.initialize();
+  private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the PlacementPicker, it will create a place.txt file for you. "

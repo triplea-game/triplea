@@ -1,5 +1,6 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
 import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 
 import java.awt.GraphicsConfiguration;
@@ -21,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.ui.screen.TileManager;
-import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -42,23 +42,19 @@ public final class TileImageBreaker {
   private TileImageBreaker() {}
 
   /**
-   * Main program begins here. Creates a new instance of ReliefImageBreaker
-   * and calls createMaps() method to start the computations.
-   *
-   * @param args The command line parameters.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      try {
-        new TileImageBreaker().run(args);
-      } catch (final IOException e) {
-        ToolLogger.error("failed to run tile image breaker", e);
-      }
-    });
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    try {
+      new TileImageBreaker().runInternal(args);
+    } catch (final IOException e) {
+      ToolLogger.error("failed to run tile image breaker", e);
+    }
   }
 
-  private void run(final String[] args) throws IOException {
-    ToolApplication.initialize();
+  private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the TileImageBreaker, it will create the map image tiles file for you. "

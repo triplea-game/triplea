@@ -1,5 +1,6 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
 import static tools.util.ToolArguments.TRIPLEA_MAP_FOLDER;
 
 import java.awt.Color;
@@ -31,7 +32,6 @@ import javax.swing.filechooser.FileFilter;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
-import tools.util.ToolApplication;
 import tools.util.ToolLogger;
 
 /**
@@ -50,14 +50,15 @@ public final class TileImageReconstructor {
   private TileImageReconstructor() {}
 
   /**
-   * Entry point for the Tile Image Reconstructor tool.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingUtilities.invokeAndWait(() -> new TileImageReconstructor().run(args));
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    new TileImageReconstructor().runInternal(args);
   }
 
-  private void run(final String[] args) {
-    ToolApplication.initialize();
+  private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>"

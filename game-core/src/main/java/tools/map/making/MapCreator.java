@@ -11,14 +11,12 @@ import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -29,12 +27,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import games.strategy.engine.framework.ProcessRunnerUtil;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.function.ThrowingConsumer;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;
 import tools.image.DecorationPlacer;
@@ -43,8 +41,6 @@ import tools.image.PolygonGrabber;
 import tools.image.ReliefImageBreaker;
 import tools.image.TileImageBreaker;
 import tools.image.TileImageReconstructor;
-import tools.util.ToolApplication;
-import tools.util.ToolLogger;
 
 /**
  * A frame that will run the different map making utilities we have.
@@ -56,24 +52,25 @@ public class MapCreator extends JFrame {
   private static double unitZoom = 0.75;
   private static int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static boolean runUtilitiesAsSeperateProcesses = true;
-  final JPanel mainPanel;
-  final JPanel sidePanel;
-  final JButton part1;
-  final JButton part2;
-  final JButton part3;
-  final JButton part4;
-  final JPanel panel1 = new JPanel();
-  final JPanel panel2 = new JPanel();
-  final JPanel panel3 = new JPanel();
-  final JPanel panel4 = new JPanel();
+
+  private final JPanel mainPanel;
+  private final JPanel sidePanel;
+  private final JButton part1;
+  private final JButton part2;
+  private final JButton part3;
+  private final JButton part4;
+  private final JPanel panel1 = new JPanel();
+  private final JPanel panel2 = new JPanel();
+  private final JPanel panel3 = new JPanel();
+  private final JPanel panel4 = new JPanel();
 
   /**
    * Entry point for the map-making utilities application.
    */
   public static void main(final String[] args) throws Exception {
     SwingAction.invokeAndWait(() -> {
-      ToolApplication.initialize();
+      ClientSetting.initialize();
+      LookAndFeel.setupLookAndFeel();
 
       final MapCreator creator = new MapCreator();
       creator.setSize(800, 600);
@@ -275,11 +272,6 @@ public class MapCreator extends JFrame {
       }
     });
     panel1.add(memoryText);
-    final JCheckBox runTypeBox = new JCheckBox("Run All Utilities as Separate Processes");
-    runTypeBox.setSelected(runUtilitiesAsSeperateProcesses);
-    runTypeBox.addActionListener(SwingAction.of("Run All Utilities as Separate Processes",
-        e -> runUtilitiesAsSeperateProcesses = runTypeBox.isSelected()));
-    panel1.add(runTypeBox);
     panel1.add(Box.createVerticalStrut(30));
     panel1.validate();
   }
@@ -291,45 +283,37 @@ public class MapCreator extends JFrame {
     panel2.add(new JLabel("Map Skin Utilities:"));
     panel2.add(Box.createVerticalStrut(30));
     final JButton mapPropertiesMakerButton = new JButton("Run the Map Properties Maker");
-    mapPropertiesMakerButton.addActionListener(SwingAction.of("Run the Map Properties Maker", e -> {
-      runUtility(MapPropertiesMaker.class, MapPropertiesMaker::main);
-    }));
+    mapPropertiesMakerButton
+        .addActionListener(SwingAction.of("Run the Map Properties Maker", e -> runUtility(MapPropertiesMaker::run)));
     panel2.add(mapPropertiesMakerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton centerPickerButton = new JButton("Run the Center Picker");
-    centerPickerButton.addActionListener(SwingAction.of("Run the Center Picker", e -> {
-      runUtility(CenterPicker.class, CenterPicker::main);
-    }));
+    centerPickerButton.addActionListener(SwingAction.of("Run the Center Picker", e -> runUtility(CenterPicker::run)));
     panel2.add(centerPickerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton polygonGrabberButton = new JButton("Run the Polygon Grabber");
-    polygonGrabberButton.addActionListener(SwingAction.of("Run the Polygon Grabber", e -> {
-      runUtility(PolygonGrabber.class, PolygonGrabber::main);
-    }));
+    polygonGrabberButton
+        .addActionListener(SwingAction.of("Run the Polygon Grabber", e -> runUtility(PolygonGrabber::run)));
     panel2.add(polygonGrabberButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton autoPlacerButton = new JButton("Run the Automatic Placement Finder");
-    autoPlacerButton.addActionListener(SwingAction.of("Run the Automatic Placement Finder", e -> {
-      runUtility(AutoPlacementFinder.class, AutoPlacementFinder::main);
-    }));
+    autoPlacerButton.addActionListener(
+        SwingAction.of("Run the Automatic Placement Finder", e -> runUtility(AutoPlacementFinder::run)));
     panel2.add(autoPlacerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton placementPickerButton = new JButton("Run the Placement Picker");
-    placementPickerButton.addActionListener(SwingAction.of("Run the Placement Picker", e -> {
-      runUtility(PlacementPicker.class, PlacementPicker::main);
-    }));
+    placementPickerButton
+        .addActionListener(SwingAction.of("Run the Placement Picker", e -> runUtility(PlacementPicker::run)));
     panel2.add(placementPickerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton tileBreakerButton = new JButton("Run the Tile Image Breaker");
-    tileBreakerButton.addActionListener(SwingAction.of("Run the Tile Image Breaker", event -> {
-      runUtility(TileImageBreaker.class, TileImageBreaker::main);
-    }));
+    tileBreakerButton
+        .addActionListener(SwingAction.of("Run the Tile Image Breaker", e -> runUtility(TileImageBreaker::run)));
     panel2.add(tileBreakerButton);
     panel2.add(Box.createVerticalStrut(30));
     final JButton decorationPlacerButton = new JButton("Run the Decoration Placer");
-    decorationPlacerButton.addActionListener(SwingAction.of("Run the Decoration Placer", event -> {
-      runUtility(DecorationPlacer.class, DecorationPlacer::main);
-    }));
+    decorationPlacerButton
+        .addActionListener(SwingAction.of("Run the Decoration Placer", e -> runUtility(DecorationPlacer::run)));
     panel2.add(decorationPlacerButton);
     panel2.add(Box.createVerticalStrut(30));
     panel2.validate();
@@ -343,9 +327,8 @@ public class MapCreator extends JFrame {
     panel3.add(new JLabel("Sorry but for now the only XML creator is Wisconsin's 'Part 2' of his map maker."));
     panel3.add(Box.createVerticalStrut(30));
     final JButton connectionFinderButton = new JButton("Run the Connection Finder");
-    connectionFinderButton.addActionListener(SwingAction.of("Run the Connection Finder", event -> {
-      runUtility(ConnectionFinder.class, ConnectionFinder::main);
-    }));
+    connectionFinderButton
+        .addActionListener(SwingAction.of("Run the Connection Finder", e -> runUtility(ConnectionFinder::run)));
     panel3.add(connectionFinderButton);
     panel3.add(Box.createVerticalStrut(30));
     panel3.validate();
@@ -358,60 +341,24 @@ public class MapCreator extends JFrame {
     panel4.add(new JLabel("Other or Optional Utilities:"));
     panel4.add(Box.createVerticalStrut(30));
     final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
-    reliefBreakerButton.addActionListener(SwingAction.of("Run the Relief Image Breaker", event -> {
-      runUtility(ReliefImageBreaker.class, ReliefImageBreaker::main);
-    }));
+    reliefBreakerButton
+        .addActionListener(SwingAction.of("Run the Relief Image Breaker", e -> runUtility(ReliefImageBreaker::run)));
     panel4.add(reliefBreakerButton);
     panel4.add(Box.createVerticalStrut(30));
     final JButton imageShrinkerButton = new JButton("Run the Image Shrinker");
-    imageShrinkerButton.addActionListener(SwingAction.of("Run the Image Shrinker", event -> {
-      runUtility(ImageShrinker.class, ImageShrinker::main);
-    }));
+    imageShrinkerButton
+        .addActionListener(SwingAction.of("Run the Image Shrinker", e -> runUtility(ImageShrinker::run)));
     panel4.add(imageShrinkerButton);
     panel4.add(Box.createVerticalStrut(30));
     final JButton tileImageReconstructorButton = new JButton("Run the Tile Image Reconstructor");
-    tileImageReconstructorButton.addActionListener(SwingAction.of("Run the Tile Image Reconstructor", event -> {
-      runUtility(TileImageReconstructor.class, TileImageReconstructor::main);
-    }));
+    tileImageReconstructorButton.addActionListener(
+        SwingAction.of("Run the Tile Image Reconstructor", e -> runUtility(TileImageReconstructor::run)));
     panel4.add(tileImageReconstructorButton);
     panel4.add(Box.createVerticalStrut(30));
     panel4.validate();
   }
 
-  private static void runUtility(final Class<?> type, final ThrowingConsumer<String[], Exception> entryPoint) {
-    if (runUtilitiesAsSeperateProcesses) {
-      runUtilityInSeparateProcess(type);
-    } else {
-      runUtilityInSameProcess(type, entryPoint);
-    }
-  }
-
-  private static void runUtilityInSeparateProcess(final Class<?> type) {
-    final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, memoryInBytes);
-    if (mapFolderLocation != null && mapFolderLocation.exists()) {
-      // no need for quotes, that will just screw up the process builder
-      commands.add("-D" + TRIPLEA_MAP_FOLDER + "=" + mapFolderLocation.getAbsolutePath());
-    }
-    commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + unitZoom);
-    commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + unitWidth);
-    commands.add("-D" + TRIPLEA_UNIT_HEIGHT + "=" + unitHeight);
-    commands.add(type.getName());
-    ProcessRunnerUtil.exec(commands);
-    // example: java -classpath triplea.jar -Dtriplea.map.folder="C:/Users" tools/image/CenterPicker
-  }
-
-  private static void runUtilityInSameProcess(
-      final Class<?> type,
-      final ThrowingConsumer<String[], Exception> entryPoint) {
-    new Thread(() -> {
-      try {
-        entryPoint.accept(new String[0]);
-      } catch (final RuntimeException e) {
-        throw e;
-      } catch (final Exception e) {
-        ToolLogger.error("Failed to run utility: " + type.getName(), e);
-      }
-    }).start();
+  private static void runUtility(final Consumer<String[]> entryPoint) {
+    entryPoint.accept(new String[0]);
   }
 }
