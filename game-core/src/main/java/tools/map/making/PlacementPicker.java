@@ -155,7 +155,7 @@ public final class PlacementPicker {
      */
     PlacementPickerFrame(final String mapName) throws IOException {
       super("Placement Picker");
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       if (!placeDimensionsSet) {
         try {
           File file = null;

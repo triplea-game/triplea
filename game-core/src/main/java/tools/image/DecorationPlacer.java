@@ -200,7 +200,7 @@ public final class DecorationPlacer {
 
     DecorationPlacerFrame(final String mapName) throws IOException {
       super("Decoration Placer");
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       setLocationRelativeTo(null);
       highlightAll = false;
       File fileCenters = null;

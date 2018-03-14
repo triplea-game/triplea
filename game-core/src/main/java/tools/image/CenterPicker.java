@@ -116,7 +116,7 @@ public final class CenterPicker {
      */
     CenterPickerFrame(final String mapName) throws IOException {
       super("Center Picker");
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       File file = null;
       if (mapFolderLocation != null && mapFolderLocation.exists()) {
         file = new File(mapFolderLocation, "polygons.txt");

@@ -121,7 +121,7 @@ public final class MapPropertiesMaker {
 
     MapPropertiesMakerFrame() {
       super("Map Properties Maker");
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       this.getContentPane().setLayout(new BorderLayout());
       final JPanel panel = createPropertiesPanel();
       this.getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
