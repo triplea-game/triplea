@@ -258,7 +258,6 @@ task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, allPlat
         
         def artifacts = [
             file("$distsDir/game-core-$version-all_platforms.zip"),
-            file("$distsDir/game-core-$version-server.zip")
         ]
         artifacts.each {
             if (!it.exists()) {
