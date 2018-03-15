@@ -1,0 +1,156 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'com.github.ben-manes.versions' version '0.17.0'
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
+    id 'com.install4j.gradle' version '7.0.1'
+    id 'de.undercouch.download' version '3.3.0'
+}
+
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+group = 'triplea'
+description = 'TripleA Lobby'
+mainClassName = 'games.strategy.engine.lobby.server.LobbyRunner'
+
+ext {
+    artifactsDir = file("$buildDir/artifacts")
+    releasesDir = file("$buildDir/releases")
+    remoteLibsDir = file('.remote-libs')
+    rootFilesDir = file("$buildDir/rootFiles")
+}
+
+version = System.getenv('LOBBY_VERSION') ?: "dev";
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [ '-Xlint:all', '-Xmaxwarns', '1000' ]
+    options.incremental = true
+    options.encoding = 'UTF-8'
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName, 'TripleA-Version': version
+    }
+}
+
+repositories {
+    jcenter()
+    maven {
+       url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    compile project(':game-core')
+
+    compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
+
+    testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
+    testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
+    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
+    testCompile 'org.mockito:mockito-core:2.13.0'
+    testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
+
+    testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
+
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
+    testRuntime 'org.junit.platform:junit-platform-launcher:1.0.2'
+    testRuntime 'org.slf4j:slf4j-nop:1.7.25'
+}
+
+task jacocoRootReport(type: JacocoReport) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Generates code coverage report for all Test tasks.'
+
+    sourceSets sourceSets.main
+    executionData fileTree(buildDir).include('**/jacoco/*.exec')
+
+    reports {
+        html {
+            destination = file("${project.jacoco.reportsDir}/root/html")
+            enabled = true
+        }
+        xml {
+            destination = file("${project.jacoco.reportsDir}/root/jacocoRootReport.xml")
+            enabled = true
+        }
+    }
+}
+
+shadowJar {
+    destinationDir = libsDir
+    baseName = 'triplea-lobby'
+    classifier = 'all'
+}
+
+
+task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
+    classifier 'server'
+    ['config/lobby.properties'].each { fileName ->
+        from(fileName) {
+            into('config/lobby')
+        }
+    }
+    from(shadowJar.outputs) {
+        into('bin')
+    }
+}
+
+task release(group: 'release', dependsOn: [lobbyServer]) {}
+
+check {
+    dependsOn 'junitPlatformTest'
+}
+
+checkstyle {
+    toolVersion = "8.0"
+    configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
+    configProperties = [samedir: configFile.parent]
+}
+
+checkstyleMain {
+    maxWarnings = 0
+    source sourceSets.main.output.resourcesDir
+}
+
+checkstyleTest {
+    maxWarnings = 0
+    source sourceSets.test.output.resourcesDir
+}
+
+afterEvaluate {
+    def junitPlatformTest = tasks.junitPlatformTest
+
+    jacoco {
+        applyTo(junitPlatformTest)
+    }
+
+    task jacocoJunit5TestReport(type: JacocoReport) {
+        executionData junitPlatformTest
+        sourceSets sourceSets.main
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories = files(sourceSets.main.output)
+
+        reports {
+            xml.enabled true
+            html.enabled true
+        }
+    }
+}
