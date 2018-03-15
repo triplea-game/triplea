@@ -61,7 +61,7 @@ public class AirBattle extends AbstractBattle {
     updateDefendingUnits();
   }
 
-  protected void updateDefendingUnits() {
+  public void updateDefendingUnits() {
     // fill in defenders
     if (m_isBombingRun) {
       m_defendingUnits = m_battleSite.getUnits().getMatches(defendingBombingRaidInterceptors(m_attacker, m_data));
@@ -641,7 +641,7 @@ public class AirBattle extends AbstractBattle {
     return Matches.unitCanAirBattle();
   }
 
-  private static Predicate<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
+  public static Predicate<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
     return PredicateBuilder.of(
         Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
@@ -650,7 +650,7 @@ public class AirBattle extends AbstractBattle {
         .build();
   }
 
-  private static Predicate<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
+  public static Predicate<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
     return PredicateBuilder.of(
         Matches.unitCanIntercept())
         .and(Matches.unitIsEnemyOf(data, attacker))
