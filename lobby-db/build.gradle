@@ -1,0 +1,18 @@
+buildscript {
+  dependencies {
+    classpath 'com.h2database:h2:1.4.191'
+    classpath 'org.postgresql:postgresql:42.2.0'
+  }
+}
+
+plugins {
+  id "org.flywaydb.flyway" version "5.0.7"
+}
+
+flyway {
+  driver = 'org.postgresql.Driver'
+  url= 'jdbc:postgresql://localhost:5432/ta_users'
+  user = 'postgres'
+  password = 'postgres'
+}
+
