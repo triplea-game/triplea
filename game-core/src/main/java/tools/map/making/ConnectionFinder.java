@@ -1,5 +1,7 @@
 package tools.map.making;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -27,13 +29,14 @@ import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 import tools.image.FileOpen;
 import tools.image.FileSave;
-import tools.util.ToolApplication;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
@@ -43,27 +46,33 @@ import tools.util.ToolLogger;
  * Outputs - a list of connections between the Polygons
  */
 // TODO: get this moved to its own package tree
-public class ConnectionFinder {
-  private static File mapFolderLocation = null;
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
+public final class ConnectionFinder {
   private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
   private static final String MIN_OVERLAP = "triplea.map.minOverlap";
-  private static boolean dimensionsSet = false;
-  private static StringBuilder territoryDefinitions = null;
+
+  private File mapFolderLocation = null;
+  private boolean dimensionsSet = false;
+  private StringBuilder territoryDefinitions = null;
   // how many pixels should each area become bigger in both x and y axis to see which area it overlaps?
   // default 8, or if LINE_THICKNESS if given 4x linethickness
-  private static int scalePixels = 8;
+  private int scalePixels = 8;
   // how many pixels should the boundingbox of the overlapping area have for it to be considered a valid connection?
   // default 32, or if LINE_THICKNESS is given 16 x linethickness
-  private static double minOverlap = 32.0;
+  private double minOverlap = 32.0;
+
+  private ConnectionFinder() {}
 
   /**
-   * Entry point for the Connection Finder tool.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) {
-    ToolApplication.initialize();
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
 
+    new ConnectionFinder().runInternal(args);
+  }
+
+  private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ConnectionFinder. "
@@ -86,7 +95,7 @@ public class ConnectionFinder {
     }
     if (polyFile == null || !polyFile.exists()) {
       ToolLogger.info("No polygons.txt Selected. Shutting down.");
-      System.exit(0);
+      return;
     }
     if (mapFolderLocation == null && polyFile != null) {
       mapFolderLocation = polyFile.getParentFile();
@@ -105,7 +114,7 @@ public class ConnectionFinder {
       }
     } catch (final IOException e) {
       ToolLogger.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);
-      System.exit(0);
+      return;
     }
     if (!dimensionsSet) {
       final String lineWidth = JOptionPane.showInputDialog(null,
@@ -262,7 +271,7 @@ public class ConnectionFinder {
    *        the area of which the boundingbox size is measured
    * @return the size of the area of the boundingbox of this area
    */
-  public static double sizeOfArea(final Area area) {
+  private static double sizeOfArea(final Area area) {
     final Dimension d = area.getBounds().getSize();
     return d.getHeight() * d.getWidth();
   }
@@ -357,7 +366,7 @@ public class ConnectionFinder {
     return (calcCenterOfMass(pointArray));
   }
 
-  public static Shape scale(final Shape currentShape, final int pixels) {
+  private static Shape scale(final Shape currentShape, final int pixels) {
     final Dimension d = currentShape.getBounds().getSize();
     final double scalefactorX = 1.0 + (1 / ((double) d.width)) * pixels;
     final double scalefactorY = 1.0 + (1 / ((double) d.height)) * pixels;
@@ -383,10 +392,10 @@ public class ConnectionFinder {
     return transform.createTransformedShape(currentPolygon);
   }
 
-  private static void handleCommandLineArgs(final String[] args) {
+  private void handleCommandLineArgs(final String[] args) {
     for (final String arg : args) {
       final String value = getValue(arg);
-      if (arg.startsWith(TRIPLEA_MAP_FOLDER)) {
+      if (arg.startsWith(ToolArguments.MAP_FOLDER)) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
@@ -409,7 +418,7 @@ public class ConnectionFinder {
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {

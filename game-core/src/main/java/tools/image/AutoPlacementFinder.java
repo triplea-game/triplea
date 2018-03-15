@@ -1,5 +1,7 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -24,40 +26,44 @@ import java.util.Set;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.PointFileReaderWriter;
-import tools.util.ToolApplication;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
-public class AutoPlacementFinder {
-  private static int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static MapData mapData;
-  private static boolean placeDimensionsSet = false;
-  private static double unitZoomPercent = 1;
-  private static int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private static File mapFolderLocation = null;
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-  private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
-  private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
-  private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
-  private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
+public final class AutoPlacementFinder {
+  private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private MapData mapData;
+  private boolean placeDimensionsSet = false;
+  private double unitZoomPercent = 1;
+  private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+  private File mapFolderLocation = null;
+  private final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
       "AutoPlacementFinder Log\r\n\r\n", "", "AutoPlacementFinder Log", null, 500, 300, true, 1, null);
 
-  public static String[] getProperties() {
-    return new String[] {TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT};
+  private AutoPlacementFinder() {}
+
+  private static String[] getProperties() {
+    return new String[] {ToolArguments.MAP_FOLDER, ToolArguments.UNIT_ZOOM, ToolArguments.UNIT_WIDTH,
+        ToolArguments.UNIT_HEIGHT};
   }
 
   /**
-   * Entry point for the Automatic Placement Finder tool.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) {
-    ToolApplication.initialize();
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
 
+    new AutoPlacementFinder().runInternal(args);
+  }
+
+  private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the AutoPlacementFinder, it will create a place.txt file for you. "
@@ -81,13 +87,13 @@ public class AutoPlacementFinder {
    * calculate()
    * Will calculate the placements on the map automatically.
    */
-  static void calculate() {
+  private void calculate() {
     // ask user where the map is
     final String mapDir = mapFolderLocation == null ? getMapDirectory() : mapFolderLocation.getName();
     if (mapDir == null) {
       ToolLogger.info("You need to specify a map name for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
+      return;
     }
     final File file = getMapPropertiesFile(mapDir);
     if (file.exists() && mapFolderLocation == null) {
@@ -198,7 +204,7 @@ public class AutoPlacementFinder {
       ToolLogger.error("Caught Exception.");
       ToolLogger.error("Could be due to some missing text files.");
       ToolLogger.error("Or due to the map folder not being in the right location.", e);
-      System.exit(0);
+      return;
     }
     textOptionPane.show();
     textOptionPane.appendNewLine("Place Dimensions in pixels, being used: " + placeWidth + "x" + placeHeight + "\r\n");
@@ -227,7 +233,7 @@ public class AutoPlacementFinder {
     if (fileName == null) {
       textOptionPane.appendNewLine("You chose not to save, Shutting down");
       textOptionPane.dispose();
-      System.exit(0);
+      return;
     }
     try (OutputStream os = new FileOutputStream(fileName)) {
       PointFileReaderWriter.writeOneToMany(os, placements);
@@ -235,11 +241,9 @@ public class AutoPlacementFinder {
     } catch (final IOException e) {
       ToolLogger.error("Failed to write points file: " + fileName, e);
       textOptionPane.dispose();
-      System.exit(0);
+      return;
     }
     textOptionPane.dispose();
-    // shut down program when done.
-    System.exit(0);
   }
 
   /**
@@ -274,7 +278,7 @@ public class AutoPlacementFinder {
     return (unitsScale != null) ? unitsScale : "1";
   }
 
-  static List<Point> getPlacementsStartingAtMiddle(final Collection<Polygon> countryPolygons, final Rectangle bounding,
+  private List<Point> getPlacementsStartingAtMiddle(final Collection<Polygon> countryPolygons, final Rectangle bounding,
       final Point center) {
     final List<Rectangle2D> placementRects = new ArrayList<>();
     final List<Point> placementPoints = new ArrayList<>();
@@ -319,8 +323,8 @@ public class AutoPlacementFinder {
     return placementPoints;
   }
 
-  static List<Point> getPlacementsStartingAtTopLeft(final Collection<Polygon> countryPolygons, final Rectangle bounding,
-      final Point center, final Collection<Polygon> containedCountryPolygons) {
+  private List<Point> getPlacementsStartingAtTopLeft(final Collection<Polygon> countryPolygons,
+      final Rectangle bounding, final Point center, final Collection<Polygon> containedCountryPolygons) {
     final List<Rectangle2D> placementRects = new ArrayList<>();
     final List<Point> placementPoints = new ArrayList<>();
     final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, placeHeight, placeWidth);
@@ -340,7 +344,7 @@ public class AutoPlacementFinder {
     return placementPoints;
   }
 
-  private static void isPlacement(final Collection<Polygon> countryPolygons,
+  private void isPlacement(final Collection<Polygon> countryPolygons,
       final Collection<Polygon> containedCountryPolygons, final List<Rectangle2D> placementRects,
       final List<Point> placementPoints, final Rectangle2D place, final int x, final int y) {
     place.setFrame(x, y, placeWidth, placeHeight);
@@ -389,43 +393,43 @@ public class AutoPlacementFinder {
     return arg.substring(index + 1);
   }
 
-  private static void handleCommandLineArgs(final String[] args) {
+  private void handleCommandLineArgs(final String[] args) {
     final String[] properties = getProperties();
     if (args.length == 1) {
       final String value;
-      if (args[0].startsWith(TRIPLEA_UNIT_ZOOM)) {
+      if (args[0].startsWith(ToolArguments.UNIT_ZOOM)) {
         value = getValue(args[0]);
       } else {
         value = args[0];
       }
       try {
         Double.parseDouble(value);
-        System.setProperty(TRIPLEA_UNIT_ZOOM, value);
+        System.setProperty(ToolArguments.UNIT_ZOOM, value);
       } catch (final Exception ex) {
         // ignore malformed input
       }
     } else if (args.length == 2) {
       final String value0;
-      if (args[0].startsWith(TRIPLEA_UNIT_WIDTH)) {
+      if (args[0].startsWith(ToolArguments.UNIT_WIDTH)) {
         value0 = getValue(args[0]);
       } else {
         value0 = args[0];
       }
       try {
         Integer.parseInt(value0);
-        System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
+        System.setProperty(ToolArguments.UNIT_WIDTH, value0);
       } catch (final Exception ex) {
         // ignore malformed input
       }
       final String value1;
-      if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT)) {
+      if (args[0].startsWith(ToolArguments.UNIT_HEIGHT)) {
         value1 = getValue(args[1]);
       } else {
         value1 = args[1];
       }
       try {
         Integer.parseInt(value1);
-        System.setProperty(TRIPLEA_UNIT_HEIGHT, value1);
+        System.setProperty(ToolArguments.UNIT_HEIGHT, value1);
       } catch (final Exception ex) {
         // ignore malformed input
       }
@@ -451,13 +455,15 @@ public class AutoPlacementFinder {
         ToolLogger.info("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          ToolLogger.info("Arguments\r\n" + "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
-              + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
-              + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
+          ToolLogger.info("Arguments\r\n" + "   "
+              + ToolArguments.MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
+              + ToolArguments.UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   "
+              + ToolArguments.UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
+              + ToolArguments.UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
         }
       }
     }
-    final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+    final String folderString = System.getProperty(ToolArguments.MAP_FOLDER);
     if (folderString != null && folderString.length() > 0) {
       final File mapFolder = new File(folderString);
       if (mapFolder.exists()) {
@@ -466,7 +472,7 @@ public class AutoPlacementFinder {
         ToolLogger.info("Could not find directory: " + folderString);
       }
     }
-    final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
+    final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
@@ -476,7 +482,7 @@ public class AutoPlacementFinder {
         ToolLogger.error("Not a decimal percentage: " + zoomString);
       }
     }
-    final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
+    final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
     if (widthString != null && widthString.length() > 0) {
       try {
         unitWidth = Integer.parseInt(widthString);
@@ -486,7 +492,7 @@ public class AutoPlacementFinder {
         ToolLogger.error("Not an integer: " + widthString);
       }
     }
-    final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
+    final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
     if (heightString != null && heightString.length() > 0) {
       try {
         unitHeight = Integer.parseInt(heightString);

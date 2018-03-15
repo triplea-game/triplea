@@ -1,10 +1,13 @@
 package tools.map.making;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -15,24 +18,34 @@ import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import tools.image.FileOpen;
-import tools.util.ToolApplication;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
  * Takes an image and shrinks it. Used for making small images.
  */
-public class ImageShrinker {
-  private static File mapFolderLocation = null;
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder"; // TODO: find other duplications of this value.
+public final class ImageShrinker {
+  private File mapFolderLocation = null;
+
+  private ImageShrinker() {}
 
   /**
-   * Entry point for the Image Shrinker tool.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
 
+    try {
+      new ImageShrinker().runInternal(args);
+    } catch (final IOException e) {
+      ToolLogger.error("failed to run image shrinker", e);
+    }
+  }
+
+  private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ImageShrinker, it will create a smallMap.jpeg file for you. "
@@ -72,7 +85,6 @@ public class ImageShrinker {
       encoder.write(null, new IIOImage(thumbImage, null, null), param);
     }
     ToolLogger.info("Image successfully written to " + file.getPath());
-    System.exit(0);
   }
 
   private static String getValue(final String arg) {
@@ -83,11 +95,11 @@ public class ImageShrinker {
     return arg.substring(index + 1);
   }
 
-  private static void handleCommandLineArgs(final String[] args) {
+  private void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
       final String value;
-      if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
+      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {
         value = args[0];
@@ -103,7 +115,7 @@ public class ImageShrinker {
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {

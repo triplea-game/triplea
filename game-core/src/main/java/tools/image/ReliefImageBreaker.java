@@ -1,5 +1,7 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
@@ -20,11 +22,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 import tools.map.making.ImageIoCompletionWatcher;
-import tools.util.ToolApplication;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
@@ -35,20 +38,29 @@ import tools.util.ToolLogger;
  * territories, he must choose "N" at the prompt.
  * sea zone images directory must be renamed to "seazone
  */
-public class ReliefImageBreaker {
-  private static String location = null;
-  private static final JFrame observer = new JFrame();
+public final class ReliefImageBreaker {
+  private String location = null;
+  private final JFrame observer = new JFrame();
   private boolean seaZoneOnly;
   private MapData mapData;
-  private static File mapFolderLocation = null;
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
+  private File mapFolderLocation = null;
+
+  private ReliefImageBreaker() {}
 
   /**
-   * Creates a new instance of ReliefImageBreaker and calls createMaps() method to start the computations.
+   * @throws IllegalStateException If not invoked on the EDT.
    */
-  public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
 
+    try {
+      new ReliefImageBreaker().runInternal(args);
+    } catch (final IOException e) {
+      ToolLogger.error("failed to run relief image breaker", e);
+    }
+  }
+
+  private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the ReliefImageBreaker, it is no longer used. "
@@ -64,10 +76,9 @@ public class ReliefImageBreaker {
     if (location == null) {
       ToolLogger.info("You need to select a folder to save the tiles in for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
       return;
     }
-    new ReliefImageBreaker().createMaps();
+    createMaps();
   }
 
   /**
@@ -80,7 +91,7 @@ public class ReliefImageBreaker {
     if (map == null) {
       ToolLogger.info("You need to select a map image for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
+      return;
     }
     // ask user wether it is sea zone only or not
     seaZoneOnly = doSeaZone();
@@ -90,14 +101,14 @@ public class ReliefImageBreaker {
     if (mapDir == null || mapDir.isEmpty()) {
       ToolLogger.info("You need to specify a map name for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
+      return;
     }
     try {
       mapData = new MapData(mapDir);
       // files for the map.
     } catch (final NullPointerException e) {
       ToolLogger.error("Bad data given or missing text files, shutting down", e);
-      System.exit(0);
+      return;
     }
     for (final String territoryName : mapData.getTerritories()) {
       final boolean seaZone = Util.isTerritoryNameIndicatingWater(territoryName);
@@ -110,7 +121,6 @@ public class ReliefImageBreaker {
       processImage(territoryName, map);
     }
     ToolLogger.info("All Finished!");
-    System.exit(0);
   }
 
   /**
@@ -147,9 +157,9 @@ public class ReliefImageBreaker {
    * Asks the user to select an image and then it loads it up into an Image
    * object and returns it to the calling class.
    *
-   * @return java.awt.Image img the loaded image
+   * @return The loaded image.
    */
-  private static Image loadImage() {
+  private Image loadImage() {
     ToolLogger.info("Select the map");
     final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
@@ -222,11 +232,11 @@ public class ReliefImageBreaker {
     return arg.substring(index + 1);
   }
 
-  private static void handleCommandLineArgs(final String[] args) {
+  private void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
       final String value;
-      if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
+      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {
         value = args[0];
@@ -242,7 +252,7 @@ public class ReliefImageBreaker {
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {

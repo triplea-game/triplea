@@ -1,5 +1,7 @@
 package tools.image;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -16,9 +18,10 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.ui.screen.TileManager;
-import tools.util.ToolApplication;
+import tools.util.ToolArguments;
 import tools.util.ToolLogger;
 
 /**
@@ -29,23 +32,29 @@ import tools.util.ToolLogger;
  * territories, he must choose "N" at the prompt.
  * sea zone images directory must be renamed to "seazone
  */
-public class TileImageBreaker {
-  private static String location = null;
-  private static final JFrame observer = new JFrame();
-  private static File mapFolderLocation = null;
-  private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
-  private static final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
+public final class TileImageBreaker {
+  private String location = null;
+  private final JFrame observer = new JFrame();
+  private File mapFolderLocation = null;
+  private final JTextAreaOptionPane textOptionPane = new JTextAreaOptionPane(null,
       "TileImageBreaker Log\r\n\r\n", "", "TileImageBreaker Log", null, 500, 300, true, 1, null);
 
-  /**
-   * Main program begins here. Creates a new instance of ReliefImageBreaker
-   * and calls createMaps() method to start the computations.
-   *
-   * @param args The command line parameters.
-   */
-  public static void main(final String[] args) throws Exception {
-    ToolApplication.initialize();
+  private TileImageBreaker() {}
 
+  /**
+   * @throws IllegalStateException If not invoked on the EDT.
+   */
+  public static void run(final String[] args) {
+    checkState(SwingUtilities.isEventDispatchThread());
+
+    try {
+      new TileImageBreaker().runInternal(args);
+    } catch (final IOException e) {
+      ToolLogger.error("failed to run tile image breaker", e);
+    }
+  }
+
+  private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
     JOptionPane.showMessageDialog(null,
         new JLabel("<html>" + "This is the TileImageBreaker, it will create the map image tiles file for you. "
@@ -62,30 +71,23 @@ public class TileImageBreaker {
     if (location == null) {
       ToolLogger.info("You need to select a folder to save the tiles in for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
       return;
     }
-    new TileImageBreaker().createMaps();
+    createMaps();
   }
 
   /**
-   * createMaps()
    * One of the main methods that is used to create the actual maps. Calls on
    * various methods to get user input and create the maps.
-   *
-   * @exception java.io.IOException
-   *            throws
    */
-  public void createMaps() throws IOException {
+  private void createMaps() throws IOException {
     // ask user to input image location
     final Image map = loadImage();
     if (map == null) {
       ToolLogger.info("You need to select a map image for this to work");
       ToolLogger.info("Shutting down");
-      System.exit(0);
       return;
     }
-
 
     textOptionPane.show();
     for (int x = 0; (x) * TileManager.TILE_SIZE < map.getWidth(null); x++) {
@@ -109,18 +111,15 @@ public class TileImageBreaker {
     textOptionPane.countDown();
     textOptionPane.dispose();
     JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
-    System.exit(0);
   }
 
-
   /**
-   * java.awt.Image loadImage()
    * Asks the user to select an image and then it loads it up into an Image
    * object and returns it to the calling class.
    *
-   * @return java.awt.Image img the loaded image
+   * @return The loaded image.
    */
-  private static Image loadImage() {
+  private Image loadImage() {
     ToolLogger.info("Select the map");
     final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
@@ -145,11 +144,11 @@ public class TileImageBreaker {
     return arg.substring(index + 1);
   }
 
-  private static void handleCommandLineArgs(final String[] args) {
+  private void handleCommandLineArgs(final String[] args) {
     // arg can only be the map folder location.
     if (args.length == 1) {
       final String value;
-      if (args[0].startsWith(TRIPLEA_MAP_FOLDER)) {
+      if (args[0].startsWith(ToolArguments.MAP_FOLDER)) {
         value = getValue(args[0]);
       } else {
         value = args[0];
@@ -165,7 +164,7 @@ public class TileImageBreaker {
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
-      final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+      final String value = System.getProperty(ToolArguments.MAP_FOLDER);
       if (value != null && value.length() > 0) {
         final File mapFolder = new File(value);
         if (mapFolder.exists()) {
