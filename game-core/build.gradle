@@ -115,8 +115,6 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/trident-1.4.jar')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
 
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
@@ -137,8 +135,9 @@ dependencies {
     }
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
-
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
     testRuntime 'org.junit.platform:junit-platform-launcher:1.0.2'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
 }
