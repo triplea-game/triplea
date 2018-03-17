@@ -49,7 +49,7 @@ public class MessengerIntegrationTest {
         break;
       }
     }
-    assertEquals(serverMessenger.getNodes().size(), 3);
+    assertEquals(3, serverMessenger.getNodes().size());
   }
 
   @AfterEach
@@ -63,38 +63,38 @@ public class MessengerIntegrationTest {
   public void testServerSend() {
     final String message = "Hello";
     serverMessenger.send(message, client1Messenger.getLocalNode());
-    assertEquals(client1MessageListener.getLastMessage(), message);
+    assertEquals(message, client1MessageListener.getLastMessage());
     assertEquals(client1MessageListener.getLastSender(), serverMessenger.getLocalNode());
-    assertEquals(client2MessageListener.getMessageCount(), 0);
+    assertEquals(0, client2MessageListener.getMessageCount());
   }
 
   @Test
   public void testServerSendToClient2() {
     final String message = "Hello";
     serverMessenger.send(message, client2Messenger.getLocalNode());
-    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(message, client2MessageListener.getLastMessage());
     assertEquals(client2MessageListener.getLastSender(), serverMessenger.getLocalNode());
-    assertEquals(client1MessageListener.getMessageCount(), 0);
+    assertEquals(0, client1MessageListener.getMessageCount());
   }
 
   @Test
   public void testClientSendToServer() {
     final String message = "Hello";
     client1Messenger.send(message, serverMessenger.getLocalNode());
-    assertEquals(serverMessageListener.getLastMessage(), message);
+    assertEquals(message, serverMessageListener.getLastMessage());
     assertEquals(serverMessageListener.getLastSender(), client1Messenger.getLocalNode());
-    assertEquals(client1MessageListener.getMessageCount(), 0);
-    assertEquals(client2MessageListener.getMessageCount(), 0);
+    assertEquals(0, client1MessageListener.getMessageCount());
+    assertEquals(0, client2MessageListener.getMessageCount());
   }
 
   @Test
   public void testClientSendToClient() {
     final String message = "Hello";
     client1Messenger.send(message, client2Messenger.getLocalNode());
-    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(message, client2MessageListener.getLastMessage());
     assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
-    assertEquals(client1MessageListener.getMessageCount(), 0);
-    assertEquals(serverMessageListener.getMessageCount(), 0);
+    assertEquals(0, client1MessageListener.getMessageCount());
+    assertEquals(0, serverMessageListener.getMessageCount());
   }
 
   @Test
@@ -108,30 +108,30 @@ public class MessengerIntegrationTest {
     client1Messenger.send(message, client2Messenger.getLocalNode());
     assertEquals(client2MessageListener.getLastMessage(), message);
     assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
-    assertEquals(client1MessageListener.getMessageCount(), 0);
-    assertEquals(serverMessageListener.getMessageCount(), 0);
+    assertEquals(0, client1MessageListener.getMessageCount());
+    assertEquals(0, serverMessageListener.getMessageCount());
   }
 
   @Test
   public void testServerBroadcast() {
     final String message = "Hello";
     serverMessenger.broadcast(message);
-    assertEquals(client1MessageListener.getLastMessage(), message);
+    assertEquals(message, client1MessageListener.getLastMessage());
     assertEquals(client1MessageListener.getLastSender(), serverMessenger.getLocalNode());
-    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(message, client2MessageListener.getLastMessage());
     assertEquals(client2MessageListener.getLastSender(), serverMessenger.getLocalNode());
-    assertEquals(serverMessageListener.getMessageCount(), 0);
+    assertEquals(0, serverMessageListener.getMessageCount());
   }
 
   @Test
   public void testClientBroadcast() {
     final String message = "Hello";
     client1Messenger.broadcast(message);
-    assertEquals(client2MessageListener.getLastMessage(), message);
+    assertEquals(message, client2MessageListener.getLastMessage());
     assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
-    assertEquals(serverMessageListener.getLastMessage(), message);
+    assertEquals(message, serverMessageListener.getLastMessage());
     assertEquals(serverMessageListener.getLastSender(), client1Messenger.getLocalNode());
-    assertEquals(client1MessageListener.getMessageCount(), 0);
+    assertEquals(0, client1MessageListener.getMessageCount());
   }
 
   @Test
@@ -228,7 +228,7 @@ public class MessengerIntegrationTest {
       }
       Interruptibles.sleep(1);
     }
-    assertEquals(serverMessenger.getNodes().size(), 1);
+    assertEquals(1, serverMessenger.getNodes().size());
   }
 
   @Test

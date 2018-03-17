@@ -99,7 +99,7 @@ public class VictoryTest {
         moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
             gameData.getMap().getRoute(frenchWestAfrica, britishCongo));
     moveDelegate.end();
-    assertEquals(error, null);
+    assertEquals(null, error);
   }
 
   @Test
@@ -110,7 +110,7 @@ public class VictoryTest {
     moveDelegate.start();
     String error = moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, angloEgypt));
     // first step is legal
-    assertEquals(error, null);
+    assertEquals(null, error);
     // second step isn't legal because we lost blitz even though we took the mountain
     error = moveDelegate.move(angloEgypt.getUnits().getUnits(), gameData.getMap().getRoute(angloEgypt, britishCongo));
     moveDelegate.end();
@@ -125,11 +125,11 @@ public class VictoryTest {
     moveDelegate.start();
     String error = moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
         gameData.getMap().getRoute(frenchWestAfrica, frenchEastAfrica));
-    assertEquals(error, null);
+    assertEquals(null, error);
     error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(),
         gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     moveDelegate.end();
-    assertEquals(error, null);
+    assertEquals(null, error);
   }
 
 

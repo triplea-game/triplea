@@ -8,7 +8,9 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge
 import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.setSelectAaCasualties;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -58,7 +61,7 @@ public class BattleCalculatorTest {
     bridge.setRandomSource(randomSource);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 1);
+    assertEquals(1, casualties.size());
     assertEquals(1, randomSource.getTotalRolled());
   }
 
@@ -76,7 +79,7 @@ public class BattleCalculatorTest {
     TripleAUnit.get(planes.get(0)).setAlreadyMoved(1);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 1);
+    assertEquals(1, casualties.size());
   }
 
   @Test
@@ -100,10 +103,10 @@ public class BattleCalculatorTest {
                 defendingAa, bridge, territory("Germany", data), true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 2);
+    assertEquals(2, casualties.size());
     // should be 1 fighter and 1 bomber
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -129,12 +132,12 @@ public class BattleCalculatorTest {
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 2);
+    assertEquals(2, casualties.size());
     // two extra rolls to pick which units are hit
     assertEquals(3, randomSource.getTotalRolled());
     // should be 1 fighter and 1 bomber
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 0);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 2);
+    assertEquals(0, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -172,10 +175,10 @@ public class BattleCalculatorTest {
     final Collection<Unit> casualties =
         BattleCalculator.getAaCasualties(false, planes, planes, defendingAa, defendingAa, roll, bridge, germans(data),
             british(data), null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 2);
+    assertEquals(2, casualties.size());
     // we selected all bombers
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 2);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 0);
+    assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(0, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -211,10 +214,10 @@ public class BattleCalculatorTest {
     final Collection<Unit> casualties =
         BattleCalculator.getAaCasualties(false, planes, planes, defendingAa, defendingAa, roll, bridge, germans(data),
             british(data), null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 3);
+    assertEquals(3, casualties.size());
     // we selected all bombers
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 3);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 0);
+    assertEquals(3, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(0, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -242,12 +245,12 @@ public class BattleCalculatorTest {
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 3);
+    assertEquals(3, casualties.size());
     // a second roll for choosing which unit
     assertEquals(2, randomSource.getTotalRolled());
     // should be 2 fighters and 1 bombers
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 2);
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -276,11 +279,11 @@ public class BattleCalculatorTest {
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 2);
+    assertEquals(2, casualties.size());
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 1 bomber
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -307,10 +310,10 @@ public class BattleCalculatorTest {
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
-    assertEquals(casualties.size(), 3);
+    assertEquals(3, casualties.size());
     // should be 2 fighters and 1 bombers
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 2);
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
   // Radar AA tests removed, because "revised" does not have radar tech.
 }
