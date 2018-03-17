@@ -1204,12 +1204,11 @@ public class TripleAFrame extends MainGameFrame {
       panel.setLayout(new BorderLayout());
       final String optionScramble = "Scramble";
       final String optionNone = "None";
-      final JButton scramble = new JButton(optionScramble);
-      scramble.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(scramble));
-      final JButton none = new JButton(optionNone);
-      none.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(none));
-      // final Object[] options = {optionScramble, optionNone};
-      final Object[] options = {scramble, none};
+      final JButton scrambleButton = new JButton(optionScramble);
+      scrambleButton.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(scrambleButton));
+      final JButton noneButton = new JButton(optionNone);
+      noneButton.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(noneButton));
+      final Object[] options = {scrambleButton, noneButton};
       final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
           JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
       final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
@@ -1265,7 +1264,7 @@ public class TripleAFrame extends MainGameFrame {
               label.setForeground(Color.RED);
             }
           }
-          scramble.setEnabled(hasEnoughFuel);
+          scrambleButton.setEnabled(hasEnoughFuel);
           dialog.pack();
         });
         choosers.add(Tuple.of(from, chooser));
