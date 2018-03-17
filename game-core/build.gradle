@@ -115,10 +115,12 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/trident-1.4.jar')
 
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
     testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
     testCompile 'org.testfx:testfx-junit5:4.0.12-alpha'
@@ -145,15 +147,16 @@ task cleanRemoteLibs(type: Delete, group: LifecycleBasePlugin.BUILD_GROUP, descr
     delete remoteLibsDir
 }
 
-task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {
+test {
+    useJUnitPlatform()
+}
+
+task integTest(type: Test, dependsOn: [compileIntegTestJava]) {
+    useJUnitPlatform()
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = 'Runs the integration tests.'
-
+    testClassesDirs = sourceSets.integTest.output.classesDirs
     classpath = sourceSets.integTest.runtimeClasspath
-    main = 'org.junit.platform.console.ConsoleLauncher'
-    args '--details', 'none'
-    args '--reports-dir', "$buildDir/integ-test-results/junit-platform"
-    args '--scan-classpath', sourceSets.integTest.output.classesDirs[0]
 }
 
 task jacocoRootReport(type: JacocoReport) {
