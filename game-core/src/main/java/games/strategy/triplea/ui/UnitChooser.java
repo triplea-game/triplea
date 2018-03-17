@@ -302,6 +302,10 @@ final class UnitChooser extends JPanel {
     });
   }
 
+  public void addChangeListener(final ScrollableTextFieldListener listener) {
+    entries.stream().forEach(entry -> entry.addChangeListener(listener));
+  }
+
   private final ScrollableTextFieldListener textFieldListener = new ScrollableTextFieldListener() {
     @Override
     public void changedValue(final ScrollableTextField field) {
@@ -448,6 +452,10 @@ final class UnitChooser extends JPanel {
 
     boolean hasMultipleHitPoints() {
       return hasMultipleHits;
+    }
+
+    void addChangeListener(final ScrollableTextFieldListener listener) {
+      hitTexts.stream().forEach(field -> field.addChangeListener(listener));
     }
 
     private class UnitChooserEntryIcon extends JComponent {
