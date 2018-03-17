@@ -1199,7 +1199,7 @@ public class TripleAFrame extends MainGameFrame {
     final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
     SwingUtilities.invokeLater(() -> {
       mapPanel.centerOn(scrambleTo);
-      final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
+      final JDialog dialog = new JDialog(this, "Select units to scramble to " + scrambleTo.getName());
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       final String optionScramble = "Scramble";
