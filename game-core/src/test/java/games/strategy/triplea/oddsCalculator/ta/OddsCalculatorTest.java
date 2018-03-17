@@ -5,6 +5,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -81,8 +82,8 @@ public class OddsCalculatorTest {
     final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData),
         sz1, attacking, defending, Collections.emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
-    assertEquals(results.getAttackerWinPercent(), 0.0);
-    assertEquals(results.getDefenderWinPercent(), 1.0);
+    assertEquals(0.0, results.getAttackerWinPercent());
+    assertEquals(1.0, results.getDefenderWinPercent());
   }
 
   @Test
@@ -97,7 +98,7 @@ public class OddsCalculatorTest {
     final AggregateResults results = calculator.setCalculateDataAndCalculate(americans(gameData), germans(gameData),
         sz1, attacking, defending, Collections.emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
     calculator.shutdown();
-    assertEquals(results.getAttackerWinPercent(), 1.0);
-    assertEquals(results.getDefenderWinPercent(), 0.0);
+    assertEquals(1.0, results.getAttackerWinPercent());
+    assertEquals(0.0, results.getDefenderWinPercent());
   }
 }

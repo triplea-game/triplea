@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -72,12 +73,12 @@ public class MoveValidatorTest extends DelegateTest {
   @Test
   public void testGetLeastMovement() {
     final Collection<Unit> collection = bomber.create(1, british);
-    assertEquals(MoveValidator.getLeastMovement(collection), 6);
+    assertEquals(6, MoveValidator.getLeastMovement(collection));
     final Object[] objs = collection.toArray();
     ((TripleAUnit) objs[0]).setAlreadyMoved(1);
-    assertEquals(MoveValidator.getLeastMovement(collection), 5);
+    assertEquals(5, MoveValidator.getLeastMovement(collection));
     collection.addAll(factory.create(2, british));
-    assertEquals(MoveValidator.getLeastMovement(collection), 0);
+    assertEquals(0, MoveValidator.getLeastMovement(collection));
   }
 
   @Test

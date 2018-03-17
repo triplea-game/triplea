@@ -19,7 +19,7 @@ public class EndPointTest {
     final RemoteMethodCall call = new RemoteMethodCall("", "compare", new Object[] {"", ""},
         new Class<?>[] {Object.class, Object.class}, Comparator.class);
     final List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, endPoint.takeANumber(), null);
-    assertEquals(results.size(), 1);
+    assertEquals(1, results.size());
     assertEquals(2, (results.iterator().next()).getRVal());
   }
 }

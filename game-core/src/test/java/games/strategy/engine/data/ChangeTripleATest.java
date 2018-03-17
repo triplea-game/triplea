@@ -26,7 +26,7 @@ public class ChangeTripleATest {
     ClientContext.gameEnginePropertyReader();
     gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
     can = gameData.getMap().getTerritory("Western Canada");
-    assertEquals(can.getUnits().getUnitCount(), 2);
+    assertEquals(2, can.getUnits().getUnitCount());
   }
 
   private Change serialize(final Change change) throws Exception {
@@ -50,10 +50,10 @@ public class ChangeTripleATest {
     final Change change =
         ChangeFactory.addUnits(can, GameDataTestUtil.infantry(gameData).create(10, null));
     gameData.performChange(change);
-    assertEquals(can.getUnits().getUnitCount(), 12);
+    assertEquals(12, can.getUnits().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(can.getUnits().getUnitCount(), 2);
+    assertEquals(2, can.getUnits().getUnitCount());
   }
 
   @Test
@@ -62,10 +62,10 @@ public class ChangeTripleATest {
     final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(gameData), 1);
     final Change change = ChangeFactory.removeUnits(can, units);
     gameData.performChange(change);
-    assertEquals(can.getUnits().getUnitCount(), 1);
+    assertEquals(1, can.getUnits().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(can.getUnits().getUnitCount(), 2);
+    assertEquals(2, can.getUnits().getUnitCount());
   }
 
   @Test
@@ -75,9 +75,9 @@ public class ChangeTripleATest {
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     gameData.performChange(change);
-    assertEquals(can.getUnits().getUnitCount(), 1);
+    assertEquals(1, can.getUnits().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(can.getUnits().getUnitCount(), 2);
+    assertEquals(2, can.getUnits().getUnitCount());
   }
 }

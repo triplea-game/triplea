@@ -3,6 +3,7 @@ package games.strategy.util;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -58,13 +59,13 @@ public class IntegerMapTest {
   public void testAdd() {
     final IntegerMap<Object> map = new IntegerMap<>();
     map.add(v1, 5);
-    assertEquals(map.getInt(v1), 5);
+    assertEquals(5, map.getInt(v1));
     map.add(v1, 10);
-    assertEquals(map.getInt(v1), 15);
+    assertEquals(15, map.getInt(v1));
     map.add(v1, -20);
-    assertEquals(map.getInt(v1), -5);
+    assertEquals(-5, map.getInt(v1));
     map.add(v1, 5);
-    assertEquals(map.getInt(v1), 0);
+    assertEquals(0, map.getInt(v1));
   }
 
   @Test

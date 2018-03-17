@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -346,7 +347,7 @@ public class MoveDelegateTest extends DelegateTest {
     route.add(westAfrica);
     assertEquals(4, equatorialAfrica.getUnits().size());
     assertEquals(0, westAfrica.getUnits().size());
-    assertEquals(westAfrica.getOwner(), PlayerID.NULL_PLAYERID);
+    assertEquals(PlayerID.NULL_PLAYERID, westAfrica.getOwner());
     assertEquals(35, british.getResources().getQuantity(pus));
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
