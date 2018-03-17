@@ -2,9 +2,6 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
-    }
 }
 
 plugins {
@@ -17,8 +14,6 @@ plugins {
     id 'com.install4j.gradle' version '7.0.1'
     id 'de.undercouch.download' version '3.3.0'
 }
-
-apply plugin: 'org.junit.platform.gradle.plugin'
 
 group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
@@ -68,7 +63,7 @@ sourceSets {
         resources.srcDir 'src/integ_test/resources'
 
         compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testCompileOnly + configurations.testRuntime
-        runtimeClasspath = output + compileClasspath + configurations.junitPlatform
+        runtimeClasspath = output + compileClasspath
     }
 }
 
@@ -115,10 +110,10 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/7.1.01/trident-1.4.jar')
 
+
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
     testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
     testCompile 'org.testfx:testfx-junit5:4.0.12-alpha'
@@ -135,9 +130,10 @@ dependencies {
     }
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
-
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
-    testRuntime 'org.junit.platform:junit-platform-launcher:1.0.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+    testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
 }
 
@@ -145,15 +141,16 @@ task cleanRemoteLibs(type: Delete, group: LifecycleBasePlugin.BUILD_GROUP, descr
     delete remoteLibsDir
 }
 
-task integTest(type: JavaExec, dependsOn: [compileIntegTestJava]) {
+test {
+    useJUnitPlatform()
+}
+
+task integTest(type: Test, dependsOn: [compileIntegTestJava]) {
+    useJUnitPlatform()
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = 'Runs the integration tests.'
-
+    testClassesDirs = sourceSets.integTest.output.classesDirs
     classpath = sourceSets.integTest.runtimeClasspath
-    main = 'org.junit.platform.console.ConsoleLauncher'
-    args '--details', 'none'
-    args '--reports-dir', "$buildDir/integ-test-results/junit-platform"
-    args '--scan-classpath', sourceSets.integTest.output.classesDirs[0]
 }
 
 task jacocoRootReport(type: JacocoReport) {
@@ -304,7 +301,7 @@ gradle.taskGraph.whenReady { graph ->
 }
 
 check {
-    dependsOn 'junitPlatformTest', 'integTest'
+    dependsOn 'test', 'integTest'
 }
 
 checkstyle {
@@ -326,24 +323,4 @@ checkstyleMain {
 checkstyleTest {
     maxWarnings = checkstyleTestMaxWarnings.toInteger()
     source sourceSets.test.output.resourcesDir
-}
-
-afterEvaluate {
-    def junitPlatformTest = tasks.junitPlatformTest
-
-    jacoco {
-        applyTo(junitPlatformTest)
-    }
-
-    task jacocoJunit5TestReport(type: JacocoReport) {
-        executionData junitPlatformTest
-        sourceSets sourceSets.main
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories = files(sourceSets.main.output)
-
-        reports {
-            xml.enabled true
-            html.enabled true
-        }
-    }
 }
