@@ -1205,7 +1205,9 @@ public class TripleAFrame extends MainGameFrame {
       final String optionScramble = "Scramble";
       final String optionNone = "None";
       final JButton scramble = new JButton(optionScramble);
+      scramble.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(scramble));
       final JButton none = new JButton(optionNone);
+      none.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(none));
       // final Object[] options = {optionScramble, optionNone};
       final Object[] options = {scramble, none};
       final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
@@ -1283,7 +1285,7 @@ public class TripleAFrame extends MainGameFrame {
         if (!dialog.isVisible()) {
           return;
         }
-        final String option = ((String) optionPane.getValue());
+        final String option = ((JButton) optionPane.getValue()).getText();
         if (option.equals(optionNone)) {
           choosers.clear();
           selection.clear();
@@ -1306,6 +1308,16 @@ public class TripleAFrame extends MainGameFrame {
     Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
+  }
+
+  private JOptionPane getOptionPane(final JComponent parent) {
+    JOptionPane pane = null;
+    if (!(parent instanceof JOptionPane)) {
+      pane = getOptionPane((JComponent) parent.getParent());
+    } else {
+      pane = (JOptionPane) parent;
+    }
+    return pane;
   }
 
   public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
