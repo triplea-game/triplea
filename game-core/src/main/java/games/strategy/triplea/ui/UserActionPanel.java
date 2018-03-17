@@ -29,6 +29,7 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.util.ResourceCollectionUtils;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -127,19 +128,24 @@ public class UserActionPanel extends ActionPanel {
       final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEtchedBorder());
       choiceScroll.setPreferredSize(getUserActionScrollPanePreferredSize(choiceScroll));
-      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
       if (canSpendResourcesOnUserActions(validUserActions)) {
-        final JLabel resourcesLabel = new JLabel(String.format("You have %s left",
-            ResourceCollectionUtils.getProductionResources(getCurrentPlayer().getResources())));
-        userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row++, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL, new Insets(8, 0, 0, 0), 0, 0));
+        final JLabel resourcesLabel = new JLabel("Remaining resources: ");
+        final ResourceCollection resources =
+            ResourceCollectionUtils.getProductionResources(getCurrentPlayer().getResources());
+        final JPanel resourcesPanel = getMap().getUiContext().getResourceImageFactory().getResourcesPanel(resources,
+            getCurrentPlayer(), getData());
+        userChoicePanel.add(resourcesLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.NONE, new Insets(8, 0, 0, 0), 0, 0));
+        userChoicePanel.add(resourcesPanel, new GridBagConstraints(1, row++, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.NONE, new Insets(8, 0, 0, 0), 0, 0));
       }
 
       final JButton noActionButton = new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
       SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
-      userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+      userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
           GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
 
       userChoiceDialog.add(userChoicePanel);
