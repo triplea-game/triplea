@@ -12,12 +12,20 @@ TripleA is an open source gaming community, free to play, 100% open source and v
 - Play vs AI
 - Many community created maps available for in-game download, you can create your own with your own rule set!
 
-## [Developers Start Here](https://github.com/triplea-game/triplea/tree/master/docs/dev)
-
 ## Contact Us
 - [Bug report](https://github.com/triplea-game/triplea/issues/new)
 - [Feature requests](https://forums.triplea-game.org/category/42/feature-requests-and-ideas)
 - [Gitter](https://gitter.im/triplea-game/social)
+
+
+## Documentation Links
+- Developer, getting started: https://github.com/triplea-game/triplea/tree/master/docs/dev
+- Moderator, how-to: https://forums.triplea-game.org/ (secret admin section)
+- Setting up Linode servers: https://github.com/triplea-game/lobby#adding-linode-servers
+- Lobby+Bot Ops (install, check status, restart): https://github.com/triplea-game/lobby
+- Forums Ops: https://github.com/triplea-game/triplea/tree/master/docs/admin#nodebb-forums
+- Dice Server (TODO): https://github.com/triplea-game/triplea/tree/master/docs/admin#the-dice-server
+
 
 
 ## License
