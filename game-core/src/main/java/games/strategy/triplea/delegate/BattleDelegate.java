@@ -19,6 +19,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
@@ -754,6 +755,27 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                 + ", but max allowed is " + scramblers.get(t).getFirst());
           }
         }
+
+        // Validate players have enough fuel to move there and back
+        final Map<PlayerID, ResourceCollection> playerFuelCost = new HashMap<>();
+        for (final Entry<Territory, Collection<Unit>> entry : toScramble.entrySet()) {
+          final Map<PlayerID, ResourceCollection> map =
+              Route.getScrambleFuelCostCharge(entry.getValue(), entry.getKey(), to, data);
+          for (final Entry<PlayerID, ResourceCollection> playerAndCost : map.entrySet()) {
+            if (playerFuelCost.containsKey(playerAndCost.getKey())) {
+              playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
+            } else {
+              playerFuelCost.put(playerAndCost.getKey(), playerAndCost.getValue());
+            }
+          }
+        }
+        for (final Entry<PlayerID, ResourceCollection> playerAndCost : playerFuelCost.entrySet()) {
+          if (!playerAndCost.getKey().getResources().has(playerAndCost.getValue().getResourcesCopy())) {
+            throw new IllegalStateException("Not enough fuel to scramble, player: " + playerAndCost.getKey()
+                + ", needs: " + playerAndCost.getValue());
+          }
+        }
+
         final CompositeChange change = new CompositeChange();
         for (final Territory t : toScramble.keySet()) {
           final Collection<Unit> scrambling = toScramble.get(t);
@@ -786,6 +808,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           for (final Unit u : scrambling) {
             change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
             change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
+            change.add(Route.getFuelChanges(Collections.singleton(u), new Route(t, to), u.getOwner(), data));
           }
           // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
           change.add(ChangeFactory.moveUnits(t, to, scrambling));
@@ -966,6 +989,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // if null, we leave it to die
         if (landingTerr != null) {
           change.add(ChangeFactory.moveUnits(t, landingTerr, Collections.singletonList(u)));
+          change.add(Route.getFuelChanges(Collections.singleton(u), new Route(t, landingTerr), u.getOwner(), data));
         }
         change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.ORIGINATED_FROM));
         change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_SCRAMBLED));
