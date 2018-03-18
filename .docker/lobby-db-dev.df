@@ -8,4 +8,4 @@ FROM postgres:9.5
 MAINTAINER "tripleabuilderbot@gmail.com"
 
 COPY ["./.travis/setup_lobby_database", "/docker-entrypoint-initdb.d/setup_lobby_database.sh"]
-COPY ["./config/lobby/db", "/config/lobby/db"]
+COPY ["./lobby/db", "/lobby/db"]

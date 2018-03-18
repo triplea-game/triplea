@@ -12,8 +12,10 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -60,7 +62,7 @@ public class WW2V3Year42Test {
     final List<Unit> transports = sz13.getUnits().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
     final String error = moveDelegate.move(transports, sz13To12);
-    assertEquals(error, null);
+    assertEquals(null, error);
   }
 
   @Test

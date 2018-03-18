@@ -34,11 +34,13 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -56,6 +58,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -756,7 +759,7 @@ public class RevisedTest {
     // Get Owner prior to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(gameData))));
     final String preOwner = fic.getOwner().getName();
-    assertEquals(preOwner, Constants.PLAYER_NAME_JAPANESE);
+    assertEquals(Constants.PLAYER_NAME_JAPANESE, preOwner);
     // Set up the move delegate
     ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
     final MoveDelegate moveDelegate = moveDelegate(gameData);
@@ -780,7 +783,7 @@ public class RevisedTest {
     // Get Owner after to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(british(gameData))));
     final String postOwner = fic.getOwner().getName();
-    assertEquals(postOwner, Constants.PLAYER_NAME_BRITISH);
+    assertEquals(Constants.PLAYER_NAME_BRITISH, postOwner);
     /*
      * add a VALID JAPANESE attack
      */
@@ -802,7 +805,7 @@ public class RevisedTest {
     // Get Owner after to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(japanese(gameData))));
     final String midOwner = fic.getOwner().getName();
-    assertEquals(midOwner, Constants.PLAYER_NAME_JAPANESE);
+    assertEquals(Constants.PLAYER_NAME_JAPANESE, midOwner);
     /*
      * add a VALID AMERICAN attack
      */
@@ -824,7 +827,7 @@ public class RevisedTest {
     // Get Owner after to battle
     assertTrue(fic.getUnits().allMatch(Matches.unitIsOwnedBy(americans(gameData))));
     final String endOwner = fic.getOwner().getName();
-    assertEquals(endOwner, Constants.PLAYER_NAME_AMERICANS);
+    assertEquals(Constants.PLAYER_NAME_AMERICANS, endOwner);
   }
 
   @Test
@@ -1301,7 +1304,7 @@ public class RevisedTest {
     move(wr.getUnits().getMatches(Matches.unitCanBlitz()), new Route(wr, cauc));
     final Set<Territory> fire = RocketsFireHelper.getTerritoriesWithRockets(gameData, germans(gameData));
     // germany, WE, SE, but not caucusus
-    assertEquals(fire.size(), 3);
+    assertEquals(3, fire.size());
   }
 
   @Test

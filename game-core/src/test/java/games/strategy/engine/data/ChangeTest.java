@@ -117,45 +117,45 @@ public class ChangeTest {
         chretian.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(chretian, units);
     gameData.performChange(change);
-    assertEquals(chretian.getUnits().getUnitCount(), 7);
+    assertEquals(7, chretian.getUnits().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(chretian.getUnits().getUnitCount(), 10);
+    assertEquals(10, chretian.getUnits().getUnitCount());
   }
 
   @Test
   public void testUnitsMove() {
     final Territory canada = gameData.getMap().getTerritory("canada");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
-    assertEquals(canada.getUnits().getUnitCount(), 5);
-    assertEquals(greenland.getUnits().getUnitCount(), 0);
+    assertEquals(5, canada.getUnits().getUnitCount());
+    assertEquals(0, greenland.getUnits().getUnitCount());
     final Collection<Unit> units =
         canada.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.moveUnits(canada, greenland, units);
     gameData.performChange(change);
-    assertEquals(canada.getUnits().getUnitCount(), 2);
-    assertEquals(greenland.getUnits().getUnitCount(), 3);
+    assertEquals(2, canada.getUnits().getUnitCount());
+    assertEquals(3, greenland.getUnits().getUnitCount());
     gameData.performChange(change.invert());
-    assertEquals(canada.getUnits().getUnitCount(), 5);
-    assertEquals(greenland.getUnits().getUnitCount(), 0);
+    assertEquals(5, canada.getUnits().getUnitCount());
+    assertEquals(0, greenland.getUnits().getUnitCount());
   }
 
   @Test
   public void testUnitsMoveSerialization() throws Exception {
     final Territory canada = gameData.getMap().getTerritory("canada");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
-    assertEquals(canada.getUnits().getUnitCount(), 5);
-    assertEquals(greenland.getUnits().getUnitCount(), 0);
+    assertEquals(5, canada.getUnits().getUnitCount());
+    assertEquals(0, greenland.getUnits().getUnitCount());
     final Collection<Unit> units =
         canada.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.moveUnits(canada, greenland, units);
     change = serialize(change);
     gameData.performChange(change);
-    assertEquals(canada.getUnits().getUnitCount(), 2);
-    assertEquals(greenland.getUnits().getUnitCount(), 3);
+    assertEquals(2, canada.getUnits().getUnitCount());
+    assertEquals(3, greenland.getUnits().getUnitCount());
     gameData.performChange(change.invert());
-    assertEquals(canada.getUnits().getUnitCount(), 5);
-    assertEquals(greenland.getUnits().getUnitCount(), 0);
+    assertEquals(5, canada.getUnits().getUnitCount());
+    assertEquals(0, greenland.getUnits().getUnitCount());
   }
 
   @Test
@@ -176,11 +176,11 @@ public class ChangeTest {
     final PlayerID can = gameData.getPlayerList().getPlayerId("chretian");
     final Resource gold = gameData.getResourceList().getResource("gold");
     final Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
-    assertEquals(can.getResources().getQuantity(gold), 100);
+    assertEquals(100, can.getResources().getQuantity(gold));
     gameData.performChange(change);
-    assertEquals(can.getResources().getQuantity(gold), 150);
+    assertEquals(150, can.getResources().getQuantity(gold));
     gameData.performChange(change.invert());
-    assertEquals(can.getResources().getQuantity(gold), 100);
+    assertEquals(100, can.getResources().getQuantity(gold));
   }
 
   @Test
@@ -189,9 +189,9 @@ public class ChangeTest {
     final Resource gold = gameData.getResourceList().getResource("gold");
     Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
     change = serialize(change);
-    assertEquals(can.getResources().getQuantity(gold), 100);
+    assertEquals(100, can.getResources().getQuantity(gold));
     gameData.performChange(change);
-    assertEquals(can.getResources().getQuantity(gold), 150);
+    assertEquals(150, can.getResources().getQuantity(gold));
   }
 
   @Test

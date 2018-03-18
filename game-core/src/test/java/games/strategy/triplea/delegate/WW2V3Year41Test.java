@@ -37,12 +37,14 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -60,6 +62,7 @@ import java.util.Map.Entry;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -150,10 +153,10 @@ public class WW2V3Year41Test {
             defendingAa, bridge, territory("Germany", gameData), true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
-    assertEquals(casualties.size(), 2);
+    assertEquals(2, casualties.size());
     // should be 1 fighter and 1 bomber
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -183,10 +186,10 @@ public class WW2V3Year41Test {
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
-    assertEquals(casualties.size(), 3);
+    assertEquals(3, casualties.size());
     // should be 1 fighter and 2 bombers
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 2);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
+    assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -213,16 +216,16 @@ public class WW2V3Year41Test {
                 Matches
                     .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
             defendingAa, bridge, territory("Germany", gameData), true);
-    assertEquals(roll.getHits(), 2);
+    assertEquals(2, roll.getHits());
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
-    assertEquals(casualties.size(), 2);
+    assertEquals(2, casualties.size());
     assertEquals(4, randomSource.getTotalRolled());
     // should be 1 fighter and 2 bombers
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()), 1);
-    assertEquals(CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()), 1);
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
+    assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber().negate()));
   }
 
   @Test
@@ -239,11 +242,11 @@ public class WW2V3Year41Test {
     sz12To13.setStart(sz12);
     sz12To13.add(sz13);
     final String error = moveDelegate.move(sz12.getUnits().getUnits(), sz12To13);
-    assertEquals(error, null);
-    assertEquals(sz13.getUnits().size(), 3);
+    assertEquals(null, error);
+    assertEquals(3, sz13.getUnits().size());
     moveDelegate.end();
     // the transport was not removed automatically
-    assertEquals(sz13.getUnits().size(), 3);
+    assertEquals(3, sz13.getUnits().size());
     final BattleDelegate bd = battleDelegate(gameData);
     assertFalse(bd.getBattleTracker().getPendingBattleSites(false).isEmpty());
   }
@@ -1482,7 +1485,7 @@ public class WW2V3Year41Test {
     IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
     gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
-    assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
+    assertEquals(1, ((TripleAUnit) factory).getUnitDamage());
     RepairRule repair = germans(gameData).getRepairFrontier().getRules().get(0);
     IntegerMap<RepairRule> repairs = new IntegerMap<>();
     repairs.put(repair, 1);
@@ -1490,7 +1493,7 @@ public class WW2V3Year41Test {
         CollectionUtils.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(),
         repairs));
     assertValid(error);
-    assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
+    assertEquals(0, ((TripleAUnit) factory).getUnitDamage());
     // Find cost
     final int midPUs = germans.getResources().getQuantity("PUs");
     assertEquals(initPUs, midPUs + 1);
@@ -1505,7 +1508,7 @@ public class WW2V3Year41Test {
     startHits = new IntegerMap<>();
     startHits.put(factory, 2);
     gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
-    assertEquals(((TripleAUnit) factory).getUnitDamage(), 2);
+    assertEquals(2, ((TripleAUnit) factory).getUnitDamage());
     repair = germans(gameData).getRepairFrontier().getRules().get(0);
     repairs = new IntegerMap<>();
     repairs.put(repair, 2);
@@ -1513,7 +1516,7 @@ public class WW2V3Year41Test {
         CollectionUtils.getMatches(germany.getUnits().getUnits(), Matches.unitCanBeDamaged()).iterator().next(),
         repairs));
     assertValid(error);
-    assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
+    assertEquals(0, ((TripleAUnit) factory).getUnitDamage());
     // Find cost
     final int finalPUs = germans.getResources().getQuantity("PUs");
     assertEquals(midPUs, finalPUs + 1);
@@ -1530,7 +1533,7 @@ public class WW2V3Year41Test {
     final IntegerMap<Unit> startHits = new IntegerMap<>();
     startHits.put(factory, 1);
     gameData.performChange(ChangeFactory.bombingUnitDamage(startHits));
-    assertEquals(((TripleAUnit) factory).getUnitDamage(), 1);
+    assertEquals(1, ((TripleAUnit) factory).getUnitDamage());
     final RepairRule repair = germans(gameData).getRepairFrontier().getRules().get(0);
     final IntegerMap<RepairRule> repairs = new IntegerMap<>();
     // we have 1 damaged marker, but trying to repair 2
@@ -1540,7 +1543,7 @@ public class WW2V3Year41Test {
         repairs));
     // it is no longer an error, we just math max 0 it
     assertValid(error);
-    assertEquals(((TripleAUnit) factory).getUnitDamage(), 0);
+    assertEquals(0, ((TripleAUnit) factory).getUnitDamage());
   }
 
   @Test
@@ -1565,15 +1568,15 @@ public class WW2V3Year41Test {
     final Collection<Unit> moveUnits = hupeh.getUnits().getUnits();
     // Get Owner prior to battle
     final String preOwner = kiangsu.getOwner().getName();
-    assertEquals(preOwner, Constants.PLAYER_NAME_JAPANESE);
+    assertEquals(Constants.PLAYER_NAME_JAPANESE, preOwner);
     // add a VALID attack
     final String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
     assertValid(validResults);
     // Ensure owner after attack doesn't match attacker
     final String postOwner = kiangsu.getOwner().getName();
-    assertNotSame(postOwner, Constants.PLAYER_NAME_BRITISH);
+    assertNotSame(Constants.PLAYER_NAME_BRITISH, postOwner);
     // Check that original owner is now owner
-    assertEquals(postOwner, Constants.PLAYER_NAME_CHINESE);
+    assertEquals(Constants.PLAYER_NAME_CHINESE, postOwner);
   }
 
   @Test
@@ -1605,15 +1608,15 @@ public class WW2V3Year41Test {
     final Collection<Unit> moveUnits = hupeh.getUnits().getUnits();
     // Get Owner prior to battle
     final String preOwner = kiangsu.getOwner().getName();
-    assertEquals(preOwner, Constants.PLAYER_NAME_JAPANESE);
+    assertEquals(Constants.PLAYER_NAME_JAPANESE, preOwner);
     // add a VALID attack
     final String validResults = moveDelegate.move(moveUnits, new Route(hupeh, kiangsu));
     assertValid(validResults);
     // Ensure owner after attack doesn't match attacker
     final String postOwner = kiangsu.getOwner().getName();
-    assertNotSame(postOwner, Constants.PLAYER_NAME_BRITISH);
+    assertNotSame(Constants.PLAYER_NAME_BRITISH, postOwner);
     // Check that original owner is now owner
-    assertEquals(postOwner, Constants.PLAYER_NAME_CHINESE);
+    assertEquals(Constants.PLAYER_NAME_CHINESE, postOwner);
   }
 
   @Test
