@@ -11,8 +11,8 @@ A project that contains the migration scripts for the lobby postgres database.
 
 First time you should see output like this:
 ```
-dan@dan-desk:~/work/triplea/lobby-db$ ./prod_run_flyway.sh 
- Error: Creds file does not exist at: /home/dan/lobby.db.creds
+triplea@triplea-server:~/lobby-db$ ./prod_run_flyway.sh 
+ Error: Creds file does not exist at: /home/triplea/lobby.db.creds
 I have created the file for you, it contains:
 user=
 pass=
@@ -25,12 +25,12 @@ Now to run migrations:
 
 If everything went well, it should all look like this:
 ```
-dan@dan-desk:~/work/triplea/lobby-db$ ./prod_run_flyway.sh 
+triplea@triplea-lobby:~/lobby-db$ ./prod_run_flyway.sh 
 Using user: postgres
 
 BUILD SUCCESSFUL in 1s
 1 actionable task: 1 executed
-dan@dan-desk:~/work/triplea/lobby-db$ ./prod_check_flyway.sh 
+triplea@triplea-lobby:~/work/triplea/lobby-db$ ./prod_check_flyway.sh 
 
 > Task :lobby-db:flywayInfo 
 Schema version: 1.06
