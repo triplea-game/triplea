@@ -1,5 +1,10 @@
 #!/bin/bash
 
-echo "drop database ta_users" | sudo -u postgres psql postgres
-echo "create database ta_users" | sudo -u postgres psql postgres
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  PSQL="psql -h localhost -U postgres"
+fi
+echo "Using: $PSQL"
+echo "drop database ta_users" | $PSQL
+
 

@@ -53,8 +53,30 @@ BUILD SUCCESSFUL in 0s
 
 ```
 
+## Dev Setup
+
+### Install psql
+
+- need a postgres client so you can connect to your local database
+
+#### Windows psql client
+??
+
+#### Mac psql client
+brew install postgresql
+
+#### Linux psql client
+
+sudo apt install psql
+
+
+### Install docker
+
+- we'll use docker to launch a local postgres DB. Steps for that are in .docker/README.md
+
 
 ### How to use for developers
+
 
 Convenience scripts for executing common commands are included. You will need to install
 a postgres database first locally.
