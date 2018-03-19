@@ -70,7 +70,7 @@ dependencies {
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
     testRuntime 'org.junit.platform:junit-platform-launcher:1.0.2'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
 }
