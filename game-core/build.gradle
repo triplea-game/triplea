@@ -1,9 +1,3 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
@@ -301,7 +295,7 @@ gradle.taskGraph.whenReady { graph ->
 }
 
 check {
-    dependsOn 'test', 'integTest'
+    dependsOn 'integTest'
 }
 
 checkstyle {
