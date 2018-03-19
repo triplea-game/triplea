@@ -32,6 +32,9 @@ import java.awt.MediaTracker;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -68,6 +71,7 @@ import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.MainPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -269,6 +273,20 @@ public class GameRunner {
    * welcome (launch lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
+
+    if (SystemProperties.isMac()) {
+      com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
+        final String encoding = StandardCharsets.UTF_8.displayName();
+        try {
+          final String mapName = URLDecoder.decode(
+              event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
+          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+        } catch (final UnsupportedEncodingException e) {
+          throw new AssertionError(encoding + " is not a supported encoding!", e);
+        }
+      });
+    }
+
     SwingUtilities.invokeLater(() -> {
       mainFrame.requestFocus();
       mainFrame.toFront();
@@ -424,8 +442,8 @@ public class GameRunner {
   public static Optional<Chat> getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
     return ((model instanceof ServerSetupPanel) || (model instanceof ClientSetupPanel))
-      ? Optional.ofNullable(model.getChatPanel().getChat())
-      : Optional.empty();
+        ? Optional.ofNullable(model.getChatPanel().getChat())
+        : Optional.empty();
   }
 
   /**
