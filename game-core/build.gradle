@@ -1,9 +1,3 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
@@ -301,7 +295,7 @@ gradle.taskGraph.whenReady { graph ->
 }
 
 check {
-    dependsOn 'test', 'integTest'
+    dependsOn 'integTest'
 }
 
 checkstyle {
@@ -323,4 +317,11 @@ checkstyleMain {
 checkstyleTest {
     maxWarnings = checkstyleTestMaxWarnings.toInteger()
     source sourceSets.test.output.resourcesDir
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }
