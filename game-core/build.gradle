@@ -262,7 +262,9 @@ task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
     }
 }
 
-task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, allPlatform]) {
+task releaseInstallers(group: 'release', dependsOn: [prepareInstallers]) {}
+
+task releaseAllPlatformsJar(group: 'release', dependsOn: [generateZipReleases, allPlatform]) {
     doLast {
         
         def artifacts = [
@@ -284,7 +286,6 @@ task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, allPlat
     }
 }
 
-task release(group: 'release', dependsOn: [prepareInstallers, prepareArtifacts]) {}
 
 gradle.taskGraph.whenReady { graph ->
     graph.getAllTasks().any({

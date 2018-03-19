@@ -24,7 +24,8 @@ before_deploy:
 - ./.travis/install_install4j
 - ENGINE_VERSION="$(grep engine_version game-core/game_engine.properties | sed 's/.*= *//g').$TRAVIS_BUILD_NUMBER"
 - LOBBY_VERSION="1.9.0.0.$TRAVIS_BUILD_NUMBER"
-- ./gradlew -PengineVersion="$ENGINE_VERSION" release
+- ./gradlew -PengineVersion="$ENGINE_VERSION" releaseInstallers
+- ./gradlew -PengineVersion="$ENGINE_VERSION" releaseAllPlatformsJar
 - ./.travis/generate_artifact_checksums
 - ./.travis/push_tag $ENGINE_VERSION
 - ./.travis/push_maps
@@ -33,8 +34,9 @@ deploy:
   api_key:
     secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
   file_glob: true
-  file: 
+  file:
     - game-core/build/artifacts/*
+    - game-core/build/libs/triplea-$ENGINE-VERSION-all.zip 
     - lobby/build/distributions/lobby-$LOBBY_VERSION-server.zip
   skip_cleanup: true
   prerelease: true
