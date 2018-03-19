@@ -126,3 +126,10 @@ checkstyleTest {
     maxWarnings = 0
     source sourceSets.test.output.resourcesDir
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}

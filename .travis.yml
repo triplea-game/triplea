@@ -16,7 +16,7 @@ addons:
       - python3-yaml
 install: ./.travis/setup_lobby_database
 before_script: ./.travis/setup_gpg
-script: ./gradlew --parallel check jacocoRootReport
+script: ./gradlew --parallel check jacocoTestReport
 after_success:
 - ./.travis/update_checkstyle_thresholds
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
