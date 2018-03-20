@@ -1,4 +1,3 @@
-start transaction;
 
 alter table banned_macs
   add column username varchar(40) not null default '__unknown__',
@@ -46,4 +45,3 @@ alter table muted_usernames
 comment on column muted_usernames.ip is 'The IP address of the muted user.';
 comment on column muted_usernames.mac is 'The hashed MAC address of the muted user.';
 
-commit;

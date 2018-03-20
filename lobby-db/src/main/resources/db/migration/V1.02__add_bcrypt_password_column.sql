@@ -1,4 +1,3 @@
-start transaction;
 
 alter table ta_users add column bcrypt_password character(60) check (char_length(bcrypt_password)=60);
 alter table ta_users alter column password drop not null;
@@ -14,4 +13,3 @@ comment on constraint ta_users_password_check on ta_users is 'This check constra
 comment on constraint ta_users_bcrypt_password_check on ta_users is 'This check constraint ensures the legacy password hash has the right char length of 60 chars';
 comment on constraint ta_users_check on ta_users is 'This check constraint ensures either password or bcrypt_password is not null.';
 
-commit;

@@ -1,4 +1,3 @@
-start transaction;
 
 create table access_log (
   access_time timestamptz not null default now(),
@@ -16,4 +15,3 @@ comment on column access_log.registered is 'True if the user was registered when
 
 alter table access_log owner to postgres;
 
-commit;

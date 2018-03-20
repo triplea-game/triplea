@@ -21,3 +21,12 @@ Start a new container using the following command:
 ```
 $ docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db
 ```
+
+
+## Installation
+
+
+
+### Mac
+
+https://store.docker.com/editions/community/docker-ce-desktop-mac
