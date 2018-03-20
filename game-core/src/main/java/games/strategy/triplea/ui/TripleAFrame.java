@@ -1310,13 +1310,9 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private JOptionPane getOptionPane(final JComponent parent) {
-    JOptionPane pane = null;
-    if (!(parent instanceof JOptionPane)) {
-      pane = getOptionPane((JComponent) parent.getParent());
-    } else {
-      pane = (JOptionPane) parent;
-    }
-    return pane;
+    return !(parent instanceof JOptionPane)
+        ? getOptionPane((JComponent) parent.getParent())
+        : (JOptionPane) parent;
   }
 
   public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,

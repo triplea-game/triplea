@@ -303,7 +303,7 @@ final class UnitChooser extends JPanel {
   }
 
   public void addChangeListener(final ScrollableTextFieldListener listener) {
-    entries.stream().forEach(entry -> entry.addChangeListener(listener));
+    entries.forEach(entry -> entry.addChangeListener(listener));
   }
 
   private final ScrollableTextFieldListener textFieldListener = new ScrollableTextFieldListener() {
@@ -455,7 +455,7 @@ final class UnitChooser extends JPanel {
     }
 
     void addChangeListener(final ScrollableTextFieldListener listener) {
-      hitTexts.stream().forEach(field -> field.addChangeListener(listener));
+      hitTexts.forEach(field -> field.addChangeListener(listener));
     }
 
     private class UnitChooserEntryIcon extends JComponent {
