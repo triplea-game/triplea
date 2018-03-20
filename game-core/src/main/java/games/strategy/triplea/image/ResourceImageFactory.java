@@ -1,8 +1,18 @@
 package games.strategy.triplea.image;
 
-import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -37,6 +47,39 @@ public class ResourceImageFactory extends AbstractImageFactory {
       label.setText(resource.getName() + " " + text);
     }
     return label;
+  }
+
+  public JPanel getResourcesPanel(final ResourceCollection resources, final GameData data) {
+    return getResourcesPanel(resources, false, null, data);
+  }
+
+  public JPanel getResourcesPanel(final ResourceCollection resources, final PlayerID player, final GameData data) {
+    return getResourcesPanel(resources, true, player, data);
+  }
+
+  private JPanel getResourcesPanel(final ResourceCollection resources, final boolean showEmpty, final PlayerID player,
+      final GameData data) {
+    final JPanel resourcePanel = new JPanel();
+    List<Resource> resourcesInOrder = new ArrayList<>();
+    data.acquireReadLock();
+    try {
+      resourcesInOrder = data.getResourceList().getResources();
+    } finally {
+      data.releaseReadLock();
+    }
+    int count = 0;
+    for (final Resource resource : resourcesInOrder) {
+      if ((player != null && !resource.isDisplayedFor(player))
+          || (!showEmpty && resources.getQuantity(resource) == 0)) {
+        continue;
+      }
+      final JLabel resourceLabel = getLabel(resource, resources.getResourcesCopy());
+      resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+      resourcePanel.add(resourceLabel,
+          new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+              new Insets(0, 0, 0, 0), 0, 0));
+    }
+    return resourcePanel;
   }
 
 }

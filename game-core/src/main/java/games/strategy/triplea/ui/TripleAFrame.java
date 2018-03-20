@@ -50,6 +50,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -1198,14 +1199,26 @@ public class TripleAFrame extends MainGameFrame {
     final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
     SwingUtilities.invokeLater(() -> {
       mapPanel.centerOn(scrambleTo);
+      final JDialog dialog = new JDialog(this, "Select units to scramble to " + scrambleTo.getName());
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
+      final String optionScramble = "Scramble";
+      final String optionNone = "None";
+      final JButton scrambleButton = new JButton(optionScramble);
+      scrambleButton.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(scrambleButton));
+      final JButton noneButton = new JButton(optionNone);
+      noneButton.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(noneButton));
+      final Object[] options = {scrambleButton, noneButton};
+      final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
+          JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
       final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
       whereTo.setFont(new Font("Arial", Font.ITALIC, 12));
       panel.add(whereTo, BorderLayout.NORTH);
       final JPanel panel2 = new JPanel();
       panel2.setBorder(BorderFactory.createEmptyBorder());
       panel2.setLayout(new FlowLayout());
+      final JPanel fuelCostPanel = new JPanel(new GridBagLayout());
+      panel.add(fuelCostPanel, BorderLayout.SOUTH);
       for (final Territory from : possibleScramblers.keySet()) {
         final JPanel panelChooser = new JPanel();
         panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
@@ -1220,18 +1233,46 @@ public class TripleAFrame extends MainGameFrame {
             Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
         final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
+        chooser.addChangeListener(field -> {
+          final Collection<Unit> units = new HashSet<>();
+          final Map<PlayerID, ResourceCollection> playerFuelCost = new HashMap<>();
+          for (final Tuple<Territory, UnitChooser> tuple : choosers) {
+            units.addAll(tuple.getSecond().getSelected(false));
+            final Map<PlayerID, ResourceCollection> map = Route
+                .getScrambleFuelCostCharge(tuple.getSecond().getSelected(false), tuple.getFirst(), scrambleTo, data);
+            for (final Entry<PlayerID, ResourceCollection> playerAndCost : map.entrySet()) {
+              if (playerFuelCost.containsKey(playerAndCost.getKey())) {
+                playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
+              } else {
+                playerFuelCost.put(playerAndCost.getKey(), playerAndCost.getValue());
+              }
+            }
+          }
+          fuelCostPanel.removeAll();
+          boolean hasEnoughFuel = true;
+          int count = 0;
+          for (final Entry<PlayerID, ResourceCollection> entry : playerFuelCost.entrySet()) {
+            final JLabel label = new JLabel(entry.getKey().getName() + ": ");
+            fuelCostPanel.add(label,
+                new GridBagConstraints(0, count, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                    new Insets(0, 0, 0, 0), 0, 0));
+            fuelCostPanel.add(uiContext.getResourceImageFactory().getResourcesPanel(entry.getValue(), data),
+                new GridBagConstraints(1, count++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                    new Insets(0, 0, 0, 0), 0, 0));
+            if (!entry.getKey().getResources().has(entry.getValue().getResourcesCopy())) {
+              hasEnoughFuel = false;
+              label.setForeground(Color.RED);
+            }
+          }
+          scrambleButton.setEnabled(hasEnoughFuel);
+          dialog.pack();
+        });
         choosers.add(Tuple.of(from, chooser));
         panelChooser.add(chooser);
         final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
         panel2.add(chooserScrollPane);
       }
       panel.add(panel2, BorderLayout.CENTER);
-      final String optionScramble = "Scramble";
-      final String optionNone = "None";
-      final Object[] options = {optionScramble, optionNone};
-      final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
-          JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[1]);
-      final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
       dialog.setContentPane(optionPane);
       dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       dialog.setLocationRelativeTo(getParent());
@@ -1243,7 +1284,7 @@ public class TripleAFrame extends MainGameFrame {
         if (!dialog.isVisible()) {
           return;
         }
-        final String option = ((String) optionPane.getValue());
+        final String option = ((JButton) optionPane.getValue()).getText();
         if (option.equals(optionNone)) {
           choosers.clear();
           selection.clear();
@@ -1266,6 +1307,12 @@ public class TripleAFrame extends MainGameFrame {
     Interruptibles.await(continueLatch);
     mapPanel.getUiContext().removeShutdownLatch(continueLatch);
     return selection;
+  }
+
+  private JOptionPane getOptionPane(final JComponent parent) {
+    return !(parent instanceof JOptionPane)
+        ? getOptionPane((JComponent) parent.getParent())
+        : (JOptionPane) parent;
   }
 
   public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,

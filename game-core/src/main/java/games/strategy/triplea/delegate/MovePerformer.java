@@ -163,11 +163,10 @@ public class MovePerformer implements Serializable {
         final Collection<Unit> presentFromStartTilEnd = new ArrayList<>(arrived);
         presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
         final CompositeChange change = new CompositeChange();
-        if (Properties.getUseFuelCost(data)) {
-          // markFuelCostResourceChange must be done
-          // before we load/unload units
-          change.add(Route.getFuelChanges(units, route, id, data));
-        }
+
+        // markFuelCostResourceChange must be done before we load/unload units
+        change.add(Route.getFuelChanges(units, route, id, data));
+
         markTransportsMovement(arrived, transporting, route);
         if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
           boolean bombing = false;
