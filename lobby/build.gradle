@@ -101,7 +101,7 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
 task release(group: 'release', dependsOn: [lobbyServer]) {}
 
 checkstyle {
-    toolVersion = "8.0"
+    toolVersion = "8.8"
     configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
     configProperties = [samedir: configFile.parent]
 }
