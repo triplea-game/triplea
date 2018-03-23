@@ -352,8 +352,12 @@ public class TileManager {
         overflow = false;
       } else {
         lastPlace = new Point(lastPlace);
-        lastPlace.x += uiContext.getUnitImageFactory().getUnitImageWidth();
         overflow = true;
+        if (mapData.getPlacementOverflowToLeft(territory)) {
+          lastPlace.x -= uiContext.getUnitImageFactory().getUnitImageWidth();
+        } else {
+          lastPlace.x += uiContext.getUnitImageFactory().getUnitImageWidth();
+        }
       }
       final UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
           category.getOwner().getName(), lastPlace, category.getDamaged(), category.getBombingDamage(),
