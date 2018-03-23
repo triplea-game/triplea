@@ -7,6 +7,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.2'
     id 'com.install4j.gradle' version '7.0.1'
     id 'de.undercouch.download' version '3.3.0'
+    id 'net.ltgt.errorprone' version '0.0.13'
 }
 
 group = 'triplea'
@@ -27,8 +28,16 @@ targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
     options.compilerArgs += [ '-Xlint:all', '-Xmaxwarns', '1000' ]
+    
+    // workaround for: https://github.com/google/error-prone/issues/780
+    options.compilerArgs += [ '-Xep:ParameterName:OFF' ]
+    
     options.incremental = true
     options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    options.compilerArgs += [ '-Xep:ClassCanBeStatic:OFF' ]
 }
 
 
@@ -46,9 +55,11 @@ repositories {
 }
 
 dependencies {
+    errorprone 'com.google.errorprone:error_prone_core:2.2.0'
+
     compile project(':game-core')
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
+    compileOnly 'org.projectlombok:lombok:1.16.20'
 
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
