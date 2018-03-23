@@ -248,14 +248,8 @@ task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
 
 task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, allPlatform]) {
     doLast {
-        
-        def artifacts = [
-            file("$distsDir/game-core-$version-all_platforms.zip"),
-        ]
-        artifacts.each {
-            if (!it.exists()) {
-                throw new GradleException("artifact '$it' does not exist")
-            }
+        if (!file("$distsDir/game-core-$version-all_platforms.zip").exists()) {
+            throw new GradleException("All Platforms Artifact does not exist")
         }
 
         copy {

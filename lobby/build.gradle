@@ -88,10 +88,8 @@ shadowJar {
 
 task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
     classifier 'server'
-    ['config/lobby.properties'].each { fileName ->
-        from(fileName) {
-            into('config/lobby')
-        }
+    from('config/lobby.properties') {
+        into('config/lobby')
     }
     from(shadowJar.outputs) {
         into('bin')
