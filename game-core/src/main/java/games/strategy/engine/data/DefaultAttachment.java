@@ -80,7 +80,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return false;
     }
     throw new IllegalArgumentException("Attachments: " + value + " is not a valid boolean");
-
   }
 
   protected String thisErrorMsg() {
