@@ -6,7 +6,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.17.0'
     id 'com.github.johnrengelman.shadow' version '2.0.2'
     id 'com.install4j.gradle' version '7.0.1'
-    id 'de.undercouch.download' version '3.3.0'
+    id 'de.undercouch.download' version '3.4.2'
     id 'net.ltgt.errorprone' version '0.0.13'
 }
 
