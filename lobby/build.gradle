@@ -21,7 +21,7 @@ ext {
     rootFilesDir = file("$buildDir/rootFiles")
 }
 
-version = System.getenv('LOBBY_VERSION') ?: "dev";
+version = System.getenv('LOBBY_VERSION') ?: "dev"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
