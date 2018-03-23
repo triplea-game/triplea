@@ -66,8 +66,6 @@ dependencies {
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
-
-    testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
     
