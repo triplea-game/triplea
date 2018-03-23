@@ -531,7 +531,6 @@ public final class PlacementPicker {
       }
       try (InputStream in = new FileInputStream(placeName)) {
         placements = PointFileReaderWriter.readOneToManyPlacements(in);
-        System.out.println(placements);
       } catch (final IOException e) {
         ToolLogger.error("Failed to load placements: " + placeName, e);
       }

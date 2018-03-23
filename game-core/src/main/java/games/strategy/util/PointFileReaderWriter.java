@@ -189,7 +189,7 @@ public final class PointFileReaderWriter {
   }
 
   /**
-   * Writes the specified one-to-many mapping between names and points to the specified stream.
+   * Writes the specified one-to-many mapping between names and (points, overflowToLeft) to the specified stream.
    *
    * @param sink The stream to which the name-to-points mappings will be written.
    * @param mapping The name-to-points mapping to be written.
@@ -226,7 +226,7 @@ public final class PointFileReaderWriter {
   }
 
   /**
-   * Returns a map of the form String -> Collection of points.
+   * Returns a map of the form String -> (points, overflowToLeft).
    */
   public static Map<String, Tuple<List<Point>, Boolean>> readOneToManyPlacements(final InputStream stream)
       throws IOException {
