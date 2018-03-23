@@ -123,13 +123,13 @@ dependencies {
     testCompile 'org.testfx:testfx-junit5:4.0.13-alpha'
 
     if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
-        testCompile('org.testfx:testfx-core:4.0.13-alpha') {
+        testCompile('org.testfx:testfx-core:4.0.12-alpha') {
             exclude group: 'org.testfx', module: 'testfx-internal-java8'
         }
-        testRuntime 'org.testfx:testfx-internal-java9:4.0.13-alpha'
+        testRuntime 'org.testfx:testfx-internal-java9:4.0.12-alpha'
         testCompile 'org.testfx:openjfx-monocle:jdk-9+181'
     } else {
-        testCompile 'org.testfx:testfx-core:4.0.13-alpha'
+        testCompile 'org.testfx:testfx-core:4.0.12-alpha'
         testCompile 'org.testfx:openjfx-monocle:8u76-b04'
     }
 
