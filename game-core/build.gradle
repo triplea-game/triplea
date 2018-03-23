@@ -156,25 +156,6 @@ task integTest(type: Test, dependsOn: [compileIntegTestJava]) {
     classpath = sourceSets.integTest.runtimeClasspath
 }
 
-task jacocoRootReport(type: JacocoReport) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = 'Generates code coverage report for all Test tasks.'
-
-    sourceSets sourceSets.main
-    executionData fileTree(buildDir).include('**/jacoco/*.exec')
-
-    reports {
-        html {
-            destination = file("${project.jacoco.reportsDir}/root/html")
-            enabled = true
-        }
-        xml {
-            destination = file("${project.jacoco.reportsDir}/root/jacocoRootReport.xml")
-            enabled = true
-        }
-    }
-}
-
 shadowJar {
     destinationDir = libsDir
     baseName = 'triplea'
