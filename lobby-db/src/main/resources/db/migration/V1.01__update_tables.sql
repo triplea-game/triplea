@@ -1,5 +1,3 @@
-start transaction;
-
 alter table ta_users
     alter column email type varchar(254),
     alter column joined type timestamptz,
@@ -73,4 +71,3 @@ comment on column muted_usernames.username is 'The username of the muted user. A
 comment on column muted_usernames.mute_till is 'A timestamp indicating how long the mute should be active, if NULL the mute is forever.';
 comment on constraint muted_usernames_mute_till_check on muted_usernames is 'Ensures no storage is being wasted by muting someone backdated to the past.';
 
-commit;

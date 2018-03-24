@@ -1,4 +1,3 @@
-start transaction;
 
 alter table muted_macs
   add column mod_username varchar(40) not null default '__unknown__',
@@ -30,4 +29,3 @@ comment on column muted_usernames.mod_username is 'The username of the moderator
 comment on column muted_usernames.mod_ip is 'The IP address of the moderator that executed the mute.';
 comment on column muted_usernames.mod_mac is 'The hashed MAC address of the moderator that executed the mute.';
 
-commit;

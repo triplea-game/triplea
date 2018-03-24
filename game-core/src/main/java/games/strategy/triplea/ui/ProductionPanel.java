@@ -174,26 +174,7 @@ public class ProductionPanel extends JPanel {
     remainingResources.removeAll();
     left.setText(String.format("%d total units purchased. Remaining resources: ", totalUnits));
     if (resourceCollection != null) {
-      final IntegerMap<Resource> resources = resourceCollection.getResourcesCopy();
-      int count = 0;
-      List<Resource> resourcesInOrder = new ArrayList<>();
-      data.acquireReadLock();
-      try {
-        resourcesInOrder = data.getResourceList().getResources();
-      } finally {
-        data.releaseReadLock();
-      }
-      for (final Resource resource : resourcesInOrder) {
-        if (!resource.isDisplayedFor(id)) {
-          continue;
-        }
-        final JLabel resourceLabel =
-            uiContext.getResourceImageFactory().getLabel(resource, resources);
-        resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-        remainingResources.add(resourceLabel,
-            new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-      }
+      remainingResources.add(uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, id, data));
     }
   }
 

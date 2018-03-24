@@ -1,4 +1,3 @@
-start transaction;
 
 alter table banned_macs
   add column mod_username varchar(40) not null default '__unknown__',
@@ -30,4 +29,3 @@ comment on column banned_usernames.mod_username is 'The username of the moderato
 comment on column banned_usernames.mod_ip is 'The IP address of the moderator that executed the ban.';
 comment on column banned_usernames.mod_mac is 'The hashed MAC address of the moderator that executed the ban.';
 
-commit;

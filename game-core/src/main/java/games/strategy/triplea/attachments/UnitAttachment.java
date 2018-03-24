@@ -467,9 +467,10 @@ public class UnitAttachment extends DefaultAttachment {
     m_whenHitPointsRepairedChangesInto = new HashMap<>();
   }
 
-  private void setWhenCapturedChangesInto(final String value) throws GameParseException {
+  @VisibleForTesting
+  void setWhenCapturedChangesInto(final String value) throws GameParseException {
     final String[] s = value.split(":");
-    if (s.length < 5 || (s.length - 1) % 2 != 0) {
+    if (s.length < 5 || s.length % 2 == 0) {
       throw new GameParseException("whenCapturedChangesInto must have 5 or more values, "
           + "playerFrom:playerTo:keepAttributes:unitType:howMany "
           + "(you may have additional unitType:howMany:unitType:howMany, etc" + thisErrorMsg());
@@ -484,14 +485,12 @@ public class UnitAttachment extends DefaultAttachment {
     }
     getBool(s[2]);
     final IntegerMap<UnitType> unitsToMake = new IntegerMap<>();
-    for (int i = 3; i < s.length; i++) {
+    for (int i = 3; i < s.length; i += 2) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
       if (ut == null) {
-        throw new GameParseException("whenCapturedChangesInto: No unit named: " + s[3] + thisErrorMsg());
+        throw new GameParseException("whenCapturedChangesInto: No unit named: " + s[i] + thisErrorMsg());
       }
-      i++;
-      final int howMany = getInt(s[i]);
-      unitsToMake.put(ut, howMany);
+      unitsToMake.put(ut, getInt(s[i + 1]));
     }
     m_whenCapturedChangesInto.put(s[0] + ":" + s[1], Tuple.of(s[2], unitsToMake));
   }

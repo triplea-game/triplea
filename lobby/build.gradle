@@ -1,12 +1,3 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
@@ -16,9 +7,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.2'
     id 'com.install4j.gradle' version '7.0.1'
     id 'de.undercouch.download' version '3.3.0'
+    id 'net.ltgt.errorprone' version '0.0.13'
 }
-
-apply plugin: 'org.junit.platform.gradle.plugin'
 
 group = 'triplea'
 description = 'TripleA Lobby'
@@ -38,8 +28,16 @@ targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
     options.compilerArgs += [ '-Xlint:all', '-Xmaxwarns', '1000' ]
+    
+    // workaround for: https://github.com/google/error-prone/issues/780
+    options.compilerArgs += [ '-Xep:ParameterName:OFF' ]
+    
     options.incremental = true
     options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    options.compilerArgs += [ '-Xep:ClassCanBeStatic:OFF' ]
 }
 
 
@@ -57,22 +55,31 @@ repositories {
 }
 
 dependencies {
+    errorprone 'com.google.errorprone:error_prone_core:2.2.0'
+
     compile project(':game-core')
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version:'1.16.20'
+    compileOnly 'org.projectlombok:lombok:1.16.20'
 
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.2'
     testCompile 'org.mockito:mockito-core:2.13.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
-
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.0.2'
-    testRuntime 'org.junit.platform:junit-platform-launcher:1.0.2'
+    
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+    
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+    testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 task jacocoRootReport(type: JacocoReport) {
@@ -115,10 +122,6 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
 
 task release(group: 'release', dependsOn: [lobbyServer]) {}
 
-check {
-    dependsOn 'junitPlatformTest'
-}
-
 checkstyle {
     toolVersion = "8.0"
     configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
@@ -135,22 +138,9 @@ checkstyleTest {
     source sourceSets.test.output.resourcesDir
 }
 
-afterEvaluate {
-    def junitPlatformTest = tasks.junitPlatformTest
-
-    jacoco {
-        applyTo(junitPlatformTest)
-    }
-
-    task jacocoJunit5TestReport(type: JacocoReport) {
-        executionData junitPlatformTest
-        sourceSets sourceSets.main
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories = files(sourceSets.main.output)
-
-        reports {
-            xml.enabled true
-            html.enabled true
-        }
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
     }
 }
