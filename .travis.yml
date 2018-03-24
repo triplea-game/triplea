@@ -29,24 +29,18 @@ after_success:
 ## upload coverage report - https://github.com/codecov/example-gradle
 - bash <(curl -s https://codecov.io/bash)
 before_deploy:
-## Update engine version property in-place, append build number.
-## For example: "engine_version = 1.9.0.0" -> "engine_version = 1.9.0.0.1234"
+## Update engine property file in-place, append build number. eg: "engine_version = 1.9.0.0" -> "engine_version = 1.9.0.0.1234"
 - sed -i "s/^\(engine_version\s*=.*\)$/\1.${TRAVIS_BUILD_NUMBER}/" game-core/game_engine.properties
-## Read the engine version number into a variable
 - ENGINE_VERSION="$(grep engine_version game-core/game_engine.properties | sed 's/.*=\s*//g')"
-## set lobby version variable to match engine version; the two for now are in sync.
 - LOBBY_VERSION="$ENGINE_VERSION"
-## install4j is a program to build executable installers
 - ./.travis/install_install4j
-## create OS specific installer application
 - ./gradlew -PengineVersion="$ENGINE_VERSION" releaseInstallers
-## create a universal java distributable that has assets and jar file packaged together
 - ./gradlew -PengineVersion="$ENGINE_VERSION" releaseAllPlatformsJar
 - ./.travis/generate_artifact_checksums
-## tag push triggers deploy files to be uploaded to github releases.
+## push tag triggers 'deploy' to occur, files listed in 'deploy.files' are uploaded to github releases.
 - ./.travis/push_tag $ENGINE_VERSION
-## read the maps in 'triplea_maps.yaml' and send info to json data dump that website
-## reads. This will live update the maps page: http://triplea-game.org/maps-list/maps/
+## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
+## to website json data directory.
 - ./.travis/push_maps
 deploy:
   provider: releases
