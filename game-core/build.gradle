@@ -21,7 +21,6 @@ ext {
     rootFilesDir = file("$buildDir/rootFiles")
 
     gameEnginePropertiesFile = file('game_engine.properties')
-    gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
 }
 
 def getEngineVersion() {
@@ -206,29 +205,14 @@ task downloadAssets(group: 'release') {
     }
 }
 
-task prepareGameEngineProperties() {
-    group = 'release'
-    description = 'Updates the game engine properties with final values for distribution.'
-
-    doLast {
-        copy {
-            from gameEnginePropertiesFile
-            into gameEnginePropertiesArtifactFile.parent
-        }
-        ant.propertyfile(file: gameEnginePropertiesArtifactFile) {
-            entry key: 'engine_version', value: version
-        }
-    }
-}
-
-task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar, prepareGameEngineProperties]) {
+task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
     classifier 'all_platforms'
     ['assets', 'dice_servers'].each { folder ->
         from(folder) {
             into(folder)
         }
     }
-    from(gameEnginePropertiesArtifactFile)
+    from(gameEnginePropertiesFile)
     from(shadowJar.outputs) {
         into('bin')
     }
