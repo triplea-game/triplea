@@ -205,20 +205,6 @@ task downloadAssets(group: 'release') {
     }
 }
 
-task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
-    classifier 'all_platforms'
-    ['assets', 'dice_servers'].each { folder ->
-        from(folder) {
-            into(folder)
-        }
-    }
-    from(gameEnginePropertiesFile)
-    from(shadowJar.outputs) {
-        into('bin')
-    }
-}
-
-task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {}
 
 import com.install4j.gradle.Install4jTask
 task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {
@@ -252,6 +238,23 @@ task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
 }
 
 task releaseInstallers(group: 'release', dependsOn: [prepareInstallers]) {}
+
+
+task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
+    classifier 'all_platforms'
+    ['assets', 'dice_servers'].each { folder ->
+        from(folder) {
+            into(folder)
+        }
+    }
+    from(gameEnginePropertiesFile)
+    from(shadowJar.outputs) {
+        into('bin')
+    }
+}
+
+task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {}
+
 
 task releaseAllPlatformsJar(group: 'release', dependsOn: [generateZipReleases, allPlatform]) {
     doLast {
