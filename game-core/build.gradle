@@ -215,7 +215,7 @@ task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAsse
     }
 }
 
-task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
+task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]) {
     doLast {
         ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
         def artifacts = [
@@ -237,8 +237,6 @@ task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
     }
 }
 
-task releaseInstallers(group: 'release', dependsOn: [prepareInstallers]) {}
-
 
 task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
     classifier 'all_platforms'
@@ -253,10 +251,7 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
     }
 }
 
-task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {}
-
-
-task releaseAllPlatformsJar(group: 'release', dependsOn: [generateZipReleases, allPlatform]) {
+task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {
     doLast {
         
         def artifacts = [

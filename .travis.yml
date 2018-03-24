@@ -34,8 +34,8 @@ before_deploy:
 - ENGINE_VERSION="$(grep engine_version game-core/game_engine.properties | sed 's/.*=\s*//g')"
 - LOBBY_VERSION="$ENGINE_VERSION"
 - ./.travis/install_install4j
-- ./gradlew -PengineVersion="$ENGINE_VERSION" releaseInstallers
-- ./gradlew -PengineVersion="$ENGINE_VERSION" releaseAllPlatformsJar
+- ./gradlew -PengineVersion="$ENGINE_VERSION" generateInstallerReleases
+- ./gradlew -PengineVersion="$ENGINE_VERSION" generateZipReleases
 - ./.travis/generate_artifact_checksums
 ## push tag triggers 'deploy' to occur, files listed in 'deploy.files' are uploaded to github releases.
 - ./.travis/push_tag $ENGINE_VERSION
