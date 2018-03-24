@@ -14,22 +14,39 @@ addons:
       # python for map file splitter
       - python3
       - python3-yaml
-install: 
+install:
+## set up clean database, will be used later for integration test
  - echo "create database ta_users" | psql -h localhost -U postgres
+## run database migration to create tables and test data inserts
  - ./gradlew flywayMigrate
 before_script: ./.travis/setup_gpg
-script: ./gradlew --parallel check jacocoTestReport
+script:
+## run all tests
+- ./gradlew --parallel check jacocoTestReport
 after_success:
+## if checkstyle violation counts are lower, submit a automatic PR to update the current violation count.
 - ./.travis/update_checkstyle_thresholds
-- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+## upload coverage report - https://github.com/codecov/example-gradle
+- bash <(curl -s https://codecov.io/bash)
 before_deploy:
+## Update engine version property in-place, append build number.
+## For example: "engine_version = 1.9.0.0" -> "engine_version = 1.9.0.0.1234"
+- sed -i "s/^\(engine_version\s*=.*\)$/\1.${TRAVIS_BUILD_NUMBER}/" game-core/game_engine.properties
+## Read the engine version number into a variable
+- ENGINE_VERSION="$(grep engine_version game-core/game_engine.properties | sed 's/.*=\s*//g')"
+## set lobby version variable to match engine version; the two for now are in sync.
+- LOBBY_VERSION="$ENGINE_VERSION"
+## install4j is a program to build executable installers
 - ./.travis/install_install4j
-- ENGINE_VERSION="$(grep engine_version game-core/game_engine.properties | sed 's/.*= *//g').$TRAVIS_BUILD_NUMBER"
-- LOBBY_VERSION="1.9.0.0.$TRAVIS_BUILD_NUMBER"
+## create OS specific installer application
 - ./gradlew -PengineVersion="$ENGINE_VERSION" releaseInstallers
+## create a universal java distributable that has assets and jar file packaged together
 - ./gradlew -PengineVersion="$ENGINE_VERSION" releaseAllPlatformsJar
 - ./.travis/generate_artifact_checksums
+## tag push triggers deploy files to be uploaded to github releases.
 - ./.travis/push_tag $ENGINE_VERSION
+## read the maps in 'triplea_maps.yaml' and send info to json data dump that website
+## reads. This will live update the maps page: http://triplea-game.org/maps-list/maps/
 - ./.travis/push_maps
 deploy:
   provider: releases
@@ -38,8 +55,8 @@ deploy:
   file_glob: true
   file:
     - game-core/build/artifacts/*
-    - game-core/build/libs/triplea-$ENGINE-VERSION-all.zip 
     - lobby/build/distributions/lobby-$LOBBY_VERSION-server.zip
+  ## This is set to true to not delete artifacts between the 'before-deploy' and 'deploy' steps
   skip_cleanup: true
   prerelease: true
   on:
@@ -56,4 +73,3 @@ notifications:
     on_success: always  # options: [always|never|change] default: always
     on_failure: always  # options: [always|never|change] default: always
     on_start: never     # options: [always|never|change] default: always
-
