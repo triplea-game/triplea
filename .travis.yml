@@ -15,24 +15,20 @@ addons:
       - python3
       - python3-yaml
 install:
-## set up clean database, will be used later for integration test
  - echo "create database ta_users" | psql -h localhost -U postgres
-## run database migration to create tables and test data inserts
  - ./gradlew flywayMigrate
 before_script: ./.travis/setup_gpg
 script:
-## run all tests
 - ./gradlew --parallel check jacocoTestReport
 after_success:
 ## if checkstyle violation counts are lower, submit a automatic PR to update the current violation count.
 - ./.travis/update_checkstyle_thresholds
-## upload coverage report - https://github.com/codecov/example-gradle
-- bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
 ## Update engine property file in-place, append build number. eg: "engine_version = 1.9.0.0" -> "engine_version = 1.9.0.0.1234"
-- sed -i "s/^\(engine_version\s*=.*\)$/\1.${TRAVIS_BUILD_NUMBER}/" game-core/game_engine.properties
-- ENGINE_VERSION="$(grep engine_version game-core/game_engine.properties | sed 's/.*=\s*//g')"
+- ENGINE_VERSION="1.9.0.0.${TRAVIS_BUILD_NUMBER}"
 - LOBBY_VERSION="$ENGINE_VERSION"
+- sed -i "s/^\(engine_version\s*=\).*/\1 ${ENGINE_VERSION}/" game-core/game_engine.properties
 - ./.travis/install_install4j
 - ./gradlew -PengineVersion="$ENGINE_VERSION" generateInstallerReleases
 - ./gradlew -PengineVersion="$ENGINE_VERSION" generateZipReleases

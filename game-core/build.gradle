@@ -31,12 +31,11 @@ def getEngineVersion() {
     def props = new Properties()
     gameEnginePropertiesFile.withInputStream { props.load(it) }
     def devEngineVersion = props.getProperty('engine_version')
-    if (devEngineVersion) {
-        return "${devEngineVersion}.dev"
+    if (!devEngineVersion) {
+        throw new GradleException("unable to determine engine version: "
+                + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
     }
-
-    throw new GradleException("unable to determine engine version: "
-        + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
+    return "${devEngineVersion}"
 }
 
 def remoteFile(url) {
