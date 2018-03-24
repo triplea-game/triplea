@@ -29,7 +29,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -275,7 +278,7 @@ public class TileManager {
       drawTerritoryEffects(territory, mapData, drawing);
     }
     if (uiContext.getShowUnits()) {
-      drawUnits(territory, mapData, drawnOn, drawing);
+      drawUnits(territory, mapData, drawnOn, drawing, data);
     }
     drawing.add(new BattleDrawable(territory.getName()));
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
@@ -336,16 +339,15 @@ public class TileManager {
   }
 
   private void drawUnits(final Territory territory, final MapData mapData, final Set<Tile> drawnOn,
-      final Set<IDrawable> drawing) {
+      final Set<IDrawable> drawing, final GameData data) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
     if (placementPoints == null || !placementPoints.hasNext()) {
       throw new IllegalStateException("No where to place units:" + territory.getName());
     }
+
     Point lastPlace = null;
-    final Iterator<UnitCategory> unitCategoryIter =
-        UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
-    while (unitCategoryIter.hasNext()) {
-      final UnitCategory category = unitCategoryIter.next();
+    final List<UnitCategory> categories = getSortedUnitCategories(territory, data);
+    for (final UnitCategory category : categories) {
       final boolean overflow;
       if (placementPoints.hasNext()) {
         lastPlace = new Point(placementPoints.next());
@@ -373,6 +375,23 @@ public class TileManager {
         drawnOn.add(tile);
       }
     }
+  }
+
+  private static List<UnitCategory> getSortedUnitCategories(final Territory t, final GameData data) {
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeperator.categorize(t.getUnits().getUnits()));
+    final List<PlayerID> players = data.getPlayerList().getPlayers();
+    if (players.contains(t.getOwner())) {
+      players.remove(t.getOwner());
+      players.add(0, t.getOwner());
+    }
+    final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
+    categories.sort(Comparator
+        .comparing(UnitCategory::getOwner, Comparator.comparing(players::indexOf))
+        .thenComparing(UnitCategory::getType, Comparator.comparing(ut -> !UnitAttachment.get(ut).getIsInfrastructure()))
+        .thenComparing(UnitCategory::getType, Comparator.comparing(ut -> !Matches.unitTypeIsLand().test(ut)))
+        .thenComparing(UnitCategory::getType, Comparator.comparing(ut -> !UnitAttachment.get(ut).getIsSea()))
+        .thenComparing(UnitCategory::getType, Comparator.comparing(xmlUnitTypes::indexOf)));
+    return categories;
   }
 
   public Image createTerritoryImage(final Territory t, final GameData data, final MapData mapData) {

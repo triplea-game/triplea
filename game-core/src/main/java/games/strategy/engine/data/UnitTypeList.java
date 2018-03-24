@@ -1,8 +1,8 @@
 package games.strategy.engine.data;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
   private static final long serialVersionUID = 9002927658524651749L;
-  private final Map<String, UnitType> m_unitTypes = new HashMap<>();
+  private final Map<String, UnitType> m_unitTypes = new LinkedHashMap<>();
 
   /**
    * Creates new UnitTypeCollection.
