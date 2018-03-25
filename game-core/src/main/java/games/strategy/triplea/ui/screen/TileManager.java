@@ -24,12 +24,17 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -275,7 +280,7 @@ public class TileManager {
       drawTerritoryEffects(territory, mapData, drawing);
     }
     if (uiContext.getShowUnits()) {
-      drawUnits(territory, mapData, drawnOn, drawing);
+      drawUnits(territory, mapData, drawnOn, drawing, data);
     }
     drawing.add(new BattleDrawable(territory.getName()));
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
@@ -336,24 +341,26 @@ public class TileManager {
   }
 
   private void drawUnits(final Territory territory, final MapData mapData, final Set<Tile> drawnOn,
-      final Set<IDrawable> drawing) {
+      final Set<IDrawable> drawing, final GameData data) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
     if (placementPoints == null || !placementPoints.hasNext()) {
       throw new IllegalStateException("No where to place units:" + territory.getName());
     }
+
     Point lastPlace = null;
-    final Iterator<UnitCategory> unitCategoryIter =
-        UnitSeperator.categorize(territory.getUnits().getUnits()).iterator();
-    while (unitCategoryIter.hasNext()) {
-      final UnitCategory category = unitCategoryIter.next();
+    for (final UnitCategory category : getSortedUnitCategories(territory, data)) {
       final boolean overflow;
       if (placementPoints.hasNext()) {
         lastPlace = new Point(placementPoints.next());
         overflow = false;
       } else {
         lastPlace = new Point(lastPlace);
-        lastPlace.x += uiContext.getUnitImageFactory().getUnitImageWidth();
         overflow = true;
+        if (mapData.getPlacementOverflowToLeft(territory)) {
+          lastPlace.x -= uiContext.getUnitImageFactory().getUnitImageWidth();
+        } else {
+          lastPlace.x += uiContext.getUnitImageFactory().getUnitImageWidth();
+        }
       }
       final UnitsDrawer drawable = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
           category.getOwner().getName(), lastPlace, category.getDamaged(), category.getBombingDamage(),
@@ -369,6 +376,24 @@ public class TileManager {
         drawnOn.add(tile);
       }
     }
+  }
+
+  @VisibleForTesting
+  static List<UnitCategory> getSortedUnitCategories(final Territory t, final GameData data) {
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeperator.categorize(t.getUnits().getUnits()));
+    final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
+    categories.sort(Comparator
+        .comparing(UnitCategory::getOwner, Comparator
+            .comparing((final PlayerID p) -> !p.equals(t.getOwner()))
+            .thenComparing(p -> !Matches.isAllied(p, data).test(t.getOwner()))
+            .thenComparing(data.getPlayerList().getPlayers()::indexOf))
+        .thenComparing(Comparator.comparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType())))
+        .thenComparing(UnitCategory::getType, Comparator
+            .comparing((final UnitType ut) -> !Matches.unitTypeCanNotMoveDuringCombatMove().test(ut))
+            .thenComparing(ut -> !Matches.unitTypeIsLand().test(ut))
+            .thenComparing(ut -> !UnitAttachment.get(ut).getIsSea())
+            .thenComparing(xmlUnitTypes::indexOf)));
+    return categories;
   }
 
   public Image createTerritoryImage(final Territory t, final GameData data, final MapData mapData) {

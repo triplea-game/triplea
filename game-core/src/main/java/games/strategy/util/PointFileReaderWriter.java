@@ -189,6 +189,69 @@ public final class PointFileReaderWriter {
   }
 
   /**
+   * Writes the specified one-to-many mapping between names and (points, overflowToLeft) to the specified stream.
+   *
+   * @param sink The stream to which the name-to-points mappings will be written.
+   * @param mapping The name-to-points mapping to be written.
+   *
+   * @throws IOException If an I/O error occurs while writing to the stream.
+   */
+  public static void writeOneToManyPlacements(final OutputStream sink,
+      final Map<String, Tuple<List<Point>, Boolean>> mapping)
+      throws IOException {
+    checkNotNull(sink);
+    checkNotNull(mapping);
+
+    final StringBuilder out = new StringBuilder();
+    final Iterator<String> keyIter = mapping.keySet().iterator();
+    while (keyIter.hasNext()) {
+      final String name = keyIter.next();
+      out.append(name).append(" ");
+      final Collection<Point> points = mapping.get(name).getFirst();
+      final boolean overflowToLeft = mapping.get(name).getSecond();
+      final Iterator<Point> pointIter = points.iterator();
+      while (pointIter.hasNext()) {
+        final Point point = pointIter.next();
+        out.append(" (").append(point.x).append(",").append(point.y).append(")");
+        if (pointIter.hasNext()) {
+          out.append(" ");
+        }
+      }
+      out.append(" | overflowToLeft=" + overflowToLeft);
+      if (keyIter.hasNext()) {
+        out.append("\r\n");
+      }
+    }
+    write(out, sink);
+  }
+
+  /**
+   * Returns a map of the form String -> (points, overflowToLeft).
+   */
+  public static Map<String, Tuple<List<Point>, Boolean>> readOneToManyPlacements(final InputStream stream)
+      throws IOException {
+    checkNotNull(stream);
+
+    final Map<String, List<Point>> mapping = new HashMap<>();
+    final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
+    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
+        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
+      @Nullable
+      String current = reader.readLine();
+      while (current != null) {
+        if (current.trim().length() != 0) {
+          final String[] s = current.split(" \\| ");
+          final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
+          final boolean overflowToLeft = s.length == 2 ? Boolean.parseBoolean(s[1].split("=")[1]) : false;
+          result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
+        }
+        current = reader.readLine();
+      }
+    }
+    return result;
+  }
+
+  /**
    * Returns a map of the form String -> Collection of polygons.
    */
   public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException {
@@ -285,7 +348,8 @@ public final class PointFileReaderWriter {
     polygons.add(new Polygon(pointsX, pointsY, pointsX.length));
   }
 
-  private static void readMultiple(final String line, final Map<String, List<Point>> mapping) throws IOException {
+  private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping)
+      throws IOException {
     final StringTokenizer tokens = new StringTokenizer(line, "");
     final String name = tokens.nextToken("(").trim();
     if (mapping.containsKey(name)) {
@@ -303,5 +367,6 @@ public final class PointFileReaderWriter {
       points.add(new Point(x, y));
     }
     mapping.put(name, points);
+    return Tuple.of(name, points);
   }
 }

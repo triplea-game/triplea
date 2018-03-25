@@ -40,6 +40,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import games.strategy.util.Tuple;
 import games.strategy.util.function.ThrowingFunction;
 import games.strategy.util.function.ThrowingSupplier;
 
@@ -96,7 +97,7 @@ public class MapData implements Closeable {
 
   private final DefaultColors defaultColors = new DefaultColors();
   private final Map<String, Color> playerColors = new HashMap<>();
-  private Map<String, List<Point>> place;
+  private Map<String, Tuple<List<Point>, Boolean>> place;
   private Map<String, List<Polygon>> polys;
   private Map<String, Point> centers;
   private Map<String, Point> vcPlace;
@@ -139,7 +140,7 @@ public class MapData implements Closeable {
   public MapData(final ResourceLoader loader) {
     resourceLoader = loader;
     try {
-      place = readPointsOneToMany(optionalResource(PLACEMENT_FILE));
+      place = readPlacementsOneToMany(optionalResource(PLACEMENT_FILE));
       territoryEffects = readPointsOneToMany(optionalResource(TERRITORY_EFFECT_FILE));
 
       if (loader.getResource(POLYGON_FILE) == null) {
@@ -196,6 +197,12 @@ public class MapData implements Closeable {
       final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
       throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToMany);
+  }
+
+  private static Map<String, Tuple<List<Point>, Boolean>> readPlacementsOneToMany(
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
+      throws IOException {
+    return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPlacements);
   }
 
   private static Map<String, List<Polygon>> readPolygonsOneToMany(
@@ -534,7 +541,11 @@ public class MapData implements Closeable {
   }
 
   public List<Point> getPlacementPoints(final Territory terr) {
-    return place.get(terr.getName());
+    return place.get(terr.getName()).getFirst();
+  }
+
+  public boolean getPlacementOverflowToLeft(final Territory terr) {
+    return place.get(terr.getName()).getSecond();
   }
 
   public List<Polygon> getPolygons(final String terr) {

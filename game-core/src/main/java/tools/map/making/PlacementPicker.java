@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -50,6 +51,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import games.strategy.util.Tuple;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
@@ -99,14 +101,16 @@ public final class PlacementPicker {
             + "<br><br>Holding CTRL/SHIFT + LEFT CLICK = Create a new placement for that territory. "
             + "<br><br>RIGHT CLICK = Remove last placement for that territory. "
             + "<br><br>Holding CTRL/SHIFT + RIGHT CLICK = Save all placements for that territory. "
+            + "<br><br>Pressing the 'O' key = Toggle the direction for placement overflow for that territory. "
             + "<br><br>It is a very good idea to check each territory using the PlacementPicker after running the "
             + "AutoPlacementFinder "
             + "<br>to make sure there are enough placements for each territory. If not, you can always add more then "
             + "save it. "
-            + "<br><br>IF there are not enough placements, the units will Overflow to the RIGHT of the very LAST "
-            + "placement made, "
+            + "<br><br>IF there are not enough placements, by default the units will Overflow to the RIGHT of the "
+            + "very LAST placement made, "
             + "<br>so be sure that the last placement is on the right side of the territory "
-            + "<br>or that it does not overflow directly on top of other placements. "
+            + "<br>or that it doesn't overflow directly on top of other placements. Can instead toggle the overflow "
+            + "direction."
             + "<br><br>To show all placements, or see the overflow direction, or see which territories you have not "
             + "yet completed enough, "
             + "<br>placements for, turn on the mode options in the 'edit' menu. " + "</html>"));
@@ -140,8 +144,9 @@ public final class PlacementPicker {
     private Image image;
     private final JLabel locationLabel = new JLabel();
     private Map<String, List<Polygon>> polygons = new HashMap<>();
-    private Map<String, List<Point>> placements;
+    private Map<String, Tuple<List<Point>, Boolean>> placements;
     private List<Point> currentPlacements;
+    private boolean currentOverflowToLeft = false;
     private String currentCountry;
 
     /**
@@ -316,6 +321,17 @@ public final class PlacementPicker {
           mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
         }
       });
+
+      this.addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyPressed(final KeyEvent e) {
+          if (showOverflowMode && currentCountry != null && (e.getKeyCode() == KeyEvent.VK_O)) {
+            currentOverflowToLeft = !currentOverflowToLeft;
+            repaint();
+          }
+        }
+      });
+
       // set up the image panel size dimensions ...etc
       imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
       imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
@@ -413,18 +429,22 @@ public final class PlacementPicker {
           g.drawImage(image, 0, 0, this);
           if (showAllMode) {
             g.setColor(Color.yellow);
-            for (final Entry<String, List<Point>> entry : placements.entrySet()) {
+            for (final Entry<String, Tuple<List<Point>, Boolean>> entry : placements.entrySet()) {
               if (entry.getKey().equals(currentCountry) && currentPlacements != null
                   && !currentPlacements.isEmpty()) {
                 continue;
               }
-              final Iterator<Point> pointIter = entry.getValue().iterator();
+              final Iterator<Point> pointIter = entry.getValue().getFirst().iterator();
               while (pointIter.hasNext()) {
                 final Point item = pointIter.next();
                 g.fillRect(item.x, item.y, placeWidth, placeHeight);
                 if (showOverflowMode && !pointIter.hasNext()) {
                   g.setColor(Color.gray);
-                  g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+                  if (entry.getValue().getSecond()) {
+                    g.fillRect(item.x - placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+                  } else {
+                    g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+                  }
                   g.setColor(Color.yellow);
                 }
               }
@@ -436,7 +456,7 @@ public final class PlacementPicker {
             final Iterator<String> terrIter = territories.iterator();
             while (terrIter.hasNext()) {
               final String terr = terrIter.next();
-              final List<Point> points = placements.get(terr);
+              final List<Point> points = placements.get(terr).getFirst();
               if (points != null && points.size() >= incompleteNum) {
                 terrIter.remove();
               }
@@ -464,7 +484,11 @@ public final class PlacementPicker {
             g.fillRect(item.x, item.y, placeWidth, placeHeight);
             if (showOverflowMode && !pointIter.hasNext()) {
               g.setColor(Color.gray);
-              g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+              if (currentOverflowToLeft) {
+                g.fillRect(item.x - placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+              } else {
+                g.fillRect(item.x + placeWidth, item.y + placeHeight / 2, placeWidth, 4);
+              }
               g.setColor(Color.red);
             }
           }
@@ -483,7 +507,7 @@ public final class PlacementPicker {
         return;
       }
       try (OutputStream out = new FileOutputStream(fileName)) {
-        PointFileReaderWriter.writeOneToMany(out, placements);
+        PointFileReaderWriter.writeOneToManyPlacements(out, placements);
         ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
       } catch (final IOException e) {
         ToolLogger.error("Failed to write placements: " + fileName, e);
@@ -500,7 +524,7 @@ public final class PlacementPicker {
         return;
       }
       try (InputStream in = new FileInputStream(placeName)) {
-        placements = PointFileReaderWriter.readOneToMany(in);
+        placements = PointFileReaderWriter.readOneToManyPlacements(in);
       } catch (final IOException e) {
         ToolLogger.error("Failed to load placements: " + placeName, e);
       }
@@ -521,8 +545,10 @@ public final class PlacementPicker {
         // If there isn't an existing array, create one
         if (placements == null || placements.get(currentCountry) == null) {
           currentPlacements = new ArrayList<>();
+          currentOverflowToLeft = false;
         } else {
-          currentPlacements = new ArrayList<>(placements.get(currentCountry));
+          currentPlacements = new ArrayList<>(placements.get(currentCountry).getFirst());
+          currentOverflowToLeft = placements.get(currentCountry).getSecond();
         }
         JOptionPane.showMessageDialog(this, currentCountry);
       } else if (!rightMouse && ctrlDown) {
@@ -535,7 +561,7 @@ public final class PlacementPicker {
           if (placements == null) {
             placements = new HashMap<>();
           }
-          placements.put(currentCountry, currentPlacements);
+          placements.put(currentCountry, Tuple.of(currentPlacements, currentOverflowToLeft));
           currentPlacements = new ArrayList<>();
           ToolLogger.info("done:" + currentCountry);
         }
