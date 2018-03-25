@@ -19,6 +19,7 @@ ext {
     releasesDir = file("$buildDir/releases")
     remoteLibsDir = file('.remote-libs')
     rootFilesDir = file("$buildDir/rootFiles")
+    shadowLibsDir = file("$buildDir/shadowLibs")
 
     gameEnginePropertiesFile = file('game_engine.properties')
     gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
@@ -153,7 +154,7 @@ task integTest(type: Test, dependsOn: [compileIntegTestJava]) {
 }
 
 shadowJar {
-    destinationDir = libsDir
+    destinationDir = shadowLibsDir
     baseName = 'triplea'
     classifier = 'all'
     version = version
