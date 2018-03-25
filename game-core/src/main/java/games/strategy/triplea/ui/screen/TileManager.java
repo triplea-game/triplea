@@ -379,7 +379,7 @@ public class TileManager {
   }
 
   @VisibleForTesting
-  public static List<UnitCategory> getSortedUnitCategories(final Territory t, final GameData data) {
+  static List<UnitCategory> getSortedUnitCategories(final Territory t, final GameData data) {
     final List<UnitCategory> categories = new ArrayList<>(UnitSeperator.categorize(t.getUnits().getUnits()));
     final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
     categories.sort(Comparator
