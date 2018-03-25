@@ -24,6 +24,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -376,7 +378,8 @@ public class TileManager {
     }
   }
 
-  private static List<UnitCategory> getSortedUnitCategories(final Territory t, final GameData data) {
+  @VisibleForTesting
+  public static List<UnitCategory> getSortedUnitCategories(final Territory t, final GameData data) {
     final List<UnitCategory> categories = new ArrayList<>(UnitSeperator.categorize(t.getUnits().getUnits()));
     final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
     categories.sort(Comparator

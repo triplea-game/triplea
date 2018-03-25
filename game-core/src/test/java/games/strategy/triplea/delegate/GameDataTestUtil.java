@@ -58,6 +58,10 @@ public class GameDataTestUtil {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_ITALIANS);
   }
 
+  public static PlayerID italy(final GameData data) {
+    return data.getPlayerList().getPlayerId("Italy");
+  }
+
   /**
    * Get the russian PlayerID for the given GameData object.
    *
@@ -92,6 +96,10 @@ public class GameDataTestUtil {
    */
   public static PlayerID british(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_BRITISH);
+  }
+
+  public static PlayerID britain(final GameData data) {
+    return data.getPlayerList().getPlayerId("Britain");
   }
 
   /**
@@ -218,6 +226,14 @@ public class GameDataTestUtil {
     return unitType("germanInfantry", data);
   }
 
+  public static UnitType italianInfantry(final GameData data) {
+    return unitType("italianInfantry", data);
+  }
+
+  public static UnitType britishInfantry(final GameData data) {
+    return unitType("britishInfantry", data);
+  }
+
   /**
    * Returns a bomber UnitType object for the specified GameData object.
    */
@@ -237,6 +253,14 @@ public class GameDataTestUtil {
    */
   public static UnitType germanFactory(final GameData data) {
     return unitType("germanFactory", data);
+  }
+
+  public static UnitType italianFactory(final GameData data) {
+    return unitType("italianFactory", data);
+  }
+
+  public static UnitType britishFactory(final GameData data) {
+    return unitType("britishFactory", data);
   }
 
   /**
@@ -312,7 +336,7 @@ public class GameDataTestUtil {
   /**
    * Adds all units from the given Collection to the given Territory.
    */
-  static void addTo(final Territory t, final Collection<Unit> units) {
+  public static void addTo(final Territory t, final Collection<Unit> units) {
     t.getData().performChange(ChangeFactory.addUnits(t, units));
   }
 
