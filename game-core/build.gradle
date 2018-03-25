@@ -227,8 +227,13 @@ task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
 
 task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {
     doLast {
-        if (!file("$distsDir/game-core-$version-all_platforms.zip").exists()) {
-            throw new GradleException("All Platforms Artifact does not exist")
+        def artifacts = [
+            file("$distsDir/game-core-$version-all_platforms.zip"),
+        ]
+        artifacts.each {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
         }
 
         copy {
