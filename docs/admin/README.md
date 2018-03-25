@@ -9,7 +9,7 @@
 
 ## Major releases
 - Can send new game clients to a new lobby: https://github.com/triplea-game/triplea/blob/master/lobby_server.yaml
-- Change the version number in the travis build file: https://github.com/triplea-game/triplea/blob/master/.travis.yml
+- Change the version number in the game_engine.properties file: https://github.com/triplea-game/triplea/blob/master/game_engine.properties
 - Trigger game client notifications: https://github.com/triplea-game/triplea/blob/master/latest_version.properties
 - Update partner sites:  
   - http://www.freewarefiles.com/TripleA_program_56699.html  
@@ -17,6 +17,9 @@
 - Post to forums:
   - https://forums.triplea-game.org/category/1/announcements
   - http://www.axisandallies.org/forums/index.php?board=53.0
+
+
+
 
 
 # Server Ops
