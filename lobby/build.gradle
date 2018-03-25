@@ -6,7 +6,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.17.0'
     id 'com.github.johnrengelman.shadow' version '2.0.2'
     id 'com.install4j.gradle' version '7.0.1'
-    id 'de.undercouch.download' version '3.3.0'
+    id 'de.undercouch.download' version '3.4.2'
     id 'net.ltgt.errorprone' version '0.0.13'
 }
 
@@ -21,7 +21,7 @@ ext {
     rootFilesDir = file("$buildDir/rootFiles")
 }
 
-version = System.getenv('LOBBY_VERSION') ?: "dev";
+version = System.getenv('LOBBY_VERSION') ?: "dev"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -62,12 +62,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.20'
 
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
-    testCompile 'nl.jqno.equalsverifier:equalsverifier:2.3.3'
+    testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.13.0'
+    testCompile 'org.mockito:mockito-core:2.16.0'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
-
-    testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
     
@@ -82,38 +80,16 @@ test {
     useJUnitPlatform()
 }
 
-task jacocoRootReport(type: JacocoReport) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = 'Generates code coverage report for all Test tasks.'
-
-    sourceSets sourceSets.main
-    executionData fileTree(buildDir).include('**/jacoco/*.exec')
-
-    reports {
-        html {
-            destination = file("${project.jacoco.reportsDir}/root/html")
-            enabled = true
-        }
-        xml {
-            destination = file("${project.jacoco.reportsDir}/root/jacocoRootReport.xml")
-            enabled = true
-        }
-    }
-}
-
 shadowJar {
     destinationDir = libsDir
     baseName = 'triplea-lobby'
     classifier = 'all'
 }
 
-
 task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
     classifier 'server'
-    ['config/lobby.properties'].each { fileName ->
-        from(fileName) {
-            into('config/lobby')
-        }
+    from('config/lobby.properties') {
+        into('config/lobby')
     }
     from(shadowJar.outputs) {
         into('bin')
@@ -123,7 +99,7 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
 task release(group: 'release', dependsOn: [lobbyServer]) {}
 
 checkstyle {
-    toolVersion = "8.0"
+    toolVersion = "8.8"
     configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
     configProperties = [samedir: configFile.parent]
 }
@@ -140,7 +116,7 @@ checkstyleTest {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
-        html.enabled true
+        xml.enabled = true
+        html.enabled = true
     }
 }
