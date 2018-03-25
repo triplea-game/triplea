@@ -346,8 +346,7 @@ public class TileManager {
     }
 
     Point lastPlace = null;
-    final List<UnitCategory> categories = getSortedUnitCategories(territory, data);
-    for (final UnitCategory category : categories) {
+    for (final UnitCategory category : getSortedUnitCategories(territory, data)) {
       final boolean overflow;
       if (placementPoints.hasNext()) {
         lastPlace = new Point(placementPoints.next());

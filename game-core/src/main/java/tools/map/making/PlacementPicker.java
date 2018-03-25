@@ -11,8 +11,8 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -322,7 +322,7 @@ public final class PlacementPicker {
         }
       });
 
-      this.addKeyListener(new KeyListener() {
+      this.addKeyListener(new KeyAdapter() {
         @Override
         public void keyPressed(final KeyEvent e) {
           if (showOverflowMode && currentCountry != null && (e.getKeyCode() == KeyEvent.VK_O)) {
@@ -330,12 +330,6 @@ public final class PlacementPicker {
             repaint();
           }
         }
-
-        @Override
-        public void keyTyped(final KeyEvent e) {}
-
-        @Override
-        public void keyReleased(final KeyEvent e) {}
       });
 
       // set up the image panel size dimensions ...etc
