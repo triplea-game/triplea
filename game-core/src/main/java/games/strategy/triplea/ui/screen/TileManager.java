@@ -378,18 +378,18 @@ public class TileManager {
 
   private static List<UnitCategory> getSortedUnitCategories(final Territory t, final GameData data) {
     final List<UnitCategory> categories = new ArrayList<>(UnitSeperator.categorize(t.getUnits().getUnits()));
-    final List<PlayerID> players = data.getPlayerList().getPlayers();
-    if (players.contains(t.getOwner())) {
-      players.remove(t.getOwner());
-      players.add(0, t.getOwner());
-    }
     final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
     categories.sort(Comparator
-        .comparing(UnitCategory::getOwner, Comparator.comparing(players::indexOf))
-        .thenComparing(UnitCategory::getType, Comparator.comparing(ut -> !UnitAttachment.get(ut).getIsInfrastructure()))
-        .thenComparing(UnitCategory::getType, Comparator.comparing(ut -> !Matches.unitTypeIsLand().test(ut)))
-        .thenComparing(UnitCategory::getType, Comparator.comparing(ut -> !UnitAttachment.get(ut).getIsSea()))
-        .thenComparing(UnitCategory::getType, Comparator.comparing(xmlUnitTypes::indexOf)));
+        .comparing(UnitCategory::getOwner, Comparator
+            .comparing((final PlayerID p) -> !p.equals(t.getOwner()))
+            .thenComparing(p -> !Matches.isAllied(p, data).test(t.getOwner()))
+            .thenComparing(data.getPlayerList().getPlayers()::indexOf))
+        .thenComparing(Comparator.comparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType())))
+        .thenComparing(UnitCategory::getType, Comparator
+            .comparing((final UnitType ut) -> !Matches.unitTypeCanNotMoveDuringCombatMove().test(ut))
+            .thenComparing(ut -> !Matches.unitTypeIsLand().test(ut))
+            .thenComparing(ut -> !UnitAttachment.get(ut).getIsSea())
+            .thenComparing(xmlUnitTypes::indexOf)));
     return categories;
   }
 
