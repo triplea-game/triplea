@@ -323,15 +323,6 @@ public class ProMatches {
         .and(territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld));
   }
 
-  public static Predicate<Territory> territoryIsNotConqueredAlliedLand(final PlayerID player, final GameData data) {
-    return t -> {
-      if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(t)) {
-        return false;
-      }
-      return Matches.isTerritoryAllied(player, data).and(Matches.territoryIsLand()).test(t);
-    };
-  }
-
   public static Predicate<Territory> territoryIsNotConqueredOwnedLand(final PlayerID player, final GameData data) {
     return t -> {
       if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(t)) {

@@ -502,8 +502,8 @@ public class ProTerritoryManager {
         Matches.isTerritoryAllied(player, data), new ArrayList<>(), clearedTerritories, false, isCheckingEnemyAttacks,
         false);
     findAirMoveOptions(player, myUnitTerritories, moveMap, unitMoveMap,
-        ProMatches.territoryIsNotConqueredAlliedLand(player, data), new ArrayList<>(), new ArrayList<>(), false,
-        isCheckingEnemyAttacks, false);
+        ProMatches.territoryCanLandAirUnits(player, data, false, new ArrayList<>(), new ArrayList<>()),
+        new ArrayList<>(), new ArrayList<>(), false, isCheckingEnemyAttacks, false);
     findAmphibMoveOptions(player, myUnitTerritories, moveMap, transportMapList, landRoutesMap,
         Matches.isTerritoryAllied(player, data), false, isCheckingEnemyAttacks, false);
   }
