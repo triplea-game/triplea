@@ -33,7 +33,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UiContext;
@@ -385,13 +384,14 @@ public class TileManager {
     categories.sort(Comparator
         .comparing(UnitCategory::getOwner, Comparator
             .comparing((final PlayerID p) -> !p.equals(t.getOwner()))
-            .thenComparing(p -> !Matches.isAllied(p, data).test(t.getOwner()))
+            .thenComparing(p -> Matches.isAtWar(p, data).test(t.getOwner()))
             .thenComparing(data.getPlayerList().getPlayers()::indexOf))
         .thenComparing(Comparator.comparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType())))
         .thenComparing(UnitCategory::getType, Comparator
             .comparing((final UnitType ut) -> !Matches.unitTypeCanNotMoveDuringCombatMove().test(ut))
+            .thenComparing(ut -> !Matches.unitTypeIsSea().test(ut))
+            .thenComparing(ut -> !(t.isWater() && Matches.unitTypeIsAir().test(ut)))
             .thenComparing(ut -> !Matches.unitTypeIsLand().test(ut))
-            .thenComparing(ut -> !UnitAttachment.get(ut).getIsSea())
             .thenComparing(xmlUnitTypes::indexOf)));
     return categories;
   }
