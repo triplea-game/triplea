@@ -19,8 +19,10 @@ ext {
     releasesDir = file("$buildDir/releases")
     remoteLibsDir = file('.remote-libs')
     rootFilesDir = file("$buildDir/rootFiles")
+    shadowLibsDir = file("$buildDir/shadowLibs")
 
     gameEnginePropertiesFile = file('game_engine.properties')
+    gameEnginePropertiesArtifactFile = file("$rootFilesDir/${gameEnginePropertiesFile.name}")
 }
 
 def getEngineVersion() {
@@ -31,11 +33,12 @@ def getEngineVersion() {
     def props = new Properties()
     gameEnginePropertiesFile.withInputStream { props.load(it) }
     def devEngineVersion = props.getProperty('engine_version')
-    if (!devEngineVersion) {
-        throw new GradleException("unable to determine engine version: "
-                + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
+    if (devEngineVersion) {
+        return "${devEngineVersion}.dev"
     }
-    return "${devEngineVersion}"
+
+    throw new GradleException("unable to determine engine version: "
+        + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
 }
 
 def remoteFile(url) {
@@ -151,7 +154,7 @@ task integTest(type: Test, dependsOn: [compileIntegTestJava]) {
 }
 
 shadowJar {
-    destinationDir = libsDir
+    destinationDir = shadowLibsDir
     baseName = 'triplea'
     classifier = 'all'
     version = version
@@ -179,6 +182,35 @@ task downloadAssets(group: 'release') {
     }
 }
 
+task prepareGameEngineProperties() {
+    group = 'release'
+    description = 'Updates the game engine properties with final values for distribution.'
+
+    doLast {
+        copy {
+            from gameEnginePropertiesFile
+            into gameEnginePropertiesArtifactFile.parent
+        }
+        ant.propertyfile(file: gameEnginePropertiesArtifactFile) {
+            entry key: 'engine_version', value: version
+        }
+    }
+}
+
+task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar, prepareGameEngineProperties]) {
+    classifier 'all_platforms'
+    ['assets', 'dice_servers'].each { folder ->
+        from(folder) {
+            into(folder)
+        }
+    }
+    from(gameEnginePropertiesArtifactFile)
+    from(shadowJar.outputs) {
+        into('bin')
+    }
+}
+
+task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {}
 
 import com.install4j.gradle.Install4jTask
 task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {
@@ -189,7 +221,7 @@ task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAsse
     }
 }
 
-task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]) {
+task prepareInstallers(group: 'release', dependsOn: [generateInstallers]) {
     doLast {
         ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
         def artifacts = [
@@ -211,21 +243,7 @@ task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]
     }
 }
 
-
-task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
-    classifier 'all_platforms'
-    ['assets', 'dice_servers'].each { folder ->
-        from(folder) {
-            into(folder)
-        }
-    }
-    from(gameEnginePropertiesFile)
-    from(shadowJar.outputs) {
-        into('bin')
-    }
-}
-
-task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {
+task prepareArtifacts(group: 'release', dependsOn: [generateZipReleases, allPlatform]) {
     doLast {
         def artifacts = [
             file("$distsDir/game-core-$version-all_platforms.zip"),
@@ -246,6 +264,7 @@ task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {
     }
 }
 
+task release(group: 'release', dependsOn: [prepareInstallers, prepareArtifacts]) {}
 
 gradle.taskGraph.whenReady { graph ->
     graph.getAllTasks().any({
