@@ -16,12 +16,9 @@ mainClassName = 'games.strategy.engine.lobby.server.LobbyRunner'
 
 ext {
     artifactsDir = file("$buildDir/artifacts")
-    releasesDir = file("$buildDir/releases")
-    remoteLibsDir = file('.remote-libs')
-    rootFilesDir = file("$buildDir/rootFiles")
 }
 
-version = System.getenv('LOBBY_VERSION') ?: "dev"
+version = project.hasProperty('lobbyVersion') ? project.lobbyVersion : 'dev'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -87,8 +84,9 @@ shadowJar {
 }
 
 task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
-    classifier 'server'
-    from('config/lobby.properties') {
+    baseName = 'triplea'
+    classifier = 'server'
+    from('lobby.properties') {
         into('config/lobby')
     }
     from(shadowJar.outputs) {
@@ -96,7 +94,23 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
-task release(group: 'release', dependsOn: [lobbyServer]) {}
+task release(group: 'release', dependsOn: lobbyServer) {
+    doLast {
+        def artifacts = [
+            file("$distsDir/triplea-$version-server.zip"),
+        ]
+        artifacts.each {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
+
+        copy {
+            from artifacts
+            into artifactsDir
+        }
+    }
+}
 
 checkstyle {
     toolVersion = "8.8"
