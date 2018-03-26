@@ -86,7 +86,7 @@ shadowJar {
 task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
     baseName = 'triplea'
     classifier = 'server'
-    from('config/lobby.properties') {
+    from('lobby.properties') {
         into('config/lobby')
     }
     from(shadowJar.outputs) {
