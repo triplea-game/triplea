@@ -107,10 +107,10 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.19'
     compile 'com.yuvimasory:orange-extensions:1.3.0'
     compile 'commons-cli:commons-cli:1.4'
-    compile remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/8.0.01/substance-8.0.01.jar')
+    compile remoteFile('https://github.com/kirill-grouchnikov/substance/raw/f894ef784a2ac20acf13e6ed2c7c26123399787b/drop/8.0.02/substance-8.0.02.jar')
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
-    runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/master/drop/8.0.01/trident-1.5.00.jar')
+    runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/f894ef784a2ac20acf13e6ed2c7c26123399787b/drop/8.0.02/trident-1.5.00.jar')
 
 
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
