@@ -3,7 +3,7 @@
 # This script generates checksums for all release artifacts.
 #
 
-readonly ARTIFACTS_DIR=./game-core/build/artifacts
+readonly ARTIFACTS_DIR=./build/artifacts
 readonly -a ENGINES=(md5sum sha1sum sha256sum)
 
 # Change to artifacts directory so file names in checksum files are bare

@@ -192,7 +192,27 @@ task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAsse
 task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]) {
     doLast {
         ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
+    }
+}
+
+task generateZipReleases(type: Zip, group: 'release', dependsOn: shadowJar) {
+    baseName = 'triplea'
+    classifier = 'all_platforms'
+    ['assets', 'dice_servers'].each { folder ->
+        from(folder) {
+            into(folder)
+        }
+    }
+    from(gameEnginePropertiesFile)
+    from(shadowJar.outputs) {
+        into('bin')
+    }
+}
+
+task release(group: 'release', dependsOn: [generateZipReleases, generateInstallerReleases]) {
+    doLast {
         def artifacts = [
+            file("$distsDir/triplea-${version}-all_platforms.zip"),
             file("$releasesDir/TripleA_${version}_macos.dmg"),
             file("$releasesDir/TripleA_${version}_unix.sh"),
             file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
@@ -210,42 +230,6 @@ task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]
         }
     }
 }
-
-
-task allPlatform(type: Zip, group: 'release', dependsOn: [shadowJar]) {
-    classifier 'all_platforms'
-    ['assets', 'dice_servers'].each { folder ->
-        from(folder) {
-            into(folder)
-        }
-    }
-    from(gameEnginePropertiesFile)
-    from(shadowJar.outputs) {
-        into('bin')
-    }
-}
-
-task generateZipReleases(group: 'release', dependsOn: [allPlatform]) {
-    doLast {
-        def artifacts = [
-            file("$distsDir/game-core-$version-all_platforms.zip"),
-        ]
-        artifacts.each {
-            if (!it.exists()) {
-                throw new GradleException("artifact '$it' does not exist")
-            }
-        }
-
-        copy {
-            from artifacts
-            into artifactsDir
-            rename { String fileName ->
-               fileName.replace('game-core', 'triplea') 
-            }
-        }
-    }
-}
-
 
 gradle.taskGraph.whenReady { graph ->
     graph.getAllTasks().any({
