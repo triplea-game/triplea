@@ -11,6 +11,7 @@ import java.io.File;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Spy;
 
 import com.example.mockito.MockitoExtension;
@@ -19,8 +20,8 @@ public final class FileUtilsTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   public final class ListFilesTest {
-    @Spy
-    private final File directory = new File("");
+    @Mock
+    private File directory;
 
     @Test
     public void shouldReturnFileCollectionWhenTargetIsDirectory() {
