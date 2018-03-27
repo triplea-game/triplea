@@ -195,10 +195,7 @@ public class PurchasePanel extends ActionPanel {
 
   private static boolean isUnlimitedProduction(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    if (ra == null) {
-      return false;
-    }
-    return ra.getUnlimitedProduction();
+    return ra != null && ra.getUnlimitedProduction();
   }
 
   @Override

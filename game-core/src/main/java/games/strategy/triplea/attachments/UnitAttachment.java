@@ -570,11 +570,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBlitz(final PlayerID player) {
-    if (m_canBlitz) {
-      return true;
-    }
-    return TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ,
-        (UnitType) this.getAttachedTo(), player, getData());
+    return m_canBlitz || TechAbilityAttachment
+        .getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ, (UnitType) this.getAttachedTo(), player,
+            getData());
   }
 
   private void resetCanBlitz() {
@@ -658,11 +656,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBombard(final PlayerID player) {
-    if (m_canBombard) {
-      return true;
-    }
-    return TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD,
-        (UnitType) this.getAttachedTo(), player, getData());
+    return m_canBombard || TechAbilityAttachment
+        .getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD, (UnitType) this.getAttachedTo(), player,
+            getData());
   }
 
   private void resetCanBombard() {
@@ -883,11 +879,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean canInvadeFrom(final Unit transport) {
-    if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].isEmpty()
-        || m_canInvadeOnlyFrom[0].equals("all")) {
-      return true;
-    }
-    return Arrays.asList(m_canInvadeOnlyFrom).contains(transport.getType().getName());
+    return m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0]
+        .isEmpty() || m_canInvadeOnlyFrom[0].equals("all") || Arrays.asList(m_canInvadeOnlyFrom)
+        .contains(transport.getType().getName());
   }
 
   private void resetCanInvadeOnlyFrom() {
@@ -2580,26 +2574,17 @@ public class UnitAttachment extends DefaultAttachment {
 
   private static boolean playerHasRockets(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getRocket();
+    return ta != null && ta.getRocket();
   }
 
   private static boolean playerHasMechInf(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getMechanizedInfantry();
+    return ta != null && ta.getMechanizedInfantry();
   }
 
   private static boolean playerHasParatroopers(final PlayerID player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-    if (ta == null) {
-      return false;
-    }
-    return ta.getParatroopers();
+    return ta != null && ta.getParatroopers();
   }
 
   /**

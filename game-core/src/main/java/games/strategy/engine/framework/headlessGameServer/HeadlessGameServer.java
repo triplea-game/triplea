@@ -123,10 +123,7 @@ public class HeadlessGameServer {
   }
 
   public static synchronized boolean headless() {
-    if (getInstance() != null) {
-      return true;
-    }
-    return Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
+    return getInstance() != null || Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"));
   }
 
   public Set<String> getAvailableGames() {

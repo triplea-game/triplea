@@ -325,10 +325,8 @@ public class ProMatches {
 
   public static Predicate<Territory> territoryIsNotConqueredOwnedLand(final PlayerID player, final GameData data) {
     return t -> {
-      if (AbstractMoveDelegate.getBattleTracker(data).wasConquered(t)) {
-        return false;
-      }
-      return Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand()).test(t);
+      return !AbstractMoveDelegate.getBattleTracker(data).wasConquered(t) && Matches.isTerritoryOwnedBy(player)
+          .and(Matches.territoryIsLand()).test(t);
     };
   }
 
@@ -345,49 +343,36 @@ public class ProMatches {
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedAir(final PlayerID player, final boolean isCombatMove) {
     return u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
-        return false;
-      }
-      return unitCanBeMovedAndIsOwned(player).and(Matches.unitIsAir()).test(u);
+      return (!isCombatMove || !Matches.unitCanNotMoveDuringCombatMove().test(u)) && unitCanBeMovedAndIsOwned(player)
+          .and(Matches.unitIsAir()).test(u);
     };
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedLand(final PlayerID player, final boolean isCombatMove) {
     return u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
-        return false;
-      }
-      return unitCanBeMovedAndIsOwned(player)
-          .and(Matches.unitIsLand())
-          .and(Matches.unitIsBeingTransported().negate())
-          .test(u);
+      return (!isCombatMove || !Matches.unitCanNotMoveDuringCombatMove().test(u)) && unitCanBeMovedAndIsOwned(player)
+          .and(Matches.unitIsLand()).and(Matches.unitIsBeingTransported().negate()).test(u);
     };
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedSea(final PlayerID player, final boolean isCombatMove) {
     return u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
-        return false;
-      }
-      return unitCanBeMovedAndIsOwned(player).and(Matches.unitIsSea()).test(u);
+      return (!isCombatMove || !Matches.unitCanNotMoveDuringCombatMove().test(u)) && unitCanBeMovedAndIsOwned(player)
+          .and(Matches.unitIsSea()).test(u);
     };
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedTransport(final PlayerID player, final boolean isCombatMove) {
     return u -> {
-      if (isCombatMove && Matches.unitCanNotMoveDuringCombatMove().test(u)) {
-        return false;
-      }
-      return unitCanBeMovedAndIsOwned(player).and(Matches.unitIsTransport()).test(u);
+      return (!isCombatMove || !Matches.unitCanNotMoveDuringCombatMove().test(u)) && unitCanBeMovedAndIsOwned(player)
+          .and(Matches.unitIsTransport()).test(u);
     };
   }
 
   public static Predicate<Unit> unitCanBeMovedAndIsOwnedBombard(final PlayerID player) {
     return u -> {
-      if (Matches.unitCanNotMoveDuringCombatMove().test(u)) {
-        return false;
-      }
-      return unitCanBeMovedAndIsOwned(player).and(Matches.unitCanBombard(player)).test(u);
+      return !Matches.unitCanNotMoveDuringCombatMove().test(u) && unitCanBeMovedAndIsOwned(player)
+          .and(Matches.unitCanBombard(player)).test(u);
     };
   }
 
@@ -501,14 +486,9 @@ public class ProMatches {
       final boolean isCombatMove) {
     return u -> {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
-      if (isCombatMove && (Matches.unitCanNotMoveDuringCombatMove().test(u) || !ua.canInvadeFrom(transport))) {
-        return false;
-      }
-      return unitIsOwnedTransportableUnit(player)
-          .and(Matches.unitHasNotMoved())
-          .and(Matches.unitHasMovementLeft())
-          .and(Matches.unitIsBeingTransported().negate())
-          .test(u);
+      return (!isCombatMove || (!Matches.unitCanNotMoveDuringCombatMove().test(u) && ua.canInvadeFrom(transport)))
+          && unitIsOwnedTransportableUnit(player).and(Matches.unitHasNotMoved()).and(Matches.unitHasMovementLeft())
+          .and(Matches.unitIsBeingTransported().negate()).test(u);
     };
   }
 }

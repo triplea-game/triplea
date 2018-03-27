@@ -1149,21 +1149,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean onlyDefenselessDefendingTransportsLeft() {
-    if (!isTransportCasualtiesRestricted()) {
-      return false;
-    }
-    return !m_defendingUnits.isEmpty()
-        && m_defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
+    return isTransportCasualtiesRestricted() && !m_defendingUnits.isEmpty() && m_defendingUnits.stream()
+        .allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
 
   private boolean canAttackerRetreatSubs() {
     if (m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    if (m_defendingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return canAttackerRetreat() || canSubsSubmerge();
+    return !m_defendingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer()) && (canAttackerRetreat()
+        || canSubsSubmerge());
   }
 
   // Added for test case calls
@@ -1206,11 +1201,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    if (m_attackingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return getEmptyOrFriendlySeaNeighbors(m_defender, CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub()))
-        .size() != 0 || canSubsSubmerge();
+    return !m_attackingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer()) && (
+        getEmptyOrFriendlySeaNeighbors(m_defender, CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub()))
+            .size() != 0 || canSubsSubmerge());
   }
 
   private void attackerRetreatSubs(final IDelegateBridge bridge) {

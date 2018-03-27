@@ -92,10 +92,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!player.amNotDeadYet(getData())) {
       return false;
     }
-    if (!Properties.getUsePolitics(getData())) {
-      return false;
-    }
-    return !getValidActions().isEmpty();
+    return Properties.getUsePolitics(getData()) && !getValidActions().isEmpty();
   }
 
   public HashMap<ICondition, Boolean> getTestedConditions() {

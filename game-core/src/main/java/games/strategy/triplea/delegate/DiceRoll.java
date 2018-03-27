@@ -1010,10 +1010,8 @@ public class DiceRoll implements Externalizable {
 
   private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
-    if (player.isNull() || data.getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player)) {
-      return false;
-    }
-    return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
+    return !player.isNull() && data.getSequence().getRound() == 1 && !isNegateDominatingFirstRoundAttack(player)
+        && isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
   private static boolean isDominatingFirstRoundAttack(final PlayerID player) {
@@ -1021,18 +1019,12 @@ public class DiceRoll implements Externalizable {
       return false;
     }
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    if (ra == null) {
-      return false;
-    }
-    return ra.getDominatingFirstRoundAttack();
+    return ra != null && ra.getDominatingFirstRoundAttack();
   }
 
   private static boolean isNegateDominatingFirstRoundAttack(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    if (ra == null) {
-      return false;
-    }
-    return ra.getNegateDominatingFirstRoundAttack();
+    return ra != null && ra.getNegateDominatingFirstRoundAttack();
   }
 
   static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {

@@ -245,10 +245,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   public boolean canAlliancesChainTogether() {
-    if (m_alliancesCanChainTogether.equals(PROPERTY_DEFAULT) || isWar() || isNeutral()) {
-      return false;
-    }
-    return m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
+    return !m_alliancesCanChainTogether.equals(PROPERTY_DEFAULT) && !isWar() && !isNeutral()
+        && m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
   }
 
   private void resetAlliancesCanChainTogether() {
@@ -268,10 +266,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   public boolean isDefaultWarPosition() {
-    if (m_isDefaultWarPosition.equals(PROPERTY_DEFAULT) || isAllied() || isNeutral()) {
-      return false;
-    }
-    return m_isDefaultWarPosition.equals(PROPERTY_TRUE);
+    return !m_isDefaultWarPosition.equals(PROPERTY_DEFAULT) && !isAllied() && !isNeutral() && m_isDefaultWarPosition
+        .equals(PROPERTY_TRUE);
   }
 
   private void resetIsDefaultWarPosition() {
@@ -291,10 +287,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   public boolean givesBackOriginalTerritories() {
-    if (m_givesBackOriginalTerritories.equals(PROPERTY_DEFAULT)) {
-      return false;
-    }
-    return m_givesBackOriginalTerritories.equals(PROPERTY_TRUE);
+    return !m_givesBackOriginalTerritories.equals(PROPERTY_DEFAULT) && m_givesBackOriginalTerritories
+        .equals(PROPERTY_TRUE);
   }
 
   private void resetGivesBackOriginalTerritories() {
@@ -315,10 +309,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
   public boolean canMoveIntoDuringCombatMove() {
     // this property is not affected by any archetype.
-    if (m_canMoveIntoDuringCombatMove.equals(PROPERTY_DEFAULT)) {
-      return true;
-    }
-    return m_canMoveIntoDuringCombatMove.equals(PROPERTY_TRUE);
+    return m_canMoveIntoDuringCombatMove.equals(PROPERTY_DEFAULT) || m_canMoveIntoDuringCombatMove
+        .equals(PROPERTY_TRUE);
   }
 
   private void resetCanMoveIntoDuringCombatMove() {
@@ -363,10 +355,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
   public boolean canRocketsFlyOver() {
     // rockets can normally fly over everyone.
-    if (m_rocketsCanFlyOver.equals(PROPERTY_DEFAULT)) {
-      return true;
-    }
-    return m_rocketsCanFlyOver.equals(PROPERTY_TRUE);
+    return m_rocketsCanFlyOver.equals(PROPERTY_DEFAULT) || m_rocketsCanFlyOver.equals(PROPERTY_TRUE);
   }
 
   private void resetRocketsCanFlyOver() {

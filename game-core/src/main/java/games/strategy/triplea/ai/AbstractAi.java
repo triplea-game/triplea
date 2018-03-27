@@ -236,10 +236,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     final Collection<String> myAlliances =
         new HashSet<>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerId()));
     myAlliances.retainAll(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
-    if (!myAlliances.isEmpty()) {
-      return true;
-    }
-    return Math.random() < .5;
+    return !myAlliances.isEmpty() || Math.random() < .5;
   }
 
   @Override
