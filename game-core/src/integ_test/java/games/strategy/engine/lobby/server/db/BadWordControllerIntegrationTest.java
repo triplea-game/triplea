@@ -7,10 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.util.Util;
 
+@Tag("integration")
 public class BadWordControllerIntegrationTest {
 
   @Test

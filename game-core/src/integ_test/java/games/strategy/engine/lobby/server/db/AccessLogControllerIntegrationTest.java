@@ -9,12 +9,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.login.UserType;
 
+@Tag("integration")
 public final class AccessLogControllerIntegrationTest {
   private final AccessLogController accessLogController = new AccessLogController();
 

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.net.ClientMessenger;
@@ -19,6 +20,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 
+@Tag("integration")
 public final class ClientLoginIntegrationTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";

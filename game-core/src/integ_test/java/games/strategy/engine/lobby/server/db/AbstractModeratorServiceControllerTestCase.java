@@ -13,10 +13,12 @@ import java.sql.SQLException;
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
 import games.strategy.util.function.ThrowingConsumer;
+import org.junit.jupiter.api.Tag;
 
 /**
  * Superclass for fixtures that test a moderator service controller.
  */
+@Tag("integration")
 public abstract class AbstractModeratorServiceControllerTestCase {
   protected final User user = newUser();
   protected final User moderator = newUser();

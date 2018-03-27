@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
@@ -27,6 +28,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.util.Util;
 
+@Tag("integration")
 public class ModeratorControllerIntegrationTest {
   private final IServerMessenger serverMessenger = mock(IServerMessenger.class);
   private ModeratorController moderatorController;

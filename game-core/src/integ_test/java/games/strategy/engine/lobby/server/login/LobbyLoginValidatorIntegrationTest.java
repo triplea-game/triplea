@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -31,6 +32,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
+@Tag("integration")
 public class LobbyLoginValidatorIntegrationTest {
   private final ILoginValidator loginValidator = new LobbyLoginValidator();
 

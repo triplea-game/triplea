@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.server.NullModeratorController;
@@ -27,6 +28,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.SoundPath;
 
+@Tag("integration")
 public final class ChatIntegrationTest {
   private static final String CHAT_NAME = "c";
   private static final int MESSAGE_COUNT = 50;
