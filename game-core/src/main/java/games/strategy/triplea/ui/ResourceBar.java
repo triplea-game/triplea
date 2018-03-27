@@ -69,8 +69,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
         SwingUtilities.invokeLater(() -> {
           this.removeAll();
           int count = 0;
-          for (int i = 0; i < resourceStats.size(); i++) {
-            final ResourceStat resourceStat = resourceStats.get(i);
+          for (final ResourceStat resourceStat : resourceStats) {
             final Resource resource = resourceStat.resource;
             if (!resource.isDisplayedFor(player)) {
               continue;

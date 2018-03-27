@@ -66,9 +66,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final IntegerMap<Resource> resources = new IntegerMap<>();
 
     // Only add territory resources if endTurn not endTurnNoPU
-    final Iterator<GameStep> it = data.getSequence().iterator();
-    while (it.hasNext()) {
-      final GameStep step = it.next();
+    for (GameStep step : data.getSequence()) {
       if (player.equals(step.getPlayerId()) && step.getDelegate().getName().equals("endTurn")) {
         final List<Territory> territories = data.getMap().getTerritoriesOwnedBy(player);
         final int pusFromTerritories = getProduction(territories, data) * Properties.getPuMultiplier(data);
