@@ -474,7 +474,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       politicalActions();
     } else if (name.endsWith("Place")) {
       final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      place(name.indexOf("Bid") != -1, placeDel, getGameData(), id);
+      place(name.contains("Bid"), placeDel, getGameData(), id);
     } else if (name.endsWith("EndTurn")) {
       endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
     }

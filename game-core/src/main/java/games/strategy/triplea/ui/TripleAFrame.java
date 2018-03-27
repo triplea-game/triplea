@@ -790,21 +790,21 @@ public class TripleAFrame extends MainGameFrame {
     if (message == null || title == null) {
       return;
     }
-    if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1
-        && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1
+    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
+        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
         && !getUiContext().getShowTriggerChanceFailure()) {
       return;
     }
-    if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1
-        && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1
+    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
+        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
         && !getUiContext().getShowTriggerChanceSuccessful()) {
       return;
     }
     if (title.equals(AbstractTriggerAttachment.NOTIFICATION) && !getUiContext().getShowTriggeredNotifications()) {
       return;
     }
-    if (title.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
-        && message.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
+    if (title.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
+        && message.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
         && !getUiContext().getShowEndOfTurnReport()) {
       return;
     }
