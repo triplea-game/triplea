@@ -51,7 +51,6 @@ update_local_thresholds() {
   echo "Updating Checkstyle thresholds..."
   update_threshold main.xml Main
   update_threshold test.xml Test
-  update_threshold integTest.xml IntegTest
 }
 
 update_threshold() {
