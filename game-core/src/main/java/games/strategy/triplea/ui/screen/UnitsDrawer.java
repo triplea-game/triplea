@@ -156,7 +156,7 @@ public class UnitsDrawer implements IDrawable {
                 placementPoint.x - bounds.x + 2 * stackSize
                     + (uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10),
                 placementPoint.y - 2 * stackSize - bounds.y
-                    + uiContext.getUnitImageFactory().getUnitImageHeight() * 1 / 3);
+                    + uiContext.getUnitImageFactory().getUnitImageHeight() / 3);
           }
         }
       } else { // Display a white number at the bottom of the unit
