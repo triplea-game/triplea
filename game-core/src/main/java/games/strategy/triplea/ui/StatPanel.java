@@ -286,7 +286,7 @@ public class StatPanel extends AbstractStatPanel {
       /* Load the country -> col mapping */
       colMap = new HashMap<>();
       for (int i = 0; i < colList.length; i++) {
-        colMap.put(colList[i], Integer.valueOf(i + 1));
+        colMap.put(colList[i], i + 1);
       }
       /*
        * .size()+1 added to stop index out of bounds errors when using an
@@ -308,13 +308,13 @@ public class StatPanel extends AbstractStatPanel {
       rowMap = new HashMap<>();
       int row = 0;
       if (useTech) {
-        rowMap.put("Tokens", Integer.valueOf(row));
+        rowMap.put("Tokens", row);
         data[row][0] = "Tokens";
         row++;
       }
       final List<TechAdvance> techAdvances = TechAdvance.getTechAdvances(gameData, null);
       for (final TechAdvance tech : techAdvances) {
-        rowMap.put((tech).getName(), Integer.valueOf(row));
+        rowMap.put((tech).getName(), row);
         data[row][0] = tech.getName();
         row++;
       }
