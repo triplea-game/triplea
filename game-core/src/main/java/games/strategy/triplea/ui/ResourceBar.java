@@ -79,7 +79,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
             if (resourceIncomes.getInt(resource) >= 0) {
               text.append("+");
             }
-            text.append(resourceIncomes.getInt(resource) + ")");
+            text.append(resourceIncomes.getInt(resource)).append(")");
             final JLabel label = uiContext.getResourceImageFactory().getLabel(resource, text.toString());
             label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
             add(label, new GridBagConstraints(count++, 0, 1, 1, 0, 1, GridBagConstraints.WEST,

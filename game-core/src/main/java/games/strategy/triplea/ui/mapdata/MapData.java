@@ -758,7 +758,7 @@ public class MapData implements Closeable {
 
   public List<Point> getTerritoryEffectPoints(final Territory territory) {
     if (territoryEffects.get(territory.getName()) == null) {
-      return Arrays.asList(getCenter(territory));
+      return Collections.singletonList(getCenter(territory));
     }
     return territoryEffects.get(territory.getName());
   }

@@ -687,14 +687,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("ServerModel GameData:").append(data == null ? "null" : data.getGameName()).append("\n");
-    sb.append("Connected:").append(serverMessenger == null ? "null" : serverMessenger.isConnected()).append("\n");
-    sb.append(serverMessenger);
-    sb.append("\n");
-    sb.append(remoteMessenger);
-    sb.append("\n");
-    sb.append(channelMessenger);
-    return sb.toString();
+    String sb = "ServerModel GameData:" + (data == null ? "null" : data.getGameName()) + "\n"
+        + "Connected:" + (serverMessenger == null ? "null" : serverMessenger.isConnected()) + "\n"
+        + serverMessenger
+        + "\n"
+        + remoteMessenger
+        + "\n"
+        + channelMessenger;
+    return sb;
   }
 }

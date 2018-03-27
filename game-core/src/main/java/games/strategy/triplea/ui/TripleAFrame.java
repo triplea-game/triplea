@@ -627,7 +627,7 @@ public class TripleAFrame extends MainGameFrame {
               new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                   new Insets(0, 0, 0, 0), 0, 0));
         } catch (final IllegalStateException e) {
-          territoryEffectText.append(territoryEffect.getName() + ", ");
+          territoryEffectText.append(territoryEffect.getName()).append(", ");
         }
       }
 

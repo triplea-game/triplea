@@ -215,7 +215,7 @@ public final class PointFileReaderWriter {
           out.append(" ");
         }
       }
-      out.append(" | overflowToLeft=" + overflowToLeft);
+      out.append(" | overflowToLeft=").append(overflowToLeft);
       if (keyIter.hasNext()) {
         out.append("\r\n");
       }
