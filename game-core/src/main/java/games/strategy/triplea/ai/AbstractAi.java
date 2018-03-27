@@ -480,9 +480,9 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     }
   }
 
-  /************************
-   * The following methods are called when the AI starts a phase.
-   *************************/
+  /***********************
+   The following methods are called when the AI starts a phase.
+   */
   /**
    * It is the AI's turn to purchase units.
    *

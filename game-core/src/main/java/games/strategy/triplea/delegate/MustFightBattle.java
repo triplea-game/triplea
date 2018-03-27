@@ -1916,11 +1916,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Change change = ChangeFactory.markNoMovementChange(bombard);
       bridge.addChange(change);
     }
-    /**
-     * TODO This code is actually a bug- the property is intended to tell if the return fire is
-     * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
-     * property definition. However, fixing this will entail a fix to the XML to reverse
-     * all values. We'll leave it as is for now and try to figure out a patch strategy later.
+    /*
+      TODO This code is actually a bug- the property is intended to tell if the return fire is
+      RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
+      property definition. However, fixing this will entail a fix to the XML to reverse
+      all values. We'll leave it as is for now and try to figure out a patch strategy later.
      */
     final boolean canReturnFire = isNavalBombardCasualtiesReturnFire();
     if (bombard.size() > 0 && attacked.size() > 0) {
