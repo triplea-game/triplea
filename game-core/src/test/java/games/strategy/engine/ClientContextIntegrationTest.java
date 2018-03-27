@@ -4,12 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.test.Integration;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
-@Tag("integration")
+@Integration
 public class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test

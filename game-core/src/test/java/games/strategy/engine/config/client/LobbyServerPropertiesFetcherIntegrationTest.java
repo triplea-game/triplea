@@ -3,12 +3,12 @@ package games.strategy.engine.config.client;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.test.Integration;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
-@Tag("integration")
+@Integration
 public class LobbyServerPropertiesFetcherIntegrationTest extends AbstractClientSettingTestCase {
   @Test
   public void remoteLobbyUrlReaderWorks() {

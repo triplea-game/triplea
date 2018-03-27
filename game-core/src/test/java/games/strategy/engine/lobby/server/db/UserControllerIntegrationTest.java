@@ -13,16 +13,16 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.test.Integration;
 import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
-@Tag("integration")
+@Integration
 public class UserControllerIntegrationTest {
 
   private static final Supplier<Connection> connectionSupplier = Database::getPostgresConnection;

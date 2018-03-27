@@ -15,12 +15,12 @@ import javax.annotation.concurrent.GuardedBy;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.test.Integration;
 import games.strategy.util.Interruptibles;
 
-@Tag("integration")
+@Integration
 public class MessengerIntegrationTest {
   private int serverPort = -1;
   private IServerMessenger serverMessenger;
