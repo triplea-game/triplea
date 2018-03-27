@@ -2625,17 +2625,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void sortAmphib(final List<Unit> units) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
-    Collections.sort(units,
-        Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
-            .thenComparing((u1, u2) -> {
-              final UnitAttachment ua = UnitAttachment.get(u1.getType());
-              final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-              if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
-                return compareAccordingToAmphibious(u1, u2);
-              }
-              return 0;
-            })
-            .thenComparing(decreasingMovement));
+    units.sort(Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
+        .thenComparing((u1, u2) -> {
+          final UnitAttachment ua = UnitAttachment.get(u1.getType());
+          final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+          if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
+            return compareAccordingToAmphibious(u1, u2);
+          }
+          return 0;
+        })
+        .thenComparing(decreasingMovement));
   }
 
   private int compareAccordingToAmphibious(final Unit u1, final Unit u2) {

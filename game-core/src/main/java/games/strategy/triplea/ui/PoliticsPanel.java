@@ -88,7 +88,7 @@ public class PoliticsPanel extends ActionPanel {
 
     // Never use a delegate or bridge from a UI. Multiplayer games will not work.
     validPoliticalActions = new ArrayList<>(politicsDelegate.getValidActions());
-    Collections.sort(validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
+    validPoliticalActions.sort(new PoliticalActionComparator(getCurrentPlayer(), getData()));
     if (this.firstRun && validPoliticalActions.isEmpty()) {
       // No Valid political actions, do nothing
       return null;

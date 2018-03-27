@@ -220,7 +220,7 @@ public class ProTerritoryValueUtils {
         values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
       }
     }
-    Collections.sort(values, Collections.reverseOrder());
+    values.sort(Collections.reverseOrder());
     double capitalOrFactoryValue = 0;
     for (int i = 0; i < values.size(); i++) {
       capitalOrFactoryValue += values.get(i) / Math.pow(2, i); // Decrease each additional factory value by half
@@ -282,7 +282,7 @@ public class ProTerritoryValueUtils {
         values.add(enemyCapitalsAndFactoriesMap.get(enemyCapitalOrFactory) / Math.pow(2, distance));
       }
     }
-    Collections.sort(values, Collections.reverseOrder());
+    values.sort(Collections.reverseOrder());
     double capitalOrFactoryValue = 0;
     for (int i = 0; i < values.size(); i++) {
       capitalOrFactoryValue += values.get(i) / Math.pow(2, i); // Decrease each additional factory value by half

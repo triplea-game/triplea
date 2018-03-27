@@ -193,7 +193,7 @@ public class TransportUtils {
 
   private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
     final List<Unit> canTransport = new ArrayList<>(transports);
-    Collections.sort(canTransport, Comparator.comparingInt(TransportTracker::getAvailableCapacity)
+    canTransport.sort(Comparator.comparingInt(TransportTracker::getAvailableCapacity)
         .thenComparing(TripleAUnit::get,
             Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed()));
     return canTransport;
@@ -204,7 +204,7 @@ public class TransportUtils {
    */
   public static List<Unit> sortByTransportCostDescending(final Collection<Unit> units) {
     final List<Unit> canBeTransported = new ArrayList<>(units);
-    Collections.sort(canBeTransported, Comparator.comparing(Unit::getType,
+    canBeTransported.sort(Comparator.comparing(Unit::getType,
         Comparator.comparing(UnitAttachment::get,
             Comparator.comparingInt(UnitAttachment::getTransportCost).reversed())));
     return canBeTransported;

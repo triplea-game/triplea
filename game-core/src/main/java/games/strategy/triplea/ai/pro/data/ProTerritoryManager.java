@@ -347,7 +347,7 @@ public class ProTerritoryManager {
         // Add max scramble units
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
           if (maxCanScramble < canScrambleAir.size()) {
-            Collections.sort(canScrambleAir, (o1, o2) -> {
+            canScrambleAir.sort((o1, o2) -> {
               final double strength1 =
                   ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(), false);
               final double strength2 =

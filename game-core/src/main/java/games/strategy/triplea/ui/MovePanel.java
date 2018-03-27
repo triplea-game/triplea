@@ -134,7 +134,7 @@ public class MovePanel extends AbstractMovePanel {
       unitComparator = UnitComparator.getMovableUnitsComparator(units, route);
     }
 
-    Collections.sort(units, unitComparator);
+    units.sort(unitComparator);
   }
 
   /**
@@ -144,8 +144,7 @@ public class MovePanel extends AbstractMovePanel {
     if (transports.isEmpty()) {
       return;
     }
-    Collections.sort(transports,
-        UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports)));
+    transports.sort(UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports)));
   }
 
   /**
@@ -155,8 +154,8 @@ public class MovePanel extends AbstractMovePanel {
     if (transports.isEmpty()) {
       return;
     }
-    Collections.sort(transports,
-        UnitComparator.getUnloadableTransportsComparator(transports, route, getUnitOwner(transports), true));
+    transports
+        .sort(UnitComparator.getUnloadableTransportsComparator(transports, route, getUnitOwner(transports), true));
   }
 
   /**
@@ -220,7 +219,7 @@ public class MovePanel extends AbstractMovePanel {
         hasChanged = false;
 
         // Sort transports by increasing capacity
-        Collections.sort(sortedTransports, increasingCapacityComparator);
+        sortedTransports.sort(increasingCapacityComparator);
 
         // Try to remove one unit from each transport, in succession
         final Iterator<Unit> transportIter = sortedTransports.iterator();
@@ -278,7 +277,7 @@ public class MovePanel extends AbstractMovePanel {
     sortUnitsToMove(allUnitsInSelectedTransports, route);
     final List<Unit> selectedUnitsToUnload = new ArrayList<>();
     final List<Unit> sortedTransports = new ArrayList<>(chosenTransports);
-    Collections.sort(sortedTransports, UnitComparator.getIncreasingCapacityComparator(sortedTransports));
+    sortedTransports.sort(UnitComparator.getIncreasingCapacityComparator(sortedTransports));
     final Collection<Unit> selectedUnits = new ArrayList<>(unitsToUnload);
 
     // First pass: choose one unit from each selected transport
@@ -813,7 +812,7 @@ public class MovePanel extends AbstractMovePanel {
         // best candidate unit for route is chosen dynamically later
         // check for alt key - add 1/10 of total units (useful for splitting large armies)
         final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
-        Collections.sort(unitsToMove, UnitComparator.getHighestToLowestMovementComparator());
+        unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
 
         final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
 

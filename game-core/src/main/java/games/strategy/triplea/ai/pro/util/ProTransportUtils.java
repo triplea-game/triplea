@@ -95,7 +95,7 @@ public class ProTransportUtils {
       units.removeAll(unitsToIgnore);
 
       // Sort units by attack
-      Collections.sort(units, (o1, o2) -> {
+      units.sort((o1, o2) -> {
 
         // Very rough way to add support power
         final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());

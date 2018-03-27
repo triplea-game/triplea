@@ -195,7 +195,7 @@ final class ExportMenu extends JMenu {
       text.append("\n");
       final List<PlayerID> playerOrderList = new ArrayList<>();
       playerOrderList.addAll(gameData.getPlayerList().getPlayers());
-      Collections.sort(playerOrderList, new PlayerOrderComparator(gameData));
+      playerOrderList.sort(new PlayerOrderComparator(gameData));
       final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
       for (final PlayerID currentPlayerId : playerOrderSetNoDuplicates) {
         text.append(currentPlayerId.getName()).append(",");

@@ -341,7 +341,7 @@ public class DiceRoll implements Externalizable {
       }
       return 0;
     };
-    Collections.sort(units, comparator);
+    units.sort(comparator);
   }
 
   private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower,
@@ -725,7 +725,7 @@ public class DiceRoll implements Externalizable {
       }
       return v1.compareTo(v2);
     };
-    Collections.sort(units, comp);
+    units.sort(comp);
   }
 
   private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
@@ -819,7 +819,7 @@ public class DiceRoll implements Externalizable {
       return unitPower2.compareTo(unitPower1);
     };
     for (final List<UnitSupportAttachment> attachments : support) {
-      Collections.sort(attachments, compList);
+      attachments.sort(compList);
     }
   }
 

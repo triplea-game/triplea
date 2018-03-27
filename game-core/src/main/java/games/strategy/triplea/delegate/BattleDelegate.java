@@ -293,7 +293,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (units.isEmpty()) {
       return;
     }
-    Collections.sort(units, UnitComparator.getDecreasingAttackComparator(player));
+    units.sort(UnitComparator.getDecreasingAttackComparator(player));
   }
 
   /**

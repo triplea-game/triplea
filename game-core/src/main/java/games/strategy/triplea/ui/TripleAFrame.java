@@ -1126,9 +1126,8 @@ public class TripleAFrame extends MainGameFrame {
       final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
       for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
         final List<Unit> units = new ArrayList<>(entry.getValue());
-        Collections.sort(units,
-            new UnitBattleComparator(false, TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
-                TerritoryEffectHelper.getEffects(entry.getKey()), data, true, false));
+        units.sort(new UnitBattleComparator(false, TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+            TerritoryEffectHelper.getEffects(entry.getKey()), data, true, false));
         Collections.reverse(units);
         possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
       }
