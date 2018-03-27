@@ -1118,8 +1118,8 @@ public final class Matches {
     final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units);
     return unit -> {
       final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
-      return transporting != null && CollectionUtils
-          .someIntersect(UnitSeperator.categorize(transporting), unitCategories);
+      return transporting != null
+          && CollectionUtils.someIntersect(UnitSeperator.categorize(transporting), unitCategories);
     };
   }
 
@@ -1147,12 +1147,9 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryFriendly(final PlayerID player, final GameData data) {
-    return t -> {
-      if (t.isWater()) {
-        return true;
-      }
-      return t.getOwner().equals(player) || data.getRelationshipTracker().isAllied(player, t.getOwner());
-    };
+    return t -> t.isWater()
+        || t.getOwner().equals(player)
+        || data.getRelationshipTracker().isAllied(player, t.getOwner());
   }
 
   private static Predicate<Unit> unitIsEnemyAaForAnything(final PlayerID player, final GameData data) {
@@ -1172,18 +1169,13 @@ public final class Matches {
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWater(final PlayerID player, final GameData data) {
-    return t -> {
-      if (t.getOwner().equals(player)) {
-        return false;
-      }
-      // if we look at territory attachments, may have funny results for blockades or other things that are passable
-      // and not owned. better
-      // to check them by alliance. (veqryn)
-      // OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return
-      // false;}
-      return (!t.getOwner().equals(PlayerID.NULL_PLAYERID) || !t.isWater()) && data.getRelationshipTracker()
-          .isAtWar(player, t.getOwner());
-    };
+    // if we look at territory attachments, may have funny results for blockades or other things that are passable
+    // and not owned. better
+    // to check them by alliance. (veqryn)
+    return t -> !t.getOwner().equals(player)
+        && ((!t.getOwner().equals(PlayerID.NULL_PLAYERID)
+            || !t.isWater())
+            && data.getRelationshipTracker().isAtWar(player, t.getOwner()));
   }
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(final PlayerID player,
@@ -1195,13 +1187,11 @@ public final class Matches {
       // if we look at territory attachments, may have funny results for blockades or other things that are passable
       // and not owned. better
       // to check them by alliance. (veqryn)
-      // OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return
-      // false;}
       if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) {
         return false;
       }
-      return territoryIsPassableAndNotRestricted(player, data).test(t) && data.getRelationshipTracker()
-          .isAtWar(player, t.getOwner());
+      return territoryIsPassableAndNotRestricted(player, data).test(t)
+          && data.getRelationshipTracker().isAtWar(player, t.getOwner());
     };
   }
 
@@ -1238,7 +1228,8 @@ public final class Matches {
   }
 
   public static Predicate<Territory> territoryDoesNotCostMoneyToEnter(final GameData data) {
-    return t -> territoryIsLand().negate().test(t) || !t.getOwner().equals(PlayerID.NULL_PLAYERID)
+    return t -> territoryIsLand().negate().test(t)
+        || !t.getOwner().equals(PlayerID.NULL_PLAYERID)
         || Properties.getNeutralCharge(data) <= 0;
   }
 
@@ -1350,17 +1341,13 @@ public final class Matches {
       if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
         return true;
       }
-      return TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, territory) || TransportTracker
-          .isTransportUnloadRestrictedInNonCombat(transport);
+      return TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, territory)
+          || TransportTracker.isTransportUnloadRestrictedInNonCombat(transport);
     };
   }
 
   public static Predicate<Unit> transportIsNotTransporting() {
     return transport -> !TransportTracker.isTransporting(transport);
-  }
-
-  static Predicate<Unit> transportIsTransporting() {
-    return TransportTracker::isTransporting;
   }
 
   /**

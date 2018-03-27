@@ -308,8 +308,8 @@ public class GameStepPropertiesHelper {
   }
 
   private static boolean isCombatDelegate(final GameData data) {
-    return !data.getSequence().getStep().getName().endsWith("NonCombatMove") && data.getSequence().getStep().getName()
-        .endsWith("CombatMove");
+    return !data.getSequence().getStep().getName().endsWith("NonCombatMove")
+        && data.getSequence().getStep().getName().endsWith("CombatMove");
   }
 
   private static boolean isAirborneDelegate(final GameData data) {

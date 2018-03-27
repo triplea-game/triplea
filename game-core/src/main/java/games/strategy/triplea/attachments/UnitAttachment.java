@@ -879,9 +879,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean canInvadeFrom(final Unit transport) {
-    return m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0]
-        .isEmpty() || m_canInvadeOnlyFrom[0].equals("all") || Arrays.asList(m_canInvadeOnlyFrom)
-        .contains(transport.getType().getName());
+    return m_canInvadeOnlyFrom == null
+        || Arrays.asList(m_canInvadeOnlyFrom).isEmpty()
+        || m_canInvadeOnlyFrom[0].isEmpty()
+        || m_canInvadeOnlyFrom[0].equals("all")
+        || Arrays.asList(m_canInvadeOnlyFrom).contains(transport.getType().getName());
   }
 
   private void resetCanInvadeOnlyFrom() {

@@ -81,7 +81,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public boolean isEquivalent(final Unit unit) {
-    return m_type != null && m_owner != null && m_type.equals(unit.getType()) && m_owner.equals(unit.getOwner())
+    return m_type != null && m_type.equals(unit.getType())
+        && m_owner != null && m_owner.equals(unit.getOwner())
         && m_hits == unit.getHits();
   }
 
