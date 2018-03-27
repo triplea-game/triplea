@@ -236,8 +236,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     final GameData data = getGameData();
-    return !getPlayerId().amNotDeadYet(data) || getPlayerBridge().isGameOver() || ui
-        .acceptAction(playerSendingProposal, "To " + getPlayerId().getName() + ": " + acceptanceQuestion, politics);
+    return !getPlayerId().amNotDeadYet(data)
+        || getPlayerBridge().isGameOver()
+        || ui.acceptAction(playerSendingProposal, "To " + getPlayerId().getName()
+            + ": " + acceptanceQuestion, politics);
   }
 
   private void tech() {

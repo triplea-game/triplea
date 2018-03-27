@@ -3,6 +3,7 @@ package games.strategy.triplea.ai.pro.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -347,13 +348,8 @@ public class ProTerritoryManager {
         // Add max scramble units
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
           if (maxCanScramble < canScrambleAir.size()) {
-            canScrambleAir.sort((o1, o2) -> {
-              final double strength1 =
-                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(), false);
-              final double strength2 =
-                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(), false);
-              return Double.compare(strength2, strength1);
-            });
+            canScrambleAir.sort(Comparator.comparingDouble(
+                o -> ProBattleUtils.estimateStrength(to, Collections.singletonList(o), new ArrayList<>(), false)));
             canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
           }
           moveMap.get(to).getMaxScrambleUnits().addAll(canScrambleAir);

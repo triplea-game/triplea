@@ -339,10 +339,9 @@ public class MovePanel extends AbstractMovePanel {
       movableBuilder.and(Matches.unitCanNotMoveDuringCombatMove().negate());
     }
     if (route != null) {
-      final Predicate<Unit> enoughMovement = u -> {
-        return BaseEditDelegate.getEditMode(getData()) || TripleAUnit.get(u).getMovementLeft() >= route
-            .getMovementCost(u);
-      };
+      final Predicate<Unit> enoughMovement = u -> BaseEditDelegate.getEditMode(getData())
+          || TripleAUnit.get(u).getMovementLeft() >= route.getMovementCost(u);
+
       if (route.isUnload()) {
         final Predicate<Unit> notLandAndCanMove = enoughMovement.and(Matches.unitIsNotLand());
         final Predicate<Unit> landOrCanMove = Matches.unitIsLand().or(notLandAndCanMove);

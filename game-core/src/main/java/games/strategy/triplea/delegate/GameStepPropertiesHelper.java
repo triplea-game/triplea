@@ -185,10 +185,10 @@ public class GameStepPropertiesHelper {
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REMOVE_AIR_THAT_CAN_NOT_LAND);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
-      } else
-        return (data.getSequence().getStep().getDelegate() == null
-            || !NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) && (
-            isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place"));
+      }
+      return (data.getSequence().getStep().getDelegate() == null
+          || !NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass()))
+          && (isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place"));
     } finally {
       data.releaseReadLock();
     }

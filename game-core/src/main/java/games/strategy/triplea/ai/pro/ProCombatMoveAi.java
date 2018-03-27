@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.pro;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -288,11 +288,7 @@ class ProCombatMoveAi {
     }
 
     // Sort attack territories by value
-    attackOptions.sort((t1, t2) -> {
-      final double value1 = t1.getValue();
-      final double value2 = t2.getValue();
-      return Double.compare(value2, value1);
-    });
+    attackOptions.sort(Comparator.comparingDouble(ProTerritory::getValue));
 
     // Log prioritized territories
     for (final ProTerritory patd : attackOptions) {
