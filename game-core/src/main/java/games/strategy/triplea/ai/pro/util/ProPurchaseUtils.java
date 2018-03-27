@@ -298,7 +298,7 @@ public class ProPurchaseUtils {
    * Comparator that sorts cheaper units before expensive ones.
    */
   public static Comparator<Unit> getCostComparator() {
-    return (o1, o2) -> Double.compare(getCost(o1), getCost(o2));
+    return Comparator.comparingDouble(ProPurchaseUtils::getCost);
   }
 
   /**

@@ -28,8 +28,7 @@ public class AiUtils {
    * @return a comparator that sorts cheaper units before expensive ones.
    */
   public static Comparator<Unit> getCostComparator() {
-    return (o1, o2) -> getCost(o1.getType(), o1.getOwner(), o1.getData())
-        - getCost(o2.getType(), o2.getOwner(), o2.getData());
+    return Comparator.comparingInt(o -> getCost(o.getType(), o.getOwner(), o.getData()));
   }
 
   /**

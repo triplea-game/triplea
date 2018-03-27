@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public final class MapDownloadListSort {
 
 
   private static List<DownloadFileDescription> sort(final List<DownloadFileDescription> maps) {
-    maps.sort((lhs, rhs) -> lhs.getMapName().toUpperCase().compareTo(rhs.getMapName().toUpperCase()));
+    maps.sort(Comparator.comparing(lhs -> lhs.getMapName().toUpperCase()));
     return maps;
   }
 }
