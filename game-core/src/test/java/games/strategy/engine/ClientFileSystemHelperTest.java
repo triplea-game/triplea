@@ -23,14 +23,14 @@ public final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   public final class GetFolderContainingFileWithNameTest {
-    @Spy
-    private final File file = new File("filename.ext");
+    @Mock
+    private File file;
 
-    @Spy
-    private final File parentFolder = new File("parent");
+    @Mock
+    private File parentFolder;
 
-    @Spy
-    private final File startFolder = new File("start");
+    @Mock
+    private File startFolder;
 
     private File getFolderContainingFileWithName() throws Exception {
       return ClientFileSystemHelper.getFolderContainingFileWithName(file.getName(), startFolder);
@@ -40,6 +40,9 @@ public final class ClientFileSystemHelperTest {
     public void setUp() {
       when(file.isFile()).thenReturn(true);
       when(startFolder.getParentFile()).thenReturn(parentFolder);
+      when(file.getName()).thenReturn("filename.ext");
+      when(parentFolder.getName()).thenReturn("parent");
+      when(startFolder.getName()).thenReturn("start");
     }
 
     @Test
