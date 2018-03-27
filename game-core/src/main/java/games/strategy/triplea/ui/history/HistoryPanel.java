@@ -169,7 +169,7 @@ public class HistoryPanel extends JPanel {
       @Override
       public void mouseReleased(final MouseEvent me) {}
     });
-    tree.addTreeSelectionListener(e -> treeSelectionChanged(e));
+    tree.addTreeSelectionListener(this::treeSelectionChanged);
   }
 
   private void previous() {

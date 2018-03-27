@@ -208,7 +208,7 @@ public class StatPanel extends AbstractStatPanel {
       synchronized (this) {
         isDirty = true;
       }
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(StatPanel.this::repaint);
     }
 
     /*
@@ -408,7 +408,7 @@ public class StatPanel extends AbstractStatPanel {
     @Override
     public void gameDataChanged(final Change change) {
       isDirty = true;
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(StatPanel.this::repaint);
     }
 
     public void setGameData(final GameData data) {

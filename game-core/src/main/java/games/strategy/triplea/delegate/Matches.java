@@ -1375,7 +1375,7 @@ public final class Matches {
   }
 
   static Predicate<Unit> transportIsTransporting() {
-    return transport -> TransportTracker.isTransporting(transport);
+    return TransportTracker::isTransporting;
   }
 
   /**

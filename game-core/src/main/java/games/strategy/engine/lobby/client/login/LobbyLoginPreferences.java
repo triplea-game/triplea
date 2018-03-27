@@ -40,7 +40,7 @@ public final class LobbyLoginPreferences {
    * @return The user's current lobby login preferences.
    */
   public static LobbyLoginPreferences load() {
-    return load(getPreferenceNode(), () -> CredentialManager.newInstance());
+    return load(getPreferenceNode(), CredentialManager::newInstance);
   }
 
   @VisibleForTesting
@@ -86,7 +86,7 @@ public final class LobbyLoginPreferences {
    * Saves this instance as the user's current lobby login preferences.
    */
   public void save() {
-    save(getPreferenceNode(), () -> CredentialManager.newInstance());
+    save(getPreferenceNode(), CredentialManager::newInstance);
   }
 
   @VisibleForTesting

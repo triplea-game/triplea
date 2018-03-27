@@ -262,7 +262,7 @@ public class BattlePanel extends ActionPanel {
         }
         battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         currentBattleDisplayed = battleId;
-        SwingUtilities.invokeLater(() -> battleFrame.toFront());
+        SwingUtilities.invokeLater(battleFrame::toFront);
       }
     }));
   }

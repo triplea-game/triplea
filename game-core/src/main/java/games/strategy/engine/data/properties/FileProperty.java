@@ -95,7 +95,7 @@ public class FileProperty extends AEditableProperty {
           m_file = selection;
           label.setText(m_file.getAbsolutePath());
           // Ask Swing to repaint this label when it's convenient
-          SwingUtilities.invokeLater(() -> label.repaint());
+          SwingUtilities.invokeLater(label::repaint);
         }
       }
 

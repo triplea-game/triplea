@@ -105,7 +105,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
     refresh.addActionListener(SwingAction.of("Refresh Objectives", e -> {
       objectiveModel.loadData();
-      SwingUtilities.invokeLater(() -> table.repaint());
+      SwingUtilities.invokeLater(table::repaint);
     }));
     add(Box.createVerticalStrut(6));
     add(refresh);
@@ -352,7 +352,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       synchronized (this) {
         isDirty = true;
       }
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(ObjectivePanel.this::repaint);
     }
 
     @Override

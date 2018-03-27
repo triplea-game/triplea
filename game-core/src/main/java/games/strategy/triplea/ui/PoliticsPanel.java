@@ -154,7 +154,7 @@ public class PoliticsPanel extends ActionPanel {
         GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
     final JButton noActionButton =
         new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
-    SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
+    SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
     politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, 1, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, insets, 0, 0));
     politicalChoiceDialog.add(politicalChoicePanel);

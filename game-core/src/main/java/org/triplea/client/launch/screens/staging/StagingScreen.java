@@ -105,7 +105,7 @@ public enum StagingScreen {
                 .addNorth(gameInfoPanel(gameData))
                 .addCenter(playerAndBidSelectionTabs(gameData, this, playerSelectionModel))
                 .build())
-            .addSouthIf(chatSupport != null, () -> chatSupport.getChatPanel())
+            .addSouthIf(chatSupport != null, chatSupport::getChatPanel)
             .build())
         .build();
 

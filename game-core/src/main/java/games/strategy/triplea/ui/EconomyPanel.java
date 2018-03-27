@@ -105,7 +105,7 @@ public class EconomyPanel extends AbstractStatPanel {
       synchronized (this) {
         isDirty = true;
       }
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(EconomyPanel.this::repaint);
     }
 
     @Override

@@ -75,7 +75,7 @@ public final class BackgroundTaskRunner {
       final String message,
       final Supplier<T> backgroundAction)
       throws InterruptedException {
-    return runInBackgroundAndReturn(message, () -> backgroundAction.get(), RuntimeException.class);
+    return runInBackgroundAndReturn(message, backgroundAction::get, RuntimeException.class);
   }
 
   /**

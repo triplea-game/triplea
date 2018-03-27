@@ -33,7 +33,7 @@ class FileSystemAccessStrategy {
   static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
-            + formatMapList(toRemove, map -> map.getMapName()) + "</html>",
+            + formatMapList(toRemove, DownloadFileDescription::getMapName) + "</html>",
         createRemoveMapAction(toRemove, listModel));
   }
 
@@ -94,7 +94,7 @@ class FileSystemAccessStrategy {
   private static void showRemoveSuccessDialog(final String successMessage,
       final List<DownloadFileDescription> mapList) {
     final String message = createDialogMessage(successMessage, mapList);
-    showDialog(message, mapList, (map) -> map.getMapName());
+    showDialog(message, mapList, DownloadFileDescription::getMapName);
   }
 
   private static void showDialog(final String message, final List<DownloadFileDescription> mapList,

@@ -794,7 +794,7 @@ public class UnitAttachment extends DefaultAttachment {
     restrictedTerritories.removeAll(allowedTerritories);
     m_unitPlacementRestrictions = restrictedTerritories.stream()
         .map(Territory::getName)
-        .toArray(size -> new String[size]);
+        .toArray(String[]::new);
   }
 
   private void setRepairsUnits(final String value) throws GameParseException {

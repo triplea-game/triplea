@@ -63,7 +63,7 @@ public class UnifiedMessenger {
    */
   public UnifiedMessenger(final IMessenger messenger) {
     this.messenger = messenger;
-    final IMessageListener messageListener = (msg, from) -> UnifiedMessenger.this.messageReceived(msg, from);
+    final IMessageListener messageListener = UnifiedMessenger.this::messageReceived;
     this.messenger.addMessageListener(messageListener);
     final IMessengerErrorListener messengerErrorListener =
         (messenger1, reason) -> UnifiedMessenger.this.messengerInvalid();

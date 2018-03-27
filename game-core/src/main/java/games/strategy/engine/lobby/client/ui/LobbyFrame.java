@@ -65,7 +65,7 @@ public class LobbyFrame extends JFrame {
     chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
     chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
-    chatPlayers.addActionFactory(clickedOn -> createAdminActions(clickedOn));
+    chatPlayers.addActionFactory(this::createAdminActions);
     final LobbyGamePanel gamePanel = new LobbyGamePanel(this.client.getMessengers());
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);

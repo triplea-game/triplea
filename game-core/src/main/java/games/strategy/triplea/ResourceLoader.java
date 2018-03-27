@@ -122,7 +122,7 @@ public class ResourceLoader implements Closeable {
     candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
     candidates.addAll(getMapZipFileCandidates(mapName));
 
-    final Optional<File> match = candidates.stream().filter(file -> file.exists()).findFirst();
+    final Optional<File> match = candidates.stream().filter(File::exists).findFirst();
     if (!match.isPresent()) {
       // if we get no results, we will eventually prompt the user to download the map
       return new ArrayList<>();

@@ -130,7 +130,7 @@ public class UserActionPanel extends ActionPanel {
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
       final JButton noActionButton = new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
-      SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
+      SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
       userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
           GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
 
