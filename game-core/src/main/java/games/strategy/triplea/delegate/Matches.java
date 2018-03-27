@@ -917,8 +917,9 @@ public final class Matches {
       if (!areNeutralsPassableByAir && territoryIsNeutralButNotWater().test(t)) {
         return false;
       }
-      return territoryIsPassableAndNotRestricted(player, data).test(t) && !(territoryIsLand().test(t) && !data
-          .getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()));
+      return territoryIsPassableAndNotRestricted(player, data).test(t)
+          && !(territoryIsLand().test(t)
+              && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()));
     };
   }
 
@@ -1004,10 +1005,11 @@ public final class Matches {
           return false;
         }
       }
-      return (!isLandingZoneOnLandForAirUnits || data.getRelationshipTracker()
-          .canLandAirUnitsOnOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
-          && !(isCombatMovePhase && !data
-              .getRelationshipTracker().canMoveIntoDuringCombatMove(playerWhoOwnsAllTheUnitsMoving, t.getOwner()));
+      return (!isLandingZoneOnLandForAirUnits
+          || data.getRelationshipTracker().canLandAirUnitsOnOwnedLand(playerWhoOwnsAllTheUnitsMoving, t.getOwner()))
+          && !(isCombatMovePhase
+              && !data.getRelationshipTracker().canMoveIntoDuringCombatMove(playerWhoOwnsAllTheUnitsMoving,
+                  t.getOwner()));
     };
   }
 
@@ -1808,8 +1810,8 @@ public final class Matches {
         return true;
       }
       final PlayerID territoryOwner = t.getOwner();
-      return territoryOwner == null || data.getRelationshipTracker()
-          .canMoveLandUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
+      return territoryOwner == null
+          || data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
     };
   }
 
@@ -1827,8 +1829,8 @@ public final class Matches {
         return true;
       }
       final PlayerID territoryOwner = t.getOwner();
-      return territoryOwner == null || data.getRelationshipTracker()
-          .canMoveAirUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
+      return territoryOwner == null
+          || data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(territoryOwner, ownerOfUnitsMoving);
     };
   }
 
@@ -2128,13 +2130,10 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(final PlayerID movingPlayer) {
-    return t -> {
-      if (t.getOwner().equals(movingPlayer)) {
-        return true;
-      }
-      return t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater() || t.getData().getRelationshipTracker()
-          .canMoveIntoDuringCombatMove(movingPlayer, t.getOwner());
-    };
+    return t -> t.getOwner().equals(movingPlayer)
+        || (t.getOwner().equals(PlayerID.NULL_PLAYERID)
+            && t.isWater()
+            || t.getData().getRelationshipTracker().canMoveIntoDuringCombatMove(movingPlayer, t.getOwner()));
   }
 
   public static Predicate<Unit> unitCanBeInBattle(final boolean attack, final boolean isLandBattle,

@@ -1149,16 +1149,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean onlyDefenselessDefendingTransportsLeft() {
-    return isTransportCasualtiesRestricted() && !m_defendingUnits.isEmpty() && m_defendingUnits.stream()
-        .allMatch(Matches.unitIsTransportButNotCombatTransport());
+    return isTransportCasualtiesRestricted()
+        && !m_defendingUnits.isEmpty()
+        && m_defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
 
   private boolean canAttackerRetreatSubs() {
     if (m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    return !m_defendingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer()) && (canAttackerRetreat()
-        || canSubsSubmerge());
+    return !m_defendingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())
+        && (canAttackerRetreat() || canSubsSubmerge());
   }
 
   // Added for test case calls
@@ -1201,9 +1202,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    return !m_attackingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer()) && (
-        getEmptyOrFriendlySeaNeighbors(m_defender, CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub()))
-            .size() != 0 || canSubsSubmerge());
+    return !m_attackingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())
+        && (getEmptyOrFriendlySeaNeighbors(m_defender,
+            CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub())).size() != 0
+            || canSubsSubmerge());
   }
 
   private void attackerRetreatSubs(final IDelegateBridge bridge) {
@@ -1917,10 +1919,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       bridge.addChange(change);
     }
     /*
-      TODO This code is actually a bug- the property is intended to tell if the return fire is
-      RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
-      property definition. However, fixing this will entail a fix to the XML to reverse
-      all values. We'll leave it as is for now and try to figure out a patch strategy later.
+     * TODO This code is actually a bug- the property is intended to tell if the return fire is
+     * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
+     * property definition. However, fixing this will entail a fix to the XML to reverse
+     * all values. We'll leave it as is for now and try to figure out a patch strategy later.
      */
     final boolean canReturnFire = isNavalBombardCasualtiesReturnFire();
     if (bombard.size() > 0 && attacked.size() > 0) {

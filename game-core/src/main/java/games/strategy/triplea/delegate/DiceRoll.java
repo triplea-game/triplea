@@ -1010,7 +1010,9 @@ public class DiceRoll implements Externalizable {
 
   private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
-    return !player.isNull() && data.getSequence().getRound() == 1 && !isNegateDominatingFirstRoundAttack(player)
+    return !player.isNull()
+        && data.getSequence().getRound() == 1
+        && !isNegateDominatingFirstRoundAttack(player)
         && isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
@@ -1031,19 +1033,18 @@ public class DiceRoll implements Externalizable {
     final StringBuilder buffer = new StringBuilder(80);
     buffer.append(player.getName()).append(" roll dice for ").append(MyFormatter.unitsToTextNoOwner(units));
     if (battle != null) {
-      buffer.append(" in ").append(battle.getTerritory().getName()).append(", round ")
+      buffer.append(" in ")
+          .append(battle.getTerritory().getName())
+          .append(", round ")
           .append((battle.getBattleRound() + 1));
     }
     return buffer.toString();
   }
 
   /**
-   * @param dice
-   *        int[] the dice, 0 based
-   * @param hits
-   *        int - the number of hits
-   * @param rollAt
-   *        int - what we roll at, [0,Constants.MAX_DICE]
+   * @param dice int[] the dice, 0 based
+   * @param hits int - the number of hits
+   * @param rollAt int - what we roll at, [0,Constants.MAX_DICE]
    * @param hitOnlyIfEquals
    *        boolean - do we get a hit only if we are equals, or do we hit
    *        when we are equal or less than for example a 5 is a hit when

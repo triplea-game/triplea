@@ -245,7 +245,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   public boolean canAlliancesChainTogether() {
-    return !m_alliancesCanChainTogether.equals(PROPERTY_DEFAULT) && !isWar() && !isNeutral()
+    return !m_alliancesCanChainTogether.equals(PROPERTY_DEFAULT)
+        && !isWar()
+        && !isNeutral()
         && m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
   }
 
@@ -266,8 +268,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   public boolean isDefaultWarPosition() {
-    return !m_isDefaultWarPosition.equals(PROPERTY_DEFAULT) && !isAllied() && !isNeutral() && m_isDefaultWarPosition
-        .equals(PROPERTY_TRUE);
+    return !m_isDefaultWarPosition.equals(PROPERTY_DEFAULT)
+        && !isAllied()
+        && !isNeutral()
+        && m_isDefaultWarPosition.equals(PROPERTY_TRUE);
   }
 
   private void resetIsDefaultWarPosition() {
@@ -287,8 +291,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   public boolean givesBackOriginalTerritories() {
-    return !m_givesBackOriginalTerritories.equals(PROPERTY_DEFAULT) && m_givesBackOriginalTerritories
-        .equals(PROPERTY_TRUE);
+    return !m_givesBackOriginalTerritories.equals(PROPERTY_DEFAULT)
+        && m_givesBackOriginalTerritories.equals(PROPERTY_TRUE);
   }
 
   private void resetGivesBackOriginalTerritories() {
@@ -309,8 +313,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
 
   public boolean canMoveIntoDuringCombatMove() {
     // this property is not affected by any archetype.
-    return m_canMoveIntoDuringCombatMove.equals(PROPERTY_DEFAULT) || m_canMoveIntoDuringCombatMove
-        .equals(PROPERTY_TRUE);
+    return m_canMoveIntoDuringCombatMove.equals(PROPERTY_DEFAULT)
+        || m_canMoveIntoDuringCombatMove.equals(PROPERTY_TRUE);
   }
 
   private void resetCanMoveIntoDuringCombatMove() {

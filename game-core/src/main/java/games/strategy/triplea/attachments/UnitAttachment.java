@@ -570,9 +570,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBlitz(final PlayerID player) {
-    return m_canBlitz || TechAbilityAttachment
-        .getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ, (UnitType) this.getAttachedTo(), player,
-            getData());
+    return m_canBlitz
+        || TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ,
+            (UnitType) this.getAttachedTo(), player, getData());
   }
 
   private void resetCanBlitz() {
@@ -656,9 +656,9 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public boolean getCanBombard(final PlayerID player) {
-    return m_canBombard || TechAbilityAttachment
-        .getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD, (UnitType) this.getAttachedTo(), player,
-            getData());
+    return m_canBombard
+        || TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD,
+            (UnitType) this.getAttachedTo(), player, getData());
   }
 
   private void resetCanBombard() {

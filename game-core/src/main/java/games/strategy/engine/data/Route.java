@@ -375,8 +375,9 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether there is some land in the route including start and end.
    */
   public boolean hasLand() {
-    return !getStart().isWater() || getAllTerritories().isEmpty() || !getAllTerritories().stream()
-        .allMatch(Matches.territoryIsWater());
+    return !getStart().isWater()
+        || getAllTerritories().isEmpty()
+        || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
   }
 
   public int getLargestMovementCost(final Collection<Unit> units) {
