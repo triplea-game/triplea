@@ -499,10 +499,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       try {
         final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(m_defender);
         defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
-      } catch (final ConnectionLostException cle) {
-        // somone else will deal with this
-        // System.out.println(cle.getMessage());
-        // cle.printStackTrace(System.out);
       } catch (final Exception e) {
         // ignore
       }
