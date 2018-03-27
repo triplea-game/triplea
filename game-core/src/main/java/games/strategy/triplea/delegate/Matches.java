@@ -178,7 +178,7 @@ public final class Matches {
     return unitIsStrategicBomber().negate();
   }
 
-  static final Predicate<UnitType> unitTypeCanLandOnCarrier() {
+  static Predicate<UnitType> unitTypeCanLandOnCarrier() {
     return obj -> {
       final UnitAttachment ua = UnitAttachment.get(obj);
       return ua != null && ua.getCarrierCost() != -1;
@@ -565,7 +565,7 @@ public final class Matches {
     return obj -> UnitAttachment.get(obj.getType()).getMovementLimit() != null;
   }
 
-  static final Predicate<Unit> unitHasAttackingLimit() {
+  static Predicate<Unit> unitHasAttackingLimit() {
     return obj -> UnitAttachment.get(obj.getType()).getAttackingLimit() != null;
   }
 

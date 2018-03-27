@@ -12,19 +12,19 @@ public class DelegateFinder {
     return delegate;
   }
 
-  public static final PoliticsDelegate politicsDelegate(final GameData data) {
+  public static PoliticsDelegate politicsDelegate(final GameData data) {
     return (PoliticsDelegate) findDelegate(data, "politics");
   }
 
-  public static final BattleDelegate battleDelegate(final GameData data) {
+  public static BattleDelegate battleDelegate(final GameData data) {
     return (BattleDelegate) findDelegate(data, "battle");
   }
 
-  public static final AbstractMoveDelegate moveDelegate(final GameData data) {
+  public static AbstractMoveDelegate moveDelegate(final GameData data) {
     return (AbstractMoveDelegate) findDelegate(data, "move");
   }
 
-  public static final TechnologyDelegate techDelegate(final GameData data) {
+  public static TechnologyDelegate techDelegate(final GameData data) {
     return (TechnologyDelegate) findDelegate(data, "tech");
   }
 }
