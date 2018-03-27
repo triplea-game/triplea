@@ -86,9 +86,7 @@ public enum SettingsWindow {
 
   private JComponent createContents() {
     tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
-    settingTypes.forEach(settingType -> {
-      tabbedPane.add(settingType.tabTitle, buildTabPanel(getSettingsByType(settingType)));
-    });
+    settingTypes.forEach(settingType -> tabbedPane.add(settingType.tabTitle, buildTabPanel(getSettingsByType(settingType))));
 
     return JPanelBuilder.builder()
         .borderLayout()

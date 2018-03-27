@@ -135,17 +135,15 @@ public enum StagingScreen {
             .build())
         .add(JButtonBuilder.builder()
             .title("Open Save Game")
-            .actionListener(() -> {
-              GameRunner.showSaveGameFileChooser().ifPresent(file -> {
-                ClientSetting.SELECTED_GAME_LOCATION.save(file.getAbsolutePath());
-                try {
-                  final GameData newData = GameDataManager.loadGame(file);
-                  LaunchScreenWindow.draw(previousScreen, currentScreen, newData);
-                } catch (final IOException e) {
-                  ClientLogger.logError("Failed to load: " + file.getAbsolutePath(), e);
-                }
-              });
-            })
+            .actionListener(() -> GameRunner.showSaveGameFileChooser().ifPresent(file -> {
+              ClientSetting.SELECTED_GAME_LOCATION.save(file.getAbsolutePath());
+              try {
+                final GameData newData = GameDataManager.loadGame(file);
+                LaunchScreenWindow.draw(previousScreen, currentScreen, newData);
+              } catch (final IOException e) {
+                ClientLogger.logError("Failed to load: " + file.getAbsolutePath(), e);
+              }
+            }))
             .build())
         .add(Box.createVerticalGlue())
         .borderEtched()
