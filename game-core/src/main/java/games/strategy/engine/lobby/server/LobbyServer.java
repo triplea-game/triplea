@@ -17,7 +17,6 @@ public class LobbyServer {
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
-  private final Messengers messengers;
 
   LobbyServer(final int port) {
     final IServerMessenger server;
@@ -27,7 +26,7 @@ public class LobbyServer {
       logger.log(Level.SEVERE, ex.toString());
       throw new IllegalStateException(ex.getMessage());
     }
-    messengers = new Messengers(server);
+    final Messengers messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator());
     // setup common objects
     new UserManager().register(messengers.getRemoteMessenger());

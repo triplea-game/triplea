@@ -15,7 +15,6 @@ import games.strategy.engine.framework.ui.PropertiesSelector;
  * Sound option window framework.
  */
 public final class SoundOptions {
-  private final ClipPlayer clipPlayer;
 
   /**
    * @param parentMenu
@@ -29,7 +28,7 @@ public final class SoundOptions {
   }
 
   private SoundOptions(final JComponent parent) {
-    clipPlayer = ClipPlayer.getInstance();
+    final ClipPlayer clipPlayer = ClipPlayer.getInstance();
     final String ok = "OK";
     final String cancel = "Cancel";
     final String selectAll = "All";

@@ -38,7 +38,6 @@ import tools.util.ToolLogger;
 public final class AutoPlacementFinder {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-  private MapData mapData;
   private boolean placeDimensionsSet = false;
   private double unitZoomPercent = 1;
   private int unitWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -195,6 +194,7 @@ public final class AutoPlacementFinder {
         ToolLogger.error("Failed to initialize from user input", e);
       }
     }
+    final MapData mapData;
     try {
       // makes TripleA read all the text data files for the map.
       mapData = new MapData(mapDir);

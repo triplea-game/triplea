@@ -211,7 +211,6 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID currentStepPlayer;
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool;
-  private final TripleAMenuBar menu;
   private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame. */
@@ -245,8 +244,7 @@ public class TripleAFrame extends MainGameFrame {
         hideCommentLog();
       }
     });
-    menu = new TripleAMenuBar(this);
-    this.setJMenuBar(menu);
+    this.setJMenuBar(new TripleAMenuBar(this));
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
