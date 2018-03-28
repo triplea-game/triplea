@@ -42,7 +42,6 @@ class Encoder {
       // we arent doing any io, just writing in memory
       // so something is very wrong
       logger.log(Level.SEVERE, "Error writing object:" + header, e);
-      return;
     }
   }
 

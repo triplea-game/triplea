@@ -719,7 +719,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     for (final IExecutable step : steps) {
       m_stack.push(step);
     }
-    return;
   }
 
   List<IExecutable> getBattleExecutables(final boolean firstRun) {
