@@ -164,13 +164,13 @@ public class StatPanel extends AbstractStatPanel {
       if (gameData.getMap().getTerritories().stream().anyMatch(Matches.territoryIsVictoryCity())) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VictoryCityStat());
-        StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
+        StatPanel.this.stats = stats.toArray(new IStat[0]);
       }
       // only add the vps in pacific
       if (gameData.getProperties().get(Constants.PACIFIC_THEATER, false)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VpStat());
-        StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
+        StatPanel.this.stats = stats.toArray(new IStat[0]);
       }
     }
 

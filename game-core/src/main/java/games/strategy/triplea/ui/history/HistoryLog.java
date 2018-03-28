@@ -365,7 +365,7 @@ public class HistoryLog extends JFrame {
         }
       } // while (nodeEnum.hasMoreElements())
       curNode = curNode.getNextSibling();
-    } while (curNode != null && (curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
+    } while ((curNode instanceof Step) && players.contains(((Step) curNode).getPlayerId()));
     // if we are mid-phase, this might not get flushed
     if (moving && !moveList.isEmpty()) {
       final Iterator<String> moveIter = moveList.iterator();

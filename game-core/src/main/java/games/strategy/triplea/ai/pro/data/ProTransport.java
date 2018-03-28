@@ -27,8 +27,7 @@ public class ProTransport {
       if (transportMap.containsKey(attackTerritory)) {
         transportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
       } else {
-        final Set<Territory> territories = new HashSet<>();
-        territories.addAll(myUnitsToLoadTerritories);
+        final Set<Territory> territories = new HashSet<>(myUnitsToLoadTerritories);
         transportMap.put(attackTerritory, territories);
       }
     }
@@ -39,8 +38,7 @@ public class ProTransport {
       if (seaTransportMap.containsKey(attackTerritory)) {
         seaTransportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
       } else {
-        final Set<Territory> territories = new HashSet<>();
-        territories.addAll(myUnitsToLoadTerritories);
+        final Set<Territory> territories = new HashSet<>(myUnitsToLoadTerritories);
         seaTransportMap.put(attackTerritory, territories);
       }
     }

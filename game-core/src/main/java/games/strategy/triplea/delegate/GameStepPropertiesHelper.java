@@ -237,7 +237,7 @@ public class GameStepPropertiesHelper {
     try {
       final String prop =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_START);
-      return (prop != null) && Boolean.parseBoolean(prop);
+      return Boolean.parseBoolean(prop);
     } finally {
       data.releaseReadLock();
     }

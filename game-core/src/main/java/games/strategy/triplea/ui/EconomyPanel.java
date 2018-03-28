@@ -60,7 +60,7 @@ public class EconomyPanel extends AbstractStatPanel {
         }
         statList.add(new ResourceStat(resource));
       }
-      statsResource = statList.toArray(new IStat[statList.size()]);
+      statsResource = statList.toArray(new IStat[0]);
     }
 
     @Override

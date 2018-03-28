@@ -72,7 +72,6 @@ public class BattleRecordsList extends GameDataComponent {
       sb.append(entry.getKey().toString());
       sb.append(" -> ");
       sb.append(entry.getValue().toString());
-      sb.append("");
     }
     return sb.toString();
   }

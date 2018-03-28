@@ -113,7 +113,6 @@ public class AirBattle extends AbstractBattle {
     for (final IExecutable step : steps) {
       m_stack.push(step);
     }
-    return;
   }
 
   private boolean shouldFightAirBattle() {

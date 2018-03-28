@@ -154,7 +154,7 @@ public class MapPanel extends ImageScrollerLargeView {
         if (!unitSelectionListeners.isEmpty()) {
           Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
           if (tuple == null) {
-            tuple = Tuple.of(getTerritory(x, y), new ArrayList<Unit>(0));
+            tuple = Tuple.of(getTerritory(x, y), new ArrayList<>(0));
           }
           notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
         }

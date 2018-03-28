@@ -114,7 +114,7 @@ public class TechPanel extends ActionPanel {
       panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
       list.setSelectedIndex(0);
       final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel,
-          "Select advance", JOptionPane.PLAIN_MESSAGE);
+          "Select advance", JOptionPane.DEFAULT_OPTION);
       if (choice != JOptionPane.OK_OPTION) {
         return;
       }

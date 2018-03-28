@@ -50,7 +50,7 @@ public class PlayerChooser extends JOptionPane {
     if (allowNeutral) {
       players.add(PlayerID.NULL_PLAYERID);
     }
-    list = new JList<>(players.toArray(new PlayerID[players.size()]));
+    list = new JList<>(players.toArray(new PlayerID[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setSelectedValue(defaultPlayer, true);
     list.setFocusable(false);

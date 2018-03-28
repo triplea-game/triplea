@@ -242,7 +242,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
       extra = extra + notes;
     }
     String status = chat.getStatusManager().getStatus(node);
-    final StringBuilder sb = new StringBuilder("");
+    final StringBuilder sb = new StringBuilder();
     if (status != null && status.length() > 0) {
       if (status.length() > 25) {
         status = status.substring(0, 25);

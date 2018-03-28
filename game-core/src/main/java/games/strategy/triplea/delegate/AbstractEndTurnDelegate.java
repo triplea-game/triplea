@@ -3,7 +3,6 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -541,26 +540,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (n2 == 1 && n1 != 1) {
         return 1;
       }
-      final TerritoryAttachment ta1 = TerritoryAttachment.get(t1);
-      final TerritoryAttachment ta2 = TerritoryAttachment.get(t2);
-      if (ta1 == null && ta2 == null) {
-        return 0;
-      }
-      if (ta1 == null) {
-        return 1;
-      }
-      if (ta2 == null) {
-        return -1;
-      }
-      final int p1 = ta1.getProduction();
-      final int p2 = ta2.getProduction();
-      if (p1 == p2) {
-        return 0;
-      }
-      if (p1 > p2) {
-        return -1;
-      }
-      return 1;
+      return Comparator.comparing(TerritoryAttachment::get,
+          Comparator.nullsFirst(Comparator.comparingInt(TerritoryAttachment::getProduction)))
+      .compare(t1, t2);
     };
   }
 
@@ -591,13 +573,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       final int d1 = tuple1.getFirst();
       final int d2 = tuple2.getFirst();
-      if (d1 == d2) {
-        return 0;
-      }
-      if (d1 > d2) {
-        return -1;
-      }
-      return 1;
+      return Integer.compare(d2, d1);
     };
   }
 }

@@ -271,7 +271,7 @@ public class TuvUtils {
     }
     for (final Entry<UnitType, List<ResourceCollection>> entry : backups.entrySet()) {
       final ResourceCollection avgCost =
-          new ResourceCollection(entry.getValue().toArray(new ResourceCollection[entry.getValue().size()]), data);
+          new ResourceCollection(entry.getValue().toArray(new ResourceCollection[0]), data);
       if (entry.getValue().size() > 1) {
         avgCost.discount((double) 1 / (double) entry.getValue().size());
       }
@@ -295,7 +295,7 @@ public class TuvUtils {
         }
       }
       final ResourceCollection avgCost =
-          new ResourceCollection(costs.toArray(new ResourceCollection[costs.size()]), data);
+          new ResourceCollection(costs.toArray(new ResourceCollection[0]), data);
       if (costs.size() > 1) {
         avgCost.discount((double) 1 / (double) costs.size());
       }

@@ -124,8 +124,7 @@ public class InGameLobbyWatcher {
 
   private static String getRealName(final String uniqueName) {
     // Remove any (n) that is added to distinguish duplicate names
-    final String name = uniqueName.split(" ")[0];
-    return name;
+    return uniqueName.split(" ")[0];
   }
 
   void setGame(final IGame game) {

@@ -983,9 +983,7 @@ public class TripleAFrame extends MainGameFrame {
       setText(unit.toString() + ", damage=" + TripleAUnit.get(unit).getUnitDamage());
       final Optional<ImageIcon> icon = uiContext.getUnitImageFactory().getIcon(unit.getType(), unit.getOwner(),
           Matches.unitHasTakenSomeBombingUnitDamage().test(unit), Matches.unitIsDisabled().test(unit));
-      if (icon.isPresent()) {
-        setIcon(icon.get());
-      }
+      icon.ifPresent(this::setIcon);
       setBorder(new EmptyBorder(0, 0, 0, 10));
 
       // Set selected option to highlighted color
@@ -1056,8 +1054,7 @@ public class TripleAFrame extends MainGameFrame {
               "Select territory for air units to land, current territory is " + currentTerritory.getName();
           EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.PLAIN_MESSAGE, null, options, null, getUiContext().getCountDownLatchHandler());
-          final Territory selected = (Territory) list.getSelectedValue();
-          return selected;
+          return (Territory) list.getSelectedValue();
         })
         .orElse(null);
   }

@@ -131,7 +131,7 @@ public final class TimespanDialog extends JDialog {
     private final String displayName;
     private final Function<Integer, Instant> function;
 
-    private TimeUnit(final String displayName, final Function<Integer, Instant> function) {
+    TimeUnit(final String displayName, final Function<Integer, Instant> function) {
       this.displayName = displayName;
       this.function = function;
     }

@@ -251,7 +251,7 @@ public abstract class TechAdvance extends NamedAttachable {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof TechAdvance)) {
+    if (!(o instanceof TechAdvance)) {
       return false;
     }
     final TechAdvance other = (TechAdvance) o;

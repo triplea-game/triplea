@@ -100,9 +100,7 @@ public class SimpleUnitPanel extends JPanel {
     if (unit instanceof UnitType) {
       final Optional<ImageIcon> icon =
           uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, damaged, disabled);
-      if (icon.isPresent()) {
-        label.setIcon(icon.get());
-      }
+      icon.ifPresent(label::setIcon);
     } else if (unit instanceof Resource) {
       label.setIcon(uiContext.getResourceImageFactory().getIcon(unit, true));
     }

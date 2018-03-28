@@ -145,7 +145,7 @@ public final class AutoPlacementFinder {
                     + "\r\n do you want to use the file to supply the info for the placement box size? "
                     + "\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height + ",    Result = ("
                     + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")",
-                "File Suggestion", 1);
+                "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION);
 
             if (result == 0) {
               unitZoomPercent = scale;

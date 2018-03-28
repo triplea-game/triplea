@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.fast;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;

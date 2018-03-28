@@ -1141,8 +1141,7 @@ public class BattleTracker implements Serializable {
     // Here and below parameter "false" to getPendingBattleSites & getPendingBattle denote non-SBR battles
     for (final Territory territory : getPendingBattleSites(false)) {
       final IBattle battle = getPendingBattle(territory, false, BattleType.NORMAL);
-      final List<Unit> defenders = new ArrayList<>();
-      defenders.addAll(battle.getDefendingUnits());
+      final List<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
       final List<Unit> sortedUnitsList = getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty() && DiceRoll.getTotalPower(
           DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, false, gameData,

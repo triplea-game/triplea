@@ -225,7 +225,7 @@ abstract class AbstractBattle implements IBattle {
    */
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof IBattle)) {
+    if (!(o instanceof IBattle)) {
       return false;
     }
     final IBattle other = (IBattle) o;

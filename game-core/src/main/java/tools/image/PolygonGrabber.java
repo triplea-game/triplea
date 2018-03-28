@@ -146,7 +146,7 @@ public final class PolygonGrabber {
       if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
           "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
               + "names?",
-          "File Suggestion", 1) == 0) {
+          "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(file.getPath())) {
           ToolLogger.info("Centers : " + file.getPath());
           centers = PointFileReaderWriter.readOneToOne(is);
@@ -326,7 +326,7 @@ public final class PolygonGrabber {
      * @return The newly created panel.
      */
     private JPanel createMainPanel() {
-      final JPanel imagePanel = new JPanel() {
+      return new JPanel() {
         private static final long serialVersionUID = 4106539186003148628L;
 
         @Override
@@ -356,7 +356,6 @@ public final class PolygonGrabber {
           } // if
         } // paint
       };
-      return imagePanel;
     }
 
     /**

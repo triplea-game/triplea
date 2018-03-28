@@ -47,9 +47,7 @@ public interface IDrawable {
 
   default void drawImage(final Graphics2D graphics, final Optional<Image> image, final Point location,
       final Rectangle bounds) {
-    if (image.isPresent()) {
-      graphics.drawImage(image.get(), location.x - bounds.x, location.y - bounds.y, null);
-    }
+    image.ifPresent(image1 -> graphics.drawImage(image1, location.x - bounds.x, location.y - bounds.y, null));
   }
 }
 

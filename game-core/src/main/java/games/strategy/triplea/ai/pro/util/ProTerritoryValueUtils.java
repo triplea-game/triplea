@@ -157,10 +157,9 @@ public class ProTerritoryValueUtils {
       final List<Territory> territoriesToAttack) {
 
     // Get all enemy factories and capitals (check if most territories have factories and if so remove them)
-    final Set<Territory> enemyCapitalsAndFactories = new HashSet<>();
     final GameData data = ProData.getData();
     final List<Territory> allTerritories = data.getMap().getTerritories();
-    enemyCapitalsAndFactories.addAll(
+    final Set<Territory> enemyCapitalsAndFactories = new HashSet<>(
         CollectionUtils.getMatches(allTerritories, ProMatches.territoryHasInfraFactoryAndIsOwnedByPlayersOrCantBeHeld(
             player, ProUtils.getPotentialEnemyPlayers(player), territoriesThatCantBeHeld)));
     final int numPotentialEnemyTerritories = CollectionUtils.countMatches(allTerritories,
@@ -318,9 +317,8 @@ public class ProTerritoryValueUtils {
         nearbyLandValue += territoryValueMap.get(nearbyLandTerritory);
       }
     }
-    final double value = capitalOrFactoryValue / 100 + nearbyLandValue / 10;
 
-    return value;
+    return capitalOrFactoryValue / 100 + nearbyLandValue / 10;
   }
 
   private static Set<Territory> findNearbyEnemyCapitalsAndFactories(final Territory t,

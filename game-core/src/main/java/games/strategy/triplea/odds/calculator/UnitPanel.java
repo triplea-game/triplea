@@ -48,7 +48,7 @@ public class UnitPanel extends JPanel {
         uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
             category.hasDamageOrBombingUnitDamage(), category.getDisabled());
 
-    final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
+    final JLabel label = img.map(image -> new JLabel(new ImageIcon(image))).orElseGet(JLabel::new);
     label.setToolTipText(toolTipText);
     add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 10), 0, 0));

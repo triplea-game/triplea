@@ -288,9 +288,7 @@ public class ProductionPanel extends JPanel {
                 new Insets(1, 0, 0, 0), 0, 0));
       }
       final JPanel label = new JPanel();
-      if (icon.isPresent()) {
-        label.add(new JLabel(icon.get()));
-      }
+      icon.ifPresent(imageIcon -> label.add(new JLabel(imageIcon)));
       label.add(costPanel);
 
       final ScrollableTextField textField = new ScrollableTextField(0, Integer.MAX_VALUE);

@@ -374,7 +374,7 @@ public class TileManager {
             .comparing((final PlayerID p) -> !p.equals(t.getOwner()))
             .thenComparing(p -> Matches.isAtWar(p, data).test(t.getOwner()))
             .thenComparing(data.getPlayerList().getPlayers()::indexOf))
-        .thenComparing(Comparator.comparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType())))
+        .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))
         .thenComparing(UnitCategory::getType, Comparator
             .comparing((final UnitType ut) -> !Matches.unitTypeCanNotMoveDuringCombatMove().test(ut))
             .thenComparing(ut -> !Matches.unitTypeIsSea().test(ut))

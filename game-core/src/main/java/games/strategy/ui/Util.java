@@ -80,7 +80,6 @@ public final class Util {
     final Graphics2D g2 = img.createGraphics();
     final Font font = new Font("Arial Bold", Font.PLAIN, 36);
     g2.setFont(font);
-    final Graphics2D originalGraphics = g2;
     g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -101,10 +100,10 @@ public final class Util {
     g2.setPaint(gp);
     g2.fill(curveShape);
     // g2.setPaint(Color.white);
-    originalGraphics.setColor(Color.WHITE);
+    g2.setColor(Color.WHITE);
     final float loginStringY = h * .75f;
     final float loginStringX = w * .05f;
-    originalGraphics.drawString(text, loginStringX, loginStringY);
+    g2.drawString(text, loginStringX, loginStringY);
     return img;
   }
 

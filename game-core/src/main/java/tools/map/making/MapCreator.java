@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.net.OpenFileUtility;
@@ -72,7 +73,7 @@ public class MapCreator extends JFrame {
 
   private MapCreator() {
     super("TripleA Map Creator");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     // components
     mainPanel = new JPanel();
     final JPanel sidePanel = new JPanel();

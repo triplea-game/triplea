@@ -127,7 +127,7 @@ public final class CenterPicker {
       if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
           "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
               + "names?",
-          "File Suggestion", 1) == 0) {
+          "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(file.getPath())) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
@@ -222,7 +222,7 @@ public final class CenterPicker {
      * @return javax.swing.JPanel the panel to return
      */
     private JPanel createMainPanel() {
-      final JPanel imagePanel = new JPanel() {
+      return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
 
         @Override
@@ -236,7 +236,6 @@ public final class CenterPicker {
           }
         }
       };
-      return imagePanel;
     }
 
     /**

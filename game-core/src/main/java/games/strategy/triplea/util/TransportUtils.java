@@ -2,7 +2,6 @@ package games.strategy.triplea.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -297,7 +296,7 @@ public class TransportUtils {
         unitToPotentialTransports.remove(unit);
       }
     }
-    unitToPotentialTransports.values().stream().forEach(t -> t.remove(transport));
+    unitToPotentialTransports.values().forEach(t -> t.remove(transport));
     return unitToPotentialTransports;
   }
 

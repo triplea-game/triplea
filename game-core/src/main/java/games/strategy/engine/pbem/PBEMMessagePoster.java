@@ -98,7 +98,7 @@ public class PBEMMessagePoster implements Serializable {
     if (m_forumPoster != null) {
       saveGameSb.append(m_forumPoster.getTopicId()).append("_");
     }
-    saveGameSb.append(currentPlayer.getName().substring(0, Math.min(3, currentPlayer.getName().length() - 1)))
+    saveGameSb.append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1))
         .append(roundNumber);
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
     if (m_forumPoster != null) {
@@ -203,7 +203,8 @@ public class PBEMMessagePoster implements Serializable {
       sb.append("Send email to ").append(emailSender.getToAddress()).append("?\n");
     }
     message = sb.toString();
-    final int choice = JOptionPane.showConfirmDialog(mainGameFrame, message, "Post " + title + "?", 2, -1, null);
+    final int choice = JOptionPane.showConfirmDialog(mainGameFrame, message, "Post " + title + "?",
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
     if (choice == 0) {
       if (postButton != null) {
         postButton.setEnabled(false);

@@ -296,32 +296,30 @@ final class ProTechAi {
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
       if (unitAttachment.getIsInfrastructure()) {
-        continue;
-      } else if (unitAttachment.getIsSea() == sea) {
-        final int unitAttack = unitAttachment.getAttack(u.getOwner());
-        // BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
-        // played with this value a good bit
-        strength += 1.00F;
-        if (attacking) {
-          strength += unitAttack * unitAttachment.getHitPoints();
-        } else {
-          strength += unitAttachment.getDefense(u.getOwner()) * unitAttachment.getHitPoints();
-        }
-        if (attacking) {
-          if (unitAttack == 0) {
+        if (unitAttachment.getIsSea() == sea) {
+          final int unitAttack = unitAttachment.getAttack(u.getOwner());
+          // BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
+          // played with this value a good bit
+          strength += 1.00F;
+          if (attacking) {
+            strength += unitAttack * unitAttachment.getHitPoints();
+          } else {
+            strength += unitAttachment.getDefense(u.getOwner()) * unitAttachment.getHitPoints();
+          }
+          if (attacking && unitAttack == 0) {
             strength -= 0.50F;
           }
-        }
-        if (unitAttack == 0 && unitAttachment.getTransportCapacity() > 0 && !transportsFirst) {
-          // only allow transport to have 0.35 on defense; none on attack
-          strength -= 0.50F;
-        }
-      } else if (unitAttachment.getIsAir() == sea) {
-        strength += 1.00F;
-        if (attacking) {
-          strength += unitAttachment.getAttack(u.getOwner()) * unitAttachment.getAttackRolls(u.getOwner());
-        } else {
-          strength += unitAttachment.getDefense(u.getOwner());
+          if (unitAttack == 0 && unitAttachment.getTransportCapacity() > 0 && !transportsFirst) {
+            // only allow transport to have 0.35 on defense; none on attack
+            strength -= 0.50F;
+          }
+        } else if (unitAttachment.getIsAir() == sea) {
+          strength += 1.00F;
+          if (attacking) {
+            strength += unitAttachment.getAttack(u.getOwner()) * unitAttachment.getAttackRolls(u.getOwner());
+          } else {
+            strength += unitAttachment.getDefense(u.getOwner());
+          }
         }
       }
     }
@@ -605,9 +603,8 @@ final class ProTechAi {
       final GameData data) {
     final Predicate<Territory> canGo = endCondition.or(routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
-    final Queue<Territory> q = new ArrayDeque<>();
     final List<Territory> frontier = new ArrayList<>();
-    q.addAll(data.getMap().getNeighbors(start, canGo));
+    final Queue<Territory> q = new ArrayDeque<>(data.getMap().getNeighbors(start, canGo));
     Territory current;
     visited.put(start, 0);
     for (final Territory t : q) {

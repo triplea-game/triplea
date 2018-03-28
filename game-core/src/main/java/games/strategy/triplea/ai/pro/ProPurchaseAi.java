@@ -238,9 +238,8 @@ class ProPurchaseAi {
 
     // Find all purchase/place territories
     final Map<Territory, ProPurchaseTerritory> purchaseTerritories = ProPurchaseUtils.findPurchaseTerritories(player);
-    final Set<Territory> placeTerritories = new HashSet<>();
-    placeTerritories
-        .addAll(CollectionUtils.getMatches(data.getMap().getTerritoriesOwnedBy(player), Matches.territoryIsLand()));
+    final Set<Territory> placeTerritories = new HashSet<>(
+        CollectionUtils.getMatches(data.getMap().getTerritoriesOwnedBy(player), Matches.territoryIsLand()));
     for (final Territory t : purchaseTerritories.keySet()) {
       for (final ProPlaceTerritory ppt : purchaseTerritories.get(t).getCanPlaceTerritories()) {
         placeTerritories.add(ppt.getTerritory());
