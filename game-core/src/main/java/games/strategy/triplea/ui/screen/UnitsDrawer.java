@@ -133,9 +133,7 @@ public class UnitsDrawer implements IDrawable {
           throw new AssertionError("unknown unit flag draw mode: " + drawUnitNationMode);
       }
     } else {
-      if (img.isPresent()) {
-        drawUnit(graphics, img.get(), bounds);
-      }
+      img.ifPresent(image -> drawUnit(graphics, image, bounds));
     }
     // more then 1 unit of this category
     if (count != 1) {

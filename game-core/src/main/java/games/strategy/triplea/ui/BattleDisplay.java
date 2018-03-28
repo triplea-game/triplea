@@ -826,9 +826,7 @@ public class BattleDisplay extends JPanel {
         stamp.setIcon(null);
       } else {
         stamp.setText("x" + count);
-        if (icon.isPresent()) {
-          stamp.setIcon(icon.get());
-        }
+        icon.ifPresent(stamp::setIcon);
       }
     }
   }
@@ -891,7 +889,7 @@ public class BattleDisplay extends JPanel {
         final Optional<ImageIcon> unitImage =
             uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(),
                 damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
-        final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
+        final JLabel unit = unitImage.map(JLabel::new).orElseGet(JLabel::new);
         panel.add(unit);
         for (final UnitOwner owner : category.getDependents()) {
           unit.add(uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner()));
