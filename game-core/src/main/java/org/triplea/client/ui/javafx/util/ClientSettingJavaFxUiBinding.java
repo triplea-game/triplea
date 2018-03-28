@@ -104,13 +104,13 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
   private final SettingType category;
   private final Supplier<SelectionComponent<Region>> nodeSupplier;
 
-  private ClientSettingJavaFxUiBinding(final SettingType category,
+  ClientSettingJavaFxUiBinding(final SettingType category,
       final Supplier<SelectionComponent<Region>> nodeSupplier) {
     this.category = category;
     this.nodeSupplier = Suppliers.memoize(nodeSupplier::get);
   }
 
-  private ClientSettingJavaFxUiBinding(final SettingType category, final ClientSetting setting) {
+  ClientSettingJavaFxUiBinding(final SettingType category, final ClientSetting setting) {
     this(category, JavaFxSelectionComponentFactory.toggleButton(setting));
   }
 
