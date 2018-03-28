@@ -177,7 +177,7 @@ public class ProductionRepairPanel extends JPanel {
     this.left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
   }
 
-  Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
+  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;

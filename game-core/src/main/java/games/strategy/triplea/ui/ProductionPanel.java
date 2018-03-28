@@ -47,9 +47,9 @@ public class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
 
   protected final UiContext uiContext;
-  protected List<Rule> rules = new ArrayList<>();
-  protected JLabel left = new JLabel();
-  protected JPanel remainingResources = new JPanel();
+  protected final List<Rule> rules = new ArrayList<>();
+  protected final JLabel left = new JLabel();
+  protected final JPanel remainingResources = new JPanel();
   protected JButton done;
   protected PlayerID id;
   protected GameData data;
@@ -178,7 +178,7 @@ public class ProductionPanel extends JPanel {
     }
   }
 
-  Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
+  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   // This method can be overridden by subclasses
   protected void calculateLimits() {

@@ -435,7 +435,7 @@ public class BattlePanel extends ActionPanel {
 
   class CenterBattleAction extends AbstractAction {
     private static final long serialVersionUID = -5071133874755970334L;
-    Territory battleSite;
+    final Territory battleSite;
 
     CenterBattleAction(final Territory battleSite) {
       super("Center");
@@ -491,9 +491,9 @@ public class BattlePanel extends ActionPanel {
 
   class FightBattleAction extends AbstractAction {
     private static final long serialVersionUID = 5510976406003707776L;
-    Territory territory;
-    boolean bomb;
-    BattleType battleType;
+    final Territory territory;
+    final boolean bomb;
+    final BattleType battleType;
 
     FightBattleAction(final Territory battleSite, final boolean bomb, final BattleType battleType) {
       super(battleType.toString() + " in " + battleSite.getName() + "...");

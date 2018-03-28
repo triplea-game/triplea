@@ -41,7 +41,7 @@ abstract class AbstractBattle implements IBattle {
   int m_round = 1;
   final boolean m_isBombingRun;
   boolean m_isAmphibious = false;
-  BattleType m_battleType;
+  final BattleType m_battleType;
   boolean m_isOver = false;
   /**
    * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on

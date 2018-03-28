@@ -797,7 +797,7 @@ public class BattleDisplay extends JPanel {
   }
 
   private static final class Renderer implements TableCellRenderer {
-    JLabel stamp = new JLabel();
+    final JLabel stamp = new JLabel();
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,

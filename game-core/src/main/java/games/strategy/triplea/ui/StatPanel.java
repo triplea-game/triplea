@@ -48,7 +48,7 @@ public class StatPanel extends AbstractStatPanel {
   private final TechTableModel techModel;
   protected IStat[] stats;
   protected final Map<PlayerID, ImageIcon> mapPlayerImage = new HashMap<>();
-  protected UiContext uiContext;
+  protected final UiContext uiContext;
 
   /** Creates a new instance of StatPanel. */
   public StatPanel(final GameData data, final UiContext uiContext) {

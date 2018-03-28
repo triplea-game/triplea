@@ -2053,7 +2053,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     private final boolean m_defending;
     private DiceRoll m_dice;
     private CasualtyDetails m_casualties;
-    Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
+    final Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
 
     private FireAA(final boolean defending) {
       m_defending = defending;
