@@ -5,8 +5,10 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.jupiter.api.Test;
 
+import games.strategy.test.Integration;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
+@Integration
 public class LobbyServerPropertiesFetcherIntegrationTest extends AbstractClientSettingTestCase {
   @Test
   public void remoteLobbyUrlReaderWorks() {

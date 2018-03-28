@@ -50,16 +50,6 @@ def remoteFile(url) {
 
 version = getEngineVersion()
 
-sourceSets {
-    integTest {
-        java.srcDir 'src/integ_test/java'
-        resources.srcDir 'src/integ_test/resources'
-
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.testCompileOnly + configurations.testRuntime
-        runtimeClasspath = output + compileClasspath
-    }
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -139,15 +129,15 @@ task cleanRemoteLibs(type: Delete, group: LifecycleBasePlugin.BUILD_GROUP, descr
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
 }
 
-task integTest(type: Test, dependsOn: [compileIntegTestJava]) {
-    useJUnitPlatform()
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = 'Runs the integration tests.'
-    testClassesDirs = sourceSets.integTest.output.classesDirs
-    classpath = sourceSets.integTest.runtimeClasspath
+task integTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
 }
 
 shadowJar {
@@ -253,11 +243,6 @@ checkstyle {
     toolVersion = "8.8"
     configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
     configProperties = [samedir: configFile.parent]
-}
-
-checkstyleIntegTest {
-    maxWarnings = checkstyleIntegTestMaxWarnings.toInteger()
-    source sourceSets.integTest.output.resourcesDir
 }
 
 checkstyleMain {

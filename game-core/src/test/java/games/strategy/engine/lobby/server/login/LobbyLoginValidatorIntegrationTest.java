@@ -28,9 +28,11 @@ import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
+import games.strategy.test.Integration;
 import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
+@Integration
 public class LobbyLoginValidatorIntegrationTest {
   private final ILoginValidator loginValidator = new LobbyLoginValidator();
 

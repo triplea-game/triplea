@@ -25,8 +25,10 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
+import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
+@Integration
 public class ModeratorControllerIntegrationTest {
   private final IServerMessenger serverMessenger = mock(IServerMessenger.class);
   private ModeratorController moderatorController;

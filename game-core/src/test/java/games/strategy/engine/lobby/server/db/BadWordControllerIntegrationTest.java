@@ -9,8 +9,10 @@ import java.sql.PreparedStatement;
 
 import org.junit.jupiter.api.Test;
 
+import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
+@Integration
 public class BadWordControllerIntegrationTest {
 
   @Test

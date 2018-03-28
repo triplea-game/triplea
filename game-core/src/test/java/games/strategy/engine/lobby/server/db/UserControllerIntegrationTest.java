@@ -18,9 +18,11 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.test.Integration;
 import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
+@Integration
 public class UserControllerIntegrationTest {
 
   private static final Supplier<Connection> connectionSupplier = Database::getPostgresConnection;

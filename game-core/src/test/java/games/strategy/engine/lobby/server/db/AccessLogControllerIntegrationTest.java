@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.login.UserType;
+import games.strategy.test.Integration;
 
+@Integration
 public final class AccessLogControllerIntegrationTest {
   private final AccessLogController accessLogController = new AccessLogController();
 
