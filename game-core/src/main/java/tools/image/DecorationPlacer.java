@@ -454,8 +454,7 @@ public final class DecorationPlacer {
       currentPoints = new HashMap<>();
       for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
         // remove duplicates
-        final LinkedHashSet<Point> pointSet = new LinkedHashSet<>();
-        pointSet.addAll(entry.getValue().getSecond());
+        final LinkedHashSet<Point> pointSet = new LinkedHashSet<>(entry.getValue().getSecond());
         entry.getValue().getSecond().clear();
         entry.getValue().getSecond().addAll(pointSet);
         currentPoints.put(entry.getKey(), entry.getValue().getSecond());

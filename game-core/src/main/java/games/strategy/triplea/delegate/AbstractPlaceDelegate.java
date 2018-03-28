@@ -1028,8 +1028,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return maxUnitsToBePlacedMap;
     }
     producers.sort(getBestProducerComparator(to, units, player));
-    final Collection<Territory> notUsableAsOtherProducers = new ArrayList<>();
-    notUsableAsOtherProducers.addAll(producers);
+    final Collection<Territory> notUsableAsOtherProducers = new ArrayList<>(producers);
     final Map<Territory, Integer> currentAvailablePlacementForOtherProducers = new HashMap<>();
     for (final Territory producerTerritory : producers) {
       final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions()

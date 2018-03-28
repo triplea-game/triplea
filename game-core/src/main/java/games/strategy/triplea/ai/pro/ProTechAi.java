@@ -603,9 +603,8 @@ final class ProTechAi {
       final GameData data) {
     final Predicate<Territory> canGo = endCondition.or(routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
-    final Queue<Territory> q = new ArrayDeque<>();
     final List<Territory> frontier = new ArrayList<>();
-    q.addAll(data.getMap().getNeighbors(start, canGo));
+    final Queue<Territory> q = new ArrayDeque<>(data.getMap().getNeighbors(start, canGo));
     Territory current;
     visited.put(start, 0);
     for (final Territory t : q) {

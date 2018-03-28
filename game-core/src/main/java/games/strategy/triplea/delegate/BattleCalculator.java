@@ -565,17 +565,16 @@ public class BattleCalculator {
   }
 
   private static List<Unit> killAmphibiousFirst(final List<Unit> killed, final Collection<Unit> targets) {
-    final Collection<Unit> killedNonAmphibUnits = new ArrayList<>();
     // Get a list of all selected killed units that are NOT amphibious
     final Predicate<Unit> match = Matches.unitIsLand().and(Matches.unitWasNotAmphibious());
-    killedNonAmphibUnits.addAll(CollectionUtils.getMatches(killed, match));
+    final Collection<Unit> killedNonAmphibUnits = new ArrayList<>(CollectionUtils.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
       return killed;
     }
     // Get a list of all units that are amphibious and remove those that are killed
-    final Collection<Unit> allAmphibUnits = new ArrayList<>();
-    allAmphibUnits.addAll(CollectionUtils.getMatches(targets, Matches.unitWasAmphibious()));
+    final Collection<Unit> allAmphibUnits =
+        new ArrayList<>(CollectionUtils.getMatches(targets, Matches.unitWasAmphibious()));
     allAmphibUnits.removeAll(CollectionUtils.getMatches(killed, Matches.unitWasAmphibious()));
     // Get a collection of the unit types of the amphib units
     final Collection<UnitType> amphibTypes = new ArrayList<>();

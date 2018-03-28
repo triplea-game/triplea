@@ -260,8 +260,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         battles = CollectionUtils.getMatches(battles, Matches.battleIsAmphibious());
         if (!battles.isEmpty()) {
           final Collection<Unit> bombardUnits = t.getUnits().getMatches(ownedAndCanBombard);
-          final List<Unit> listedBombardUnits = new ArrayList<>();
-          listedBombardUnits.addAll(bombardUnits);
+          final List<Unit> listedBombardUnits = new ArrayList<>(bombardUnits);
           sortUnitsToBombard(listedBombardUnits, attacker);
           if (!bombardUnits.isEmpty()) {
             // ask if they want to bombard
@@ -636,10 +635,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       territoriesWithBattles
           .addAll(battleTracker.getPendingBattleSites().getStrategicBombingRaidsIncludingAirBattles());
     }
-    final Set<Territory> territoriesWithBattlesWater = new HashSet<>();
-    territoriesWithBattlesWater.addAll(CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater()));
-    final Set<Territory> territoriesWithBattlesLand = new HashSet<>();
-    territoriesWithBattlesLand.addAll(CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
+    final Set<Territory> territoriesWithBattlesWater =
+        new HashSet<>(CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsWater()));
+    final Set<Territory> territoriesWithBattlesLand =
+        new HashSet<>(CollectionUtils.getMatches(territoriesWithBattles, Matches.territoryIsLand()));
     final Map<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory battleTerr : territoriesWithBattlesWater) {
       final Set<Territory> canScrambleFrom = new HashSet<>(
@@ -1475,16 +1474,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
     }
     possibleTerrs.add(currentTerr);
-    final HashSet<Territory> availableLand = new HashSet<>();
-    availableLand.addAll(CollectionUtils.getMatches(possibleTerrs,
+    final HashSet<Territory> availableLand = new HashSet<>(CollectionUtils.getMatches(possibleTerrs,
         Matches.isTerritoryAllied(alliedPlayer, data).and(Matches.territoryIsLand())));
     availableLand.removeAll(canNotLand);
-    final HashSet<Territory> whereCanLand = new HashSet<>();
-    whereCanLand.addAll(availableLand);
+    final HashSet<Territory> whereCanLand = new HashSet<>(availableLand);
     // now for carrier-air-landing validation
     if (!strandedAir.isEmpty() && strandedAir.stream().allMatch(Matches.unitCanLandOnCarrier())) {
-      final HashSet<Territory> availableWater = new HashSet<>();
-      availableWater.addAll(CollectionUtils.getMatches(possibleTerrs,
+      final HashSet<Territory> availableWater = new HashSet<>(CollectionUtils.getMatches(possibleTerrs,
           Matches.territoryHasUnitsThatMatch(Matches.unitIsAlliedCarrier(alliedPlayer, data))
               .and(Matches.territoryIsWater())));
       availableWater.removeAll(battleTracker.getPendingBattleSites(false));

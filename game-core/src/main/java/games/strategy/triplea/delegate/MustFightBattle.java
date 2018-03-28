@@ -1597,8 +1597,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
 
     // Add all suicide on hit groups and the remaining units
-    final List<Collection<Unit>> result = new ArrayList<>();
-    result.addAll(map.values());
+    final List<Collection<Unit>> result = new ArrayList<>(map.values());
     final Collection<Unit> remainingUnits = CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit().negate());
     if (!remainingUnits.isEmpty()) {
       result.add(remainingUnits);
