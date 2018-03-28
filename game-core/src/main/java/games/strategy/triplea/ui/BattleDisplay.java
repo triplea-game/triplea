@@ -484,7 +484,7 @@ public class BattleDisplay extends JPanel {
           final String[] options = {"Ok", "Cancel"};
           final String focus = ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES.booleanValue() ? options[0] : null;
           final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
-              hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+              hit.getName() + " select casualties", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
               focus);
           if (option != 0) {
             return;

@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 import com.google.common.base.Strings;
 
@@ -134,7 +135,7 @@ public final class LobbyMenu extends JMenuBar {
         dialog.setSize(new Dimension(800, 600));
         dialog.setResizable(true);
         dialog.setLocationRelativeTo(lobbyFrame);
-        dialog.setDefaultCloseOperation(2);
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setVisible(true);
       });
     }).start());

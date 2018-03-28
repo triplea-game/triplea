@@ -87,7 +87,8 @@ public final class ConnectionFinder {
       polyFile = new File(mapFolderLocation, "polygons.txt");
     }
     if (polyFile != null && polyFile.exists() && JOptionPane.showConfirmDialog(null,
-        "A polygons.txt file was found in the map's folder, do you want to use it?", "File Suggestion", 1) == 0) {
+        "A polygons.txt file was found in the map's folder, do you want to use it?", "File Suggestion",
+        JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
       // yay
     } else {
       polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
@@ -184,7 +185,7 @@ public final class ConnectionFinder {
       }
     }
     if (JOptionPane.showConfirmDialog(null, "Do you also want to create the Territory Definitions?",
-        "Territory Definitions", 1) == 0) {
+        "Territory Definitions", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
       final String waterString = JOptionPane.showInputDialog(null,
           "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
               + Util.TERRITORY_SEA_ZONE_INFIX + ")",

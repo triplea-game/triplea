@@ -119,7 +119,7 @@ final class ViewMenu extends JMenu {
       panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
           new Insets(0, 0, 0, 0), 0, 0));
       JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(this), panel, "Game UUID",
-          JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
+          JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
     })).setMnemonic(KeyEvent.VK_U);
   }
 

@@ -127,7 +127,7 @@ public final class CenterPicker {
       if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
           "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
               + "names?",
-          "File Suggestion", 1) == 0) {
+          "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(file.getPath())) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
