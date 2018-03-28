@@ -155,7 +155,7 @@ public class SwingComponents {
 
   public static ButtonGroup createButtonGroup(final JRadioButton... radioButtons) {
     final ButtonGroup group = new ButtonGroup();
-    for (final JRadioButton radioButton : Arrays.asList(radioButtons)) {
+    for (final JRadioButton radioButton : radioButtons) {
       group.add(radioButton);
     }
     return group;
