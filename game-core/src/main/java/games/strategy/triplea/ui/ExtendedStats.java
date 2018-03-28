@@ -52,7 +52,7 @@ public class ExtendedStats extends StatPanel {
       resourceStat.init(r.getName());
       final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
       statsExtended.add(resourceStat);
-      this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+      this.statsExtended = statsExtended.toArray(new IStat[0]);
     }
     // add tech related stuff
     if (Properties.getTechDevelopment(data)) {
@@ -60,12 +60,12 @@ public class ExtendedStats extends StatPanel {
       if (data.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
         final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
         statsExtended.add(new TechTokenStat());
-        this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+        this.statsExtended = statsExtended.toArray(new IStat[0]);
       }
       // add number of techs
       final List<IStat> techStatsExtended = new ArrayList<>(Arrays.asList(statsExtended));
       techStatsExtended.add(new TechCountStat());
-      statsExtended = techStatsExtended.toArray(new IStat[techStatsExtended.size()]);
+      statsExtended = techStatsExtended.toArray(new IStat[0]);
 
       // add individual techs
       for (final TechAdvance ta : TechAdvance.getTechAdvances(gameData)) {
@@ -73,7 +73,7 @@ public class ExtendedStats extends StatPanel {
         techNameStat.init(ta);
         final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
         statsExtended.add(techNameStat);
-        this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+        this.statsExtended = statsExtended.toArray(new IStat[0]);
       }
     }
     // now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
@@ -83,7 +83,7 @@ public class ExtendedStats extends StatPanel {
       unitNameStat.init(ut);
       final List<IStat> statsExtended = new ArrayList<>(Arrays.asList(this.statsExtended));
       statsExtended.add(unitNameStat);
-      this.statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
+      this.statsExtended = statsExtended.toArray(new IStat[0]);
     }
   }
 

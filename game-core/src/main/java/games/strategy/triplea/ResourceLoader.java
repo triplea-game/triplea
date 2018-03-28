@@ -67,7 +67,7 @@ public class ResourceLoader implements Closeable {
     dirs.add(resourceFolder.getAbsolutePath());
 
     ClientLogger.logQuietly("Loading resources from the following paths: " + dirs);
-    return new ResourceLoader(mapName, dirs.toArray(new String[dirs.size()]));
+    return new ResourceLoader(mapName, dirs.toArray(new String[0]));
   }
 
   /**
