@@ -1478,14 +1478,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final List<String[]> ru2 = ua2.getRequiresUnits();
       final int rus1 = (ru1 == null ? Integer.MAX_VALUE : (ru1.isEmpty() ? Integer.MAX_VALUE : ru1.size()));
       final int rus2 = (ru2 == null ? Integer.MAX_VALUE : (ru2.isEmpty() ? Integer.MAX_VALUE : ru2.size()));
-      if (rus1 == rus2) {
-        return 0;
-      }
       // fewer means more difficult, and more difficult goes to front of list.
-      if (rus1 < rus2) {
-        return -1;
-      }
-      return 1;
+      return Integer.compare(rus1, rus2);
     };
   }
 
