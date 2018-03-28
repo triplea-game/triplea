@@ -195,7 +195,7 @@ public class BattlePanel extends ActionPanel {
     }
     GUID displayed = currentBattleDisplayed;
     int count = 0;
-    while (displayed == null || !battleId.equals(displayed)) {
+    while (!battleId.equals(displayed)) {
       count++;
       Interruptibles.sleep(count);
       // something is wrong, we shouldnt have to wait this long

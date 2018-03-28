@@ -532,7 +532,7 @@ public class HeadlessGameServer {
     try {
       if (setupPanelModel != null) {
         final ISetupPanel setup = setupPanelModel.getPanel();
-        if (setup != null && setup instanceof HeadlessServerSetup) {
+        if (setup instanceof HeadlessServerSetup) {
           setup.shutDown();
         }
       }

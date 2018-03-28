@@ -176,13 +176,10 @@ public class ProPurchaseUtils {
       ProLogger.debug("Best defense option: " + bestDefenseOption.getUnitType().getName());
       int remainingUnitProduction = getUnitProduction(t, data, player);
       int pusSpent = 0;
-      while (true) {
+      while (bestDefenseOption.getCost() <= (pusRemaining - pusSpent)
+          && remainingUnitProduction >= bestDefenseOption.getQuantity()) {
 
         // If out of PUs or production then break
-        if (bestDefenseOption.getCost() > (pusRemaining - pusSpent)
-            || remainingUnitProduction < bestDefenseOption.getQuantity()) {
-          break;
-        }
 
         // Create new temp defenders
         pusSpent += bestDefenseOption.getCost();

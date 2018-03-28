@@ -61,7 +61,7 @@ final class FileMenu extends JMenu {
 
   private JMenuItem addPostPbem() {
     final JMenuItem menuPbem = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
-      if (gameData == null || !PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
+      if (!PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
       }
       final String title = "Manual Gamesave Post";

@@ -240,7 +240,7 @@ public final class PointFileReaderWriter {
         if (current.trim().length() != 0) {
           final String[] s = current.split(" \\| ");
           final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
-          final boolean overflowToLeft = s.length == 2 ? Boolean.parseBoolean(s[1].split("=")[1]) : false;
+          final boolean overflowToLeft = s.length == 2 && Boolean.parseBoolean(s[1].split("=")[1]);
           result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
         }
         current = reader.readLine();

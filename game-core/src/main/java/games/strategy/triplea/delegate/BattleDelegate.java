@@ -881,14 +881,12 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             for (final Territory territoryNeighborToNewBattle : neighborsLand) {
               final IBattle battleInTerritoryNeighborToNewBattle =
                   battleTracker.getPendingBattle(territoryNeighborToNewBattle, false, BattleType.NORMAL);
-              if (battleInTerritoryNeighborToNewBattle != null
-                  && battleInTerritoryNeighborToNewBattle instanceof MustFightBattle) {
+              if (battleInTerritoryNeighborToNewBattle instanceof MustFightBattle) {
                 final MustFightBattle mfbattleInTerritoryNeighborToNewBattle =
                     (MustFightBattle) battleInTerritoryNeighborToNewBattle;
                 mfbattleInTerritoryNeighborToNewBattle
                     .addDependentUnits(dependencies.get(territoryNeighborToNewBattle));
-              } else if (battleInTerritoryNeighborToNewBattle != null
-                  && battleInTerritoryNeighborToNewBattle instanceof NonFightingBattle) {
+              } else if (battleInTerritoryNeighborToNewBattle instanceof NonFightingBattle) {
                 final NonFightingBattle nfbattleInTerritoryNeighborToNewBattle =
                     (NonFightingBattle) battleInTerritoryNeighborToNewBattle;
                 nfbattleInTerritoryNeighborToNewBattle

@@ -189,7 +189,7 @@ public class BattleRecord implements Serializable {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof BattleRecord)) {
+    if (!(o instanceof BattleRecord)) {
       return false;
     }
     final BattleRecord other = (BattleRecord) o;
