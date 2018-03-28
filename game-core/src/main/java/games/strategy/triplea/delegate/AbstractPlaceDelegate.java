@@ -356,7 +356,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         final Territory placeTerritory = placement.getPlaceTerritory();
         // units with requiresUnits are too difficult to mess with logically, so do not move them around at all
         if (placeTerritory.isWater() && !placeTerritory.equals(producer) && (!isUnitPlacementRestrictions()
-            || !placement.getUnits().stream().anyMatch(Matches.unitRequiresUnitsOnCreation()))) {
+            || placement.getUnits().stream().noneMatch(Matches.unitRequiresUnitsOnCreation()))) {
           // found placement move of producer that can be taken over
           // remember move and amount of placements in that territory
           redoPlacements.add(placement);
@@ -645,7 +645,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     // make sure some unit has fullfilled requiresUnits requirements
     if (isUnitPlacementRestrictions() && !testUnits.isEmpty()
-        && !testUnits.stream().anyMatch(unitWhichRequiresUnitsHasRequiredUnits(producer, true))) {
+        && testUnits.stream().noneMatch(unitWhichRequiresUnitsHasRequiredUnits(producer, true))) {
       return "You do not have the required units to build in " + producer.getName();
     }
     if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas())
@@ -1225,7 +1225,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final Collection<Unit> units, final PlayerID player) {
     // constructions can ONLY be produced BY the same territory that they are going into!
     if (!to.equals(producer) || units == null || units.isEmpty()
-        || !units.stream().anyMatch(Matches.unitIsConstruction())) {
+        || units.stream().noneMatch(Matches.unitIsConstruction())) {
       return new IntegerMap<>();
     }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
@@ -1374,7 +1374,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   private boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to) {
-    if (!isUnitPlacementRestrictions() || !units.stream().anyMatch(Matches.unitRequiresUnitsOnCreation())) {
+    if (!isUnitPlacementRestrictions() || units.stream().noneMatch(Matches.unitRequiresUnitsOnCreation())) {
       return true;
     }
     final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, player, true);

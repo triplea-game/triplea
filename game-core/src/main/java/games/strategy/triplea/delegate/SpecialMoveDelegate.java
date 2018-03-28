@@ -265,9 +265,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
         if (battle == null) {
           return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
-        } else if (land && someLand && !battle.getAttackingUnits().stream().anyMatch(Matches.unitIsLand())) {
+        } else if (land && someLand && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsLand())) {
           return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
-        } else if (sea && someSea && !battle.getAttackingUnits().stream().anyMatch(Matches.unitIsSea())) {
+        } else if (sea && someSea && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsSea())) {
           return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
         }
       }

@@ -169,7 +169,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    */
   public IntegerMap<PlayerID> getPlayerUnitCounts() {
     final IntegerMap<PlayerID> count = new IntegerMap<>();
-    m_units.stream().forEach(unit -> count.add(unit.getOwner(), 1));
+    m_units.forEach(unit -> count.add(unit.getOwner(), 1));
     return count;
   }
 

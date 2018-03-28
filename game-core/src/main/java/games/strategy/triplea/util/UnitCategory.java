@@ -147,7 +147,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   public int compareTo(final UnitCategory other) {
     return Comparator.nullsLast(
         Comparator.comparing(UnitCategory::getOwner, Comparator.comparing(PlayerID::getName))
-            .thenComparing(UnitCategory::getType, new UnitTypeComparator()::compare)
+            .thenComparing(UnitCategory::getType, new UnitTypeComparator())
             .thenComparingInt(UnitCategory::getMovement)
             .thenComparing(UnitCategory::getDependents, (o1, o2) -> {
               if (CollectionUtils.equals(o1, o2)) {

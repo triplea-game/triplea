@@ -296,7 +296,7 @@ public class TransportUtils {
         unitToPotentialTransports.remove(unit);
       }
     }
-    unitToPotentialTransports.values().stream().forEach(t -> t.remove(transport));
+    unitToPotentialTransports.values().forEach(t -> t.remove(transport));
     return unitToPotentialTransports;
   }
 
