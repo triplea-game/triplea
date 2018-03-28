@@ -22,7 +22,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
