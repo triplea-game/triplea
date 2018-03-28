@@ -614,7 +614,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public String toStringForInfo(final boolean useHtml, final boolean includeAttachedToName) {
-    final StringBuilder sb = new StringBuilder("");
+    final StringBuilder sb = new StringBuilder();
     final String br = (useHtml ? "<br>" : ", ");
     final Territory t = (Territory) this.getAttachedTo();
     if (t == null) {

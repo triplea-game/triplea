@@ -253,7 +253,7 @@ public class MyFormatter {
 
   public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map,
       final String separator, final String assignment, final boolean valueBeforeKey) {
-    final StringBuilder buf = new StringBuilder("");
+    final StringBuilder buf = new StringBuilder();
     for (final Entry<? extends DefaultNamed, Integer> entry : map.entrySet()) {
       buf.append(separator);
       final DefaultNamed current = entry.getKey();
@@ -269,7 +269,7 @@ public class MyFormatter {
 
   public static String integerUnitMapToString(final IntegerMap<? extends Unit> map, final String separator,
       final String assignment, final boolean valueBeforeKey) {
-    final StringBuilder buf = new StringBuilder("");
+    final StringBuilder buf = new StringBuilder();
     for (final Entry<? extends Unit, Integer> entry : map.entrySet()) {
       buf.append(separator);
       final Unit current = entry.getKey();

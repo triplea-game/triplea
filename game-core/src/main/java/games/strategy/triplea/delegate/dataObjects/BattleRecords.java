@@ -228,7 +228,7 @@ public class BattleRecords implements Serializable {
       for (final Entry<GUID, BattleRecord> entry2 : entry.getValue().entrySet()) {
         sb2.append(", ");
         final String guid = entry2.getKey().toString();
-        sb2.append(guid.substring(Math.max(0, Math.min(guid.length(), 7 * guid.length() / 8)), guid.length()));
+        sb2.append(guid, Math.max(0, Math.min(guid.length(), 7 * guid.length() / 8)), guid.length());
         sb2.append(":");
         sb2.append(entry2.getValue().toString());
       }
