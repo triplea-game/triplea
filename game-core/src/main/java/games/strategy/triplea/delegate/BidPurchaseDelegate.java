@@ -36,11 +36,9 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (!doesPlayerHaveBid(getData(), player)) {
       return false;
     }
-    if ((player.getProductionFrontier() == null || player.getProductionFrontier().getRules().isEmpty())
-        && (player.getRepairFrontier() == null || player.getRepairFrontier().getRules().isEmpty())) {
-      return false;
-    }
-    return canWePurchaseOrRepair();
+    return ((player.getProductionFrontier() != null && !player.getProductionFrontier().getRules().isEmpty())
+        || (player.getRepairFrontier() != null && !player.getRepairFrontier().getRules().isEmpty()))
+        && canWePurchaseOrRepair();
   }
 
   @Override

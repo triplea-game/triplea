@@ -285,9 +285,7 @@ public class ProPurchaseUtils {
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
-    final Iterator<Unit> iter = factoryUnits.iterator();
-    while (iter.hasNext()) {
-      final Unit factory2 = iter.next();
+    for (Unit factory2 : factoryUnits) {
       if (player.equals(OriginalOwnerTracker.getOriginalOwner(factory2))) {
         return OriginalOwnerTracker.getOriginalOwner(factory2);
       }
@@ -300,7 +298,7 @@ public class ProPurchaseUtils {
    * Comparator that sorts cheaper units before expensive ones.
    */
   public static Comparator<Unit> getCostComparator() {
-    return (o1, o2) -> Double.compare(getCost(o1), getCost(o2));
+    return Comparator.comparingDouble(ProPurchaseUtils::getCost);
   }
 
   /**

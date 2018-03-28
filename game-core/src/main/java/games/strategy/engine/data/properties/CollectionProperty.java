@@ -77,9 +77,6 @@ public class CollectionProperty<T> extends AEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    if (value == null) {
-      return false;
-    }
-    return List.class.isAssignableFrom(value.getClass());
+    return value != null && List.class.isAssignableFrom(value.getClass());
   }
 }

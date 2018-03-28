@@ -341,7 +341,7 @@ public class DiceRoll implements Externalizable {
       }
       return 0;
     };
-    Collections.sort(units, comparator);
+    units.sort(comparator);
   }
 
   private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower,
@@ -725,7 +725,7 @@ public class DiceRoll implements Externalizable {
       }
       return v1.compareTo(v2);
     };
-    Collections.sort(units, comp);
+    units.sort(comp);
   }
 
   private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
@@ -819,7 +819,7 @@ public class DiceRoll implements Externalizable {
       return unitPower2.compareTo(unitPower1);
     };
     for (final List<UnitSupportAttachment> attachments : support) {
-      Collections.sort(attachments, compList);
+      attachments.sort(compList);
     }
   }
 
@@ -1010,10 +1010,10 @@ public class DiceRoll implements Externalizable {
 
   private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
-    if (player.isNull() || data.getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player)) {
-      return false;
-    }
-    return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
+    return !player.isNull()
+        && data.getSequence().getRound() == 1
+        && !isNegateDominatingFirstRoundAttack(player)
+        && isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
   private static boolean isDominatingFirstRoundAttack(final PlayerID player) {
@@ -1021,37 +1021,30 @@ public class DiceRoll implements Externalizable {
       return false;
     }
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    if (ra == null) {
-      return false;
-    }
-    return ra.getDominatingFirstRoundAttack();
+    return ra != null && ra.getDominatingFirstRoundAttack();
   }
 
   private static boolean isNegateDominatingFirstRoundAttack(final PlayerID player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    if (ra == null) {
-      return false;
-    }
-    return ra.getNegateDominatingFirstRoundAttack();
+    return ra != null && ra.getNegateDominatingFirstRoundAttack();
   }
 
   static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     buffer.append(player.getName()).append(" roll dice for ").append(MyFormatter.unitsToTextNoOwner(units));
     if (battle != null) {
-      buffer.append(" in ").append(battle.getTerritory().getName()).append(", round ")
+      buffer.append(" in ")
+          .append(battle.getTerritory().getName())
+          .append(", round ")
           .append((battle.getBattleRound() + 1));
     }
     return buffer.toString();
   }
 
   /**
-   * @param dice
-   *        int[] the dice, 0 based
-   * @param hits
-   *        int - the number of hits
-   * @param rollAt
-   *        int - what we roll at, [0,Constants.MAX_DICE]
+   * @param dice int[] the dice, 0 based
+   * @param hits int - the number of hits
+   * @param rollAt int - what we roll at, [0,Constants.MAX_DICE]
    * @param hitOnlyIfEquals
    *        boolean - do we get a hit only if we are equals, or do we hit
    *        when we are equal or less than for example a 5 is a hit when

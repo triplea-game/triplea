@@ -97,49 +97,47 @@ public final class LobbyMenu extends JMenuBar {
   private void addDisplayPlayersInformationMenu(final JMenu parentMenu) {
     final JMenuItem revive = new JMenuItem("Display Players Information");
     revive.setEnabled(true);
-    revive.addActionListener(event -> {
-      new Thread(() -> {
-        final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-            .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Online Players:\r\n\r\n");
-        for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
-          builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
-        }
-        builder.append("Players That Have Left (Last 10):\r\n\r\n");
-        for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
-          builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
-        }
-        SwingUtilities.invokeLater(() -> {
-          final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
-          final JTextArea label = new JTextArea(builder.toString());
-          label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-          label.setEditable(false);
-          label.setAutoscrolls(true);
-          label.setLineWrap(false);
-          label.setFocusable(true);
-          label.setWrapStyleWord(true);
-          label.setLocation(0, 0);
-          dialog.setBackground(label.getBackground());
-          dialog.setLayout(new BorderLayout());
-          final JScrollPane pane = new JScrollPane();
-          pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-          pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-          pane.setViewportView(label);
-          dialog.add(pane, BorderLayout.CENTER);
-          final JButton button = new JButton("Close");
-          button.addActionListener(e -> dialog.dispose());
-          button.setMinimumSize(new Dimension(100, 30));
-          dialog.add(button, BorderLayout.SOUTH);
-          dialog.setMinimumSize(new Dimension(500, 300));
-          dialog.setSize(new Dimension(800, 600));
-          dialog.setResizable(true);
-          dialog.setLocationRelativeTo(lobbyFrame);
-          dialog.setDefaultCloseOperation(2);
-          dialog.setVisible(true);
-        });
-      }).start();
-    });
+    revive.addActionListener(event -> new Thread(() -> {
+      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
+          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+      final StringBuilder builder = new StringBuilder();
+      builder.append("Online Players:\r\n\r\n");
+      for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
+        builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+      }
+      builder.append("Players That Have Left (Last 10):\r\n\r\n");
+      for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
+        builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+      }
+      SwingUtilities.invokeLater(() -> {
+        final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
+        final JTextArea label = new JTextArea(builder.toString());
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        label.setEditable(false);
+        label.setAutoscrolls(true);
+        label.setLineWrap(false);
+        label.setFocusable(true);
+        label.setWrapStyleWord(true);
+        label.setLocation(0, 0);
+        dialog.setBackground(label.getBackground());
+        dialog.setLayout(new BorderLayout());
+        final JScrollPane pane = new JScrollPane();
+        pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        pane.setViewportView(label);
+        dialog.add(pane, BorderLayout.CENTER);
+        final JButton button = new JButton("Close");
+        button.addActionListener(e -> dialog.dispose());
+        button.setMinimumSize(new Dimension(100, 30));
+        dialog.add(button, BorderLayout.SOUTH);
+        dialog.setMinimumSize(new Dimension(500, 300));
+        dialog.setSize(new Dimension(800, 600));
+        dialog.setResizable(true);
+        dialog.setLocationRelativeTo(lobbyFrame);
+        dialog.setDefaultCloseOperation(2);
+        dialog.setVisible(true);
+      });
+    }).start());
     parentMenu.add(revive);
   }
 

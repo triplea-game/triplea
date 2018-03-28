@@ -88,7 +88,7 @@ public class PoliticsPanel extends ActionPanel {
 
     // Never use a delegate or bridge from a UI. Multiplayer games will not work.
     validPoliticalActions = new ArrayList<>(politicsDelegate.getValidActions());
-    Collections.sort(validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
+    validPoliticalActions.sort(new PoliticalActionComparator(getCurrentPlayer(), getData()));
     if (this.firstRun && validPoliticalActions.isEmpty()) {
       // No Valid political actions, do nothing
       return null;
@@ -154,7 +154,7 @@ public class PoliticsPanel extends ActionPanel {
         GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
     final JButton noActionButton =
         new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
-    SwingUtilities.invokeLater(() -> noActionButton.requestFocusInWindow());
+    SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
     politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, 1, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, insets, 0, 0));
     politicalChoiceDialog.add(politicalChoicePanel);

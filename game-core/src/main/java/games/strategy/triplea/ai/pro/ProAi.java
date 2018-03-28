@@ -332,7 +332,7 @@ public class ProAi extends AbstractAi {
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
     final List<Unit> selectFromSorted = new ArrayList<>(selectFrom);
     if (enemyUnits.isEmpty()) {
-      Collections.sort(selectFromSorted, ProPurchaseUtils.getCostComparator());
+      selectFromSorted.sort(ProPurchaseUtils.getCostComparator());
     } else {
 
       // Get battle data

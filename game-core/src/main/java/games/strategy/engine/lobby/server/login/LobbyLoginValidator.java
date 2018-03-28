@@ -83,7 +83,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         new UserController(),
         new CompositeAccessLog(),
         new RsaAuthenticator(),
-        () -> BCrypt.gensalt());
+        BCrypt::gensalt);
   }
 
   @VisibleForTesting

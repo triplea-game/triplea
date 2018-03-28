@@ -88,7 +88,7 @@ public class MetaSetupPanel extends SetupPanel {
     setLayout(new GridBagLayout());
     // top space
     add(new JPanel(), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-        new Insets(00, 0, 0, 0), 0, 0));
+        new Insets(0, 0, 0, 0), 0, 0));
     add(connectToLobby, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
     add(startLocal, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
@@ -117,7 +117,7 @@ public class MetaSetupPanel extends SetupPanel {
 
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-        new Insets(00, 0, 0, 0), 0, 0));
+        new Insets(0, 0, 0, 0), 0, 0));
 
     if (ClientSetting.SHOW_BETA_FEATURES.booleanValue()) {
       final JButton newUiButton = JButtonBuilder.builder()

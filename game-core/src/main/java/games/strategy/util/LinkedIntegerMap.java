@@ -56,8 +56,7 @@ public final class LinkedIntegerMap<T> implements Cloneable, Serializable {
   }
 
   private void put(final T key, final int value) {
-    final Integer obj = Integer.valueOf(value);
-    m_values.put(key, obj);
+    m_values.put(key, value);
   }
 
   public void addAll(final Collection<T> keys, final int value) {
@@ -68,11 +67,7 @@ public final class LinkedIntegerMap<T> implements Cloneable, Serializable {
    * returns 0 if no key found.
    */
   public int getInt(final T key) {
-    final Integer val = m_values.get(key);
-    if (val == null) {
-      return 0;
-    }
-    return val;
+    return m_values.getOrDefault(key, 0);
   }
 
   public void add(final T key, final int value) {

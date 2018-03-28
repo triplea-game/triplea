@@ -94,10 +94,7 @@ public class GameStep extends GameDataComponent {
   }
 
   public boolean hasReachedMaxRunCount() {
-    if (m_maxRunCount == -1) {
-      return false;
-    }
-    return m_maxRunCount <= m_runCount;
+    return m_maxRunCount != -1 && m_maxRunCount <= m_runCount;
   }
 
   public int getRunCount() {

@@ -300,10 +300,10 @@ public class MapRouteDrawer {
   private void drawCurvedPath(final Graphics2D graphics, final Point2D[] points) {
     final double[] index = createParameterizedIndex(points);
     final PolynomialSplineFunction xcurve =
-        splineInterpolator.interpolate(index, getValues(points, point -> point.getX()));
+        splineInterpolator.interpolate(index, getValues(points, Point2D::getX));
     final double[] xcoords = getCoords(xcurve, index);
     final PolynomialSplineFunction ycurve =
-        splineInterpolator.interpolate(index, getValues(points, point -> point.getY()));
+        splineInterpolator.interpolate(index, getValues(points, Point2D::getY));
     final double[] ycoords = getCoords(ycurve, index);
     final List<Path2D> paths = routeCalculator.getAllNormalizedLines(xcoords, ycoords);
     for (final Path2D path : paths) {

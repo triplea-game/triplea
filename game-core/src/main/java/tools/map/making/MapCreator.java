@@ -50,11 +50,6 @@ public class MapCreator extends JFrame {
   private static int unitHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 
   private final JPanel mainPanel;
-  private final JPanel sidePanel;
-  private final JButton part1;
-  private final JButton part2;
-  private final JButton part3;
-  private final JButton part4;
   private final JPanel panel1 = new JPanel();
   private final JPanel panel2 = new JPanel();
   private final JPanel panel3 = new JPanel();
@@ -80,11 +75,11 @@ public class MapCreator extends JFrame {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     // components
     mainPanel = new JPanel();
-    sidePanel = new JPanel();
-    part1 = new JButton("Step 1: Map Properties");
-    part2 = new JButton("Step 2: Map Utilities");
-    part3 = new JButton("Step 3: Game XML");
-    part4 = new JButton("Other: Optional Things");
+    final JPanel sidePanel = new JPanel();
+    final JButton part1 = new JButton("Step 1: Map Properties");
+    final JButton part2 = new JButton("Step 2: Map Utilities");
+    final JButton part3 = new JButton("Step 3: Game XML");
+    final JButton part4 = new JButton("Other: Optional Things");
     sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.PAGE_AXIS));
     sidePanel.add(Box.createVerticalGlue());
     sidePanel.add(part1);

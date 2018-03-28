@@ -181,7 +181,7 @@ public class GameDataExporter {
     }
     if (prop.getClass().equals(ColorProperty.class)) {
       typeString = "            <color/>\n";
-      value = "0x" + Integer.toHexString((((Integer) prop.getValue()).intValue())).toUpperCase();
+      value = "0x" + Integer.toHexString(((Integer) prop.getValue())).toUpperCase();
     }
     if (prop.getClass().equals(ComboProperty.class)) {
       final Field listField;

@@ -1149,10 +1149,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean onlyDefenselessDefendingTransportsLeft() {
-    if (!isTransportCasualtiesRestricted()) {
-      return false;
-    }
-    return !m_defendingUnits.isEmpty()
+    return isTransportCasualtiesRestricted()
+        && !m_defendingUnits.isEmpty()
         && m_defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
 
@@ -1160,10 +1158,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    if (m_defendingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return canAttackerRetreat() || canSubsSubmerge();
+    return !m_defendingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())
+        && (canAttackerRetreat() || canSubsSubmerge());
   }
 
   // Added for test case calls
@@ -1206,11 +1202,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    if (m_attackingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return getEmptyOrFriendlySeaNeighbors(m_defender, CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub()))
-        .size() != 0 || canSubsSubmerge();
+    return !m_attackingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())
+        && (getEmptyOrFriendlySeaNeighbors(m_defender,
+            CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub())).size() != 0
+            || canSubsSubmerge());
   }
 
   private void attackerRetreatSubs(final IDelegateBridge bridge) {
@@ -1923,7 +1918,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Change change = ChangeFactory.markNoMovementChange(bombard);
       bridge.addChange(change);
     }
-    /**
+    /*
      * TODO This code is actually a bug- the property is intended to tell if the return fire is
      * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
      * property definition. However, fixing this will entail a fix to the XML to reverse
@@ -2632,17 +2627,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void sortAmphib(final List<Unit> units) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
-    Collections.sort(units,
-        Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
-            .thenComparing((u1, u2) -> {
-              final UnitAttachment ua = UnitAttachment.get(u1.getType());
-              final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-              if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
-                return compareAccordingToAmphibious(u1, u2);
-              }
-              return 0;
-            })
-            .thenComparing(decreasingMovement));
+    units.sort(Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
+        .thenComparing((u1, u2) -> {
+          final UnitAttachment ua = UnitAttachment.get(u1.getType());
+          final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+          if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
+            return compareAccordingToAmphibious(u1, u2);
+          }
+          return 0;
+        })
+        .thenComparing(decreasingMovement));
   }
 
   private int compareAccordingToAmphibious(final Unit u1, final Unit u2) {

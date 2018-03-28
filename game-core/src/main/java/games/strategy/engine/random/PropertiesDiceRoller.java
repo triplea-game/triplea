@@ -74,7 +74,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         }
       }
     }
-    Collections.sort(propFiles, (o1, o2) -> {
+    propFiles.sort((o1, o2) -> {
       final int n1 = Integer.parseInt(o1.getProperty("order"));
       final int n2 = Integer.parseInt(o2.getProperty("order"));
       return n1 - n2;

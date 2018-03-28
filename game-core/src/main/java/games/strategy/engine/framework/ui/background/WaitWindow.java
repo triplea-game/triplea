@@ -31,9 +31,7 @@ public final class WaitWindow extends JWindow {
    * Shows the wait window.
    */
   public void showWait() {
-    SwingUtilities.invokeLater(() -> {
-      setVisible(true);
-    });
+    SwingUtilities.invokeLater(() -> setVisible(true));
   }
 
   /**

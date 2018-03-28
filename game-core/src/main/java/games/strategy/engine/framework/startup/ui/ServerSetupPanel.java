@@ -284,12 +284,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public void playerListChanged() {
-    SwingUtilities.invokeLater(() -> internalPlayerListChanged());
+    SwingUtilities.invokeLater(this::internalPlayerListChanged);
   }
 
   @Override
   public void playersTakenChanged() {
-    SwingUtilities.invokeLater(() -> internalPlayersTakenChanged());
+    SwingUtilities.invokeLater(this::internalPlayersTakenChanged);
   }
 
   private void internalPlayersTakenChanged() {

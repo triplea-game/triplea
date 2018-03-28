@@ -435,11 +435,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   private boolean getIsServerHeadlessTest() {
     final IServerStartupRemote serverRemote = getServerStartup();
-    if (serverRemote != null) {
-      hostIsHeadlessBot = serverRemote.getIsServerHeadless();
-    } else {
-      hostIsHeadlessBot = false;
-    }
+    hostIsHeadlessBot = serverRemote != null && serverRemote.getIsServerHeadless();
     return hostIsHeadlessBot;
   }
 

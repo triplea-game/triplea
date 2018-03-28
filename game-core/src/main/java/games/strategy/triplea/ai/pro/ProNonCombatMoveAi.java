@@ -3,6 +3,7 @@ package games.strategy.triplea.ai.pro;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -481,11 +482,7 @@ class ProNonCombatMoveAi {
 
     // Sort attack territories by value
     final List<ProTerritory> prioritizedTerritories = new ArrayList<>(moveMap.values());
-    Collections.sort(prioritizedTerritories, (t1, t2) -> {
-      final double value1 = t1.getValue();
-      final double value2 = t2.getValue();
-      return Double.compare(value2, value1);
-    });
+    prioritizedTerritories.sort(Comparator.comparingDouble(ProTerritory::getValue));
 
     // Remove territories that I'm not going to try to defend
     for (final Iterator<ProTerritory> it = prioritizedTerritories.iterator(); it.hasNext();) {
@@ -1202,11 +1199,7 @@ class ProNonCombatMoveAi {
         }
 
         // Sort prioritized territories
-        Collections.sort(priorizitedLoadTerritories, (t1, t2) -> {
-          final double value1 = t1.getLoadValue();
-          final double value2 = t2.getLoadValue();
-          return Double.compare(value1, value2);
-        });
+        priorizitedLoadTerritories.sort(Comparator.comparingDouble(ProTerritory::getLoadValue));
 
         // Move towards best loading territory if route is safe
         for (final ProTerritory patd : priorizitedLoadTerritories) {

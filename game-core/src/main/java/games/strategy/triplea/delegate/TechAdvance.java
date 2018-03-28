@@ -255,10 +255,7 @@ public abstract class TechAdvance extends NamedAttachable {
       return false;
     }
     final TechAdvance other = (TechAdvance) o;
-    if (other.getName() == null || getName() == null) {
-      return false;
-    }
-    return getName().equals(other.getName());
+    return other.getName() != null && getName() != null && getName().equals(other.getName());
   }
 
   @Override

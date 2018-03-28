@@ -57,16 +57,14 @@ public final class ScreenshotExporter {
     SwingComponents.runWithProgressBar(frame, "Saving map snapshot...", () -> {
       save(gameData, node, file);
       return null;
-    }).whenComplete((ignore, e) -> {
-      SwingUtilities.invokeLater(() -> {
-        if (e == null) {
-          JOptionPane.showMessageDialog(frame, "Map Snapshot Saved", "Map Snapshot Saved",
-              JOptionPane.INFORMATION_MESSAGE);
-        } else {
-          JOptionPane.showMessageDialog(frame, e.getMessage(), "Error Saving Map Snapshot", JOptionPane.ERROR_MESSAGE);
-        }
-      });
-    });
+    }).whenComplete((ignore, e) -> SwingUtilities.invokeLater(() -> {
+      if (e == null) {
+        JOptionPane.showMessageDialog(frame, "Map Snapshot Saved", "Map Snapshot Saved",
+            JOptionPane.INFORMATION_MESSAGE);
+      } else {
+        JOptionPane.showMessageDialog(frame, e.getMessage(), "Error Saving Map Snapshot", JOptionPane.ERROR_MESSAGE);
+      }
+    }));
   }
 
   private void save(final GameData gameData, final HistoryNode node, final File file) throws IOException {

@@ -3,6 +3,7 @@ package games.strategy.triplea.ai.pro;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -508,11 +509,7 @@ class ProPurchaseAi {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(needToDefendTerritories);
-    Collections.sort(sortedTerritories, (t1, t2) -> {
-      final double value1 = t1.getDefenseValue();
-      final double value2 = t2.getDefenseValue();
-      return Double.compare(value2, value1);
-    });
+    sortedTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getDefenseValue));
     for (final ProPlaceTerritory placeTerritory : sortedTerritories) {
       ProLogger.debug(placeTerritory.toString() + " defenseValue=" + placeTerritory.getDefenseValue());
     }
@@ -671,11 +668,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
-      final double value1 = t1.getStrategicValue();
-      final double value2 = t2.getStrategicValue();
-      return Double.compare(value2, value1);
-    });
+    prioritizedLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue));
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
       ProLogger.debug(placeTerritory.toString() + " strategicValue=" + placeTerritory.getStrategicValue());
     }
@@ -1090,11 +1083,7 @@ class ProPurchaseAi {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(seaPlaceTerritories);
-    Collections.sort(sortedTerritories, (t1, t2) -> {
-      final double value1 = t1.getStrategicValue();
-      final double value2 = t2.getStrategicValue();
-      return Double.compare(value2, value1);
-    });
+    sortedTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue));
     ProLogger.debug("Sorted sea territories:");
     for (final ProPlaceTerritory placeTerritory : sortedTerritories) {
       ProLogger.debug(placeTerritory.toString() + " value=" + placeTerritory.getStrategicValue());
@@ -1529,11 +1518,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
-      final double value1 = t1.getStrategicValue();
-      final double value2 = t2.getStrategicValue();
-      return Double.compare(value2, value1);
-    });
+    prioritizedLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue));
     ProLogger.debug("Sorted land territories with remaining production: " + prioritizedLandTerritories);
 
     // Loop through territories and purchase long range attack units
@@ -1585,11 +1570,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    Collections.sort(prioritizedCantHoldLandTerritories, (t1, t2) -> {
-      final double value1 = t1.getDefenseValue();
-      final double value2 = t2.getDefenseValue();
-      return Double.compare(value2, value1);
-    });
+    prioritizedCantHoldLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getDefenseValue));
     ProLogger
         .debug("Sorted can't hold land territories with remaining production: " + prioritizedCantHoldLandTerritories);
 
@@ -1656,11 +1637,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by ascending value (try upgrading units in far away territories first)
-    Collections.sort(prioritizedLandTerritories, (t1, t2) -> {
-      final double value1 = t1.getStrategicValue();
-      final double value2 = t2.getStrategicValue();
-      return Double.compare(value1, value2);
-    });
+    prioritizedLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue));
     ProLogger.debug("Sorted land territories: " + prioritizedLandTerritories);
 
     // Loop through territories and upgrade units to long range attack units

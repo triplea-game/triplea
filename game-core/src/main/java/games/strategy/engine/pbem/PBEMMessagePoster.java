@@ -182,10 +182,7 @@ public class PBEMMessagePoster implements Serializable {
     if (m_forumPoster != null) {
       return m_forumPoster.getAlsoPostAfterCombatMove();
     }
-    if (m_emailSender != null) {
-      return m_emailSender.getAlsoPostAfterCombatMove();
-    }
-    return false;
+    return m_emailSender != null && m_emailSender.getAlsoPostAfterCombatMove();
   }
 
   public static void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame,

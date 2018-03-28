@@ -111,10 +111,8 @@ public final class PointFileReaderWriter {
       final String name = keyIter.next();
       out.append(name).append(" ");
       final List<Polygon> points = mapping.get(name);
-      final Iterator<Polygon> polygonIter = points.iterator();
-      while (polygonIter.hasNext()) {
+      for (Polygon polygon : points) {
         out.append(" < ");
-        final Polygon polygon = polygonIter.next();
         for (int i = 0; i < polygon.npoints; i++) {
           out.append(" (").append(polygon.xpoints[i]).append(",").append(polygon.ypoints[i]).append(")");
         }
@@ -217,7 +215,7 @@ public final class PointFileReaderWriter {
           out.append(" ");
         }
       }
-      out.append(" | overflowToLeft=" + overflowToLeft);
+      out.append(" | overflowToLeft=").append(overflowToLeft);
       if (keyIter.hasNext()) {
         out.append("\r\n");
       }

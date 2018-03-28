@@ -158,7 +158,8 @@ public class BattleTracker implements Serializable {
   private boolean didThesePlayersJustGoToWarThisTurn(final PlayerID p1, final PlayerID p2) {
     // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war,
     // and newRelation is war
-    for (final Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>> t : m_relationshipChangesThisTurn) {
+    for (final Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>> t
+        : m_relationshipChangesThisTurn) {
       final Tuple<PlayerID, PlayerID> players = t.getFirst();
       if (players.getFirst().equals(p1)) {
         if (!players.getSecond().equals(p2)) {
@@ -1161,9 +1162,8 @@ public class BattleTracker implements Serializable {
       final Territory territory, final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(CollectionUtils.getMatches(defenders,
         Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
-    Collections.sort(sortedUnitsList,
-        new UnitBattleComparator(false, TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
-            TerritoryEffectHelper.getEffects(territory), gameData, false, false));
+    sortedUnitsList.sort(new UnitBattleComparator(false, TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
+        TerritoryEffectHelper.getEffects(territory), gameData, false, false));
     Collections.reverse(sortedUnitsList);
     return sortedUnitsList;
   }

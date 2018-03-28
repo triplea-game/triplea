@@ -211,7 +211,6 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID currentStepPlayer;
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool;
-  private final TripleAMenuBar menu;
   private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame. */
@@ -245,8 +244,7 @@ public class TripleAFrame extends MainGameFrame {
         hideCommentLog();
       }
     });
-    menu = new TripleAMenuBar(this);
-    this.setJMenuBar(menu);
+    this.setJMenuBar(new TripleAMenuBar(this));
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
@@ -627,7 +625,7 @@ public class TripleAFrame extends MainGameFrame {
               new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                   new Insets(0, 0, 0, 0), 0, 0));
         } catch (final IllegalStateException e) {
-          territoryEffectText.append(territoryEffect.getName() + ", ");
+          territoryEffectText.append(territoryEffect.getName()).append(", ");
         }
       }
 
@@ -790,21 +788,21 @@ public class TripleAFrame extends MainGameFrame {
     if (message == null || title == null) {
       return;
     }
-    if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1
-        && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE) != -1
+    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
+        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_FAILURE)
         && !getUiContext().getShowTriggerChanceFailure()) {
       return;
     }
-    if (title.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1
-        && message.indexOf(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL) != -1
+    if (title.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
+        && message.contains(AbstractConditionsAttachment.TRIGGER_CHANCE_SUCCESSFUL)
         && !getUiContext().getShowTriggerChanceSuccessful()) {
       return;
     }
     if (title.equals(AbstractTriggerAttachment.NOTIFICATION) && !getUiContext().getShowTriggeredNotifications()) {
       return;
     }
-    if (title.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
-        && message.indexOf(AbstractEndTurnDelegate.END_TURN_REPORT_STRING) != -1
+    if (title.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
+        && message.contains(AbstractEndTurnDelegate.END_TURN_REPORT_STRING)
         && !getUiContext().getShowEndOfTurnReport()) {
       return;
     }
@@ -1126,9 +1124,8 @@ public class TripleAFrame extends MainGameFrame {
       final Map<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<>();
       for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
         final List<Unit> units = new ArrayList<>(entry.getValue());
-        Collections.sort(units,
-            new UnitBattleComparator(false, TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
-                TerritoryEffectHelper.getEffects(entry.getKey()), data, true, false));
+        units.sort(new UnitBattleComparator(false, TuvUtils.getCostsForTuv(units.get(0).getOwner(), data),
+            TerritoryEffectHelper.getEffects(entry.getKey()), data, true, false));
         Collections.reverse(units);
         possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
       }

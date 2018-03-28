@@ -48,7 +48,7 @@ public abstract class GenericConsole extends JFrame {
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     }));
     actions.add(SwingAction.of("Clear", e -> textArea.setText("")));
-    SwingUtilities.invokeLater(() -> pack());
+    SwingUtilities.invokeLater(this::pack);
   }
 
   public abstract GenericConsole getConsoleInstance();

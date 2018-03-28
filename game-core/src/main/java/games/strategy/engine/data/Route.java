@@ -111,10 +111,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (!(other.numberOfSteps() == this.numberOfSteps())) {
       return false;
     }
-    if (!other.getStart().equals(this.getStart())) {
-      return false;
-    }
-    return other.getAllTerritories().equals(this.getAllTerritories());
+    return other.getStart().equals(this.getStart()) && other.getAllTerritories().equals(this.getAllTerritories());
   }
 
   @Override
@@ -344,10 +341,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether this route is a loading route (loading from land into a transport @ sea)
    */
   public boolean isLoad() {
-    if (hasNoSteps()) {
-      return false;
-    }
-    return !getStart().isWater() && getEnd().isWater();
+    return !hasNoSteps() && !getStart().isWater() && getEnd().isWater();
   }
 
   /**
@@ -374,20 +368,16 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether there is some water in the route including start and end.
    */
   public boolean hasWater() {
-    if (getStart().isWater()) {
-      return true;
-    }
-    return getSteps().stream().anyMatch(Matches.territoryIsWater());
+    return getStart().isWater() || getSteps().stream().anyMatch(Matches.territoryIsWater());
   }
 
   /**
    * @return whether there is some land in the route including start and end.
    */
   public boolean hasLand() {
-    if (!getStart().isWater()) {
-      return true;
-    }
-    return getAllTerritories().isEmpty() || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
+    return !getStart().isWater()
+        || getAllTerritories().isEmpty()
+        || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
   }
 
   public int getLargestMovementCost(final Collection<Unit> units) {
