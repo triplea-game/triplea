@@ -399,9 +399,7 @@ public class BattlePanel extends ActionPanel {
           JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null,
           getMap().getUiContext().getCountDownLatchHandler());
       final List<Unit> killed = chooser.getSelected(false);
-      final CasualtyDetails response =
-          new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
-      return response;
+      return new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
     };
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .orElse(null);

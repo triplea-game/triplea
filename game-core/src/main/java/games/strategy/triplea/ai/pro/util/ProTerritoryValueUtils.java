@@ -317,9 +317,8 @@ public class ProTerritoryValueUtils {
         nearbyLandValue += territoryValueMap.get(nearbyLandTerritory);
       }
     }
-    final double value = capitalOrFactoryValue / 100 + nearbyLandValue / 10;
 
-    return value;
+    return capitalOrFactoryValue / 100 + nearbyLandValue / 10;
   }
 
   private static Set<Territory> findNearbyEnemyCapitalsAndFactories(final Territory t,

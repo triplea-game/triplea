@@ -420,8 +420,8 @@ public final class PlacementPicker {
      * @return The panel to return.
      */
     private JPanel createMainPanel() {
-      final JPanel imagePanel = new JPanel() {
-        private static final long serialVersionUID = -3941975573431195136L;
+      return new JPanel() {
+        private static final long serialVersionUID1 = -3941975573431195136L;
 
         @Override
         public void paint(final Graphics g) {
@@ -494,7 +494,6 @@ public final class PlacementPicker {
           }
         } // paint
       };
-      return imagePanel;
     }
 
     /**

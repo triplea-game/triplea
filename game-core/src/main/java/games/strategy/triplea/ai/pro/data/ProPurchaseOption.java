@@ -210,8 +210,7 @@ public class ProPurchaseOption {
     final double distance = Math.max(0, enemyDistance - 1.5);
     // 1, 2, 2.5, 2.75, etc
     final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1);
-    final double distanceFactor = Math.pow(moveFactor, distance / 5);
-    return distanceFactor;
+    return Math.pow(moveFactor, distance / 5);
   }
 
   // TODO: doesn't consider enemy support

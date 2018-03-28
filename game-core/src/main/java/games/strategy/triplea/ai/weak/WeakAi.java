@@ -350,14 +350,13 @@ public class WeakAi extends AbstractAi {
       if (!t.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
         continue;
       }
-      final Territory enemy = t;
-      final float enemyStrength = AiUtils.strength(enemy.getUnits().getUnits(), false, true);
+      final float enemyStrength = AiUtils.strength(t.getUnits().getUnits(), false, true);
       if (enemyStrength > 0) {
         final Predicate<Unit> attackable = Matches.unitIsOwnedBy(player).and(o -> !unitsAlreadyMoved.contains(o));
         final Set<Territory> dontMoveFrom = new HashSet<>();
         // find our strength that we can attack with
         float ourStrength = 0;
-        final Collection<Territory> attackFrom = data.getMap().getNeighbors(enemy, Matches.territoryIsWater());
+        final Collection<Territory> attackFrom = data.getMap().getNeighbors(t, Matches.territoryIsWater());
         for (final Territory owned : attackFrom) {
           // dont risk units we are carrying
           if (owned.getUnits().anyMatch(Matches.unitIsLand())) {
@@ -374,7 +373,7 @@ public class WeakAi extends AbstractAi {
             final List<Unit> units = owned.getUnits().getMatches(attackable);
             unitsAlreadyMoved.addAll(units);
             moveUnits.add(units);
-            moveRoutes.add(data.getMap().getRoute(owned, enemy));
+            moveRoutes.add(data.getMap().getRoute(owned, t));
           }
         }
       }

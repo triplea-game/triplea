@@ -610,8 +610,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   static Collection<Territory> getEmptyNeutral(final Route route) {
     final Predicate<Territory> emptyNeutral = Matches.territoryIsEmpty().and(Matches.territoryIsNeutralButNotWater());
-    final Collection<Territory> neutral = route.getMatches(emptyNeutral);
-    return neutral;
+    return route.getMatches(emptyNeutral);
   }
 
   private void removeAirThatCantLand() {

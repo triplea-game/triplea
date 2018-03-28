@@ -326,8 +326,8 @@ public final class PolygonGrabber {
      * @return The newly created panel.
      */
     private JPanel createMainPanel() {
-      final JPanel imagePanel = new JPanel() {
-        private static final long serialVersionUID = 4106539186003148628L;
+      return new JPanel() {
+        private static final long serialVersionUID1 = 4106539186003148628L;
 
         @Override
         public void paint(final Graphics g) {
@@ -356,7 +356,6 @@ public final class PolygonGrabber {
           } // if
         } // paint
       };
-      return imagePanel;
     }
 
     /**

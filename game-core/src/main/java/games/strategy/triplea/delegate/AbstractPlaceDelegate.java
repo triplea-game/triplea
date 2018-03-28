@@ -505,9 +505,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     final Change change = ChangeFactory.moveUnits(producer, at, movedFighters);
     placeChange.add(change);
-    final String transcriptText =
-        MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + producer.getName() + " to " + at.getName();
-    return transcriptText;
+    return MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + producer.getName() + " to " + at.getName();
   }
 
   /**

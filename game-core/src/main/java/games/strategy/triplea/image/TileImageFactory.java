@@ -161,8 +161,7 @@ public final class TileImageFactory {
 
   private static String getBaseTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
-    final String fileName = "baseTiles" + "/" + x + "_" + y + ".png";
-    return fileName;
+    return "baseTiles" + "/" + x + "_" + y + ".png";
   }
 
   private Image getImage(final String fileName, final boolean transparent) {
@@ -198,8 +197,7 @@ public final class TileImageFactory {
 
   private static String getReliefTileImageName(final int x, final int y) {
     // we are loading with a class loader now, use /
-    final String fileName = "reliefTiles" + "/" + x + "_" + y + ".png";
-    return fileName;
+    return "reliefTiles" + "/" + x + "_" + y + ".png";
   }
 
   /**

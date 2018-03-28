@@ -200,7 +200,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
-    final int gridWidth = width;
     final int gridHeight = 1;
     final double weigthX = 0;
     final double weigthY = 0;
@@ -209,7 +208,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final int ipadx = 0;
     final int ipady = 0;
 
-    return new GridBagConstraints(x, y, gridWidth, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
+    return new GridBagConstraints(x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
   }
 
 

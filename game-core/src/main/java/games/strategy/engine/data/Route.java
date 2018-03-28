@@ -389,8 +389,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   public int getMovementLeft(final Unit unit) {
-    final int movementLeft = ((TripleAUnit) unit).getMovementLeft() - getMovementCost(unit);
-    return movementLeft;
+    return ((TripleAUnit) unit).getMovementLeft() - getMovementCost(unit);
   }
 
   public static Change getFuelChanges(final Collection<Unit> units, final Route route, final PlayerID player,

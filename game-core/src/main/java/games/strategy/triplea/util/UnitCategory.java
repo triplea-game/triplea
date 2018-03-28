@@ -96,9 +96,8 @@ public class UnitCategory implements Comparable<UnitCategory> {
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
-    final boolean equalsIgnoreDamaged = other.type.equals(this.type) && other.movement == this.movement
+    return other.type.equals(this.type) && other.movement == this.movement
         && other.owner.equals(this.owner) && CollectionUtils.equals(this.dependents, other.dependents);
-    return equalsIgnoreDamaged;
   }
 
   @Override

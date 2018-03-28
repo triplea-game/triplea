@@ -1054,8 +1054,7 @@ public class TripleAFrame extends MainGameFrame {
               "Select territory for air units to land, current territory is " + currentTerritory.getName();
           EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.PLAIN_MESSAGE, null, options, null, getUiContext().getCountDownLatchHandler());
-          final Territory selected = (Territory) list.getSelectedValue();
-          return selected;
+          return (Territory) list.getSelectedValue();
         })
         .orElse(null);
   }

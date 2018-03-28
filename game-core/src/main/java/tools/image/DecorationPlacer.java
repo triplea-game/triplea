@@ -378,8 +378,8 @@ public final class DecorationPlacer {
     }
 
     private JPanel createMainPanel() {
-      final JPanel imagePanel = new JPanel() {
-        private static final long serialVersionUID = -7130828419508975924L;
+      return new JPanel() {
+        private static final long serialVersionUID1 = -7130828419508975924L;
 
         @Override
         public void paint(final Graphics g) {
@@ -387,7 +387,6 @@ public final class DecorationPlacer {
           paintToG(g);
         }
       };
-      return imagePanel;
     }
 
     private void paintToG(final Graphics g) {

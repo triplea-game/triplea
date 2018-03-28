@@ -339,8 +339,7 @@ public class GameDataExporter {
       // TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now
       // (including changes to
       // the game data)
-      final Tuple<IAttachment, ArrayList<Tuple<String, String>>> current = attachment;
-      printAttachments(current);
+      printAttachments(attachment);
     }
     xmlfile.append("    </attachmentList>\n");
   }

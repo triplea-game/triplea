@@ -55,9 +55,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
       // (if the map maker doesn't want to use the hardcoded tech's attachment, they should not name a hardcoded tech)
       final TechAdvance hardCodedAdvance = ((GenericTechAdvance) type).getAdvance();
       if (hardCodedAdvance != null) {
-        final TechAbilityAttachment hardCodedTechAttachment =
-            (TechAbilityAttachment) hardCodedAdvance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
-        return hardCodedTechAttachment;
+        return (TechAbilityAttachment) hardCodedAdvance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
       }
     }
     return (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
