@@ -327,7 +327,7 @@ public final class PolygonGrabber {
      */
     private JPanel createMainPanel() {
       return new JPanel() {
-        private static final long serialVersionUID1 = 4106539186003148628L;
+        private static final long serialVersionUID = 4106539186003148628L;
 
         @Override
         public void paint(final Graphics g) {

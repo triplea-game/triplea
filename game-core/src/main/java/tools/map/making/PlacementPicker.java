@@ -421,7 +421,7 @@ public final class PlacementPicker {
      */
     private JPanel createMainPanel() {
       return new JPanel() {
-        private static final long serialVersionUID1 = -3941975573431195136L;
+        private static final long serialVersionUID = -3941975573431195136L;
 
         @Override
         public void paint(final Graphics g) {

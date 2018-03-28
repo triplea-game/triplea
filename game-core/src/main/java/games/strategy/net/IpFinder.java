@@ -56,7 +56,8 @@ public class IpFinder {
         .map(NetworkInterface::getInetAddresses)
         .map(Collections::list)
         .flatMap(Collection::stream)
-        .filter(Util.not(InetAddress::isLoopbackAddress)).min(getInetAddressComparator())
+        .filter(Util.not(InetAddress::isLoopbackAddress))
+        .min(getInetAddressComparator())
         .orElse(InetAddress.getLocalHost());
   }
 

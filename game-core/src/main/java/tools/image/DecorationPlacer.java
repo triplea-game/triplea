@@ -379,7 +379,7 @@ public final class DecorationPlacer {
 
     private JPanel createMainPanel() {
       return new JPanel() {
-        private static final long serialVersionUID1 = -7130828419508975924L;
+        private static final long serialVersionUID = -7130828419508975924L;
 
         @Override
         public void paint(final Graphics g) {
