@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import games.strategy.util.function.ThrowingConsumer;
 import org.apache.commons.io.input.CloseShieldInputStream;
@@ -119,6 +120,12 @@ public final class PointFileReaderWriter {
     }
   }
 
+  static String pointsToString(final List<Point> points) {
+    return points.stream()
+        .map(point -> " (" + point.x + "," + point.y + ") ")
+        .collect(Collectors.joining(" "));
+  }
+
   /**
    * Writes the specified one-to-many mapping between names and points to the specified stream.
    *
@@ -137,15 +144,8 @@ public final class PointFileReaderWriter {
     while (keyIter.hasNext()) {
       final String name = keyIter.next();
       out.append(name).append(" ");
-      final Collection<Point> points = mapping.get(name);
-      final Iterator<Point> pointIter = points.iterator();
-      while (pointIter.hasNext()) {
-        final Point point = pointIter.next();
-        out.append(" (").append(point.x).append(",").append(point.y).append(")");
-        if (pointIter.hasNext()) {
-          out.append(" ");
-        }
-      }
+      out.append(pointsToString(mapping.get(name)));
+
       if (keyIter.hasNext()) {
         out.append("\r\n");
       }
@@ -178,27 +178,13 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      final Collection<Point> points = mapping.get(name).getFirst();
-      final boolean overflowToLeft = mapping.get(name).getSecond();
-      final Iterator<Point> pointIter = points.iterator();
-      while (pointIter.hasNext()) {
-        final Point point = pointIter.next();
-        out.append(" (").append(point.x).append(",").append(point.y).append(")");
-        if (pointIter.hasNext()) {
-          out.append(" ");
-        }
-      }
-      out.append(" | overflowToLeft=").append(overflowToLeft);
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out.toString(), sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey()
+            + " "
+            + pointsToString(entry.getValue().getFirst())
+            + " | overflowToLeft="
+            + entry.getValue().getSecond())
+        .collect(Collectors.joining("\r\n")), sink);
   }
 
   /**
@@ -328,7 +314,8 @@ public final class PointFileReaderWriter {
     return Tuple.of(name, points);
   }
 
-  private static void readStream(final InputStream stream, ThrowingConsumer<String, IOException> lineParser) throws IOException {
+  private static void readStream(final InputStream stream, ThrowingConsumer<String, IOException> lineParser)
+      throws IOException {
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputStreamReader)) {
       for (String current = reader.readLine(); current != null; current = reader.readLine()) {
