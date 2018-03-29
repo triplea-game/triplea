@@ -18,12 +18,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import games.strategy.util.function.ThrowingConsumer;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
@@ -50,16 +49,16 @@ public final class PointFileReaderWriter {
     return mapping;
   }
 
-  private static void readSingle(final String line, final Map<String, Point> mapping) throws IOException {
+  private static void readSingle(final String line, final Map<String, Point> mapping) {
     final Matcher matcher = singlePointPattern.matcher(line);
     if (matcher.find()) {
       final String name = matcher.group(1);
       if (mapping.containsKey(name)) {
-        throw new IOException("name found twice:" + name);
+        throw new IllegalArgumentException("name found twice:" + name);
       }
       mapping.put(name, new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
     } else {
-      throw new IOException("Invalid Point Pattern");
+      throw new IllegalArgumentException("Invalid Point Pattern");
     }
   }
 
@@ -224,11 +223,10 @@ public final class PointFileReaderWriter {
     return mapping;
   }
 
-  private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping)
-      throws IOException {
+  private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping) {
       final String name = line.substring(0, line.indexOf('<')).trim();
       if (mapping.containsKey(name)) {
-        throw new IOException("name found twice:" + name);
+        throw new IllegalArgumentException("name found twice:" + name);
       }
       final List<Polygon> polygons = new ArrayList<>();
       final Matcher polyMatcher = polygonPattern.matcher(line);
@@ -254,11 +252,10 @@ public final class PointFileReaderWriter {
     return new Polygon(pointsX, pointsY, pointsX.length);
   }
 
-  private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping)
-      throws IOException {
+  private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping) {
     final String name = line.substring(0, line.indexOf("(")).trim();
     if (mapping.containsKey(name)) {
-      throw new IOException("name found twice:" + name);
+      throw new IllegalArgumentException("name found twice:" + name);
     }
     final Matcher matcher = pointPattern.matcher(line);
     final List<Point> points = new ArrayList<>();
@@ -269,15 +266,15 @@ public final class PointFileReaderWriter {
     return Tuple.of(name, points);
   }
 
-  private static void readStream(final InputStream stream, ThrowingConsumer<String, IOException> lineParser)
+  private static void readStream(final InputStream stream, Consumer<String> lineParser)
       throws IOException {
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputStreamReader)) {
-      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
-        if (current.trim().length() != 0) {
-          lineParser.accept(current);
-        }
-      }
+      reader.lines()
+          .filter(current -> current.trim().length() != 0)
+          .forEachOrdered(lineParser);
+    } catch (IllegalArgumentException e) {
+      throw new IOException(e);
     }
   }
 }
