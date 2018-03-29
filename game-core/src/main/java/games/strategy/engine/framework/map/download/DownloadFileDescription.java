@@ -36,7 +36,7 @@ public class DownloadFileDescription {
 
     EXPERIMENTAL("Experimental");
 
-    String outputLabel;
+    final String outputLabel;
 
 
     MapCategory(final String label) {

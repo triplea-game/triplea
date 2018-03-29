@@ -11,7 +11,7 @@ import games.strategy.ui.SwingAction;
 
 public class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
-  protected Action doneAction = SwingAction.of("Done", e -> {
+  protected final Action doneAction = SwingAction.of("Done", e -> {
     if (forumPosterComponent.getHasPostedTurnSummary()
         || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(EndTurnPanel.this),
             "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {

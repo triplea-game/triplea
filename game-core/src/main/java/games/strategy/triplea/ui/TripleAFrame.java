@@ -590,7 +590,7 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
-  public MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
+  public final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void mouseEntered(final Territory territory) {
       territoryLastEntered = territory;
@@ -1442,7 +1442,7 @@ public class TripleAFrame extends MainGameFrame {
         .orElse(null);
   }
 
-  GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
+  final GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private void updateStep() {
     if (uiContext == null || uiContext.isShutDown()) {
@@ -1532,7 +1532,7 @@ public class TripleAFrame extends MainGameFrame {
     }));
   }
 
-  GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
+  final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
     @Override
     public void gameDataChanged(final Change change) {
       try {

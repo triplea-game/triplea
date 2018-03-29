@@ -330,9 +330,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     private static final long serialVersionUID = -4667856856747597406L;
     DiceRoll m_dice;
     CasualtyDetails m_casualties;
-    Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
+    final Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
     Collection<Unit> validAttackingUnitsForThisRoll;
-    boolean determineAttackers;
+    final boolean determineAttackers;
 
     public FireAA(final Collection<Unit> attackers) {
       validAttackingUnitsForThisRoll = attackers;

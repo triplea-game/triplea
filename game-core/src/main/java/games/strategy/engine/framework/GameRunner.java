@@ -238,7 +238,7 @@ public class GameRunner {
    * problem and makes refactoring easier.
    */
   public static class Title {
-    public String value;
+    public final String value;
 
     private Title(final String value) {
       this.value = value;
