@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Point;
 import java.awt.Polygon;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,14 +42,11 @@ public final class PointFileReaderWriter {
 
     final Map<String, Point> mapping = new HashMap<>();
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
+        BufferedReader reader = new BufferedReader(inputStreamReader)) {
+      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
         if (current.trim().length() != 0) {
           readSingle(current, mapping);
         }
-        current = reader.readLine();
       }
     }
     return mapping;
@@ -62,8 +60,7 @@ public final class PointFileReaderWriter {
     }
     final int x = Integer.parseInt(tokens.nextToken("(, "));
     final int y = Integer.parseInt(tokens.nextToken(",) "));
-    final Point p = new Point(x, y);
-    mapping.put(name, p);
+    mapping.put(name, new Point(x, y));
   }
 
   /**
@@ -173,14 +170,11 @@ public final class PointFileReaderWriter {
 
     final Map<String, List<Point>> mapping = new HashMap<>();
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
+        BufferedReader reader = new BufferedReader(inputStreamReader)) {
+      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
         if (current.trim().length() != 0) {
           readMultiple(current, mapping);
         }
-        current = reader.readLine();
       }
     }
     return mapping;
@@ -233,17 +227,14 @@ public final class PointFileReaderWriter {
     final Map<String, List<Point>> mapping = new HashMap<>();
     final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
+        BufferedReader reader = new BufferedReader(inputStreamReader)) {
+      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
         if (current.trim().length() != 0) {
           final String[] s = current.split(" \\| ");
           final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
           final boolean overflowToLeft = s.length == 2 && Boolean.parseBoolean(s[1].split("=")[1]);
           result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
         }
-        current = reader.readLine();
       }
     }
     return result;
@@ -257,14 +248,11 @@ public final class PointFileReaderWriter {
 
     final Map<String, List<Polygon>> mapping = new HashMap<>();
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
+        BufferedReader reader = new BufferedReader(inputStreamReader)) {
+      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
         if (current.trim().length() != 0) {
           readMultiplePolygons(current, mapping);
         }
-        current = reader.readLine();
       }
     }
     return mapping;
