@@ -89,7 +89,7 @@ public final class PointFileReaderWriter {
         out.append("\r\n");
       }
     }
-    write(out, sink);
+    write(out.toString(), sink);
   }
 
   /**
@@ -122,12 +122,12 @@ public final class PointFileReaderWriter {
         out.append("\r\n");
       }
     }
-    write(out, sink);
+    write(out.toString(), sink);
   }
 
-  private static void write(final StringBuilder buf, final OutputStream sink) throws IOException {
+  private static void write(final String string, final OutputStream sink) throws IOException {
     try (Writer out = new OutputStreamWriter(new CloseShieldOutputStream(sink), StandardCharsets.UTF_8)) {
-      out.write(buf.toString());
+      out.write(string);
     }
   }
 
@@ -162,7 +162,7 @@ public final class PointFileReaderWriter {
         out.append("\r\n");
       }
     }
-    write(out, sink);
+    write(out.toString(), sink);
   }
 
   /**
@@ -220,7 +220,7 @@ public final class PointFileReaderWriter {
         out.append("\r\n");
       }
     }
-    write(out, sink);
+    write(out.toString(), sink);
   }
 
   /**
