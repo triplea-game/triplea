@@ -204,21 +204,21 @@ public final class PointFileReaderWriter {
   }
 
   private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping) {
-      final String name = line.substring(0, line.indexOf('<')).trim();
-      if (mapping.containsKey(name)) {
-        throw new IllegalArgumentException("name found twice:" + name);
+    final String name = line.substring(0, line.indexOf('<')).trim();
+    if (mapping.containsKey(name)) {
+      throw new IllegalArgumentException("name found twice:" + name);
+    }
+    final List<Polygon> polygons = new ArrayList<>();
+    final Matcher polyMatcher = polygonPattern.matcher(line);
+    while (polyMatcher.find()) {
+      final List<Point> points = new ArrayList<>();
+      final Matcher pointMatcher = pointPattern.matcher(polyMatcher.group());
+      while (pointMatcher.find()) {
+        points.add(new Point(Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
       }
-      final List<Polygon> polygons = new ArrayList<>();
-      final Matcher polyMatcher = polygonPattern.matcher(line);
-      while(polyMatcher.find()) {
-        final List<Point> points = new ArrayList<>();
-        final Matcher pointMatcher = pointPattern.matcher(polyMatcher.group());
-        while (pointMatcher.find()) {
-          points.add(new Point(Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
-        }
-        polygons.add(createPolygonFromPoints(points));
-      }
-      mapping.put(name, polygons);
+      polygons.add(createPolygonFromPoints(points));
+    }
+    mapping.put(name, polygons);
   }
 
   private static Polygon createPolygonFromPoints(final List<Point> points) {
