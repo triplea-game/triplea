@@ -15,13 +15,13 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
@@ -74,18 +74,9 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      final Point point = mapping.get(name);
-      out.append(" (").append(point.x).append(",").append(point.y).append(")");
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out.toString(), sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey() + " " + pointToString(entry.getValue()))
+        .collect(Collectors.joining("\r\n")), sink);
   }
 
   /**
@@ -101,24 +92,11 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      final List<Polygon> points = mapping.get(name);
-      for (Polygon polygon : points) {
-        out.append(" < ");
-        for (int i = 0; i < polygon.npoints; i++) {
-          out.append(" (").append(polygon.xpoints[i]).append(",").append(polygon.ypoints[i]).append(")");
-        }
-        out.append(" > ");
-      }
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out.toString(), sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey() + " " + entry.getValue().stream()
+            .map(PointFileReaderWriter::polygonToString)
+            .collect(Collectors.joining()))
+        .collect(Collectors.joining("\r\n")), sink);
   }
 
   private static void write(final String string, final OutputStream sink) throws IOException {
@@ -127,10 +105,21 @@ public final class PointFileReaderWriter {
     }
   }
 
-  static String pointsToString(final List<Point> points) {
+  private static String pointsToString(final List<Point> points) {
     return points.stream()
-        .map(point -> " (" + point.x + "," + point.y + ") ")
+        .map(PointFileReaderWriter::pointToString)
         .collect(Collectors.joining(" "));
+  }
+
+  private static String pointToString(final Point point) {
+    return " (" + point.x + "," + point.y + ") ";
+  }
+
+  private static String polygonToString(final Polygon polygon) {
+    return IntStream.range(0, polygon.npoints)
+        .mapToObj(i -> new Point(polygon.xpoints[i], polygon.ypoints[i]))
+        .map(PointFileReaderWriter::pointToString)
+        .collect(Collectors.joining(" ", " < ", " > "));
   }
 
   /**
@@ -146,18 +135,9 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      out.append(pointsToString(mapping.get(name)));
-
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out.toString(), sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey() + " " + pointsToString(entry.getValue()))
+        .collect(Collectors.joining("\r\n")), sink);
   }
 
   /**
