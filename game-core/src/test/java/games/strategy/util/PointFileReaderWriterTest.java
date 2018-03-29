@@ -183,9 +183,9 @@ public final class PointFileReaderWriterTest {
       final String content = writeToString(os -> PointFileReaderWriter.writeOneToOne(os, pointsByName));
 
       assertThat(content, is(""
-          + "United Kingdom  (1011,1021)\r\n"
-          + "Germany  (2011,2021)\r\n"
-          + "Eastern United States  (3011,3021)"));
+          + "United Kingdom  (1011,1021) \r\n"
+          + "Germany  (2011,2021) \r\n"
+          + "Eastern United States  (3011,3021) "));
     }
   }
 
@@ -210,9 +210,9 @@ public final class PointFileReaderWriterTest {
       final String content = writeToString(os -> PointFileReaderWriter.writeOneToMany(os, pointListsByName));
 
       assertThat(content, is(""
-          + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)\r\n"
-          + "54 Sea Zone  (2011,2021)  (2012,2022)\r\n"
-          + "Philippines  (3011,3021)"));
+          + "Belarus  (1011,1021)  (1012,1022)  (1013,1023) \r\n"
+          + "54 Sea Zone  (2011,2021)  (2012,2022) \r\n"
+          + "Philippines  (3011,3021) "));
     }
   }
 
@@ -243,9 +243,10 @@ public final class PointFileReaderWriterTest {
       final String content = writeToString(os -> PointFileReaderWriter.writeOneToManyPolygons(os, polygonListsByName));
 
       assertThat(content, is(""
-          + "Belarus  <  (1011,1021) (1012,1022) (1013,1023) > \r\n"
-          + "54 Sea Zone  <  (2011,2021) (2012,2022) (2013,2023) >  <  (2111,2121) (2112,2122) (2113,2123) > \r\n"
-          + "Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122) >  <  (3211,3221) > "));
+          + "Belarus  <  (1011,1021)  (1012,1022)  (1013,1023)  > \r\n"
+          + "54 Sea Zone  <  (2011,2021)  (2012,2022)  (2013,2023)  >  <  (2111,2121)  (2112,2122)  (2113,2123)  > \r\n"
+          + "Philippines  <  (3011,3021)  (3012,3022)  (3013,3023)  > "
+          + " <  (3111,3121)  (3112,3122)  >  <  (3211,3221)  > "));
     }
 
     private Polygon polygon(final Point... points) {

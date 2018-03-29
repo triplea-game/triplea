@@ -108,7 +108,7 @@ public final class PointFileReaderWriter {
   private static String pointsToString(final List<Point> points) {
     return points.stream()
         .map(PointFileReaderWriter::pointToString)
-        .collect(Collectors.joining(" "));
+        .collect(Collectors.joining());
   }
 
   private static String pointToString(final Point point) {
@@ -119,7 +119,7 @@ public final class PointFileReaderWriter {
     return IntStream.range(0, polygon.npoints)
         .mapToObj(i -> new Point(polygon.xpoints[i], polygon.ypoints[i]))
         .map(PointFileReaderWriter::pointToString)
-        .collect(Collectors.joining(" ", " < ", " > "));
+        .collect(Collectors.joining("", " < ", " > "));
   }
 
   /**
