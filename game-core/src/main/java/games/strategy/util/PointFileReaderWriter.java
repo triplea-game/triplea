@@ -14,12 +14,13 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import games.strategy.util.function.ThrowingConsumer;
@@ -31,6 +32,11 @@ import org.apache.commons.io.output.CloseShieldOutputStream;
  * String -> a list of points, or string-> list of polygons.
  */
 public final class PointFileReaderWriter {
+
+  private static final Pattern pointPattern = Pattern.compile("\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+  private static final Pattern polygonPattern = Pattern.compile("<[^>]*>");
+  private static final Pattern singlePointPattern = Pattern.compile("([^(]+?)\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+
   private PointFileReaderWriter() {}
 
   /**
@@ -45,14 +51,16 @@ public final class PointFileReaderWriter {
   }
 
   private static void readSingle(final String line, final Map<String, Point> mapping) throws IOException {
-    final StringTokenizer tokens = new StringTokenizer(line, "", false);
-    final String name = tokens.nextToken("(").trim();
-    if (mapping.containsKey(name)) {
-      throw new IOException("name found twice:" + name);
+    final Matcher matcher = singlePointPattern.matcher(line);
+    if (matcher.find()) {
+      final String name = matcher.group(1);
+      if (mapping.containsKey(name)) {
+        throw new IOException("name found twice:" + name);
+      }
+      mapping.put(name, new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
+    } else {
+      throw new IOException("Invalid Point Pattern");
     }
-    final int x = Integer.parseInt(tokens.nextToken("(, "));
-    final int y = Integer.parseInt(tokens.nextToken(",) "));
-    mapping.put(name, new Point(x, y));
   }
 
   /**
@@ -218,70 +226,24 @@ public final class PointFileReaderWriter {
 
   private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping)
       throws IOException {
-    try {
-      // this loop is executed a lot when loading games
-      // so it is hand optimized
       final String name = line.substring(0, line.indexOf('<')).trim();
-      int index = name.length();
-      final List<Polygon> polygons = new ArrayList<>(64);
-      final List<Point> points = new ArrayList<>();
-      final int length = line.length();
-      while (index < length) {
-        char current = line.charAt(index);
-        if (current == '<') {
-          int x = 0;
-          int base = 0;
-          // inside a poly
-          while (true) {
-            current = line.charAt(++index);
-            final int y;
-            switch (current) {
-              case '0':
-              case '1':
-              case '2':
-              case '3':
-              case '4':
-              case '5':
-              case '6':
-              case '7':
-              case '8':
-              case '9':
-                base *= 10;
-                base += current - '0';
-                break;
-              case ',':
-                x = base;
-                base = 0;
-                break;
-              case ')':
-                y = base;
-                base = 0;
-                points.add(new Point(x, y));
-                break;
-              default:
-                break;
-            }
-            if (current == '>') {
-              // end poly
-              createPolygonFromPoints(polygons, points);
-              points.clear();
-              // break from while(true)
-              break;
-            }
-          }
-        }
-        index++;
-      }
       if (mapping.containsKey(name)) {
         throw new IOException("name found twice:" + name);
       }
+      final List<Polygon> polygons = new ArrayList<>();
+      final Matcher polyMatcher = polygonPattern.matcher(line);
+      while(polyMatcher.find()) {
+        final List<Point> points = new ArrayList<>();
+        final Matcher pointMatcher = pointPattern.matcher(polyMatcher.group());
+        while (pointMatcher.find()) {
+          points.add(new Point(Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
+        }
+        polygons.add(createPolygonFromPoints(points));
+      }
       mapping.put(name, polygons);
-    } catch (final StringIndexOutOfBoundsException e) {
-      throw new IllegalStateException("Invalid line:" + line, e);
-    }
   }
 
-  private static void createPolygonFromPoints(final Collection<Polygon> polygons, final List<Point> points) {
+  private static Polygon createPolygonFromPoints(final List<Point> points) {
     final int[] pointsX = new int[points.size()];
     final int[] pointsY = new int[points.size()];
     for (int i = 0; i < points.size(); i++) {
@@ -289,26 +251,19 @@ public final class PointFileReaderWriter {
       pointsX[i] = p.x;
       pointsY[i] = p.y;
     }
-    polygons.add(new Polygon(pointsX, pointsY, pointsX.length));
+    return new Polygon(pointsX, pointsY, pointsX.length);
   }
 
   private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping)
       throws IOException {
-    final StringTokenizer tokens = new StringTokenizer(line, "");
-    final String name = tokens.nextToken("(").trim();
+    final String name = line.substring(0, line.indexOf("(")).trim();
     if (mapping.containsKey(name)) {
       throw new IOException("name found twice:" + name);
     }
+    final Matcher matcher = pointPattern.matcher(line);
     final List<Point> points = new ArrayList<>();
-    while (tokens.hasMoreTokens()) {
-      final String stringX = tokens.nextToken(",(), ");
-      if (!tokens.hasMoreTokens()) {
-        continue;
-      }
-      final String stringY = tokens.nextToken(",() ");
-      final int x = Integer.parseInt(stringX);
-      final int y = Integer.parseInt(stringY);
-      points.add(new Point(x, y));
+    while (matcher.find()) {
+      points.add(new Point(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))));
     }
     mapping.put(name, points);
     return Tuple.of(name, points);
