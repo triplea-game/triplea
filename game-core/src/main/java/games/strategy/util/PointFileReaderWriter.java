@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -22,8 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.annotation.Nullable;
-
+import games.strategy.util.function.ThrowingConsumer;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
@@ -41,14 +39,7 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, Point> mapping = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        BufferedReader reader = new BufferedReader(inputStreamReader)) {
-      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
-        if (current.trim().length() != 0) {
-          readSingle(current, mapping);
-        }
-      }
-    }
+    readStream(stream, current -> readSingle(current, mapping));
     return mapping;
   }
 
@@ -169,14 +160,7 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, List<Point>> mapping = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        BufferedReader reader = new BufferedReader(inputStreamReader)) {
-      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
-        if (current.trim().length() != 0) {
-          readMultiple(current, mapping);
-        }
-      }
-    }
+    readStream(stream, current -> readMultiple(current, mapping));
     return mapping;
   }
 
@@ -226,17 +210,12 @@ public final class PointFileReaderWriter {
 
     final Map<String, List<Point>> mapping = new HashMap<>();
     final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        BufferedReader reader = new BufferedReader(inputStreamReader)) {
-      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
-        if (current.trim().length() != 0) {
-          final String[] s = current.split(" \\| ");
-          final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
-          final boolean overflowToLeft = s.length == 2 && Boolean.parseBoolean(s[1].split("=")[1]);
-          result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
-        }
-      }
-    }
+    readStream(stream, current -> {
+      final String[] s = current.split(" \\| ");
+      final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
+      final boolean overflowToLeft = s.length == 2 && Boolean.parseBoolean(s[1].split("=")[1]);
+      result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
+    });
     return result;
   }
 
@@ -247,14 +226,7 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, List<Polygon>> mapping = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        BufferedReader reader = new BufferedReader(inputStreamReader)) {
-      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
-        if (current.trim().length() != 0) {
-          readMultiplePolygons(current, mapping);
-        }
-      }
-    }
+    readStream(stream, current -> readMultiplePolygons(current, mapping));
     return mapping;
   }
 
@@ -354,5 +326,16 @@ public final class PointFileReaderWriter {
     }
     mapping.put(name, points);
     return Tuple.of(name, points);
+  }
+
+  private static void readStream(final InputStream stream, ThrowingConsumer<String, IOException> lineParser) throws IOException {
+    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(inputStreamReader)) {
+      for (String current = reader.readLine(); current != null; current = reader.readLine()) {
+        if (current.trim().length() != 0) {
+          lineParser.accept(current);
+        }
+      }
+    }
   }
 }
