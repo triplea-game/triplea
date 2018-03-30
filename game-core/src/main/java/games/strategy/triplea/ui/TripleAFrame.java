@@ -18,6 +18,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -346,7 +347,8 @@ public class TripleAFrame extends MainGameFrame {
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
     final List<KeyListener> keyListeners =
-        ImmutableList.of(getArrowKeyListener(), movePanel.getCustomKeyListeners(), getFlagToggleKeyListener(this));
+        ImmutableList.of(getFullScreenListener(), getArrowKeyListener(), movePanel.getCustomKeyListeners(),
+            getFlagToggleKeyListener(this));
     for (final KeyListener keyListener : keyListeners) {
       mapPanel.addKeyListener(keyListener);
     }
@@ -1588,6 +1590,21 @@ public class TripleAFrame extends MainGameFrame {
       }
     }
   };
+
+  private KeyListener getFullScreenListener() {
+    return new KeyAdapter() {
+      @Override
+      public void keyPressed(final KeyEvent e) {
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_F) {
+          if (gameCenterPanel.getDividerLocation() <= gameCenterPanel.getMaximumDividerLocation()) {
+            gameCenterPanel.setDividerLocation(1.0);
+          } else {
+            gameCenterPanel.setDividerLocation(gameCenterPanel.getLastDividerLocation());
+          }
+        }
+      }
+    };
+  }
 
   private KeyListener getArrowKeyListener() {
     return new KeyListener() {
