@@ -192,6 +192,73 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
+  public final class ReadOneToManyPlacementsTest {
+    @Test
+    public void shouldNotCloseStream() throws Exception {
+      final InputStream is = spy(new ByteArrayInputStream(new byte[0]));
+
+      PointFileReaderWriter.readOneToManyPlacements(is);
+
+      verify(is, never()).close();
+    }
+
+    @Test
+    public void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
+      assertThat(IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToManyPlacements),
+          is(Collections.emptyMap()));
+    }
+
+    @Test
+    public void shouldReadMultiplePlacementsPerName() throws Exception {
+      final String content = ""
+          + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=false\n"
+          + "54 Sea Zone  (2011,2021)  (2012,2022)     | overflowToLeft=true\n"
+          + "Philippines (3011,3021)     | weird other thing =true \n"
+          + "East America (4011,4021)\n"
+          + "East Africa (5011,5021) | overflowToLeft=not a boolean\n";
+
+      final Map<String, Tuple<List<Point>, Boolean>> pointListsByName =
+          readFromString(PointFileReaderWriter::readOneToManyPlacements, content);
+
+      assertThat(pointListsByName, is(ImmutableMap.of(
+          "Belarus", Tuple.of(Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)), false),
+          "54 Sea Zone", Tuple.of(Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)), true),
+          "Philippines", Tuple.of(Arrays.asList(new Point(3011, 3021)), false),
+          "East America", Tuple.of(Arrays.asList(new Point(4011, 4021)), false),
+          "East Africa", Tuple.of(Arrays.asList(new Point(5011, 5021)), false))));
+    }
+
+    @Test
+    public void shouldErrorOnDuplicateKey(){
+      final String content1 = ""
+          + "54 Sea Zone  (1011,1021)  | overflowToLeft=false\n"
+          + "54 Sea Zone  (1011,1021)  | overflowToLeft=false";
+
+      final Exception e1 = assertThrows(IOException.class,
+          () -> readFromString(PointFileReaderWriter::readOneToManyPlacements, content1));
+      assertTrue(e1.getMessage().contains("54 Sea Zone"));
+
+
+      final String content2 = ""
+          + "54 Sea Zone  (1011,1021)  | overflowToLeft=true\n"
+          + "54 Sea Zone  (      1011  , 1021    )    | overflowToLeft=true";
+
+      final Exception e2 = assertThrows(IOException.class,
+          () -> readFromString(PointFileReaderWriter::readOneToManyPlacements, content2));
+      assertTrue(e2.getMessage().contains("54 Sea Zone"));
+
+
+      final String content3 = ""
+          + "54 Sea Zone  (1011,1021)  (1012,1022)  (1013,1023)  | qwertz =false\n"
+          + "54 Sea Zone  (2011,2021)  (2012,2022)  | overflowToLeft=true";
+
+      final Exception e3 = assertThrows(IOException.class,
+          () -> readFromString(PointFileReaderWriter::readOneToManyPlacements, content3));
+      assertTrue(e3.getMessage().contains("54 Sea Zone"));
+    }
+  }
+
+  @Nested
   public final class ReadOneToManyPolygonsTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
@@ -322,6 +389,36 @@ public final class PointFileReaderWriterTest {
           + "Belarus  (1011,1021)  (1012,1022)  (1013,1023) \r\n"
           + "54 Sea Zone  (2011,2021)  (2012,2022) \r\n"
           + "Philippines  (3011,3021) "));
+    }
+  }
+
+  @Nested
+  public final class WriteOneToManyPlacementsTest {
+    @Test
+    public void shouldNotCloseStream() throws Exception {
+      final OutputStream os = spy(new ByteArrayOutputStream());
+
+      PointFileReaderWriter.writeOneToManyPlacements(os, Collections.emptyMap());
+
+      verify(os, never()).close();
+    }
+
+    @Test
+    public void shouldWriteMultiplePlacementsPerName() throws Exception {
+      final Map<String, Tuple<List<Point>, Boolean>> polygonListsByName = ImmutableMap.of(
+          "Belarus", Tuple.of(Arrays.asList(
+              new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)), true),
+          "54 Sea Zone", Tuple.of(Arrays.asList(
+              new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)), false),
+          "Philippines", Tuple.of(Arrays.asList(
+              new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)), true));
+
+      final String content = writeToString(os -> PointFileReaderWriter.writeOneToManyPlacements(os, polygonListsByName));
+
+      assertThat(content, is(""
+          + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=true\r\n"
+          + "54 Sea Zone  (2011,2021)  (2012,2022)  (2013,2023)  | overflowToLeft=false\r\n"
+          + "Philippines  (3011,3021)  (3012,3022)  (3013,3023)  | overflowToLeft=true"));
     }
   }
 
