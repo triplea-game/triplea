@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -350,23 +351,23 @@ public class TripleAFrame extends MainGameFrame {
       mapPanel.addKeyListener(keyListener);
     }
 
-    tabsPanel.addTab("Actions", actionButtons);
+    addTab("Actions", actionButtons, 'A');
     actionButtons.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
-    tabsPanel.addTab("Stats", statsPanel);
+    addTab("Players", statsPanel, 'P');
     economyPanel = new EconomyPanel(data);
-    tabsPanel.addTab("Economy", economyPanel);
+    addTab("Resources", economyPanel, 'R');
     objectivePanel = new ObjectivePanel(data);
     if (objectivePanel.isEmpty()) {
       objectivePanel.removeDataChangeListener();
       objectivePanel = null;
     } else {
-      tabsPanel.addTab(objectivePanel.getName(), objectivePanel);
+      addTab(objectivePanel.getName(), objectivePanel, 'O');
     }
     notesPanel = new NotesPanel(HelpMenu.gameNotesPane);
-    tabsPanel.addTab("Notes", notesPanel);
+    addTab("Notes", notesPanel, 'N');
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
-    tabsPanel.addTab("Territory", null, details, TerritoryDetailPanel.getHoverText());
+    addTab("Territory", details, 'T');
     editPanel = new EditPanel(data, mapPanel, this);
     // Register a change listener
     tabsPanel.addChangeListener(evt -> {
@@ -508,7 +509,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private void addZoomKeyboardShortcuts() {
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '+', () -> {
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '=', () -> {
       if (getScale() < 100) {
         setScale(getScale() + 10);
       }
@@ -519,6 +520,12 @@ public class TripleAFrame extends MainGameFrame {
         setScale(getScale() - 10);
       }
     });
+  }
+
+  private void addTab(final String title, final Component component, final char hotkey) {
+    tabsPanel.add(title, component);
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, hotkey,
+        () -> tabsPanel.setSelectedIndex((Arrays.asList(tabsPanel.getComponents())).indexOf(component)));
   }
 
   /**
@@ -1593,13 +1600,13 @@ public class TripleAFrame extends MainGameFrame {
         final int y = mapPanel.getYOffset();
         final int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
+        if (keyCode == KeyEvent.VK_RIGHT) {
           getMapPanel().setTopLeft(x + diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
+        } else if (keyCode == KeyEvent.VK_LEFT) {
           getMapPanel().setTopLeft(x - diffPixel, y);
-        } else if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
+        } else if (keyCode == KeyEvent.VK_DOWN) {
           getMapPanel().setTopLeft(x, y + diffPixel);
-        } else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
+        } else if (keyCode == KeyEvent.VK_UP) {
           getMapPanel().setTopLeft(x, y - diffPixel);
         }
         // I for info
@@ -1725,13 +1732,13 @@ public class TripleAFrame extends MainGameFrame {
     final HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, mapPanel);
     tabsPanel.removeAll();
     tabsPanel.add("History", historyDetailPanel);
-    tabsPanel.add("Stats", statsPanel);
-    tabsPanel.add("Economy", economyPanel);
+    addTab("Players", statsPanel, 'P');
+    addTab("Resources", economyPanel, 'R');
     if (objectivePanel != null && !objectivePanel.isEmpty()) {
-      tabsPanel.add(objectivePanel.getName(), objectivePanel);
+      addTab(objectivePanel.getName(), objectivePanel, 'O');
     }
-    tabsPanel.add("Notes", notesPanel);
-    tabsPanel.add("Territory", details);
+    addTab("Notes", notesPanel, 'N');
+    addTab("Territory", details, 'T');
     if (getEditMode()) {
       tabsPanel.add("Edit", editPanel);
     }
@@ -1881,14 +1888,14 @@ public class TripleAFrame extends MainGameFrame {
       tabsPanel.removeAll();
     }
     setWidgetActivation();
-    tabsPanel.add("Action", actionButtons);
-    tabsPanel.add("Stats", statsPanel);
-    tabsPanel.add("Economy", economyPanel);
+    addTab("Actions", actionButtons, 'A');
+    addTab("Players", statsPanel, 'P');
+    addTab("Resources", economyPanel, 'R');
     if (objectivePanel != null && !objectivePanel.isEmpty()) {
-      tabsPanel.add(objectivePanel.getName(), objectivePanel);
+      addTab(objectivePanel.getName(), objectivePanel, 'O');
     }
-    tabsPanel.add("Notes", notesPanel);
-    tabsPanel.add("Territory", details);
+    addTab("Notes", notesPanel, 'N');
+    addTab("Territory", details, 'T');
     if (getEditMode()) {
       tabsPanel.add("Edit", editPanel);
     }

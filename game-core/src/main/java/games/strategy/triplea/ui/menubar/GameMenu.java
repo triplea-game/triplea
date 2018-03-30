@@ -62,8 +62,8 @@ final class GameMenu extends JMenu {
     SoundOptions.addGlobalSoundSwitchMenu(this);
     SoundOptions.addToMenu(this);
     addSeparator();
-    add(frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
-    add(frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
+    addMenuItemWithHotkey(frame.getShowGameAction(), KeyEvent.VK_G);
+    addMenuItemWithHotkey(frame.getShowHistoryAction(), KeyEvent.VK_H);
     add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
     addSeparator();
     addGameOptionsMenu();
@@ -72,13 +72,24 @@ final class GameMenu extends JMenu {
     addNotificationSettings();
     addShowDiceStats();
     addRollDice();
-    addBattleCalculatorMenu();
+    addMenuItemWithHotkey(SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null)),
+        KeyEvent.VK_B);
+  }
+
+  private void addMenuItemWithHotkey(final Action action, final int keyCode) {
+    final JMenuItem gameMenuItem = add(action);
+    gameMenuItem.setMnemonic(keyCode);
+    gameMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(keyCode, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
   private void addEditMode() {
     final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
     editMode.setModel(frame.getEditModeButtonModel());
-    add(editMode).setMnemonic(KeyEvent.VK_E);
+    final JMenuItem editMenuItem = add(editMode);
+    editMenuItem.setMnemonic(KeyEvent.VK_E);
+    editMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
   private void addShowVerifiedDice() {
@@ -103,7 +114,7 @@ final class GameMenu extends JMenu {
    * current political landscape as a reference, no actions on this panel.
    */
   private void addPoliticsMenu() {
-    add(SwingAction.of("Show Politics Panel", e -> {
+    final JMenuItem politicsMenuItem = add(SwingAction.of("Show Politics Panel", e -> {
       final PoliticalStateOverview ui = new PoliticalStateOverview(gameData, uiContext, false);
       final JScrollPane scroll = new JScrollPane(ui);
       scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -118,7 +129,10 @@ final class GameMenu extends JMenu {
               (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
 
       JOptionPane.showMessageDialog(frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
-    })).setMnemonic(KeyEvent.VK_P);
+    }));
+    politicsMenuItem.setMnemonic(KeyEvent.VK_P);
+    politicsMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
   private void addNotificationSettings() {
@@ -221,11 +235,4 @@ final class GameMenu extends JMenu {
     add(rollDiceBox);
   }
 
-  private void addBattleCalculatorMenu() {
-    final Action showBattleMenu = SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null));
-    final JMenuItem showBattleMenuItem = add(showBattleMenu);
-    showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
-    showBattleMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-  }
 }
