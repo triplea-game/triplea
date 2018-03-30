@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
@@ -37,7 +38,7 @@ public final class PointFileReaderWriter {
   // Matches a "polygon" like this: < something that's not a greater than or less than char >
   private static final Pattern polygonPattern = Pattern.compile("<[^>]*>");
   // Matches a Name-Int-Tuple pair like this: Some Weird Territory Name without an opening round bracket (654, 321)
-  private static final Pattern singlePointPattern = Pattern.compile("([^(]+?)\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+  private static final Pattern singlePointPattern = Pattern.compile("^([^(]*?)\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
 
   private PointFileReaderWriter() {}
 
@@ -249,7 +250,8 @@ public final class PointFileReaderWriter {
     return Tuple.of(name, points);
   }
 
-  private static void readStream(final InputStream stream, Consumer<String> lineParser)
+  @VisibleForTesting
+  static void readStream(final InputStream stream, Consumer<String> lineParser)
       throws IOException {
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputStreamReader)) {
