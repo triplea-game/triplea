@@ -30,6 +30,7 @@ public class EconomyPanel extends AbstractStatPanel {
   private final List<ResourceStat> resourceStats = new ArrayList<>();
   private ResourceTableModel resourceModel;
   private final UiContext uiContext;
+  private final Map<Integer, String> columnHeaders = new HashMap<>();
 
   public EconomyPanel(final GameData data, final UiContext uiContext) {
     super(data);
@@ -48,7 +49,12 @@ public class EconomyPanel extends AbstractStatPanel {
     for (int i = 1; i < resourceModel.getColumnCount(); i++) {
       table.getColumnModel().getColumn(i).setHeaderRenderer(new DefaultTableCellRenderer());
       final JLabel label = (JLabel) table.getColumnModel().getColumn(i).getHeaderRenderer();
-      label.setIcon(uiContext.getResourceImageFactory().getIcon(resourceStats.get(i - 1).resource, false));
+      final Resource resource = resourceStats.get(i - 1).resource;
+      try {
+        label.setIcon(uiContext.getResourceImageFactory().getIcon(resource, false));
+      } catch (final IllegalStateException e) {
+        // ignore missing resource image
+      }
     }
     final JScrollPane scroll = new JScrollPane(table);
     add(scroll);
@@ -139,9 +145,6 @@ public class EconomyPanel extends AbstractStatPanel {
 
     @Override
     public String getColumnName(final int col) {
-      if (col == 0) {
-        return "Player";
-      }
       return "";
     }
 
