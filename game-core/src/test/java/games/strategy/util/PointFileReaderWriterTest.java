@@ -83,7 +83,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnInvalidSyntax() throws Exception {
+    public void shouldErrorOnInvalidSyntax() {
       final String content1 = "United Kingdom (1011,1021\n";
       assertThrows(IOException.class, () -> readFromString(PointFileReaderWriter::readOneToOne, content1));
 
@@ -101,7 +101,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey(){
+    public void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  (1011,1021)\n"
           + "54 Sea Zone  (1011,1021)";
@@ -162,7 +162,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey(){
+    public void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  (1011,1021)\n"
           + "54 Sea Zone  (1011,1021)";
@@ -221,7 +221,8 @@ public final class PointFileReaderWriterTest {
           readFromString(PointFileReaderWriter::readOneToManyPlacements, content);
 
       assertThat(pointListsByName, is(ImmutableMap.of(
-          "Belarus", Tuple.of(Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)), false),
+          "Belarus",
+          Tuple.of(Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)), false),
           "54 Sea Zone", Tuple.of(Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)), true),
           "Philippines", Tuple.of(Arrays.asList(new Point(3011, 3021)), false),
           "East America", Tuple.of(Arrays.asList(new Point(4011, 4021)), false),
@@ -229,7 +230,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey(){
+    public void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  (1011,1021)  | overflowToLeft=false\n"
           + "54 Sea Zone  (1011,1021)  | overflowToLeft=false";
@@ -302,7 +303,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey(){
+    public void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
           + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >";
@@ -332,8 +333,8 @@ public final class PointFileReaderWriterTest {
     private List<List<Point>> points(final List<Polygon> polygons) {
       return polygons.stream()
           .map(polygon -> Streams
-                .zip(Ints.asList(polygon.xpoints).stream(), Ints.asList(polygon.ypoints).stream(), Point::new)
-                .collect(Collectors.toList()))
+              .zip(Ints.asList(polygon.xpoints).stream(), Ints.asList(polygon.ypoints).stream(), Point::new)
+              .collect(Collectors.toList()))
           .collect(Collectors.toList());
     }
   }
@@ -413,7 +414,8 @@ public final class PointFileReaderWriterTest {
           "Philippines", Tuple.of(Arrays.asList(
               new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)), true));
 
-      final String content = writeToString(os -> PointFileReaderWriter.writeOneToManyPlacements(os, polygonListsByName));
+      final String content =
+          writeToString(os -> PointFileReaderWriter.writeOneToManyPlacements(os, polygonListsByName));
 
       assertThat(content, is(""
           + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=true\r\n"
@@ -466,7 +468,7 @@ public final class PointFileReaderWriterTest {
   @Nested
   public final class ReadStreamTest {
     @Test
-    public void testExceptionWrapping(){
+    public void testExceptionWrapping() {
       final String test = "Test";
       final ByteArrayInputStream stream = new ByteArrayInputStream(test.getBytes(StandardCharsets.UTF_8));
       final IllegalArgumentException exception = new IllegalArgumentException("Test Exception");

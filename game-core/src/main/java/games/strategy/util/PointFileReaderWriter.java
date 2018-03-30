@@ -23,9 +23,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Utility to read and write files in the form of
