@@ -94,6 +94,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     add(new JLabel("Units: " + unitsInTerritory.size()));
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, uiContext));
     scroll.setBorder(BorderFactory.createEmptyBorder());
+    scroll.getVerticalScrollBar().setUnitIncrement(20);
     add(scroll);
     refresh();
   }
