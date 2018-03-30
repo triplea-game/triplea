@@ -357,7 +357,7 @@ public class TripleAFrame extends MainGameFrame {
     actionButtons.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
     addTab("Players", statsPanel, 'P');
-    economyPanel = new EconomyPanel(data);
+    economyPanel = new EconomyPanel(data, uiContext);
     addTab("Resources", economyPanel, 'R');
     objectivePanel = new ObjectivePanel(data);
     if (objectivePanel.isEmpty()) {
