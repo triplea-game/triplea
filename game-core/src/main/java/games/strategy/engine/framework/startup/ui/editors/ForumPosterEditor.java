@@ -146,12 +146,10 @@ public class ForumPosterEditor extends EditorPanel {
           "Testing Forum poster");
       progressWindow.setVisible(false);
       // now that we have a result, marshall it back unto the swing thread
-      SwingUtilities.invokeLater(() -> {
-        GameRunner.showMessageDialog(
-            bean.getTurnSummaryRef(),
-            GameRunner.Title.of("Test Turn Summary Post"),
-            JOptionPane.INFORMATION_MESSAGE);
-      });
+      SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
+          bean.getTurnSummaryRef(),
+          GameRunner.Title.of("Test Turn Summary Post"),
+          JOptionPane.INFORMATION_MESSAGE));
     }).start();
   }
 

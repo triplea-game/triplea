@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.fast;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
@@ -41,12 +40,12 @@ public class FastOddsEstimator implements IOddsCalculator {
     List<Unit> remainingDefendingUnits = new ArrayList<>();
     if (winPercentage > 50) {
       remainingAttackingUnits.addAll(attackingUnits);
-      Collections.sort(remainingAttackingUnits, ProPurchaseUtils.getCostComparator().reversed());
+      remainingAttackingUnits.sort(ProPurchaseUtils.getCostComparator().reversed());
       final int numRemainingUnits = (int) Math.ceil(attackingUnits.size() * (Math.min(100, winPercentage) - 50) / 50);
       remainingAttackingUnits = remainingAttackingUnits.subList(0, numRemainingUnits);
     } else {
       remainingDefendingUnits.addAll(defendingUnits);
-      Collections.sort(remainingDefendingUnits, ProPurchaseUtils.getCostComparator().reversed());
+      remainingDefendingUnits.sort(ProPurchaseUtils.getCostComparator().reversed());
       final int numRemainingUnits = (int) Math.ceil(defendingUnits.size() * (50 - Math.max(0, winPercentage)) / 50);
       remainingDefendingUnits = remainingDefendingUnits.subList(0, numRemainingUnits);
     }

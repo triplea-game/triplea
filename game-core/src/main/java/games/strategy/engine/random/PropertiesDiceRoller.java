@@ -9,7 +9,6 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -74,7 +73,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         }
       }
     }
-    Collections.sort(propFiles, (o1, o2) -> {
+    propFiles.sort((o1, o2) -> {
       final int n1 = Integer.parseInt(o1.getProperty("order"));
       final int n2 = Integer.parseInt(o2.getProperty("order"));
       return n1 - n2;

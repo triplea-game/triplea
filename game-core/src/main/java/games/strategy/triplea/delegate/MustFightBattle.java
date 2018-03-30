@@ -484,11 +484,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // Check if defending subs can submerge before battle
     if (isSubRetreatBeforeBattle()) {
-      if (!m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())
+      if (m_defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
           && m_attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
         steps.add(m_attacker.getName() + SUBS_SUBMERGE);
       }
-      if (!m_attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())
+      if (m_attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
           && m_defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
         steps.add(m_defender.getName() + SUBS_SUBMERGE);
       }
@@ -719,7 +719,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     for (final IExecutable step : steps) {
       m_stack.push(step);
     }
-    return;
   }
 
   List<IExecutable> getBattleExecutables(final boolean firstRun) {
@@ -1033,7 +1032,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private ReturnFire returnFireAgainstAttackingSubs() {
-    final boolean attackingSubsSneakAttack = !m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer());
+    final boolean attackingSubsSneakAttack = m_defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
     final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
     final ReturnFire returnFireAgainstAttackingSubs;
     if (!attackingSubsSneakAttack) {
@@ -1047,7 +1046,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private ReturnFire returnFireAgainstDefendingSubs() {
-    final boolean attackingSubsSneakAttack = !m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer());
+    final boolean attackingSubsSneakAttack = m_defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
     final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
     final ReturnFire returnFireAgainstDefendingSubs;
     if (!defendingSubsSneakAttack) {
@@ -1061,7 +1060,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean defendingSubsSneakAttack2() {
-    return !m_attackingUnits.stream().anyMatch(Matches.unitIsDestroyer()) && defendingSubsSneakAttack3();
+    return m_attackingUnits.stream().noneMatch(Matches.unitIsDestroyer()) && defendingSubsSneakAttack3();
   }
 
   private boolean defendingSubsSneakAttack3() {
@@ -1149,10 +1148,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean onlyDefenselessDefendingTransportsLeft() {
-    if (!isTransportCasualtiesRestricted()) {
-      return false;
-    }
-    return !m_defendingUnits.isEmpty()
+    return isTransportCasualtiesRestricted()
+        && !m_defendingUnits.isEmpty()
         && m_defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
 
@@ -1160,10 +1157,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    if (m_defendingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return canAttackerRetreat() || canSubsSubmerge();
+    return m_defendingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
+        && (canAttackerRetreat() || canSubsSubmerge());
   }
 
   // Added for test case calls
@@ -1206,11 +1201,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
       return false;
     }
-    if (m_attackingWaitingToDie.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return getEmptyOrFriendlySeaNeighbors(m_defender, CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub()))
-        .size() != 0 || canSubsSubmerge();
+    return m_attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
+        && (getEmptyOrFriendlySeaNeighbors(m_defender,
+            CollectionUtils.getMatches(m_defendingUnits, Matches.unitIsSub())).size() != 0
+            || canSubsSubmerge());
   }
 
   private void attackerRetreatSubs(final IDelegateBridge bridge) {
@@ -1603,8 +1597,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
 
     // Add all suicide on hit groups and the remaining units
-    final List<Collection<Unit>> result = new ArrayList<>();
-    result.addAll(map.values());
+    final List<Collection<Unit>> result = new ArrayList<>(map.values());
     final Collection<Unit> remainingUnits = CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit().negate());
     if (!remainingUnits.isEmpty()) {
       result.add(remainingUnits);
@@ -1923,7 +1916,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Change change = ChangeFactory.markNoMovementChange(bombard);
       bridge.addChange(change);
     }
-    /**
+    /*
      * TODO This code is actually a bug- the property is intended to tell if the return fire is
      * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
      * property definition. However, fixing this will entail a fix to the XML to reverse
@@ -1951,7 +1944,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> attackedDefenders = CollectionUtils.getMatches(m_defendingUnits, attackableUnits);
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with anything.
-    if (isAirAttackSubRestricted() && !m_attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())
+    if (isAirAttackSubRestricted() && m_attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
         && attackedDefenders.stream().anyMatch(Matches.unitIsSub())) {
       attackedDefenders.removeAll(CollectionUtils.getMatches(attackedDefenders, Matches.unitIsSub()));
     }
@@ -1980,7 +1973,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> attackedAttackers = CollectionUtils.getMatches(m_attackingUnits, attackableUnits);
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with anything.
-    if (isAirAttackSubRestricted() && !m_defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())
+    if (isAirAttackSubRestricted() && m_defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
         && attackedAttackers.stream().anyMatch(Matches.unitIsSub())) {
       attackedAttackers.removeAll(CollectionUtils.getMatches(attackedAttackers, Matches.unitIsSub()));
     }
@@ -2060,7 +2053,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     private final boolean m_defending;
     private DiceRoll m_dice;
     private CasualtyDetails m_casualties;
-    Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
+    final Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
 
     private FireAA(final boolean defending) {
       m_defending = defending;
@@ -2632,17 +2625,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void sortAmphib(final List<Unit> units) {
     final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
-    Collections.sort(units,
-        Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
-            .thenComparing((u1, u2) -> {
-              final UnitAttachment ua = UnitAttachment.get(u1.getType());
-              final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-              if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
-                return compareAccordingToAmphibious(u1, u2);
-              }
-              return 0;
-            })
-            .thenComparing(decreasingMovement));
+    units.sort(Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
+        .thenComparing((u1, u2) -> {
+          final UnitAttachment ua = UnitAttachment.get(u1.getType());
+          final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+          if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
+            return compareAccordingToAmphibious(u1, u2);
+          }
+          return 0;
+        })
+        .thenComparing(decreasingMovement));
   }
 
   private int compareAccordingToAmphibious(final Unit u1, final Unit u2) {

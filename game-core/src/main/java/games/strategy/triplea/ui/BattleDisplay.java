@@ -17,7 +17,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -190,9 +189,7 @@ public class BattleDisplay extends JPanel {
       gameData.releaseReadLock();
     }
     final Collection<Unit> dependentUnitsReturned = new ArrayList<>();
-    final Iterator<Collection<Unit>> dependentUnitsCollections = dependentsMap.values().iterator();
-    while (dependentUnitsCollections.hasNext()) {
-      final Collection<Unit> dependentCollection = dependentUnitsCollections.next();
+    for (Collection<Unit> dependentCollection : dependentsMap.values()) {
       dependentUnitsReturned.addAll(dependentCollection);
     }
     for (final UnitCategory category : UnitSeperator.categorize(killedUnits, dependentsMap, false, false)) {
@@ -487,7 +484,7 @@ public class BattleDisplay extends JPanel {
           final String[] options = {"Ok", "Cancel"};
           final String focus = ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES.booleanValue() ? options[0] : null;
           final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
-              hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+              hit.getName() + " select casualties", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
               focus);
           if (option != 0) {
             return;
@@ -800,7 +797,7 @@ public class BattleDisplay extends JPanel {
   }
 
   private static final class Renderer implements TableCellRenderer {
-    JLabel stamp = new JLabel();
+    final JLabel stamp = new JLabel();
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
@@ -829,9 +826,7 @@ public class BattleDisplay extends JPanel {
         stamp.setIcon(null);
       } else {
         stamp.setText("x" + count);
-        if (icon.isPresent()) {
-          stamp.setIcon(icon.get());
-        }
+        icon.ifPresent(stamp::setIcon);
       }
     }
   }
@@ -894,7 +889,7 @@ public class BattleDisplay extends JPanel {
         final Optional<ImageIcon> unitImage =
             uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(),
                 damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
-        final JLabel unit = unitImage.isPresent() ? new JLabel(unitImage.get()) : new JLabel();
+        final JLabel unit = unitImage.map(JLabel::new).orElseGet(JLabel::new);
         panel.add(unit);
         for (final UnitOwner owner : category.getDependents()) {
           unit.add(uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner()));

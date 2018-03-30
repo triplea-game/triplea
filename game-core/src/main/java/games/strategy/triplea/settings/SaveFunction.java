@@ -66,7 +66,7 @@ interface SaveFunction {
   }
 
 
-  static class SaveResult {
+  class SaveResult {
     final String message;
     final int dialogType;
 

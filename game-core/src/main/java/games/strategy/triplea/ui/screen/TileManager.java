@@ -182,18 +182,14 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        final Iterator<Tile> allTiles = tiles.iterator();
-        while (allTiles.hasNext()) {
-          final Tile tile = allTiles.next();
+        for (Tile tile : tiles) {
           tile.clear();
           final int x = tile.getBounds().x / TILE_SIZE;
           final int y = tile.getBounds().y / TILE_SIZE;
           tile.addDrawable(new BaseMapDrawable(x, y, uiContext));
           tile.addDrawable(new ReliefMapDrawable(x, y, uiContext));
         }
-        final Iterator<Territory> territories = data.getMap().getTerritories().iterator();
-        while (territories.hasNext()) {
-          final Territory territory = territories.next();
+        for (Territory territory : data.getMap().getTerritories()) {
           clearTerritory(territory);
           drawTerritory(territory, data, mapData);
         }
@@ -224,9 +220,7 @@ public class TileManager {
         if (territories == null) {
           return;
         }
-        final Iterator<Territory> iter = territories.iterator();
-        while (iter.hasNext()) {
-          final Territory territory = iter.next();
+        for (Territory territory : territories) {
           updateTerritory(territory, data, mapData);
         }
       } finally {
@@ -261,9 +255,7 @@ public class TileManager {
     if (drawables == null || drawables.isEmpty()) {
       return;
     }
-    final Iterator<Tile> tiles = territoryTiles.get(territory.getName()).iterator();
-    while (tiles.hasNext()) {
-      final Tile tile = tiles.next();
+    for (Tile tile : territoryTiles.get(territory.getName())) {
       tile.removeDrawables(drawables);
     }
     allUnitDrawables.removeAll(drawables);
@@ -319,9 +311,7 @@ public class TileManager {
       drawing.add(new VcDrawable(territory));
     }
     // add to the relevant tiles
-    final Iterator<Tile> tiles = getTiles(mapData.getBoundingRect(territory.getName())).iterator();
-    while (tiles.hasNext()) {
-      final Tile tile = tiles.next();
+    for (Tile tile : getTiles(mapData.getBoundingRect(territory.getName()))) {
       drawnOn.add(tile);
       tile.addDrawables(drawing);
     }
@@ -366,11 +356,9 @@ public class TileManager {
           category.getDisabled(), overflow, territory.getName(), uiContext);
       drawing.add(drawable);
       allUnitDrawables.add(drawable);
-      final Iterator<Tile> tiles =
-          getTiles(new Rectangle(lastPlace.x, lastPlace.y, uiContext.getUnitImageFactory().getUnitImageWidth(),
-              uiContext.getUnitImageFactory().getUnitImageHeight())).iterator();
-      while (tiles.hasNext()) {
-        final Tile tile = tiles.next();
+      for (Tile tile : getTiles(
+          new Rectangle(lastPlace.x, lastPlace.y, uiContext.getUnitImageFactory().getUnitImageWidth(),
+              uiContext.getUnitImageFactory().getUnitImageHeight()))) {
         tile.addDrawable(drawable);
         drawnOn.add(tile);
       }
@@ -386,7 +374,7 @@ public class TileManager {
             .comparing((final PlayerID p) -> !p.equals(t.getOwner()))
             .thenComparing(p -> Matches.isAtWar(p, data).test(t.getOwner()))
             .thenComparing(data.getPlayerList().getPlayers()::indexOf))
-        .thenComparing(Comparator.comparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType())))
+        .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))
         .thenComparing(UnitCategory::getType, Comparator
             .comparing((final UnitType ut) -> !Matches.unitTypeCanNotMoveDuringCombatMove().test(ut))
             .thenComparing(ut -> !Matches.unitTypeIsSea().test(ut))

@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -163,8 +162,8 @@ final class ExportMenu extends JMenu {
       // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech
       // tokens or # techs, etc.
       final IStat[] statsExtended = statPanel.getStatsExtended(gameData);
-      final String[] alliances = statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
-      final PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
+      final String[] alliances = statPanel.getAlliances().toArray(new String[0]);
+      final PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[0]);
       // its important here to translate the player objects into our game data
       // the players for the stat panel are only relevant with respect to
       // the game data they belong to
@@ -193,9 +192,8 @@ final class ExportMenu extends JMenu {
       text.append("\n");
       text.append("Turn Order: ,");
       text.append("\n");
-      final List<PlayerID> playerOrderList = new ArrayList<>();
-      playerOrderList.addAll(gameData.getPlayerList().getPlayers());
-      Collections.sort(playerOrderList, new PlayerOrderComparator(gameData));
+      final List<PlayerID> playerOrderList = new ArrayList<>(gameData.getPlayerList().getPlayers());
+      playerOrderList.sort(new PlayerOrderComparator(gameData));
       final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
       for (final PlayerID currentPlayerId : playerOrderSetNoDuplicates) {
         text.append(currentPlayerId.getName()).append(",");

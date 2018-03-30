@@ -233,9 +233,7 @@ public class MapData implements Closeable {
     for (final String name : centers.keySet()) {
       final Optional<Image> territoryNameImage = loadTerritoryNameImage(name);
 
-      if (territoryNameImage.isPresent()) {
-        territoryNameImages.put(name, territoryNameImage.get());
-      }
+      territoryNameImage.ifPresent(image -> territoryNameImages.put(name, image));
     }
     return territoryNameImages;
   }
@@ -758,7 +756,7 @@ public class MapData implements Closeable {
 
   public List<Point> getTerritoryEffectPoints(final Territory territory) {
     if (territoryEffects.get(territory.getName()) == null) {
-      return Arrays.asList(getCenter(territory));
+      return Collections.singletonList(getCenter(territory));
     }
     return territoryEffects.get(territory.getName());
   }

@@ -64,13 +64,7 @@ public class UnitType extends NamedAttachable {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null) {
-      return false;
-    }
-    if (!(o instanceof UnitType)) {
-      return false;
-    }
-    return ((UnitType) o).getName().equals(getName());
+    return o instanceof UnitType && ((UnitType) o).getName().equals(getName());
   }
 
   @Override

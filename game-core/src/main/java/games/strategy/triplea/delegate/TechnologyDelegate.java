@@ -382,11 +382,10 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     final List<Integer> rolled = new ArrayList<>();
     for (final int element : random) {
-      final int index = element;
       // check in case of dice chooser.
-      if (!rolled.contains(index) && index < available.size()) {
-        newAdvances.add(available.get(index));
-        rolled.add(index);
+      if (!rolled.contains(element) && element < available.size()) {
+        newAdvances.add(available.get(element));
+        rolled.add(element);
       }
     }
     bridge.getHistoryWriter().startEvent("Rolls to resolve tech hits:" + MyFormatter.asDice(random));
@@ -406,8 +405,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory) {
     final Collection<TechAdvance> playersAdvances =
         TechTracker.getCurrentTechAdvances(bridge.getPlayerId(), getData());
-    final List<TechAdvance> available = CollectionUtils.difference(techCategory.getTechs(), playersAdvances);
-    return available;
+    return CollectionUtils.difference(techCategory.getTechs(), playersAdvances);
   }
 
   public int getTechCost() {

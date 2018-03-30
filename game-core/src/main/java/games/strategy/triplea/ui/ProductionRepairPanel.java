@@ -177,7 +177,7 @@ public class ProductionRepairPanel extends JPanel {
     this.left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
   }
 
-  Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
+  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;
@@ -248,7 +248,8 @@ public class ProductionRepairPanel extends JPanel {
       final String text = "<html> x " + ResourceCollection.toStringForHtml(cost, data) + "</html>";
 
       final JLabel label =
-          icon.isPresent() ? new JLabel(text, icon.get(), SwingConstants.LEFT) : new JLabel(text, SwingConstants.LEFT);
+          icon.map(imageIcon -> new JLabel(text, imageIcon, SwingConstants.LEFT))
+              .orElseGet(() -> new JLabel(text, SwingConstants.LEFT));
       final JLabel info = new JLabel(territoryUnitIsIn.getName());
       maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);
       final JLabel remaining = new JLabel("Damage left to repair: " + maxRepairAmount);

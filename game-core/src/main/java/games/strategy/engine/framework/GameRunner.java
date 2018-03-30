@@ -45,6 +45,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
 import org.triplea.client.ui.javafx.TripleA;
@@ -160,7 +161,7 @@ public class GameRunner {
     frame.add(new MainPanel(setupPanelModel));
     frame.pack();
 
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.setIconImage(getGameIcon(frame));
     frame.setLocationRelativeTo(null);
 
@@ -237,7 +238,7 @@ public class GameRunner {
    * problem and makes refactoring easier.
    */
   public static class Title {
-    public String value;
+    public final String value;
 
     private Title(final String value) {
       this.value = value;

@@ -13,6 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import com.google.common.base.Strings;
 
+import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
 /**
@@ -20,6 +21,7 @@ import games.strategy.util.Util;
  * More information: http://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
  * This class checks if those lengths are supported.
  */
+@Integration
 public class EmailLimitIntegrationTest {
 
   private static Connection connection;

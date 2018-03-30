@@ -18,7 +18,9 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
+import games.strategy.test.Integration;
 
+@Integration
 public final class ClientLoginIntegrationTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";

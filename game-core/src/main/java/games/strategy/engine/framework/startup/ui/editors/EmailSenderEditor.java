@@ -176,12 +176,10 @@ public class EmailSenderEditor extends EditorPanel {
         // now that we have a result, marshall it back unto the swing thread
         final String finalMessage = message;
         final int finalMessageType = messageType;
-        SwingUtilities.invokeLater(() -> {
-          GameRunner.showMessageDialog(
-              finalMessage,
-              GameRunner.Title.of("Email Test"),
-              finalMessageType);
-        });
+        SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
+            finalMessage,
+            GameRunner.Title.of("Email Test"),
+            finalMessageType));
         progressWindow.setVisible(false);
       }
     }).start();

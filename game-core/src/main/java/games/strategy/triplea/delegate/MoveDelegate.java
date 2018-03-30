@@ -367,10 +367,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
           continue;
         }
         int bonusMovement = Integer.MIN_VALUE;
-        final Collection<Unit> givesBonusUnits = new ArrayList<>();
         final Predicate<Unit> givesBonusUnit = Matches.alliedUnit(player, data)
             .and(Matches.unitCanGiveBonusMovementToThisUnit(u));
-        givesBonusUnits.addAll(CollectionUtils.getMatches(t.getUnits().getUnits(), givesBonusUnit));
+        final Collection<Unit> givesBonusUnits =
+            new ArrayList<>(CollectionUtils.getMatches(t.getUnits().getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
           final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(Matches.unitIsLand());
           final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
@@ -507,12 +507,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
     if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
       return 1;
     }
-    final Set<Unit> repairUnitsForThisUnit = new HashSet<>();
     final PlayerID owner = unitToBeRepaired.getOwner();
     final Predicate<Unit> repairUnit = Matches.alliedUnit(owner, data)
         .and(Matches.unitCanRepairOthers())
         .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
-    repairUnitsForThisUnit.addAll(territoryUnitIsIn.getUnits().getMatches(repairUnit));
+    final Set<Unit> repairUnitsForThisUnit = new HashSet<>(territoryUnitIsIn.getUnits().getMatches(repairUnit));
     if (Matches.unitIsSea().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
@@ -611,8 +610,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   static Collection<Territory> getEmptyNeutral(final Route route) {
     final Predicate<Territory> emptyNeutral = Matches.territoryIsEmpty().and(Matches.territoryIsNeutralButNotWater());
-    final Collection<Territory> neutral = route.getMatches(emptyNeutral);
-    return neutral;
+    return route.getMatches(emptyNeutral);
   }
 
   private void removeAirThatCantLand() {

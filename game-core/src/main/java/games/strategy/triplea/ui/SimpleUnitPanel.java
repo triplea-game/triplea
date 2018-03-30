@@ -100,17 +100,15 @@ public class SimpleUnitPanel extends JPanel {
     if (unit instanceof UnitType) {
       final Optional<ImageIcon> icon =
           uiContext.getUnitImageFactory().getIcon((UnitType) unit, player, damaged, disabled);
-      if (icon.isPresent()) {
-        label.setIcon(icon.get());
-      }
+      icon.ifPresent(label::setIcon);
     } else if (unit instanceof Resource) {
       label.setIcon(uiContext.getResourceImageFactory().getIcon(unit, true));
     }
     add(label);
   }
 
-  Comparator<ProductionRule> productionRuleComparator = new Comparator<ProductionRule>() {
-    UnitTypeComparator utc = new UnitTypeComparator();
+  final Comparator<ProductionRule> productionRuleComparator = new Comparator<ProductionRule>() {
+    final UnitTypeComparator utc = new UnitTypeComparator();
 
     @Override
     public int compare(final ProductionRule o1, final ProductionRule o2) {
@@ -149,8 +147,8 @@ public class SimpleUnitPanel extends JPanel {
       return o1.getName().compareTo(o2.getName());
     }
   };
-  Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>() {
-    UnitTypeComparator utc = new UnitTypeComparator();
+  final Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>() {
+    final UnitTypeComparator utc = new UnitTypeComparator();
 
     @Override
     public int compare(final RepairRule o1, final RepairRule o2) {

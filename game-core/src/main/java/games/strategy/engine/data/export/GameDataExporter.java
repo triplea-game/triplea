@@ -181,7 +181,7 @@ public class GameDataExporter {
     }
     if (prop.getClass().equals(ColorProperty.class)) {
       typeString = "            <color/>\n";
-      value = "0x" + Integer.toHexString((((Integer) prop.getValue()).intValue())).toUpperCase();
+      value = "0x" + Integer.toHexString(((Integer) prop.getValue())).toUpperCase();
     }
     if (prop.getClass().equals(ComboProperty.class)) {
       final Field listField;
@@ -339,8 +339,7 @@ public class GameDataExporter {
       // TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now
       // (including changes to
       // the game data)
-      final Tuple<IAttachment, ArrayList<Tuple<String, String>>> current = attachment;
-      printAttachments(current);
+      printAttachments(attachment);
     }
     xmlfile.append("    </attachmentList>\n");
   }

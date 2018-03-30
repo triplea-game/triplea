@@ -23,8 +23,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
 
   private static int getBidAmount(final GameData data, final PlayerID currentPlayer) {
     final String propertyName = currentPlayer.getName() + " bid";
-    final int bid = data.getProperties().get(propertyName, 0);
-    return bid;
+    return data.getProperties().get(propertyName, 0);
   }
 
   public static boolean doesPlayerHaveBid(final GameData data, final PlayerID player) {
@@ -36,11 +35,9 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
     if (!doesPlayerHaveBid(getData(), player)) {
       return false;
     }
-    if ((player.getProductionFrontier() == null || player.getProductionFrontier().getRules().isEmpty())
-        && (player.getRepairFrontier() == null || player.getRepairFrontier().getRules().isEmpty())) {
-      return false;
-    }
-    return canWePurchaseOrRepair();
+    return ((player.getProductionFrontier() != null && !player.getProductionFrontier().getRules().isEmpty())
+        || (player.getRepairFrontier() != null && !player.getRepairFrontier().getRules().isEmpty()))
+        && canWePurchaseOrRepair();
   }
 
   @Override

@@ -236,10 +236,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     final Collection<String> myAlliances =
         new HashSet<>(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(getPlayerId()));
     myAlliances.retainAll(getGameData().getAllianceTracker().getAlliancesPlayerIsIn(playerSendingProposal));
-    if (!myAlliances.isEmpty()) {
-      return true;
-    }
-    return Math.random() < .5;
+    return !myAlliances.isEmpty() || Math.random() < .5;
   }
 
   @Override
@@ -477,15 +474,13 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       politicalActions();
     } else if (name.endsWith("Place")) {
       final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
-      place(name.indexOf("Bid") != -1, placeDel, getGameData(), id);
+      place(name.contains("Bid"), placeDel, getGameData(), id);
     } else if (name.endsWith("EndTurn")) {
       endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
     }
   }
 
-  /************************
-   * The following methods are called when the AI starts a phase.
-   *************************/
+  // The following methods are called when the AI starts a phase.
   /**
    * It is the AI's turn to purchase units.
    *

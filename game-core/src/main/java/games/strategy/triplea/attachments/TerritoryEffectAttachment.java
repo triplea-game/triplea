@@ -111,7 +111,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     if (s.length < 1) {
       throw new GameParseException("noBlitz must have at least one unitType" + thisErrorMsg());
     }
-    for (final String unitTypeName : Arrays.asList(s)) {
+    for (final String unitTypeName : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
       if (ut == null) {
         throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());

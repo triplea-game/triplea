@@ -33,8 +33,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
     for (final int i : ints) {
       sb.append(i).append(",");
     }
-    final String intArrayString = sb.substring(0, sb.length() - 1);
-    return intArrayString;
+    return sb.substring(0, sb.length() - 1);
   }
 
   @Override

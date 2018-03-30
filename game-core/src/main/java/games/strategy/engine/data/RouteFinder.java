@@ -47,10 +47,7 @@ class RouteFinder {
         }
       }
     }
-    if (nextSet.isEmpty()) {
-      return false;
-    }
-    return calculate(nextSet, end);
+    return !nextSet.isEmpty() && calculate(nextSet, end);
   }
 
   private Route getRoute(final Territory start, final Territory destination) {

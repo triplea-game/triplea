@@ -158,10 +158,7 @@ class EndPoint {
       return new RemoteMethodCallResults(methodRVal);
     } catch (final InvocationTargetException e) {
       return new RemoteMethodCallResults(e.getTargetException());
-    } catch (final IllegalAccessException e) {
-      ClientLogger.logQuietly("error in call:" + call, e);
-      return new RemoteMethodCallResults(e);
-    } catch (final IllegalArgumentException e) {
+    } catch (final IllegalAccessException | IllegalArgumentException e) {
       ClientLogger.logQuietly("error in call:" + call, e);
       return new RemoteMethodCallResults(e);
     } finally {

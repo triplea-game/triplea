@@ -50,9 +50,6 @@ public class StringProperty extends AEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    if (value == null) {
-      return true;
-    }
-    return value instanceof String;
+    return value == null || value instanceof String;
   }
 }

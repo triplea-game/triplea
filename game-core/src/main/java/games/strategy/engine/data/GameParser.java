@@ -907,7 +907,7 @@ public final class GameParser {
     final String childName = child.getNodeName();
     final IEditableProperty editableProperty;
     if (childName.equals("boolean")) {
-      editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue).booleanValue());
+      editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue));
     } else if (childName.equals("file")) {
       editableProperty = new FileProperty(name, null, defaultValue);
     } else if (childName.equals("list") || childName.equals("combo")) {
@@ -918,13 +918,13 @@ public final class GameParser {
       }
       editableProperty = new ComboProperty<>(name, null, defaultValue, values);
     } else if (childName.equals("number")) {
-      final int max = Integer.valueOf(child.getAttribute("max")).intValue();
-      final int min = Integer.valueOf(child.getAttribute("min")).intValue();
-      final int def = Integer.valueOf(defaultValue).intValue();
+      final int max = Integer.valueOf(child.getAttribute("max"));
+      final int min = Integer.valueOf(child.getAttribute("min"));
+      final int def = Integer.valueOf(defaultValue);
       editableProperty = new NumberProperty(name, null, max, min, def);
     } else if (childName.equals("color")) {
       // Parse the value as a hexidecimal number
-      final int def = Integer.valueOf(defaultValue, 16).intValue();
+      final int def = Integer.valueOf(defaultValue, 16);
       editableProperty = new ColorProperty(name, null, def);
     } else if (childName.equals("string")) {
       editableProperty = new StringProperty(name, null, defaultValue);

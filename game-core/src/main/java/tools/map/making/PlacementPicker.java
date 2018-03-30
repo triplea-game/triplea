@@ -214,7 +214,7 @@ public final class PlacementPicker {
                       + "\r\n do you want to use the file to supply the info for the placement box size? "
                       + "\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height + ",    Result = ("
                       + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")",
-                  "File Suggestion", 1);
+                  "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION);
 
               if (result == 0) {
                 unitZoomPercent = scale;
@@ -272,7 +272,7 @@ public final class PlacementPicker {
       }
       if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
           "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?",
-          "File Suggestion", 1) == 0) {
+          "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(file.getPath())) {
           ToolLogger.info("Polygons : " + file.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
@@ -420,7 +420,7 @@ public final class PlacementPicker {
      * @return The panel to return.
      */
     private JPanel createMainPanel() {
-      final JPanel imagePanel = new JPanel() {
+      return new JPanel() {
         private static final long serialVersionUID = -3941975573431195136L;
 
         @Override
@@ -494,7 +494,6 @@ public final class PlacementPicker {
           }
         } // paint
       };
-      return imagePanel;
     }
 
     /**

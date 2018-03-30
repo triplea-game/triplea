@@ -6,8 +6,10 @@ import static org.hamcrest.core.Is.is;
 
 import org.junit.jupiter.api.Test;
 
+import games.strategy.test.Integration;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
+@Integration
 public class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test

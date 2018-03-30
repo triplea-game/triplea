@@ -213,7 +213,7 @@ public final class DecorationPlacer {
       if (fileCenters.exists() && JOptionPane.showConfirmDialog(new JPanel(),
           "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
               + "centers?",
-          "File Suggestion", 1) == 0) {
+          "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(fileCenters.getPath())) {
           ToolLogger.info("Centers : " + fileCenters.getPath());
           centers = PointFileReaderWriter.readOneToOne(is);
@@ -250,7 +250,7 @@ public final class DecorationPlacer {
       if (filePoly.exists() && JOptionPane.showConfirmDialog(new JPanel(),
           "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
               + "polygons?",
-          "File Suggestion", 1) == 0) {
+          "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(filePoly.getPath())) {
           ToolLogger.info("Polygons : " + filePoly.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
@@ -378,7 +378,7 @@ public final class DecorationPlacer {
     }
 
     private JPanel createMainPanel() {
-      final JPanel imagePanel = new JPanel() {
+      return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
 
         @Override
@@ -387,7 +387,6 @@ public final class DecorationPlacer {
           paintToG(g);
         }
       };
-      return imagePanel;
     }
 
     private void paintToG(final Graphics g) {
@@ -454,8 +453,7 @@ public final class DecorationPlacer {
       currentPoints = new HashMap<>();
       for (final Entry<String, Tuple<Image, List<Point>>> entry : currentImagePoints.entrySet()) {
         // remove duplicates
-        final LinkedHashSet<Point> pointSet = new LinkedHashSet<>();
-        pointSet.addAll(entry.getValue().getSecond());
+        final LinkedHashSet<Point> pointSet = new LinkedHashSet<>(entry.getValue().getSecond());
         entry.getValue().getSecond().clear();
         entry.getValue().getSecond().addAll(pointSet);
         currentPoints.put(entry.getKey(), entry.getValue().getSecond());

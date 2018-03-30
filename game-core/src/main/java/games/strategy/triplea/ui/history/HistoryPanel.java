@@ -169,7 +169,7 @@ public class HistoryPanel extends JPanel {
       @Override
       public void mouseReleased(final MouseEvent me) {}
     });
-    tree.addTreeSelectionListener(e -> treeSelectionChanged(e));
+    tree.addTreeSelectionListener(this::treeSelectionChanged);
   }
 
   private void previous() {
@@ -263,8 +263,7 @@ public class HistoryPanel extends JPanel {
 
   public HistoryNode getCurrentNode() {
     final TreePath path = tree.getSelectionPath();
-    final HistoryNode curNode = (HistoryNode) path.getLastPathComponent();
-    return curNode;
+    return (HistoryNode) path.getLastPathComponent();
   }
 
   public HistoryNode getCurrentPopupNode() {

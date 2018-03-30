@@ -59,7 +59,7 @@ public class BattleRecordsList extends GameDataComponent {
   private static Map<Integer, BattleRecords> copyList(final Map<Integer, BattleRecords> records) {
     final Map<Integer, BattleRecords> copy = new HashMap<>();
     for (final Entry<Integer, BattleRecords> entry : records.entrySet()) {
-      copy.put(Integer.valueOf(entry.getKey()), new BattleRecords(entry.getValue()));
+      copy.put(entry.getKey(), new BattleRecords(entry.getValue()));
     }
     return copy;
   }
@@ -72,7 +72,6 @@ public class BattleRecordsList extends GameDataComponent {
       sb.append(entry.getKey().toString());
       sb.append(" -> ");
       sb.append(entry.getValue().toString());
-      sb.append("");
     }
     return sb.toString();
   }

@@ -195,7 +195,7 @@ public class BattlePanel extends ActionPanel {
     }
     GUID displayed = currentBattleDisplayed;
     int count = 0;
-    while (displayed == null || !battleId.equals(displayed)) {
+    while (!battleId.equals(displayed)) {
       count++;
       Interruptibles.sleep(count);
       // something is wrong, we shouldnt have to wait this long
@@ -262,7 +262,7 @@ public class BattlePanel extends ActionPanel {
         }
         battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         currentBattleDisplayed = battleId;
-        SwingUtilities.invokeLater(() -> battleFrame.toFront());
+        SwingUtilities.invokeLater(battleFrame::toFront);
       }
     }));
   }
@@ -399,9 +399,7 @@ public class BattlePanel extends ActionPanel {
           JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null,
           getMap().getUiContext().getCountDownLatchHandler());
       final List<Unit> killed = chooser.getSelected(false);
-      final CasualtyDetails response =
-          new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
-      return response;
+      return new CasualtyDetails(killed, chooser.getSelectedDamagedMultipleHitPointUnits(), false);
     };
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
         .orElse(null);
@@ -437,7 +435,7 @@ public class BattlePanel extends ActionPanel {
 
   class CenterBattleAction extends AbstractAction {
     private static final long serialVersionUID = -5071133874755970334L;
-    Territory battleSite;
+    final Territory battleSite;
 
     CenterBattleAction(final Territory battleSite) {
       super("Center");
@@ -493,9 +491,9 @@ public class BattlePanel extends ActionPanel {
 
   class FightBattleAction extends AbstractAction {
     private static final long serialVersionUID = 5510976406003707776L;
-    Territory territory;
-    boolean bomb;
-    BattleType battleType;
+    final Territory territory;
+    final boolean bomb;
+    final BattleType battleType;
 
     FightBattleAction(final Territory battleSite, final boolean bomb, final BattleType battleType) {
       super(battleType.toString() + " in " + battleSite.getName() + "...");

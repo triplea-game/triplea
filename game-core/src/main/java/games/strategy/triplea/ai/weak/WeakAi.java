@@ -350,14 +350,13 @@ public class WeakAi extends AbstractAi {
       if (!t.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
         continue;
       }
-      final Territory enemy = t;
-      final float enemyStrength = AiUtils.strength(enemy.getUnits().getUnits(), false, true);
+      final float enemyStrength = AiUtils.strength(t.getUnits().getUnits(), false, true);
       if (enemyStrength > 0) {
         final Predicate<Unit> attackable = Matches.unitIsOwnedBy(player).and(o -> !unitsAlreadyMoved.contains(o));
         final Set<Territory> dontMoveFrom = new HashSet<>();
         // find our strength that we can attack with
         float ourStrength = 0;
-        final Collection<Territory> attackFrom = data.getMap().getNeighbors(enemy, Matches.territoryIsWater());
+        final Collection<Territory> attackFrom = data.getMap().getNeighbors(t, Matches.territoryIsWater());
         for (final Territory owned : attackFrom) {
           // dont risk units we are carrying
           if (owned.getUnits().anyMatch(Matches.unitIsLand())) {
@@ -374,7 +373,7 @@ public class WeakAi extends AbstractAi {
             final List<Unit> units = owned.getUnits().getMatches(attackable);
             unitsAlreadyMoved.addAll(units);
             moveUnits.add(units);
-            moveRoutes.add(data.getMap().getRoute(owned, enemy));
+            moveRoutes.add(data.getMap().getRoute(owned, t));
           }
         }
       }
@@ -529,7 +528,7 @@ public class WeakAi extends AbstractAi {
             .or(Matches.isTerritoryFreeNeutral(data));
     final List<Territory> enemyOwned = CollectionUtils.getMatches(data.getMap().getTerritories(), walkInto);
     Collections.shuffle(enemyOwned);
-    Collections.sort(enemyOwned, (o1, o2) -> {
+    enemyOwned.sort((o1, o2) -> {
       // -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
       if (Objects.equals(o1, o2)) {
         return 0;
@@ -593,7 +592,7 @@ public class WeakAi extends AbstractAi {
           }
           // get the cheapest unit to move in
           final List<Unit> unitsSortedByCost = new ArrayList<>(attackFrom.getUnits().getUnits());
-          Collections.sort(unitsSortedByCost, AiUtils.getCostComparator());
+          unitsSortedByCost.sort(AiUtils.getCostComparator());
           for (final Unit unit : unitsSortedByCost) {
             final Predicate<Unit> match = Matches.unitIsOwnedBy(player)
                 .and(Matches.unitIsLand())

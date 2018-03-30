@@ -323,14 +323,6 @@ public final class MapPropertiesMaker {
       } catch (final IOException e) {
         ToolLogger.error("Failed to load map properties: " + centerName, e);
       }
-      for (final Method setter : mapProperties.getClass().getMethods()) {
-        final boolean startsWithSet = setter.getName().startsWith("set");
-        if (!startsWithSet) {
-          continue;
-        }
-
-        // TODO: finish this
-      }
       validate();
       repaint();
     }

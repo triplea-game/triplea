@@ -49,7 +49,7 @@ public final class JComboBoxBuilder {
     Preconditions.checkState(options.size() > 0);
     final Consumer<String> myAction = selectionAction;
 
-    final JComboBox<String> comboBox = new JComboBox<>(options.toArray(new String[options.size()]));
+    final JComboBox<String> comboBox = new JComboBox<>(options.toArray(new String[0]));
 
     if (clientSetting != null) {
       final String lastValue = clientSetting.value();

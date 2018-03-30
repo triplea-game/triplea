@@ -31,7 +31,7 @@ public class VaultID implements Serializable {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof VaultID)) {
+    if (!(o instanceof VaultID)) {
       return false;
     }
     final VaultID other = (VaultID) o;

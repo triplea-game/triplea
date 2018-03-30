@@ -85,7 +85,7 @@ public class GameStep extends GameDataComponent {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null || !(o instanceof GameStep)) {
+    if (!(o instanceof GameStep)) {
       return false;
     }
     final GameStep other = (GameStep) o;
@@ -94,10 +94,7 @@ public class GameStep extends GameDataComponent {
   }
 
   public boolean hasReachedMaxRunCount() {
-    if (m_maxRunCount == -1) {
-      return false;
-    }
-    return m_maxRunCount <= m_runCount;
+    return m_maxRunCount != -1 && m_maxRunCount <= m_runCount;
   }
 
   public int getRunCount() {

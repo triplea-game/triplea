@@ -329,11 +329,10 @@ class LobbyGamePanel extends JPanel {
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {
     final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     final String hostedByName = description.getHostedBy().getName();
-    final INode lobbyWatcherNode = new Node(
+    return new Node(
         (hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName
             : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
         description.getHostedBy().getAddress(), description.getHostedBy().getPort());
-    return lobbyWatcherNode;
   }
 
   private void mutePlayerInHeadlessHostBot() {

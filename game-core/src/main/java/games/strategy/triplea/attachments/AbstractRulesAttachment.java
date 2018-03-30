@@ -190,10 +190,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   boolean getGamePropertyState(final GameData data) {
-    if (m_gameProperty == null) {
-      return false;
-    }
-    return data.getProperties().get(m_gameProperty, false);
+    return m_gameProperty != null && data.getProperties().get(m_gameProperty, false);
   }
 
   private void resetGameProperty() {

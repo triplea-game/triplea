@@ -32,7 +32,7 @@ public enum LockUtil {
 
   // the locks the current thread has
   // because locks can be re-entrant, store this as a count
-  private final ThreadLocal<Map<Lock, Integer>> locksHeld = ThreadLocal.withInitial(() -> new HashMap<>());
+  private final ThreadLocal<Map<Lock, Integer>> locksHeld = ThreadLocal.withInitial(HashMap::new);
 
   // a map of all the locks ever held when a lock was acquired
   // store weak references to everything so that locks don't linger here forever

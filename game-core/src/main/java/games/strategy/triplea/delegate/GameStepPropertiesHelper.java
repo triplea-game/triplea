@@ -185,12 +185,10 @@ public class GameStepPropertiesHelper {
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REMOVE_AIR_THAT_CAN_NOT_LAND);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
-      } else if (data.getSequence().getStep().getDelegate() != null
-          && NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass())) {
-        return false;
-      } else {
-        return isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place");
       }
+      return (data.getSequence().getStep().getDelegate() == null
+          || !NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass()))
+          && (isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place"));
     } finally {
       data.releaseReadLock();
     }
@@ -239,7 +237,7 @@ public class GameStepPropertiesHelper {
     try {
       final String prop =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_START);
-      return (prop != null) && Boolean.parseBoolean(prop);
+      return Boolean.parseBoolean(prop);
     } finally {
       data.releaseReadLock();
     }
@@ -310,10 +308,8 @@ public class GameStepPropertiesHelper {
   }
 
   private static boolean isCombatDelegate(final GameData data) {
-    if (data.getSequence().getStep().getName().endsWith("NonCombatMove")) {
-      return false;
-    }
-    return data.getSequence().getStep().getName().endsWith("CombatMove");
+    return !data.getSequence().getStep().getName().endsWith("NonCombatMove")
+        && data.getSequence().getStep().getName().endsWith("CombatMove");
   }
 
   private static boolean isAirborneDelegate(final GameData data) {

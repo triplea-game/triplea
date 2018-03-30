@@ -9,14 +9,14 @@ import java.util.logging.LogManager;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
+import org.mockito.Mock;
 
 import com.example.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public final class LoggingConfigurationTest {
-  @Spy
-  private final LogManager logManager = LogManager.getLogManager();
+  @Mock
+  private LogManager logManager;
 
   private final Properties systemProperties = new Properties();
 

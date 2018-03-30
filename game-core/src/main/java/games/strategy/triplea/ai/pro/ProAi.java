@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.pro;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -332,7 +331,7 @@ public class ProAi extends AbstractAi {
     myCasualties.addToDamaged(defaultCasualties.getDamaged());
     final List<Unit> selectFromSorted = new ArrayList<>(selectFrom);
     if (enemyUnits.isEmpty()) {
-      Collections.sort(selectFromSorted, ProPurchaseUtils.getCostComparator());
+      selectFromSorted.sort(ProPurchaseUtils.getCostComparator());
     } else {
 
       // Get battle data

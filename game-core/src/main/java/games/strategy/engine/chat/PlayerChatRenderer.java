@@ -26,8 +26,8 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   private final IGame game;
   private final UiContext uiContext;
   int maxIconCounter = 0;
-  HashMap<String, List<Icon>> iconMap = new HashMap<>();
-  HashMap<String, Set<String>> playerMap = new HashMap<>();
+  final HashMap<String, List<Icon>> iconMap = new HashMap<>();
+  final HashMap<String, Set<String>> playerMap = new HashMap<>();
 
   public PlayerChatRenderer(final IGame game, final UiContext uiContext) {
     this.game = game;

@@ -26,7 +26,7 @@ public class RandomStats implements IRandomStats {
       map = new IntegerMap<>();
     }
     for (final int element : random) {
-      map.add(Integer.valueOf(element + 1), 1);
+      map.add(element + 1, 1);
     }
     // for now, only record if it is combat, otherwise if not combat, throw it in the null pile
     randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
@@ -37,7 +37,7 @@ public class RandomStats implements IRandomStats {
     if (map == null) {
       map = new IntegerMap<>();
     }
-    map.add(Integer.valueOf(random + 1), 1);
+    map.add(random + 1, 1);
     randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
   }
 

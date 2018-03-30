@@ -114,7 +114,7 @@ public class TechPanel extends ActionPanel {
       panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
       list.setSelectedIndex(0);
       final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel,
-          "Select advance", JOptionPane.PLAIN_MESSAGE);
+          "Select advance", JOptionPane.DEFAULT_OPTION);
       if (choice != JOptionPane.OK_OPTION) {
         return;
       }
@@ -263,10 +263,10 @@ public class TechPanel extends ActionPanel {
 
   private static final class TechRollPanel extends JPanel {
     private static final long serialVersionUID = -3794742986339086059L;
-    int pus;
-    PlayerID player;
-    JLabel left = new JLabel();
-    ScrollableTextField textField;
+    final int pus;
+    final PlayerID player;
+    final JLabel left = new JLabel();
+    final ScrollableTextField textField;
 
     TechRollPanel(final int pus, final PlayerID player) {
       setLayout(new GridBagLayout());
@@ -303,13 +303,13 @@ public class TechPanel extends ActionPanel {
   private static final class TechTokenPanel extends JPanel {
     private static final long serialVersionUID = 332026624893335993L;
     int totalPus;
-    int playerPus;
+    final int playerPus;
     final ScrollableTextField playerPuField;
-    PlayerID player;
-    JLabel left = new JLabel();
-    JLabel right = new JLabel();
-    JLabel totalCost = new JLabel();
-    ScrollableTextField textField;
+    final PlayerID player;
+    final JLabel left = new JLabel();
+    final JLabel right = new JLabel();
+    final JLabel totalCost = new JLabel();
+    final ScrollableTextField textField;
     HashMap<PlayerID, ScrollableTextField> whoPaysTextFields = null;
 
     TechTokenPanel(final int pus, final int currTokens, final PlayerID player, final Collection<PlayerID> helpPay) {

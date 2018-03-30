@@ -207,7 +207,7 @@ final class GameMenu extends JMenu {
       panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
       JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(this), panel, "Roll Dice",
-          JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
+          JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
       try {
         final int numberOfDice = Integer.parseInt(numberOfText.getText());
         if (numberOfDice > 0) {

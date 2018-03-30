@@ -27,14 +27,12 @@ import games.strategy.util.IntegerMap;
  */
 public class UnitPanel extends JPanel {
   private static final long serialVersionUID = 1509643150038705671L;
-  private final UiContext uiContext;
   private final UnitCategory category;
   private final ScrollableTextField textField;
   private final List<Runnable> listeners = new ArrayList<>();
 
   UnitPanel(final UiContext uiContext, final UnitCategory category, final IntegerMap<UnitType> costs) {
     this.category = category;
-    this.uiContext = uiContext;
     textField = new ScrollableTextField(0, 512);
     textField.setShowMaxAndMin(false);
     textField.addChangeListener(field -> notifyListeners());
@@ -47,10 +45,10 @@ public class UnitPanel extends JPanel {
 
 
     final Optional<Image> img =
-        this.uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
+        uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
             category.hasDamageOrBombingUnitDamage(), category.getDisabled());
 
-    final JLabel label = img.isPresent() ? new JLabel(new ImageIcon(img.get())) : new JLabel();
+    final JLabel label = img.map(image -> new JLabel(new ImageIcon(image))).orElseGet(JLabel::new);
     label.setToolTipText(toolTipText);
     add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, 0, 10), 0, 0));

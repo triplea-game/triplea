@@ -81,10 +81,7 @@ public final class TileImageReconstructor {
         JFileChooser.FILES_ONLY, new File(mapFolderLocation, "map.png"), new FileFilter() {
           @Override
           public boolean accept(final File f) {
-            if (f.isDirectory()) {
-              return false;
-            }
-            return f.getName().endsWith(".png");
+            return !f.isDirectory() && f.getName().endsWith(".png");
           }
 
           @Override

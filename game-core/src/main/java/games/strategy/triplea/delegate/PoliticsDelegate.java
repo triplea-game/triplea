@@ -92,10 +92,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!player.amNotDeadYet(getData())) {
       return false;
     }
-    if (!Properties.getUsePolitics(getData())) {
-      return false;
-    }
-    return !getValidActions().isEmpty();
+    return Properties.getUsePolitics(getData()) && !getValidActions().isEmpty();
   }
 
   public HashMap<ICondition, Boolean> getTestedConditions() {
@@ -193,8 +190,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         playersWhoNeedToAccept.addAll(CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
             Matches.isAlliedAndAlliancesCanChainTogether(player, data)));
       }
-      final HashSet<PlayerID> alliesWhoMustAccept = playersWhoNeedToAccept;
-      alliesWhoMustAccept.removeAll(paa.getActionAccept());
+      playersWhoNeedToAccept.removeAll(paa.getActionAccept());
       for (final PlayerID player : playersWhoNeedToAccept) {
         String actionText = PoliticsText.getInstance().getAcceptanceQuestion(paa.getText());
         if (actionText.equals("NONE")) {

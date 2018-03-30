@@ -1282,15 +1282,14 @@ public class MoveValidator {
       final Map<Unit, Collection<Unit>> newDependents, final Territory start, final GameData data,
       final PlayerID player) {
     final List<Unit> sortedUnits = new ArrayList<>(units);
-    Collections.sort(sortedUnits, UnitComparator.getHighestToLowestMovementComparator());
-    final Map<Unit, Collection<Unit>> mapping = new HashMap<>();
-    mapping.putAll(transportsMustMoveWith(sortedUnits));
+    sortedUnits.sort(UnitComparator.getHighestToLowestMovementComparator());
+    final Map<Unit, Collection<Unit>> mapping = new HashMap<>(transportsMustMoveWith(sortedUnits));
     // Check if there are combined transports (carriers that are transports) and load them.
     if (mapping.isEmpty()) {
       mapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
     } else {
-      final Map<Unit, Collection<Unit>> newMapping = new HashMap<>();
-      newMapping.putAll(carrierMustMoveWith(sortedUnits, start, data, player));
+      final Map<Unit, Collection<Unit>> newMapping =
+          new HashMap<>(carrierMustMoveWith(sortedUnits, start, data, player));
       if (!newMapping.isEmpty()) {
         addToMapping(mapping, newMapping);
       }
@@ -1298,8 +1297,8 @@ public class MoveValidator {
     if (mapping.isEmpty()) {
       mapping.putAll(airTransportsMustMoveWith(sortedUnits, newDependents));
     } else {
-      final Map<Unit, Collection<Unit>> newMapping = new HashMap<>();
-      newMapping.putAll(airTransportsMustMoveWith(sortedUnits, newDependents));
+      final Map<Unit, Collection<Unit>> newMapping =
+          new HashMap<>(airTransportsMustMoveWith(sortedUnits, newDependents));
       if (!newMapping.isEmpty()) {
         addToMapping(mapping, newMapping);
       }

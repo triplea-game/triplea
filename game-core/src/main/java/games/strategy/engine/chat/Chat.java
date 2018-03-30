@@ -128,7 +128,7 @@ public class Chat {
     if (notes == null) {
       return null;
     }
-    final StringBuilder sb = new StringBuilder("");
+    final StringBuilder sb = new StringBuilder();
     for (final String note : notes) {
       sb.append(" ");
       sb.append(note);

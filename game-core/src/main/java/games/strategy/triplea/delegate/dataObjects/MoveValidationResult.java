@@ -146,13 +146,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     if (getDisallowedUnitCount() > other.getDisallowedUnitCount()) {
       return 1;
     }
-    if (getUnresolvedUnitCount() < other.getUnresolvedUnitCount()) {
-      return -1;
-    }
-    if (getUnresolvedUnitCount() > other.getUnresolvedUnitCount()) {
-      return 1;
-    }
-    return 0;
+    return Integer.compare(getUnresolvedUnitCount(), other.getUnresolvedUnitCount());
   }
 
   @Override

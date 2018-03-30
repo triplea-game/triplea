@@ -47,9 +47,8 @@ public class StatPanel extends AbstractStatPanel {
   private final StatTableModel dataModel;
   private final TechTableModel techModel;
   protected IStat[] stats;
-  private JTable statsTable;
   protected final Map<PlayerID, ImageIcon> mapPlayerImage = new HashMap<>();
-  protected UiContext uiContext;
+  protected final UiContext uiContext;
 
   /** Creates a new instance of StatPanel. */
   public StatPanel(final GameData data, final UiContext uiContext) {
@@ -66,9 +65,7 @@ public class StatPanel extends AbstractStatPanel {
     final boolean hasTech = !TechAdvance.getTechAdvances(gameData, null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));
-    statsTable = new JTable(dataModel) {
-      private static final long serialVersionUID = -5516554955307630864L;
-    };
+    final JTable statsTable = new JTable(dataModel);
     statsTable.getTableHeader().setReorderingAllowed(false);
     statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
     JScrollPane scroll = new JScrollPane(statsTable);
@@ -167,13 +164,13 @@ public class StatPanel extends AbstractStatPanel {
       if (gameData.getMap().getTerritories().stream().anyMatch(Matches.territoryIsVictoryCity())) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VictoryCityStat());
-        StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
+        StatPanel.this.stats = stats.toArray(new IStat[0]);
       }
       // only add the vps in pacific
       if (gameData.getProperties().get(Constants.PACIFIC_THEATER, false)) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
         stats.add(new VpStat());
-        StatPanel.this.stats = stats.toArray(new IStat[stats.size()]);
+        StatPanel.this.stats = stats.toArray(new IStat[0]);
       }
     }
 
@@ -208,7 +205,7 @@ public class StatPanel extends AbstractStatPanel {
       synchronized (this) {
         isDirty = true;
       }
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(StatPanel.this::repaint);
     }
 
     /*
@@ -286,7 +283,7 @@ public class StatPanel extends AbstractStatPanel {
       /* Load the country -> col mapping */
       colMap = new HashMap<>();
       for (int i = 0; i < colList.length; i++) {
-        colMap.put(colList[i], Integer.valueOf(i + 1));
+        colMap.put(colList[i], i + 1);
       }
       /*
        * .size()+1 added to stop index out of bounds errors when using an
@@ -308,13 +305,13 @@ public class StatPanel extends AbstractStatPanel {
       rowMap = new HashMap<>();
       int row = 0;
       if (useTech) {
-        rowMap.put("Tokens", Integer.valueOf(row));
+        rowMap.put("Tokens", row);
         data[row][0] = "Tokens";
         row++;
       }
       final List<TechAdvance> techAdvances = TechAdvance.getTechAdvances(gameData, null);
       for (final TechAdvance tech : techAdvances) {
-        rowMap.put((tech).getName(), Integer.valueOf(row));
+        rowMap.put((tech).getName(), row);
         data[row][0] = tech.getName();
         row++;
       }
@@ -408,7 +405,7 @@ public class StatPanel extends AbstractStatPanel {
     @Override
     public void gameDataChanged(final Change change) {
       isDirty = true;
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(StatPanel.this::repaint);
     }
 
     public void setGameData(final GameData data) {

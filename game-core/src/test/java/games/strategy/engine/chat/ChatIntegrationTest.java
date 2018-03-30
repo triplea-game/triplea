@@ -26,7 +26,9 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.SoundPath;
+import games.strategy.test.Integration;
 
+@Integration
 public final class ChatIntegrationTest {
   private static final String CHAT_NAME = "c";
   private static final int MESSAGE_COUNT = 50;
