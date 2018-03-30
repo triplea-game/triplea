@@ -60,8 +60,8 @@
       <includedFiles />
       <unextractableFiles />
       <vmOptionsFile mode="content" overwriteMode="3" fileMode="644">
-        <content>-Xmx1G
--Xms1G</content>
+        <content>-Xmx2G
+-Xms2G</content>
       </vmOptionsFile>
       <customScript mode="1" file="">
         <content />
