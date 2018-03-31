@@ -660,6 +660,14 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("Is a Blockade Zone");
       sb.append(br);
     }
+    if (m_navalBase) {
+      sb.append("Is a Naval Base");
+      sb.append(br);
+    }
+    if (m_airBase) {
+      sb.append("Is an Air Base");
+      sb.append(br);
+    }
     if (m_convoyRoute) {
       if (!m_convoyAttached.isEmpty()) {
         sb.append("Needs: ").append(MyFormatter.defaultNamedToTextList(m_convoyAttached)).append(br);

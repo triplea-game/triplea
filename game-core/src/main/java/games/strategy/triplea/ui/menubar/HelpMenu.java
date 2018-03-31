@@ -20,9 +20,11 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import com.apple.eawt.Application;
@@ -97,9 +99,11 @@ public final class HelpMenu extends JMenu {
           + "Left click in the Minimap at the top right of the screen, and Drag the mouse.<br>"
           + "Move the mouse to the edge of the map to scroll in that direction. Moving the mouse even closer to the "
           + "edge will scroll faster.<br>"
-          + "Scrolling the mouse wheel will move the map up and down.<br>" + "<br><b> Zooming Out</b><br>"
+          + "Scrolling the mouse wheel will move the map up and down.<br>"
+          + "<br><b> Zooming Out</b><br>"
           + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
           + "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
+          + "Hold CTRL with - or + to zoom out and in.<br>"
           + "<br><b> Turn off Map Artwork</b><br>"
           + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
           + "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have "
@@ -110,7 +114,14 @@ public final class HelpMenu extends JMenu {
           + "Press 'i' or 'v' to popup info on whatever territory and unit your mouse is currently over.<br>"
           + "Press 'u' while mousing over a unit to undo all moves that unit has made (beta).<br>"
           + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the "
-          + "map to the territory panel.<br>";
+          + "map to the territory panel.<br>"
+          + "Press CTRL+(key) to select a specific tab panel "
+          + "(A-Actions, P-Players, R-Resources, O-Objectives, N-Notes, T-Territory).<br>"
+          + "Press CTRL+E to toggle edit mode.<br>"
+          + "Press CTRL+H and CTRL+G to show history or game modes.<br>"
+          + "Press CTRL+W to show politics panel.<br>"
+          + "Press CTRL+L to show unit help list.<br>"
+          + "Press CTRL+F to show full screen and minimize right panel.<br>";
       editorPane.setText(hints);
       final JScrollPane scroll = new JScrollPane(editorPane);
       JOptionPane.showMessageDialog(null, scroll, moveSelectionHelpTitle, JOptionPane.PLAIN_MESSAGE);
@@ -172,7 +183,7 @@ public final class HelpMenu extends JMenu {
 
   private void addUnitHelpMenu() {
     final String unitHelpTitle = "Unit Help";
-    add(SwingAction.of(unitHelpTitle, e -> {
+    final JMenuItem unitMenuItem = add(SwingAction.of(unitHelpTitle, e -> {
       final JEditorPane editorPane = new JEditorPane();
       editorPane.setEditable(false);
       editorPane.setContentType("text/html");
@@ -207,7 +218,6 @@ public final class HelpMenu extends JMenu {
       dialog.getRootPane().setDefaultButton(button);
       dialog.add(buttons, BorderLayout.SOUTH);
       dialog.pack();
-      // dialog.setLocationRelativeTo(frame);
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowOpened(final WindowEvent e) {
@@ -217,8 +227,10 @@ public final class HelpMenu extends JMenu {
         }
       });
       dialog.setVisible(true);
-      // dialog.dispose();
-    })).setMnemonic(KeyEvent.VK_U);
+    }));
+    unitMenuItem.setMnemonic(KeyEvent.VK_U);
+    unitMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
   public static final JEditorPane gameNotesPane = new JEditorPane();

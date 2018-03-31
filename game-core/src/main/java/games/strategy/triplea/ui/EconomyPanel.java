@@ -2,13 +2,18 @@ package games.strategy.triplea.ui;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import games.strategy.engine.data.Change;
@@ -16,16 +21,20 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
+import games.strategy.util.IntegerMap;
 
 public class EconomyPanel extends AbstractStatPanel {
   private static final long serialVersionUID = -7713792841831042952L;
-  private IStat[] statsResource;
+  private final List<ResourceStat> resourceStats = new ArrayList<>();
   private ResourceTableModel resourceModel;
+  private final UiContext uiContext;
+  private final Map<Integer, String> columnHeaders = new HashMap<>();
 
-  public EconomyPanel(final GameData data) {
+  public EconomyPanel(final GameData data, final UiContext uiContext) {
     super(data);
+    this.uiContext = uiContext;
     initLayout();
   }
 
@@ -37,6 +46,16 @@ public class EconomyPanel extends AbstractStatPanel {
     table.getTableHeader().setReorderingAllowed(false);
     final TableColumn column = table.getColumnModel().getColumn(0);
     column.setPreferredWidth(175);
+    for (int i = 1; i < resourceModel.getColumnCount(); i++) {
+      table.getColumnModel().getColumn(i).setHeaderRenderer(new DefaultTableCellRenderer());
+      final JLabel label = (JLabel) table.getColumnModel().getColumn(i).getHeaderRenderer();
+      final Resource resource = resourceStats.get(i - 1).resource;
+      try {
+        label.setIcon(uiContext.getResourceImageFactory().getIcon(resource, false));
+      } catch (final IllegalStateException e) {
+        // ignore missing resource image
+      }
+    }
     final JScrollPane scroll = new JScrollPane(table);
     add(scroll);
   }
@@ -53,14 +72,12 @@ public class EconomyPanel extends AbstractStatPanel {
     }
 
     private void setResourceColumns() {
-      final List<IStat> statList = new ArrayList<>();
       for (final Resource resource : gameData.getResourceList().getResources()) {
-        if (resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.VPS)) {
+        if (resource.getName().equals(Constants.VPS)) {
           continue;
         }
-        statList.add(new ResourceStat(resource));
+        resourceStats.add(new ResourceStat(resource));
       }
-      statsResource = statList.toArray(new IStat[0]);
     }
 
     @Override
@@ -76,28 +93,47 @@ public class EconomyPanel extends AbstractStatPanel {
       gameData.acquireReadLock();
       try {
         final List<PlayerID> players = getPlayers();
-        final Collection<String> alliances = getAlliances();
-        collectedData = new String[players.size() + alliances.size()][statsResource.length + 1];
+        final Map<String, Set<PlayerID>> allianceMap = getAllianceMap();
+        collectedData = new String[players.size() + allianceMap.size()][resourceStats.size() + 1];
         int row = 0;
+        final Map<PlayerID, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();
         for (final PlayerID player : players) {
           collectedData[row][0] = player.getName();
-          for (int i = 0; i < statsResource.length; i++) {
-            collectedData[row][i + 1] =
-                statsResource[i].getFormatter().format(statsResource[i].getValue(player, gameData));
+          final IntegerMap<Resource> resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
+          resourceIncomeMap.put(player, resourceIncomes);
+          for (int i = 0; i < resourceStats.size(); i++) {
+            final ResourceStat resourceStat = resourceStats.get(i);
+            final double amount = resourceStat.getValue(player, gameData);
+            final int income = resourceIncomes.getInt(resourceStat.resource);
+            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
           }
           row++;
         }
-        for (final String alliance : alliances) {
-          collectedData[row][0] = alliance;
-          for (int i = 0; i < statsResource.length; i++) {
-            collectedData[row][i + 1] =
-                statsResource[i].getFormatter().format(statsResource[i].getValue(alliance, gameData));
+        for (final Entry<String, Set<PlayerID>> alliance : allianceMap.entrySet()) {
+          collectedData[row][0] = alliance.getKey();
+          for (int i = 0; i < resourceStats.size(); i++) {
+            final ResourceStat resourceStat = resourceStats.get(i);
+            final double amount = resourceStat.getValue(alliance.getKey(), gameData);
+            final int income = alliance.getValue().stream()
+                .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource)).sum();
+            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
           }
           row++;
         }
       } finally {
         gameData.releaseReadLock();
       }
+    }
+
+    private String getResourceAmountAndIncome(final ResourceStat resourceStat, final double amount,
+        final int income) {
+      final StringBuilder resourceAmountAndIncome =
+          new StringBuilder(resourceStat.getFormatter().format(amount) + " (");
+      if (income >= 0) {
+        resourceAmountAndIncome.append("+");
+      }
+      resourceAmountAndIncome.append(income + ")");
+      return resourceAmountAndIncome.toString();
     }
 
     @Override
@@ -110,15 +146,12 @@ public class EconomyPanel extends AbstractStatPanel {
 
     @Override
     public String getColumnName(final int col) {
-      if (col == 0) {
-        return "Player";
-      }
-      return statsResource[col - 1].getName();
+      return "";
     }
 
     @Override
     public int getColumnCount() {
-      return statsResource.length + 1;
+      return resourceStats.size() + 1;
     }
 
     @Override

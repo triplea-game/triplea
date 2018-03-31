@@ -2,8 +2,10 @@ package games.strategy.triplea.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -39,13 +41,17 @@ public abstract class AbstractStatPanel extends JPanel {
    * @return all the alliances with more than one player.
    */
   public Collection<String> getAlliances() {
-    final Collection<String> alliances = new TreeSet<>();
+    return getAllianceMap().keySet();
+  }
+
+  protected Map<String, Set<PlayerID>> getAllianceMap() {
+    final Map<String, Set<PlayerID>> allianceMap = new LinkedHashMap<>();
     for (final String alliance : gameData.getAllianceTracker().getAlliances()) {
       if (gameData.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
-        alliances.add(alliance);
+        allianceMap.put(alliance, gameData.getAllianceTracker().getPlayersInAlliance(alliance));
       }
     }
-    return alliances;
+    return allianceMap;
   }
 
   public List<PlayerID> getPlayers() {
