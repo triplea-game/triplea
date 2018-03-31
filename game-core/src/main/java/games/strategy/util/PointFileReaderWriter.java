@@ -57,13 +57,15 @@ public final class PointFileReaderWriter {
   private static void readSingle(final String line, final Map<String, Point> mapping) {
     final Matcher matcher = singlePointPattern.matcher(line);
     if (matcher.find()) {
-      final String name = matcher.group(1);
-      if (mapping.containsKey(name)) {
-        throw new IllegalArgumentException("name found twice:" + name);
+      final String territoryName = matcher.group(1);
+      if (mapping.containsKey(territoryName)) {
+        throw new IllegalArgumentException("Territory '" + territoryName
+            + "' was found twice, it's already mapped to '" + mapping.get(territoryName) + "'");
       }
-      mapping.put(name, new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
+      mapping.put(territoryName, new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
     } else {
-      throw new IllegalArgumentException("Invalid Point Pattern");
+      throw new IllegalArgumentException(
+          "Line '" + line + "' did not match required pattern. Example: Territory (1,2)");
     }
   }
 
@@ -110,12 +112,6 @@ public final class PointFileReaderWriter {
     }
   }
 
-  private static String pointsToString(final List<Point> points) {
-    return points.stream()
-        .map(PointFileReaderWriter::pointToString)
-        .collect(Collectors.joining());
-  }
-
   private static String pointToString(final Point point) {
     return " (" + point.x + "," + point.y + ") ";
   }
@@ -143,6 +139,12 @@ public final class PointFileReaderWriter {
     write(mapping.entrySet().stream()
         .map(entry -> entry.getKey() + " " + pointsToString(entry.getValue()))
         .collect(Collectors.joining("\r\n")), sink);
+  }
+
+  private static String pointsToString(final List<Point> points) {
+    return points.stream()
+        .map(PointFileReaderWriter::pointToString)
+        .collect(Collectors.joining());
   }
 
   /**
