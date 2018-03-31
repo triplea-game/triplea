@@ -103,14 +103,9 @@ public class EconomyPanel extends AbstractStatPanel {
           resourceIncomeMap.put(player, resourceIncomes);
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
-            final Resource resource = resourceStat.resource;
-            final double quantity = resourceStat.getValue(player, gameData);
-            final StringBuilder text = new StringBuilder(resourceStat.getFormatter().format(quantity) + " (");
-            if (resourceIncomes.getInt(resource) >= 0) {
-              text.append("+");
-            }
-            text.append(resourceIncomes.getInt(resource) + ")");
-            collectedData[row][i + 1] = text.toString();
+            final double amount = resourceStat.getValue(player, gameData);
+            final int income = resourceIncomes.getInt(resourceStat.resource);
+            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
           }
           row++;
         }
@@ -118,21 +113,27 @@ public class EconomyPanel extends AbstractStatPanel {
           collectedData[row][0] = alliance.getKey();
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
-            final double quantity = resourceStat.getValue(alliance.getKey(), gameData);
-            final StringBuilder text = new StringBuilder(resourceStat.getFormatter().format(quantity) + " (");
+            final double amount = resourceStat.getValue(alliance.getKey(), gameData);
             final int income = alliance.getValue().stream()
                 .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource)).sum();
-            if (income >= 0) {
-              text.append("+");
-            }
-            text.append(income + ")");
-            collectedData[row][i + 1] = text.toString();
+            collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
           }
           row++;
         }
       } finally {
         gameData.releaseReadLock();
       }
+    }
+
+    private String getResourceAmountAndIncome(final ResourceStat resourceStat, final double amount,
+        final int income) {
+      final StringBuilder resourceAmountAndIncome =
+          new StringBuilder(resourceStat.getFormatter().format(amount) + " (");
+      if (income >= 0) {
+        resourceAmountAndIncome.append("+");
+      }
+      resourceAmountAndIncome.append(income + ")");
+      return resourceAmountAndIncome.toString();
     }
 
     @Override
