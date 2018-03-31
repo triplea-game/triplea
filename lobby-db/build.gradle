@@ -7,6 +7,7 @@ buildscript {
 
 plugins {
   id "org.flywaydb.flyway" version "5.0.7"
+  id 'java'
 }
 
 flyway {
@@ -16,7 +17,8 @@ flyway {
   password = 'postgres'
 }
 
-task zipMigrationFiles(type: Zip, group: 'release') {
-  baseName = "migrations"
-  from('src/main/resources/db/migration')
+task lobbyDbRelease(type: Zip, group: 'release') {
+   from "${projectDir}/src/main/resources/db/migration/"
+   include '*.sql'
+   archiveName 'migrations.zip'
 }
