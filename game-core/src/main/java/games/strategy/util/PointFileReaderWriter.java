@@ -21,12 +21,13 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Streams;
+import com.google.common.primitives.Ints;
 
 /**
  * Utility to read and write files in the form of
@@ -117,8 +118,8 @@ public final class PointFileReaderWriter {
   }
 
   private static String polygonToString(final Polygon polygon) {
-    return IntStream.range(0, polygon.npoints)
-        .mapToObj(i -> new Point(polygon.xpoints[i], polygon.ypoints[i]))
+    return Streams
+        .zip(Ints.asList(polygon.xpoints).stream(), Ints.asList(polygon.ypoints).stream(), Point::new)
         .map(PointFileReaderWriter::pointToString)
         .collect(Collectors.joining("", " < ", " > "));
   }
@@ -229,14 +230,10 @@ public final class PointFileReaderWriter {
   }
 
   private static Polygon createPolygonFromPoints(final List<Point> points) {
-    final int[] pointsX = new int[points.size()];
-    final int[] pointsY = new int[points.size()];
-    for (int i = 0; i < points.size(); i++) {
-      final Point p = points.get(i);
-      pointsX[i] = p.x;
-      pointsY[i] = p.y;
-    }
-    return new Polygon(pointsX, pointsY, pointsX.length);
+    return new Polygon(
+        points.stream().mapToInt(it -> it.x).toArray(),
+        points.stream().mapToInt(it -> it.y).toArray(),
+        points.size());
   }
 
   private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping) {
