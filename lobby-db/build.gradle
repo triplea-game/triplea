@@ -16,3 +16,7 @@ flyway {
   password = 'postgres'
 }
 
+task zipMigrationFiles(type: Zip, group: 'release') {
+  baseName = "migrations"
+  from('src/main/resources/db/migration')
+}
