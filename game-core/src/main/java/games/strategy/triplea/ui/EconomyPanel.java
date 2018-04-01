@@ -128,11 +128,11 @@ public class EconomyPanel extends AbstractStatPanel {
     private String getResourceAmountAndIncome(final ResourceStat resourceStat, final double amount,
         final int income) {
       final StringBuilder resourceAmountAndIncome =
-          new StringBuilder(resourceStat.getFormatter().format(amount) + " (");
+          new StringBuilder("<html><b>" + resourceStat.getFormatter().format(amount) + "</b>&nbsp;(");
       if (income >= 0) {
         resourceAmountAndIncome.append("+");
       }
-      resourceAmountAndIncome.append(income + ")");
+      resourceAmountAndIncome.append(income + ")</html>");
       return resourceAmountAndIncome.toString();
     }
 
