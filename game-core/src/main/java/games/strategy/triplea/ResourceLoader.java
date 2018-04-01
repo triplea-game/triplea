@@ -75,8 +75,7 @@ public class ResourceLoader implements Closeable {
    *
    * <p>
    * The candidate directories are returned in order of preference. That is, a candidate directory earlier in the list
-   * should
-   * be preferred to a candidate directory later in the list assuming they both exist.
+   * should be preferred to a candidate directory later in the list assuming they both exist.
    * </p>
    *
    * @param mapName The map name; must not be {@code null}.
