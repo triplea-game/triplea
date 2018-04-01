@@ -71,6 +71,32 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
+   * Returns a list of candidate directories from which the specified map may be loaded.
+   *
+   * <p>
+   * The candidate directories are returned in order of preference. That is, a candidate directory earlier in the list
+   * should
+   * be preferred to a candidate directory later in the list assuming they both exist.
+   * </p>
+   *
+   * @param mapName The map name; must not be {@code null}.
+   *
+   * @return A list of candidate directories; never {@code null}.
+   */
+  public static List<File> getMapDirectoryCandidates(final String mapName) {
+    checkNotNull(mapName);
+
+    final File userMapsFolder = ClientFileSystemHelper.getUserMapsFolder();
+    final String dirName = File.separator + mapName;
+    final String normalizedMapName = File.separator + normalizeMapName(mapName) + "-master";
+    return Arrays.asList(
+        new File(userMapsFolder, dirName + File.separator + "map"),
+        new File(userMapsFolder, dirName),
+        new File(userMapsFolder, normalizedMapName + File.separator + "map"),
+        new File(userMapsFolder, normalizedMapName));
+  }
+
+  /**
    * Returns a list of candidate zip files from which the specified map may be loaded.
    *
    * <p>
@@ -115,11 +141,9 @@ public class ResourceLoader implements Closeable {
     if (mapName == null) {
       return new ArrayList<>();
     }
-    // find the primary directory/file
-    final String dirName = File.separator + mapName;
+
     final List<File> candidates = new ArrayList<>();
-    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName + File.separator + "map"));
-    candidates.add(new File(ClientFileSystemHelper.getUserMapsFolder(), dirName));
+    candidates.addAll(getMapDirectoryCandidates(mapName));
     candidates.addAll(getMapZipFileCandidates(mapName));
 
     final Optional<File> match = candidates.stream().filter(File::exists).findFirst();
