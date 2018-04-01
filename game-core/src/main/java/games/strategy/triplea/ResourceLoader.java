@@ -83,7 +83,8 @@ public class ResourceLoader implements Closeable {
    *
    * @return A list of candidate directories; never {@code null}.
    */
-  public static List<File> getMapDirectoryCandidates(final String mapName) {
+  @VisibleForTesting
+  static List<File> getMapDirectoryCandidates(final String mapName) {
     checkNotNull(mapName);
 
     final File userMapsFolder = ClientFileSystemHelper.getUserMapsFolder();
