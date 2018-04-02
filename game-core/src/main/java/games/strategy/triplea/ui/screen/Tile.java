@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -27,9 +26,9 @@ import games.strategy.ui.Util;
 public class Tile {
   public static final LockUtil LOCK_UTIL = LockUtil.INSTANCE;
 
-  // allow the gc to implement memory management
-  private SoftReference<Image> imageRef;
   private boolean isDirty = true;
+
+  private final Image image;
   private final Rectangle bounds;
   private final int x;
   private final int y;
@@ -42,12 +41,13 @@ public class Tile {
     this.x = x;
     this.y = y;
     this.scale = scale;
+    image = createBlankImage();
   }
 
   public boolean isDirty() {
     acquireLock();
     try {
-      return isDirty || imageRef == null || imageRef.get() == null;
+      return isDirty;
     } finally {
       releaseLock();
     }
@@ -64,16 +64,6 @@ public class Tile {
   public Image getImage(final GameData data, final MapData mapData) {
     acquireLock();
     try {
-      if (imageRef == null) {
-        imageRef = new SoftReference<>(createBlankImage());
-        isDirty = true;
-      }
-      Image image = imageRef.get();
-      if (image == null) {
-        image = createBlankImage();
-        imageRef = new SoftReference<>(image);
-        isDirty = true;
-      }
       if (isDirty) {
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -89,7 +79,7 @@ public class Tile {
   }
 
   private BufferedImage createBlankImage() {
-    return Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), false);
+    return Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
   }
 
   /**
@@ -99,10 +89,7 @@ public class Tile {
    * @return the image we currently have.
    */
   public Image getRawImage() {
-    if (imageRef == null) {
-      return null;
-    }
-    return imageRef.get();
+    return image;
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
