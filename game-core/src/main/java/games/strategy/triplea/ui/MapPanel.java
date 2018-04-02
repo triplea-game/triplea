@@ -524,7 +524,7 @@ public class MapPanel extends ImageScrollerLargeView {
   public void paint(final Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
     super.paint(g2d);
-    g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * scale), (getImageHeight() * scale)));
+    g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
     int x = model.getX();
     int y = model.getY();
     final List<Tile> images = new ArrayList<>();
@@ -573,15 +573,14 @@ public class MapPanel extends ImageScrollerLargeView {
     if (routeDescription != null) {
       routeDrawer.drawRoute(g2d, routeDescription, movementLeftForCurrentUnits, movementFuelCost,
           uiContext.getResourceImageFactory());
-
     }
     // used to keep strong references to what is on the screen so it wont be garbage collected
     // other references to the images are weak references
     this.images.clear();
     this.images.addAll(images);
     if (highlightedUnits != null) {
-      for (final Entry<Territory, List<Unit>> entry : highlightedUnits.entrySet()) {
-        final Set<UnitCategory> categories = UnitSeperator.categorize(entry.getValue());
+      for (final List<Unit> value : highlightedUnits.values()) {
+        final Set<UnitCategory> categories = UnitSeperator.categorize(value);
         for (final UnitCategory category : categories) {
           final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
           if (territoryUnitsOfSameCategory.isEmpty()) {
@@ -660,14 +659,12 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds,
-      final List<Tile> undrawn) {
-    final List<Tile> tileList = tileManager.getTiles(bounds);
-    bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
-    for (final Tile tile : tileList) {
-      final Image img;
+  private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data,
+      final Rectangle2D.Double bounds, final List<Tile> undrawn) {
+    for (final Tile tile : tileManager.getTiles(bounds)) {
       tile.acquireLock();
       try {
+        final Image img;
         if (tile.isDirty()) {
           // take what we can get to avoid screen flicker
           undrawn.add(tile);
