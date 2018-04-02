@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -166,8 +167,8 @@ public class TileManager {
     try {
       // create our tiles
       tiles = new ArrayList<>();
-      for (int x = 0; (x) * TILE_SIZE < bounds.width; x++) {
-        for (int y = 0; (y) * TILE_SIZE < bounds.height; y++) {
+      for (int x = 0; x * TILE_SIZE < bounds.width; x++) {
+        for (int y = 0; y * TILE_SIZE < bounds.height; y++) {
           tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x, y,
               uiContext.getScale()));
         }
@@ -195,8 +196,9 @@ public class TileManager {
         }
         // add the decorations
         final Map<Image, List<Point>> decorations = mapData.getDecorations();
-        for (final Image img : decorations.keySet()) {
-          for (final Point p : decorations.get(img)) {
+        for (final Entry<Image, List<Point>> entry : decorations.entrySet()) {
+          final Image img = entry.getKey();
+          for (final Point p : entry.getValue()) {
             final DecoratorDrawable drawable = new DecoratorDrawable(p, img);
             final Rectangle bounds = new Rectangle(p.x, p.y, img.getWidth(null), img.getHeight(null));
             for (final Tile t : getTiles(bounds)) {
