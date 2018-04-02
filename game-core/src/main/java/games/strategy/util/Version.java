@@ -5,7 +5,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.StringTokenizer;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -55,31 +57,20 @@ public final class Version implements Serializable, Comparable<Version> {
    */
   public Version(final String version) {
     exactVersion = version;
-    final StringTokenizer tokens = new StringTokenizer(version, ".", false);
-    if (tokens.countTokens() < 1) {
-      throw new IllegalArgumentException("invalid version string:" + version);
+
+    final Matcher matcher = Pattern.compile("(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.(\\d+|dev))?)?)?").matcher(version);
+
+    if (matcher.find()) {
+      m_major = Integer.parseInt(matcher.group(1));
+      m_minor = Optional.ofNullable(matcher.group(2)).map(Integer::valueOf).orElse(0);
+      m_point = Optional.ofNullable(matcher.group(3)).map(Integer::valueOf).orElse(0);
+      final String microString = matcher.group(4);
+      m_micro = "dev".equals(microString)
+          ? Integer.MAX_VALUE
+          : Optional.ofNullable(microString).map(Integer::valueOf).orElse(0);
+      return;
     }
-    try {
-      m_major = Integer.parseInt(tokens.nextToken());
-      if (tokens.hasMoreTokens()) {
-        m_minor = Integer.parseInt(tokens.nextToken());
-      } else {
-        m_minor = 0;
-      }
-      if (tokens.hasMoreTokens()) {
-        m_point = Integer.parseInt(tokens.nextToken());
-      } else {
-        m_point = 0;
-      }
-      if (tokens.hasMoreTokens()) {
-        final String micro = tokens.nextToken();
-        m_micro = micro.equals("dev") ? Integer.MAX_VALUE : Integer.parseInt(micro);
-      } else {
-        m_micro = 0;
-      }
-    } catch (final NumberFormatException e) {
-      throw new IllegalArgumentException("invalid version string:" + version);
-    }
+    throw new IllegalArgumentException("Invalid version String: " + version);
   }
 
   /**
