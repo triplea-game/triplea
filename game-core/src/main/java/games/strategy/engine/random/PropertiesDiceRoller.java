@@ -9,10 +9,10 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -33,6 +33,8 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+
+import com.google.common.base.Splitter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -73,11 +75,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         }
       }
     }
-    propFiles.sort((o1, o2) -> {
-      final int n1 = Integer.parseInt(o1.getProperty("order"));
-      final int n2 = Integer.parseInt(o2.getProperty("order"));
-      return n1 - n2;
-    });
+    propFiles.sort(Comparator.comparingInt(o -> Integer.parseInt(o.getProperty("order"))));
     final List<PropertiesDiceRoller> rollers = new ArrayList<>();
     for (final Properties prop : propFiles) {
       rollers.add(new PropertiesDiceRoller(prop));
@@ -195,18 +193,21 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     if (endIndex == -1) {
       throw new IOException("Could not find end index");
     }
-    final StringTokenizer tokenizer = new StringTokenizer(string.substring(startIndex, endIndex), " ,", false);
-    final int[] dice = new int[count];
-    for (int i = 0; i < count; i++) {
-      try {
-        // -1 since we are 0 based
-        dice[i] = Integer.parseInt(tokenizer.nextToken()) - 1;
-      } catch (final NumberFormatException ex) {
-        ClientLogger.logQuietly("Number format parsing: " + string, ex);
-        throw new IOException(ex.getMessage());
-      }
+    try {
+      return Splitter
+          .on(',')
+          .omitEmptyStrings()
+          .trimResults()
+          .splitToList(string.substring(startIndex, endIndex))
+          .stream()
+          .mapToInt(Integer::parseInt)
+          // -1 since we are 0 based
+          .map(i -> i - 1)
+          .toArray();
+    } catch (final NumberFormatException ex) {
+      ClientLogger.logQuietly("Number format parsing: " + string, ex);
+      throw new IOException(ex.getMessage());
     }
-    return dice;
   }
 
   @Override
