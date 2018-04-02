@@ -4,33 +4,44 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Point;
 import java.awt.Polygon;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
-
-import javax.annotation.Nullable;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Streams;
+import com.google.common.primitives.Ints;
 
 /**
  * Utility to read and write files in the form of
  * String -> a list of points, or string-> list of polygons.
  */
 public final class PointFileReaderWriter {
+
+  // Matches an int tuple like this: (123, 456)
+  private static final Pattern pointPattern = Pattern.compile("\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+  // Matches a "polygon" like this: < something that's not a greater than or less than char >
+  private static final Pattern polygonPattern = Pattern.compile("<[^>]*>");
+  // Matches a Name-Int-Tuple pair like this: Some Weird Territory Name without an opening round bracket (654, 321)
+  private static final Pattern singlePointPattern = Pattern.compile("^([^(]*?)\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+
   private PointFileReaderWriter() {}
 
   /**
@@ -40,30 +51,23 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, Point> mapping = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
-        if (current.trim().length() != 0) {
-          readSingle(current, mapping);
-        }
-        current = reader.readLine();
-      }
-    }
+    readStream(stream, current -> readSingle(current, mapping));
     return mapping;
   }
 
-  private static void readSingle(final String line, final Map<String, Point> mapping) throws IOException {
-    final StringTokenizer tokens = new StringTokenizer(line, "", false);
-    final String name = tokens.nextToken("(").trim();
-    if (mapping.containsKey(name)) {
-      throw new IOException("name found twice:" + name);
+  private static void readSingle(final String line, final Map<String, Point> mapping) {
+    final Matcher matcher = singlePointPattern.matcher(line);
+    if (matcher.find()) {
+      final String territoryName = matcher.group(1);
+      if (mapping.containsKey(territoryName)) {
+        throw new IllegalArgumentException("Territory '" + territoryName
+            + "' was found twice, it's already mapped to '" + mapping.get(territoryName) + "'");
+      }
+      mapping.put(territoryName, new Point(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
+    } else {
+      throw new IllegalArgumentException(
+          "Line '" + line + "' did not match required pattern. Example: Territory (1,2)");
     }
-    final int x = Integer.parseInt(tokens.nextToken("(, "));
-    final int y = Integer.parseInt(tokens.nextToken(",) "));
-    final Point p = new Point(x, y);
-    mapping.put(name, p);
   }
 
   /**
@@ -78,18 +82,9 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      final Point point = mapping.get(name);
-      out.append(" (").append(point.x).append(",").append(point.y).append(")");
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out, sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey() + " " + pointToString(entry.getValue()))
+        .collect(Collectors.joining("\r\n")), sink);
   }
 
   /**
@@ -105,30 +100,28 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      final List<Polygon> points = mapping.get(name);
-      for (Polygon polygon : points) {
-        out.append(" < ");
-        for (int i = 0; i < polygon.npoints; i++) {
-          out.append(" (").append(polygon.xpoints[i]).append(",").append(polygon.ypoints[i]).append(")");
-        }
-        out.append(" > ");
-      }
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out, sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey() + " " + entry.getValue().stream()
+            .map(PointFileReaderWriter::polygonToString)
+            .collect(Collectors.joining()))
+        .collect(Collectors.joining("\r\n")), sink);
   }
 
-  private static void write(final StringBuilder buf, final OutputStream sink) throws IOException {
+  private static void write(final String string, final OutputStream sink) throws IOException {
     try (Writer out = new OutputStreamWriter(new CloseShieldOutputStream(sink), StandardCharsets.UTF_8)) {
-      out.write(buf.toString());
+      out.write(string);
     }
+  }
+
+  private static String pointToString(final Point point) {
+    return " (" + point.x + "," + point.y + ") ";
+  }
+
+  private static String polygonToString(final Polygon polygon) {
+    return Streams
+        .zip(Ints.asList(polygon.xpoints).stream(), Ints.asList(polygon.ypoints).stream(), Point::new)
+        .map(PointFileReaderWriter::pointToString)
+        .collect(Collectors.joining("", " < ", " > "));
   }
 
   /**
@@ -144,25 +137,15 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      final Collection<Point> points = mapping.get(name);
-      final Iterator<Point> pointIter = points.iterator();
-      while (pointIter.hasNext()) {
-        final Point point = pointIter.next();
-        out.append(" (").append(point.x).append(",").append(point.y).append(")");
-        if (pointIter.hasNext()) {
-          out.append(" ");
-        }
-      }
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out, sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey() + " " + pointsToString(entry.getValue()))
+        .collect(Collectors.joining("\r\n")), sink);
+  }
+
+  private static String pointsToString(final List<Point> points) {
+    return points.stream()
+        .map(PointFileReaderWriter::pointToString)
+        .collect(Collectors.joining());
   }
 
   /**
@@ -172,17 +155,7 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, List<Point>> mapping = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
-        if (current.trim().length() != 0) {
-          readMultiple(current, mapping);
-        }
-        current = reader.readLine();
-      }
-    }
+    readStream(stream, current -> readMultiple(current, mapping));
     return mapping;
   }
 
@@ -200,27 +173,13 @@ public final class PointFileReaderWriter {
     checkNotNull(sink);
     checkNotNull(mapping);
 
-    final StringBuilder out = new StringBuilder();
-    final Iterator<String> keyIter = mapping.keySet().iterator();
-    while (keyIter.hasNext()) {
-      final String name = keyIter.next();
-      out.append(name).append(" ");
-      final Collection<Point> points = mapping.get(name).getFirst();
-      final boolean overflowToLeft = mapping.get(name).getSecond();
-      final Iterator<Point> pointIter = points.iterator();
-      while (pointIter.hasNext()) {
-        final Point point = pointIter.next();
-        out.append(" (").append(point.x).append(",").append(point.y).append(")");
-        if (pointIter.hasNext()) {
-          out.append(" ");
-        }
-      }
-      out.append(" | overflowToLeft=").append(overflowToLeft);
-      if (keyIter.hasNext()) {
-        out.append("\r\n");
-      }
-    }
-    write(out, sink);
+    write(mapping.entrySet().stream()
+        .map(entry -> entry.getKey()
+            + " "
+            + pointsToString(entry.getValue().getFirst())
+            + " | overflowToLeft="
+            + entry.getValue().getSecond())
+        .collect(Collectors.joining("\r\n")), sink);
   }
 
   /**
@@ -232,20 +191,12 @@ public final class PointFileReaderWriter {
 
     final Map<String, List<Point>> mapping = new HashMap<>();
     final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
-        if (current.trim().length() != 0) {
-          final String[] s = current.split(" \\| ");
-          final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
-          final boolean overflowToLeft = s.length == 2 && Boolean.parseBoolean(s[1].split("=")[1]);
-          result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
-        }
-        current = reader.readLine();
-      }
-    }
+    readStream(stream, current -> {
+      final String[] s = current.split(" \\| ");
+      final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
+      final boolean overflowToLeft = s.length == 2 && Boolean.parseBoolean(s[1].split("=")[1]);
+      result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
+    });
     return result;
   }
 
@@ -256,115 +207,59 @@ public final class PointFileReaderWriter {
     checkNotNull(stream);
 
     final Map<String, List<Polygon>> mapping = new HashMap<>();
-    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
-        LineNumberReader reader = new LineNumberReader(inputStreamReader)) {
-      @Nullable
-      String current = reader.readLine();
-      while (current != null) {
-        if (current.trim().length() != 0) {
-          readMultiplePolygons(current, mapping);
-        }
-        current = reader.readLine();
-      }
-    }
+    readStream(stream, current -> readMultiplePolygons(current, mapping));
     return mapping;
   }
 
-  private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping)
-      throws IOException {
-    try {
-      // this loop is executed a lot when loading games
-      // so it is hand optimized
-      final String name = line.substring(0, line.indexOf('<')).trim();
-      int index = name.length();
-      final List<Polygon> polygons = new ArrayList<>(64);
-      final List<Point> points = new ArrayList<>();
-      final int length = line.length();
-      while (index < length) {
-        char current = line.charAt(index);
-        if (current == '<') {
-          int x = 0;
-          int base = 0;
-          // inside a poly
-          while (true) {
-            current = line.charAt(++index);
-            final int y;
-            switch (current) {
-              case '0':
-              case '1':
-              case '2':
-              case '3':
-              case '4':
-              case '5':
-              case '6':
-              case '7':
-              case '8':
-              case '9':
-                base *= 10;
-                base += current - '0';
-                break;
-              case ',':
-                x = base;
-                base = 0;
-                break;
-              case ')':
-                y = base;
-                base = 0;
-                points.add(new Point(x, y));
-                break;
-              default:
-                break;
-            }
-            if (current == '>') {
-              // end poly
-              createPolygonFromPoints(polygons, points);
-              points.clear();
-              // break from while(true)
-              break;
-            }
-          }
-        }
-        index++;
-      }
-      if (mapping.containsKey(name)) {
-        throw new IOException("name found twice:" + name);
-      }
-      mapping.put(name, polygons);
-    } catch (final StringIndexOutOfBoundsException e) {
-      throw new IllegalStateException("Invalid line:" + line, e);
-    }
-  }
-
-  private static void createPolygonFromPoints(final Collection<Polygon> polygons, final List<Point> points) {
-    final int[] pointsX = new int[points.size()];
-    final int[] pointsY = new int[points.size()];
-    for (int i = 0; i < points.size(); i++) {
-      final Point p = points.get(i);
-      pointsX[i] = p.x;
-      pointsY[i] = p.y;
-    }
-    polygons.add(new Polygon(pointsX, pointsY, pointsX.length));
-  }
-
-  private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping)
-      throws IOException {
-    final StringTokenizer tokens = new StringTokenizer(line, "");
-    final String name = tokens.nextToken("(").trim();
+  private static void readMultiplePolygons(final String line, final Map<String, List<Polygon>> mapping) {
+    final String name = line.substring(0, line.indexOf('<')).trim();
     if (mapping.containsKey(name)) {
-      throw new IOException("name found twice:" + name);
+      throw new IllegalArgumentException("name found twice:" + name);
     }
-    final List<Point> points = new ArrayList<>();
-    while (tokens.hasMoreTokens()) {
-      final String stringX = tokens.nextToken(",(), ");
-      if (!tokens.hasMoreTokens()) {
-        continue;
+    final List<Polygon> polygons = new ArrayList<>();
+    final Matcher polyMatcher = polygonPattern.matcher(line);
+    while (polyMatcher.find()) {
+      final List<Point> points = new ArrayList<>();
+      final Matcher pointMatcher = pointPattern.matcher(polyMatcher.group());
+      while (pointMatcher.find()) {
+        points.add(new Point(Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
       }
-      final String stringY = tokens.nextToken(",() ");
-      final int x = Integer.parseInt(stringX);
-      final int y = Integer.parseInt(stringY);
-      points.add(new Point(x, y));
+      polygons.add(createPolygonFromPoints(points));
+    }
+    mapping.put(name, polygons);
+  }
+
+  private static Polygon createPolygonFromPoints(final List<Point> points) {
+    return new Polygon(
+        points.stream().mapToInt(it -> it.x).toArray(),
+        points.stream().mapToInt(it -> it.y).toArray(),
+        points.size());
+  }
+
+  private static Tuple<String, List<Point>> readMultiple(final String line, final Map<String, List<Point>> mapping) {
+    final String name = line.substring(0, line.indexOf("(")).trim();
+    if (mapping.containsKey(name)) {
+      throw new IllegalArgumentException("name found twice:" + name);
+    }
+    final Matcher matcher = pointPattern.matcher(line);
+    final List<Point> points = new ArrayList<>();
+    while (matcher.find()) {
+      points.add(new Point(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))));
     }
     mapping.put(name, points);
     return Tuple.of(name, points);
+  }
+
+  @VisibleForTesting
+  static void readStream(final InputStream stream, Consumer<String> lineParser)
+      throws IOException {
+    try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(inputStreamReader)) {
+      reader.lines()
+          .filter(current -> current.trim().length() != 0)
+          .forEachOrdered(lineParser);
+    } catch (IllegalArgumentException e) {
+      throw new IOException(e);
+    }
   }
 }
