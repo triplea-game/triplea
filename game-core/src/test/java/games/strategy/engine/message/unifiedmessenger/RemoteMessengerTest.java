@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
@@ -48,21 +46,13 @@ public class RemoteMessengerTest {
   public void setUp() throws Exception {
     // simple set up for non networked testing
     final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
-    doAnswer(new Answer<Void>() {
-      @Override
-      public Void answer(final InvocationOnMock invocation) {
-        connectionListeners.add(invocation.getArgument(0));
-        return null;
+    doAnswer(invocation -> connectionListeners.add(invocation.getArgument(0)))
+        .when(serverMessenger).addConnectionChangeListener(any());
+    doAnswer(invocation -> {
+      for (final IConnectionChangeListener listener : connectionListeners) {
+        listener.connectionRemoved(invocation.getArgument(0));
       }
-    }).when(serverMessenger).addConnectionChangeListener(any());
-    doAnswer(new Answer<Void>() {
-      @Override
-      public Void answer(final InvocationOnMock invocation) {
-        for (final IConnectionChangeListener listener : connectionListeners) {
-          listener.connectionRemoved(invocation.getArgument(0));
-        }
-        return null;
-      }
+      return null;
     }).when(serverMessenger).removeConnection(any());
     final Node dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(serverMessenger.getLocalNode()).thenReturn(dummyNode);

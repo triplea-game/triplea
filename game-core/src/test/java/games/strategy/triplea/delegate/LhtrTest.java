@@ -22,7 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -153,7 +153,7 @@ public class LhtrTest {
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {2, 2, 3}));
+    bridge.setRandomSource(new ScriptedRandomSource(2, 2, 3));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
     final ITripleAPlayer player = (ITripleAPlayer) Proxy
@@ -188,7 +188,7 @@ public class LhtrTest {
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 3, 2, 3, 0, 1}));
+    bridge.setRandomSource(new ScriptedRandomSource(3, 3, 2, 3, 0, 1));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
     final ITripleAPlayer player = (ITripleAPlayer) Proxy

@@ -13,7 +13,6 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.random.IRandomSource;
-import games.strategy.engine.random.ScriptedRandomSource;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.Interruptibles;
@@ -40,10 +39,6 @@ public class LocalLauncher extends AbstractLauncher {
           gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
       game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers);
       game.setRandomSource(randomSource);
-      // for debugging, we can use a scripted random source
-      if (ScriptedRandomSource.useScriptedRandom()) {
-        game.setRandomSource(new ScriptedRandomSource());
-      }
       gameData.getGameLoader().startGame(game, gamePlayers, headless);
     } catch (final MapNotFoundException e) {
       exceptionLoadingGame = e;

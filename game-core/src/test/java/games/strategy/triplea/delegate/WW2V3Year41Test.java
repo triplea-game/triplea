@@ -37,14 +37,12 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -63,9 +61,6 @@ import java.util.Map.Entry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -79,7 +74,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -104,15 +99,12 @@ public class WW2V3Year41Test {
   @BeforeEach
   public void setUp() throws Exception {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
-        anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
-          @Override
-          public CasualtyDetails answer(final InvocationOnMock invocation) {
-            final CasualtyList defaultCasualties = invocation.getArgument(11);
-            if (defaultCasualties != null) {
-              return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
-            }
-            return null;
+        anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(invocation -> {
+          final CasualtyList defaultCasualties = invocation.getArgument(11);
+          if (defaultCasualties != null) {
+            return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
           }
+          return null;
         });
     gameData = TestMapGameData.WW2V3_1941.getGameData();
   }
@@ -144,13 +136,10 @@ public class WW2V3Year41Test {
     final Collection<Unit> defendingAa =
         territory("Germany", gameData).getUnits().getMatches(Matches.unitIsAaForAnything());
     // don't allow rolling, 6 of each is deterministic
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {ScriptedRandomSource.ERROR}));
-    final DiceRoll roll =
-        DiceRoll.rollAa(
-            CollectionUtils.getMatches(planes,
-                Matches
-                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
-            defendingAa, bridge, territory("Germany", gameData), true);
+    bridge.setRandomSource(new ScriptedRandomSource(ScriptedRandomSource.ERROR));
+    final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
+        Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
+        defendingAa, bridge, territory("Germany", gameData), true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(2, casualties.size());
@@ -174,14 +163,11 @@ public class WW2V3Year41Test {
         territory("Germany", gameData).getUnits().getMatches(Matches.unitIsAaForAnything());
     // 1 roll, a hit
     // then a dice to select the casualty
-    final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
+    final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 1);
     bridge.setRandomSource(randomSource);
-    final DiceRoll roll =
-        DiceRoll.rollAa(
-            CollectionUtils.getMatches(planes,
-                Matches
-                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
-            defendingAa, bridge, territory("Germany", gameData), true);
+    final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
+        Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
+        defendingAa, bridge, territory("Germany", gameData), true);
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
@@ -207,15 +193,12 @@ public class WW2V3Year41Test {
         territory("Germany", gameData).getUnits().getMatches(Matches.unitIsAaForAnything());
     // 1 roll, a miss
     // then a dice to select the casualty
-    final ScriptedRandomSource randomSource =
-        new ScriptedRandomSource(new int[] {5, 0, 0, 0, ScriptedRandomSource.ERROR});
+    final ScriptedRandomSource randomSource = new ScriptedRandomSource(5, 0, 0, 0, ScriptedRandomSource.ERROR);
     bridge.setRandomSource(randomSource);
-    final DiceRoll roll =
-        DiceRoll.rollAa(
-            CollectionUtils.getMatches(planes,
-                Matches
-                    .unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
-            defendingAa, bridge, territory("Germany", gameData), true);
+    final DiceRoll roll = DiceRoll.rollAa(
+        CollectionUtils.getMatches(planes,
+            Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
+        defendingAa, bridge, territory("Germany", gameData), true);
     assertEquals(2, roll.getHits());
     // make sure we rolled once
     assertEquals(1, randomSource.getTotalRolled());
@@ -291,14 +274,14 @@ public class WW2V3Year41Test {
     final int initTokens = germans.getResources().getQuantity("techTokens");
     assertEquals(1, initTokens);
     // Fail the roll
-    delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {3}));
+    delegateBridge.setRandomSource(new ScriptedRandomSource(3));
     final TechResults roll = techDelegate.rollTech(1, mech, 0, null);
     // Check to make sure it failed
     assertEquals(0, roll.getHits());
     final int midTokens = germans.getResources().getQuantity("techTokens");
     assertEquals(1, midTokens);
     // Make a Successful roll
-    delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {5}));
+    delegateBridge.setRandomSource(new ScriptedRandomSource(5));
     final TechResults roll2 = techDelegate.rollTech(1, mech, 0, null);
     // Check to make sure it succeeded and all tokens were removed
     assertEquals(1, roll2.getHits());
@@ -353,7 +336,7 @@ public class WW2V3Year41Test {
     // load the transport
     load(uk.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(uk, sz7));
     moveDelegate(gameData).end();
-    final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] {0, 1});
+    final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 1);
     bridge.setRandomSource(randomSource);
     bridge.setStepName("britishBattle");
     final BattleDelegate battleDelegate = battleDelegate(gameData);
@@ -572,12 +555,12 @@ public class WW2V3Year41Test {
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(eastPoland);
     // With JET_POWER attacking fighter hits on 4 (0 base)
     final List<Unit> germanFighter = (List<Unit>) poland.getUnits().getUnits(fighterType, 1);
-    delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {3}));
+    delegateBridge.setRandomSource(new ScriptedRandomSource(3));
     final DiceRoll roll1 = DiceRoll.rollDice(germanFighter, false, germans, delegateBridge, new MockBattle(eastPoland),
         "", territoryEffects, null);
     assertEquals(1, roll1.getHits());
     // With JET_POWER defending fighter misses on 5 (0 base)
-    delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {4}));
+    delegateBridge.setRandomSource(new ScriptedRandomSource(4));
     final DiceRoll roll2 = DiceRoll.rollDice(germanFighter, true, germans, delegateBridge, new MockBattle(eastPoland),
         "", territoryEffects, null);
     assertEquals(0, roll2.getHits());
@@ -947,13 +930,9 @@ public class WW2V3Year41Test {
             attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(),
-        any(),
-        any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
-          @Override
-          public CasualtyDetails answer(final InvocationOnMock invocation) {
-            final Collection<Unit> selectFrom = invocation.getArgument(0);
-            return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
-          }
+        any(), any(), any(), any(), anyBoolean())).thenAnswer(invocation -> {
+          final Collection<Unit> selectFrom = invocation.getArgument(0);
+          return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
         });
     bridge.setRemote(dummyPlayer);
     // attacking subs sneak attack and hit
@@ -1411,13 +1390,9 @@ public class WW2V3Year41Test {
     // remove the sub
     removeFrom(sz5, sz5.getUnits().getMatches(Matches.unitIsSub()));
 
-    when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(),
-        any(), any())).thenAnswer(new Answer<Territory>() {
-          @Override
-          public Territory answer(final InvocationOnMock invocation) throws Throwable {
-            throw new IllegalStateException(
-                "Should not be asked to retreat:" + invocation.getArgument(4));
-          }
+    when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(), any(), any()))
+        .thenAnswer(invocation -> {
+          throw new IllegalStateException("Should not be asked to retreat:" + invocation.getArgument(4));
         });
     bridge.setRemote(dummyPlayer);
     move(uk.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(uk, sz5));

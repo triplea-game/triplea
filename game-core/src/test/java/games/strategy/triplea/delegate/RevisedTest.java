@@ -34,13 +34,11 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.submarine;
 import static games.strategy.triplea.delegate.GameDataTestUtil.techDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -59,9 +57,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
@@ -72,7 +67,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -95,15 +90,12 @@ public class RevisedTest {
   @BeforeEach
   public void setUp() throws Exception {
     when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
-        anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(new Answer<CasualtyDetails>() {
-          @Override
-          public CasualtyDetails answer(final InvocationOnMock invocation) {
-            final CasualtyList defaultCasualties = invocation.getArgument(11);
-            if (defaultCasualties != null) {
-              return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
-            }
-            return null;
+        anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(invocation -> {
+          final CasualtyList defaultCasualties = invocation.getArgument(11);
+          if (defaultCasualties != null) {
+            return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
           }
+          return null;
         });
     gameData = TestMapGameData.REVISED.getGameData();
   }
@@ -203,7 +195,7 @@ public class RevisedTest {
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
+    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0));
     bridge.setRemote(dummyPlayer);
     battle.start(); // fights battle
     battle.end();
@@ -845,7 +837,7 @@ public class RevisedTest {
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, ScriptedRandomSource.ERROR}));
+    bridge.setRandomSource(new ScriptedRandomSource(0, ScriptedRandomSource.ERROR));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
@@ -874,7 +866,7 @@ public class RevisedTest {
     // first 0 is the AA gun rolling 1@2 and getting a 1, which is a hit
     // second 0 is the LL AA casualty selection randomly picking the first unit to die
     // third 0 is the single remaining bomber dealing 1 damage to the enemy's PUs
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0, ScriptedRandomSource.ERROR}));
+    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0, ScriptedRandomSource.ERROR));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
@@ -899,7 +891,7 @@ public class RevisedTest {
     bridge.setRemote(dummyPlayer);
     // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
     // surviving bombers
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0, 0, 0, 0, ScriptedRandomSource.ERROR}));
+    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0, 0, 0, 0, ScriptedRandomSource.ERROR));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
@@ -924,7 +916,7 @@ public class RevisedTest {
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 2, 2}));
+    bridge.setRandomSource(new ScriptedRandomSource(3, 2, 2));
     // if we try to move aa, then the game will ask us if we want to move
     // fail if we are called
     final InvocationHandler handler = (proxy, method, args) -> null;
@@ -1325,14 +1317,14 @@ public class RevisedTest {
     // Check to make sure it was successful
     final int initPUs = germans.getResources().getQuantity("PUs");
     // Fail the roll
-    delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {3, 4}));
+    delegateBridge.setRandomSource(new ScriptedRandomSource(3, 4));
     final TechResults roll = techDelegate.rollTech(2, rockets, 0, null);
     // Check to make sure it failed
     assertEquals(0, roll.getHits());
     final int midPUs = germans.getResources().getQuantity("PUs");
     assertEquals(initPUs - 10, midPUs);
     // Make a Successful roll
-    delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {5}));
+    delegateBridge.setRandomSource(new ScriptedRandomSource(5));
     final TechResults roll2 = techDelegate.rollTech(1, rockets, 0, null);
     // Check to make sure it succeeded
     assertEquals(1, roll2.getHits());
@@ -1341,7 +1333,7 @@ public class RevisedTest {
     // Test the variable tech cost
     // Make a Successful roll
     ta.setTechCost("6");
-    delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] {5}));
+    delegateBridge.setRandomSource(new ScriptedRandomSource(5));
     final TechResults roll3 = techDelegate.rollTech(1, jet, 0, null);
     // Check to make sure it succeeded
     assertEquals(1, roll3.getHits());
