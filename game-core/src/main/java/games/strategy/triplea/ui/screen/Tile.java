@@ -41,7 +41,7 @@ public class Tile {
     this.x = x;
     this.y = y;
     this.scale = scale;
-    image = createBlankImage();
+    image = Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
   }
 
   public boolean isDirty() {
@@ -76,10 +76,6 @@ public class Tile {
     } finally {
       releaseLock();
     }
-  }
-
-  private BufferedImage createBlankImage() {
-    return Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
   }
 
   /**

@@ -529,7 +529,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
     // make sure we use the same data for the entire paint
     final GameData data = gameData;
-    // if the map fits on screen, dont draw any overlap
+    // if the map fits on screen, don't draw any overlap
     final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
     final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
     if (fitAxisX || fitAxisY) {
@@ -573,8 +573,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     if (highlightedUnits != null) {
       for (final List<Unit> value : highlightedUnits.values()) {
-        final Set<UnitCategory> categories = UnitSeperator.categorize(value);
-        for (final UnitCategory category : categories) {
+        for (final UnitCategory category : UnitSeperator.categorize(value)) {
           final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
           if (territoryUnitsOfSameCategory.isEmpty()) {
             continue;
@@ -587,10 +586,9 @@ public class MapPanel extends ImageScrollerLargeView {
           final Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
               category.getOwner(), category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (image.isPresent()) {
-            final AffineTransform t = new AffineTransform();
-            t.translate(normalizeX(r.getX() - getXOffset()) * scale, normalizeY(r.getY() - getYOffset()) * scale);
-            t.scale(scale, scale);
-            g2d.drawImage(image.get(), t, this);
+            final AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+            transform.translate(normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
+            g2d.drawImage(image.get(), transform, this);
           }
         }
       }
