@@ -22,9 +22,11 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -101,16 +103,13 @@ public final class ConnectionFinder {
       mapFolderLocation = polyFile.getParentFile();
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
-    Map<String, List<Polygon>> mapOfPolygons = null;
+    Map<String, List<Polygon>> mapOfPolygons;
     try (InputStream in = new FileInputStream(polyFile)) {
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
-      for (final String territoryName : mapOfPolygons.keySet()) {
-        final List<Polygon> listOfPolygons = mapOfPolygons.get(territoryName);
-        final List<Area> listOfAreas = new ArrayList<>();
-        for (final Polygon p : listOfPolygons) {
-          listOfAreas.add(new Area(p));
-        }
-        territoryAreas.put(territoryName, listOfAreas);
+      for (final Entry<String, List<Polygon>> entry : mapOfPolygons.entrySet()) {
+        territoryAreas.put(entry.getKey(), entry.getValue().stream()
+            .map(Area::new)
+            .collect(Collectors.toList()));
       }
     } catch (final IOException e) {
       ToolLogger.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);

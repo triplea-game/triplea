@@ -124,7 +124,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     public ObjectiveTableModel() {
       setObjectiveStats();
       gameData.addDataChangeListener(this);
-      isDirty = true;
     }
 
     public void removeDataChangeListener() {

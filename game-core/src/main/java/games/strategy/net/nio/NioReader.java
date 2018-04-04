@@ -62,7 +62,7 @@ class NioReader {
   }
 
   private void selectNewChannels() {
-    List<SocketChannel> toAdd = null;
+    final List<SocketChannel> toAdd;
     synchronized (socketsToAddMutex) {
       if (socketsToAdd.isEmpty()) {
         return;

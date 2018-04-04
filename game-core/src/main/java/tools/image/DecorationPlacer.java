@@ -181,16 +181,16 @@ public final class DecorationPlacer {
     // hash map for image points
     private Map<String, List<Point>> currentPoints = new HashMap<>();
     // hash map for center points
-    private Map<String, Point> centers = new HashMap<>();
+    private final Map<String, Point> centers;
     // hash map for polygon points
-    private Map<String, List<Polygon>> polygons = new HashMap<>();
+    private final Map<String, List<Polygon>> polygons;
     private final JLabel locationLabel = new JLabel();
     private File currentImageFolderLocation = null;
     private File currentImagePointsTextFile = null;
     private Point currentMousePoint = new Point(0, 0);
     private Triple<String, Image, Point> currentSelectedImage = null;
     private Map<String, Tuple<Image, List<Point>>> currentImagePoints = new HashMap<>();
-    private boolean highlightAll = false;
+    private boolean highlightAll;
     private boolean createNewImageOnRightClick = false;
     private Image staticImageForPlacing = null;
     private boolean showFromTopLeft = true;

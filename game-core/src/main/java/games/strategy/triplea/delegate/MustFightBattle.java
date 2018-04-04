@@ -103,9 +103,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else {
       m_maxRounds = Properties.getLandBattleRounds(data);
     }
-    m_attackingFromMap = new HashMap<>();
-    m_attackingFrom = new HashSet<>();
-    m_amphibiousAttackFrom = new ArrayList<>();
   }
 
   public void resetDefendingUnits(final PlayerID attacker, final GameData data) {

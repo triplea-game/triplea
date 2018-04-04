@@ -365,10 +365,6 @@ public final class PlacementPicker {
       fileMenu.add(saveItem);
       fileMenu.addSeparator();
       fileMenu.add(exitItem);
-      showAllMode = false;
-      showOverflowMode = false;
-      showIncompleteMode = false;
-      incompleteNum = 1;
       showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
       showAllModeItem.addActionListener(event -> {
         showAllMode = showAllModeItem.getState();

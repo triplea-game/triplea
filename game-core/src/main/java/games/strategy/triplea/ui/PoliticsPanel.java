@@ -43,13 +43,69 @@ public class PoliticsPanel extends ActionPanel {
   private JButton selectPoliticalActionButton = null;
   private JButton doneButton = null;
   private PoliticalActionAttachment choice = null;
-  private TripleAFrame parent = null;
   private boolean firstRun = true;
   protected List<PoliticalActionAttachment> validPoliticalActions = null;
 
+  /**
+   * Fires up a JDialog showing the political landscape and valid actions,
+   * choosing an action will release this model and trigger waitForRelease().
+   */
+  private final Action selectPoliticalActionAction;
+
   public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
-    this.parent = parent;
+    selectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
+      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+      final int availHeight = screenResolution.height - 96;
+      final int availWidth = screenResolution.width - 30;
+      final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
+      final int availHeightChoice = (int) ((float) availHeight / 3);
+
+      final JDialog politicalChoiceDialog = new JDialog(parent, "Political Actions", true);
+      final Insets insets = new Insets(1, 1, 1, 1);
+      final JPanel politicalChoicePanel = new JPanel();
+      politicalChoicePanel.setLayout(new GridBagLayout());
+      final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUiContext(), false);
+      final JScrollPane overviewScroll = new JScrollPane(overview);
+      overviewScroll.setBorder(BorderFactory.createEmptyBorder());
+      // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong
+      // (again)...
+      // add 20 to either when the opposite needs scroll bars, because that is how big scroll bars are..
+      overviewScroll.setPreferredSize(new Dimension(
+          (overviewScroll.getPreferredSize().width > availWidth ? availWidth
+              : (overviewScroll.getPreferredSize().width
+              + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
+          (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
+              : (overviewScroll.getPreferredSize().height + (validPoliticalActions.isEmpty() ? 26 : 0)
+              + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
+
+      final JScrollPane choiceScroll = new JScrollPane(politicalActionButtonPanel(politicalChoiceDialog));
+      choiceScroll.setBorder(BorderFactory.createEmptyBorder());
+      choiceScroll.setPreferredSize(new Dimension(
+          (choiceScroll.getPreferredSize().width > availWidth ? availWidth
+              : (choiceScroll.getPreferredSize().width
+              + (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
+          (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice
+              : (choiceScroll.getPreferredSize().height)
+              + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
+
+      final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
+      splitPane.setOneTouchExpandable(true);
+      splitPane.setDividerSize(8);
+      politicalChoicePanel.add(splitPane, new GridBagConstraints(0, 0, 1, 1, 100.0, 100.0,
+          GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+      final JButton noActionButton =
+          new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
+      SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
+      politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, 1, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
+          GridBagConstraints.NONE, insets, 0, 0));
+      politicalChoiceDialog.add(politicalChoicePanel);
+      politicalChoiceDialog.pack();
+      politicalChoiceDialog.setLocationRelativeTo(parent);
+      politicalChoiceDialog.setVisible(true);
+      politicalChoiceDialog.dispose();
+
+    });
   }
 
   @Override
@@ -106,63 +162,6 @@ public class PoliticsPanel extends ActionPanel {
     waitForRelease();
     return choice;
   }
-
-  /**
-   * Fires up a JDialog showing the political landscape and valid actions,
-   * choosing an action will release this model and trigger waitForRelease().
-   */
-  private final Action selectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
-    final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-    final int availHeight = screenResolution.height - 96;
-    final int availWidth = screenResolution.width - 30;
-    final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
-    final int availHeightChoice = (int) ((float) availHeight / 3);
-
-    final JDialog politicalChoiceDialog = new JDialog(parent, "Political Actions", true);
-    final Insets insets = new Insets(1, 1, 1, 1);
-    final JPanel politicalChoicePanel = new JPanel();
-    politicalChoicePanel.setLayout(new GridBagLayout());
-    final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUiContext(), false);
-    final JScrollPane overviewScroll = new JScrollPane(overview);
-    overviewScroll.setBorder(BorderFactory.createEmptyBorder());
-    // add 26 to height when the actions are empty, because for some stupid reason java calculates the pack size wrong
-    // (again)...
-    // add 20 to either when the opposite needs scroll bars, because that is how big scroll bars are..
-    overviewScroll.setPreferredSize(new Dimension(
-        (overviewScroll.getPreferredSize().width > availWidth ? availWidth
-            : (overviewScroll.getPreferredSize().width
-                + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
-        (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
-            : (overviewScroll.getPreferredSize().height + (validPoliticalActions.isEmpty() ? 26 : 0)
-                + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
-
-    final JScrollPane choiceScroll = new JScrollPane(politicalActionButtonPanel(politicalChoiceDialog));
-    choiceScroll.setBorder(BorderFactory.createEmptyBorder());
-    choiceScroll.setPreferredSize(new Dimension(
-        (choiceScroll.getPreferredSize().width > availWidth ? availWidth
-            : (choiceScroll.getPreferredSize().width
-                + (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
-        (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice
-            : (choiceScroll.getPreferredSize().height)
-                + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
-
-    final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
-    splitPane.setOneTouchExpandable(true);
-    splitPane.setDividerSize(8);
-    politicalChoicePanel.add(splitPane, new GridBagConstraints(0, 0, 1, 1, 100.0, 100.0,
-        GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
-    final JButton noActionButton =
-        new JButton(SwingAction.of("No Actions", event -> politicalChoiceDialog.setVisible(false)));
-    SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
-    politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, 1, 20, 1, 1.0, 1.0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, insets, 0, 0));
-    politicalChoiceDialog.add(politicalChoicePanel);
-    politicalChoiceDialog.pack();
-    politicalChoiceDialog.setLocationRelativeTo(parent);
-    politicalChoiceDialog.setVisible(true);
-    politicalChoiceDialog.dispose();
-
-  });
 
   private JPanel politicalActionButtonPanel(final JDialog parent) {
     final JPanel politicalActionButtonPanel = new JPanel();

@@ -120,7 +120,7 @@ public class ClipPlayer {
 
   protected final Map<String, List<URL>> sounds = new HashMap<>();
   private final Set<String> mutedClips = new HashSet<>();
-  private boolean beSilent = false;
+  private boolean beSilent;
   private final ResourceLoader resourceLoader;
   private static ClipPlayer clipPlayer;
 

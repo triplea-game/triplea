@@ -156,7 +156,6 @@ public class StatPanel extends AbstractStatPanel {
     public StatTableModel() {
       setStatCollums();
       gameData.addDataChangeListener(this);
-      isDirty = true;
     }
 
     public void setStatCollums() {
@@ -273,15 +272,14 @@ public class StatPanel extends AbstractStatPanel {
     /* Underlying data for the table */
     private final String[][] data;
     /* Convenience mapping of country names -> col */
-    private Map<String, Integer> colMap = null;
+    private final Map<String, Integer> colMap = new HashMap<>();
     /* Convenience mapping of technology names -> row */
-    private Map<String, Integer> rowMap = null;
+    private final Map<String, Integer> rowMap = new HashMap<>();
 
     public TechTableModel() {
       gameData.addDataChangeListener(this);
       initColList();
       /* Load the country -> col mapping */
-      colMap = new HashMap<>();
       for (int i = 0; i < colList.length; i++) {
         colMap.put(colList[i], i + 1);
       }
@@ -302,7 +300,6 @@ public class StatPanel extends AbstractStatPanel {
         gameData.releaseReadLock();
       }
       /* Load the technology -> row mapping */
-      rowMap = new HashMap<>();
       int row = 0;
       if (useTech) {
         rowMap.put("Tokens", row);

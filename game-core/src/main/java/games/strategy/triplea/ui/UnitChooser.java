@@ -324,7 +324,7 @@ final class UnitChooser extends JPanel {
     private final List<Integer> defaultHits;
     private final List<ScrollableTextField> hitTexts;
     private final List<JLabel> hitLabel = new ArrayList<>();
-    private int leftToSelect = 0;
+    private int leftToSelect;
     private static final Insets nullInsets = new Insets(0, 0, 0, 0);
     private final UiContext uiContext;
 
