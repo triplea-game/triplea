@@ -53,7 +53,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private boolean shutdown = false;
   private final NioSocket nioSocket;
   private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
-  private final List<IMessengerErrorListener> errorListeners = new CopyOnWriteArrayList<>();
   private final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
   private boolean acceptNewConnection = false;
   private ILoginValidator loginValidator;
@@ -479,14 +478,10 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   @Override
-  public void addErrorListener(final IMessengerErrorListener listener) {
-    errorListeners.add(listener);
-  }
+  public void addErrorListener(final IMessengerErrorListener listener) {}
 
   @Override
-  public void removeErrorListener(final IMessengerErrorListener listener) {
-    errorListeners.remove(listener);
-  }
+  public void removeErrorListener(final IMessengerErrorListener listener) {}
 
   @Override
   public void addConnectionChangeListener(final IConnectionChangeListener listener) {

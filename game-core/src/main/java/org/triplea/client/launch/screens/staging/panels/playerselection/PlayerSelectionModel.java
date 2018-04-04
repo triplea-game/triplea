@@ -29,7 +29,6 @@ public class PlayerSelectionModel {
 
   private final NetworkModel networkModel;
 
-  private final Map<PlayerID, String> countryToHumanOrAiSelectionMap = new HashMap<>();
   private final Map<PlayerID, String> countryToPlayerNameMap = new HashMap<>();
 
 
@@ -81,8 +80,6 @@ public class PlayerSelectionModel {
 
   // TODO: use enum for second arg!!!
   void updatePlayerSelection(final PlayerID country, final String selection) {
-    this.countryToHumanOrAiSelectionMap.put(country, selection);
-
     if (networkModel != null) {
       networkModel.updateAiPlayer(country, selection);
     }

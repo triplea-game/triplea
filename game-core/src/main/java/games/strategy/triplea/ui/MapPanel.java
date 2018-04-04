@@ -83,9 +83,6 @@ public class MapPanel extends ImageScrollerLargeView {
   // units the mouse is currently over
   private Tuple<Territory, List<Unit>> currentUnits;
   private final SmallMapImageManager smallMapImageManager;
-  // keep a reference to the images from the last paint to
-  // prevent them from being gcd
-  private final List<Tile> images = new ArrayList<>();
   private RouteDescription routeDescription;
   private final TileManager tileManager;
   private BufferedImage mouseShadowImage = null;
@@ -575,10 +572,6 @@ public class MapPanel extends ImageScrollerLargeView {
           uiContext.getResourceImageFactory());
 
     }
-    // used to keep strong references to what is on the screen so it wont be garbage collected
-    // other references to the images are weak references
-    this.images.clear();
-    this.images.addAll(images);
     if (highlightedUnits != null) {
       for (final Entry<Territory, List<Unit>> entry : highlightedUnits.entrySet()) {
         final Set<UnitCategory> categories = UnitSeperator.categorize(entry.getValue());
@@ -653,8 +646,6 @@ public class MapPanel extends ImageScrollerLargeView {
       for (final Tile tile : tileList) {
         if (tile.isDirty()) {
           undrawnTiles.add(tile);
-        } else if (forceInMemory) {
-          images.add(tile);
         }
       }
     }

@@ -203,8 +203,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
-    final List<Unit> remainingUnitsToPlace = new ArrayList<>(player.getUnits().getUnits());
-    remainingUnitsToPlace.removeAll(unitsLeftToPlace);
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
       // Get next producer territory
       final Territory producer = producers.remove(0);

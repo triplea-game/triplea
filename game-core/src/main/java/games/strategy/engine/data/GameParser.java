@@ -834,13 +834,11 @@ public final class GameParser {
   }
 
   private void parseProperties(final Node root) throws GameParseException {
-    final Collection<String> runningList = new ArrayList<>();
     final GameProperties properties = data.getProperties();
     for (final Element current : getChildren("property", root)) {
       final String editable = current.getAttribute("editable");
       final String property = current.getAttribute("name");
       String value = current.getAttribute("value");
-      runningList.add(property);
       if (value == null || value.length() == 0) {
         final List<Element> valueChildren = getChildren("value", current);
         if (!valueChildren.isEmpty()) {

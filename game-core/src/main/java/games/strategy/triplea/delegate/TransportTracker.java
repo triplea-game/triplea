@@ -157,8 +157,6 @@ public class TransportTracker {
     if (!transport.getTransporting().contains(unit)) {
       throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
     }
-    final ArrayList<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
-    newUnloaded.add(unit);
     change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {
       change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));

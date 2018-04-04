@@ -320,6 +320,8 @@ public final class MapPropertiesMaker {
       try (InputStream in = new FileInputStream(centerName)) {
         final Properties properties = new Properties();
         properties.load(in);
+        System.out.println("Successfully loaded Properties File:");
+        properties.list(System.out);
       } catch (final IOException e) {
         ToolLogger.error("Failed to load map properties: " + centerName, e);
       }

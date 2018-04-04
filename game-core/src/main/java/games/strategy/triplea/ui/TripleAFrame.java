@@ -1235,10 +1235,8 @@ public class TripleAFrame extends MainGameFrame {
         final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         chooser.addChangeListener(field -> {
-          final Collection<Unit> units = new HashSet<>();
           final Map<PlayerID, ResourceCollection> playerFuelCost = new HashMap<>();
           for (final Tuple<Territory, UnitChooser> tuple : choosers) {
-            units.addAll(tuple.getSecond().getSelected(false));
             final Map<PlayerID, ResourceCollection> map = Route
                 .getScrambleFuelCostCharge(tuple.getSecond().getSelected(false), tuple.getFirst(), scrambleTo, data);
             for (final Entry<PlayerID, ResourceCollection> playerAndCost : map.entrySet()) {
