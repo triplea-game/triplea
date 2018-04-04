@@ -192,9 +192,9 @@ public class TransportUtils {
 
   private static List<Unit> sortByTransportCapacityDescendingThenMovesDescending(final Collection<Unit> transports) {
     final List<Unit> canTransport = new ArrayList<>(transports);
-    canTransport.sort(Comparator.comparingInt(TransportTracker::getAvailableCapacity)
-        .thenComparing(TripleAUnit::get,
-            Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed()));
+    canTransport.sort(Comparator.comparing(TransportTracker::hasTransportUnloadedInPreviousPhase)
+        .thenComparingInt(TransportTracker::getAvailableCapacity)
+        .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed()));
     return canTransport;
   }
 

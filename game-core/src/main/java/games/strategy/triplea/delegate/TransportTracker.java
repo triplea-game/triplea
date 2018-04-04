@@ -235,7 +235,7 @@ public class TransportTracker {
     return loadedUnits;
   }
 
-  static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {
+  public static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {
     final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
     // See if transport has unloaded anywhere yet
     for (final Unit u : unloaded) {
