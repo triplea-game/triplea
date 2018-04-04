@@ -11,6 +11,7 @@ import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public final class TileImageFactory {
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
   private double scale = 1.0;
   // maps image name to ImageRef
-  private final Map<String, ImageRef> imageCache = new HashMap<>();
+  private final Map<String, SoftReference<Image>> imageCache = new HashMap<>();
   private ResourceLoader resourceLoader;
 
   static {
@@ -128,9 +129,6 @@ public final class TileImageFactory {
   public void setMapDir(final ResourceLoader loader) {
     resourceLoader = loader;
     synchronized (mutex) {
-      // we manually want to clear each ref to allow the soft reference to
-      // be removed
-      imageCache.values().forEach(ImageRef::clear);
       imageCache.clear();
     }
   }
@@ -139,7 +137,7 @@ public final class TileImageFactory {
     if (imageCache.get(fileName) == null) {
       return null;
     }
-    return imageCache.get(fileName).getImage();
+    return imageCache.get(fileName).get();
   }
 
   public Image getBaseTile(final int x, final int y) {
@@ -276,14 +274,14 @@ public final class TileImageFactory {
       final BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
       g2.setComposite(blendComposite);
       g2.drawImage(baseFile, 0, 0, null);
-      final ImageRef ref = new ImageRef(blendedImage);
+      final SoftReference<Image> ref = new SoftReference<>(blendedImage);
       if (cache) {
         imageCache.put(fileName, ref);
       }
       return blendedImage;
     }
 
-    final ImageRef ref = new ImageRef(baseFile);
+    final SoftReference<Image> ref = new SoftReference<>(baseFile);
     if (cache) {
       imageCache.put(fileName, ref);
     }
@@ -319,7 +317,7 @@ public final class TileImageFactory {
       ClientLogger.logError("Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
-    final ImageRef ref = new ImageRef(image);
+    final SoftReference<Image> ref = new SoftReference<>(image);
     if (cache) {
       imageCache.put(fileName, ref);
     }
