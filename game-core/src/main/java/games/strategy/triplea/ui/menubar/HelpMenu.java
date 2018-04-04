@@ -121,7 +121,7 @@ public final class HelpMenu extends JMenu {
           + "Press CTRL+H and CTRL+G to show history or game modes.<br>"
           + "Press CTRL+W to show politics panel.<br>"
           + "Press CTRL+L to show unit help list.<br>"
-          + "Press CTRL+F to show full screen and minimize right panel.<br>";
+          + "Press CTRL+Z to show full screen and minimize right panel.<br>";
       editorPane.setText(hints);
       final JScrollPane scroll = new JScrollPane(editorPane);
       JOptionPane.showMessageDialog(null, scroll, moveSelectionHelpTitle, JOptionPane.PLAIN_MESSAGE);

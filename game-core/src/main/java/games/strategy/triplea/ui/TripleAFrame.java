@@ -1589,7 +1589,7 @@ public class TripleAFrame extends MainGameFrame {
     return new KeyAdapter() {
       @Override
       public void keyPressed(final KeyEvent e) {
-        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_F) {
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) {
           if (gameCenterPanel.getDividerLocation() <= gameCenterPanel.getMaximumDividerLocation()) {
             gameCenterPanel.setDividerLocation(1.0);
           } else {
