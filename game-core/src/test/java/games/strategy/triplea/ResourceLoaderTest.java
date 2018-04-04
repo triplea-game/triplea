@@ -19,6 +19,31 @@ import com.google.common.collect.Maps;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 public class ResourceLoaderTest extends AbstractClientSettingTestCase {
+
+  @Test
+  public void testGetMapDirectoryCandidatesIncludesNameThenMap() {
+    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+    assertThat(candidates, containsDirectoryEndingWith("MapName" + File.separator + "map"));
+  }
+
+  @Test
+  public void testGetMapDirectoryCandidatesIncludesName() {
+    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+    assertThat(candidates, containsDirectoryEndingWith("MapName"));
+  }
+
+  @Test
+  public void testGetMapDirectoryCandidatesIncludesGithubNameThenMap() {
+    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+    assertThat(candidates, containsDirectoryEndingWith("map_name-master" + File.separator + "map"));
+  }
+
+  @Test
+  public void testGetMapDirectoryCandidatesIncludesGithubName() {
+    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+    assertThat(candidates, containsDirectoryEndingWith("map_name-master"));
+  }
+
   @Test
   public void testGetMapZipFileCandidates_ShouldIncludeDefaultZipFile() {
     final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
@@ -38,6 +63,22 @@ public class ResourceLoaderTest extends AbstractClientSettingTestCase {
     final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
 
     assertThat(candidates, containsFileWithName("map_name-master.zip"));
+  }
+
+  private static Matcher<Iterable<File>> containsDirectoryEndingWith(final String name) {
+    return new TypeSafeMatcher<Iterable<File>>() {
+      @Override
+      public void describeTo(final Description description) {
+        description.appendText("iterable containing file with name ").appendValue(name);
+      }
+
+      @Override
+      protected boolean matchesSafely(final Iterable<File> files) {
+        return StreamSupport.stream(files.spliterator(), false)
+            .map(File::getPath)
+            .anyMatch(p -> p.endsWith(name));
+      }
+    };
   }
 
   private static Matcher<Iterable<File>> containsFileWithName(final String name) {
