@@ -1098,15 +1098,13 @@ public class TripleAFrame extends MainGameFrame {
     if (index != -1 && inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
       SwingUtilities.invokeLater(() -> {
-        if (tabsPanel != null) {
-          // remove actions tab
-          tabsPanel.remove(index);
-        }
+        // remove actions tab
+        tabsPanel.remove(index);
         latch2.countDown();
       });
       Interruptibles.await(latch2);
     }
-    if (actionButtons != null && actionButtons.getCurrent() != null) {
+    if (actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(false);
     }
     return territoryAndUnits;

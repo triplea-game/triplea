@@ -469,7 +469,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
     }
     final int realTotalLoss = Math.max(0, totalDamageTracker.totalValues());
-    if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || (rolledDice && !transcripts.isEmpty()))) {
+    if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || !transcripts.isEmpty())) {
       final String mainline = "Total Cost from Convoy Blockades: " + realTotalLoss;
       bridge.getHistoryWriter().startEvent(mainline);
       endTurnReport.append(mainline).append("<br />");

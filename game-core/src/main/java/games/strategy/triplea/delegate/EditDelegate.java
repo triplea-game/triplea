@@ -72,7 +72,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (result != null) {
       return result;
     }
-    if (units == null || units.isEmpty()) {
+    if (units.isEmpty()) {
       return null;
     }
     // now make sure land units are put on transports properly

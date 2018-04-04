@@ -693,7 +693,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Territory> producers = new ArrayList<>();
     // if not water then must produce in that territory
     if (!to.isWater()) {
-      if (simpleCheck || canProduce(to, to, unitsToPlace, player, simpleCheck) == null) {
+      if (simpleCheck || canProduce(to, to, unitsToPlace, player, false) == null) {
         producers.add(to);
       }
       return producers;

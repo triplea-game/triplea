@@ -516,9 +516,7 @@ public class HeadlessGameServer {
   synchronized void shutdown() {
     shutDown = true;
     try {
-      if (lobbyWatcherResetupThread != null) {
-        lobbyWatcherResetupThread.shutdown();
-      }
+      lobbyWatcherResetupThread.shutdown();
     } catch (final Exception e) {
       logger.log(Level.SEVERE, "Failed to shutdown lobby watcher resetup thread", e);
     }

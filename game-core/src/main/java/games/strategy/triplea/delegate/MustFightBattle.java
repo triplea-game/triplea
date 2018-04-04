@@ -1369,10 +1369,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         final String messageLong;
         if (subs) {
           messageLong = retreatingPlayer.getName() + " retreats subs to " + retreatTo.getName();
-        } else if (planes) {
-          messageLong = retreatingPlayer.getName() + " retreats planes to " + retreatTo.getName();
-        } else if (partialAmphib) {
-          messageLong = retreatingPlayer.getName() + " retreats non-amphibious units to " + retreatTo.getName();
         } else {
           messageLong = retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
         }

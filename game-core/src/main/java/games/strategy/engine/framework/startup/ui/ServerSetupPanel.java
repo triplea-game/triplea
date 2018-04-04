@@ -70,11 +70,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   void createLobbyWatcher() {
-    if (lobbyWatcher != null) {
-      lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), this,
-          lobbyWatcher.getInGameLobbyWatcher()));
-      lobbyWatcher.setGameSelectorModel(gameSelectorModel);
-    }
+    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), this,
+        lobbyWatcher.getInGameLobbyWatcher()));
+    lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
   public synchronized void repostLobbyWatcher(final IGame game) {
@@ -92,9 +90,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   void shutDownLobbyWatcher() {
-    if (lobbyWatcher != null) {
-      lobbyWatcher.shutDown();
-    }
+    lobbyWatcher.shutDown();
   }
 
   private void createComponents() {
@@ -238,18 +234,14 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   public void shutDown() {
     model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
     model.shutDown();
-    if (lobbyWatcher != null) {
-      lobbyWatcher.shutDown();
-    }
+    lobbyWatcher.shutDown();
   }
 
   @Override
   public void cancel() {
     model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
     model.cancel();
-    if (lobbyWatcher != null) {
-      lobbyWatcher.shutDown();
-    }
+    lobbyWatcher.shutDown();
   }
 
   @Override
@@ -467,7 +459,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     actions.add(new MutePlayerAction(this, model.getMessenger()));
     actions.add(
         new SetPasswordAction(this, lobbyWatcher, (ClientLoginValidator) model.getMessenger().getLoginValidator()));
-    if (lobbyWatcher != null && lobbyWatcher.isActive()) {
+    if (lobbyWatcher.isActive()) {
       actions.add(new EditGameCommentAction(lobbyWatcher, ServerSetupPanel.this));
       actions.add(new RemoveGameFromLobbyAction(lobbyWatcher));
     }

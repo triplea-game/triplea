@@ -663,9 +663,7 @@ public class DiceRoll implements Externalizable {
         ruleType = new ArrayList<>();
         supportsAvailable.add(ruleType);
       }
-      if (ruleType != null) {
-        ruleType.add(rule);
-      }
+      ruleType.add(rule);
     }
     sortSupportRules(supportsAvailable, defence, allies);
   }

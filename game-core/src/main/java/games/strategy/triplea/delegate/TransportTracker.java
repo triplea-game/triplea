@@ -104,10 +104,7 @@ public class TransportTracker {
   }
 
   public static Collection<Unit> transportingAndUnloaded(final Unit transport) {
-    Collection<Unit> units = transporting(transport);
-    if (units == null) {
-      units = new ArrayList<>();
-    }
+    final Collection<Unit> units = transporting(transport);
     units.addAll(unloaded(transport));
     return units;
   }

@@ -169,7 +169,6 @@ public class MovePerformer implements Serializable {
 
         markTransportsMovement(arrived, transporting, route);
         if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
-          boolean bombing = false;
           boolean ignoreBattle = false;
           // could it be a bombing raid
           final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
@@ -196,7 +195,7 @@ public class MovePerformer implements Serializable {
           boolean targetedAttack = false;
           // if it's all bombers and there's something to bomb
           if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
-            bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
+            boolean bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
             // if bombing and there's something to target- ask what to bomb
             if (bombing) {
               // CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory,
@@ -238,14 +237,8 @@ public class MovePerformer implements Serializable {
             }
           }
           if (!ignoreBattle && GameStepPropertiesHelper.isCombatMove(data) && !targetedAttack) {
-            // createdBattle = true;
-            if (bombing) {
-              getBattleTracker().addBombingBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge,
-                  m_currentMove, dependentOnSomethingTilTheEndOfRoute);
-            } else {
-              getBattleTracker().addBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge, m_currentMove,
-                  dependentOnSomethingTilTheEndOfRoute);
-            }
+            getBattleTracker().addBattle(route, arrivedCopyForBattles, id, MovePerformer.this.bridge, m_currentMove,
+                dependentOnSomethingTilTheEndOfRoute);
           }
           if (!ignoreBattle && GameStepPropertiesHelper.isNonCombatMove(data, false) && !targetedAttack) {
             // We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This

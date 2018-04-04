@@ -82,10 +82,7 @@ public class BattleRecordsList extends GameDataComponent {
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
       if (brl != null) {
-        final BattleRecords current = brl.getCurrentRoundCopy();
-        if (current != null) {
-          brs.add(current);
-        }
+        brs.add(brl.getCurrentRoundCopy());
       }
     } else {
       if (brl != null) {
@@ -121,7 +118,7 @@ public class BattleRecordsList extends GameDataComponent {
       final int beginningRound, final int endRound, final boolean currentRoundOnly) {
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
-      if (brl != null && brl.getCurrentRoundCopy() != null) {
+      if (brl != null) {
         brs.add(brl.getCurrentRoundCopy());
       }
     } else {

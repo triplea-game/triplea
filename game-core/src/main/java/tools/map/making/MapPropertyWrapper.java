@@ -63,9 +63,9 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       property = new FileProperty(name, description, ((File) defaultValue));
     } else if (defaultValue instanceof String) {
       property = new StringProperty(name, description, ((String) defaultValue));
-    } else if (defaultValue instanceof Collection || defaultValue instanceof List || defaultValue instanceof Set) {
+    } else if (defaultValue instanceof Collection) {
       property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
-    } else if (defaultValue instanceof Map || defaultValue instanceof HashMap) {
+    } else if (defaultValue instanceof Map) {
       property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
       property =

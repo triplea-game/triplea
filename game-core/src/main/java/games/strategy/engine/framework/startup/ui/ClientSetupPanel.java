@@ -50,7 +50,7 @@ public class ClientSetupPanel extends SetupPanel {
   public ClientSetupPanel(final ClientModel model) {
     clientModel = model;
     layoutComponents();
-    setupListeners();
+    clientModel.setRemoteModelListener(remoteModelListener);
     setWidgetActivation();
   }
 
@@ -149,12 +149,6 @@ public class ClientSetupPanel extends SetupPanel {
     }
     add(players, BorderLayout.CENTER);
     validate();
-  }
-
-  private void setupListeners() {
-    clientModel.setRemoteModelListener(remoteModelListener == null
-        ? IRemoteModelListener.NULL_LISTENER
-        : remoteModelListener);
   }
 
   @Override

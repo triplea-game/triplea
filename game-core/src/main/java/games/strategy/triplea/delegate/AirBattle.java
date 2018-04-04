@@ -116,9 +116,10 @@ public class AirBattle extends AbstractBattle {
   }
 
   private boolean shouldFightAirBattle() {
-    return !m_defendingUnits.isEmpty()
-        && (!m_attackingUnits.isEmpty()
-            || (m_isBombingRun && m_attackingUnits.stream().anyMatch(Matches.unitIsStrategicBomber())));
+    return !m_defendingUnits.isEmpty() &&
+        (m_isBombingRun
+            ? m_attackingUnits.stream().anyMatch(Matches.unitIsStrategicBomber())
+            : !m_attackingUnits.isEmpty());
   }
 
   public boolean shouldEndBattleDueToMaxRounds() {

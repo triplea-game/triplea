@@ -550,11 +550,11 @@ public final class PlacementPicker {
           currentOverflowToLeft = placements.get(currentCountry).getSecond();
         }
         JOptionPane.showMessageDialog(this, currentCountry);
-      } else if (!rightMouse && ctrlDown) {
+      } else if (!rightMouse) {
         if (currentPlacements != null) {
           currentPlacements.add(point);
         }
-      } else if (rightMouse && ctrlDown) {
+      } else if (ctrlDown) {
         if (currentPlacements != null) {
           // If there isn't an existing hashmap, create one
           if (placements == null) {
@@ -564,7 +564,7 @@ public final class PlacementPicker {
           currentPlacements = new ArrayList<>();
           ToolLogger.info("done:" + currentCountry);
         }
-      } else if (rightMouse) {
+      } else {
         if (currentPlacements != null && !currentPlacements.isEmpty()) {
           currentPlacements.remove(currentPlacements.size() - 1);
         }

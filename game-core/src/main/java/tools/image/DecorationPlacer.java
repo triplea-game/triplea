@@ -709,7 +709,7 @@ public final class DecorationPlacer {
             }
           }
         }
-      } else if (!rightMouse && !ctrlDown && currentSelectedImage != null) {
+      } else if (!rightMouse && !ctrlDown) {
         // save the image
         final Tuple<Image, List<Point>> imagePoints = currentImagePoints.get(currentSelectedImage.getFirst());
         final List<Point> points = imagePoints.getSecond();

@@ -377,9 +377,7 @@ public class MoveValidator {
     // See if they've already been in combat
     if (units.stream().anyMatch(Matches.unitWasInCombat())
         && units.stream().anyMatch(Matches.unitWasUnloadedThisTurn())) {
-      final Collection<Territory> end = Collections.singleton(route.getEnd());
-      if (!end.isEmpty()
-          && end.stream().allMatch(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data))
+      if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data).test(route.getEnd())
           && !route.getEnd().getUnits().isEmpty()) {
         return result.setErrorReturnResult("Units cannot participate in multiple battles");
       }
@@ -1337,7 +1335,7 @@ public class MoveValidator {
     for (final Unit airTransport : airTransports) {
       if (!mustMoveWith.containsKey(airTransport)) {
         Collection<Unit> transporting = TransportTracker.transporting(airTransport);
-        if (transporting == null || transporting.isEmpty()) {
+        if (transporting.isEmpty()) {
           if (!newDependents.isEmpty()) {
             transporting = newDependents.get(airTransport);
           }

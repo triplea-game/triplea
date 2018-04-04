@@ -665,7 +665,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     private void addToTargetDiceMap(final Unit attackerUnit, final Die roll,
         final HashMap<Unit, List<Die>> targetToDiceMap) {
-      if (m_targets == null || m_targets.isEmpty()) {
+      if (m_targets.isEmpty()) {
         return;
       }
       final Unit target = getTarget(attackerUnit);

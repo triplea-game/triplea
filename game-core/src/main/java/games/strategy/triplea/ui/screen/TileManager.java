@@ -332,7 +332,7 @@ public class TileManager {
   private void drawUnits(final Territory territory, final MapData mapData, final Set<Tile> drawnOn,
       final Set<IDrawable> drawing, final GameData data) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
-    if (placementPoints == null || !placementPoints.hasNext()) {
+    if (!placementPoints.hasNext()) {
       throw new IllegalStateException("No where to place units:" + territory.getName());
     }
 

@@ -23,12 +23,12 @@ public class PlayerManager {
   }
 
   public boolean isEmpty() {
-    return playerMapping == null || playerMapping.isEmpty();
+    return playerMapping.isEmpty();
   }
 
   @Override
   public String toString() {
-    if (playerMapping == null || playerMapping.isEmpty()) {
+    if (playerMapping.isEmpty()) {
       return "empty";
     }
     return playerMapping.entrySet().stream()

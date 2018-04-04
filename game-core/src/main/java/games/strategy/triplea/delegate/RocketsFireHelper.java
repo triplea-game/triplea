@@ -249,7 +249,7 @@ public class RocketsFireHelper {
     int cost = 0;
     final String transcript;
     if (!Properties.getLowLuckDamageOnly(data)) {
-      if (doNotUseBombingBonus || rockets == null) {
+      if (doNotUseBombingBonus) {
         // no low luck, and no bonus, so just roll based on the map's dice sides
         final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING,
             "Rocket fired by " + player.getName() + " at " + attacked.getName());
@@ -289,16 +289,14 @@ public class RocketsFireHelper {
             // we are zero based
             cost += r + 1;
           }
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
-              + MyFormatter.asDice(rolls);
+          transcript = "Rockets " + ("in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
         } else {
           cost = highestBonus * numberOfAttacks;
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus
-              + " damage for each rocket";
+          transcript = "Rockets " + ("in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
         }
       }
     } else {
-      if (doNotUseBombingBonus || rockets == null) {
+      if (doNotUseBombingBonus) {
         // no bonus, so just roll based on the map's dice sides, but modify for LL
         final int maxDice = (data.getDiceSides() + 1) / 3;
         final int bonus = (data.getDiceSides() + 1) / 3;
@@ -325,9 +323,6 @@ public class RocketsFireHelper {
           if (maxDice < 0 || doNotUseBombingBonus) {
             maxDice = diceSides;
           }
-          if (doNotUseBombingBonus) {
-            bonus = 0;
-          }
           // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case
           // that we reduce the
           // luck by 2/3.
@@ -351,12 +346,10 @@ public class RocketsFireHelper {
             // we are zero based
             cost += r + 1;
           }
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
-              + MyFormatter.asDice(rolls);
+          transcript = "Rockets " + ("in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
         } else {
           cost = highestBonus * numberOfAttacks;
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus
-              + " damage for each rocket";
+          transcript = "Rockets " + ("in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
         }
       }
     }
@@ -416,7 +409,7 @@ public class RocketsFireHelper {
     bridge.getHistoryWriter().addChildToEvent(transcript, rockets == null ? null : new ArrayList<>(rockets));
     // this is null in WW2V1
     if (attackFrom != null) {
-      if (rockets != null && !rockets.isEmpty()) {
+      if (!rockets.isEmpty()) {
         // TODO: only a certain number fired...
         final Change change = ChangeFactory.markNoMovementChange(Collections.singleton(rockets.iterator().next()));
         bridge.addChange(change);

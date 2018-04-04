@@ -38,9 +38,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
     final Change productionChange = ChangeFactory.addUnits(player, units);
     final String transcriptText = player.getName() + " builds " + units.size() + " units.";
     bridge.getHistoryWriter().startEvent(transcriptText);
-    if (productionChange != null) {
-      bridge.addChange(productionChange);
-    }
+    bridge.addChange(productionChange);
   }
 
   private Collection<Unit> getProductionUnits(final Collection<Territory> territories, final PlayerID player) {

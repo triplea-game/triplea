@@ -56,9 +56,6 @@ public abstract class AbstractGame implements IGame {
       allPlayers.put(player.getName(), messenger.getLocalNode());
     }
     playerManager = new PlayerManager(allPlayers);
-    if (playerManager == null) {
-      throw new IllegalArgumentException("Player manager cant be null");
-    }
     setupLocalPlayers(gamePlayers);
   }
 

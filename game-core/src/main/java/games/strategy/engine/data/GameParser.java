@@ -144,9 +144,9 @@ public final class GameParser {
     // SAX errors we need to show
     if (!errorsSax.isEmpty()) {
       for (final SAXParseException error : errorsSax) {
-        System.err.println("SAXParseException: game: "
-            + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: "
-            + error.getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
+        System.err.println(
+            "SAXParseException: game: " + (data.getGameName() == null ? "?" : data.getGameName()) + ", line: " + error
+                .getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
       }
     }
     parseDiceSides(getSingleChild("diceSides", root, true));

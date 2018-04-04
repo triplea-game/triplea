@@ -175,12 +175,7 @@ public class FileProperty extends AEditableProperty {
       return true;
     }
     if (value instanceof File) {
-      final File file = (File) value;
-      for (final String suff : m_acceptableSuffixes) {
-        if (file.getName() != null && file.getName().endsWith(suff)) {
-          return true;
-        }
-      }
+      return Arrays.stream(m_acceptableSuffixes).anyMatch(suffix -> ((File)value).getName().endsWith(suffix));
     }
     return false;
   }

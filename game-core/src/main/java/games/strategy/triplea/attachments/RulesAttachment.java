@@ -524,7 +524,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     } catch (final Exception e) {
       m_atWarCount = 0;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
     m_atWarPlayers = new HashSet<>();
@@ -565,7 +565,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     } catch (final Exception e) {
       m_techCount = 0;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
     m_techs = new ArrayList<>();
@@ -612,7 +612,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<PlayerID> players = getPlayers();
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
-    if (objectiveMet && m_conditions.size() > 0) {
+    if (m_conditions.size() > 0) {
       if (testedConditions == null) {
         testedConditions = testAllConditionsRecursive(
             getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, delegateBridge);
@@ -907,7 +907,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
               break;
             }
           }
-        } else if (useSpecific) {
+        } else {
           final IntegerMap<String> unitComboMap = getUnitPresence();
           final Set<String> unitCombos = unitComboMap.keySet();
           boolean hasEnough = false;

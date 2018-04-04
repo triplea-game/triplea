@@ -112,10 +112,10 @@ public enum StagingScreen {
         .build();
 
     return JPanelBuilder.builder()
-        .addCenter(chatSupport != null ? JSplitPaneBuilder.builder()
-            .addTop(selectionPanel)
-            .addBottom(chatSupport.getChatPanel())
-            .build() : selectionPanel)
+        .addCenter(JSplitPaneBuilder.builder()
+                    .addTop(selectionPanel)
+                    .addBottom(chatSupport.getChatPanel())
+                    .build())
         .addSouth((this == NETWORK_CLIENT) ? NavigationPanelFactory.buildWithDisabledPlayButton(previousScreen)
             : NavigationPanelFactory.buildWithPlayButton(
                 previousScreen,

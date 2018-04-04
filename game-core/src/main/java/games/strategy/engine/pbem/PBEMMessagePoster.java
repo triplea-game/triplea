@@ -220,10 +220,8 @@ public class PBEMMessagePoster implements Serializable {
         }
         try {
           saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
-          if (saveGameFile != null) {
-            mainGameFrame.getGame().saveGame(saveGameFile);
-            posterPbem.setSaveGame(saveGameFile);
-          }
+          mainGameFrame.getGame().saveGame(saveGameFile);
+          posterPbem.setSaveGame(saveGameFile);
         } catch (final Exception e) {
           postOk = false;
           ClientLogger.logQuietly("Failed to create save game", e);

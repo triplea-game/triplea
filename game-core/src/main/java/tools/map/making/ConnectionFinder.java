@@ -97,7 +97,7 @@ public final class ConnectionFinder {
       ToolLogger.info("No polygons.txt Selected. Shutting down.");
       return;
     }
-    if (mapFolderLocation == null && polyFile != null) {
+    if (mapFolderLocation == null) {
       mapFolderLocation = polyFile.getParentFile();
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
@@ -153,7 +153,7 @@ public final class ConnectionFinder {
     ToolLogger.info("Now Scanning for Connections");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
-        mapOfPolygons == null ? new ArrayList<>() : new ArrayList<>(mapOfPolygons.keySet());
+        new ArrayList<>(mapOfPolygons.keySet());
     allTerritories.sort(new AlphanumComparator());
     final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
     allAreas.sort(new AlphanumComparator());
