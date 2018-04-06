@@ -21,7 +21,7 @@ import games.strategy.triplea.settings.ClientSetting;
  * Command line argument parser for the various TripleA applications.
  */
 public final class ArgParser {
-  private static final String TRIPLEA_PROTOCOL = "triplea:";
+  static final String TRIPLEA_PROTOCOL = "triplea:";
   private static final String TRIPLEA_PROPERTY_PREFIX = "P";
   private final Set<String> availableProperties;
 
