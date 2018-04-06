@@ -1827,8 +1827,8 @@
 - mapName: House of Habsburg
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/house_of_habsburg/archive/master.zip
-  version: 5
-  img: https://raw.githubusercontent.com/triplea-maps/house_of_habsburg/master/description/MapThumbnail.jpeg
+  version: 4
+  img: https://raw.githubusercontent.com/triplea-maps/house_of_habsburg/master/description/MapThumbnail.png
   description: |
     <br>
     House of Habsburg Beta Version
