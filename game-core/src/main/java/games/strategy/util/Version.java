@@ -58,7 +58,8 @@ public final class Version implements Serializable, Comparable<Version> {
   public Version(final String version) {
     exactVersion = version;
 
-    final Matcher matcher = Pattern.compile("(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.(\\d+|dev))?)?)?").matcher(version);
+    final Matcher matcher = Pattern.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.((?:\\d+|dev)[^.]*)\\.?)?)?)?")
+        .matcher(version);
 
     if (matcher.find()) {
       m_major = Integer.parseInt(matcher.group(1));

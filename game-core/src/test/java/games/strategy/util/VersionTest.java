@@ -102,5 +102,19 @@ public class VersionTest {
   public void testGetExactVersion() {
     assertEquals("1.2.3.4", new Version(1, 2, 3, 4).getExactVersion());
     assertEquals("1.2.3.4.5", new Version("1.2.3.4.5").getExactVersion());
+    assertEquals("1.2.3.4.something weird", new Version("1.2.3.4.something weird").getExactVersion());
+  }
+
+  @Test
+  public void testErrorOnWrongSyntax() {
+    assertThrows(IllegalArgumentException.class, () -> new Version("abc12.34.56.78"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("abc12.34.56"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("abc12.34"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("abc12"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("a b c.12"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("a.b.c.12.34"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("a:b:c.12.34.56"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("a;b;c.12.34.56.78"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("1.2.3.4 wrong syntax"));
   }
 }
