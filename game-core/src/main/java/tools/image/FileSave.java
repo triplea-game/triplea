@@ -5,10 +5,12 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import com.google.common.base.Strings;
+
 import games.strategy.engine.framework.system.SystemProperties;
 
 public class FileSave {
-  private File file = null;
+  private final File file;
 
   public FileSave(final String title, final String name, final File currentDirectory) {
     this(title, name, currentDirectory, JFileChooser.DIRECTORIES_ONLY, null, new FileFilter() {
@@ -51,15 +53,9 @@ public class FileSave {
     if (fileFilter != null) {
       chooser.setFileFilter(fileFilter);
     }
-
-    final int r = chooser.showSaveDialog(null);
-    if (r == JFileChooser.APPROVE_OPTION) {
-      if (name != null) {
-        file = new File(chooser.getSelectedFile().getPath() + File.separator + name);
-      } else {
-        file = new File(chooser.getSelectedFile().getPath());
-      }
-    }
+    file = chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION
+        ? new File(chooser.getSelectedFile(), Strings.nullToEmpty(name))
+        : null;
   }
 
   /**
