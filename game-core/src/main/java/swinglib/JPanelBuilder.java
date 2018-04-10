@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Supplier;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -307,8 +307,10 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder addIf(final boolean condition, final Component component) {
-    return condition ? add(component) : this;
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  public JPanelBuilder addIf(final Optional<Component> component) {
+    component.ifPresent(this::add);
+    return this;
   }
 
   public JPanelBuilder add(final Component component) {
@@ -333,10 +335,9 @@ public class JPanelBuilder {
    * Assumes a border layout, adds a given component to the southern portion of the border layout
    * if the boolean parameter is true.
    */
-  public JPanelBuilder addSouthIf(final boolean condition, final Supplier<JComponent> builder) {
-    if (condition) {
-      addSouth(builder.get());
-    }
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  public JPanelBuilder addSouthIf(final Optional<JComponent> component) {
+    component.ifPresent(this::addSouth);
     return this;
   }
 

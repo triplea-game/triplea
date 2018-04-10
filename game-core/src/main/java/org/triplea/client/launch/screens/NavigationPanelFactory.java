@@ -68,13 +68,12 @@ public class NavigationPanelFactory {
         .flowLayout()
         .add(playButton)
         .add(Box.createHorizontalStrut(50))
-        .addIf(
-            screenWindow.getPreviousScreen().isPresent(),
-            JButtonBuilder.builder()
+        .addIf(screenWindow.getPreviousScreen()
+            .map(prevScreen -> JButtonBuilder.builder()
                 .title("Back")
-                .enabled(screenWindow.getPreviousScreen().isPresent())
-                .actionListener(() -> LaunchScreenWindow.draw(screenWindow.getPreviousScreenNotOptional()))
-                .build())
+                .enabled(true)
+                .actionListener(() -> LaunchScreenWindow.draw(prevScreen))
+                .build()))
         .add(Box.createHorizontalStrut(50))
         .add(JButtonBuilder.builder()
             .title("Quit")
