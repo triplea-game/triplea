@@ -67,19 +67,10 @@ public class MapProperty<T, U> extends AEditableProperty {
     return m_map;
   }
 
-  public Map<T, U> getValueT() {
-    return m_map;
-  }
-
   @Override
   @SuppressWarnings("unchecked")
   public void setValue(final Object value) throws ClassCastException {
     m_map = (Map<T, U>) value;
-    resetProperties(m_map, m_properties, this.getName(), this.getDescription());
-  }
-
-  public void setValueT(final Map<T, U> value) {
-    m_map = value;
     resetProperties(m_map, m_properties, this.getName(), this.getDescription());
   }
 
