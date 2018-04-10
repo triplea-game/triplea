@@ -512,12 +512,7 @@ public class TileManager {
       drawer.draw(bounds, data, graphics, mapData, null, null);
     }
     if (!drawOutline) {
-      final Color c;
-      if (selected.isWater()) {
-        c = Color.RED;
-      } else {
-        c = new Color(0, 0, 0);
-      }
+      final Color c = selected.isWater() ? Color.RED : Color.BLACK;
       final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, Operation.FILL);
       told.draw(bounds, data, graphics, mapData, null, null);
     }
