@@ -6,7 +6,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -30,16 +29,12 @@ public class Tile {
 
   private final Image image;
   private final Rectangle bounds;
-  private final int x;
-  private final int y;
   private final double scale;
   private final Lock lock = new ReentrantLock();
   private final List<IDrawable> contents = new ArrayList<>();
 
-  Tile(final Rectangle bounds, final int x, final int y, final double scale) {
+  Tile(final Rectangle bounds, final double scale) {
     this.bounds = bounds;
-    this.x = x;
-    this.y = y;
     this.scale = scale;
     image = Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
   }

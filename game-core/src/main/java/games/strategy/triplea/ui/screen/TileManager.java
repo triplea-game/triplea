@@ -169,8 +169,7 @@ public class TileManager {
       tiles = new ArrayList<>();
       for (int x = 0; x * TILE_SIZE < bounds.width; x++) {
         for (int y = 0; y * TILE_SIZE < bounds.height; y++) {
-          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x, y,
-              uiContext.getScale()));
+          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), uiContext.getScale()));
         }
       }
     } finally {
