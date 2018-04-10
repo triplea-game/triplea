@@ -53,27 +53,26 @@ public class TuvUtils {
     } finally {
       data.releaseReadLock();
     }
+
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
-    // any one will do then
-    if (frontier == null) {
-      return TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(data);
-    }
-    for (final ProductionRule rule : frontier.getRules()) {
-      final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
-      if (!(resourceOrUnit instanceof UnitType)) {
-        continue;
+    if (frontier != null) {
+      for (final ProductionRule rule : frontier.getRules()) {
+        final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
+        if (!(resourceOrUnit instanceof UnitType)) {
+          continue;
+        }
+        final UnitType type = (UnitType) resourceOrUnit;
+        final int costPerGroup = rule.getCosts().getInt(pus);
+        final int numberProduced = rule.getResults().getInt(type);
+        // we average the cost for a single unit, rounding up
+        final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
+        costs.put(type, roundedCostPerSingle);
       }
-      final UnitType type = (UnitType) resourceOrUnit;
-      final int costPerGroup = rule.getCosts().getInt(pus);
-      final int numberProduced = rule.getResults().getInt(type);
-      // we average the cost for a single unit, rounding up
-      final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
-      costs.put(type, roundedCostPerSingle);
     }
     // since our production frontier may not cover all the units we control, and not the enemy units,
     // we will add any unit types not in our list, based on the list for everyone
-    final IntegerMap<UnitType> costsAll = TuvUtils.getCostsForTuvForAllPlayersMergedAndAveraged(data);
+    final IntegerMap<UnitType> costsAll = getCostsForTuvForAllPlayersMergedAndAveraged(data);
     for (final UnitType ut : costsAll.keySet()) {
       if (!costs.keySet().contains(ut)) {
         costs.put(ut, costsAll.getInt(ut));
@@ -134,6 +133,15 @@ public class TuvUtils {
       final int averagedCost = (int) Math.round(((double) totalCosts / (double) costsForType.size()));
       costs.put(ut, averagedCost);
     }
+
+    // Add any units that have XML TUV even if they aren't purchasable
+    for (final UnitType unitType : data.getUnitTypeList()) {
+      final UnitAttachment ua = UnitAttachment.get(unitType);
+      if (ua != null && ua.getTuv() > 0) {
+        costs.put(unitType, ua.getTuv());
+      }
+    }
+
     return costs;
   }
 
