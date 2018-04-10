@@ -79,8 +79,8 @@ public class Tile {
   }
 
   /**
-   * This image may be null, and it may not reflect our current drawables. Use getImage() to get
-   * a correct image
+   * This image may not reflect our current drawables.
+   * Use getImage() to get a correct image
    *
    * @return the image we currently have.
    */
