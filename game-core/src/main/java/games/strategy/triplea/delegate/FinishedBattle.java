@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -29,6 +30,9 @@ import games.strategy.util.IntegerMap;
  */
 public class FinishedBattle extends AbstractBattle {
   private static final long serialVersionUID = -5852495231826940879L;
+  // Kept for backwards compatibility. Remove in the next incompatible release
+  @SuppressWarnings("unused")
+  private final Set<Territory> m_attackingFrom = new HashSet<>(0);
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
   private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
