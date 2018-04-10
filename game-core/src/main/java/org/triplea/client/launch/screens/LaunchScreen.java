@@ -39,11 +39,6 @@ public enum LaunchScreen {
     return Optional.ofNullable(previousScreen);
   }
 
-  public LaunchScreen getPreviousScreenNotOptional() {
-    return getPreviousScreen()
-        .orElseThrow(() -> new IllegalStateException("Previous screen is null for enum value: " + name()));
-  }
-
   public JComponent buildScreen() {
     return windowBuilder.get();
   }

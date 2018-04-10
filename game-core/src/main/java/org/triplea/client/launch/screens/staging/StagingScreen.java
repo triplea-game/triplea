@@ -1,6 +1,7 @@
 package org.triplea.client.launch.screens.staging;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -105,7 +106,8 @@ public enum StagingScreen {
                 .addNorth(gameInfoPanel(gameData))
                 .addCenter(playerAndBidSelectionTabs(gameData, this, playerSelectionModel))
                 .build())
-            .addSouthIf(chatSupport != null, chatSupport::getChatPanel)
+            .addSouthIf(Optional.ofNullable(chatSupport)
+                .map(ChatSupport::getChatPanel))
             .build())
         .build();
 
