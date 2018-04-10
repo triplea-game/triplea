@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,6 +30,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
@@ -911,11 +911,9 @@ public final class GameParser {
     } else if (childName.equals("file")) {
       editableProperty = new FileProperty(name, null, defaultValue);
     } else if (childName.equals("list") || childName.equals("combo")) {
-      final StringTokenizer tokenizer = new StringTokenizer(child.getAttribute("values"), ",");
-      final Collection<String> values = new ArrayList<>();
-      while (tokenizer.hasMoreElements()) {
-        values.add(tokenizer.nextToken());
-      }
+      final List<String> values = Splitter.on(',')
+          .omitEmptyStrings()
+          .splitToList(child.getAttribute("values"));
       editableProperty = new ComboProperty<>(name, null, defaultValue, values);
     } else if (childName.equals("number")) {
       final int max = Integer.valueOf(child.getAttribute("max"));
@@ -923,7 +921,7 @@ public final class GameParser {
       final int def = Integer.valueOf(defaultValue);
       editableProperty = new NumberProperty(name, null, max, min, def);
     } else if (childName.equals("color")) {
-      // Parse the value as a hexidecimal number
+      // Parse the value as a hexadecimal number
       final int def = Integer.valueOf(defaultValue, 16);
       editableProperty = new ColorProperty(name, null, def);
     } else if (childName.equals("string")) {

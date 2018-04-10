@@ -15,7 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
@@ -112,19 +112,19 @@ public class PacificTest extends DelegateTest {
     // Defending US infantry hit on a 2 (0 base)
     final List<Unit> infantryUs = infantry.create(1, americans);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+    bridge.setRandomSource(new ScriptedRandomSource(1));
     DiceRoll roll =
         DiceRoll.rollDice(infantryUs, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines hit on a 2 (0 base)
     final List<Unit> marineUs = marine.create(1, americans);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+    bridge.setRandomSource(new ScriptedRandomSource(1));
     roll = DiceRoll.rollDice(marineUs, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry hit on a 2 (0 base)
     final List<Unit> infantryChina = infantry.create(1, chinese);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+    bridge.setRandomSource(new ScriptedRandomSource(1));
     roll =
         DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
@@ -140,34 +140,34 @@ public class PacificTest extends DelegateTest {
     // Defending US infantry miss on a 2 (0 base)
     final List<Unit> infantryUs = infantry.create(1, americans);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+    bridge.setRandomSource(new ScriptedRandomSource(1));
     DiceRoll roll =
         DiceRoll.rollDice(infantryUs, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(0, roll.getHits());
     // Defending US marines miss on a 2 (0 base)
     final List<Unit> marineUs = marine.create(1, americans);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+    bridge.setRandomSource(new ScriptedRandomSource(1));
     roll = DiceRoll.rollDice(marineUs, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(0, roll.getHits());
     // Chinese units
     // Defending Chinese infantry still hit on a 2 (0 base)
     final List<Unit> infantryChina = infantry.create(1, chinese);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+    bridge.setRandomSource(new ScriptedRandomSource(1));
     roll =
         DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US infantry hit on a 1 (0 base)
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
+    bridge.setRandomSource(new ScriptedRandomSource(0));
     roll =
         DiceRoll.rollDice(infantryUs, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines hit on a 1 (0 base)
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0}));
+    bridge.setRandomSource(new ScriptedRandomSource(0));
     roll = DiceRoll.rollDice(marineUs, true, americans, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry still hit on a 2 (0 base)
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {1}));
+    bridge.setRandomSource(new ScriptedRandomSource(1));
     roll =
         DiceRoll.rollDice(infantryChina, true, chinese, bridge, new MockBattle(queensland), "", territoryEffects, null);
     assertEquals(1, roll.getHits());

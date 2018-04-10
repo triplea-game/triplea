@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import javax.activation.DataHandler;
@@ -25,6 +24,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+
+import com.google.common.base.Splitter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
@@ -153,9 +154,8 @@ public class GenericEmailSender implements IEmailSender {
       // from
       mimeMessage.setFrom(new InternetAddress(from));
       // to address
-      final StringTokenizer toAddresses = new StringTokenizer(to, " ", false);
-      while (toAddresses.hasMoreTokens()) {
-        mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddresses.nextToken().trim()));
+      for (final String token : Splitter.on(' ').omitEmptyStrings().trimResults().split(to)) {
+        mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(token));
       }
       // subject
       mimeMessage.setSubject(m_subjectPrefix + " " + subject);

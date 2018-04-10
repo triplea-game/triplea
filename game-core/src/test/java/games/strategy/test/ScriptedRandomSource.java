@@ -1,17 +1,10 @@
-package games.strategy.engine.random;
+package games.strategy.test;
 
-import java.util.StringTokenizer;
+import games.strategy.engine.random.IRandomSource;
 
 /**
  * A random source for use while debugging.
  *
- * <p>
- * Returns the random numbers designated in the system property triplea.scriptedRandom
- * </p>
- *
- * <p>
- * for example, to roll 1,2,3 use -Dtriplea.scriptedRandom=1,2,3
- * </p>
  *
  * <p>
  * When scripted random runs out of numbers, the numbers will repeat.
@@ -23,55 +16,18 @@ import java.util.StringTokenizer;
  * </p>
  */
 public class ScriptedRandomSource implements IRandomSource {
-  public static final int PAUSE = -2;
   public static final int ERROR = -3;
-  private static final String SCRIPTED_RANDOM_PROPERTY = "triplea.scriptedRandom";
   private final int[] numbers;
   private int currentIndex = 0;
   private int rolled;
-
-  /**
-   * Should we use a scripted random sourcce.
-   */
-  public static boolean useScriptedRandom() {
-    return System.getProperty(SCRIPTED_RANDOM_PROPERTY) != null
-        && System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0;
-  }
-
-  /**
-   * Create a scripted random source from the system property triplea.scriptedRandom.
-   */
-  public ScriptedRandomSource() {
-    final String property = System.getProperty(SCRIPTED_RANDOM_PROPERTY, "1,2,3");
-    final int length = property.split(",").length;
-    final StringTokenizer tokenizer = new StringTokenizer(property, ",");
-    numbers = new int[length];
-    for (int i = 0; i < numbers.length; i++) {
-      final String token = tokenizer.nextToken();
-      if (token.equals("e")) {
-        numbers[i] = ERROR;
-      } else if (token.equals("p")) {
-        numbers[i] = PAUSE;
-      } else {
-        numbers[i] = Integer.parseInt(token) - 1;
-      }
-    }
-  }
 
   /**
    * Create a scripted random from the given numbers. The scripted random will return
    * the numbers supplied in order. When the scripted source runs out of random numbers, it
    * starts returning elements from the beginning.
    */
-  public ScriptedRandomSource(final int[] numbers) {
+  public ScriptedRandomSource(final int... numbers) {
     this.numbers = numbers;
-  }
-
-  public ScriptedRandomSource(final Integer... numbers) {
-    this.numbers = new int[numbers.length];
-    for (int i = 0; i < numbers.length; i++) {
-      this.numbers[i] = numbers[i];
-    }
   }
 
   @Override

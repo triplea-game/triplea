@@ -17,7 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.random.ScriptedRandomSource;
+import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -154,7 +154,7 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
+    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0));
     bridge.setRemote(getDummyPlayer());
     battle.start();
     battle.end();
@@ -202,7 +202,7 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
+    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0));
     bridge.setRemote(getDummyPlayer());
     battle.start();
     battle.end();
@@ -251,7 +251,7 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0,}));
+    bridge.setRandomSource(new ScriptedRandomSource(0));
     bridge.setRemote(getDummyPlayer());
     battle.start();
     battle.end();
@@ -303,7 +303,7 @@ public class AirThatCantLandUtilTest {
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
-    bridge.setRandomSource(new ScriptedRandomSource(new int[] {0, 0, 0}));
+    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0));
     bridge.setRemote(getDummyPlayer());
     fight(battle, sz9, false);
     battle.end();

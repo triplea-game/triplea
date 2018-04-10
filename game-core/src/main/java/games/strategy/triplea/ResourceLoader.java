@@ -11,14 +11,16 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -165,12 +167,14 @@ public class ResourceLoader implements Closeable {
           try (InputStream stream = inputStream.get()) {
             final java.util.Properties dependenciesFile = new java.util.Properties();
             dependenciesFile.load(stream);
-            final String dependencies = dependenciesFile.getProperty("dependencies");
-            final StringTokenizer tokens = new StringTokenizer(dependencies, ",", false);
-            while (tokens.hasMoreTokens()) {
-              // add the dependencies recursivly
-              paths.addAll(getPaths(tokens.nextToken()));
-            }
+            paths.addAll(
+                Splitter.on(',')
+                    .omitEmptyStrings()
+                    .splitToList(dependenciesFile.getProperty("dependencies"))
+                    .stream()
+                    .map(ResourceLoader::getPaths)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList()));
           }
         }
       }
