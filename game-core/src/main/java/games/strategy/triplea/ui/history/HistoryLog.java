@@ -100,7 +100,7 @@ public class HistoryLog extends JFrame {
         players.add(curPlayer);
       }
       // get first step for this turn
-      Step turnStartNode = null;
+      Step turnStartNode;
       while (true) {
         turnStartNode = stepNode;
         stepNode = (Step) stepNode.getPreviousSibling();

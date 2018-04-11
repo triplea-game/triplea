@@ -2,7 +2,6 @@ package games.strategy.triplea.image;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -60,7 +59,7 @@ public class ResourceImageFactory extends AbstractImageFactory {
   private JPanel getResourcesPanel(final ResourceCollection resources, final boolean showEmpty, final PlayerID player,
       final GameData data) {
     final JPanel resourcePanel = new JPanel();
-    List<Resource> resourcesInOrder = new ArrayList<>();
+    final List<Resource> resourcesInOrder;
     data.acquireReadLock();
     try {
       resourcesInOrder = data.getResourceList().getResources();

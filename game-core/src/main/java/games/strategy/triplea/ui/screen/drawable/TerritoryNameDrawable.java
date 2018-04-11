@@ -88,7 +88,7 @@ public class TerritoryNameDrawable implements IDrawable {
     }
 
     // draw comments above names
-    if (showComments && drawComments && commentText != null) {
+    if (showComments && drawComments) {
       final Optional<Point> place = mapData.getCommentMarkerLocation(territory);
       if (place.isPresent()) {
         draw(bounds, graphics, place.get().x, place.get().y, null, commentText, drawFromTopLeft);

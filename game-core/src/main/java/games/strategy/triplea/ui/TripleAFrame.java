@@ -1098,15 +1098,13 @@ public class TripleAFrame extends MainGameFrame {
     if (index != -1 && inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
       SwingUtilities.invokeLater(() -> {
-        if (tabsPanel != null) {
-          // remove actions tab
-          tabsPanel.remove(index);
-        }
+        // remove actions tab
+        tabsPanel.remove(index);
         latch2.countDown();
       });
       Interruptibles.await(latch2);
     }
-    if (actionButtons != null && actionButtons.getCurrent() != null) {
+    if (actionButtons.getCurrent() != null) {
       actionButtons.getCurrent().setActive(false);
     }
     return territoryAndUnits;
@@ -1237,10 +1235,8 @@ public class TripleAFrame extends MainGameFrame {
         final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         chooser.addChangeListener(field -> {
-          final Collection<Unit> units = new HashSet<>();
           final Map<PlayerID, ResourceCollection> playerFuelCost = new HashMap<>();
           for (final Tuple<Territory, UnitChooser> tuple : choosers) {
-            units.addAll(tuple.getSecond().getSelected(false));
             final Map<PlayerID, ResourceCollection> map = Route
                 .getScrambleFuelCostCharge(tuple.getSecond().getSelected(false), tuple.getFirst(), scrambleTo, data);
             for (final Entry<PlayerID, ResourceCollection> playerAndCost : map.entrySet()) {

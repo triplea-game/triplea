@@ -209,7 +209,7 @@ public class MovePanel extends AbstractMovePanel {
         final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
         capacityMap.add(transport, TransportUtils.getTransportCost(transporting));
       }
-      boolean hasChanged = false;
+      boolean hasChanged;
       final Comparator<Unit> increasingCapacityComparator =
           UnitComparator.getIncreasingCapacityComparator(sortedTransports);
 
@@ -1247,9 +1247,8 @@ public class MovePanel extends AbstractMovePanel {
             // now, check if there is a better route for just the units that can get there (we check only air since that
             // is the only one for
             // which the route may actually change much)
-            if (unitsThatCanMoveOnRoute.size() < selectedUnits.size()
-                && (unitsThatCanMoveOnRoute.size() == 0 || (!unitsThatCanMoveOnRoute.isEmpty()
-                    && unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir())))) {
+            if (unitsThatCanMoveOnRoute.size() < selectedUnits.size() && (unitsThatCanMoveOnRoute.size() == 0
+                || unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir()))) {
               final Collection<Unit> airUnits = CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
               if (airUnits.size() > 0) {
                 route = getRoute(getFirstSelectedTerritory(), territory, airUnits);

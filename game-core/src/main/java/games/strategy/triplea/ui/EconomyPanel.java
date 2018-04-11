@@ -30,7 +30,6 @@ public class EconomyPanel extends AbstractStatPanel {
   private final List<ResourceStat> resourceStats = new ArrayList<>();
   private ResourceTableModel resourceModel;
   private final UiContext uiContext;
-  private final Map<Integer, String> columnHeaders = new HashMap<>();
 
   public EconomyPanel(final GameData data, final UiContext uiContext) {
     super(data);
@@ -68,7 +67,6 @@ public class EconomyPanel extends AbstractStatPanel {
     public ResourceTableModel() {
       setResourceColumns();
       gameData.addDataChangeListener(this);
-      isDirty = true;
     }
 
     private void setResourceColumns() {

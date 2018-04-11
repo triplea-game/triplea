@@ -70,9 +70,7 @@ public class CompositeRouteFinder {
           newLeaders.add(ter);
           previous.put(ter, oldLeader);
           if (ter.equals(end)) {
-            if (routeScore < bestRouteToEndScore) {
-              bestRouteToEndScore = routeScore;
-            }
+            bestRouteToEndScore = routeScore;
           }
         }
       }

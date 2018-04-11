@@ -117,8 +117,9 @@ public class AirBattle extends AbstractBattle {
 
   private boolean shouldFightAirBattle() {
     return !m_defendingUnits.isEmpty()
-        && (!m_attackingUnits.isEmpty()
-            || (m_isBombingRun && m_attackingUnits.stream().anyMatch(Matches.unitIsStrategicBomber())));
+        && (m_isBombingRun
+            ? m_attackingUnits.stream().anyMatch(Matches.unitIsStrategicBomber())
+            : !m_attackingUnits.isEmpty());
   }
 
   public boolean shouldEndBattleDueToMaxRounds() {
@@ -595,9 +596,6 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-          allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingUnits);
-          allEnemyUnitsAliveOrWaitingToDie.addAll(m_attackingWaitingToDie);
           m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, "Defenders Fire, ");
         }
       };

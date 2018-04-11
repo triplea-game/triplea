@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -166,10 +167,9 @@ public class TileManager {
     try {
       // create our tiles
       tiles = new ArrayList<>();
-      for (int x = 0; (x) * TILE_SIZE < bounds.width; x++) {
-        for (int y = 0; (y) * TILE_SIZE < bounds.height; y++) {
-          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), x, y,
-              uiContext.getScale()));
+      for (int x = 0; x * TILE_SIZE < bounds.width; x++) {
+        for (int y = 0; y * TILE_SIZE < bounds.height; y++) {
+          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), uiContext.getScale()));
         }
       }
     } finally {
@@ -195,8 +195,9 @@ public class TileManager {
         }
         // add the decorations
         final Map<Image, List<Point>> decorations = mapData.getDecorations();
-        for (final Image img : decorations.keySet()) {
-          for (final Point p : decorations.get(img)) {
+        for (final Entry<Image, List<Point>> entry : decorations.entrySet()) {
+          final Image img = entry.getKey();
+          for (final Point p : entry.getValue()) {
             final DecoratorDrawable drawable = new DecoratorDrawable(p, img);
             final Rectangle bounds = new Rectangle(p.x, p.y, img.getWidth(null), img.getHeight(null));
             for (final Tile t : getTiles(bounds)) {
@@ -332,7 +333,7 @@ public class TileManager {
   private void drawUnits(final Territory territory, final MapData mapData, final Set<Tile> drawnOn,
       final Set<IDrawable> drawing, final GameData data) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
-    if (placementPoints == null || !placementPoints.hasNext()) {
+    if (!placementPoints.hasNext()) {
       throw new IllegalStateException("No where to place units:" + territory.getName());
     }
 
@@ -511,12 +512,7 @@ public class TileManager {
       drawer.draw(bounds, data, graphics, mapData, null, null);
     }
     if (!drawOutline) {
-      final Color c;
-      if (selected.isWater()) {
-        c = Color.RED;
-      } else {
-        c = new Color(0, 0, 0);
-      }
+      final Color c = selected.isWater() ? Color.RED : Color.BLACK;
       final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, Operation.FILL);
       told.draw(bounds, data, graphics, mapData, null, null);
     }

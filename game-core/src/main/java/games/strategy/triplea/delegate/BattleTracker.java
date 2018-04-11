@@ -67,9 +67,9 @@ public class BattleTracker implements Serializable {
   // territories where a battle occurred
   // TODO: fix typo in name, 'fough' -> 'fought'
   private final Set<Territory> m_foughBattles = new HashSet<>();
-  // these territories have had battleships bombard during a naval invasion
-  // used to make sure that the same battleship doesn't bombard twice
-  private final Set<Territory> m_bombardedFromTerritories = new HashSet<>();
+  // Kept for backwards compatibility. Remove in the next incompatible release
+  @SuppressWarnings("unused")
+  private final Set<Territory> m_bombardedFromTerritories = new HashSet<>(0);
   // list of territory we have conquered in a FinishedBattle and where from and if amphibious
   private final HashMap<Territory, Map<Territory, Collection<Unit>>> m_finishedBattlesUnitAttackFromMap =
       new HashMap<>();
@@ -1050,7 +1050,6 @@ public class BattleTracker implements Serializable {
 
   public void clear() {
     m_finishedBattlesUnitAttackFromMap.clear();
-    m_bombardedFromTerritories.clear();
     m_pendingBattles.clear();
     m_blitzed.clear();
     m_foughBattles.clear();

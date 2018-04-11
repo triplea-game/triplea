@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -83,9 +82,6 @@ public class MapPanel extends ImageScrollerLargeView {
   // units the mouse is currently over
   private Tuple<Territory, List<Unit>> currentUnits;
   private final SmallMapImageManager smallMapImageManager;
-  // keep a reference to the images from the last paint to
-  // prevent them from being gcd
-  private final List<Tile> images = new ArrayList<>();
   private RouteDescription routeDescription;
   private final TileManager tileManager;
   private BufferedImage mouseShadowImage = null;
@@ -524,7 +520,7 @@ public class MapPanel extends ImageScrollerLargeView {
   public void paint(final Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
     super.paint(g2d);
-    g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * scale), (getImageHeight() * scale)));
+    g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
     int x = model.getX();
     int y = model.getY();
     final List<Tile> images = new ArrayList<>();
@@ -532,7 +528,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
     // make sure we use the same data for the entire paint
     final GameData data = gameData;
-    // if the map fits on screen, dont draw any overlap
+    // if the map fits on screen, don't draw any overlap
     final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
     final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
     if (fitAxisX || fitAxisY) {
@@ -573,16 +569,10 @@ public class MapPanel extends ImageScrollerLargeView {
     if (routeDescription != null) {
       routeDrawer.drawRoute(g2d, routeDescription, movementLeftForCurrentUnits, movementFuelCost,
           uiContext.getResourceImageFactory());
-
     }
-    // used to keep strong references to what is on the screen so it wont be garbage collected
-    // other references to the images are weak references
-    this.images.clear();
-    this.images.addAll(images);
     if (highlightedUnits != null) {
-      for (final Entry<Territory, List<Unit>> entry : highlightedUnits.entrySet()) {
-        final Set<UnitCategory> categories = UnitSeperator.categorize(entry.getValue());
-        for (final UnitCategory category : categories) {
+      for (final List<Unit> value : highlightedUnits.values()) {
+        for (final UnitCategory category : UnitSeperator.categorize(value)) {
           final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
           if (territoryUnitsOfSameCategory.isEmpty()) {
             continue;
@@ -595,10 +585,9 @@ public class MapPanel extends ImageScrollerLargeView {
           final Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
               category.getOwner(), category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (image.isPresent()) {
-            final AffineTransform t = new AffineTransform();
-            t.translate(normalizeX(r.getX() - getXOffset()) * scale, normalizeY(r.getY() - getYOffset()) * scale);
-            t.scale(scale, scale);
-            g2d.drawImage(image.get(), t, this);
+            final AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+            transform.translate(normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
+            g2d.drawImage(image.get(), transform, this);
           }
         }
       }
@@ -653,21 +642,17 @@ public class MapPanel extends ImageScrollerLargeView {
       for (final Tile tile : tileList) {
         if (tile.isDirty()) {
           undrawnTiles.add(tile);
-        } else if (forceInMemory) {
-          images.add(tile);
         }
       }
     }
   }
 
-  private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds,
-      final List<Tile> undrawn) {
-    final List<Tile> tileList = tileManager.getTiles(bounds);
-    bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
-    for (final Tile tile : tileList) {
-      final Image img;
+  private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data,
+      final Rectangle2D.Double bounds, final List<Tile> undrawn) {
+    for (final Tile tile : tileManager.getTiles(bounds)) {
       tile.acquireLock();
       try {
+        final Image img;
         if (tile.isDirty()) {
           // take what we can get to avoid screen flicker
           undrawn.add(tile);

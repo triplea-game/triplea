@@ -1097,7 +1097,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     } catch (final Exception e) {
       count = 1;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
     final Territory territory = getData().getMap().getTerritory(s[i]);
@@ -1155,7 +1155,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     } catch (final Exception e) {
       count = 1;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
     }
     final Collection<Territory> territories = new ArrayList<>();
@@ -1224,7 +1224,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     } catch (final Exception e) {
       count = 1;
     }
-    if (s.length < 1 || (s.length == 1 && count != -1)) {
+    if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty purchase list" + thisErrorMsg());
     }
 

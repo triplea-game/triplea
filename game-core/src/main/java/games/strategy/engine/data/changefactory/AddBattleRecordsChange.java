@@ -45,7 +45,7 @@ class AddBattleRecordsChange extends Change {
     // This only occurs when serialization went badly, or something cannot be serialized.
     if (m_recordsToAdd == null) {
       throw new IllegalStateException(
-          "Records cannot be null (most likely caused by improper or impossible serialization): " + m_recordsToAdd);
+          "Records cannot be null (most likely caused by improper or impossible serialization)");
     }
     return "Adding Battle Records: " + m_recordsToAdd;
   }

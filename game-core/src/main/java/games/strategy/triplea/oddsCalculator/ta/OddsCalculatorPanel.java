@@ -95,7 +95,7 @@ class OddsCalculatorPanel extends JPanel {
   private final JLabel defenderUnitsTotalPower = new JLabel();
   private String attackerOrderOfLosses = null;
   private String defenderOrderOfLosses = null;
-  private Territory location = null;
+  private final Territory location;
   private final JList<String> territoryEffectsJList;
 
   OddsCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location,

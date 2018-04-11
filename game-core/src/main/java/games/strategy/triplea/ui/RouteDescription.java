@@ -51,7 +51,7 @@ public class RouteDescription {
     }
     // we dont want to be updating for every small change,
     // if the end points are close enough, they are close enough
-    if (other.end == null && this.end == null) {
+    if (other.end == null) {
       return true;
     }
     int diffX = end.x - other.end.x;

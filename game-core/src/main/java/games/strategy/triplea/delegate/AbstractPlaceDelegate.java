@@ -203,8 +203,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Unit> unitsLeftToPlace = new ArrayList<>(units);
     unitsLeftToPlace.sort(getUnitConstructionComparator());
 
-    final List<Unit> remainingUnitsToPlace = new ArrayList<>(player.getUnits().getUnits());
-    remainingUnitsToPlace.removeAll(unitsLeftToPlace);
     while (!unitsLeftToPlace.isEmpty() && !producers.isEmpty()) {
       // Get next producer territory
       final Territory producer = producers.remove(0);
@@ -693,7 +691,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     final List<Territory> producers = new ArrayList<>();
     // if not water then must produce in that territory
     if (!to.isWater()) {
-      if (simpleCheck || canProduce(to, to, unitsToPlace, player, simpleCheck) == null) {
+      if (simpleCheck || canProduce(to, to, unitsToPlace, player, false) == null) {
         producers.add(to);
       }
       return producers;

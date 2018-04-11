@@ -19,10 +19,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -31,7 +28,6 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -55,7 +51,6 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
-import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
 import tools.util.ToolLogger;
@@ -124,8 +119,6 @@ public final class MapPropertiesMaker {
       final JPanel panel = createPropertiesPanel();
       this.getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
       // set up the actions
-      final Action openAction = SwingAction.of("Load Properties", e -> loadProperties());
-      openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Properties File");
       final Action saveAction = SwingAction.of("Save Properties", e -> saveProperties());
       saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Properties To File");
       final Action exitAction = SwingAction.of("Exit", e -> {
@@ -134,8 +127,6 @@ public final class MapPropertiesMaker {
       });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
       // set up the menu items
-      final JMenuItem openItem = new JMenuItem(openAction);
-      openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
       final JMenuItem saveItem = new JMenuItem(saveAction);
       saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
       final JMenuItem exitItem = new JMenuItem(exitAction);
@@ -306,25 +297,8 @@ public final class MapPropertiesMaker {
       }));
       playerColorChooser.add(addPlayer, new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST,
           GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-      playerColorChooser.add(nameTextField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST,
+      playerColorChooser.add(nameTextField, new GridBagConstraints(1, row, 1, 1, 1, 1, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
-    }
-
-    private void loadProperties() {
-      ToolLogger.info("Load a properties file");
-      final String centerName =
-          new FileOpen("Load A Properties File", mapFolderLocation, ".properties").getPathString();
-      if (centerName == null) {
-        return;
-      }
-      try (InputStream in = new FileInputStream(centerName)) {
-        final Properties properties = new Properties();
-        properties.load(in);
-      } catch (final IOException e) {
-        ToolLogger.error("Failed to load map properties: " + centerName, e);
-      }
-      validate();
-      repaint();
     }
 
     private void saveProperties() {

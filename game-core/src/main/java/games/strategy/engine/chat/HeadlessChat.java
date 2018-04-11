@@ -2,8 +2,6 @@ package games.strategy.engine.chat;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.DefaultListCellRenderer;
 
@@ -29,8 +27,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   private boolean showTime = true;
   private StringBuilder allText = new StringBuilder();
   private final ChatFloodControl floodControl = new ChatFloodControl();
-  private final Set<String> hiddenPlayers = new HashSet<>();
-  private final Set<INode> players = new HashSet<>();
 
   public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
@@ -64,18 +60,10 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   }
 
   @Override
-  public void setPlayerRenderer(final DefaultListCellRenderer renderer) { // nothing
-  }
+  public void setPlayerRenderer(final DefaultListCellRenderer renderer) {}
 
   @Override
-  public synchronized void updatePlayerList(final Collection<INode> players) {
-    this.players.clear();
-    for (final INode name : players) {
-      if (!hiddenPlayers.contains(name.getName())) {
-        this.players.add(name);
-      }
-    }
-  }
+  public void updatePlayerList(final Collection<INode> players) {}
 
   @Override
   public void shutDown() {

@@ -276,9 +276,9 @@ public class HistoryPanel extends JPanel {
 
   // remember which paths were expanded
   final Collection<TreePath> stayExpandedPaths = new ArrayList<>();
-  private boolean mouseOverPanel = false;
+  private boolean mouseOverPanel;
   // to distinguish the first mouse over panel event from the others
-  boolean mouseWasOverPanel = false;
+  boolean mouseWasOverPanel;
   // remember where to start collapsing
   TreePath lastParent = null;
 

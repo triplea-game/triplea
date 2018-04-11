@@ -30,7 +30,9 @@ import games.strategy.util.IntegerMap;
  */
 public class FinishedBattle extends AbstractBattle {
   private static final long serialVersionUID = -5852495231826940879L;
-  private final Set<Territory> m_attackingFrom = new HashSet<>();
+  // Kept for backwards compatibility. Remove in the next incompatible release
+  @SuppressWarnings("unused")
+  private final Set<Territory> m_attackingFrom = new HashSet<>(0);
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
   private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
@@ -74,7 +76,6 @@ public class FinishedBattle extends AbstractBattle {
       }
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    m_attackingFrom.add(attackingFrom);
     m_attackingUnits.addAll(units);
     m_attackingFromMap.putIfAbsent(attackingFrom, new ArrayList<>());
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
@@ -103,9 +104,6 @@ public class FinishedBattle extends AbstractBattle {
       attackingFromMapUnits = new ArrayList<>();
     }
     attackingFromMapUnits.removeAll(units);
-    if (attackingFromMapUnits.isEmpty()) {
-      m_attackingFrom.remove(attackingFrom);
-    }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
       if (route.getEnd() != null && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {

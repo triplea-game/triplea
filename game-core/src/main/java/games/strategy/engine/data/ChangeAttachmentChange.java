@@ -27,7 +27,6 @@ public class ChangeAttachmentChange extends Change {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
     attachedTo = attachment.getAttachedTo();
-    clearFirst = false;
     attachmentName = attachment.getName();
     oldValue = attachment.getPropertyOrThrow(property).getValue();
     this.newValue = newValue;

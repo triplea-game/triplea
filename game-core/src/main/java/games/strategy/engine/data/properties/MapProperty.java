@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.swing.JComponent;
 
@@ -45,7 +44,7 @@ public class MapProperty<T, U> extends AEditableProperty {
         properties.add(new FileProperty(key, description, ((File) value)));
       } else if (value instanceof String) {
         properties.add(new StringProperty(key, description, ((String) value)));
-      } else if (value instanceof Collection || value instanceof List || value instanceof Set) {
+      } else if (value instanceof Collection) {
         properties.add(new CollectionProperty<>(name, description, ((Collection<U>) value)));
       } else if (value instanceof Integer) {
         properties.add(new NumberProperty(key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
@@ -68,19 +67,10 @@ public class MapProperty<T, U> extends AEditableProperty {
     return m_map;
   }
 
-  public Map<T, U> getValueT() {
-    return m_map;
-  }
-
   @Override
   @SuppressWarnings("unchecked")
   public void setValue(final Object value) throws ClassCastException {
     m_map = (Map<T, U>) value;
-    resetProperties(m_map, m_properties, this.getName(), this.getDescription());
-  }
-
-  public void setValueT(final Map<T, U> value) {
-    m_map = value;
     resetProperties(m_map, m_properties, this.getName(), this.getDescription());
   }
 
@@ -114,7 +104,7 @@ public class MapProperty<T, U> extends AEditableProperty {
               break;
             }
           }
-          if (key != null && val != null) {
+          if (key != null) {
             for (final Entry<T, U> entry : test.entrySet()) {
               if (entry.getKey() != null && entry.getValue() != null
                   && (!entry.getKey().getClass().isAssignableFrom(key.getClass())

@@ -170,9 +170,6 @@ public abstract class TechAdvance extends NamedAttachable {
     } catch (final Exception e) {
       throw new IllegalStateException(s + " is not a valid technology or could not be instantiated", e);
     }
-    if (ta == null) {
-      throw new IllegalStateException(s + " is not a valid technology or could not be instantiated");
-    }
     return ta;
   }
 

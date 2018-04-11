@@ -165,12 +165,7 @@ public class ActionButtons extends JPanel {
       return;
     }
     actionPanel.display(id);
-    final String currentName = actionPanel.toString();
-    SwingUtilities.invokeLater(() -> {
-      if (layout != null) {
-        layout.show(ActionButtons.this, currentName);
-      }
-    });
+    SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, actionPanel.toString()));
   }
 
   public void changeToPickTerritoryAndUnits(final PlayerID id) {
