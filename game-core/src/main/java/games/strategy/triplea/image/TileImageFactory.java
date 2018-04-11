@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -29,7 +30,6 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 public final class TileImageFactory {
-  private final Object mutex = new Object();
   // one instance in the application
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
   private static boolean showReliefImages;
@@ -45,7 +45,7 @@ public final class TileImageFactory {
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
   private double scale = 1.0;
   // maps image name to ImageRef
-  private final Map<String, SoftReference<Image>> imageCache = new HashMap<>();
+  private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());
   private ResourceLoader resourceLoader;
 
   static {
@@ -76,10 +76,8 @@ public final class TileImageFactory {
     if (newScale > 1) {
       throw new IllegalArgumentException("Wrong scale");
     }
-    synchronized (mutex) {
-      scale = newScale;
-      imageCache.clear();
-    }
+    scale = newScale;
+    imageCache.clear();
   }
 
   public static void setShowReliefImages(final boolean showReliefImages) {
@@ -128,9 +126,7 @@ public final class TileImageFactory {
 
   public void setMapDir(final ResourceLoader loader) {
     resourceLoader = loader;
-    synchronized (mutex) {
-      imageCache.clear();
-    }
+    imageCache.clear();
   }
 
   private Image isImageLoaded(final String fileName) {
@@ -163,20 +159,17 @@ public final class TileImageFactory {
   }
 
   private Image getImage(final String fileName, final boolean transparent) {
-    synchronized (mutex) {
-      final Image image = isImageLoaded(fileName);
-      if (image != null) {
-        return image;
-      }
-      // This is null if there is no image
-      final URL url = resourceLoader.getResource(fileName);
-
-      if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
-        return null;
-      }
-      loadImage(url, fileName, transparent, true, true);
+    final Image image = isImageLoaded(fileName);
+    if (image != null) {
+      return image;
     }
-    return getImage(fileName, transparent);
+    // This is null if there is no image
+    final URL url = resourceLoader.getResource(fileName);
+
+    if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
+      return null;
+    }
+    return loadImage(url, fileName, transparent, true, true);
   }
 
   public Image getReliefTile(final int a, final int b) {
@@ -317,9 +310,8 @@ public final class TileImageFactory {
       ClientLogger.logError("Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
-    final SoftReference<Image> ref = new SoftReference<>(image);
     if (cache) {
-      imageCache.put(fileName, ref);
+      imageCache.put(fileName, new SoftReference<>(image));
     }
     return image;
   }

@@ -28,7 +28,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -815,6 +818,12 @@ public class MapPanel extends ImageScrollerLargeView {
 
   private final class BackgroundDrawer implements Runnable {
     private volatile boolean running = true;
+    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+    BackgroundDrawer(){
+      ((ThreadPoolExecutor)executor).setKeepAliveTime(2L, TimeUnit.SECONDS);
+      ((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+    }
 
     void stop() {
       running = false;
@@ -828,18 +837,21 @@ public class MapPanel extends ImageScrollerLargeView {
           if (drawOperation != null) {
             final Tile tile = drawOperation.getFirst();
             final GameData data = drawOperation.getSecond();
-            data.acquireReadLock();
-            try {
-              tile.getImage(data, MapPanel.this.getUiContext().getMapData());
-            } finally {
-              data.releaseReadLock();
-            }
-            SwingUtilities.invokeLater(MapPanel.this::repaint);
+            executor.submit(() -> {
+              data.acquireReadLock();
+              try {
+                tile.getImage(data, MapPanel.this.getUiContext().getMapData());
+              } finally {
+                data.releaseReadLock();
+              }
+              SwingUtilities.invokeLater(MapPanel.this::repaint);
+            });
           }
         } catch (final InterruptedException e) {
           Thread.currentThread().interrupt();
         }
       }
+      executor.shutdown();
     }
   }
 }
