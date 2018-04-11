@@ -2837,8 +2837,8 @@ public class UnitAttachment extends DefaultAttachment {
       } else if (getIsAaForFlyOverOnly()) {
         stats.append(" for Move Through ");
       }
-      stats.append("with ").append(getMaxAaAttacks() != -1 ? getMaxAaAttacks() : "Unlimited").append(" Attacks for ");
-      stats.append(getMaxRoundsAa() != -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds, ");
+      stats.append("with ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited").append(" Attacks for ");
+      stats.append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds, ");
     }
     if (getIsRocket() && playerHasRockets(player)) {
       stats.append("can Rocket Attack, ");
