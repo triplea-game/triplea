@@ -13,7 +13,6 @@ import java.util.Scanner;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.util.Util;
 
 /**
  * To hold various static utility methods for running a java program.
@@ -74,15 +73,21 @@ public class ProcessRunnerUtil {
       final InputStream s = p.getInputStream();
       // we need to read the input stream to prevent possible
       // deadlocks
-      Util.createDaemonThread(() -> {
+      startDaemonThread(() -> {
         try (Scanner scanner = new Scanner(s, Charset.defaultCharset().name())) {
           while (scanner.hasNextLine()) {
             System.out.println(scanner.nextLine());
           }
         }
-      }, "Process output gobbler").start();
+      }, "Process output gobbler");
     } catch (final IOException e) {
       ClientLogger.logQuietly("Failed to start new process", e);
     }
+  }
+
+  private static void startDaemonThread(final Runnable runnable, final String name) {
+    final Thread thread = new Thread(runnable, name);
+    thread.setDaemon(true);
+    thread.start();
   }
 }
