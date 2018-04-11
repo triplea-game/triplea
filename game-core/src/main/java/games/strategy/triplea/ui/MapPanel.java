@@ -228,7 +228,7 @@ public class MapPanel extends ImageScrollerLargeView {
     return gameData;
   }
 
-  // Beagle Code used to chnage map skin
+  // Beagle Code used to change map skin
   void changeImage(final Dimension newDimensions) {
     model.setMaxBounds((int) newDimensions.getWidth(), (int) newDimensions.getHeight());
     tileManager.createTiles(new Rectangle(newDimensions));
