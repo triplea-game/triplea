@@ -2816,31 +2816,29 @@ public class UnitAttachment extends DefaultAttachment {
       if (getOffensiveAttackAa(player) > 0) {
         stats.append(getOffensiveAttackAa(player)).append("/").append(
             getOffensiveAttackAaMaxDieSides() != -1 ? getOffensiveAttackAaMaxDieSides() : getData().getDiceSides())
-            .append(" att ");
+            .append(" Att ");
       }
       if (getAttackAa(player) > 0) {
         stats.append(getAttackAa(player)).append("/")
             .append(getAttackAaMaxDieSides() != -1 ? getAttackAaMaxDieSides() : getData().getDiceSides())
-            .append(" def ");
+            .append(" Def ");
       }
-      if (getIsAaForCombatOnly() && getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()) {
-        stats.append(getTypeAa()).append(", ");
-      } else if (getIsAaForCombatOnly() && getIsAaForFlyOverOnly()
+      stats.append(getTypeAa());
+      if (getIsAaForCombatOnly() && getIsAaForFlyOverOnly()
           && !Properties.getAaTerritoryRestricted(getData())) {
-        stats.append(getTypeAa()).append(" for Combat & Move Through, ");
+        stats.append(" for Combat & Move Through ");
       } else if (getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()
           && !Properties.getAaTerritoryRestricted(getData())) {
-        stats.append(getTypeAa()).append(" for Raids & Move Through, ");
+        stats.append(" for Raids & Move Through ");
       } else if (getIsAaForCombatOnly()) {
-        stats.append(getTypeAa()).append(" for Combat, ");
+        stats.append(" for Combat ");
       } else if (getIsAaForBombingThisUnitOnly()) {
-        stats.append(getTypeAa()).append(" for Raids, ");
+        stats.append(" for Raids ");
       } else if (getIsAaForFlyOverOnly()) {
-        stats.append(getTypeAa()).append(" for Move Through, ");
+        stats.append(" for Move Through ");
       }
-      if (getMaxAaAttacks() > -1) {
-        stats.append(getMaxAaAttacks()).append(" ").append(getTypeAa()).append(" Attacks, ");
-      }
+      stats.append("with ").append(getMaxAaAttacks() != -1 ? getMaxAaAttacks() : "Unlimited").append(" Attacks for ");
+      stats.append(getMaxRoundsAa() != -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds, ");
     }
     if (getIsRocket() && playerHasRockets(player)) {
       stats.append("can Rocket Attack, ");
@@ -2967,7 +2965,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append("is Anti-Stealth, ");
     }
     if (getCanBombard(player) && getBombard() > 0) {
-      stats.append(getBombard()).append(" Bombard, ");
+      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(getBombard()).append(" Bombard, ");
     }
     if (getBlockade() > 0) {
       stats.append(getBlockade()).append(" Blockade Loss, ");
