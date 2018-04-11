@@ -65,6 +65,9 @@ public class BattleCalculator {
         .thenComparing(UnitComparator.getLowestToHighestMovementComparator()));
   }
 
+  /**
+   * Find total remaining hit points of units.
+   */
   public static int getTotalHitpointsLeft(final Collection<Unit> units) {
     if (units == null || units.isEmpty()) {
       return 0;
@@ -72,8 +75,10 @@ public class BattleCalculator {
     int totalHitPoints = 0;
     for (final Unit u : units) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
-      totalHitPoints += ua.getHitPoints();
-      totalHitPoints -= u.getHits();
+      if (!ua.getIsInfrastructure()) {
+        totalHitPoints += ua.getHitPoints();
+        totalHitPoints -= u.getHits();
+      }
     }
     return totalHitPoints;
   }
