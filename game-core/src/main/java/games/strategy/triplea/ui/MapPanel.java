@@ -27,10 +27,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -91,7 +89,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private String movementLeftForCurrentUnits = "";
   private ResourceCollection movementFuelCost;
   private final UiContext uiContext;
-  private final BlockingQueue<Tuple<Tile, GameData>> pendingDrawOperations = new LinkedBlockingQueue<>();
+  private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   private Map<Territory, List<Unit>> highlightedUnits;
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
@@ -110,9 +108,10 @@ public class MapPanel extends ImageScrollerLargeView {
     movementFuelCost = new ResourceCollection(data);
     setGameData(data);
 
+    ((ThreadPoolExecutor)executor).setKeepAliveTime(2L, TimeUnit.SECONDS);
+    ((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+
     setCursor(uiContext.getCursor());
-    final BackgroundDrawer backgroundDrawer = new BackgroundDrawer();
-    games.strategy.util.Util.createDaemonThread(backgroundDrawer, "Map panel background drawer").start();
     setDoubleBuffered(false);
     addMouseListener(new MouseAdapter() {
 
@@ -216,7 +215,7 @@ public class MapPanel extends ImageScrollerLargeView {
       // super.deactivate
       deactivate();
       clearPendingDrawOperations();
-      backgroundDrawer.stop();
+      executor.shutdown();
     });
   }
 
@@ -599,27 +598,24 @@ public class MapPanel extends ImageScrollerLargeView {
     // then draw farther away
     updateUndrawnTiles(undrawnTiles, 30, true);
     updateUndrawnTiles(undrawnTiles, 257, true);
-    // when we are this far away, dont force the tiles to stay in memroy
+    // when we are this far away, don't force the tiles to stay in memory
     updateUndrawnTiles(undrawnTiles, 513, false);
     updateUndrawnTiles(undrawnTiles, 767, false);
     clearPendingDrawOperations();
-    undrawnTiles.forEach(tile -> pendingDrawOperations.add(Tuple.of(tile, data)));
+    undrawnTiles.forEach(tile -> executor.execute(() -> {
+      data.acquireReadLock();
+      try {
+        tile.getImage(data, MapPanel.this.getUiContext().getMapData());
+      } finally {
+        data.releaseReadLock();
+      }
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
+    }));
     stopWatch.done();
   }
 
   private void clearPendingDrawOperations() {
-    for (int i = 0; i < 3; i++) {
-      try {
-        // several bug reports indicate that
-        // clear can throw an exception
-        // http://sourceforge.net/tracker/index.php?func=detail&aid=1832130&group_id=44492&atid=439737
-        // ignore
-        pendingDrawOperations.clear();
-        return;
-      } catch (final Exception e) {
-        e.printStackTrace(System.out);
-      }
-    }
+    ((ThreadPoolExecutor)executor).getQueue().clear();
   }
 
   private boolean mapWidthFitsOnScreen() {
@@ -814,44 +810,5 @@ public class MapPanel extends ImageScrollerLargeView {
 
   Optional<Image> getWarningImage() {
     return uiContext.getMapData().getWarningImage();
-  }
-
-  private final class BackgroundDrawer implements Runnable {
-    private volatile boolean running = true;
-    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
-    BackgroundDrawer(){
-      ((ThreadPoolExecutor)executor).setKeepAliveTime(2L, TimeUnit.SECONDS);
-      ((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
-    }
-
-    void stop() {
-      running = false;
-    }
-
-    @Override
-    public void run() {
-      while (running) {
-        try {
-          final Tuple<Tile, GameData> drawOperation = pendingDrawOperations.poll(2, TimeUnit.SECONDS);
-          if (drawOperation != null) {
-            final Tile tile = drawOperation.getFirst();
-            final GameData data = drawOperation.getSecond();
-            executor.submit(() -> {
-              data.acquireReadLock();
-              try {
-                tile.getImage(data, MapPanel.this.getUiContext().getMapData());
-              } finally {
-                data.releaseReadLock();
-              }
-              SwingUtilities.invokeLater(MapPanel.this::repaint);
-            });
-          }
-        } catch (final InterruptedException e) {
-          Thread.currentThread().interrupt();
-        }
-      }
-      executor.shutdown();
-    }
   }
 }
