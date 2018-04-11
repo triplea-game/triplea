@@ -162,8 +162,8 @@ public class GameDataExporter {
     xmlfile.append("    </propertyList>\n");
   }
 
-  private void printEditableProperties(final Map<String, IEditableProperty> edProperties) {
-    edProperties.values().forEach(this::printEditableProperty);
+  private void printEditableProperties(final Map<String, IEditableProperty> editableProperties) {
+    editableProperties.values().forEach(this::printEditableProperty);
   }
 
   @SuppressWarnings("unchecked")
