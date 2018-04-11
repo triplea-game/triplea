@@ -8,12 +8,14 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.thread.LockUtil;
@@ -31,7 +33,7 @@ public class Tile {
   private final Rectangle bounds;
   private final double scale;
   private final Lock lock = new ReentrantLock();
-  private final List<IDrawable> contents = new ArrayList<>();
+  private final SortedMap<Integer, List<IDrawable>> contents = new TreeMap<>();
 
   Tile(final Rectangle bounds, final double scale) {
     this.bounds = bounds;
@@ -98,28 +100,23 @@ public class Tile {
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
-    contents.sort(Comparator.comparingInt(IDrawable::getLevel));
-    for (final IDrawable drawable : contents) {
-      drawable.draw(bounds, data, g, mapData, unscaled, scaled);
+    for (final List<IDrawable> list : contents.values()) {
+      for (final IDrawable drawable : list) {
+        drawable.draw(bounds, data, g, mapData, unscaled, scaled);
+      }
     }
     isDirty = false;
     stopWatch.done();
   }
 
   void addDrawables(final Collection<IDrawable> drawables) {
-    acquireLock();
-    try {
-      contents.addAll(drawables);
-      isDirty = true;
-    } finally {
-      releaseLock();
-    }
+    drawables.forEach(this::addDrawable);
   }
 
   void addDrawable(final IDrawable d) {
     acquireLock();
     try {
-      contents.add(d);
+      contents.computeIfAbsent(d.getLevel(), l -> new ArrayList<>()).add(d);
       isDirty = true;
     } finally {
       releaseLock();
@@ -129,7 +126,7 @@ public class Tile {
   void removeDrawables(final Collection<IDrawable> c) {
     acquireLock();
     try {
-      contents.removeAll(c);
+      contents.values().forEach(l -> l.removeAll(c));
       isDirty = true;
     } finally {
       releaseLock();
@@ -149,7 +146,9 @@ public class Tile {
   List<IDrawable> getDrawables() {
     acquireLock();
     try {
-      return new ArrayList<>(contents);
+      return contents.values().stream()
+          .flatMap(Collection::stream)
+          .collect(Collectors.toList());
     } finally {
       releaseLock();
     }
