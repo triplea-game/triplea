@@ -138,7 +138,7 @@ public class XmlGameElementMapper {
           .put("UserActionAttachment",
               attachmentData -> new UserActionAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("TestAttachment", attachmentData -> new TestAttachment(attachmentData.name,
+          .put("games.strategy.engine.xml.TestAttachment", attachmentData -> new TestAttachment(attachmentData.name,
               attachmentData.attachable, attachmentData.gameData))
           .build();
 
@@ -165,9 +165,8 @@ public class XmlGameElementMapper {
       handleMissingObjectError("delegate", className);
       return Optional.empty();
     }
-
-    final Supplier<IDelegate> delegateFactory = delegateMap.get(bareName);
-    return Optional.of(delegateFactory.get());
+    
+    return Optional.of(delegateMap.get(bareName).get());
   }
 
   private static void handleMissingObjectError(final String typeLabel, final String value) {
@@ -179,7 +178,7 @@ public class XmlGameElementMapper {
 
   public Optional<IAttachment> getAttachment(final String javaClass, final String name, final Attachable attachable,
       final GameData data) {
-    final String bareName = javaClass.replaceAll("^games\\.strategy\\.(?:triplea\\.attachments|engine\\.xml)\\.", "");
+    final String bareName = javaClass.replaceAll("^games\\.strategy\\.triplea\\.attachments\\.", "");
     if (!attachmentMap.containsKey(bareName)) {
       handleMissingObjectError("attachment", javaClass);
       return Optional.empty();
