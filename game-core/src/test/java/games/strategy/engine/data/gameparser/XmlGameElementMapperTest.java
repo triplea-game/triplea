@@ -53,7 +53,7 @@ public class XmlGameElementMapperTest {
 
   @Test
   public void getDelegateHappyCase() {
-    final Optional<IDelegate> resultObject = testObj.getDelegate(XmlGameElementMapper.BATTLE_DELEGATE_NAME);
+    final Optional<IDelegate> resultObject = testObj.getDelegate("games.strategy.triplea.delegate.BattleDelegate");
     assertThat(resultObject.isPresent(), is(true));
     assertThat(resultObject.get(), instanceOf(BattleDelegate.class));
   }
