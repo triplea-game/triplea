@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.launcher;
 
 import java.awt.Component;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -30,28 +31,9 @@ public class LocalLauncher extends AbstractLauncher {
 
   @Override
   protected void launchInNewThread(final Component parent) {
-    Exception exceptionLoadingGame = null;
-    ServerGame game = null;
+    final Optional<ServerGame> game = loadGame();
     try {
-      gameData.doPreGameStartDataModifications(playerListing);
-      final Messengers messengers = new Messengers(new HeadlessServerMessenger());
-      final Set<IGamePlayer> gamePlayers =
-          gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
-      game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers);
-      game.setRandomSource(randomSource);
-      gameData.getGameLoader().startGame(game, gamePlayers, headless);
-    } catch (final MapNotFoundException e) {
-      exceptionLoadingGame = e;
-    } catch (final Exception ex) {
-      ClientLogger.logQuietly("Failed to start game", ex);
-      exceptionLoadingGame = ex;
-    } finally {
-      gameLoadingWindow.doneWait();
-    }
-    try {
-      if (exceptionLoadingGame == null) {
-        game.startGame();
-      }
+      game.ifPresent(ServerGame::startGame);
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
@@ -59,6 +41,23 @@ public class LocalLauncher extends AbstractLauncher {
       Interruptibles.sleep(100);
       gameSelectorModel.loadDefaultGameNewThread();
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
+    }
+  }
+
+  private Optional<ServerGame> loadGame() {
+    try {
+      gameData.doPreGameStartDataModifications(playerListing);
+      final Messengers messengers = new Messengers(new HeadlessServerMessenger());
+      final Set<IGamePlayer> gamePlayers = gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
+      final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers);
+      game.setRandomSource(randomSource);
+      gameData.getGameLoader().startGame(game, gamePlayers, headless);
+      return Optional.of(game);
+    } catch (final Exception ex) {
+      ClientLogger.logError("Failed to start game", ex);
+      return Optional.empty();
+    } finally {
+      gameLoadingWindow.doneWait();
     }
   }
 }
