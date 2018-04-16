@@ -118,13 +118,9 @@ public class TripleA implements IGameLoader {
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
     } else {
-      final UiContext uiContext = new HeadedUiContext();
-      uiContext.setDefaultMapDir(game.getData());
-      uiContext.getMapData().verify(game.getData());
-      uiContext.setLocalPlayers(localPlayers);
+      final TripleAFrame frame = TripleAFrame.create(game, localPlayers);
 
       SwingAction.invokeAndWait(() -> {
-        final TripleAFrame frame = new TripleAFrame(game, localPlayers, uiContext);
         LookAndFeelSwingFrameListener.register(frame);
         display = new TripleADisplay(frame);
         game.addDisplay(display);

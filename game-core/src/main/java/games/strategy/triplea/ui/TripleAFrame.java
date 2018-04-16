@@ -77,6 +77,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
@@ -213,8 +214,24 @@ public class TripleAFrame extends MainGameFrame {
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private boolean isCtrlPressed = false;
 
-  /** Creates new TripleAFrame. */
-  public TripleAFrame(final IGame game, final LocalPlayers players, final UiContext uiContext) {
+  /**
+   * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
+   */
+  public static TripleAFrame create(final IGame game, final LocalPlayers players) {
+    Preconditions.checkState(!SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
+
+    final UiContext uiContext = new HeadedUiContext();
+    uiContext.setDefaultMapDir(game.getData());
+    uiContext.getMapData().verify(game.getData());
+    uiContext.setLocalPlayers(players);
+
+    return Interruptibles
+        .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext)))
+        .result
+        .get();
+  }
+
+  private TripleAFrame(final IGame game, final LocalPlayers players, final UiContext uiContext) {
     super("TripleA - " + game.getData().getGameName(), players);
     this.game = game;
     data = game.getData();
