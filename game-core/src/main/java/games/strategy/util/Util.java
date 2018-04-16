@@ -72,14 +72,4 @@ public class Util {
 
     return p.negate();
   }
-
-  /**
-   * A helper method to allow one-line creation of daemon Threads.
-   */
-  public static Thread createDaemonThread(final Runnable runnable, final String name) {
-    Preconditions.checkNotNull(runnable);
-    final Thread thread = new Thread(runnable, name);
-    thread.setDaemon(true);
-    return thread;
-  }
 }

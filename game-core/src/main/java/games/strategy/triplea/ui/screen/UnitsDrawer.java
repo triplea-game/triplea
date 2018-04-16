@@ -93,7 +93,7 @@ public class UnitsDrawer implements IDrawable {
     final Optional<Image> img =
         uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 
-    if (!img.isPresent()) {
+    if (!img.isPresent() && !uiContext.isShutDown()) {
       ClientLogger.logError("MISSING IMAGE (this unit or image will be invisible): " + type);
     }
 
