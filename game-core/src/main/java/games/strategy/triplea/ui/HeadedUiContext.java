@@ -51,7 +51,7 @@ public class HeadedUiContext extends AbstractUiContext {
   protected OptionalExtraBorderLevel extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
   protected Cursor cursor = Cursor.getDefaultCursor();
 
-  HeadedUiContext() {
+  public HeadedUiContext() {
     super();
     mapImage = new MapImage();
   }

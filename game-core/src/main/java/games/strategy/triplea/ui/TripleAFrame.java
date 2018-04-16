@@ -157,7 +157,6 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.CollectionUtils;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
@@ -215,7 +214,7 @@ public class TripleAFrame extends MainGameFrame {
   private boolean isCtrlPressed = false;
 
   /** Creates new TripleAFrame. */
-  public TripleAFrame(final IGame game, final LocalPlayers players) {
+  public TripleAFrame(final IGame game, final LocalPlayers players, final UiContext uiContext) {
     super("TripleA - " + game.getData().getGameName(), players);
     this.game = game;
     data = game.getData();
@@ -228,10 +227,7 @@ public class TripleAFrame extends MainGameFrame {
       }
     };
     this.addWindowListener(windowListener);
-    uiContext = new HeadedUiContext();
-    uiContext.setDefaultMapDir(game.getData());
-    uiContext.getMapData().verify(data);
-    uiContext.setLocalPlayers(players);
+    this.uiContext = uiContext;
     this.setCursor(uiContext.getCursor());
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
