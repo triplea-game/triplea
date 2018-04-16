@@ -18,6 +18,7 @@ import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.util.Interruptibles;
 
 public class ClientGame extends AbstractGame {
@@ -101,6 +102,7 @@ public class ClientGame extends AbstractGame {
         if (!loadedFromSavedGame) {
           gameData.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
         }
+        BattleCalculator.clearOolCache();
         notifyGameStepListeners(stepName, delegateName, player, round, displayName);
       }
 

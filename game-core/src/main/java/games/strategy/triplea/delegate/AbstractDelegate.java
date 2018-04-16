@@ -44,7 +44,7 @@ public abstract class AbstractDelegate implements IDelegate {
    */
   @Override
   public void start() {
-    // nothing to do here
+    BattleCalculator.clearOolCache();
   }
 
   /**

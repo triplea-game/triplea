@@ -31,7 +31,6 @@ import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
-import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -133,7 +132,6 @@ public class ProAi extends AbstractAi {
   protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
       final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOolCache();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     calc.setData(data);
@@ -156,7 +154,6 @@ public class ProAi extends AbstractAi {
   protected void purchase(final boolean purchaseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
       final GameData data, final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOolCache();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     if (pusToSpend <= 0) {
@@ -251,7 +248,6 @@ public class ProAi extends AbstractAi {
   protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
       final PlayerID player) {
     final long start = System.currentTimeMillis();
-    BattleCalculator.clearOolCache();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
     purchaseAi.place(storedPurchaseTerritories, placeDelegate);
