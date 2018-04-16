@@ -794,7 +794,7 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
-     messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+    messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
         displayMessage, title, JOptionPane.INFORMATION_MESSAGE, getUiContext().getCountDownLatchHandler()));
   }
 
