@@ -66,32 +66,27 @@ import games.strategy.twoIfBySea.delegate.InitDelegate;
  * </p>
  */
 public class XmlGameElementMapper {
-
-  // these keys are package protected to allow test to have access to known good keys
-  @VisibleForTesting
-  static final String BATTLE_DELEGATE_NAME = "games.strategy.triplea.delegate.BattleDelegate";
-
   /* Maps a name (given as an XML attribute value) to a supplier function that creates the corresponding delegate */
   private final ImmutableMap<String, Supplier<IDelegate>> delegateMap =
       ImmutableMap.<String, Supplier<IDelegate>>builder()
-          .put(BATTLE_DELEGATE_NAME, BattleDelegate::new)
-          .put("games.strategy.triplea.delegate.BidPlaceDelegate", BidPlaceDelegate::new)
-          .put("games.strategy.triplea.delegate.BidPurchaseDelegate", BidPurchaseDelegate::new)
-          .put("games.strategy.triplea.delegate.EndRoundDelegate", EndRoundDelegate::new)
-          .put("games.strategy.triplea.delegate.EndTurnDelegate", EndTurnDelegate::new)
-          .put("games.strategy.triplea.delegate.InitializationDelegate", InitializationDelegate::new)
-          .put("games.strategy.triplea.delegate.MoveDelegate", MoveDelegate::new)
-          .put("games.strategy.triplea.delegate.NoAirCheckPlaceDelegate", NoAirCheckPlaceDelegate::new)
-          .put("games.strategy.triplea.delegate.NoPUEndTurnDelegate", NoPUEndTurnDelegate::new)
-          .put("games.strategy.triplea.delegate.NoPUPurchaseDelegate", NoPUPurchaseDelegate::new)
-          .put("games.strategy.triplea.delegate.PlaceDelegate", PlaceDelegate::new)
-          .put("games.strategy.triplea.delegate.PoliticsDelegate", PoliticsDelegate::new)
-          .put("games.strategy.triplea.delegate.PurchaseDelegate", PurchaseDelegate::new)
-          .put("games.strategy.triplea.delegate.RandomStartDelegate", RandomStartDelegate::new)
-          .put("games.strategy.triplea.delegate.SpecialMoveDelegate", SpecialMoveDelegate::new)
-          .put("games.strategy.triplea.delegate.TechActivationDelegate", TechActivationDelegate::new)
-          .put("games.strategy.triplea.delegate.TechnologyDelegate", TechnologyDelegate::new)
-          .put("games.strategy.triplea.delegate.UserActionDelegate", UserActionDelegate::new)
+          .put("BattleDelegate", BattleDelegate::new)
+          .put("BidPlaceDelegate", BidPlaceDelegate::new)
+          .put("BidPurchaseDelegate", BidPurchaseDelegate::new)
+          .put("EndRoundDelegate", EndRoundDelegate::new)
+          .put("EndTurnDelegate", EndTurnDelegate::new)
+          .put("InitializationDelegate", InitializationDelegate::new)
+          .put("MoveDelegate", MoveDelegate::new)
+          .put("NoAirCheckPlaceDelegate", NoAirCheckPlaceDelegate::new)
+          .put("NoPUEndTurnDelegate", NoPUEndTurnDelegate::new)
+          .put("NoPUPurchaseDelegate", NoPUPurchaseDelegate::new)
+          .put("PlaceDelegate", PlaceDelegate::new)
+          .put("PoliticsDelegate", PoliticsDelegate::new)
+          .put("PurchaseDelegate", PurchaseDelegate::new)
+          .put("RandomStartDelegate", RandomStartDelegate::new)
+          .put("SpecialMoveDelegate", SpecialMoveDelegate::new)
+          .put("TechActivationDelegate", TechActivationDelegate::new)
+          .put("TechnologyDelegate", TechnologyDelegate::new)
+          .put("UserActionDelegate", UserActionDelegate::new)
           .put("games.strategy.twoIfBySea.delegate.EndTurnDelegate",
               games.strategy.twoIfBySea.delegate.EndTurnDelegate::new)
           .put("games.strategy.twoIfBySea.delegate.InitDelegate", InitDelegate::new)
@@ -143,7 +138,7 @@ public class XmlGameElementMapper {
           .put("UserActionAttachment",
               attachmentData -> new UserActionAttachment(attachmentData.name, attachmentData.attachable,
                   attachmentData.gameData))
-          .put("TestAttachment", attachmentData -> new TestAttachment(attachmentData.name,
+          .put("games.strategy.engine.xml.TestAttachment", attachmentData -> new TestAttachment(attachmentData.name,
               attachmentData.attachable, attachmentData.gameData))
           .build();
 
@@ -165,13 +160,18 @@ public class XmlGameElementMapper {
    * Assumes a zero argument constructor.
    */
   public Optional<IDelegate> getDelegate(final String className) {
-    if (!delegateMap.containsKey(className)) {
+    final String bareName = className.replaceAll("^games\\.strategy\\.triplea\\.delegate\\.", "");
+    if (!delegateMap.containsKey(bareName)) {
       handleMissingObjectError("delegate", className);
       return Optional.empty();
     }
 
-    final Supplier<IDelegate> delegateFactory = delegateMap.get(className);
-    return Optional.of(delegateFactory.get());
+    if (className.startsWith("games.strategy.twoIfBySea.delegate.")) {
+      ClientLogger.logQuietly("Use of twoIfBySea delegates is discouraged "
+          + "and will be removed in a future version of TripleA.");
+    }
+
+    return Optional.of(delegateMap.get(bareName).get());
   }
 
   private static void handleMissingObjectError(final String typeLabel, final String value) {
@@ -183,7 +183,7 @@ public class XmlGameElementMapper {
 
   public Optional<IAttachment> getAttachment(final String javaClass, final String name, final Attachable attachable,
       final GameData data) {
-    final String bareName = javaClass.replaceAll("^games\\.strategy\\.(?:triplea\\.attachments|engine\\.xml)\\.", "");
+    final String bareName = javaClass.replaceAll("^games\\.strategy\\.triplea\\.attachments\\.", "");
     if (!attachmentMap.containsKey(bareName)) {
       handleMissingObjectError("attachment", javaClass);
       return Optional.empty();
