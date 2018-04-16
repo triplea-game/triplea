@@ -168,8 +168,7 @@ public class XmlGameElementMapper {
 
     if (className.startsWith("games.strategy.twoIfBySea.delegate.")) {
       ClientLogger.logQuietly("Use of twoIfBySea delegates is discouraged "
-          + "and will be removed in a future "
-          + "version of TripleA.");
+          + "and will be removed in a future version of TripleA.");
     }
 
     return Optional.of(delegateMap.get(bareName).get());
