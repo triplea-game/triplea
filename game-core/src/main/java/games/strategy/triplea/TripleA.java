@@ -29,6 +29,7 @@ import games.strategy.triplea.ai.weak.DoesNothingAi;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
+import games.strategy.triplea.ui.HeadedUiContext;
 import games.strategy.triplea.ui.HeadlessUiContext;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
@@ -117,8 +118,9 @@ public class TripleA implements IGameLoader {
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
     } else {
+      final TripleAFrame frame = TripleAFrame.create(game, localPlayers);
+
       SwingAction.invokeAndWait(() -> {
-        final TripleAFrame frame = new TripleAFrame(game, localPlayers);
         LookAndFeelSwingFrameListener.register(frame);
         display = new TripleADisplay(frame);
         game.addDisplay(display);

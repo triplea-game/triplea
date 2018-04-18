@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -78,6 +77,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
@@ -158,7 +158,6 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.CollectionUtils;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
@@ -212,15 +211,30 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID lastStepPlayer;
   private PlayerID currentStepPlayer;
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
-  private final ThreadPool messageAndDialogThreadPool;
+  private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private boolean isCtrlPressed = false;
 
-  /** Creates new TripleAFrame. */
-  public TripleAFrame(final IGame game, final LocalPlayers players) {
+  /**
+   * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
+   */
+  public static TripleAFrame create(final IGame game, final LocalPlayers players) {
+    Preconditions.checkState(!SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
+
+    final UiContext uiContext = new HeadedUiContext();
+    uiContext.setDefaultMapDir(game.getData());
+    uiContext.getMapData().verify(game.getData());
+    uiContext.setLocalPlayers(players);
+
+    return Interruptibles
+        .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext)))
+        .result
+        .get();
+  }
+
+  private TripleAFrame(final IGame game, final LocalPlayers players, final UiContext uiContext) {
     super("TripleA - " + game.getData().getGameName(), players);
     this.game = game;
     data = game.getData();
-    messageAndDialogThreadPool = new ThreadPool(1);
     addZoomKeyboardShortcuts();
     this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     final WindowListener windowListener = new WindowAdapter() {
@@ -230,10 +244,7 @@ public class TripleAFrame extends MainGameFrame {
       }
     };
     this.addWindowListener(windowListener);
-    uiContext = new HeadedUiContext();
-    uiContext.setDefaultMapDir(game.getData());
-    uiContext.getMapData().verify(data);
-    uiContext.setLocalPlayers(players);
+    this.uiContext = uiContext;
     this.setCursor(uiContext.getCursor());
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
@@ -702,9 +713,6 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public IntegerMap<ProductionRule> getProduction(final PlayerID player, final boolean bid) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToProduce(player);
     return actionButtons.waitForPurchase(bid);
@@ -712,9 +720,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public HashMap<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToRepair(player);
     return actionButtons.waitForRepair(bid, allowedPlayersToRepair);
@@ -722,9 +727,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat,
       final String stepName) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToMove(player, nonCombat, stepName);
     // workaround for panel not receiving focus at beginning of n/c move phase
@@ -742,36 +744,28 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public PlaceData waitForPlace(final PlayerID player, final boolean bid, final IPlayerBridge bridge) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPlace(player);
     return actionButtons.waitForPlace(bid, bridge);
   }
 
   public void waitForMoveForumPoster(final PlayerID player, final IPlayerBridge bridge) {
-    if (actionButtons == null || messageAndDialogThreadPool == null) {
+    if (actionButtons == null) {
       return;
     }
-    // m_messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToMoveForumPosterPanel(player);
     actionButtons.waitForMoveForumPosterPanel(this, bridge);
   }
 
   public void waitForEndTurn(final PlayerID player, final IPlayerBridge bridge) {
-    if (actionButtons == null || messageAndDialogThreadPool == null) {
+    if (actionButtons == null) {
       return;
     }
-    // m_messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToEndTurn(player);
     actionButtons.waitForEndTurn(this, bridge);
   }
 
   public FightBattleDetails getBattle(final PlayerID player, final Map<BattleType, Collection<Territory>> battles) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToBattle(player, battles);
     return actionButtons.waitForBattleSelection();
@@ -783,9 +777,6 @@ public class TripleAFrame extends MainGameFrame {
   @Override
   public void notifyError(final String message) {
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
-    if (messageAndDialogThreadPool == null) {
-      return;
-    }
     messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
         displayMessage, "Error", JOptionPane.ERROR_MESSAGE, getUiContext().getCountDownLatchHandler()));
   }
@@ -816,15 +807,13 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
-    if (messageAndDialogThreadPool != null) {
-      messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
-          displayMessage, title, JOptionPane.INFORMATION_MESSAGE, getUiContext().getCountDownLatchHandler()));
-    }
+    messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
+        displayMessage, title, JOptionPane.INFORMATION_MESSAGE, getUiContext().getCountDownLatchHandler()));
   }
 
   public boolean getOkToLetAirDie(final PlayerID id, final Collection<Territory> airCantLand,
       final boolean movePhase) {
-    if (airCantLand == null || airCantLand.isEmpty() || messageAndDialogThreadPool == null) {
+    if (airCantLand == null || airCantLand.isEmpty()) {
       return true;
     }
     messageAndDialogThreadPool.waitForAll();
@@ -856,7 +845,7 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public boolean getOkToLetUnitsDie(final Collection<Territory> unitsCantFight, final boolean movePhase) {
-    if (unitsCantFight == null || unitsCantFight.isEmpty() || messageAndDialogThreadPool == null) {
+    if (unitsCantFight == null || unitsCantFight.isEmpty()) {
       return true;
     }
     messageAndDialogThreadPool.waitForAll();
@@ -876,9 +865,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
-    if (messageAndDialogThreadPool == null) {
-      return true;
-    }
     messageAndDialogThreadPool.waitForAll();
     final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion,
         "Accept " + (politics ? "Political " : "") + "Proposal from " + playerSendingProposal.getName() + "?",
@@ -887,9 +873,6 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public boolean getOk(final String message) {
-    if (messageAndDialogThreadPool == null) {
-      return true;
-    }
     messageAndDialogThreadPool.waitForAll();
     final int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION,
         getUiContext().getCountDownLatchHandler());
@@ -897,9 +880,6 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public void notifyTechResults(final TechResults msg) {
-    if (messageAndDialogThreadPool == null) {
-      return;
-    }
     final Supplier<TechResultsDisplay> action = () -> new TechResultsDisplay(msg, uiContext, data);
     messageAndDialogThreadPool
         .submit(() -> Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
@@ -916,9 +896,6 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public boolean getStrategicBombingRaid(final Territory location) {
-    if (messageAndDialogThreadPool == null) {
-      return true;
-    }
     messageAndDialogThreadPool.waitForAll();
     final String message =
         (Properties.getRaidsMayBePreceededByAirBattles(data) ? "Bomb/Escort" : "Bomb") + " in "
@@ -939,7 +916,7 @@ public class TripleAFrame extends MainGameFrame {
       final Territory territory,
       final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
-    if (potentialTargets.size() == 1 || messageAndDialogThreadPool == null) {
+    if (potentialTargets.size() == 1) {
       return potentialTargets.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
@@ -1010,9 +987,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
       final int diceSides) {
-    if (messageAndDialogThreadPool == null) {
-      return new int[numDice];
-    }
     messageAndDialogThreadPool.waitForAll();
     final Supplier<DiceChooser> action =
         () -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides);
@@ -1034,7 +1008,7 @@ public class TripleAFrame extends MainGameFrame {
     if (candidates == null || candidates.isEmpty()) {
       return null;
     }
-    if (candidates.size() == 1 || messageAndDialogThreadPool == null) {
+    if (candidates.size() == 1) {
       return candidates.iterator().next();
     }
     messageAndDialogThreadPool.waitForAll();
@@ -1070,10 +1044,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player,
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
-    if (messageAndDialogThreadPool == null) {
-      return Tuple.of(territoryChoices.iterator().next(),
-          new HashSet<>(CollectionUtils.getNMatches(unitChoices, unitsPerPick, Matches.always())));
-    }
     // total hacks
     messageAndDialogThreadPool.waitForAll();
     {
@@ -1118,7 +1088,7 @@ public class TripleAFrame extends MainGameFrame {
     }
     final Map<Territory, IntegerMap<Unit>> selection = new HashMap<>();
     if (possibleUnitsToAttack == null || possibleUnitsToAttack.isEmpty() || attackResourceToken == null
-        || maxNumberOfAttacksAllowed <= 0 || messageAndDialogThreadPool == null) {
+        || maxNumberOfAttacksAllowed <= 0) {
       return selection;
     }
     messageAndDialogThreadPool.waitForAll();
@@ -1188,9 +1158,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
@@ -1316,9 +1283,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
       final String message) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
@@ -1387,9 +1351,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun,
       final IPoliticsDelegate politicsDelegate) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPolitics(player);
     requestWindowFocus();
@@ -1398,9 +1359,6 @@ public class TripleAFrame extends MainGameFrame {
 
   public UserActionAttachment getUserActionChoice(final PlayerID player, final boolean firstRun,
       final IUserActionDelegate userActionDelegate) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToUserActions(player);
     requestWindowFocus();
@@ -1408,9 +1366,6 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public TechRoll getTechRolls(final PlayerID id) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToTech(id);
     // workaround for panel not receiving focus at beginning of tech phase
@@ -1419,10 +1374,6 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public Territory getRocketAttack(final Collection<Territory> candidates, final Territory from) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
-
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(from);
 
@@ -2037,9 +1988,6 @@ public class TripleAFrame extends MainGameFrame {
   });
 
   public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where) {
-    if (messageAndDialogThreadPool == null) {
-      return null;
-    }
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(where);
     final AtomicReference<JScrollPane> panelRef = new AtomicReference<>();
