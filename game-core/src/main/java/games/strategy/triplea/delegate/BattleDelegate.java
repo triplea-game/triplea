@@ -50,6 +50,10 @@ import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
+
+/**
+ * Delegate to track and fight all battles.
+ */
 @MapSupport
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
