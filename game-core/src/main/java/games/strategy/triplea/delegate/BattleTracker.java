@@ -1040,7 +1040,10 @@ public class BattleTracker implements Serializable {
       }
       m_pendingBattles.remove(battle);
       m_foughBattles.add(battle.getTerritory());
-      DelegateFinder.battleDelegate(data).clearCurrentBattle(battle);
+      final BattleDelegate battleDelegate = DelegateFinder.battleDelegate(data);
+      if (battleDelegate != null) {
+        battleDelegate.clearCurrentBattle(battle);
+      }
     }
   }
 
