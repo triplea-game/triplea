@@ -187,6 +187,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     battleTracker.clearEmptyAirBattleAttacks(bridge);
   }
 
+  // TODO: Remove unused method for next incompatible release
   @Override
   public String fightCurrentBattle() {
     if (currentBattle == null) {
@@ -217,10 +218,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       return "Must complete " + getFightingWord(firstPrecede) + " in " + name + " first";
     }
     currentBattle = battle;
-    // fight the battle
     battle.fight(bridge);
-    currentBattle = null;
-    // and were done
     return null;
   }
 
@@ -481,7 +479,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
             BattleRecord.BattleResultDescription.STALEMATE, results);
         battle.cancelBattle(bridge);
-        battleTracker.removeBattle(battle);
+        battleTracker.removeBattle(battle, data);
         continue;
       }
       // possibility to ignore battle altogether
@@ -493,7 +491,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                 BattleRecord.BattleResultDescription.NO_BATTLE, results);
             battle.cancelBattle(bridge);
-            battleTracker.removeBattle(battle);
+            battleTracker.removeBattle(battle, data);
           }
           continue;
         }
@@ -507,7 +505,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(bridge);
-              battleTracker.removeBattle(battle);
+              battleTracker.removeBattle(battle, data);
             }
             continue;
           }
@@ -518,7 +516,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(bridge);
-              battleTracker.removeBattle(battle);
+              battleTracker.removeBattle(battle, data);
             }
             continue;
           }
@@ -530,7 +528,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
               battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
                   BattleRecord.BattleResultDescription.NO_BATTLE, results);
               battle.cancelBattle(bridge);
-              battleTracker.removeBattle(battle);
+              battleTracker.removeBattle(battle, data);
             }
           }
         }
@@ -1527,4 +1525,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   public IBattle getCurrentBattle() {
     return currentBattle;
   }
+
+  public void clearCurrentBattle(final IBattle battle) {
+    if (battle.equals(currentBattle)) {
+      currentBattle = null;
+    }
+  }
+
 }

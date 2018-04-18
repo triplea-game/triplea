@@ -82,7 +82,7 @@ public class ProSimulateTurnUtils {
           delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
         }
         battleDelegate.getBattleTracker().getConquered().add(t);
-        battleDelegate.getBattleTracker().removeBattle(battle);
+        battleDelegate.getBattleTracker().removeBattle(battle, data);
         final Territory updatedTerritory = data.getMap().getTerritory(t.getName());
         ProLogger.debug(
             "after changes owner=" + updatedTerritory.getOwner() + ", units=" + updatedTerritory.getUnits().getUnits());

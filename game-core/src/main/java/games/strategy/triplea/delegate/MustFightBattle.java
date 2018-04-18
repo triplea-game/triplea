@@ -76,7 +76,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
   private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
   private Set<Territory> m_attackingFrom = new HashSet<>();
-  private Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
+  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> m_killed = new ArrayList<>();
@@ -2586,7 +2586,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void endBattle(final IDelegateBridge bridge) {
     clearWaitingToDieAndDamagedChangesInto(bridge);
     m_isOver = true;
-    m_battleTracker.removeBattle(this);
+    m_battleTracker.removeBattle(this, bridge.getData());
 
     // Must clear transportedby for allied air on carriers for both attacking units and retreating units
     final CompositeChange clearAlliedAir =
@@ -2676,7 +2676,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
             m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
             new BattleResults(this, m_data));
       }
-      m_battleTracker.removeBattle(this);
+      m_battleTracker.removeBattle(this, m_data);
     }
   }
 

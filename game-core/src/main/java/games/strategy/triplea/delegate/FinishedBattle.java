@@ -60,7 +60,7 @@ public class FinishedBattle extends AbstractBattle {
       m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
           m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     }
-    m_battleTracker.removeBattle(this);
+    m_battleTracker.removeBattle(this, bridge.getData());
     m_isOver = true;
   }
 
@@ -149,7 +149,7 @@ public class FinishedBattle extends AbstractBattle {
               m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
               new BattleResults(this, m_data));
         }
-        m_battleTracker.removeBattle(this);
+        m_battleTracker.removeBattle(this, bridge.getData());
       }
     }
   }

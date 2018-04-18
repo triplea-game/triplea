@@ -386,7 +386,7 @@ public class AirBattle extends AbstractBattle {
         m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
     getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
     m_isOver = true;
-    m_battleTracker.removeBattle(AirBattle.this);
+    m_battleTracker.removeBattle(AirBattle.this, bridge.getData());
   }
 
   void finishBattleAndRemoveFromTrackerHeadless(final IDelegateBridge bridge) {
@@ -395,7 +395,7 @@ public class AirBattle extends AbstractBattle {
     m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
     m_battleTracker.getBattleRecords().removeBattle(m_attacker, m_battleID);
     m_isOver = true;
-    m_battleTracker.removeBattle(AirBattle.this);
+    m_battleTracker.removeBattle(AirBattle.this, bridge.getData());
   }
 
   private void attackerRetreat(final IDelegateBridge bridge) {
