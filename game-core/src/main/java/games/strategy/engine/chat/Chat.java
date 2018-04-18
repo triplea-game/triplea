@@ -37,7 +37,7 @@ public class Chat {
   // mutex used for access synchronization to nodes
   // TODO: check if this mutex is used for something else as well
   private final Object mutexNodes = new Object();
-  private final List<INode> nodes;
+  private final List<INode> nodes = new ArrayList<>();
   // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
   // until end of
   // initialization
@@ -78,11 +78,11 @@ public class Chat {
     // this all seems a lot more involved than it needs to be.
     final IChatController controller = (IChatController) messengers.getRemoteMessenger()
         .getRemote(ChatController.getChatControlerRemoteName(chatName));
-    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscribor,
-        new RemoteName(chatChannelName, IChatChannel.class));
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
-    nodes = new ArrayList<>(chatters.keySet());
+    nodes.addAll(chatters.keySet());
+    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscribor,
+        new RemoteName(chatChannelName, IChatChannel.class));
     chatInitVersion = init.getSecond();
     queuedInitMessages.forEach(Runnable::run);
     assignNodeTags(chatters);
@@ -92,9 +92,6 @@ public class Chat {
 
   private void updateConnections() {
     synchronized (mutexNodes) {
-      if (nodes == null) {
-        return;
-      }
       final List<INode> playerNames = new ArrayList<>(nodes);
       Collections.sort(playerNames);
       for (final IChatListener listener : listeners) {
