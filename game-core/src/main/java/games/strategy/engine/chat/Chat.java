@@ -78,11 +78,11 @@ public class Chat {
     // this all seems a lot more involved than it needs to be.
     final IChatController controller = (IChatController) messengers.getRemoteMessenger()
         .getRemote(ChatController.getChatControlerRemoteName(chatName));
-    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscribor,
-        new RemoteName(chatChannelName, IChatChannel.class));
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
     nodes.addAll(chatters.keySet());
+    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscribor,
+        new RemoteName(chatChannelName, IChatChannel.class));
     chatInitVersion = init.getSecond();
     queuedInitMessages.forEach(Runnable::run);
     assignNodeTags(chatters);
