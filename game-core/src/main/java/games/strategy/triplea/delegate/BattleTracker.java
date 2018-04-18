@@ -1033,6 +1033,9 @@ public class BattleTracker implements Serializable {
     }
   }
 
+  /**
+   * Removes battle from pending list, any dependencies, and clears current battle.
+   */
   public void removeBattle(final IBattle battle, final GameData data) {
     if (battle != null) {
       for (final IBattle current : getBlocked(battle)) {
