@@ -1034,7 +1034,7 @@ public class BattleTracker implements Serializable {
   }
 
   /**
-   * Removes battle from pending list, any dependencies, and clears current battle.
+   * Remove battle from pending list, dependencies, and clear current battle.
    */
   public void removeBattle(final IBattle battle, final GameData data) {
     if (battle != null) {
@@ -1043,9 +1043,10 @@ public class BattleTracker implements Serializable {
       }
       m_pendingBattles.remove(battle);
       m_foughBattles.add(battle.getTerritory());
-      final BattleDelegate battleDelegate = DelegateFinder.battleDelegate(data);
-      if (battleDelegate != null) {
-        battleDelegate.clearCurrentBattle(battle);
+      try {
+        DelegateFinder.battleDelegate(data).clearCurrentBattle(battle);
+      } catch (final IllegalStateException e) {
+        // ignore as can't find battle delegate
       }
     }
   }
