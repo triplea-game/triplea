@@ -76,18 +76,21 @@ public class ProPurchaseOptionMap {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         factoryOptions.add(ppo);
         ProLogger.debug("Factory: " + ppo);
-      } else if (Matches.unitTypeIsAaForBombingThisUnitOnly().test(unitType)) {
-        final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-        aaOptions.add(ppo);
-        ProLogger.debug("AA: " + ppo);
       } else if (Matches.unitTypeIsLand().test(unitType)) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
-        landFodderOptions.add(ppo);
-        if (ppo.getAttack() >= ppo.getDefense() || ppo.isAttackSupport() || ppo.getMovement() > 1) {
+        if (!Matches.unitTypeIsInfrastructure().test(unitType)) {
+          landFodderOptions.add(ppo);
+        }
+        if ((ppo.getAttack() > 0 || ppo.isAttackSupport())
+            && (ppo.getAttack() >= ppo.getDefense() || ppo.getMovement() > 1)) {
           landAttackOptions.add(ppo);
         }
-        if (ppo.getDefense() >= ppo.getAttack() || ppo.isDefenseSupport() || ppo.getMovement() > 1) {
+        if ((ppo.getDefense() > 0 || ppo.isDefenseSupport())
+            && (ppo.getDefense() >= ppo.getAttack() || ppo.getMovement() > 1)) {
           landDefenseOptions.add(ppo);
+        }
+        if (Matches.unitTypeIsAaForBombingThisUnitOnly().test(unitType)) {
+          aaOptions.add(ppo);
         }
         ProLogger.debug("Land: " + ppo);
       } else if (Matches.unitTypeIsAir().test(unitType)) {
