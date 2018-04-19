@@ -338,7 +338,7 @@ public class ProTerritoryManager {
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
-        final List<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
+        List<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitWasScrambled().negate())
@@ -354,6 +354,7 @@ public class ProTerritoryManager {
                   ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(), false);
               return Double.compare(strength2, strength1);
             });
+            canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
           }
           moveMap.get(to).getMaxScrambleUnits().addAll(canScrambleAir);
         }
