@@ -482,7 +482,7 @@ class ProNonCombatMoveAi {
 
     // Sort attack territories by value
     final List<ProTerritory> prioritizedTerritories = new ArrayList<>(moveMap.values());
-    prioritizedTerritories.sort(Comparator.comparingDouble(ProTerritory::getValue));
+    prioritizedTerritories.sort(Comparator.comparingDouble(ProTerritory::getValue).reversed());
 
     // Remove territories that I'm not going to try to defend
     for (final Iterator<ProTerritory> it = prioritizedTerritories.iterator(); it.hasNext();) {

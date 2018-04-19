@@ -288,7 +288,7 @@ class ProCombatMoveAi {
     }
 
     // Sort attack territories by value
-    attackOptions.sort(Comparator.comparingDouble(ProTerritory::getValue));
+    attackOptions.sort(Comparator.comparingDouble(ProTerritory::getValue).reversed());
 
     // Log prioritized territories
     for (final ProTerritory patd : attackOptions) {
