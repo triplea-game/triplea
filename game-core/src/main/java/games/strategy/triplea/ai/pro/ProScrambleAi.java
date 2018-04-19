@@ -61,7 +61,7 @@ class ProScrambleAi {
     final Map<Territory, List<Unit>> possibleMaxScramblerMap = new HashMap<>();
     for (final Territory t : possibleScramblers.keySet()) {
       final int maxCanScramble = BattleDelegate.getMaxScrambleCount(possibleScramblers.get(t).getFirst());
-      final List<Unit> canScrambleAir = new ArrayList<>(possibleScramblers.get(t).getSecond());
+      List<Unit> canScrambleAir = new ArrayList<>(possibleScramblers.get(t).getSecond());
       if (maxCanScramble < canScrambleAir.size()) {
         Collections.sort(canScrambleAir, (o1, o2) -> {
           final double strength1 =
@@ -70,6 +70,7 @@ class ProScrambleAi {
               ProBattleUtils.estimateStrength(scrambleTo, Collections.singletonList(o2), new ArrayList<>(), false);
           return Double.compare(strength2, strength1);
         });
+        canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
       }
       allScramblers.addAll(canScrambleAir);
       possibleMaxScramblerMap.put(t, canScrambleAir);
