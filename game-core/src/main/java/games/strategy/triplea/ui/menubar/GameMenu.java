@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -57,24 +56,24 @@ final class GameMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_G);
 
-    SwingUtilities.invokeLater(this::addEditMode);
-    SwingUtilities.invokeLater(this::addSeparator);
-    SwingUtilities.invokeLater(() -> add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow())));
-    SwingUtilities.invokeLater(() -> SoundOptions.addGlobalSoundSwitchMenu(this));
-    SwingUtilities.invokeLater(() -> SoundOptions.addToMenu(this));
-    SwingUtilities.invokeLater(this::addSeparator);
-    SwingUtilities.invokeLater(() -> addMenuItemWithHotkey(frame.getShowGameAction(), KeyEvent.VK_G));
-    SwingUtilities.invokeLater(() -> addMenuItemWithHotkey(frame.getShowHistoryAction(), KeyEvent.VK_H));
-    SwingUtilities.invokeLater(() -> add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M));
-    SwingUtilities.invokeLater(this::addSeparator);
-    SwingUtilities.invokeLater(this::addGameOptionsMenu);
-    SwingUtilities.invokeLater(this::addShowVerifiedDice);
-    SwingUtilities.invokeLater(this::addPoliticsMenu);
-    SwingUtilities.invokeLater(this::addNotificationSettings);
-    SwingUtilities.invokeLater(this::addShowDiceStats);
-    SwingUtilities.invokeLater(this::addRollDice);
-    SwingUtilities.invokeLater(() -> addMenuItemWithHotkey(SwingAction.of("Battle Calculator",
-        e -> OddsCalculatorDialog.show(frame, null)), KeyEvent.VK_B));
+    addEditMode();
+    addSeparator();
+    add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow()));
+    SoundOptions.addGlobalSoundSwitchMenu(this);
+    SoundOptions.addToMenu(this);
+    addSeparator();
+    addMenuItemWithHotkey(frame.getShowGameAction(), KeyEvent.VK_G);
+    addMenuItemWithHotkey(frame.getShowHistoryAction(), KeyEvent.VK_H);
+    add(frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
+    addSeparator();
+    addGameOptionsMenu();
+    addShowVerifiedDice();
+    addPoliticsMenu();
+    addNotificationSettings();
+    addShowDiceStats();
+    addRollDice();
+    addMenuItemWithHotkey(SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null)),
+        KeyEvent.VK_B);
   }
 
   private void addMenuItemWithHotkey(final Action action, final int keyCode) {

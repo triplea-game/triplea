@@ -33,7 +33,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -73,25 +72,25 @@ final class ViewMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_V);
 
-    SwingUtilities.invokeLater(this::addZoomMenu);
-    SwingUtilities.invokeLater(this::addUnitSizeMenu);
-    SwingUtilities.invokeLater(this::addLockMap);
-    SwingUtilities.invokeLater(this::addShowUnits);
-    SwingUtilities.invokeLater(this::addUnitNationDrawMenu);
+    addZoomMenu();
+    addUnitSizeMenu();
+    addLockMap();
+    addShowUnits();
+    addUnitNationDrawMenu();
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
-      SwingUtilities.invokeLater(this::addShowTerritoryEffects);
+      addShowTerritoryEffects();
     }
-    SwingUtilities.invokeLater(this::addMapSkinsMenu);
-    SwingUtilities.invokeLater(this::addShowMapDetails);
-    SwingUtilities.invokeLater(this::addShowMapBlends);
-    SwingUtilities.invokeLater(this::addDrawTerritoryBordersAgain);
-    SwingUtilities.invokeLater(this::addMapFontAndColorEditorMenu);
-    SwingUtilities.invokeLater(this::addChatTimeMenu);
-    SwingUtilities.invokeLater(this::addShowCommentLog);
-    SwingUtilities.invokeLater(this::addTabbedProduction);
-    SwingUtilities.invokeLater(this::addShowGameUuid);
+    addMapSkinsMenu();
+    addShowMapDetails();
+    addShowMapBlends();
+    addDrawTerritoryBordersAgain();
+    addMapFontAndColorEditorMenu();
+    addChatTimeMenu();
+    addShowCommentLog();
+    addTabbedProduction();
+    addShowGameUuid();
 
-    SwingUtilities.invokeLater(() -> showMapDetails.setEnabled(uiContext.getMapData().getHasRelief()));
+    showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
   }
 
   private void addShowCommentLog() {

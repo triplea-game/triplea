@@ -10,7 +10,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
@@ -33,22 +32,20 @@ public final class TripleAMenuBar extends JMenuBar {
   public TripleAMenuBar(final TripleAFrame frame) {
     this.frame = frame;
 
-    SwingUtilities.invokeLater(() -> add(new FileMenu(frame)));
-    SwingUtilities.invokeLater(() -> add(new ViewMenu(frame)));
-    SwingUtilities.invokeLater(() -> add(new GameMenu(frame)));
-    SwingUtilities.invokeLater(() -> add(new ExportMenu(frame)));
+    add(new FileMenu(frame));
+    add(new ViewMenu(frame));
+    add(new GameMenu(frame));
+    add(new ExportMenu(frame));
 
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
-    SwingUtilities.invokeLater(() -> watcher
-        .filter(InGameLobbyWatcherWrapper::isActive).ifPresent(this::createLobbyMenu));
-
+    watcher.filter(InGameLobbyWatcherWrapper::isActive).ifPresent(this::createLobbyMenu);
     if (!(frame.getGame().getMessenger() instanceof HeadlessServerMessenger)) {
-      SwingUtilities.invokeLater(() -> add(new NetworkMenu(watcher, frame)));
+      add(new NetworkMenu(watcher, frame));
     }
 
-    SwingUtilities.invokeLater(() -> add(new WebHelpMenu()));
-    SwingUtilities.invokeLater(() -> add(new DebugMenu(frame)));
-    SwingUtilities.invokeLater(() -> add(new HelpMenu(frame.getUiContext(), frame.getGame().getData())));
+    add(new WebHelpMenu());
+    add(new DebugMenu(frame));
+    add(new HelpMenu(frame.getUiContext(), frame.getGame().getData()));
   }
 
   private void createLobbyMenu(final InGameLobbyWatcherWrapper watcher) {
