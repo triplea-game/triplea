@@ -158,8 +158,7 @@ public class BattleTracker implements Serializable {
   private boolean didThesePlayersJustGoToWarThisTurn(final PlayerID p1, final PlayerID p2) {
     // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war,
     // and newRelation is war
-    for (final Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>> t
-        : m_relationshipChangesThisTurn) {
+    for (final Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>> t : m_relationshipChangesThisTurn) {
       final Tuple<PlayerID, PlayerID> players = t.getFirst();
       if (players.getFirst().equals(p1)) {
         if (!players.getSecond().equals(p2)) {
@@ -683,7 +682,7 @@ public class BattleTracker implements Serializable {
         getBattleRecords().addResultToBattle(id, bombingBattle.getBattleId(), null, 0, 0,
             BattleRecord.BattleResultDescription.NO_BATTLE, results);
         bombingBattle.cancelBattle(bridge);
-        removeBattle(bombingBattle);
+        removeBattle(bombingBattle, data);
         throw new IllegalStateException(
             "Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
       }
@@ -1034,13 +1033,21 @@ public class BattleTracker implements Serializable {
     }
   }
 
-  public void removeBattle(final IBattle battle) {
+  /**
+   * Remove battle from pending list, dependencies, and clear current battle.
+   */
+  public void removeBattle(final IBattle battle, final GameData data) {
     if (battle != null) {
       for (final IBattle current : getBlocked(battle)) {
         removeDependency(current, battle);
       }
       m_pendingBattles.remove(battle);
       m_foughBattles.add(battle.getTerritory());
+      try {
+        DelegateFinder.battleDelegate(data).clearCurrentBattle(battle);
+      } catch (final IllegalStateException e) {
+        // ignore as can't find battle delegate
+      }
     }
   }
 

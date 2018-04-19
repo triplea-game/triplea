@@ -92,11 +92,7 @@ public class NonFightingBattle extends DependentBattle {
     }
     m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
         m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
-    end();
-  }
-
-  private void end() {
-    m_battleTracker.removeBattle(this);
+    m_battleTracker.removeBattle(this, m_data);
     m_isOver = true;
   }
 

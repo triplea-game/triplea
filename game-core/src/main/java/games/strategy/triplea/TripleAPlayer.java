@@ -31,7 +31,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
-import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -451,12 +450,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
       }
       final BattleListing battles = battleDel.getBattles();
       if (battles.isEmpty()) {
-        final IBattle battle = battleDel.getCurrentBattle();
-        if (battle != null) {
-          // this should never happen, but it happened once....
-          System.err.println("Current battle exists but is not on pending list:  " + battle.toString());
-          battleDel.fightCurrentBattle();
-        }
         return;
       }
       if (!soundPlayedAlreadyBattle) {
