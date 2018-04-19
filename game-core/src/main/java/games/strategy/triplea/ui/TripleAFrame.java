@@ -270,7 +270,7 @@ public class TripleAFrame extends MainGameFrame {
     final MouseOverUnitListener mouseOverUnitListener = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(mouseOverUnitListener);
     // link the small and large images
-    mapPanel.initSmallMap();
+    SwingUtilities.invokeLater(mapPanel::initSmallMap);
     mapAndChatPanel = new JPanel();
     mapAndChatPanel.setLayout(new BorderLayout());
     commentPanel = new CommentPanel(this, data);
