@@ -3,7 +3,6 @@ package games.strategy.triplea.ai.pro.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -339,7 +338,7 @@ public class ProTerritoryManager {
         final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
-        List<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
+        final List<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitWasScrambled().negate())
@@ -348,9 +347,13 @@ public class ProTerritoryManager {
         // Add max scramble units
         if (maxCanScramble > 0 && !canScrambleAir.isEmpty()) {
           if (maxCanScramble < canScrambleAir.size()) {
-            canScrambleAir.sort(Comparator.comparingDouble(
-                o -> ProBattleUtils.estimateStrength(to, Collections.singletonList(o), new ArrayList<>(), false)));
-            canScrambleAir = canScrambleAir.subList(0, maxCanScramble);
+            Collections.sort(canScrambleAir, (o1, o2) -> {
+              final double strength1 =
+                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o1), new ArrayList<>(), false);
+              final double strength2 =
+                  ProBattleUtils.estimateStrength(to, Collections.singletonList(o2), new ArrayList<>(), false);
+              return Double.compare(strength2, strength1);
+            });
           }
           moveMap.get(to).getMaxScrambleUnits().addAll(canScrambleAir);
         }

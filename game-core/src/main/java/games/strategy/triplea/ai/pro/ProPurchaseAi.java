@@ -508,7 +508,7 @@ class ProPurchaseAi {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(needToDefendTerritories);
-    sortedTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getDefenseValue));
+    sortedTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getDefenseValue).reversed());
     for (final ProPlaceTerritory placeTerritory : sortedTerritories) {
       ProLogger.debug(placeTerritory.toString() + " defenseValue=" + placeTerritory.getDefenseValue());
     }
@@ -667,7 +667,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    prioritizedLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue));
+    prioritizedLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue).reversed());
     for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
       ProLogger.debug(placeTerritory.toString() + " strategicValue=" + placeTerritory.getStrategicValue());
     }
@@ -1082,7 +1082,7 @@ class ProPurchaseAi {
 
     // Sort territories by value
     final List<ProPlaceTerritory> sortedTerritories = new ArrayList<>(seaPlaceTerritories);
-    sortedTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue));
+    sortedTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue).reversed());
     ProLogger.debug("Sorted sea territories:");
     for (final ProPlaceTerritory placeTerritory : sortedTerritories) {
       ProLogger.debug(placeTerritory.toString() + " value=" + placeTerritory.getStrategicValue());
@@ -1517,7 +1517,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    prioritizedLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue));
+    prioritizedLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getStrategicValue).reversed());
     ProLogger.debug("Sorted land territories with remaining production: " + prioritizedLandTerritories);
 
     // Loop through territories and purchase long range attack units
@@ -1569,7 +1569,7 @@ class ProPurchaseAi {
     }
 
     // Sort territories by value
-    prioritizedCantHoldLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getDefenseValue));
+    prioritizedCantHoldLandTerritories.sort(Comparator.comparingDouble(ProPlaceTerritory::getDefenseValue).reversed());
     ProLogger
         .debug("Sorted can't hold land territories with remaining production: " + prioritizedCantHoldLandTerritories);
 
