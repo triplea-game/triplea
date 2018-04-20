@@ -97,23 +97,23 @@ public class MapData implements Closeable {
 
   private final DefaultColors defaultColors = new DefaultColors();
   private final Map<String, Color> playerColors = new HashMap<>();
-  private Map<String, Tuple<List<Point>, Boolean>> place;
-  private Map<String, List<Polygon>> polys;
-  private Map<String, Point> centers;
-  private Map<String, Point> vcPlace;
-  private Map<String, Point> blockadePlace;
-  private Map<String, Point> convoyPlace;
-  private Map<String, Point> commentPlace;
-  private Map<String, Point> puPlace;
-  private Map<String, Point> namePlace;
-  private Map<String, Point> kamikazePlace;
-  private Map<String, Point> capitolPlace;
-  private Map<String, List<String>> contains;
-  private Properties mapProperties;
-  private Map<String, List<Point>> territoryEffects;
+  private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
+  private final Map<String, List<Polygon>> polys = new HashMap<>();
+  private final Map<String, Point> centers = new HashMap<>();
+  private final Map<String, Point> vcPlace = new HashMap<>();
+  private final Map<String, Point> blockadePlace = new HashMap<>();
+  private final Map<String, Point> convoyPlace = new HashMap<>();
+  private final Map<String, Point> commentPlace = new HashMap<>();
+  private final Map<String, Point> puPlace = new HashMap<>();
+  private final Map<String, Point> namePlace = new HashMap<>();
+  private final Map<String, Point> kamikazePlace = new HashMap<>();
+  private final Map<String, Point> capitolPlace = new HashMap<>();
+  private final Map<String, List<String>> contains = new HashMap<>();
+  private final Properties mapProperties = new Properties();
+  private final Map<String, List<Point>> territoryEffects = new HashMap<>();
   private Set<String> undrawnTerritoriesNames;
-  private Map<Image, List<Point>> decorations;
-  private Map<String, Image> territoryNameImages;
+  private final Map<Image, List<Point>> decorations = new HashMap<>();
+  private final Map<String, Image> territoryNameImages = new HashMap<>();
   private final Map<String, Image> effectImages = new HashMap<>();
   private final ResourceLoader resourceLoader;
 
@@ -140,9 +140,6 @@ public class MapData implements Closeable {
   public MapData(final ResourceLoader loader) {
     resourceLoader = loader;
     try {
-      place = readPlacementsOneToMany(optionalResource(PLACEMENT_FILE));
-      territoryEffects = readPointsOneToMany(optionalResource(TERRITORY_EFFECT_FILE));
-
       if (loader.getResource(POLYGON_FILE) == null) {
         throw new IllegalStateException(
             "Error in resource loading. Unable to load expected resource: " + POLYGON_FILE + ", the error"
@@ -151,19 +148,21 @@ public class MapData implements Closeable {
                 + " relative to the map folder, or relative to the root of the map zip");
       }
 
-      polys = readPolygonsOneToMany(requiredResource(POLYGON_FILE));
-      centers = readPointsOneToOne(requiredResource(CENTERS_FILE));
-      vcPlace = readPointsOneToOne(optionalResource(VC_MARKERS));
-      convoyPlace = readPointsOneToOne(optionalResource(CONVOY_MARKERS));
-      commentPlace = readPointsOneToOne(optionalResource(COMMENT_MARKERS));
-      blockadePlace = readPointsOneToOne(optionalResource(BLOCKADE_MARKERS));
-      capitolPlace = readPointsOneToOne(optionalResource(CAPITAL_MARKERS));
-      puPlace = readPointsOneToOne(optionalResource(PU_PLACE_FILE));
-      namePlace = readPointsOneToOne(optionalResource(TERRITORY_NAME_PLACE_FILE));
-      kamikazePlace = readPointsOneToOne(optionalResource(KAMIKAZE_FILE));
-      mapProperties = new Properties();
-      decorations = loadDecorations();
-      territoryNameImages = territoryNameImages();
+      place.putAll(readPlacementsOneToMany(optionalResource(PLACEMENT_FILE)));
+      territoryEffects.putAll(readPointsOneToMany(optionalResource(TERRITORY_EFFECT_FILE)));
+
+      polys.putAll(readPolygonsOneToMany(requiredResource(POLYGON_FILE)));
+      centers.putAll(readPointsOneToOne(requiredResource(CENTERS_FILE)));
+      vcPlace.putAll(readPointsOneToOne(optionalResource(VC_MARKERS)));
+      convoyPlace.putAll(readPointsOneToOne(optionalResource(CONVOY_MARKERS)));
+      commentPlace.putAll(readPointsOneToOne(optionalResource(COMMENT_MARKERS)));
+      blockadePlace.putAll(readPointsOneToOne(optionalResource(BLOCKADE_MARKERS)));
+      capitolPlace.putAll(readPointsOneToOne(optionalResource(CAPITAL_MARKERS)));
+      puPlace.putAll(readPointsOneToOne(optionalResource(PU_PLACE_FILE)));
+      namePlace.putAll(readPointsOneToOne(optionalResource(TERRITORY_NAME_PLACE_FILE)));
+      kamikazePlace.putAll(readPointsOneToOne(optionalResource(KAMIKAZE_FILE)));
+      decorations.putAll(loadDecorations());
+      territoryNameImages.putAll(territoryNameImages());
 
       try (InputStream inputStream = requiredResource(MAP_PROPERTIES).get()) {
         mapProperties.load(inputStream);
@@ -412,7 +411,6 @@ public class MapData implements Closeable {
   }
 
   private void initializeContains() {
-    contains = new HashMap<>();
     for (final String seaTerritory : getTerritories()) {
       if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
         continue;
