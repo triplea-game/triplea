@@ -6,10 +6,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -29,30 +32,40 @@ public class DiceImageFactory {
   private final ResourceLoader resourceLoader;
   private static final Color IGNORED = new Color(100, 100, 100, 200);
 
-  private final Map<Integer, Image> images = new HashMap<>();
-  private final Map<Integer, Image> imagesHit = new HashMap<>();
-  private final Map<Integer, Image> imagesIgnored = new HashMap<>();
+  private final Map<Integer, Image> images;
+  private final Map<Integer, Image> imagesHit;
+  private final Map<Integer, Image> imagesIgnored;
 
   public DiceImageFactory(final ResourceLoader loader, final int diceSides) {
     this.diceSides = Math.max(6, diceSides);
     resourceLoader = loader;
-    final int pipSize = 6;
-    generateDice(pipSize, Color.black, images);
-    generateDice(pipSize, Color.red, imagesHit);
-    generateDice(pipSize, IGNORED, imagesIgnored);
+    images = generateDice(Color.BLACK);
+    imagesHit = generateDice(Color.RED);
+    imagesIgnored = generateDice(IGNORED);
   }
 
-  private void generateDice(final int pipSize, final Color color, final Map<Integer, Image> images) {
+  private Map<Integer, Image> generateDice(final Color color) {
     final ImageFactory imageFactory = new ImageFactory();
     imageFactory.setResourceLoader(resourceLoader);
-    for (int currentSide = 1; currentSide <= diceSides; currentSide++) {
-      final Image img = resourceLoader != null
-          ? imageFactory.getImage(getDiceResourceName(color, currentSide), false)
-          : null;
-      images.put(currentSide, img != null ? img : drawFallbackDie(pipSize, currentSide, color));
-    }
+    return IntStream.rangeClosed(1, diceSides)
+        .boxed()
+        .collect(Collectors.toMap(Function.identity(),
+            side -> getImageOrFallback(resourceLoader, imageFactory, color, side)));
   }
 
+  private Image getImageOrFallback(
+      @Nullable final ResourceLoader loader,
+      final ImageFactory factory,
+      final Color color,
+      final int dieSide) {
+    if (loader != null) {
+      final Image image = factory.getImage(getDiceResourceName(color, dieSide), false);
+      if (image != null) {
+        return image;
+      }
+    }
+    return drawFallbackDie(dieSide, color);
+  }
 
   private String getDiceResourceName(final Color color, final int dieSide) {
     final String suffix = ImmutableMap
@@ -65,12 +78,13 @@ public class DiceImageFactory {
     return "dice/" + dieSide + Objects.requireNonNull(suffix) + ".png";
   }
 
-  private Image drawFallbackDie(final int pipSize, final int dieSide, final Color color) {
+  private Image drawFallbackDie(final int dieSide, final Color color) {
+    final int pipSize = 6;
     final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
-    final Graphics graphics = canvas.getGraphics();
+    final Graphics2D graphics = (Graphics2D) canvas.getGraphics();
     graphics.setColor(color);
     graphics.drawRoundRect(1, 1, DIE_WIDTH - 3, DIE_HEIGHT - 3, 5, 5);
-    ((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     // center dot
     if (dieSide == 1 || dieSide == 3 || dieSide == 5) {
       graphics.fillOval(DIE_WIDTH / 2 - (pipSize / 2), DIE_HEIGHT / 2 - (pipSize / 2), pipSize, pipSize);
@@ -98,7 +112,7 @@ public class DiceImageFactory {
     }
     if (dieSide > 6) {
       graphics.setFont(new Font("Arial", Font.BOLD, 16));
-      ((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       final String number = Integer.toString(dieSide);
       final int widthOffset = graphics.getFontMetrics().charsWidth(number.toCharArray(), 0, number.length());
       final int heightOffset = graphics.getFontMetrics().getHeight();
