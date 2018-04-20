@@ -128,6 +128,21 @@ public final class PointFileReaderWriterTest {
           () -> readFromString(PointFileReaderWriter::readOneToOne, content3));
       assertTrue(e3.getMessage().contains("54 Sea Zone"));
     }
+
+    @Test
+    public void shouldSupportNegativeValues() throws Exception {
+      final String content = ""
+          + "United Kingdom (-1011,1021)\n"
+          + "Germany (1234, -12424)\n"
+          + "Eastern United States (-123, -456)";
+
+      final Map<String, Point> pointsByName = readFromString(PointFileReaderWriter::readOneToOne, content);
+
+      assertThat(pointsByName, is(ImmutableMap.of(
+          "United Kingdom", new Point(-1011, 1021),
+          "Germany", new Point(1234, -12424),
+          "Eastern United States", new Point(-123, -456))));
+    }
   }
 
   @Nested
@@ -188,6 +203,18 @@ public final class PointFileReaderWriterTest {
       final Exception e3 = assertThrows(IOException.class,
           () -> readFromString(PointFileReaderWriter::readOneToMany, content3));
       assertTrue(e3.getMessage().contains("54 Sea Zone"));
+    }
+
+    @Test
+    public void shouldSupportNegativeValues() throws Exception {
+      final String content = ""
+          + "United Kingdom (-1011,1021) (1234, -12424) (-123, -456)";
+
+      final Map<String, List<Point>> pointListsByName = readFromString(PointFileReaderWriter::readOneToMany, content);
+
+      assertThat(pointListsByName, is(ImmutableMap.of(
+          "United Kingdom",
+          Arrays.asList(new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
     }
   }
 
@@ -256,6 +283,21 @@ public final class PointFileReaderWriterTest {
       final Exception e3 = assertThrows(IOException.class,
           () -> readFromString(PointFileReaderWriter::readOneToManyPlacements, content3));
       assertTrue(e3.getMessage().contains("54 Sea Zone"));
+    }
+
+    @Test
+    public void shouldSupportNegativeValues() throws Exception {
+      final String content = ""
+          + "United Kingdom (-1011,1021) (1234, -12424) (-123, -456)";
+
+      final Map<String, Tuple<List<Point>, Boolean>> pointListsByName =
+          readFromString(PointFileReaderWriter::readOneToManyPlacements, content);
+
+      assertThat(pointListsByName, is(ImmutableMap.of(
+          "United Kingdom",
+          Tuple.of(
+              Arrays.asList(new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)),
+              Boolean.FALSE))));
     }
   }
 
@@ -336,6 +378,19 @@ public final class PointFileReaderWriterTest {
               .zip(Ints.asList(polygon.xpoints).stream(), Ints.asList(polygon.ypoints).stream(), Point::new)
               .collect(Collectors.toList()))
           .collect(Collectors.toList());
+    }
+
+    @Test
+    public void shouldSupportNegativeValues() throws Exception {
+      final String content = ""
+          + "United Kingdom < (-1011,1021) (1234, -12424) (-123, -456) >";
+
+      final Map<String, List<Polygon>> polygonListsByName =
+          readFromString(PointFileReaderWriter::readOneToManyPolygons, content);
+
+      assertThat(points(polygonListsByName.get("United Kingdom")), is(Arrays
+          .asList(Arrays
+              .asList(new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
     }
   }
 
