@@ -270,7 +270,7 @@ public class TripleAFrame extends MainGameFrame {
     final MouseOverUnitListener mouseOverUnitListener = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(mouseOverUnitListener);
     // link the small and large images
-    mapPanel.initSmallMap();
+    SwingUtilities.invokeLater(mapPanel::initSmallMap);
     mapAndChatPanel = new JPanel();
     mapAndChatPanel.setLayout(new BorderLayout());
     commentPanel = new CommentPanel(this, data);
@@ -355,12 +355,10 @@ public class TripleAFrame extends MainGameFrame {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    final List<KeyListener> keyListeners =
-        ImmutableList.of(getFullScreenListener(), getArrowKeyListener(), movePanel.getCustomKeyListeners(),
-            getFlagToggleKeyListener(this));
-    for (final KeyListener keyListener : keyListeners) {
-      mapPanel.addKeyListener(keyListener);
-    }
+    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getFullScreenListener()));
+    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
+    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(movePanel.getCustomKeyListeners()));
+    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getFlagToggleKeyListener(this)));
 
     addTab("Actions", actionButtons, 'A');
     actionButtons.setBorder(null);

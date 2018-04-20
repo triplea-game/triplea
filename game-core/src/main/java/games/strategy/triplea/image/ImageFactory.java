@@ -36,13 +36,11 @@ public class ImageFactory {
         images.put(key, null);
         return null;
       }
-      final Image image;
       try {
-        image = ImageIO.read(url);
+        images.put(key, ImageIO.read(url));
       } catch (final IOException e) {
         throw new IllegalStateException(e);
       }
-      images.put(key, image);
     }
     return images.get(key);
   }

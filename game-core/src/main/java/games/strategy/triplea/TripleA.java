@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -93,8 +95,7 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless)
-      throws InterruptedException {
+  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
     this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
@@ -120,19 +121,21 @@ public class TripleA implements IGameLoader {
     } else {
       final TripleAFrame frame = TripleAFrame.create(game, localPlayers);
 
-      SwingAction.invokeAndWait(() -> {
+      SwingUtilities.invokeLater(() -> {
         LookAndFeelSwingFrameListener.register(frame);
-        display = new TripleADisplay(frame);
-        game.addDisplay(display);
-        soundChannel = new DefaultSoundChannel(localPlayers);
-        game.addSoundChannel(soundChannel);
         frame.setSize(700, 400);
         frame.setVisible(true);
-        ClipPlayer.play(SoundPath.CLIP_GAME_START);
-        connectPlayers(players, frame);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         frame.toFront();
       });
+
+      display = new TripleADisplay(frame);
+      game.addDisplay(display);
+      soundChannel = new DefaultSoundChannel(localPlayers);
+      game.addSoundChannel(soundChannel);
+      ClipPlayer.play(SoundPath.CLIP_GAME_START);
+      connectPlayers(players, frame);
+
     }
   }
 

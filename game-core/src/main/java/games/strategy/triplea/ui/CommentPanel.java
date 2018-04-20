@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.text.BadLocationException;
@@ -46,7 +48,7 @@ public class CommentPanel extends JPanel {
   private JButton save;
   private final GameData data;
   private final TripleAFrame frame;
-  private Map<PlayerID, Icon> iconMap;
+  private final Map<PlayerID, Icon> iconMap = new HashMap<>();
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -91,10 +93,9 @@ public class CommentPanel extends JPanel {
     save = new JButton(saveAction);
     save.setMargin(inset);
     save.setFocusable(false);
-    // create icon map
-    iconMap = new HashMap<>();
     for (final PlayerID playerId : data.getPlayerList().getPlayers()) {
-      iconMap.put(playerId, new ImageIcon(frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId)));
+      CompletableFuture.supplyAsync(() -> frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId))
+        .thenAccept(image -> SwingUtilities.invokeLater(() -> iconMap.put(playerId, new ImageIcon(image))));
     }
   }
 
