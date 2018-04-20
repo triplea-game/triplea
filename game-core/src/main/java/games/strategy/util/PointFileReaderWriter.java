@@ -36,11 +36,12 @@ import com.google.common.primitives.Ints;
 public final class PointFileReaderWriter {
 
   // Matches an int tuple like this: (123, 456)
-  private static final Pattern pointPattern = Pattern.compile("\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+  private static final Pattern pointPattern = Pattern.compile("\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
   // Matches a "polygon" like this: < something that's not a greater than or less than char >
   private static final Pattern polygonPattern = Pattern.compile("<[^>]*>");
   // Matches a Name-Int-Tuple pair like this: Some Weird Territory Name without an opening round bracket (654, 321)
-  private static final Pattern singlePointPattern = Pattern.compile("^([^(]*?)\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+  private static final Pattern singlePointPattern = Pattern
+      .compile("^([^(]*?)\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
 
   private PointFileReaderWriter() {}
 
