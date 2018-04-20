@@ -48,6 +48,7 @@ public class DiceImageFactory {
     final ImageFactory imageFactory = new ImageFactory();
     imageFactory.setResourceLoader(resourceLoader);
     return IntStream.rangeClosed(1, diceSides)
+        .parallel()
         .boxed()
         .collect(Collectors.toMap(Function.identity(),
             side -> getImageOrFallback(resourceLoader, imageFactory, color, side)));
