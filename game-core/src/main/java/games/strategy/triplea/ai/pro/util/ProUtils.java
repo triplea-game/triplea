@@ -112,7 +112,7 @@ public class ProUtils {
     for (final Iterator<PlayerID> it = otherPlayers.iterator(); it.hasNext();) {
       final PlayerID otherPlayer = it.next();
       final RelationshipType relation = data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
-      if (Matches.relationshipTypeIsAllied().test(relation) || isNeutralPlayer(otherPlayer)) {
+      if (Matches.relationshipTypeIsAllied().test(relation) || isPassiveNeutralPlayer(otherPlayer)) {
         it.remove();
       }
     }
@@ -185,7 +185,7 @@ public class ProUtils {
       }
       int distance = data.getMap().getDistance(t, enemyLandTerritory,
           ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
-      if (enemyLandTerritory.getOwner().isNull()) {
+      if (ProUtils.isNeutralLand(enemyLandTerritory)) {
         distance++;
       }
       if (distance < minDistance) {
@@ -226,10 +226,36 @@ public class ProUtils {
     return false;
   }
 
+  public static boolean isNeutralLand(final Territory t) {
+    return !t.isWater() && ProUtils.isNeutralPlayer(t.getOwner());
+  }
+
+  /**
+   * Determines whether a player is neutral by checking if all players in its alliance can be considered
+   * neutral as defined by: isPassiveNeutralPlayer OR isHidden and defaultType is AI or DoesNothing.
+   */
   public static boolean isNeutralPlayer(final PlayerID player) {
-    final GameData data = ProData.getData();
-    for (final GameStep gameStep : data.getSequence()) {
-      if (player.equals(gameStep.getPlayerId())) {
+    final GameData data = player.getData();
+    final Set<PlayerID> players = data.getRelationshipTracker().getAllies(player, true);
+    for (final PlayerID p : players) {
+      if (!isPassiveNeutralPlayer(player)
+          && (!p.isHidden() || !(p.isDefaultTypeAi() || p.isDefaultTypeDoesNothing()))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Returns true if the player doesn't have a combat move phase.
+   */
+  public static boolean isPassiveNeutralPlayer(final PlayerID player) {
+    if (player.isNull()) {
+      return true;
+    }
+    for (final GameStep gameStep : player.getData().getSequence()) {
+      if (player.equals(gameStep.getPlayerId()) && gameStep.getName().endsWith("CombatMove")
+          && !gameStep.getName().endsWith("NonCombatMove")) {
         return false;
       }
     }

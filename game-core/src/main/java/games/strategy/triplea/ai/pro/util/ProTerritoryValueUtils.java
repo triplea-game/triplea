@@ -30,7 +30,7 @@ public class ProTerritoryValueUtils {
     final GameData data = ProData.getData();
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
     double value = 3 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
-    if (!t.isWater() && t.getOwner().isNull()) {
+    if (ProUtils.isNeutralLand(t)) {
       final double strength =
           ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnits().getUnits()), new ArrayList<>(), false);
 
@@ -188,7 +188,7 @@ public class ProTerritoryValueUtils {
       }
 
       // Calculate value
-      final int isNeutral = t.getOwner().isNull() ? 1 : 0;
+      final int isNeutral = ProUtils.isNeutralLand(t) ? 1 : 0;
       final int landMassSize = 1 + data.getMap()
           .getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)).size();
       final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32 / (1 + 3 * isNeutral)
@@ -237,7 +237,7 @@ public class ProTerritoryValueUtils {
           ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
       if (distance > 0) {
         double value = TerritoryAttachment.getProduction(nearbyEnemyTerritory);
-        if (nearbyEnemyTerritory.getOwner().isNull()) {
+        if (ProUtils.isNeutralLand(nearbyEnemyTerritory)) {
           value = findTerritoryAttackValue(player, nearbyEnemyTerritory) / 3; // find neutral value
         } else if (ProMatches.territoryIsAlliedLandAndHasNoEnemyNeighbors(player, data).test(nearbyEnemyTerritory)) {
           value *= 0.1; // reduce value for can't hold amphib allied territories
@@ -304,7 +304,7 @@ public class ProTerritoryValueUtils {
         if (ProMatches.territoryIsEnemyOrCantBeHeld(player, data, territoriesThatCantBeHeld)
             .test(nearbyLandTerritory)) {
           double value = TerritoryAttachment.getProduction(nearbyLandTerritory);
-          if (nearbyLandTerritory.getOwner().isNull()) {
+          if (ProUtils.isNeutralLand(nearbyLandTerritory)) {
             value = findTerritoryAttackValue(player, nearbyLandTerritory);
           }
           nearbyLandValue += value;

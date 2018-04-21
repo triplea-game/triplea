@@ -432,7 +432,7 @@ public class ProMatches {
   }
 
   private static Predicate<Unit> unitIsNeutral() {
-    return u -> u.getOwner().isNull();
+    return u -> ProUtils.isNeutralPlayer(u.getOwner());
   }
 
   static Predicate<Unit> unitIsOwnedAir(final PlayerID player) {
