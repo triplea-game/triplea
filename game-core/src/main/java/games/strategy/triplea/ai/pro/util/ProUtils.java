@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Streams;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
@@ -221,12 +223,8 @@ public class ProUtils {
     final Set<PlayerID> enemies = relationshipTracker.getEnemies(player);
     final Set<PlayerID> enemiesWithoutNeutrals =
         enemies.stream().filter(p -> !isNeutralPlayer(p)).collect(Collectors.toSet());
-    for (final PlayerID enemy : enemiesWithoutNeutrals) {
-      if (relationshipTracker.isAtWarWithAnyOfThesePlayers(enemy, enemiesWithoutNeutrals)) {
-        return true;
-      }
-    }
-    return false;
+    return enemiesWithoutNeutrals.stream()
+        .anyMatch(e -> relationshipTracker.isAtWarWithAnyOfThesePlayers(e, enemiesWithoutNeutrals));
   }
 
   public static boolean isNeutralLand(final Territory t) {
@@ -235,34 +233,24 @@ public class ProUtils {
 
   /**
    * Determines whether a player is neutral by checking if all players in its alliance can be considered
-   * neutral as defined by: isPassiveNeutralPlayer OR isHidden and defaultType is AI or DoesNothing.
+   * neutral as defined by: isPassiveNeutralPlayer OR (isHidden and defaultType is AI or DoesNothing).
    */
   public static boolean isNeutralPlayer(final PlayerID player) {
     final GameData data = player.getData();
-    final Set<PlayerID> players = data.getRelationshipTracker().getAllies(player, true);
-    for (final PlayerID p : players) {
-      if (!isPassiveNeutralPlayer(player)
-          && (!p.isHidden() || !(p.isDefaultTypeAi() || p.isDefaultTypeDoesNothing()))) {
-        return false;
-      }
-    }
-    return true;
+    final Set<PlayerID> allies = data.getRelationshipTracker().getAllies(player, true);
+    return allies.stream().allMatch(
+        a -> isPassiveNeutralPlayer(a) || (a.isHidden() && (a.isDefaultTypeAi() || a.isDefaultTypeDoesNothing())));
   }
 
   /**
-   * Returns true if the player doesn't have a combat move phase.
+   * Returns true if the player is Null or doesn't have a combat move phase.
    */
   public static boolean isPassiveNeutralPlayer(final PlayerID player) {
     if (player.isNull()) {
       return true;
     }
-    for (final GameStep gameStep : player.getData().getSequence()) {
-      if (player.equals(gameStep.getPlayerId()) && gameStep.getName().endsWith("CombatMove")
-          && !gameStep.getName().endsWith("NonCombatMove")) {
-        return false;
-      }
-    }
-    return true;
+    return Streams.stream(player.getData().getSequence()).noneMatch(s -> player.equals(s.getPlayerId())
+        && s.getName().endsWith("CombatMove") && !s.getName().endsWith("NonCombatMove"));
   }
 
   /**
