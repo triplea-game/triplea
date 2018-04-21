@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Streams;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
@@ -112,7 +115,7 @@ public class ProUtils {
     for (final Iterator<PlayerID> it = otherPlayers.iterator(); it.hasNext();) {
       final PlayerID otherPlayer = it.next();
       final RelationshipType relation = data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
-      if (Matches.relationshipTypeIsAllied().test(relation) || isNeutralPlayer(otherPlayer)) {
+      if (Matches.relationshipTypeIsAllied().test(relation) || isPassiveNeutralPlayer(otherPlayer)) {
         it.remove();
       }
     }
@@ -185,7 +188,7 @@ public class ProUtils {
       }
       int distance = data.getMap().getDistance(t, enemyLandTerritory,
           ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
-      if (enemyLandTerritory.getOwner().isNull()) {
+      if (ProUtils.isNeutralLand(enemyLandTerritory)) {
         distance++;
       }
       if (distance < minDistance) {
@@ -218,22 +221,36 @@ public class ProUtils {
   public static boolean isFfa(final GameData data, final PlayerID player) {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final Set<PlayerID> enemies = relationshipTracker.getEnemies(player);
-    for (final PlayerID enemy : enemies) {
-      if (relationshipTracker.isAtWarWithAnyOfThesePlayers(enemy, enemies)) {
-        return true;
-      }
-    }
-    return false;
+    final Set<PlayerID> enemiesWithoutNeutrals =
+        enemies.stream().filter(p -> !isNeutralPlayer(p)).collect(Collectors.toSet());
+    return enemiesWithoutNeutrals.stream()
+        .anyMatch(e -> relationshipTracker.isAtWarWithAnyOfThesePlayers(e, enemiesWithoutNeutrals));
   }
 
+  public static boolean isNeutralLand(final Territory t) {
+    return !t.isWater() && ProUtils.isNeutralPlayer(t.getOwner());
+  }
+
+  /**
+   * Determines whether a player is neutral by checking if all players in its alliance can be considered
+   * neutral as defined by: isPassiveNeutralPlayer OR (isHidden and defaultType is AI or DoesNothing).
+   */
   public static boolean isNeutralPlayer(final PlayerID player) {
-    final GameData data = ProData.getData();
-    for (final GameStep gameStep : data.getSequence()) {
-      if (player.equals(gameStep.getPlayerId())) {
-        return false;
-      }
+    final GameData data = player.getData();
+    final Set<PlayerID> allies = data.getRelationshipTracker().getAllies(player, true);
+    return allies.stream().allMatch(
+        a -> isPassiveNeutralPlayer(a) || (a.isHidden() && (a.isDefaultTypeAi() || a.isDefaultTypeDoesNothing())));
+  }
+
+  /**
+   * Returns true if the player is Null or doesn't have a combat move phase.
+   */
+  public static boolean isPassiveNeutralPlayer(final PlayerID player) {
+    if (player.isNull()) {
+      return true;
     }
-    return true;
+    return Streams.stream(player.getData().getSequence()).noneMatch(s -> player.equals(s.getPlayerId())
+        && s.getName().endsWith("CombatMove") && !s.getName().endsWith("NonCombatMove"));
   }
 
   /**

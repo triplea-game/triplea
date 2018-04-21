@@ -29,9 +29,6 @@ import games.strategy.triplea.TripleA;
  */
 public class PlayerSelectorRow implements PlayerCountrySelection {
 
-  private static final String PLAYER_TYPE_AI = "AI";
-  private static final String PLAYER_TYPE_DOES_NOTHING = "DoesNothing";
-
   private final JCheckBox enabledCheckBox;
   private final String playerName;
   private final PlayerID player;
@@ -172,9 +169,9 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   }
 
   void setDefaultPlayerType() {
-    if (PLAYER_TYPE_AI.equals(player.getDefaultType())) {
+    if (player.isDefaultTypeAi()) {
       playerTypes.setSelectedItem(TripleA.PRO_COMPUTER_PLAYER_TYPE);
-    } else if (PLAYER_TYPE_DOES_NOTHING.equals(player.getDefaultType())) {
+    } else if (player.isDefaultTypeDoesNothing()) {
       playerTypes.setSelectedItem(TripleA.DOESNOTHINGAI_COMPUTER_PLAYER_TYPE);
     } else {
       playerTypes.setSelectedItem(TripleA.HUMAN_PLAYER_TYPE);

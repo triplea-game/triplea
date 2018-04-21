@@ -195,7 +195,7 @@ class ProCombatMoveAi {
 
       // Determine territory attack properties
       final int isLand = !t.isWater() ? 1 : 0;
-      final int isNeutral = (!t.isWater() && t.getOwner().isNull()) ? 1 : 0;
+      final int isNeutral = ProUtils.isNeutralLand(t) ? 1 : 0;
       final int isCanHold = patd.isCanHold() ? 1 : 0;
       final int isAmphib = patd.isNeedAmphibUnits() ? 1 : 0;
       final List<Unit> defendingUnits = CollectionUtils.getMatches(patd.getMaxEnemyDefenders(player, data),
@@ -230,7 +230,7 @@ class ProCombatMoveAi {
           * (1 + 2 * isNotNeutralAdjacentToMyCapital) * (1 - 0.9 * isNeutral);
 
       // Check if a negative value neutral territory should be attacked
-      if (attackValue <= 0 && !patd.isNeedAmphibUnits() && !t.isWater() && t.getOwner().isNull()) {
+      if (attackValue <= 0 && !patd.isNeedAmphibUnits() && ProUtils.isNeutralLand(t)) {
 
         // Determine enemy neighbor territory production value for neutral land territories
         double nearbyEnemyValue = 0;
@@ -470,7 +470,7 @@ class ProCombatMoveAi {
       }
 
       // Remove neutral and low value amphib land territories that can't be held
-      final boolean isNeutral = t.getOwner().isNull();
+      final boolean isNeutral = ProUtils.isNeutralLand(t);
       final double strengthDifference =
           ProBattleUtils.estimateStrengthDifference(t, patd.getMaxUnits(), patd.getMaxEnemyDefenders(player, data));
       if (!patd.isCanHold() && enemyAttackOptions.getMax(t) != null && !t.isWater()) {
@@ -903,7 +903,7 @@ class ProCombatMoveAi {
         }
 
         // Find attack value
-        final boolean isNeutral = (!t.isWater() && t.getOwner().isNull());
+        final boolean isNeutral = ProUtils.isNeutralLand(t);
         final int isLand = !t.isWater() ? 1 : 0;
         final int isCanHold = canHold ? 1 : 0;
         final int isCantHoldAmphib = !canHold && !patd.getAmphibAttackMap().isEmpty() ? 1 : 0;

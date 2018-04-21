@@ -10,6 +10,10 @@ import games.strategy.triplea.delegate.Matches;
 
 public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
+
+  private static final String DEFAULT_TYPE_AI = "AI";
+  private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
+
   private final boolean m_optional;
   private final boolean m_canBeDisabled;
   private final String defaultType;
@@ -174,6 +178,14 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
       currentPlayers.put(player.getName(), player.getWhoAmI().split(":")[1]);
     }
     return currentPlayers;
+  }
+
+  public boolean isDefaultTypeAi() {
+    return DEFAULT_TYPE_AI.equals(defaultType);
+  }
+
+  public boolean isDefaultTypeDoesNothing() {
+    return DEFAULT_TYPE_DOES_NOTHING.equals(defaultType);
   }
 
   public RulesAttachment getRulesAttachment() {

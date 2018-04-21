@@ -1220,6 +1220,7 @@
     <player name="Neutral_Axis" optional="true"/>
     <player name="Neutral_Allies" optional="true"/>
     <player name="Neutral_True" optional="true"/>
+    <player name="Pirates" optional="true" defaultType="AI" isHidden="true"/>
     <!-- Alliances -->
     <alliance player="Russians" alliance="Allies"/>
     <alliance player="Americans" alliance="Allies"/>
@@ -1236,6 +1237,7 @@
     <alliance player="Neutral_Axis" alliance="Neutral_Axis"/>
     <alliance player="Neutral_Allies" alliance="Neutral_Allies"/>
     <alliance player="Neutral_True" alliance="Neutral_True"/>
+    <alliance player="Pirates" alliance="Pirates"/>
   </playerList>
   <unitList>
     <unit name="infantry"/>
@@ -1414,6 +1416,18 @@
       <step name="frenchNonCombatMove" delegate="move" player="French" display="Non Combat Move"/>
       <step name="frenchPlace" delegate="place" player="French"/>
       <step name="frenchEndTurn" delegate="endTurn" player="French"/>
+      <!-- French Game Sequence -->
+      <step name="piratesTech" delegate="tech" player="Pirates"/>
+      <step name="piratesTechActivation" delegate="tech_activation" player="Pirates"/>
+      <step name="piratesPurchase" delegate="purchase" player="Pirates"/>
+      <step name="piratesPolitics" delegate="politics" player="Pirates"/>
+      <step name="piratesCombatMove" delegate="move" player="Pirates"/>
+      <step name="piratesAirborneCombatMove" delegate="specialCombatMove" player="Pirates" display="Airborne Attack Move"/>
+      <step name="piratesBattle" delegate="battle" player="Pirates"/>
+      <step name="piratesNonCombatMove" delegate="move" player="Pirates" display="Non Combat Move"/>
+      <step name="piratesPlace" delegate="place" player="Pirates"/>
+      <step name="piratesEndTurn" delegate="endTurn" player="Pirates"/>
+      
       <step name="endRoundStep" delegate="endRound"/>
     </sequence>
   </gamePlay>
