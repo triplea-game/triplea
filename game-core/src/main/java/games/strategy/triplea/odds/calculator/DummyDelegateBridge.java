@@ -119,11 +119,12 @@ public class DummyDelegateBridge implements IDelegateBridge {
 
   @Override
   public void addChange(final Change change) {
-    if (!(change instanceof UnitHitsChange)) {
-      return;
+    if (change instanceof UnitHitsChange) {
+      allChanges.add(change);
+      gameData.performChange(change);
+    } else if (change instanceof CompositeChange) {
+      ((CompositeChange) change).getChanges().forEach(c -> addChange(c));
     }
-    allChanges.add(change);
-    gameData.performChange(change);
   }
 
   @Override
