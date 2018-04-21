@@ -99,12 +99,12 @@ public class HeadedUiContext extends AbstractUiContext {
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
     // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
-    new Thread(() -> ClipPlayer.getInstance(resourceLoader), "Triplea sound loader").start();
+    new Thread(() -> ClipPlayer.getInstance(resourceLoader), "TripleA sound loader").start();
     // load a new cursor
     cursor = Cursor.getDefaultCursor();
     final Toolkit toolkit = Toolkit.getDefaultToolkit();
     // URL's use "/" not "\"
-    final URL cursorUrl = resourceLoader.getResource("misc" + "/" + "cursor.gif");
+    final URL cursorUrl = resourceLoader.getResource("misc/cursor.gif");
     if (cursorUrl != null) {
       try {
         final Image image = ImageIO.read(cursorUrl);
