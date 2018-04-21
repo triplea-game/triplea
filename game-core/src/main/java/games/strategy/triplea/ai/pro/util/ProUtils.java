@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
@@ -218,8 +219,10 @@ public class ProUtils {
   public static boolean isFfa(final GameData data, final PlayerID player) {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final Set<PlayerID> enemies = relationshipTracker.getEnemies(player);
-    for (final PlayerID enemy : enemies) {
-      if (relationshipTracker.isAtWarWithAnyOfThesePlayers(enemy, enemies)) {
+    final Set<PlayerID> enemiesWithoutNeutrals =
+        enemies.stream().filter(p -> !isNeutralPlayer(p)).collect(Collectors.toSet());
+    for (final PlayerID enemy : enemiesWithoutNeutrals) {
+      if (relationshipTracker.isAtWarWithAnyOfThesePlayers(enemy, enemiesWithoutNeutrals)) {
         return true;
       }
     }
