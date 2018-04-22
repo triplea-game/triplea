@@ -487,7 +487,7 @@ public class TripleAUnit extends Unit {
         hits.put(u, combatDamage);
       }
     }
-    if (hits.size() > 0) {
+    if (!hits.isEmpty()) {
       changes.add(ChangeFactory.unitsHit(hits));
     }
     final int unitDamage = taUnit.getUnitDamage();
@@ -503,7 +503,9 @@ public class TripleAUnit extends Unit {
         damageMap.put(u, transferDamage);
       }
     }
-    changes.add(ChangeFactory.bombingUnitDamage(damageMap));
+    if (!damageMap.isEmpty()) {
+      changes.add(ChangeFactory.bombingUnitDamage(damageMap));
+    }
     return changes;
   }
 
