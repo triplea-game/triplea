@@ -148,7 +148,9 @@ class ProCombatMoveAi {
     ProLogger.info("Logging results");
     logAttackMoves(attackOptions);
 
-    return territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> result = territoryManager.getAttackOptions().getTerritoryMap();
+    territoryManager = null;
+    return result;
   }
 
   void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel, final GameData data,

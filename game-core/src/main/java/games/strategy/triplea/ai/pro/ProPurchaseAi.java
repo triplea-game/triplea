@@ -216,6 +216,8 @@ class ProPurchaseAi {
     if (error != null) {
       ProLogger.warn("Purchase error: " + error);
     }
+
+    territoryManager = null;
     return purchaseTerritories;
   }
 
@@ -309,6 +311,8 @@ class ProPurchaseAi {
     if (error != null) {
       ProLogger.warn("Purchase error: " + error);
     }
+
+    territoryManager = null;
     return purchaseTerritories;
   }
 
@@ -406,6 +410,8 @@ class ProPurchaseAi {
 
     // Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle combined)
     placeLandUnits(prioritizedLandTerritories, placeDelegate, true);
+
+    territoryManager = null;
   }
 
   private void findDefendersInPlaceTerritories(final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
