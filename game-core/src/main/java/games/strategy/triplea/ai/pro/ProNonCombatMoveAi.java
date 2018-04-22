@@ -166,6 +166,7 @@ class ProNonCombatMoveAi {
     ProLogger.info("Logging results");
     logAttackMoves(prioritizedTerritories);
 
+    territoryManager = null;
     return factoryMoveMap;
   }
 
