@@ -200,7 +200,7 @@ class ProCombatMoveAi {
       final int isAmphib = patd.isNeedAmphibUnits() ? 1 : 0;
       final List<Unit> defendingUnits = CollectionUtils.getMatches(patd.getMaxEnemyDefenders(player, data),
           ProMatches.unitIsEnemyAndNotInfa(player, data));
-      final int isEmptyLand = (defendingUnits.isEmpty() && !patd.isNeedAmphibUnits()) ? 1 : 0;
+      final int isEmptyLand = (!t.isWater() && defendingUnits.isEmpty() && !patd.isNeedAmphibUnits()) ? 1 : 0;
       final boolean isAdjacentToMyCapital =
           !data.getMap().getNeighbors(t, Matches.territoryIs(ProData.myCapital)).isEmpty();
       final int isNotNeutralAdjacentToMyCapital =
@@ -224,8 +224,8 @@ class ProCombatMoveAi {
       if (isFfa == 1 && tuvSwing > 0) {
         tuvSwing *= 0.5;
       }
-      final double territoryValue = (1 + isLand + isCanHold * (1 + 2 * isFfa)) * (1 + isEmptyLand) * (1 + isFactory)
-          * (1 - 0.5 * isAmphib) * production;
+      final double territoryValue = (1 + isLand + isCanHold * (1 + 2 * isFfa * isLand)) * (1 + isEmptyLand)
+          * (1 + isFactory) * (1 - 0.5 * isAmphib) * production;
       double attackValue = (tuvSwing + territoryValue) * (1 + 4 * isEnemyCapital)
           * (1 + 2 * isNotNeutralAdjacentToMyCapital) * (1 - 0.9 * isNeutral);
 
