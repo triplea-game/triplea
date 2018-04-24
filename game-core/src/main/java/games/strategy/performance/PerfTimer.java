@@ -9,7 +9,7 @@ import java.util.prefs.Preferences;
  * <br />
  * Example usage with auto-close try block:
  * <code>
- * try(PerfTimer timer = PerfTimer.startTime()) {
+ * try(PerfTimer timer = PerfTimer.startTime("timer_name_0")) {
  *   // code to be timed
  * }
  * </code>
