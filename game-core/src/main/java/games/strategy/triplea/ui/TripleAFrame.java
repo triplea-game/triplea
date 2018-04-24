@@ -1435,8 +1435,8 @@ public class TripleAFrame extends MainGameFrame {
     });
     if (player != null && !player.isNull()) {
       CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
-      .thenApplyAsync(ImageIcon::new)
-      .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
+        .thenApplyAsync(ImageIcon::new)
+        .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
@@ -1744,11 +1744,11 @@ public class TripleAFrame extends MainGameFrame {
         @Override
         public void actionPerformed(final ActionEvent ae) {
           JOptionPane.showMessageDialog(TripleAFrame.this,
-              "Please first left click on the spot you want to save from, Then right click and select 'Save Game From "
-                  + "History'"
+              "Please first left click on the spot you want to save from, Then right click and select "
+                  + "'Save Game From History'"
                   + "\n\nIt is recommended that when saving the game from the History panel:"
-                  + "\n * Your CURRENT GAME is at the start of some player's turn, and that no moves have been made and "
-                  + "no actions taken yet."
+                  + "\n * Your CURRENT GAME is at the start of some player's turn, and that no moves have been made "
+                  + "and no actions taken yet."
                   + "\n * The point in HISTORY that you are trying to save at, is at the beginning of a player's turn, "
                   + "or the beginning of a round."
                   + "\nSaving at any other point, could potentially create errors."
