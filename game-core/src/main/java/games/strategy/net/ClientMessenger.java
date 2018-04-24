@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
@@ -79,8 +80,13 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
           socketChannel.close();
           throw new IOException("Connection refused");
         }
-        if (socketChannel.finishConnect()) {
-          break;
+        try {
+          if (socketChannel.finishConnect()) {
+            break;
+          }
+        } catch (final ConnectException e) {
+          throw new RuntimeException(String.format("Could not connect host: %s, port: %s, name: %s, mac: %s",
+              host, port, name, mac), e);
         }
         if (!Interruptibles.sleep(50)) {
           shutDown();
@@ -295,7 +301,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     }
     // Create the byte array to hold the data
     final byte[] bytes = new byte[(int) length];
-    try (InputStream is = new FileInputStream(file)) {
+    try (final InputStream is = new FileInputStream(file)) {
       is.read(bytes);
     } catch (final IOException e) {
       ClientLogger.logQuietly("Failed to read file: " + file, e);
