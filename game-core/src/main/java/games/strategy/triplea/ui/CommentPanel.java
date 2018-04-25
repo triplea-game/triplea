@@ -159,39 +159,44 @@ public class CommentPanel extends JPanel {
 
   private void loadHistory() {
     final Document doc = text.getDocument();
-    final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
-    @SuppressWarnings("unchecked")
-    final Enumeration<TreeNode> nodeEnum = rootNode.preorderEnumeration();
-    final Pattern p = Pattern.compile("^COMMENT: (.*)");
-    String player = "";
-    int round = 0;
-    Icon icon = null;
-    while (nodeEnum.hasMoreElements()) {
-      final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
-      if (node instanceof Round) {
-        round++;
-      } else if (node instanceof Step) {
-        final PlayerID playerId = ((Step) node).getPlayerId();
-        if (playerId != null) {
-          player = playerId.getName();
-          icon = iconMap.get(playerId);
-        }
-      } else {
-        final String title = node.getTitle();
-        final Matcher m = p.matcher(title);
-        if (m.matches()) {
-          try {
-            // insert into ui document
+    new Thread(() -> {
+      final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
+      @SuppressWarnings("unchecked")
+      final Enumeration<TreeNode> nodeEnum = rootNode.preorderEnumeration();
+      final Pattern p = Pattern.compile("^COMMENT: (.*)");
+      String player = "";
+      int round = 0;
+      Icon icon = null;
+      while (nodeEnum.hasMoreElements()) {
+        final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
+        if (node instanceof Round) {
+          round++;
+        } else if (node instanceof Step) {
+          final PlayerID playerId = ((Step) node).getPlayerId();
+          if (playerId != null) {
+            player = playerId.getName();
+            icon = iconMap.get(playerId);
+          }
+        } else {
+          final String title = node.getTitle();
+          final Matcher m = p.matcher(title);
+          if (m.matches()) {
             final String prefix = " " + player + "(" + round + ") : ";
-            text.insertIcon(icon);
-            doc.insertString(doc.getLength(), prefix, bold);
-            doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-          } catch (final BadLocationException e) {
-            ClientLogger.logQuietly("Failed to add history", e);
+            final Icon lastIcon = icon;
+            SwingUtilities.invokeLater(() -> {
+              try {
+                // insert into ui document
+                text.insertIcon(lastIcon);
+                doc.insertString(doc.getLength(), prefix, bold);
+                doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
+              } catch (final BadLocationException e) {
+                ClientLogger.logQuietly("Failed to add history", e);
+              }
+            });
           }
         }
       }
-    }
+    }).start();
   }
 
   /** thread safe. */

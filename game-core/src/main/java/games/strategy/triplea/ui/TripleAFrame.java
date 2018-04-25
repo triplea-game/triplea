@@ -260,7 +260,7 @@ public class TripleAFrame extends MainGameFrame {
         hideCommentLog();
       }
     });
-    this.setJMenuBar(new TripleAMenuBar(this));
+    SwingUtilities.invokeLater(() -> this.setJMenuBar(new TripleAMenuBar(this)));
     final ImageScrollModel model = new ImageScrollModel();
     model.setScrollX(uiContext.getMapData().scrollWrapX());
     model.setScrollY(uiContext.getMapData().scrollWrapY());
