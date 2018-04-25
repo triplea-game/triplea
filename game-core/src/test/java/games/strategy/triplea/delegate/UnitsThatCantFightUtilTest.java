@@ -17,14 +17,14 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class UnitsThatCantFightUtilTest {
 
   @Test
-  public void testNoSuicideAttacksAA50AtStart() throws Exception {
-    // at the start of the game, there are no suicide attacks
+  public void testCantFightAttacksV3() throws Exception {
     final GameData data = TestMapGameData.WW2V3_1941.getGameData();
+
     Collection<Territory> territories =
         new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
     assertTrue(territories.isEmpty());
 
-    // add a german sub to sz 12
+    // Add a german transport which would be attempting to attack UK ships
     final Territory sz12 = territory("12 Sea Zone", data);
     addTo(sz12, transport(data).create(1, germans(data)));
     territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
@@ -32,7 +32,7 @@ public class UnitsThatCantFightUtilTest {
   }
 
   @Test
-  public void testSuicideAttackInRevised() throws Exception {
+  public void testCantFightAttackInRevised() throws Exception {
     final GameData data = TestMapGameData.REVISED.getGameData();
     final Territory sz15 = territory("15 Sea Zone", data);
     addTo(sz15, transport(data).create(1, germans(data)));
