@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -225,10 +226,12 @@ public class TripleAFrame extends MainGameFrame {
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
-    return Interruptibles
+    final TripleAFrame frame = Interruptibles
         .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext)))
         .result
         .get();
+    frame.updateStep();
+    return frame;
   }
 
   private TripleAFrame(final IGame game, final LocalPlayers players, final UiContext uiContext) {
@@ -432,7 +435,6 @@ public class TripleAFrame extends MainGameFrame {
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     data.addDataChangeListener(dataChangeListener);
     game.addGameStepListener(stepListener);
-    updateStep();
     uiContext.addShutdownWindow(this);
   }
 
@@ -1399,6 +1401,8 @@ public class TripleAFrame extends MainGameFrame {
   final GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private void updateStep() {
+    Preconditions.checkState(!SwingUtilities.isEventDispatchThread(),
+        "This method must not be invoked on the EDT!");
     if (uiContext == null || uiContext.isShutDown()) {
       return;
     }
@@ -1409,14 +1413,6 @@ public class TripleAFrame extends MainGameFrame {
       }
     } finally {
       data.releaseReadLock();
-    }
-    // we need to invoke and wait here since
-    // if we switch to the history as a result of a history
-    // change, we need to ensure that no further history
-    // events are run until our historySynchronizer is set up
-    if (!SwingUtilities.isEventDispatchThread()) {
-      Interruptibles.await(() -> SwingAction.invokeAndWait(this::updateStep));
-      return;
     }
     int round;
     String stepDisplayName;
@@ -1429,14 +1425,18 @@ public class TripleAFrame extends MainGameFrame {
     } finally {
       data.releaseReadLock();
     }
-    this.round.setText("Round:" + round + " ");
-    step.setText(stepDisplayName);
     final boolean isPlaying = localPlayers.playing(player);
-    if (player != null) {
-      this.player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
-    }
+    SwingUtilities.invokeLater(() -> {
+      this.round.setText("Round:" + round + " ");
+      step.setText(stepDisplayName);
+      if (player != null) {
+        this.player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
+      }
+    });
     if (player != null && !player.isNull()) {
-      this.round.setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag(player)));
+      CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
+        .thenApplyAsync(ImageIcon::new)
+        .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
@@ -1450,13 +1450,9 @@ public class TripleAFrame extends MainGameFrame {
           // if the game control is with us
           // show the current game
           showGame();
-          // System.out.println("Changing step to " + stepDisplayName + " for " + player.getName());
         }
       } else {
         if (!inHistory && !uiContext.getShowMapOnly()) {
-          if (!SwingUtilities.isEventDispatchThread()) {
-            throw new IllegalStateException("We should be in dispatch thread");
-          }
           showHistory();
         }
       }
@@ -1685,139 +1681,141 @@ public class TripleAFrame extends MainGameFrame {
     }
     details.setGameData(clonedGameData);
     mapPanel.setGameData(clonedGameData);
-    final HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, mapPanel);
-    tabsPanel.removeAll();
-    tabsPanel.add("History", historyDetailPanel);
-    addTab("Players", statsPanel, 'P');
-    addTab("Resources", economyPanel, 'R');
-    if (objectivePanel != null && !objectivePanel.isEmpty()) {
-      addTab(objectivePanel.getName(), objectivePanel, 'O');
-    }
-    addTab("Notes", notesPanel, 'N');
-    addTab("Territory", details, 'T');
-    if (getEditMode()) {
-      tabsPanel.add("Edit", editPanel);
-    }
-    if (actionButtons.getCurrent() != null) {
-      actionButtons.getCurrent().setActive(false);
-    }
-    historyComponent.removeAll();
-    historyComponent.setLayout(new BorderLayout());
-    // create history tree context menu
-    // actions need to clear the history panel popup state when done
-    final JPopupMenu popup = new JPopupMenu();
-    popup.add(new AbstractAction("Show Summary Log") {
-      private static final long serialVersionUID = -6730966512179268157L;
-
-      @Override
-      public void actionPerformed(final ActionEvent ae) {
-        final HistoryLog historyLog = new HistoryLog();
-        historyLog.printRemainingTurn(historyPanel.getCurrentPopupNode(), false, data.getDiceSides(), null);
-        historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
-        historyLog.printProductionSummary(clonedGameData);
-        historyPanel.clearCurrentPopupNode();
-        historyLog.setVisible(true);
+    SwingUtilities.invokeLater(() -> {
+      final HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, mapPanel);
+      tabsPanel.removeAll();
+      tabsPanel.add("History", historyDetailPanel);
+      addTab("Players", statsPanel, 'P');
+      addTab("Resources", economyPanel, 'R');
+      if (objectivePanel != null && !objectivePanel.isEmpty()) {
+        addTab(objectivePanel.getName(), objectivePanel, 'O');
       }
-    });
-    popup.add(new AbstractAction("Show Detailed Log") {
-      private static final long serialVersionUID = -8709762764495294671L;
-
-      @Override
-      public void actionPerformed(final ActionEvent ae) {
-        final HistoryLog historyLog = new HistoryLog();
-        historyLog.printRemainingTurn(historyPanel.getCurrentPopupNode(), true, data.getDiceSides(), null);
-        historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
-        historyLog.printProductionSummary(clonedGameData);
-        historyPanel.clearCurrentPopupNode();
-        historyLog.setVisible(true);
+      addTab("Notes", notesPanel, 'N');
+      addTab("Territory", details, 'T');
+      if (getEditMode()) {
+        tabsPanel.add("Edit", editPanel);
       }
-    });
-    popup.add(new AbstractAction("Export Map Snapshot") {
-      private static final long serialVersionUID = 1222760138263428443L;
-
-      @Override
-      public void actionPerformed(final ActionEvent ae) {
-        ScreenshotExporter.exportScreenshot(TripleAFrame.this, data, historyPanel.getCurrentPopupNode());
-        historyPanel.clearCurrentPopupNode();
+      if (actionButtons.getCurrent() != null) {
+        actionButtons.getCurrent().setActive(false);
       }
-    });
-    popup.add(new AbstractAction("Save Game at this point (BETA)") {
-      private static final long serialVersionUID = 1430512376199927896L;
+      historyComponent.removeAll();
+      historyComponent.setLayout(new BorderLayout());
+      // create history tree context menu
+      // actions need to clear the history panel popup state when done
+      final JPopupMenu popup = new JPopupMenu();
+      popup.add(new AbstractAction("Show Summary Log") {
+        private static final long serialVersionUID = -6730966512179268157L;
 
-      @Override
-      public void actionPerformed(final ActionEvent ae) {
-        JOptionPane.showMessageDialog(TripleAFrame.this,
-            "Please first left click on the spot you want to save from, Then right click and select 'Save Game From "
-                + "History'"
-                + "\n\nIt is recommended that when saving the game from the History panel:"
-                + "\n * Your CURRENT GAME is at the start of some player's turn, and that no moves have been made and "
-                + "no actions taken yet."
-                + "\n * The point in HISTORY that you are trying to save at, is at the beginning of a player's turn, "
-                + "or the beginning of a round."
-                + "\nSaving at any other point, could potentially create errors."
-                + "\nFor example, saving while your current game is in the middle of a move or battle phase will "
-                + "always create errors in the savegame."
-                + "\nAnd you will also get errors in the savegame if you try to create a save at a point in history "
-                + "such as a move or battle phase.",
-            "Save Game from History", JOptionPane.INFORMATION_MESSAGE);
-        data.acquireReadLock();
-        try {
-          final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
-          if (f != null) {
-            try (FileOutputStream fout = new FileOutputStream(f)) {
-              final GameData datacopy = GameDataUtils.cloneGameData(data, true);
-              datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
-              datacopy.getHistory().removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
-              // TODO: the saved current delegate is still the current delegate,
-              // rather than the delegate at that history popup node
-              // TODO: it still shows the current round number, rather than the round at the history popup node
-              // TODO: this could be solved easily if rounds/steps were changes,
-              // but that could greatly increase the file size :(
-              // TODO: this also does not undo the runcount of each delegate step
-              @SuppressWarnings("unchecked")
-              final Enumeration<TreeNode> enumeration =
-                  ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
-              enumeration.nextElement();
-              int round = 0;
-              String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
-              PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
-              while (enumeration.hasMoreElements()) {
-                final HistoryNode node = (HistoryNode) enumeration.nextElement();
-                if (node instanceof Round) {
-                  round = Math.max(0, ((Round) node).getRoundNo() - datacopy.getSequence().getRoundOffset());
-                  currentPlayer = null;
-                  stepDisplayName = node.getTitle();
-                } else if (node instanceof Step) {
-                  currentPlayer = ((Step) node).getPlayerId();
-                  stepDisplayName = node.getTitle();
-                }
-              }
-              datacopy.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
-              GameDataManager.saveGame(fout, datacopy);
-              JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",
-                  JOptionPane.INFORMATION_MESSAGE);
-            } catch (final IOException e) {
-              ClientLogger.logQuietly("Failed to save game: " + f.getAbsolutePath(), e);
-            }
-          }
-        } finally {
-          data.releaseReadLock();
+        @Override
+        public void actionPerformed(final ActionEvent ae) {
+          final HistoryLog historyLog = new HistoryLog();
+          historyLog.printRemainingTurn(historyPanel.getCurrentPopupNode(), false, data.getDiceSides(), null);
+          historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
+          historyLog.printProductionSummary(clonedGameData);
+          historyPanel.clearCurrentPopupNode();
+          historyLog.setVisible(true);
         }
-        historyPanel.clearCurrentPopupNode();
-      }
+      });
+      popup.add(new AbstractAction("Show Detailed Log") {
+        private static final long serialVersionUID = -8709762764495294671L;
+
+        @Override
+        public void actionPerformed(final ActionEvent ae) {
+          final HistoryLog historyLog = new HistoryLog();
+          historyLog.printRemainingTurn(historyPanel.getCurrentPopupNode(), true, data.getDiceSides(), null);
+          historyLog.printTerritorySummary(historyPanel.getCurrentPopupNode(), clonedGameData);
+          historyLog.printProductionSummary(clonedGameData);
+          historyPanel.clearCurrentPopupNode();
+          historyLog.setVisible(true);
+        }
+      });
+      popup.add(new AbstractAction("Export Map Snapshot") {
+        private static final long serialVersionUID = 1222760138263428443L;
+
+        @Override
+        public void actionPerformed(final ActionEvent ae) {
+          ScreenshotExporter.exportScreenshot(TripleAFrame.this, data, historyPanel.getCurrentPopupNode());
+          historyPanel.clearCurrentPopupNode();
+        }
+      });
+      popup.add(new AbstractAction("Save Game at this point (BETA)") {
+        private static final long serialVersionUID = 1430512376199927896L;
+
+        @Override
+        public void actionPerformed(final ActionEvent ae) {
+          JOptionPane.showMessageDialog(TripleAFrame.this,
+              "Please first left click on the spot you want to save from, Then right click and select "
+                  + "'Save Game From History'"
+                  + "\n\nIt is recommended that when saving the game from the History panel:"
+                  + "\n * Your CURRENT GAME is at the start of some player's turn, and that no moves have been made "
+                  + "and no actions taken yet."
+                  + "\n * The point in HISTORY that you are trying to save at, is at the beginning of a player's turn, "
+                  + "or the beginning of a round."
+                  + "\nSaving at any other point, could potentially create errors."
+                  + "\nFor example, saving while your current game is in the middle of a move or battle phase will "
+                  + "always create errors in the savegame."
+                  + "\nAnd you will also get errors in the savegame if you try to create a save at a point in history "
+                  + "such as a move or battle phase.",
+              "Save Game from History", JOptionPane.INFORMATION_MESSAGE);
+          data.acquireReadLock();
+          try {
+            final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
+            if (f != null) {
+              try (FileOutputStream fout = new FileOutputStream(f)) {
+                final GameData datacopy = GameDataUtils.cloneGameData(data, true);
+                datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
+                datacopy.getHistory().removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
+                // TODO: the saved current delegate is still the current delegate,
+                // rather than the delegate at that history popup node
+                // TODO: it still shows the current round number, rather than the round at the history popup node
+                // TODO: this could be solved easily if rounds/steps were changes,
+                // but that could greatly increase the file size :(
+                // TODO: this also does not undo the runcount of each delegate step
+                @SuppressWarnings("unchecked")
+                final Enumeration<TreeNode> enumeration =
+                    ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
+                enumeration.nextElement();
+                int round = 0;
+                String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
+                PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
+                while (enumeration.hasMoreElements()) {
+                  final HistoryNode node = (HistoryNode) enumeration.nextElement();
+                  if (node instanceof Round) {
+                    round = Math.max(0, ((Round) node).getRoundNo() - datacopy.getSequence().getRoundOffset());
+                    currentPlayer = null;
+                    stepDisplayName = node.getTitle();
+                  } else if (node instanceof Step) {
+                    currentPlayer = ((Step) node).getPlayerId();
+                    stepDisplayName = node.getTitle();
+                  }
+                }
+                datacopy.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
+                GameDataManager.saveGame(fout, datacopy);
+                JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",
+                    JOptionPane.INFORMATION_MESSAGE);
+              } catch (final IOException e) {
+                ClientLogger.logQuietly("Failed to save game: " + f.getAbsolutePath(), e);
+              }
+            }
+          } finally {
+            data.releaseReadLock();
+          }
+          historyPanel.clearCurrentPopupNode();
+        }
+      });
+      final JSplitPane split = new JSplitPane();
+      split.setOneTouchExpandable(true);
+      split.setDividerSize(8);
+      historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
+      split.setLeftComponent(historyPanel);
+      split.setRightComponent(gameCenterPanel);
+      split.setDividerLocation(150);
+      historyComponent.add(split, BorderLayout.CENTER);
+      historyComponent.add(gameSouthPanel, BorderLayout.SOUTH);
+      getContentPane().removeAll();
+      getContentPane().add(historyComponent, BorderLayout.CENTER);
+      validate();
     });
-    final JSplitPane split = new JSplitPane();
-    split.setOneTouchExpandable(true);
-    split.setDividerSize(8);
-    historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, uiContext);
-    split.setLeftComponent(historyPanel);
-    split.setRightComponent(gameCenterPanel);
-    split.setDividerLocation(150);
-    historyComponent.add(split, BorderLayout.CENTER);
-    historyComponent.add(gameSouthPanel, BorderLayout.SOUTH);
-    getContentPane().removeAll();
-    getContentPane().add(historyComponent, BorderLayout.CENTER);
-    validate();
   }
 
   private void showGame() {
@@ -1843,29 +1841,31 @@ public class TripleAFrame extends MainGameFrame {
       data.addDataChangeListener(dataChangeListener);
       tabsPanel.removeAll();
     }
-    setWidgetActivation();
-    addTab("Actions", actionButtons, 'A');
-    addTab("Players", statsPanel, 'P');
-    addTab("Resources", economyPanel, 'R');
-    if (objectivePanel != null && !objectivePanel.isEmpty()) {
-      addTab(objectivePanel.getName(), objectivePanel, 'O');
-    }
-    addTab("Notes", notesPanel, 'N');
-    addTab("Territory", details, 'T');
-    if (getEditMode()) {
-      tabsPanel.add("Edit", editPanel);
-    }
-    if (actionButtons.getCurrent() != null) {
-      actionButtons.getCurrent().setActive(true);
-    }
-    gameMainPanel.removeAll();
-    gameMainPanel.setLayout(new BorderLayout());
-    gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
-    gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
-    getContentPane().removeAll();
-    getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+    SwingUtilities.invokeLater(() -> {
+      setWidgetActivation();
+      addTab("Actions", actionButtons, 'A');
+      addTab("Players", statsPanel, 'P');
+      addTab("Resources", economyPanel, 'R');
+      if (objectivePanel != null && !objectivePanel.isEmpty()) {
+        addTab(objectivePanel.getName(), objectivePanel, 'O');
+      }
+      addTab("Notes", notesPanel, 'N');
+      addTab("Territory", details, 'T');
+      if (getEditMode()) {
+        tabsPanel.add("Edit", editPanel);
+      }
+      if (actionButtons.getCurrent() != null) {
+        actionButtons.getCurrent().setActive(true);
+      }
+      gameMainPanel.removeAll();
+      gameMainPanel.setLayout(new BorderLayout());
+      gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
+      gameMainPanel.add(gameSouthPanel, BorderLayout.SOUTH);
+      getContentPane().removeAll();
+      getContentPane().add(gameMainPanel, BorderLayout.CENTER);
+      validate();
+    });
     mapPanel.setRoute(null);
-    validate();
   }
 
   private void showMapOnly() {
