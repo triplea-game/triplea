@@ -197,10 +197,11 @@ public final class Matches {
     return unit -> !TripleAUnit.get(unit).getChargedFlatFuelCost();
   }
 
+  // TODO: this should really be improved to check more properties like support attachments
   static Predicate<Unit> unitCanAttack(final PlayerID id) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getMovement(id) > 0 && ua.getAttack(id) > 0;
+      return ua.getMovement(id) > 0 && (ua.getAttack(id) > 0 || ua.getOffensiveAttackAa(id) > 0);
     };
   }
 
