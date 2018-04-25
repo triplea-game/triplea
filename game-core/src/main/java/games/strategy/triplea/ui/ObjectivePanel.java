@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -137,7 +136,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       final String gameName =
           FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
-      final List<String> sectionsSorters = new ArrayList<>();
+      final Set<String> sectionsSorters = new TreeSet<>();
       // do sections first
       for (final Entry<Object, Object> entry : op.entrySet()) {
         final String fileKey = (String) entry.getKey();
@@ -163,7 +162,6 @@ public class ObjectivePanel extends AbstractStatPanel {
         sectionsSorters.add(sorter[1] + ";" + key[1]);
         sectionsUnsorted.put(key[1], Arrays.asList(value.split(";")));
       }
-      Collections.sort(sectionsSorters);
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
       for (final String section : sectionsSorters) {
         final String key = section.split(";")[1];
