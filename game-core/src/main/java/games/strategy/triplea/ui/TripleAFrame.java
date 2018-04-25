@@ -1822,26 +1822,26 @@ public class TripleAFrame extends MainGameFrame {
     inGame = true;
     uiContext.setShowMapOnly(false);
     // Are we coming from showHistory mode or showMapOnly mode?
-    if (inHistory) {
-      inHistory = false;
-      if (historySyncher != null) {
-        historySyncher.deactivate();
-        historySyncher = null;
-      }
-      historyPanel.goToEnd();
-      historyPanel = null;
-      mapPanel.getData().removeDataChangeListener(dataChangeListener);
-      statsPanel.setGameData(data);
-      economyPanel.setGameData(data);
-      if (objectivePanel != null && !objectivePanel.isEmpty()) {
-        objectivePanel.setGameData(data);
-      }
-      details.setGameData(data);
-      mapPanel.setGameData(data);
-      data.addDataChangeListener(dataChangeListener);
-      tabsPanel.removeAll();
-    }
     SwingUtilities.invokeLater(() -> {
+      if (inHistory) {
+        inHistory = false;
+        if (historySyncher != null) {
+          historySyncher.deactivate();
+          historySyncher = null;
+        }
+        historyPanel.goToEnd();
+        historyPanel = null;
+        mapPanel.getData().removeDataChangeListener(dataChangeListener);
+        statsPanel.setGameData(data);
+        economyPanel.setGameData(data);
+        if (objectivePanel != null && !objectivePanel.isEmpty()) {
+          objectivePanel.setGameData(data);
+        }
+        details.setGameData(data);
+        mapPanel.setGameData(data);
+        data.addDataChangeListener(dataChangeListener);
+        tabsPanel.removeAll();
+      }
       setWidgetActivation();
       addTab("Actions", actionButtons, 'A');
       addTab("Players", statsPanel, 'P');
