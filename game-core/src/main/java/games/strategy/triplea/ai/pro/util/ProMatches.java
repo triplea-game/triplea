@@ -281,13 +281,14 @@ public class ProMatches {
   }
 
   public static Predicate<Territory> territoryIsEnemyNotNeutralLand(final PlayerID player, final GameData data) {
-    return territoryIsEnemyLand(player, data).and(Matches.territoryIsNeutralButNotWater().negate());
+    return territoryIsEnemyLand(player, data).and(Matches.territoryIsNeutralButNotWater().negate())
+        .and(t -> !ProUtils.isPassiveNeutralPlayer(t.getOwner()));
   }
 
   public static Predicate<Territory> territoryIsOrAdjacentToEnemyNotNeutralLand(final PlayerID player,
       final GameData data) {
     final Predicate<Territory> isMatch = territoryIsEnemyLand(player, data)
-        .and(Matches.territoryIsNeutralButNotWater().negate());
+        .and(Matches.territoryIsNeutralButNotWater().negate()).and(t -> !ProUtils.isPassiveNeutralPlayer(t.getOwner()));
     final Predicate<Territory> adjacentMatch = territoryCanMoveLandUnits(player, data, false)
         .and(Matches.territoryHasNeighborMatching(data, isMatch));
     return isMatch.or(adjacentMatch);
