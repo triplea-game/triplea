@@ -180,13 +180,13 @@ public class ProAi extends AbstractAi {
       // Setup data copy and delegates
       GameData dataCopy;
       try {
-        data.acquireReadLock();
-        dataCopy = GameDataUtils.cloneGameData(data, true);
+        data.acquireWriteLock();
+        dataCopy = GameDataUtils.cloneGameDataWithoutHistory(data, true);
       } catch (final Throwable t) {
         ProLogger.log(Level.WARNING, "Error trying to clone game data for simulating phases", t);
         return;
       } finally {
-        data.releaseReadLock();
+        data.releaseWriteLock();
       }
       calc.setData(dataCopy);
       final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());

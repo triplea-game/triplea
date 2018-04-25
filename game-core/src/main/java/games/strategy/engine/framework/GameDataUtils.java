@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
+import games.strategy.engine.history.History;
 import games.strategy.io.IoUtils;
 
 /**
@@ -14,6 +15,18 @@ import games.strategy.io.IoUtils;
  */
 public final class GameDataUtils {
   private GameDataUtils() {}
+
+  /**
+   * Create a deep copy of GameData without history as it can get large.
+   * <strong>You should have the game data's write lock before calling this method</strong>
+   */
+  public static GameData cloneGameDataWithoutHistory(final GameData data, final boolean copyDelegates) {
+    final History temp = data.getHistory();
+    data.resetHistory();
+    final GameData dataCopy = cloneGameData(data, copyDelegates);
+    data.setHistory(temp);
+    return dataCopy;
+  }
 
   public static GameData cloneGameData(final GameData data) {
     return cloneGameData(data, false);

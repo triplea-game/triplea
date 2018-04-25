@@ -141,10 +141,10 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       try {
         // make first copy, then release lock on it so game can continue (ie: we don't want to lock on it while we copy
         // it 16 times, when once is enough) don't let the data change while we make the first copy
-        data.acquireReadLock();
-        newData = GameDataUtils.cloneGameData(data, false);
+        data.acquireWriteLock();
+        newData = GameDataUtils.cloneGameDataWithoutHistory(data, false);
       } finally {
-        data.releaseReadLock();
+        data.releaseWriteLock();
       }
       currentThreads = getThreadsToUse((System.currentTimeMillis() - startTime), startMemory);
       try {
