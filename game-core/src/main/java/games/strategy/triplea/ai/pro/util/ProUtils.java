@@ -236,8 +236,10 @@ public class ProUtils {
    * neutral as defined by: isPassiveNeutralPlayer OR (isHidden and defaultType is AI or DoesNothing).
    */
   public static boolean isNeutralPlayer(final PlayerID player) {
-    final GameData data = player.getData();
-    final Set<PlayerID> allies = data.getRelationshipTracker().getAllies(player, true);
+    if (player.isNull()) {
+      return true;
+    }
+    final Set<PlayerID> allies = player.getData().getRelationshipTracker().getAllies(player, true);
     return allies.stream().allMatch(
         a -> isPassiveNeutralPlayer(a) || (a.isHidden() && (a.isDefaultTypeAi() || a.isDefaultTypeDoesNothing())));
   }
