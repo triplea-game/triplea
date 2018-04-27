@@ -68,8 +68,7 @@ public class StatPanel extends AbstractStatPanel {
     final JTable statsTable = new JTable(dataModel);
     statsTable.getTableHeader().setReorderingAllowed(false);
     statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
-    JScrollPane scroll = new JScrollPane(statsTable);
-    add(scroll);
+    add(new JScrollPane(statsTable));
     // if no technologies, do not show the tech table
     if (!hasTech) {
       return;
@@ -88,8 +87,7 @@ public class StatPanel extends AbstractStatPanel {
       value.setToolTipText(player);
       column.setHeaderValue(value);
     }
-    scroll = new JScrollPane(techTable);
-    add(scroll);
+    add(new JScrollPane(techTable));
   }
 
   @Override

@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -238,13 +239,14 @@ public final class HelpMenu extends JMenu {
   private void addGameNotesMenu() {
     // allow the game developer to write notes that appear in the game
     // displays whatever is in the notes field in html
-    final String notesProperty = gameData.getProperties().get("notes", "");
-    if (notesProperty != null && notesProperty.trim().length() != 0) {
-      final String notes = LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim());
+    final String trimmedNotes = gameData.getProperties().get("notes", "").trim();
+    if (!trimmedNotes.isEmpty()) {
+      CompletableFuture.supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
+        .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
-      gameNotesPane.setText(notes);
       gameNotesPane.setForeground(Color.BLACK);
+
       final String gameNotesTitle = "Game Notes";
       add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
         final JScrollPane scroll = new JScrollPane(gameNotesPane);
