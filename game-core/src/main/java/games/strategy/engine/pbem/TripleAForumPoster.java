@@ -10,6 +10,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
@@ -100,37 +101,29 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private int getUserId(final CloseableHttpClient client) throws IOException {
-    final JSONObject jsonObject = login(client);
+    final JSONObject jsonObject = queryUserInfo(client);
     checkUser(jsonObject);
     return jsonObject.getInt("uid");
   }
 
-  private static void checkUser(final JSONObject jsonObject) {
-    if (jsonObject.has("message")) {
-      throw new IllegalStateException(jsonObject.getString("message"));
+  private void checkUser(final JSONObject jsonObject) {
+    if (!jsonObject.has("uid")) {
+      throw new IllegalStateException(String.format("User %s doesn't exist.", getUsername()));
     }
-    if (jsonObject.getInt("banned") != 0) {
-      throw new IllegalStateException("Your account is banned from the forum");
+    if (jsonObject.getBoolean("banned")) {
+      throw new IllegalStateException("Your account is banned from the forum.");
     }
-    if (jsonObject.getInt("email:confirmed") != 1) {
+    if (!jsonObject.getBoolean("email:confirmed")) {
       throw new IllegalStateException("Your email isn't confirmed yet!");
     }
   }
 
-  private JSONObject login(final CloseableHttpClient client) throws IOException {
-    final HttpPost post = new HttpPost(tripleAForumURL + "/api/ns/login");
-    post.setEntity(new UrlEncodedFormEntity(
-        Arrays.asList(newUsernameParameter(), newPasswordParameter()),
-        StandardCharsets.UTF_8));
+  private JSONObject queryUserInfo(final CloseableHttpClient client) throws IOException {
+    final HttpGet post = new HttpGet(tripleAForumURL + "/api/user/" + getUsername());
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      final String rawJson = EntityUtils.toString(response.getEntity());
-      return new JSONObject(rawJson);
+      return new JSONObject(EntityUtils.toString(response.getEntity()));
     }
-  }
-
-  private NameValuePair newUsernameParameter() {
-    return new BasicNameValuePair("username", getUsername());
   }
 
   private NameValuePair newPasswordParameter() {
