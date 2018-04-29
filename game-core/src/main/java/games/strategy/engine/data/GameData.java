@@ -103,7 +103,7 @@ public class GameData implements Serializable {
   private final TechnologyFrontier technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
   private transient ResourceLoader resourceLoader;
   private IGameLoader loader;
-  private final History gameHistory = new History(this);
+  private History gameHistory = new History(this);
   private transient volatile boolean testLockIsHeld = false;
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
@@ -362,6 +362,14 @@ public class GameData implements Serializable {
     // history operations often acquire the write lock
     // and we cant acquire the write lock if we have the read lock
     return gameHistory;
+  }
+
+  public void setHistory(final History history) {
+    gameHistory = history;
+  }
+
+  public void resetHistory() {
+    gameHistory = new History(this);
   }
 
   /**
