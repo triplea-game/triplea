@@ -1,11 +1,9 @@
 # How to Release
-## Tasks:
 
-## Standard release
+## Game Engine Release
 - Verify the release notes: https://github.com/triplea-game/triplea-game.github.io/blob/master/release_notes.md
    - Add link to full list of merged PRs included in release: https://github.com/triplea-game/triplea-game.github.io/blob/master/.github/generate_release_changes_url
 - Mark the target release version as latest: https://github.com/triplea-game/triplea/releases
-- Update the lobby bots and the lobby server: https://github.com/triplea-game/lobby
 
 ## Major releases
 - Can send new game clients to a new lobby: https://github.com/triplea-game/triplea/blob/master/lobby_server.yaml
@@ -18,21 +16,12 @@
   - https://forums.triplea-game.org/category/1/announcements
   - http://www.axisandallies.org/forums/index.php?board=53.0
 
-
 # Server Ops
-
-All TripleA related processes are started as the `triplea` user, so if you ever get an error because of insufficient permissions, make sure all the files are owned by the `triplea` user.
-
 
 ## Lobby
 
 ### Installation
 https://github.com/triplea-game/lobby/blob/master/install_lobby
-
-### Check status
-
-Check lobby process is running (lobby port 3304 is a command line arg):
-`ps -ef | grep 3304`
 
 
 ### Starting and Stopping
@@ -119,13 +108,6 @@ git pull
 
 # Last but definitely not least restart the forum.
 sudo service nodebb start
-```
-
-
-## TripleAWarClub Forum (Legacy)
-The old tripleawarclub forum runs on the same server as the lobby, it is powered by XOOPS, written in PHP and uses MySQL as Database scheme. Because of more and more issues with XOOPS we decided to move to the NodeBB forum, which is much easier to maintain. To restart the WarClub forum, just restart nginx:
-```
-sudo service nginx restart
 ```
 
 
