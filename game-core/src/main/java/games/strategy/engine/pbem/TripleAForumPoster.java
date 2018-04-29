@@ -41,7 +41,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
       final String token = getToken(client, userId);
       try {
         post(client, token, "### " + title + "\n" + summary);
-        turnSummaryRef = "Sucessfully posted!";
+        turnSummaryRef = "Successfully posted!";
         return true;
       } finally {
         deleteToken(client, userId, token);
@@ -54,7 +54,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private void post(final CloseableHttpClient client, final String token, final String text) throws IOException {
-    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
+    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v2/topics/" + getTopicId());
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(new BasicNameValuePair("content",
@@ -70,7 +70,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private String uploadSaveGame(final CloseableHttpClient client, final String token) throws IOException {
-    final HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
+    final HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v2/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
         .addBinaryBody("files[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM, saveGameFileName)
         .build());
@@ -88,7 +88,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   private static void deleteToken(final CloseableHttpClient client, final int userId, final String token)
       throws IOException {
-    final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userId + "/tokens/" + token);
+    final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v2/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
     try (CloseableHttpResponse response = client.execute(httpDelete)) {
       final int code = response.getStatusLine().getStatusCode();
@@ -138,7 +138,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
-    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
+    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v2/users/" + userId + "/tokens");
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(newPasswordParameter()),
         StandardCharsets.UTF_8));
