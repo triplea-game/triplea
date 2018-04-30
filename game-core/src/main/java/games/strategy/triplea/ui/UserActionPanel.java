@@ -125,8 +125,7 @@ public class UserActionPanel extends ActionPanel {
       int row = 0;
       final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEtchedBorder());
-      choiceScroll.setPreferredSize(getUserActionScrollPanePreferredSize(choiceScroll));
-      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
       final JButton noActionButton = new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
@@ -134,7 +133,7 @@ public class UserActionPanel extends ActionPanel {
       userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
           GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
 
-      userChoiceDialog.add(userChoicePanel);
+      userChoiceDialog.setContentPane(userChoicePanel);
       userChoiceDialog.pack();
       userChoiceDialog.setLocationRelativeTo(parent);
       userChoiceDialog.setVisible(true);
@@ -190,20 +189,6 @@ public class UserActionPanel extends ActionPanel {
   @VisibleForTesting
   static boolean canPlayerAffordUserAction(final PlayerID player, final UserActionAttachment userAction) {
     return userAction.getCostPu() <= player.getResources().getQuantity(Constants.PUS);
-  }
-
-  private static Dimension getUserActionScrollPanePreferredSize(final JScrollPane scrollPane) {
-    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    final int availableHeight = screenSize.height - 120;
-    final int availableWidth = screenSize.width - 30;
-
-    return new Dimension(
-        (scrollPane.getPreferredSize().width > availableWidth ? availableWidth
-            : (scrollPane.getPreferredSize().width
-                + (scrollPane.getPreferredSize().height > availableHeight ? 25 : 0))),
-        (scrollPane.getPreferredSize().height > availableHeight ? availableHeight
-            : (scrollPane.getPreferredSize().height)
-                + (scrollPane.getPreferredSize().width > availableWidth ? 25 : 0)));
   }
 
   /**
