@@ -2956,7 +2956,7 @@ public class UnitAttachment extends DefaultAttachment {
       stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(airAttack).append(" Air Attack, ");
     }
     if (airDefense > 0 && (getCanIntercept() || getCanAirBattle())) {
-      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(airAttack).append(" Air Defense, ");
+      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(airDefense).append(" Air Defense, ");
     }
     if (getIsSub()) {
       stats.append("is Stealth, ");
