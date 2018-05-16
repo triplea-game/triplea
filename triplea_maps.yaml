@@ -1870,7 +1870,7 @@
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_grand_war/archive/master.zip
   version: 1
-  img: 
+  img: https://raw.githubusercontent.com/triplea-maps/the_grand_war/master/map/smallMap.jpeg
   description:
     <br>
     <br>An alternate history World War 2 scenario.
