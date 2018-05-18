@@ -1869,7 +1869,7 @@
 - mapName: The Grand War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_grand_war/archive/master.zip
-  version: 2
+  version: 3
   img: https://raw.githubusercontent.com/triplea-maps/the_grand_war/master/map/sampleMapImage.png
   description:
     <br>
