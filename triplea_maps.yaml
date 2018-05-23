@@ -1098,6 +1098,53 @@
     <br>The fuel mod opens a totally new strategy setup. Big unit groups can't move forever, so use your fuel wisely.
     <br>Historical: http://histclo.com/essay/war/ww2/stra/w2j-oil.html
     <br>
+- mapName: The Rising Sun Variants
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/the_rising_sun_variants/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/the_rising_sun_variants/master/description/TripleA_the_rising_sun_mini.png
+  description: |
+    <br>
+    <br>v3 Variants of The Rising Sun (original map by Sieg)
+    <br>Version 1.0.0, last update 2018.05.22 for engine 1.9.0.0
+    <br>Mod done by sneakingcoward.
+    <br>Suggestions to wgbt@gmx.at
+    <br>Game is continuously played by PBEM.
+    <br>
+    <br>a.) Content:
+    <br>The Rising Sun - vXXX ... (with Japanese as 3 parties)
+    <br>
+    <br>b.) Rough overview:
+    <br>Detailed description inside game notes, following is a rough overview.
+    <br>
+    <br>The vXXX mod uses v2+v3 rules and include:
+    <br>- paratroopers
+    <br>- air+sea+land transports, also landing boats, generally proper transport concept
+    <br>- construction unit
+    <br>- ability to destroy structures with strategic bombing raid (SBR)
+    <br>- destroy structures at a retreat
+    <br>- fighter escorting+intercepting and air battle before normal battle
+    <br>- battle rounds limit
+    <br>- multiple hitPoints
+    <br>- Turn order, which combines axis+allies parties and is therefore perfect for PBEM.
+    <br>- "Change unit owners" from Brit&US to Rus&CN and Rus to CN
+    <br>- Fighter scrambling with radar
+    <br>- Fighter can also do SBR to train, radar, construction and not intercepted planes
+    <br>- Fuel consumption for production+movement, incl. refineries
+    <br>- AntiAir (AA) separated to combat- (hit 1 of 6) and bombing raid- (hit 1 of 12) AA
+    <br>- Airbase enables full range for planes
+    <br>- Recruits
+    <br>- Slightly modified setup for this variant 
+    <br>- Ships SBR
+    <br>- Land units SBR
+    <br>
+    <br>c.) General tips:
+    <br>Due to the wide range of possibilities its more a game for experienced players (typical rounds 20).
+    <br>Specially the supply strategy is crucial for this mod with air+sea+land transport units.
+    <br>The combination of all possible features enables almost a real handling of warfare.
+    <br>The fuel mod opens a totally new strategy setup. Big unit groups can't move forever, so use your fuel wisely.
+    <br>Historical: http://histclo.com/essay/war/ww2/stra/w2j-oil.html
+    <br>    
 - mapName: World War2010
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_war2010/archive/master.zip
