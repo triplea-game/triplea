@@ -17,7 +17,7 @@
 #      should be pretty similar to any of the other map downaod URLs
 #
 # version: The map download version, used by the game to determine if an existing map is out of date.
-#          The game engine uses the map version number found in XML for any other usages (yeah, that is confusig.)
+#          The game engine uses the map version number found in XML for any other usages (yeah, that is confusing.)
 #          Just know that this is *only* used by the download screen for determining if a map is out of date.
 #          The game keeps track of the current map version downloaded in the extra .properties file that is created
 #          in addition to every map file downloaded
