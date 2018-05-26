@@ -22,6 +22,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.util.Tuple;
 
 /**
  * Pro AI move utilities.
@@ -45,6 +46,7 @@ public class ProMoveUtils {
     for (final Territory t : attackMap.keySet()) {
 
       // Loop through each unit that is attacking the current territory
+      Tuple<Territory, Unit> lastLandTransport = Tuple.of(null, null);
       for (final Unit u : attackMap.get(t).getUnits()) {
 
         // Skip amphib units
@@ -62,6 +64,9 @@ public class ProMoveUtils {
         final List<Unit> unitList = new ArrayList<>();
         unitList.add(u);
         moveUnits.add(unitList);
+        if (Matches.unitIsLandTransport().test(u)) {
+          lastLandTransport = Tuple.of(startTerritory, u);
+        }
 
         // If carrier has dependent allied fighters then move them too
         if (Matches.unitIsCarrier().test(u)) {
@@ -84,6 +89,11 @@ public class ProMoveUtils {
           // Land unit
           route = data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches
               .territoryCanMoveLandUnitsThrough(player, data, u, startTerritory, isCombatMove, new ArrayList<>()));
+          if (route == null && startTerritory.equals(lastLandTransport.getFirst())) {
+            route =
+                data.getMap().getRoute_IgnoreEnd(startTerritory, t, ProMatches.territoryCanMoveLandUnitsThrough(player,
+                    data, lastLandTransport.getSecond(), startTerritory, isCombatMove, new ArrayList<>()));
+          }
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
 
           // Air unit
@@ -91,6 +101,8 @@ public class ProMoveUtils {
               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove));
         }
         if (route == null) {
+          System.out.println(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
+              + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
           ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
               + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
         }
