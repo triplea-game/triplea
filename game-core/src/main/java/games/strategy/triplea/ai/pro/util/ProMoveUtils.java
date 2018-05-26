@@ -101,8 +101,6 @@ public class ProMoveUtils {
               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove));
         }
         if (route == null) {
-          System.out.println(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
-              + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
           ProLogger.warn(data.getSequence().getRound() + "-" + data.getSequence().getStep().getName()
               + ": route is null " + startTerritory + " to " + t + ", units=" + unitList);
         }
