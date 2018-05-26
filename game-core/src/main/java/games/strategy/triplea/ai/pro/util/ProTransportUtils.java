@@ -157,6 +157,9 @@ public class ProTransportUtils {
     return findBestUnitsToLandTransport(unit, t, new ArrayList<>());
   }
 
+  /**
+   * Check if unit is can land transport and if there are any unused units that could be transported.
+   */
   public static List<Unit> findBestUnitsToLandTransport(final Unit unit, final Territory t,
       final List<Unit> usedUnits) {
     if (usedUnits.contains(unit)) {
