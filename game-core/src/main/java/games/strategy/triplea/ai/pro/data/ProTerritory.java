@@ -174,6 +174,10 @@ public class ProTerritory {
     this.maxUnits.add(unit);
   }
 
+  void addMaxUnits(final List<Unit> units) {
+    this.maxUnits.addAll(units);
+  }
+
   public Territory getTerritory() {
     return territory;
   }
