@@ -226,9 +226,8 @@ public class TripleAFrame extends MainGameFrame {
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
-    final TripleAFrame frame = Interruptibles
-        .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext))).result
-            .get();
+    final TripleAFrame frame = Interruptibles.awaitResult(() -> SwingAction
+        .invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext))).result.get();
     frame.updateStep();
     return frame;
   }
