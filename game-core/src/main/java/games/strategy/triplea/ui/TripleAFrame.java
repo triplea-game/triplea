@@ -79,7 +79,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.ChatPanel;
@@ -115,6 +114,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
+import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.thread.ThreadPool;
@@ -226,10 +226,8 @@ public class TripleAFrame extends MainGameFrame {
     uiContext.getMapData().verify(game.getData());
     uiContext.setLocalPlayers(players);
 
-    final TripleAFrame frame = Interruptibles
-        .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext)))
-        .result
-        .get();
+    final TripleAFrame frame = Interruptibles.awaitResult(() -> SwingAction
+        .invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext))).result.get();
     frame.updateStep();
     return frame;
   }
@@ -328,12 +326,18 @@ public class TripleAFrame extends MainGameFrame {
     status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     final JPanel stepPanel = new JPanel();
     stepPanel.setLayout(new GridBagLayout());
-    stepPanel.add(step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
     stepPanel.add(player, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0), 0, 0));
+    stepPanel.add(step, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
     stepPanel.add(round, new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
+    if (game.getRandomSource() instanceof PbemDiceRoller) {
+      final JLabel diceServerLabel = new JLabel("Dice Server On");
+      diceServerLabel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+      stepPanel.add(diceServerLabel, new GridBagConstraints(3, 0, 1, 1, 0, 0, GridBagConstraints.EAST,
+          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+    }
     step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     player.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -1435,8 +1439,8 @@ public class TripleAFrame extends MainGameFrame {
     });
     if (player != null && !player.isNull()) {
       CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
-        .thenApplyAsync(ImageIcon::new)
-        .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
+          .thenApplyAsync(ImageIcon::new)
+          .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }
