@@ -62,6 +62,8 @@ public class ProPurchaseOption {
   @Getter
   private final boolean isTransport;
   @Getter
+  private final boolean isLandTransport;
+  @Getter
   private final boolean isCarrier;
   @Getter
   private final int carrierCapacity;
@@ -107,6 +109,7 @@ public class ProPurchaseOption {
     isSub = unitAttachment.getIsSub();
     isDestroyer = unitAttachment.getIsDestroyer();
     isTransport = unitAttachment.getTransportCapacity() > 0;
+    isLandTransport = unitAttachment.isLandTransport();
     isCarrier = unitAttachment.getCarrierCapacity() > 0;
     carrierCapacity = unitAttachment.getCarrierCapacity() * quantity;
     transportEfficiency = (double) unitAttachment.getTransportCapacity() / cost;
@@ -208,8 +211,9 @@ public class ProPurchaseOption {
 
   private double calculateLandDistanceFactor(final int enemyDistance) {
     final double distance = Math.max(0, enemyDistance - 1.5);
+    final int moveValue = isLandTransport ? (movement + 1) : movement;
     // 1, 2, 2.5, 2.75, etc
-    final double moveFactor = 1 + 2 * (Math.pow(2, movement - 1) - 1) / Math.pow(2, movement - 1);
+    final double moveFactor = 1 + 2 * (Math.pow(2, moveValue - 1) - 1) / Math.pow(2, moveValue - 1);
     return Math.pow(moveFactor, distance / 5);
   }
 

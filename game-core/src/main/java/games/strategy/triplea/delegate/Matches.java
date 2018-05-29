@@ -455,7 +455,7 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getCanBlitz(unit.getOwner());
   }
 
-  static Predicate<Unit> unitIsLandTransport() {
+  public static Predicate<Unit> unitIsLandTransport() {
     return unit -> UnitAttachment.get(unit.getType()).getIsLandTransport();
   }
 
@@ -463,7 +463,7 @@ public final class Matches {
     return unit -> unitIsLandTransport().and(unitCanTransport()).test(unit);
   }
 
-  static Predicate<Unit> unitIsLandTransportWithoutCapacity() {
+  public static Predicate<Unit> unitIsLandTransportWithoutCapacity() {
     return unit -> unitIsLandTransport().and(unitCanTransport().negate()).test(unit);
   }
 

@@ -3,19 +3,23 @@ package games.strategy.triplea.ai.pro.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPurchaseOption;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
+import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.AirMovementValidator;
@@ -95,27 +99,7 @@ public class ProTransportUtils {
       units.removeAll(unitsToIgnore);
 
       // Sort units by attack
-      units.sort((o1, o2) -> {
-
-        // Very rough way to add support power
-        final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
-        int maxSupport1 = 0;
-        for (final UnitSupportAttachment usa : supportAttachments1) {
-          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
-            maxSupport1 = usa.getBonus();
-          }
-        }
-        final int attack1 = UnitAttachment.get(o1.getType()).getAttack(player) + maxSupport1;
-        final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
-        int maxSupport2 = 0;
-        for (final UnitSupportAttachment usa : supportAttachments2) {
-          if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
-            maxSupport2 = usa.getBonus();
-          }
-        }
-        final int attack2 = UnitAttachment.get(o2.getType()).getAttack(player) + maxSupport2;
-        return attack2 - attack1;
-      });
+      units.sort(getDecreasingAttackComparator(player));
 
       // Get best units that can be loaded
       selectedUnits.addAll(selectUnitsToTransportFromList(transport, units));
@@ -146,6 +130,83 @@ public class ProTransportUtils {
       transportCost += UnitAttachment.get(unit.getType()).getTransportCost();
     }
     return transportCost;
+  }
+
+  public static List<Unit> getUnitsToAdd(final Unit unit, final Map<Territory, ProTerritory> moveMap) {
+    return getUnitsToAdd(unit, new ArrayList<>(), moveMap);
+  }
+
+  public static List<Unit> getUnitsToAdd(final Unit unit, final List<Unit> alreadyMovedUnits,
+      final Map<Territory, ProTerritory> moveMap) {
+    final List<Unit> movedUnits = getMovedUnits(alreadyMovedUnits, moveMap);
+    return findBestUnitsToLandTransport(unit, ProData.unitTerritoryMap.get(unit),
+        movedUnits);
+  }
+
+  public static List<Unit> getMovedUnits(final List<Unit> alreadyMovedUnits,
+      final Map<Territory, ProTerritory> attackMap) {
+    final List<Unit> movedUnits = new ArrayList<>(alreadyMovedUnits);
+    movedUnits.addAll(attackMap.values().stream()
+        .map(ProTerritory::getAllDefenders)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList()));
+    return movedUnits;
+  }
+
+  public static List<Unit> findBestUnitsToLandTransport(final Unit unit, final Territory t) {
+    return findBestUnitsToLandTransport(unit, t, new ArrayList<>());
+  }
+
+  /**
+   * Check if unit is can land transport and if there are any unused units that could be transported.
+   */
+  public static List<Unit> findBestUnitsToLandTransport(final Unit unit, final Territory t,
+      final List<Unit> usedUnits) {
+    if (usedUnits.contains(unit)) {
+      return new ArrayList<>();
+    }
+    final PlayerID player = unit.getOwner();
+    final List<Unit> units = t.getUnits().getMatches(Matches.unitIsOwnedBy(player)
+        .and(Matches.unitIsLandTransportable()).and(ProMatches.unitHasLessMovementThan(unit)));
+    units.removeAll(usedUnits);
+    if (Matches.unitIsLandTransport().negate().test(unit) || !TechAttachment.isMechanizedInfantry(player)
+        || units.isEmpty()) {
+      return Collections.singletonList(unit);
+    }
+    units.sort(Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
+        .thenComparing(getDecreasingAttackComparator(player)));
+    final List<Unit> results = new ArrayList<Unit>();
+    results.add(unit);
+    if (Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
+      results.add(units.get(0));
+    } else {
+      results.addAll(selectUnitsToTransportFromList(unit, units));
+    }
+    return results;
+  }
+
+  private static Comparator<Unit> getDecreasingAttackComparator(final PlayerID player) {
+    return (o1, o2) -> {
+
+      // Very rough way to add support power
+      final Set<UnitSupportAttachment> supportAttachments1 = UnitSupportAttachment.get(o1.getType());
+      int maxSupport1 = 0;
+      for (final UnitSupportAttachment usa : supportAttachments1) {
+        if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport1) {
+          maxSupport1 = usa.getBonus();
+        }
+      }
+      final int attack1 = UnitAttachment.get(o1.getType()).getAttack(player) + maxSupport1;
+      final Set<UnitSupportAttachment> supportAttachments2 = UnitSupportAttachment.get(o2.getType());
+      int maxSupport2 = 0;
+      for (final UnitSupportAttachment usa : supportAttachments2) {
+        if (usa.getAllied() && usa.getOffence() && usa.getBonus() > maxSupport2) {
+          maxSupport2 = usa.getBonus();
+        }
+      }
+      final int attack2 = UnitAttachment.get(o2.getType()).getAttack(player) + maxSupport2;
+      return attack2 - attack1;
+    };
   }
 
   public static List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t,

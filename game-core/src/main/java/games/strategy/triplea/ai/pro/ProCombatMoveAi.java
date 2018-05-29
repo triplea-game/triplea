@@ -746,10 +746,10 @@ class ProCombatMoveAi {
       // Re-sort attack options
       sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
           attackMap, ProData.unitTerritoryMap, calc);
+      final List<Unit> addedUnits = new ArrayList<>();
 
       // Set air units in any territory with no AA (don't move planes to empty territories)
-      for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-        final Unit unit = it.next();
+      for (final Unit unit : sortedUnitAttackOptions.keySet()) {
         final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
         if (!isAirUnit) {
           continue; // skip non-air units
@@ -783,19 +783,22 @@ class ProCombatMoveAi {
           }
         }
         if (minWinTerritory != null) {
-          attackMap.get(minWinTerritory).addUnit(unit);
           attackMap.get(minWinTerritory).setBattleResult(null);
-          it.remove();
+          attackMap.get(minWinTerritory).addUnit(unit);
+          addedUnits.add(unit);
         }
       }
+      sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
       // Re-sort attack options
       sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
           attackMap, ProData.unitTerritoryMap, calc);
 
       // Find territory that we can try to hold that needs unit
-      for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-        final Unit unit = it.next();
+      for (final Unit unit : sortedUnitAttackOptions.keySet()) {
+        if (addedUnits.contains(unit)) {
+          continue;
+        }
         Territory minWinTerritory = null;
         for (final Territory t : sortedUnitAttackOptions.get(unit)) {
           final ProTerritory patd = attackMap.get(t);
@@ -818,19 +821,20 @@ class ProCombatMoveAi {
           }
         }
         if (minWinTerritory != null) {
-          attackMap.get(minWinTerritory).addUnit(unit);
           attackMap.get(minWinTerritory).setBattleResult(null);
-          it.remove();
+          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+          attackMap.get(minWinTerritory).addUnits(unitsToAdd);
+          addedUnits.addAll(unitsToAdd);
         }
       }
+      sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
       // Re-sort attack options
       sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
           attackMap, ProData.unitTerritoryMap, calc);
 
       // Add sea units to any territory that significantly increases TUV gain
-      for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-        final Unit unit = it.next();
+      for (final Unit unit : sortedUnitAttackOptions.keySet()) {
         final boolean isSeaUnit = UnitAttachment.get(unit.getType()).getIsSea();
         if (!isSeaUnit) {
           continue; // skip non-sea units
@@ -848,13 +852,14 @@ class ProCombatMoveAi {
               patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet());
           final double unitValue = ProData.unitValueMap.getInt(unit.getType());
           if ((result2.getTuvSwing() - unitValue / 3) > result.getTuvSwing()) {
-            attackMap.get(t).addUnit(unit);
             attackMap.get(t).setBattleResult(null);
-            it.remove();
+            attackMap.get(t).addUnit(unit);
+            addedUnits.add(unit);
             break;
           }
         }
       }
+      sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
       // Determine if all attacks are worth it
       final List<Unit> usedUnits = new ArrayList<>();
@@ -1004,10 +1009,10 @@ class ProCombatMoveAi {
 
     // Sort units by number of attack options and cost
     Map<Unit, Set<Territory>> sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitMoveOptions(unitAttackOptions);
+    final List<Unit> addedUnits = new ArrayList<>();
 
     // Try to set at least one destroyer in each sea territory with subs
-    for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-      final Unit unit = it.next();
+    for (final Unit unit : sortedUnitAttackOptions.keySet()) {
       final boolean isDestroyerUnit = UnitAttachment.get(unit.getType()).getIsDestroyer();
       if (!isDestroyerUnit) {
         continue; // skip non-destroyer units
@@ -1019,17 +1024,17 @@ class ProCombatMoveAi {
         if (defendingUnits.stream().anyMatch(Matches.unitIsSub())
             && attackMap.get(t).getUnits().stream().noneMatch(Matches.unitIsDestroyer())) {
           attackMap.get(t).addUnit(unit);
-          it.remove();
+          addedUnits.add(unit);
           break;
         }
       }
     }
+    sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Set enough land and sea units in territories to have at least a chance of winning
-    for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-      final Unit unit = it.next();
+    for (final Unit unit : sortedUnitAttackOptions.keySet()) {
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
-      if (isAirUnit) {
+      if (isAirUnit || addedUnits.contains(unit)) {
         continue; // skip air units
       }
       final TreeMap<Double, Territory> estimatesMap = new TreeMap<>();
@@ -1047,20 +1052,21 @@ class ProCombatMoveAi {
       }
       if (!estimatesMap.isEmpty() && estimatesMap.firstKey() < 40) {
         final Territory minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
-        attackMap.get(minWinTerritory).addUnit(unit);
-        it.remove();
+        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+        attackMap.get(minWinTerritory).addUnits(unitsToAdd);
+        addedUnits.addAll(unitsToAdd);
       }
     }
+    sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Re-sort attack options
     sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
         attackMap, ProData.unitTerritoryMap, calc);
 
     // Set non-air units in territories that can be held
-    for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-      final Unit unit = it.next();
+    for (final Unit unit : sortedUnitAttackOptions.keySet()) {
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
-      if (isAirUnit) {
+      if (isAirUnit || addedUnits.contains(unit)) {
         continue; // skip air units
       }
       Territory minWinTerritory = null;
@@ -1081,19 +1087,20 @@ class ProCombatMoveAi {
         }
       }
       if (minWinTerritory != null) {
-        attackMap.get(minWinTerritory).addUnit(unit);
         attackMap.get(minWinTerritory).setBattleResult(null);
-        it.remove();
+        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+        attackMap.get(minWinTerritory).addUnits(unitsToAdd);
+        addedUnits.addAll(unitsToAdd);
       }
     }
+    sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Re-sort attack options
     sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
         attackMap, ProData.unitTerritoryMap, calc);
 
     // Set air units in territories that can't be held (don't move planes to empty territories)
-    for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-      final Unit unit = it.next();
+    for (final Unit unit : sortedUnitAttackOptions.keySet()) {
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
       if (!isAirUnit) {
         continue; // skip non-air units
@@ -1141,19 +1148,22 @@ class ProCombatMoveAi {
         }
       }
       if (minWinTerritory != null) {
-        attackMap.get(minWinTerritory).addUnit(unit);
         attackMap.get(minWinTerritory).setBattleResult(null);
-        it.remove();
+        attackMap.get(minWinTerritory).addUnit(unit);
+        addedUnits.add(unit);
       }
     }
+    sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Re-sort attack options
     sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
         attackMap, ProData.unitTerritoryMap, calc);
 
     // Set remaining units in any territory that needs it (don't move planes to empty territories)
-    for (final Iterator<Unit> it = sortedUnitAttackOptions.keySet().iterator(); it.hasNext();) {
-      final Unit unit = it.next();
+    for (final Unit unit : sortedUnitAttackOptions.keySet()) {
+      if (addedUnits.contains(unit)) {
+        continue;
+      }
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
       Territory minWinTerritory = null;
       double minWinPercentage = ProData.winPercentage;
@@ -1197,11 +1207,13 @@ class ProCombatMoveAi {
         }
       }
       if (minWinTerritory != null) {
-        attackMap.get(minWinTerritory).addUnit(unit);
         attackMap.get(minWinTerritory).setBattleResult(null);
-        it.remove();
+        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+        attackMap.get(minWinTerritory).addUnits(unitsToAdd);
+        addedUnits.addAll(unitsToAdd);
       }
     }
+    sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Re-sort attack options
     sortedUnitAttackOptions =
@@ -1292,14 +1304,9 @@ class ProCombatMoveAi {
           if (result.getWinPercentage() < minWinPercentage
               || (!result.isHasLandUnitRemaining() && minWinTerritory == null)) {
 
-            // Get all units that have already attacked
-            final List<Unit> alreadyAttackedWithUnits = new ArrayList<>(alreadyMovedUnits);
-            alreadyAttackedWithUnits.addAll(attackMap.values().stream()
-                .map(ProTerritory::getUnits)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList()));
-
             // Find units that haven't attacked and can be transported
+            final List<Unit> alreadyAttackedWithUnits =
+                ProTransportUtils.getMovedUnits(alreadyMovedUnits, attackMap);
             for (final ProTransport proTransportData : transportMapList) {
               if (proTransportData.getTransport().equals(transport)) {
 

@@ -607,12 +607,12 @@ class ProNonCombatMoveAi {
       // Sort units by number of defend options and cost
       final Map<Unit, Set<Territory>> sortedUnitMoveOptions =
           ProSortMoveOptionsUtils.sortUnitMoveOptions(unitDefendOptions);
+      final List<Unit> addedUnits = new ArrayList<>();
 
       // Set enough units in territories to have at least a chance of winning
-      for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();) {
-        final Unit unit = it.next();
+      for (final Unit unit : sortedUnitMoveOptions.keySet()) {
         final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
-        if (isAirUnit || Matches.unitIsCarrier().test(unit)) {
+        if (isAirUnit || Matches.unitIsCarrier().test(unit) || addedUnits.contains(unit)) {
           continue; // skip air and carrier units
         }
         final TreeMap<Double, Territory> estimatesMap = new TreeMap<>();
@@ -628,15 +628,16 @@ class ProNonCombatMoveAi {
         }
         if (!estimatesMap.isEmpty() && estimatesMap.lastKey() > 60) {
           final Territory minWinTerritory = estimatesMap.lastEntry().getValue();
-          moveMap.get(minWinTerritory).addTempUnit(unit);
-          it.remove();
+          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, moveMap);
+          moveMap.get(minWinTerritory).addTempUnits(unitsToAdd);
+          addedUnits.addAll(unitsToAdd);
         }
       }
+      sortedUnitMoveOptions.keySet().removeAll(addedUnits);
 
       // Set non-air units in territories
-      for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();) {
-        final Unit unit = it.next();
-        if (Matches.unitCanLandOnCarrier().test(unit)) {
+      for (final Unit unit : sortedUnitMoveOptions.keySet()) {
+        if (Matches.unitCanLandOnCarrier().test(unit) || addedUnits.contains(unit)) {
           continue;
         }
         Territory maxWinTerritory = null;
@@ -662,9 +663,10 @@ class ProNonCombatMoveAi {
           }
         }
         if (maxWinTerritory != null) {
-          moveMap.get(maxWinTerritory).addTempUnit(unit);
           moveMap.get(maxWinTerritory).setBattleResult(null);
-          it.remove();
+          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, moveMap);
+          moveMap.get(maxWinTerritory).addTempUnits(unitsToAdd);
+          addedUnits.addAll(unitsToAdd);
 
           // If carrier has dependent allied fighters then move them too
           if (Matches.unitIsCarrier().test(unit)) {
@@ -677,10 +679,10 @@ class ProNonCombatMoveAi {
           }
         }
       }
+      sortedUnitMoveOptions.keySet().removeAll(addedUnits);
 
       // Set air units in territories
-      for (final Iterator<Unit> it = sortedUnitMoveOptions.keySet().iterator(); it.hasNext();) {
-        final Unit unit = it.next();
+      for (final Unit unit : sortedUnitMoveOptions.keySet()) {
         Territory maxWinTerritory = null;
         double maxWinPercentage = -1;
         for (final Territory t : sortedUnitMoveOptions.get(unit)) {
@@ -716,9 +718,10 @@ class ProNonCombatMoveAi {
         if (maxWinTerritory != null) {
           moveMap.get(maxWinTerritory).addTempUnit(unit);
           moveMap.get(maxWinTerritory).setBattleResult(null);
-          it.remove();
+          addedUnits.add(unit);
         }
       }
+      sortedUnitMoveOptions.keySet().removeAll(addedUnits);
 
       // Loop through all my transports and see which territories they can defend from current list
       final List<Unit> alreadyMovedTransports = new ArrayList<>();
@@ -1033,6 +1036,7 @@ class ProNonCombatMoveAi {
         t.getTempAmphibAttackMap().clear();
         t.setBattleResult(null);
       }
+
       ProLogger.debug("Move amphib units");
 
       // Transport amphib units to best territory
@@ -1154,6 +1158,7 @@ class ProNonCombatMoveAi {
           it.remove();
         }
       }
+
       ProLogger.debug("Move empty transports to best loading territory");
 
       // Move remaining transports to best loading territory if safe
@@ -1236,6 +1241,7 @@ class ProNonCombatMoveAi {
           }
         }
       }
+
       ProLogger.debug("Move remaining transports to safest territory");
 
       // Move remaining transports to safest territory
@@ -1327,6 +1333,7 @@ class ProNonCombatMoveAi {
           }
         }
       }
+
       ProLogger.debug("Move sea units");
 
       // Move sea units to defend transports
@@ -1558,13 +1565,14 @@ class ProNonCombatMoveAi {
       t.getTempUnits().clear();
       t.getTempAmphibAttackMap().clear();
     }
+
     ProLogger.info("Move land units");
 
     // Move land units to territory with highest value and highest transport capacity
     // TODO: consider if territory ends up being safe
-    for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
-      final Unit u = it.next();
-      if (Matches.unitIsLand().test(u)) {
+    final List<Unit> addedUnits = new ArrayList<>();
+    for (final Unit u : unitMoveMap.keySet()) {
+      if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
         Territory maxValueTerritory = null;
         double maxValue = 0;
         int maxNeedAmphibUnitValue = Integer.MIN_VALUE;
@@ -1630,19 +1638,20 @@ class ProNonCombatMoveAi {
         if (maxValueTerritory != null) {
           ProLogger.trace(u + " moved to " + maxValueTerritory + " with value=" + maxValue
               + ", numNeededTransportUnits=" + maxNeedAmphibUnitValue);
-          moveMap.get(maxValueTerritory).addUnit(u);
-          it.remove();
+          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(u, moveMap);
+          moveMap.get(maxValueTerritory).addUnits(unitsToAdd);
+          addedUnits.addAll(unitsToAdd);
         }
       }
     }
+    unitMoveMap.keySet().removeAll(addedUnits);
 
     // Move land units towards nearest factory that is adjacent to the sea
     final Set<Territory> myFactoriesAdjacentToSea =
         new HashSet<>(CollectionUtils.getMatches(data.getMap().getTerritories(),
             ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data)));
-    for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
-      final Unit u = it.next();
-      if (Matches.unitIsLand().test(u)) {
+    for (final Unit u : unitMoveMap.keySet()) {
+      if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
         int minDistance = Integer.MAX_VALUE;
         Territory minTerritory = null;
         for (final Territory t : unitMoveMap.get(u)) {
@@ -1663,17 +1672,19 @@ class ProNonCombatMoveAi {
         if (minTerritory != null) {
           ProLogger.trace(
               u.getType().getName() + " moved towards closest factory adjacent to sea at " + minTerritory.getName());
-          moveMap.get(minTerritory).addUnit(u);
-          it.remove();
+          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(u, moveMap);
+          moveMap.get(minTerritory).addUnits(unitsToAdd);
+          addedUnits.addAll(unitsToAdd);
         }
       }
     }
+    unitMoveMap.keySet().removeAll(addedUnits);
+
     ProLogger.info("Move land units to safest territory");
 
     // Move any remaining land units to safest territory (this is rarely used)
-    for (final Iterator<Unit> it = unitMoveMap.keySet().iterator(); it.hasNext();) {
-      final Unit u = it.next();
-      if (Matches.unitIsLand().test(u)) {
+    for (final Unit u : unitMoveMap.keySet()) {
+      if (Matches.unitIsLand().test(u) && !addedUnits.contains(u)) {
 
         // Get all units that have already moved
         final List<Unit> alreadyMovedUnits = moveMap.values().stream()
@@ -1698,11 +1709,14 @@ class ProNonCombatMoveAi {
         if (minTerritory != null) {
           ProLogger.debug(u.getType().getName() + " moved to safest territory at " + minTerritory.getName()
               + " with strengthDifference=" + minStrengthDifference);
-          moveMap.get(minTerritory).addUnit(u);
-          it.remove();
+          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(u, moveMap);
+          moveMap.get(minTerritory).addUnits(unitsToAdd);
+          addedUnits.addAll(unitsToAdd);
         }
       }
     }
+    unitMoveMap.keySet().removeAll(addedUnits);
+
     ProLogger.info("Move air units");
 
     // Get list of territories that can't be held

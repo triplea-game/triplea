@@ -704,10 +704,13 @@ public class ProTerritoryManager {
 
           // Populate territories with land units
           if (moveMap.containsKey(potentialTerritory)) {
-            moveMap.get(potentialTerritory).addMaxUnit(myLandUnit);
+            final List<Unit> unitsToAdd = ProTransportUtils.findBestUnitsToLandTransport(myLandUnit, startTerritory,
+                moveMap.get(potentialTerritory).getMaxUnits());
+            moveMap.get(potentialTerritory).addMaxUnits(unitsToAdd);
           } else {
             final ProTerritory moveTerritoryData = new ProTerritory(potentialTerritory);
-            moveTerritoryData.addMaxUnit(myLandUnit);
+            final List<Unit> unitsToAdd = ProTransportUtils.findBestUnitsToLandTransport(myLandUnit, startTerritory);
+            moveTerritoryData.addMaxUnits(unitsToAdd);
             moveMap.put(potentialTerritory, moveTerritoryData);
           }
 

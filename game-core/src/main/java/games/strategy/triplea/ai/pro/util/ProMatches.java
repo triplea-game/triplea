@@ -9,6 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -487,4 +488,9 @@ public class ProMatches {
             .and(Matches.unitIsBeingTransported().negate())
             .test(u);
   }
+
+  public static Predicate<Unit> unitHasLessMovementThan(final Unit unit) {
+    return u -> TripleAUnit.get(u).getMovementLeft() < TripleAUnit.get(unit).getMovementLeft();
+  }
+
 }
