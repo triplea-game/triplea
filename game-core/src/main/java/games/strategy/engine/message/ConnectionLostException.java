@@ -11,6 +11,6 @@ public class ConnectionLostException extends MessengerException {
   private static final long serialVersionUID = -5310065420171098696L;
 
   public ConnectionLostException(final String message) {
-    super(message, new Exception("Invoker Stack"));
+    super(message);
   }
 }
