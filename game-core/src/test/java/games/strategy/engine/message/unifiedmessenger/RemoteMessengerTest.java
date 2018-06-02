@@ -246,8 +246,8 @@ public class RemoteMessengerTest {
       serverUnifiedMessenger.getHub().waitForNodesToImplement(test.getName());
       assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-          final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
-          remoteFoo.foo();
+        final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
+        remoteFoo.foo();
       });
       // Wait for each other
       Interruptibles.await(semaphore::acquire);
