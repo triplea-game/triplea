@@ -237,7 +237,7 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
       final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
-      final Semaphore semaphore = new Semaphore(0, true);
+      final Semaphore semaphore = new Semaphore(0);
       final IFoo foo = () -> {
         semaphore.release();
         Interruptibles.await(semaphore::acquire);
