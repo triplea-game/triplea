@@ -76,9 +76,9 @@ class Decoder {
           if (!running || s == null || s.isInputShutdown()) {
             continue;
           }
-          final QuarantineConversation converstation = quarantine.get(data.getChannel());
-          if (converstation != null) {
-            sendQuarantine(data.getChannel(), converstation, header);
+          final QuarantineConversation conversation = quarantine.get(data.getChannel());
+          if (conversation != null) {
+            sendQuarantine(data.getChannel(), conversation, header);
           } else {
             if (nioSocket.getLocalNode() == null) {
               throw new IllegalStateException("we are writing messages, but no local node");
@@ -90,8 +90,7 @@ class Decoder {
           }
         } catch (final IOException | RuntimeException e) {
           // we are reading from memory here
-          // there should be no network errors, something
-          // is odd
+          // there should be no network errors, something is odd
           logger.log(Level.SEVERE, "error reading object", e);
           errorReporter.error(data.getChannel(), e);
         }

@@ -93,7 +93,8 @@ public class RemoteMessengerTest {
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     remoteMessenger.unregisterRemote("test");
-    assertThrows(RemoteNotFoundException.class, () -> remote.increment(1));
+    final Exception e = assertThrows(RuntimeException.class, () -> remote.increment(1));
+    assertTrue(RemoteNotFoundException.class.isInstance(e.getCause()));
   }
 
   @Test
@@ -101,7 +102,8 @@ public class RemoteMessengerTest {
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
     remoteMessenger.getRemote(test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
-    assertThrows(RemoteNotFoundException.class, remote::testVoid);
+    final Exception e = assertThrows(RuntimeException.class, remote::testVoid);
+    assertTrue(RemoteNotFoundException.class.isInstance(e.getCause()));
   }
 
   @Test
@@ -120,7 +122,7 @@ public class RemoteMessengerTest {
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     final Exception e = assertThrows(Exception.class, remote::throwException);
-    assertEquals(TestRemote.EXCEPTION_STRING, e.getMessage());
+    assertEquals(TestRemote.EXCEPTION_STRING, e.getCause().getMessage());
   }
 
   @Test
@@ -247,11 +249,12 @@ public class RemoteMessengerTest {
           final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
           remoteFoo.foo();
       });
+      // Wait for each other
       Interruptibles.await(semaphore::acquire);
       client.shutDown();
       semaphore.release();
       final Exception e = assertThrows(ExecutionException.class, future::get);
-      assertTrue(ConnectionLostException.class.isInstance(e.getCause()));
+      assertTrue(ConnectionLostException.class.isInstance(e.getCause().getCause()));
     } finally {
       shutdownServerAndClient(server, client);
     }
@@ -270,7 +273,7 @@ public class RemoteMessengerTest {
   }
 
   private static class TestRemote implements ITestRemote {
-    public static final String EXCEPTION_STRING = "AND GO";
+    static final String EXCEPTION_STRING = "AND GO";
     private INode senderNode;
 
     @Override
@@ -289,7 +292,7 @@ public class RemoteMessengerTest {
       throw new Exception(EXCEPTION_STRING);
     }
 
-    public INode getLastSenderNode() {
+    INode getLastSenderNode() {
       return senderNode;
     }
   }

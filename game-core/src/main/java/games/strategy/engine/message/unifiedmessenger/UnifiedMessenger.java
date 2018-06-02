@@ -64,7 +64,7 @@ public class UnifiedMessenger {
   public UnifiedMessenger(final IMessenger messenger) {
     this.messenger = messenger;
     this.messenger.addMessageListener(UnifiedMessenger.this::messageReceived);
-    this.messenger.addErrorListener((messenger1, reason) -> UnifiedMessenger.this.messengerInvalid());
+    this.messenger.addErrorListener((messenger1, reason) -> this.messengerInvalid(reason));
     if (this.messenger.isServer()) {
       hub = new UnifiedMessengerHub(this.messenger, this);
     }
@@ -75,12 +75,12 @@ public class UnifiedMessenger {
     return hub;
   }
 
-  private void messengerInvalid() {
+  private void messengerInvalid(final Throwable cause) {
     synchronized (pendingLock) {
       for (final GUID id : pendingInvocations.keySet()) {
         final CountDownLatch latch = pendingInvocations.remove(id);
         latch.countDown();
-        results.put(id, new RemoteMethodCallResults(new ConnectionLostException("Connection Lost")));
+        results.put(id, new RemoteMethodCallResults(cause));
       }
     }
   }

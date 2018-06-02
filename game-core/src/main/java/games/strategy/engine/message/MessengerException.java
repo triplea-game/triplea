@@ -9,4 +9,8 @@ public class MessengerException extends RuntimeException {
   MessengerException(final String message) {
     super(message);
   }
+
+  MessengerException(final String message, final Throwable cause) {
+    super(message, cause);
+  }
 }
