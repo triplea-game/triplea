@@ -72,7 +72,7 @@ public class SetupPanelModel extends Observable {
         return false;
       }
       return true;
-    })).result.get()) {
+    })).result.orElse(false)) {
       setGameTypePanel(new ClientSetupPanel(model));
     }
   }
