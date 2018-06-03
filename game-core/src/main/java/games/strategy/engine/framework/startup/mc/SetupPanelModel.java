@@ -67,12 +67,12 @@ public class SetupPanelModel extends Observable {
     final ClientModel model = new ClientModel(gameSelectorModel, this);
     if (Interruptibles.awaitResult(() -> GameRunner
         .newBackgroundTaskRunner().runInBackgroundAndReturn("Loading game...", () -> {
-      if (!model.createClientMessenger(ui)) {
-        model.cancel();
-        return false;
-      }
-      return true;
-    })).result.orElse(false)) {
+          if (!model.createClientMessenger(ui)) {
+            model.cancel();
+            return false;
+          }
+          return true;
+        })).result.orElse(false)) {
       setGameTypePanel(new ClientSetupPanel(model));
     }
   }

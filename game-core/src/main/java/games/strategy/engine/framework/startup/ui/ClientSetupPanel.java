@@ -43,7 +43,8 @@ public class ClientSetupPanel extends SetupPanel {
     layoutComponents();
     clientModel.setRemoteModelListener(new IRemoteModelListener() {
       @Override
-      public void playersTakenChanged() {}
+      public void playersTakenChanged() {
+      }
 
       @Override
       public void playerListChanged() {
@@ -150,7 +151,8 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public void setWidgetActivation() {}
+  public void setWidgetActivation() {
+  }
 
   @Override
   public void shutDown() {
