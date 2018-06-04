@@ -63,6 +63,11 @@ public class SetupPanelModel extends Observable {
     ui.setSize(new Dimension(x, y));
   }
 
+  /**
+   * A method that establishes a connection to a remote game
+   * and displays the game start screen afterwards if the
+   * connection was successfully established.
+   */
   public void showClient(final Component ui) {
     final ClientModel model = new ClientModel(gameSelectorModel, this);
     if (Interruptibles.awaitResult(() -> GameRunner
