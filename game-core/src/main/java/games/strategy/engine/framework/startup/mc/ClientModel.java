@@ -181,13 +181,12 @@ public class ClientModel implements IMessengerErrorListener {
     return props;
   }
 
-  boolean createClientMessenger(Component ui) {
+  boolean createClientMessenger(final Component ui) {
+    this.ui = JOptionPane.getFrameForComponent(ui);
     gameDataOnStartup = gameSelectorModel.getGameData();
     gameSelectorModel.setCanSelect(false);
-    ui = JOptionPane.getFrameForComponent(ui);
-    this.ui = ui;
     // load in the saved name!
-    final ClientProps props = getProps(ui);
+    final ClientProps props = getProps(this.ui);
     if (props == null) {
       gameSelectorModel.setCanSelect(true);
       cancel();
@@ -199,7 +198,7 @@ public class ClientModel implements IMessengerErrorListener {
     ClientSetting.flush();
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {
-      EventThreadJOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+      EventThreadJOptionPane.showMessageDialog(this.ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
       return false;
     }
     final String address = props.getHost();
@@ -207,11 +206,11 @@ public class ClientModel implements IMessengerErrorListener {
       final String mac = MacFinder.getHashedMacAddress();
       messenger = new ClientMessenger(address, port, name, mac, objectStreamFactory, new ClientLogin(this.ui));
     } catch (final CouldNotLogInException e) {
-      EventThreadJOptionPane.showMessageDialog(ui, e.getMessage());
+      EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
     } catch (final Exception ioe) {
       ioe.printStackTrace(System.out);
-      EventThreadJOptionPane.showMessageDialog(ui, "Unable to connect:" + ioe.getMessage(), "Error",
+      EventThreadJOptionPane.showMessageDialog(this.ui, "Unable to connect:" + ioe.getMessage(), "Error",
           JOptionPane.ERROR_MESSAGE);
       return false;
     }

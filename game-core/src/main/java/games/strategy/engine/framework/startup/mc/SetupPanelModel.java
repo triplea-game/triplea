@@ -9,12 +9,14 @@ import javax.swing.JPanel;
 
 import com.google.common.base.Preconditions;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
+import games.strategy.util.Interruptibles;
 
 public class SetupPanelModel extends Observable {
   protected final GameSelectorModel gameSelectorModel;
@@ -61,13 +63,23 @@ public class SetupPanelModel extends Observable {
     ui.setSize(new Dimension(x, y));
   }
 
+  /**
+   * A method that establishes a connection to a remote game
+   * and displays the game start screen afterwards if the
+   * connection was successfully established.
+   */
   public void showClient(final Component ui) {
     final ClientModel model = new ClientModel(gameSelectorModel, this);
-    if (!model.createClientMessenger(ui)) {
-      model.cancel();
-      return;
+    if (Interruptibles.awaitResult(() -> GameRunner
+        .newBackgroundTaskRunner().runInBackgroundAndReturn("Loading game...", () -> {
+          if (!model.createClientMessenger(ui)) {
+            model.cancel();
+            return false;
+          }
+          return true;
+        })).result.orElse(false)) {
+      setGameTypePanel(new ClientSetupPanel(model));
     }
-    setGameTypePanel(new ClientSetupPanel(model));
   }
 
   protected void setGameTypePanel(final ISetupPanel panel) {

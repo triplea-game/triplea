@@ -37,21 +37,20 @@ public class ClientSetupPanel extends SetupPanel {
   private final Insets buttonInsets = new Insets(0, 0, 0, 0);
   private final ClientModel clientModel;
   private List<PlayerRow> playerRows = Collections.emptyList();
-  private final IRemoteModelListener remoteModelListener = new IRemoteModelListener() {
-    @Override
-    public void playersTakenChanged() {}
-
-    @Override
-    public void playerListChanged() {
-      SwingUtilities.invokeLater(() -> internalPlayersChanged());
-    }
-  };
 
   public ClientSetupPanel(final ClientModel model) {
     clientModel = model;
     layoutComponents();
-    clientModel.setRemoteModelListener(remoteModelListener);
-    setWidgetActivation();
+    clientModel.setRemoteModelListener(new IRemoteModelListener() {
+      @Override
+      public void playersTakenChanged() {
+      }
+
+      @Override
+      public void playerListChanged() {
+        internalPlayersChanged();
+      }
+    });
   }
 
   private void internalPlayersChanged() {
@@ -70,9 +69,9 @@ public class ClientSetupPanel extends SetupPanel {
       final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
           IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
       playerRows.add(playerRow);
-      playerRow.update(players.get(name), disableable.contains(name));
+      SwingUtilities.invokeLater(() -> playerRow.update(players.get(name), disableable.contains(name)));
     }
-    layoutComponents();
+    SwingUtilities.invokeLater(this::layoutComponents);
   }
 
   private void layoutComponents() {
@@ -152,7 +151,8 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public void setWidgetActivation() {}
+  public void setWidgetActivation() {
+  }
 
   @Override
   public void shutDown() {
