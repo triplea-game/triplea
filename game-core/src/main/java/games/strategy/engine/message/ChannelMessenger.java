@@ -31,7 +31,7 @@ public class ChannelMessenger implements IChannelMessenger {
   @Override
   public void registerChannelSubscriber(final Object implementor, final RemoteName channelName) {
     if (!IChannelSubscribor.class.isAssignableFrom(channelName.getClazz())) {
-      throw new IllegalStateException(channelName.getClazz() + " is not a channel subscribor");
+      throw new IllegalStateException(channelName.getClazz() + " is not a channel subscriber");
     }
     unifiedMessenger.addImplementor(channelName, implementor, true);
   }
