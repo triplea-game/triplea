@@ -92,7 +92,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   protected void addConnection(final Territory t1, final Territory t2) {
     if (t1.equals(t2)) {
-      throw new IllegalArgumentException("Cannot connect a territory to itself");
+      throw new IllegalArgumentException("Cannot connect a territory to itself: " + t1);
     }
     if (!m_territories.contains(t1) || !m_territories.contains(t2)) {
       throw new IllegalArgumentException("Map doesnt know about one of " + t1 + " " + t2);
