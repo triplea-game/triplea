@@ -527,7 +527,7 @@ public class MapData implements Closeable {
     final Set<String> keySet = map.keySet();
     for (final Territory terr : data.getMap().getTerritories()) {
       if (!keySet.contains(terr.getName())) {
-        errors.append("No data of type ").append(dataTypeForErrorMessage).append(" for territory:")
+        errors.append("No data of type ").append(dataTypeForErrorMessage).append(" for territory: ")
             .append(terr.getName()).append("\n");
       }
     }
