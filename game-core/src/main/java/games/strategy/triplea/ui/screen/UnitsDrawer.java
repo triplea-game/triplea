@@ -104,25 +104,20 @@ public class UnitsDrawer implements IDrawable {
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
-            final int xoffset = img.get().getWidth(null) / 2 - flag.getWidth(null) / 2;// centered flag in the middle
-            final int yoffset = img.get().getHeight(null) / 2 - flag.getHeight(null) / 4
-                - 5;// centered flag in the middle moved it 1/2 - 5 down
+            final int xoffset = img.get().getWidth(null) / 2 - flag.getWidth(null) / 2;
+            final int yoffset = img.get().getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;
             graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset,
                 null);
           }
-          drawUnit(graphics, img.get(), bounds);
+          drawUnit(graphics, img.get(), bounds, data);
           break;
         case NEXT_TO:
-          drawUnit(graphics, img.get(), bounds);
+          drawUnit(graphics, img.get(), bounds, data);
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
-            final int xoffset = img.get().getWidth(null) - flag.getWidth(
-                null);// If someone wants to put more effort in this, he could add an algorithm to calculate the real
-            final int yoffset =
-                img.get().getHeight(null) - flag.getHeight(null);// lower right corner - transparency/alpha channel etc.
-            // currently the flag is drawn in the lower right corner of the image's bounds -> offsets on some unit
-            // images
+            final int xoffset = img.get().getWidth(null) - flag.getWidth(null);
+            final int yoffset = img.get().getHeight(null) - flag.getHeight(null);
             // This Method draws the Flag in the lower right corner of the unit image. Since the position is the upper
             // left corner we have to move the picture up by the height and left by the width.
             graphics.drawImage(flag, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y) + yoffset,
@@ -133,8 +128,9 @@ public class UnitsDrawer implements IDrawable {
           throw new AssertionError("unknown unit flag draw mode: " + drawUnitNationMode);
       }
     } else {
-      img.ifPresent(image -> drawUnit(graphics, image, bounds));
+      img.ifPresent(image -> drawUnit(graphics, image, bounds, data));
     }
+
     // more then 1 unit of this category
     if (count != 1) {
       final int stackSize = mapData.getDefaultUnitsStackSize();
@@ -189,8 +185,15 @@ public class UnitsDrawer implements IDrawable {
   /**
    * This draws the given image onto the given graphics object.
    */
-  private void drawUnit(final Graphics2D graphics, final Image image, final Rectangle bounds) {
+  private void drawUnit(final Graphics2D graphics, final Image image, final Rectangle bounds, final GameData data) {
     graphics.drawImage(image, placementPoint.x - bounds.x, placementPoint.y - bounds.y, null);
+
+    // draw unit icons in top right corner
+    final List<Image> unitIcons = uiContext.getUnitIconImageFactory().getImages(playerName, unitType, data);
+    for (final Image unitIcon : unitIcons) {
+      final int xoffset = image.getWidth(null) - unitIcon.getWidth(null);
+      graphics.drawImage(unitIcon, (placementPoint.x - bounds.x) + xoffset, (placementPoint.y - bounds.y), null);
+    }
   }
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
