@@ -108,8 +108,8 @@ public class MapPanel extends ImageScrollerLargeView {
     movementFuelCost = new ResourceCollection(data);
     setGameData(data);
 
-    ((ThreadPoolExecutor)executor).setKeepAliveTime(2L, TimeUnit.SECONDS);
-    ((ThreadPoolExecutor)executor).allowCoreThreadTimeOut(true);
+    ((ThreadPoolExecutor) executor).setKeepAliveTime(2L, TimeUnit.SECONDS);
+    ((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
 
     setCursor(uiContext.getCursor());
     setDoubleBuffered(false);
@@ -419,11 +419,11 @@ public class MapPanel extends ImageScrollerLargeView {
     // clean up any old listeners
     if (gameData != null) {
       gameData.removeTerritoryListener(territoryListener);
-      gameData.removeDataChangeListener(techUpdateListener);
+      gameData.removeDataChangeListener(dataChangeListener);
     }
     gameData = data;
     gameData.addTerritoryListener(territoryListener);
-    gameData.addDataChangeListener(techUpdateListener);
+    gameData.addDataChangeListener(dataChangeListener);
     clearPendingDrawOperations();
     executor.submit(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
   }
@@ -448,17 +448,18 @@ public class MapPanel extends ImageScrollerLargeView {
       SwingUtilities.invokeLater(() -> repaint());
     }
   };
-  private final GameDataChangeListener techUpdateListener = new GameDataChangeListener() {
+
+  private final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
     @Override
     public void gameDataChanged(final Change change) {
       // find the players with tech changes
       final Set<PlayerID> playersWithTechChange = new HashSet<>();
       getPlayersWithTechChanges(change, playersWithTechChange);
-      if (playersWithTechChange.isEmpty()) {
-        return;
+      if (!playersWithTechChange.isEmpty()
+          || UnitIconProperties.getInstance(gameData).testIfConditionsHaveChanged(gameData)) {
+        tileManager.resetTiles(gameData, uiContext.getMapData());
+        SwingUtilities.invokeLater(() -> repaint());
       }
-      tileManager.resetTiles(gameData, uiContext.getMapData());
-      SwingUtilities.invokeLater(() -> repaint());
     }
 
     private void getPlayersWithTechChanges(final Change change, final Set<PlayerID> players) {
@@ -615,7 +616,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void clearPendingDrawOperations() {
-    ((ThreadPoolExecutor)executor).getQueue().clear();
+    ((ThreadPoolExecutor) executor).getQueue().clear();
   }
 
   private boolean mapWidthFitsOnScreen() {
