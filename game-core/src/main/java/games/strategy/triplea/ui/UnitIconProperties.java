@@ -62,6 +62,9 @@ public class UnitIconProperties extends PropertyFile {
     return instance;
   }
 
+  /**
+   * Get all unit icon images for given player and unit type that are currently true.
+   */
   public List<String> getImagePaths(final String player, final String unitType, final GameData data) {
     final List<String> imagePaths = new ArrayList<>();
     final String gameName =
