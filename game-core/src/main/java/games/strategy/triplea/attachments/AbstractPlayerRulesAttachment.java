@@ -1,5 +1,6 @@
 package games.strategy.triplea.attachments;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -7,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -76,6 +78,45 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName());
     }
     return rulesAttachment;
+  }
+
+  public static ICondition getCondition(final String playerName, final String conditionName,
+      final GameData data) {
+    final PlayerID player = data.getPlayerList().getPlayerId(playerName);
+    if (player == null) {
+      // could be an old map, or an old save, so we don't want to stop the game from running.
+      System.err.println("When trying to find condition: " + conditionName + ", player does not exist: " + playerName);
+      return null;
+    }
+    final Collection<PlayerID> allPlayers = data.getPlayerList().getPlayers();
+    final IAttachment attachment;
+    try {
+      if (conditionName.contains(Constants.RULES_OBJECTIVE_PREFIX)
+          || conditionName.contains(Constants.RULES_CONDITION_PREFIX)) {
+        attachment = RulesAttachment.get(player, conditionName, allPlayers, true);
+      } else if (conditionName.contains(Constants.TRIGGER_ATTACHMENT_PREFIX)) {
+        attachment = TriggerAttachment.get(player, conditionName, allPlayers);
+      } else if (conditionName.contains(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
+        attachment = PoliticalActionAttachment.get(player, conditionName, allPlayers);
+      } else {
+        System.err.println(conditionName + " attachment must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
+            + " or " + Constants.RULES_CONDITION_PREFIX + " or " + Constants.TRIGGER_ATTACHMENT_PREFIX + " or "
+            + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
+        return null;
+      }
+    } catch (final Exception e) {
+      // could be an old map, or an old save, so we don't want to stop the game from running.
+      System.err.println(e.getMessage());
+      return null;
+    }
+    if (attachment == null) {
+      System.err.println("Condition attachment does not exist: " + conditionName);
+      return null;
+    }
+    if (!ICondition.class.isAssignableFrom(attachment.getClass())) {
+      throw new IllegalStateException("(wtf??) attachment is not an ICondition: " + attachment.getName());
+    }
+    return (ICondition) attachment;
   }
 
   private void setMovementRestrictionTerritories(final String value) {
