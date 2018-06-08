@@ -16,6 +16,7 @@ import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TerritoryEffectImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
@@ -76,6 +77,11 @@ public class HeadlessUiContext extends AbstractUiContext {
 
   @Override
   public MapImage getMapImage() {
+    return null;
+  }
+
+  @Override
+  public UnitIconImageFactory getUnitIconImageFactory() {
     return null;
   }
 
