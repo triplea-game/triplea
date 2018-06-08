@@ -80,6 +80,9 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     return rulesAttachment;
   }
 
+  /**
+   * Get condition attachment for the given player and condition name.
+   */
   public static ICondition getCondition(final String playerName, final String conditionName,
       final GameData data) {
     final PlayerID player = data.getPlayerList().getPlayerId(playerName);
