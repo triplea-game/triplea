@@ -10,8 +10,11 @@ import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
 
-/** TODO: copy paste overlap with PoliticsText.java */
-public class PropertyFile {
+
+/**
+ * Common property file class which should be extended.
+ */
+public abstract class PropertyFile {
 
   protected final Properties properties = new Properties();
 
