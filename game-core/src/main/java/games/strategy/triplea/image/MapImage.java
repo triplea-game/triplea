@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
@@ -162,7 +163,7 @@ public class MapImage {
       }
     }
     if (mapFileUrl == null) {
-      throw new IllegalStateException("File not found: " + name + " with extensions: " + extensions);
+      throw new IllegalStateException("File not found: " + name + " with extensions: " + Arrays.toString(extensions));
     }
     try {
       return ImageIO.read(mapFileUrl);
