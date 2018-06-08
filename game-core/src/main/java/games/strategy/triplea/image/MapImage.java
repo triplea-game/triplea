@@ -20,17 +20,6 @@ import games.strategy.ui.Util;
  * Is not responsible for drawing things on top of the map, such as units, routes etc.
  */
 public class MapImage {
-  private static Image loadImage(final ResourceLoader loader, final String name) {
-    final URL mapFileUrl = loader.getResource(name);
-    if (mapFileUrl == null) {
-      throw new IllegalStateException("resource not found:" + name);
-    }
-    try {
-      return ImageIO.read(mapFileUrl);
-    } catch (final IOException e) {
-      throw new IllegalStateException(e);
-    }
-  }
 
   private BufferedImage smallMapImage;
   private static Font propertyMapFont = null;
@@ -156,11 +145,29 @@ public class MapImage {
   }
 
   public void loadMaps(final ResourceLoader loader) {
-    final Image smallFromFile = loadImage(loader, Constants.SMALL_MAP_FILENAME);
+    final Image smallFromFile = loadImage(loader, Constants.SMALL_MAP_FILENAME, Constants.SMALL_MAP_EXTENSIONS);
     smallMapImage = Util.createImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
     final Graphics g = smallMapImage.getGraphics();
     g.drawImage(smallFromFile, 0, 0, null);
     g.dispose();
     smallFromFile.flush();
+  }
+
+  private static Image loadImage(final ResourceLoader loader, final String name, final String[] extensions) {
+    URL mapFileUrl = null;
+    for (final String extension : extensions) {
+      mapFileUrl = loader.getResource(name + "." + extension);
+      if (mapFileUrl != null) {
+        break;
+      }
+    }
+    if (mapFileUrl == null) {
+      throw new IllegalStateException("File not found: " + name + " with extensions: " + extensions);
+    }
+    try {
+      return ImageIO.read(mapFileUrl);
+    } catch (final IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }

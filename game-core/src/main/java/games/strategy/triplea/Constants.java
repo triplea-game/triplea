@@ -147,7 +147,8 @@ public interface Constants {
   String UNIT_TYPE_AAGUN = "aaGun";
   String UNIT_TYPE_ARTILLERY = "artillery";
   String UNIT_TYPE_DESTROYER = "destroyer";
-  String SMALL_MAP_FILENAME = "smallMap.jpeg";
+  String SMALL_MAP_FILENAME = "smallMap";
+  String[] SMALL_MAP_EXTENSIONS = {"jpeg", "jpg", "png"};
   String MAP_NAME = "mapName";
   // new scramble property names
   String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
