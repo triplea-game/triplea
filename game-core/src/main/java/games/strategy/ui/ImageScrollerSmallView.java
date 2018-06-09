@@ -25,7 +25,7 @@ public class ImageScrollerSmallView extends JComponent {
   private static final long serialVersionUID = 7010099211049677928L;
   private final ImageScrollModel model;
   private Image image;
-  private MapData mapData;
+  private final MapData mapData;
 
   public ImageScrollerSmallView(final Image image, final ImageScrollModel model, final MapData mapData) {
     this.model = model;

@@ -123,11 +123,11 @@ public class MapData implements Closeable {
   private final ResourceLoader resourceLoader;
 
   public boolean scrollWrapX() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
   }
 
   public boolean scrollWrapY() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
   }
 
   public MapData(final String mapNameDir) {
@@ -362,7 +362,7 @@ public class MapData implements Closeable {
   }
 
   public boolean getHasRelief() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true"));
   }
 
   public int getMapCursorHotspotX() {
@@ -380,47 +380,47 @@ public class MapData implements Closeable {
   }
 
   public float getMapBlendAlpha() {
-    return Float.valueOf(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDALPHA, "0.5f"));
+    return Float.parseFloat(mapProperties.getProperty(PROPERTY_MAP_MAPBLENDALPHA, "0.5f"));
   }
 
   public boolean drawCapitolMarkers() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWCAPITOLMARKERS, "true"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SHOWCAPITOLMARKERS, "true"));
   }
 
   public boolean drawTerritoryNames() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true"));
   }
 
   public boolean drawResources() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true"));
   }
 
   public boolean drawComments() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWCOMMENTS, "true"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SHOWCOMMENTS, "true"));
   }
 
   public boolean drawSeaZoneNames() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_SHOWSEAZONENAMES, "false"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SHOWSEAZONENAMES, "false"));
   }
 
   public boolean drawNamesFromTopLeft() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
   }
 
   public boolean useNation_convoyFlags() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
   }
 
   public boolean useTerritoryEffectMarkers() {
-    return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
   }
 
   public float getSmallMapTerritoryAlpha() {
-    return Float.valueOf(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPTERRITORYTALPHA, "1.0f"));
+    return Float.parseFloat(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPTERRITORYTALPHA, "1.0f"));
   }
 
   public int getSmallMapUnitSize() {
-    return Integer.valueOf(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPUNITSIZE, "4"));
+    return Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPUNITSIZE, "4"));
   }
 
   public Color getSmallMapViewerBorderColor() {
@@ -432,7 +432,7 @@ public class MapData implements Closeable {
   }
 
   public float getSmallMapViewerFillAlpha() {
-    return Float.valueOf(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA, "0.0f"));
+    return Float.parseFloat(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA, "0.0f"));
   }
 
   private void initializeContains() {
@@ -458,7 +458,7 @@ public class MapData implements Closeable {
   }
 
   public boolean getBooleanProperty(final String propertiesKey) {
-    return Boolean.valueOf(mapProperties.getProperty(propertiesKey, "true"));
+    return Boolean.parseBoolean(mapProperties.getProperty(propertiesKey, "true"));
   }
 
   public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
