@@ -23,7 +23,6 @@ import games.strategy.ui.Util;
 public class SmallMapImageManager {
   private static final Logger logger = Logger.getLogger(SmallMapImageManager.class.getName());
   private final ImageScrollerSmallView view;
-  private static final int UNIT_BOX_SIZE = 4;
   private Image offscreen;
   private final TileManager tileManager;
 
@@ -47,7 +46,7 @@ public class SmallMapImageManager {
       final int x = (int) (drawer.getPlacementPoint().x * view.getRatioX());
       final int y = (int) (drawer.getPlacementPoint().y * view.getRatioY());
       onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());
-      onScreenGraphics.fillRect(x, y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
+      onScreenGraphics.fillRect(x, y, mapData.getSmallMapUnitSize(), mapData.getSmallMapUnitSize());
     }
     onScreenGraphics.dispose();
     stopwatch.done();
@@ -75,6 +74,7 @@ public class SmallMapImageManager {
       g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
       g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, mapData.getSmallMapTerritoryAlpha()));
       final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
       drawable.draw(bounds, data, g, mapData, null, null);
       g.dispose();
