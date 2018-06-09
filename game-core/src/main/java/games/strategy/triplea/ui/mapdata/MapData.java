@@ -79,6 +79,11 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
+  public static final String PROPERTY_MAP_SMALLMAPTERRITORYTALPHA = "smallMap.territory.alpha";
+  public static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
+  public static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR = "smallMap.viewer.borderColor";
+  public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
+  public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA = "smallMap.viewer.fillAlpha";
 
   private static final String CENTERS_FILE = "centers.txt";
   private static final String POLYGON_FILE = "polygons.txt";
@@ -410,6 +415,26 @@ public class MapData implements Closeable {
     return Boolean.valueOf(mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
   }
 
+  public float getSmallMapTerritoryAlpha() {
+    return Float.valueOf(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPTERRITORYTALPHA, "1.0f"));
+  }
+
+  public int getSmallMapUnitSize() {
+    return Integer.valueOf(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPUNITSIZE, "4"));
+  }
+
+  public Color getSmallMapViewerBorderColor() {
+    return getColorProperty(PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR, Color.LIGHT_GRAY);
+  }
+
+  public Color getSmallMapViewerFillColor() {
+    return getColorProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR, Color.LIGHT_GRAY);
+  }
+
+  public float getSmallMapViewerFillAlpha() {
+    return Float.valueOf(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA, "0.0f"));
+  }
+
   private void initializeContains() {
     for (final String seaTerritory : getTerritories()) {
       if (!Util.isTerritoryNameIndicatingWater(seaTerritory)) {
@@ -437,6 +462,10 @@ public class MapData implements Closeable {
   }
 
   public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
+    return getColorProperty(propertiesKey, null);
+  }
+
+  public Color getColorProperty(final String propertiesKey, final Color defaultColor) throws IllegalStateException {
     if (mapProperties.getProperty(propertiesKey) != null) {
       final String colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
@@ -448,7 +477,7 @@ public class MapData implements Closeable {
         throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
       }
     }
-    return null;
+    return defaultColor;
   }
 
   public Color getPlayerColor(final String playerName) {
