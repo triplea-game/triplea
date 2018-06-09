@@ -1,8 +1,9 @@
 package games.strategy.triplea.image;
 
 import java.awt.Image;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.UnitIconProperties;
@@ -17,15 +18,11 @@ public class UnitIconImageFactory extends ImageFactory {
   public UnitIconImageFactory() {}
 
   public List<Image> getImages(final String player, final String unitType, final GameData data) {
-    final List<Image> images = new ArrayList<>();
-    final List<String> imagePaths = UnitIconProperties.getInstance(data).getImagePaths(player, unitType, data);
-    for (final String imagePath : imagePaths) {
-      final Image image = getImage(PREFIX + imagePath, false);
-      if (image != null) {
-        images.add(image);
-      }
-    }
-    return images;
+    return UnitIconProperties.getInstance(data).getImagePaths(player, unitType, data)
+        .stream()
+        .map(imagePath -> getImage(PREFIX + imagePath, false))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
   }
 
 }

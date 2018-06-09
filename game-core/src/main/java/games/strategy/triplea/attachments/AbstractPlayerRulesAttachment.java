@@ -116,9 +116,6 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       System.err.println("Condition attachment does not exist: " + conditionName);
       return null;
     }
-    if (!ICondition.class.isAssignableFrom(attachment.getClass())) {
-      throw new IllegalStateException("(wtf??) attachment is not an ICondition: " + attachment.getName());
-    }
     return (ICondition) attachment;
   }
 
