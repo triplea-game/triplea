@@ -850,6 +850,26 @@
     <br>
     <br>Updated single-player variant of the WW2 Pacific conflict using a modded map created by Triple_Elk, iron__cross, and ComradeKev.  This map features AI interactivity, diverging timelines, a unique technology system, nontraditional unit statistics, resources, a  'quick-to-learn hard-to-master' play style, and built-in difficulty selection.  Designed for challenging human play as Japan versus the AI.
     <br>
+- mapName: Camp David
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/camp_david/archive/master.zip
+  version: 2
+  img: https://raw.githubusercontent.com/triplea-maps/camp_david/master/description/TripleA_camp_david_mini2.png
+  description: |
+    <br>By Bas71
+    <br>
+    <br>On 29 November 1947 the United Nations General Assembly approved a plan to resolve the Arab-Jewish conflict by
+        partitioning Palestine into two states, one Jewish and one Arab. After the Arab rejection of this plan, Egypt, Iraq, Jordan, Lebanon
+        and Syria invaded the territory of the former British Mandate of Palestine. The war concluded with the 1949 Armistice Agreements, but it
+        did not mark the end of the Arab-Israeli conflict. Three more wars would follow.
+    <br>
+    <br>The Camp David map consists of the four Arab - Israeli wars:
+    <br>
+    <br>* 1948 Arab-Israeli War
+    <br>* 1956 Suez Crisis
+    <br>* 1967 Six-Day War
+    <br>* 1973 Yom Kippur War
+    <br>     
 - mapName: Big World Variations
   url: https://github.com/triplea-maps/big_world_variations/archive/master.zip
   version: 2
@@ -1357,26 +1377,6 @@
     <br>Cold War Asia (1948) covers three interconnected civil wars between pro-democracy and pro-communist forces following the end of WWII, circa 1947 to 1948 and extending past the 1950 Chinese Revolution, the Korean War, and the First Indochina War. Victory Condition... An alliance occupies 10 of the 11 Victory Cities.
     <br>
     <br>A second alternate history variant adds a hypothetical where the US did not drop nuclear weapons on Japan in 1945 and Japan was occupied by the US and USSR following WWII. This variant covers four interconnected civil wars, the three mentioned above plus an alternative history Japan civil war. Victory Condition... An alliance occupies 15 of the 16 Victory Cities.
-- mapName: Camp David
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/camp_david/archive/master.zip
-  version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/camp_david/master/description/TripleA_camp_david_mini2.png
-  description: |
-    <br>By Bas71
-    <br>
-    <br>On 29 November 1947 the United Nations General Assembly approved a plan to resolve the Arab-Jewish conflict by
-        partitioning Palestine into two states, one Jewish and one Arab. After the Arab rejection of this plan, Egypt, Iraq, Jordan, Lebanon
-        and Syria invaded the territory of the former British Mandate of Palestine. The war concluded with the 1949 Armistice Agreements, but it
-        did not mark the end of the Arab-Israeli conflict. Three more wars would follow.
-    <br>
-    <br>The Camp David map consists of the four Arab - Israeli wars:
-    <br>
-    <br>* 1948 Arab-Israeli War
-    <br>* 1956 Suez Crisis
-    <br>* 1967 Six-Day War
-    <br>* 1973 Yom Kippur War
-    <br>
 - mapName: Cold War
   mapCategory: GOOD
   url: https://github.com/triplea-maps/cold_war/archive/master.zip
