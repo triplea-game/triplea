@@ -265,7 +265,7 @@ public class TripleAFrame extends MainGameFrame {
     model.setMaxBounds(uiContext.getMapData().getMapDimensions().width,
         uiContext.getMapData().getMapDimensions().height);
     final Image small = uiContext.getMapImage().getSmallMapImage();
-    smallView = new MapPanelSmallView(small, model);
+    smallView = new MapPanelSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     mapPanel.addMapSelectionListener(mapSelectionListener);
     final MouseOverUnitListener mouseOverUnitListener = (units, territory, me) -> unitsBeingMousedOver = units;

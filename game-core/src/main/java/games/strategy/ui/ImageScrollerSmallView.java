@@ -1,6 +1,6 @@
 package games.strategy.ui;
 
-import java.awt.Color;
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,20 +15,24 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
 
+import games.strategy.triplea.ui.mapdata.MapData;
+
 /**
  * A small image that tracks a selection area within a small image. Generally
- * used in conjunction with a ImageScrollerLarrgeView.
+ * used in conjunction with a ImageScrollerLargeView.
  */
 public class ImageScrollerSmallView extends JComponent {
   private static final long serialVersionUID = 7010099211049677928L;
   private final ImageScrollModel model;
   private Image image;
+  private final MapData mapData;
 
-  public ImageScrollerSmallView(final Image image, final ImageScrollModel model) {
+  public ImageScrollerSmallView(final Image image, final ImageScrollModel model, final MapData mapData) {
     this.model = model;
     Util.ensureImageLoaded(image);
     setDoubleBuffered(false);
     this.image = image;
+    this.mapData = mapData;
     this.setBorder(new EtchedBorder());
     final int prefWidth = getInsetsWidth() + this.image.getWidth(this);
     final int prefHeight = getInsetsHeight() + this.image.getHeight(this);
@@ -98,7 +102,6 @@ public class ImageScrollerSmallView extends JComponent {
   @Override
   public void paintComponent(final Graphics g) {
     g.drawImage(image, 0, 0, this);
-    g.setColor(Color.lightGray);
     drawViewBox((Graphics2D) g);
   }
 
@@ -113,14 +116,23 @@ public class ImageScrollerSmallView extends JComponent {
     final double width = model.getBoxWidth() * ratioX;
     final double height = model.getBoxHeight() * ratioY;
     final Rectangle2D.Double rect = new Rectangle2D.Double(x, y, width, height);
-    g.draw(rect);
+    drawFilledRect(rect, g);
     if (model.getScrollX()) {
       final double mapWidth = model.getMaxWidth() * ratioX;
       rect.x += mapWidth;
-      g.draw(rect);
+      drawFilledRect(rect, g);
       rect.x -= 2 * mapWidth;
-      g.draw(rect);
+      drawFilledRect(rect, g);
     }
+  }
+
+  private void drawFilledRect(final Rectangle2D.Double rect, final Graphics2D g) {
+    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, mapData.getSmallMapViewerFillAlpha()));
+    g.setColor(mapData.getSmallMapViewerFillColor());
+    g.fill(rect);
+    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+    g.setColor(mapData.getSmallMapViewerBorderColor());
+    g.draw(rect);
   }
 
   public Image getOffScreenImage() {
