@@ -6,16 +6,11 @@ package games.strategy.engine.message;
 public class MessengerException extends RuntimeException {
   private static final long serialVersionUID = 1058615494612307887L;
 
-  MessengerException(final String message, final Throwable cause) {
-    super(message, cause);
+  MessengerException(final String message) {
+    super(message);
   }
 
-  /**
-   * We were created in a thread that is not related to the remote
-   * that called the method. This allows us to see the stack trace of
-   * the invoker.
-   */
-  void fillInInvokerStackTrace() {
-    getCause().setStackTrace(Thread.currentThread().getStackTrace());
+  MessengerException(final String message, final Throwable cause) {
+    super(message, cause);
   }
 }

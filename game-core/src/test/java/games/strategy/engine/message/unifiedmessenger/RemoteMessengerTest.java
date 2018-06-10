@@ -2,9 +2,8 @@ package games.strategy.engine.message.unifiedmessenger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -12,10 +11,10 @@ import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,25 +93,17 @@ public class RemoteMessengerTest {
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     remoteMessenger.unregisterRemote("test");
-    try {
-      remote.increment(1);
-      fail("No exception thrown");
-    } catch (final RemoteNotFoundException rme) {
-      // this is what we expect
-    }
+    final Exception e = assertThrows(RuntimeException.class, () -> remote.increment(1));
+    assertTrue(RemoteNotFoundException.class.isInstance(e.getCause()));
   }
 
   @Test
   public void testNoRemote() {
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
-    try {
-      remoteMessenger.getRemote(test);
-      final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
-      remote.testVoid();
-      fail("No exception thrown");
-    } catch (final RemoteNotFoundException rme) {
-      // this is what we expect
-    }
+    remoteMessenger.getRemote(test);
+    final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
+    final Exception e = assertThrows(RuntimeException.class, remote::testVoid);
+    assertTrue(RemoteNotFoundException.class.isInstance(e.getCause()));
   }
 
   @Test
@@ -125,21 +116,13 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testException() throws Exception {
+  public void testException() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName(ITestRemote.class, "test");
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
-    try {
-      remote.throwException();
-    } catch (final Exception e) {
-      // this is what we want
-      if (e.getMessage().equals(TestRemote.EXCEPTION_STRING)) {
-        return;
-      }
-      throw e;
-    }
-    fail("No exception thrown");
+    final Exception e = assertThrows(Exception.class, remote::throwException);
+    assertEquals(TestRemote.EXCEPTION_STRING, e.getCause().getMessage());
   }
 
   @Test
@@ -254,43 +237,24 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
       final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
-      final CountDownLatch latch = new CountDownLatch(1);
-      final AtomicBoolean started = new AtomicBoolean(false);
-      final IFoo foo = new IFoo() {
-        @Override
-        public void foo() {
-          started.set(true);
-          Interruptibles.await(latch);
-        }
+      final Semaphore semaphore = new Semaphore(0);
+      final IFoo foo = () -> {
+        semaphore.release();
+        Interruptibles.await(semaphore::acquire);
       };
       clientRemoteMessenger.registerRemote(foo, test);
       serverUnifiedMessenger.getHub().waitForNodesToImplement(test.getName());
       assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
-      final AtomicReference<ConnectionLostException> rme = new AtomicReference<>(null);
-      final Thread t = new Thread(() -> {
-        try {
-          final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
-          remoteFoo.foo();
-        } catch (final ConnectionLostException e) {
-          rme.set(e);
-        }
+      final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
+        remoteFoo.foo();
       });
-      t.start();
-      // wait for the thread to start
-      while (started.get() == false) {
-        Interruptibles.sleep(1);
-      }
-      Interruptibles.sleep(20);
-      // TODO: we are getting a RemoteNotFoundException because the client is disconnecting before the invoke goes out
-      // completely
-      // Perhaps this situation should be changed to a ConnectionLostException or something else?
+      // Wait for each other
+      Interruptibles.await(semaphore::acquire);
       client.shutDown();
-      // when the client shutdowns, this should wake up.
-      // and an error should be thrown
-      // give the thread a chance to execute
-      t.join(200);
-      latch.countDown();
-      assertNotNull(rme.get());
+      semaphore.release();
+      final Exception e = assertThrows(ExecutionException.class, future::get);
+      assertTrue(ConnectionLostException.class.isInstance(e.getCause().getCause()));
     } finally {
       shutdownServerAndClient(server, client);
     }
@@ -309,7 +273,7 @@ public class RemoteMessengerTest {
   }
 
   private static class TestRemote implements ITestRemote {
-    public static final String EXCEPTION_STRING = "AND GO";
+    static final String EXCEPTION_STRING = "AND GO";
     private INode senderNode;
 
     @Override
@@ -328,7 +292,7 @@ public class RemoteMessengerTest {
       throw new Exception(EXCEPTION_STRING);
     }
 
-    public INode getLastSenderNode() {
+    INode getLastSenderNode() {
       return senderNode;
     }
   }
