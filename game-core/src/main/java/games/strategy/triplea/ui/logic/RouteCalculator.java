@@ -21,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-@AllArgsConstructor(access =  AccessLevel.PRIVATE)
+@AllArgsConstructor(access =  AccessLevel.PUBLIC)
 @Builder
 public class RouteCalculator {
 
@@ -147,8 +147,7 @@ public class RouteCalculator {
    *
    * @return An unmodifiable List containing 9-1 {@linkplain AffineTransform}s
    */
-  @VisibleForTesting
-  List<AffineTransform> getPossibleTranslations() {
+  public List<AffineTransform> getPossibleTranslations() {
     final List<AffineTransform> result = new ArrayList<>(3); // 3 is probably the most common value
     result.add(new AffineTransform());
     if (isInfiniteX && isInfiniteY) {

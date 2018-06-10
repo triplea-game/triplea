@@ -101,6 +101,9 @@ public class ImageScrollModel extends Observable {
   public boolean getScrollX() {
     return scrollX;
   }
+  public boolean getScrollY() {
+    return scrollY;
+  }
 
   public int getX() {
     return x;

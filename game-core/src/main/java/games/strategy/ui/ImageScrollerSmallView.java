@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -15,6 +16,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
 
+import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
@@ -115,18 +117,24 @@ public class ImageScrollerSmallView extends JComponent {
     final double y = model.getY() * ratioY;
     final double width = model.getBoxWidth() * ratioX;
     final double height = model.getBoxHeight() * ratioY;
-    final Rectangle2D.Double rect = new Rectangle2D.Double(x, y, width, height);
-    drawFilledRect(rect, g);
-    if (model.getScrollX()) {
-      final double mapWidth = model.getMaxWidth() * ratioX;
-      rect.x += mapWidth;
-      drawFilledRect(rect, g);
-      rect.x -= 2 * mapWidth;
-      drawFilledRect(rect, g);
-    }
+    final Rectangle2D.Double mapBounds = new Rectangle2D.Double(0, 0,
+        model.getMaxWidth() * ratioX, model.getMaxHeight() * ratioY);
+    final RouteCalculator calculator = new RouteCalculator(
+        model.getScrollY(),
+        model.getScrollX(),
+        (int) Math.round(mapBounds.width),
+        (int) Math.round(mapBounds.height));
+    final Rectangle2D.Double rect = new Rectangle2D.Double(
+        x % mapBounds.width, y % mapBounds.height,
+        width, height);
+    g.setClip(mapBounds);
+    calculator.getPossibleTranslations().stream()
+        .map(t -> t.createTransformedShape(rect))
+        .map(Shape::getBounds2D)
+        .forEach(r -> drawFilledRect(r, g));
   }
 
-  private void drawFilledRect(final Rectangle2D.Double rect, final Graphics2D g) {
+  private void drawFilledRect(final Rectangle2D rect, final Graphics2D g) {
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, mapData.getSmallMapViewerFillAlpha()));
     g.setColor(mapData.getSmallMapViewerFillColor());
     g.fill(rect);
