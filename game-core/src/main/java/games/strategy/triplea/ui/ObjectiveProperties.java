@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.time.Instant;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -13,21 +12,12 @@ public class ObjectiveProperties extends PropertyFile {
   private static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
   static final String GROUP_PROPERTY = "TABLEGROUP";
 
-
-  private static ObjectiveProperties instance = null;
-  private static Instant timestamp = Instant.EPOCH;
-
   protected ObjectiveProperties() {
     super(PROPERTY_FILE);
   }
 
   public static ObjectiveProperties getInstance() {
-    // cache properties for 1 second
-    if (instance == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
-      instance = new ObjectiveProperties();
-      timestamp = Instant.now();
-    }
-    return instance;
+    return PropertyFile.getInstance(ObjectiveProperties.class, ObjectiveProperties::new);
   }
 
   public String getName() {

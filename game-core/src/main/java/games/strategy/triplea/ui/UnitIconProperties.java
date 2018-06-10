@@ -1,6 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,9 +20,6 @@ import games.strategy.util.FileNameUtils;
 public class UnitIconProperties extends PropertyFile {
 
   private static final String PROPERTY_FILE = "unit_icons.properties";
-
-  private static UnitIconProperties instance = null;
-  private static Instant timestamp = Instant.EPOCH;
   private static Map<ICondition, Boolean> conditionsStatus = new HashMap<>();
 
   protected UnitIconProperties(final GameData data) {
@@ -54,12 +50,7 @@ public class UnitIconProperties extends PropertyFile {
   }
 
   public static UnitIconProperties getInstance(final GameData data) {
-    // cache properties for 10 seconds
-    if (instance == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
-      instance = new UnitIconProperties(data);
-      timestamp = Instant.now();
-    }
-    return instance;
+    return PropertyFile.getInstance(UnitIconProperties.class, () -> new UnitIconProperties(data));
   }
 
   /**

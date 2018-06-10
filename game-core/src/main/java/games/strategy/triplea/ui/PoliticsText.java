@@ -1,7 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.time.Instant;
-
 /**
  * Returns a bunch of messages from politicstext.properties
  */
@@ -16,20 +14,12 @@ public class PoliticsText extends PropertyFile {
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
-  private static PoliticsText instance = null;
-  private static Instant timestamp = Instant.EPOCH;
-
   protected PoliticsText() {
     super(PROPERTY_FILE);
   }
 
   public static PoliticsText getInstance() {
-    // cache properties for 10 seconds
-    if (instance == null || timestamp.plusSeconds(10).isBefore(Instant.now())) {
-      instance = new PoliticsText();
-      timestamp = Instant.now();
-    }
-    return instance;
+    return PropertyFile.getInstance(PoliticsText.class, PoliticsText::new);
   }
 
   public String getButtonText(final String politicsKey) {
