@@ -17,6 +17,7 @@ import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TerritoryEffectImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
@@ -60,6 +61,8 @@ public interface UiContext {
   TerritoryEffectImageFactory getTerritoryEffectImageFactory();
 
   MapImage getMapImage();
+
+  UnitIconImageFactory getUnitIconImageFactory();
 
   FlagIconImageFactory getFlagImageFactory();
 

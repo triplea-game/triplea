@@ -27,6 +27,7 @@ import games.strategy.triplea.image.PuImageFactory;
 import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.image.TerritoryEffectImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
@@ -42,6 +43,7 @@ public class HeadedUiContext extends AbstractUiContext {
   protected final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
   protected final TerritoryEffectImageFactory territoryEffectImageFactory = new TerritoryEffectImageFactory();
   protected final MapImage mapImage;
+  protected final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   protected final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
   protected DiceImageFactory diceImageFactory;
   protected final PuImageFactory puImageFactory = new PuImageFactory();
@@ -88,6 +90,7 @@ public class HeadedUiContext extends AbstractUiContext {
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
+    unitIconImageFactory.setResourceLoader(resourceLoader);
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setMapDir(resourceLoader);
@@ -155,6 +158,11 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public MapImage getMapImage() {
     return mapImage;
+  }
+
+  @Override
+  public UnitIconImageFactory getUnitIconImageFactory() {
+    return unitIconImageFactory;
   }
 
   @Override
@@ -239,4 +247,5 @@ public class HeadedUiContext extends AbstractUiContext {
       ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
+
 }

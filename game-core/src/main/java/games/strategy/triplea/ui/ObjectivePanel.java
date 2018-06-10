@@ -2,12 +2,8 @@ package games.strategy.triplea.ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,8 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -41,21 +35,17 @@ import javax.swing.table.TableColumnModel;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
+import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
-import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.FileNameUtils;
-import games.strategy.util.UrlStreams;
 
 /**
  * A panel that will show all objectives for all players, including if the objective is filled or not.
@@ -74,7 +64,7 @@ public class ObjectivePanel extends AbstractStatPanel {
 
   @Override
   public String getName() {
-    return ObjectiveProperties.getInstance().getProperty(ObjectiveProperties.OBJECTIVES_PANEL_NAME, "Objectives");
+    return ObjectiveProperties.getInstance().getName();
   }
 
   public boolean isEmpty() {
@@ -132,7 +122,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     private void setObjectiveStats() {
       statsObjective = new LinkedHashMap<>();
       final ObjectiveProperties op = ObjectiveProperties.getInstance();
-      final Collection<PlayerID> allPlayers = gameData.getPlayerList().getPlayers();
       final String gameName =
           FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
       final Map<String, List<String>> sectionsUnsorted = new HashMap<>();
@@ -185,38 +174,12 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
+        final ICondition condition = AbstractPlayerRulesAttachment.getCondition(key[0], key[1], gameData);
+        if (condition == null) {
+          continue;
+        }
         final PlayerID player = gameData.getPlayerList().getPlayerId(key[0]);
-        if (player == null) {
-          // could be an old map, or an old save, so we don't want to stop the game from running.
-          System.err.println("objective.properties player does not exist: " + key[0]);
-          continue;
-        }
-        final IAttachment attachment;
-        try {
-          if (key[1].contains(Constants.RULES_OBJECTIVE_PREFIX) || key[1].contains(Constants.RULES_CONDITION_PREFIX)) {
-            attachment = RulesAttachment.get(player, key[1], allPlayers, true);
-          } else if (key[1].contains(Constants.TRIGGER_ATTACHMENT_PREFIX)) {
-            attachment = TriggerAttachment.get(player, key[1], allPlayers);
-          } else if (key[1].contains(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
-            attachment = PoliticalActionAttachment.get(player, key[1], allPlayers);
-          } else {
-            System.err.println("objective.properties objective must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
-                + " or " + Constants.RULES_CONDITION_PREFIX + " or " + Constants.TRIGGER_ATTACHMENT_PREFIX + " or "
-                + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
-            continue;
-          }
-        } catch (final Exception e) {
-          // could be an old map, or an old save, so we don't want to stop the game from running.
-          System.err.println(e.getMessage());
-          continue;
-        }
-        if (attachment == null) {
-          System.err.println("objective.properties attachment does not exist: " + key[1]);
-          continue;
-        }
-        if (!ICondition.class.isAssignableFrom(attachment.getClass())) {
-          throw new IllegalStateException("(wtf??) attachment is not an ICondition: " + attachment.getName());
-        }
+
         // find which section
         boolean found = false;
         if (sections.containsKey(player.getName())) {
@@ -225,7 +188,7 @@ public class ObjectivePanel extends AbstractStatPanel {
             if (map == null) {
               throw new IllegalStateException("objective.properties group has nothing: " + player.getName());
             }
-            map.put((ICondition) attachment, value);
+            map.put(condition, value);
             statsObjectiveUnsorted.put(player.getName(), map);
             found = true;
           }
@@ -237,7 +200,7 @@ public class ObjectivePanel extends AbstractStatPanel {
               if (map == null) {
                 throw new IllegalStateException("objective.properties group has nothing: " + sectionEntry.getKey());
               }
-              map.put((ICondition) attachment, value);
+              map.put(condition, value);
               statsObjectiveUnsorted.put(sectionEntry.getKey(), map);
               break;
             }
@@ -531,53 +494,6 @@ public class ObjectivePanel extends AbstractStatPanel {
         maximumHeight = Math.max(maximumHeight, cellHeight);
       }
       return maximumHeight;
-    }
-  }
-
-  // TODO: copy paste overlap with NotifcationMessages.java
-  static class ObjectiveProperties {
-    // Filename
-    private static final String PROPERTY_FILE = "objectives.properties";
-    static final String GROUP_PROPERTY = "TABLEGROUP";
-    static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
-    private static ObjectiveProperties instance = null;
-    private static Instant timestamp = Instant.EPOCH;
-    private final Properties properties = new Properties();
-
-    protected ObjectiveProperties() {
-      final ResourceLoader loader = AbstractUiContext.getResourceLoader();
-      final URL url = loader.getResource(PROPERTY_FILE);
-      if (url != null) {
-        final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-        if (inputStream.isPresent()) {
-          try {
-            properties.load(inputStream.get());
-          } catch (final IOException e) {
-            System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
-          }
-        }
-      }
-    }
-
-    public static ObjectiveProperties getInstance() {
-      // cache properties for 1 second
-      if (instance == null || timestamp.plusSeconds(1).isBefore(Instant.now())) {
-        instance = new ObjectiveProperties();
-        timestamp = Instant.now();
-      }
-      return instance;
-    }
-
-    public String getProperty(final String objectiveKey) {
-      return getProperty(objectiveKey, "Not Found In objectives.properties");
-    }
-
-    public String getProperty(final String objectiveKey, final String defaultValue) {
-      return properties.getProperty(objectiveKey, defaultValue);
-    }
-
-    public Set<Entry<Object, Object>> entrySet() {
-      return properties.entrySet();
     }
   }
 
