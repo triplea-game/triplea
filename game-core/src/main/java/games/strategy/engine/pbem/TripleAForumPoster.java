@@ -10,6 +10,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
@@ -41,7 +42,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
       final String token = getToken(client, userId);
       try {
         post(client, token, "### " + title + "\n" + summary);
-        turnSummaryRef = "Sucessfully posted!";
+        turnSummaryRef = "Successfully posted!";
         return true;
       } finally {
         deleteToken(client, userId, token);
@@ -54,7 +55,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private void post(final CloseableHttpClient client, final String token, final String text) throws IOException {
-    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/topics/" + getTopicId());
+    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v2/topics/" + getTopicId());
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(new BasicNameValuePair("content",
@@ -70,7 +71,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private String uploadSaveGame(final CloseableHttpClient client, final String token) throws IOException {
-    final HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v1/util/upload");
+    final HttpPost fileUpload = new HttpPost(tripleAForumURL + "/api/v2/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
         .addBinaryBody("files[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM, saveGameFileName)
         .build());
@@ -88,7 +89,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
 
   private static void deleteToken(final CloseableHttpClient client, final int userId, final String token)
       throws IOException {
-    final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v1/users/" + userId + "/tokens/" + token);
+    final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v2/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
     try (CloseableHttpResponse response = client.execute(httpDelete)) {
       final int code = response.getStatusLine().getStatusCode();
@@ -100,37 +101,29 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private int getUserId(final CloseableHttpClient client) throws IOException {
-    final JSONObject jsonObject = login(client);
+    final JSONObject jsonObject = queryUserInfo(client);
     checkUser(jsonObject);
     return jsonObject.getInt("uid");
   }
 
-  private static void checkUser(final JSONObject jsonObject) {
-    if (jsonObject.has("message")) {
-      throw new IllegalStateException(jsonObject.getString("message"));
+  private void checkUser(final JSONObject jsonObject) {
+    if (!jsonObject.has("uid")) {
+      throw new IllegalStateException(String.format("User %s doesn't exist.", getUsername()));
     }
-    if (jsonObject.getInt("banned") != 0) {
-      throw new IllegalStateException("Your account is banned from the forum");
+    if (jsonObject.getBoolean("banned")) {
+      throw new IllegalStateException("Your account is banned from the forum.");
     }
-    if (jsonObject.getInt("email:confirmed") != 1) {
+    if (!jsonObject.getBoolean("email:confirmed")) {
       throw new IllegalStateException("Your email isn't confirmed yet!");
     }
   }
 
-  private JSONObject login(final CloseableHttpClient client) throws IOException {
-    final HttpPost post = new HttpPost(tripleAForumURL + "/api/ns/login");
-    post.setEntity(new UrlEncodedFormEntity(
-        Arrays.asList(newUsernameParameter(), newPasswordParameter()),
-        StandardCharsets.UTF_8));
+  private JSONObject queryUserInfo(final CloseableHttpClient client) throws IOException {
+    final HttpGet post = new HttpGet(tripleAForumURL + "/api/user/" + getUsername());
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      final String rawJson = EntityUtils.toString(response.getEntity());
-      return new JSONObject(rawJson);
+      return new JSONObject(EntityUtils.toString(response.getEntity()));
     }
-  }
-
-  private NameValuePair newUsernameParameter() {
-    return new BasicNameValuePair("username", getUsername());
   }
 
   private NameValuePair newPasswordParameter() {
@@ -138,7 +131,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
   }
 
   private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
-    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v1/users/" + userId + "/tokens");
+    final HttpPost post = new HttpPost(tripleAForumURL + "/api/v2/users/" + userId + "/tokens");
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(newPasswordParameter()),
         StandardCharsets.UTF_8));
