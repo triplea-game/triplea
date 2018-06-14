@@ -179,7 +179,11 @@ public class ResourceCollection extends GameDataComponent {
 
   @Override
   public String toString() {
-    return toString(m_resources, getData(), ", ");
+    return toString(m_resources, getData());
+  }
+
+  public static String toString(final IntegerMap<Resource> resources, final GameData data) {
+    return toString(resources, data, ", ");
   }
 
   private static String toString(final IntegerMap<Resource> resources, final GameData data,
