@@ -27,9 +27,9 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.ui.SwingAction;
@@ -141,7 +141,7 @@ public class UserActionPanel extends ActionPanel {
 
   @VisibleForTesting
   static boolean canSpendResourcesOnUserActions(final Collection<UserActionAttachment> userActions) {
-    return userActions.stream().anyMatch(userAction -> userAction.getCostPu() > 0);
+    return userActions.stream().anyMatch(userAction -> !userAction.getCostResources().isEmpty());
   }
 
   private JPanel getUserActionButtonPanel(final JDialog parent) {
@@ -186,7 +186,7 @@ public class UserActionPanel extends ActionPanel {
 
   @VisibleForTesting
   static boolean canPlayerAffordUserAction(final PlayerID player, final UserActionAttachment userAction) {
-    return userAction.getCostPu() <= player.getResources().getQuantity(Constants.PUS);
+    return player.getResources().has(userAction.getCostResources());
   }
 
   /**
@@ -217,8 +217,9 @@ public class UserActionPanel extends ActionPanel {
     return panel;
   }
 
-  private static String getActionButtonText(final UserActionAttachment paa) {
-    final String costString = paa.getCostPu() == 0 ? "" : "[" + paa.getCostPu() + " PU] ";
+  private String getActionButtonText(final UserActionAttachment paa) {
+    final String costString = paa.getCostResources().isEmpty() ? ""
+        : "[" + ResourceCollection.toString(paa.getCostResources(), getData()) + "] ";
     return costString + UserActionText.getInstance().getButtonText(paa.getText());
   }
 

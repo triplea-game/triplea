@@ -26,6 +26,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.RelationshipTypeList;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -74,20 +75,20 @@ public class PoliticsPanel extends ActionPanel {
       overviewScroll.setPreferredSize(new Dimension(
           (overviewScroll.getPreferredSize().width > availWidth ? availWidth
               : (overviewScroll.getPreferredSize().width
-              + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
+                  + (overviewScroll.getPreferredSize().height > availHeightOverview ? 20 : 0))),
           (overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview
               : (overviewScroll.getPreferredSize().height + (validPoliticalActions.isEmpty() ? 26 : 0)
-              + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
+                  + (overviewScroll.getPreferredSize().width > availWidth ? 20 : 0)))));
 
       final JScrollPane choiceScroll = new JScrollPane(politicalActionButtonPanel(politicalChoiceDialog));
       choiceScroll.setBorder(BorderFactory.createEmptyBorder());
       choiceScroll.setPreferredSize(new Dimension(
           (choiceScroll.getPreferredSize().width > availWidth ? availWidth
               : (choiceScroll.getPreferredSize().width
-              + (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
+                  + (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
           (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice
               : (choiceScroll.getPreferredSize().height)
-              + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
+                  + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
 
       final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
       splitPane.setOneTouchExpandable(true);
@@ -221,8 +222,9 @@ public class PoliticsPanel extends ActionPanel {
     return panel;
   }
 
-  private static String getActionButtonText(final PoliticalActionAttachment paa) {
-    final String costString = paa.getCostPu() == 0 ? "" : "[" + paa.getCostPu() + " PU] ";
+  private String getActionButtonText(final PoliticalActionAttachment paa) {
+    final String costString = paa.getCostResources().isEmpty() ? ""
+        : "[" + ResourceCollection.toString(paa.getCostResources(), getData()) + "] ";
     return costString + PoliticsText.getInstance().getButtonText(paa.getText());
   }
 
