@@ -10,10 +10,10 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -21,6 +21,7 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.UserActionText;
+import games.strategy.util.IntegerMap;
 
 @MapSupport
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
@@ -103,16 +104,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     }
   }
 
-  /**
-   * @param uaa
-   *        The UserActionAttachment the player should be charged for.
-   * @return false if the player can't afford the action
-   */
   private boolean checkEnoughMoney(final UserActionAttachment uaa) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
-    final int cost = uaa.getCostPu();
-    final int has = bridge.getPlayerId().getResources().getQuantity(pus);
-    return has >= cost;
+    return bridge.getPlayerId().getResources().has(uaa.getCostResources());
   }
 
   /**
@@ -122,15 +115,14 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    *        the UserActionAttachment this the money is charged for.
    */
   private void chargeForAction(final UserActionAttachment uaa) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
-    final int cost = uaa.getCostPu();
-    if (cost > 0) {
-      // don't notify user of spending money anymore
-      // notifyMoney(uaa, true);
-      final String transcriptText = bridge.getPlayerId().getName() + " spend " + cost + " PU on User Action: "
+    final IntegerMap<Resource> cost = uaa.getCostResources();
+    if (!cost.isEmpty()) {
+      final String transcriptText = bridge.getPlayerId().getName() + " spend "
+          + ResourceCollection.toString(cost, getData()) + " on User Action: "
           + MyFormatter.attachmentNameToText(uaa.getName());
       bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), pus, -cost);
+      final Change charge =
+          ChangeFactory.removeResourceCollection(bridge.getPlayerId(), new ResourceCollection(getData(), cost));
       bridge.addChange(charge);
     } else {
       final String transcriptText =
@@ -260,7 +252,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    *
    */
   private void notifyMoney(final UserActionAttachment uaa) {
-    sendNotification("You don't have enough money, you need " + uaa.getCostPu() + " PU's to perform this action");
+    sendNotification("You don't have enough money, you need "
+        + ResourceCollection.toString(uaa.getCostResources(), getData()) + " to perform this action");
   }
 
   /**
