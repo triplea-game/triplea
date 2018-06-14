@@ -112,7 +112,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     m_costResources.put(r, n);
   }
 
-  private void setCostResources(final IntegerMap<Resource> value) {
+  public void setCostResources(final IntegerMap<Resource> value) {
     m_costResources = value;
   }
 
