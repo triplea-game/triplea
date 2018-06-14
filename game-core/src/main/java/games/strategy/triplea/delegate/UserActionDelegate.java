@@ -23,6 +23,9 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.UserActionText;
 import games.strategy.util.IntegerMap;
 
+/**
+ * Contains validation and logic to change game data for UserActionAttachments.
+ */
 @MapSupport
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
   public UserActionDelegate() {}
