@@ -10,7 +10,6 @@ import java.util.Map;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.ai.AiPoliticalUtils;
 import games.strategy.triplea.ai.pro.data.ProTerritory;
 import games.strategy.triplea.ai.pro.data.ProTerritoryManager;
@@ -152,7 +151,7 @@ class ProPoliticsAi {
               .test(action)) {
             continue;
           }
-          if (action.getCostPu() > 0 && action.getCostPu() > player.getResources().getQuantity(Constants.PUS)) {
+          if (!player.getResources().has(action.getCostResources())) {
             continue;
           }
           i++;
