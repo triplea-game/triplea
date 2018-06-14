@@ -12,9 +12,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.Constants;
+import games.strategy.util.IntegerMap;
 
 /**
  * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment.
@@ -25,8 +28,10 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
   protected String m_text = "";
-  // cost in PU to attempt this action
+  @Deprecated
   protected int m_costPU = 0;
+  // cost in any resources to attempt this action
+  protected IntegerMap<Resource> m_costResources = new IntegerMap<>();
   // how many times can you perform this action each round?
   protected int m_attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
@@ -71,27 +76,58 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     m_text = "";
   }
 
-  /**
-   * @param s
-   *        the amount you need to pay to perform the action.
-   */
+  @Deprecated
   private void setCostPu(final String s) {
-    m_costPU = getInt(s);
+    setCostPu(getInt(s));
   }
 
+  @Deprecated
   public void setCostPu(final Integer s) {
-    m_costPU = s;
+    final Resource r = getData().getResourceList().getResource(Constants.PUS);
+    m_costResources.put(r, s);
   }
 
-  /**
-   * @return The amount you need to pay to perform the action.
-   */
+  @Deprecated
   public int getCostPu() {
     return m_costPU;
   }
 
+  @Deprecated
   private void resetCostPu() {
     m_costPU = 0;
+  }
+
+  private void setCostResources(final String value) throws GameParseException {
+    final String[] s = value.split(":");
+    if (s.length <= 0 || s.length > 2) {
+      throw new GameParseException(
+          "costResources cannot be empty or have more than two fields" + thisErrorMsg());
+    }
+    final String resourceToProduce = s[1];
+    final Resource r = getData().getResourceList().getResource(resourceToProduce);
+    if (r == null) {
+      throw new GameParseException("costResources: No resource called: " + resourceToProduce + thisErrorMsg());
+    }
+    final int n = getInt(s[0]);
+    m_costResources.put(r, n);
+  }
+
+  private void setCostResources(final IntegerMap<Resource> value) {
+    m_costResources = value;
+  }
+
+  public IntegerMap<Resource> getCostResources() {
+    // TODO: remove for incompatible release
+    if (m_costPU != 0) {
+      final Resource r = getData().getResourceList().getResource(Constants.PUS);
+      m_costResources.add(r, m_costPU);
+      m_costPU = 0;
+    }
+    return m_costResources;
+  }
+
+  private void resetCostResources() {
+    m_costResources = new IntegerMap<>();
   }
 
   private void setActionAccept(final String value) throws GameParseException {
@@ -206,6 +242,12 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
                 this::setCostPu,
                 this::getCostPu,
                 this::resetCostPu))
+        .put("costResources",
+            MutableProperty.of(
+                this::setCostResources,
+                this::setCostResources,
+                this::getCostResources,
+                this::resetCostResources))
         .put("attemptsPerTurn",
             MutableProperty.of(
                 this::setAttemptsPerTurn,
