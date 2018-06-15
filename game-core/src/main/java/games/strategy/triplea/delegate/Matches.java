@@ -1960,11 +1960,6 @@ public final class Matches {
     return uaa -> uaa.hasAttemptsLeft() && uaa.canPerform(testedConditions);
   }
 
-  public static Predicate<PoliticalActionAttachment> politicalActionHasCostBetween(final int greaterThanEqualTo,
-      final int lessThanEqualTo) {
-    return paa -> paa.getCostPu() >= greaterThanEqualTo && paa.getCostPu() <= lessThanEqualTo;
-  }
-
   static Predicate<Unit> unitCanOnlyPlaceInOriginalTerritories() {
     return u -> {
       final UnitAttachment ua = UnitAttachment.get(u.getType());

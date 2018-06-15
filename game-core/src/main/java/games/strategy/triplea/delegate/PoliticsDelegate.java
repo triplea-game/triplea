@@ -16,12 +16,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
@@ -32,6 +32,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.PoliticsText;
 import games.strategy.util.CollectionUtils;
+import games.strategy.util.IntegerMap;
 
 /**
  * Responsible allowing players to perform politicalActions.
@@ -239,10 +240,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    *        is this a notification about enough or not enough money.
    */
   private void notifyMoney(final PoliticalActionAttachment paa, final boolean enough) {
+    final String cost = ResourceCollection.toString(paa.getCostResources(), getData());
     if (enough) {
-      sendNotification("Charging " + paa.getCostPu() + " PU's to perform this action");
+      sendNotification("Charging " + cost + " to perform this action");
     } else {
-      sendNotification("You don't have ennough money, you need " + paa.getCostPu() + " PU's to perform this action");
+      sendNotification("You don't have enough money, you need " + cost + " to perform this action");
     }
   }
 
@@ -253,15 +255,14 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    *        the politicalactionattachment this the money is charged for.
    */
   private void chargeForAction(final PoliticalActionAttachment paa) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
-    final int cost = paa.getCostPu();
-    if (cost > 0) {
-      // don't notify user of spending money anymore
-      // notifyMoney(paa, true);
-      final String transcriptText = bridge.getPlayerId().getName() + " spend " + cost + " PU on Political Action: "
+    final IntegerMap<Resource> cost = paa.getCostResources();
+    if (!cost.isEmpty()) {
+      final String transcriptText = bridge.getPlayerId().getName() + " spend "
+          + ResourceCollection.toString(cost, getData()) + " on Political Action: "
           + MyFormatter.attachmentNameToText(paa.getName());
       bridge.getHistoryWriter().startEvent(transcriptText);
-      final Change charge = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), pus, -cost);
+      final Change charge =
+          ChangeFactory.removeResourceCollection(bridge.getPlayerId(), new ResourceCollection(getData(), cost));
       bridge.addChange(charge);
     } else {
       final String transcriptText = bridge.getPlayerId().getName() + " takes Political Action: "
@@ -271,16 +272,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
   }
 
-  /**
-   * @param paa
-   *        The Political Action the player should be charged for.
-   * @return false if the player can't afford the action
-   */
   private boolean checkEnoughMoney(final PoliticalActionAttachment paa) {
-    final Resource pus = getData().getResourceList().getResource(Constants.PUS);
-    final int cost = paa.getCostPu();
-    final int has = bridge.getPlayerId().getResources().getQuantity(pus);
-    return has >= cost;
+    return bridge.getPlayerId().getResources().has(paa.getCostResources());
   }
 
   /**

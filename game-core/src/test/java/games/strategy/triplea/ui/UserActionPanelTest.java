@@ -23,6 +23,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
+import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
 public final class UserActionPanelTest {
@@ -61,7 +62,11 @@ public final class UserActionPanelTest {
 
   private UserActionAttachment createUserActionWithCost(final int costInPUs) {
     final UserActionAttachment userAction = new UserActionAttachment("userAction", mock(Attachable.class), data);
-    userAction.setCostPu(costInPUs);
+    if (costInPUs > 0) {
+      final IntegerMap<Resource> cost = new IntegerMap<>();
+      cost.put(pus, costInPUs);
+      userAction.setCostResources(cost);
+    }
     return userAction;
   }
 

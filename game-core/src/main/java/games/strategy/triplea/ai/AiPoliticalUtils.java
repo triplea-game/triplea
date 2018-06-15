@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
 /**
@@ -52,7 +54,7 @@ public class AiPoliticalUtils {
       }
       if (isFree(nextAction)) {
         acceptableActions.add(nextAction);
-      } else if (CollectionUtils.countMatches(validActions, Matches.politicalActionHasCostBetween(0, 0)) > 1) {
+      } else if (CollectionUtils.countMatches(validActions, politicalActionHasNoResourceCost()) > 1) {
         if (Math.random() < .9 && isAcceptableCost(nextAction, id, data)) {
           acceptableActions.add(nextAction);
         }
@@ -63,6 +65,10 @@ public class AiPoliticalUtils {
       }
     }
     return acceptableActions;
+  }
+
+  private static Predicate<PoliticalActionAttachment> politicalActionHasNoResourceCost() {
+    return paa -> paa.getCostResources().isEmpty();
   }
 
   private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID id,
@@ -115,7 +121,7 @@ public class AiPoliticalUtils {
   }
 
   private static boolean isFree(final PoliticalActionAttachment nextAction) {
-    return nextAction.getCostPu() <= 0;
+    return nextAction.getCostResources().isEmpty();
   }
 
   private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player,
@@ -123,6 +129,7 @@ public class AiPoliticalUtils {
     // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable
     // price.
     final float production = AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
-    return production >= 21 && (nextAction.getCostPu()) <= ((production / 10));
+    final Resource r = data.getResourceList().getResource(Constants.PUS);
+    return production >= 21 && (nextAction.getCostResources().getInt(r)) <= ((production / 10));
   }
 }
