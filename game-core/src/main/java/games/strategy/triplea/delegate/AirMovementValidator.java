@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -164,12 +165,13 @@ public class AirMovementValidator {
     final Predicate<Unit> carrierAlliedNotOwned = Matches.unitIsOwnedBy(player).negate()
         .and(Matches.isUnitAllied(player, data))
         .and(Matches.unitIsCarrier());
-    // final Predicate<Unit> airAlliedNotOwned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).negate(),
-    // Matches.isUnitAllied(player, data), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
     final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
-    // final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
-    final List<Unit> carriersInProductionQueue = player.getUnits().getMatches(Matches.unitIsCarrier());
+    final List<Unit> carriersInProductionQueue = GameStepPropertiesHelper.getCombinedTurns(data, player).stream()
+        .map(PlayerID::getUnits)
+        .map(units -> units.getMatches(Matches.unitIsCarrier()))
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
     for (final Territory t : landingSpots) {
       if (landAirOnNewCarriers && !carriersInProductionQueue.isEmpty()) {
         if (Matches.territoryIsWater().test(t)
@@ -189,7 +191,6 @@ public class AirMovementValidator {
       }
       final Collection<Unit> alliedCarriers = t.getUnits().getMatches(carrierAlliedNotOwned);
       alliedCarriers.removeAll(movedCarriersAndTheirFighters.keySet());
-      // Collection<Unit> alliedAir = t.getUnits().getMatches(airAlliedNotOwned);
       final int alliedCarrierCapacity = carrierCapacity(alliedCarriers, t);
       startingSpace.add(t, alliedCarrierCapacity);
     }
