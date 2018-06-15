@@ -28,6 +28,9 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
   protected String m_text = "";
+  /**
+   * @deprecated Replaced by costResources.
+   */
   @Deprecated
   protected int m_costPU = 0;
   // cost in any resources to attempt this action
@@ -101,7 +104,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     final String[] s = value.split(":");
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
-          "costResources cannot be empty or have more than two fields" + thisErrorMsg());
+          "costResources cannot be empty or have more than two fields: " + value + thisErrorMsg());
     }
     final String resourceToProduce = s[1];
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
