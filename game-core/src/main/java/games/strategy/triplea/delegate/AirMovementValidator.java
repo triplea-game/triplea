@@ -165,12 +165,8 @@ public class AirMovementValidator {
     final Predicate<Unit> carrierAlliedNotOwned = Matches.unitIsOwnedBy(player).negate()
         .and(Matches.isUnitAllied(player, data))
         .and(Matches.unitIsCarrier());
-    // final Predicate<Unit> airAlliedNotOwned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).negate(),
-    // Matches.isUnitAllied(player, data), Matches.unitIsAir(), Matches.unitCanLandOnCarrier());
     final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
-    // final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
-    // final List<Unit> carriersInProductionQueue = player.getUnits().getMatches(Matches.unitIsCarrier());
     final List<Unit> carriersInProductionQueue = GameStepPropertiesHelper.getCombinedTurns(data, player).stream()
         .map(PlayerID::getUnits)
         .map(units -> units.getMatches(Matches.unitIsCarrier()))
@@ -195,7 +191,6 @@ public class AirMovementValidator {
       }
       final Collection<Unit> alliedCarriers = t.getUnits().getMatches(carrierAlliedNotOwned);
       alliedCarriers.removeAll(movedCarriersAndTheirFighters.keySet());
-      // Collection<Unit> alliedAir = t.getUnits().getMatches(airAlliedNotOwned);
       final int alliedCarrierCapacity = carrierCapacity(alliedCarriers, t);
       startingSpace.add(t, alliedCarrierCapacity);
     }
