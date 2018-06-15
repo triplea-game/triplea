@@ -861,7 +861,7 @@ public final class Matches {
   private static Predicate<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(final GameData data,
       final PlayerID player) {
     return t -> {
-      if (!t.getOwner().equals(player)) {
+      if (!GameStepPropertiesHelper.getCombinedTurns(data, player).contains(t.getOwner())) {
         return false;
       }
       if (!t.getUnits().anyMatch(unitCanProduceUnits())) {
