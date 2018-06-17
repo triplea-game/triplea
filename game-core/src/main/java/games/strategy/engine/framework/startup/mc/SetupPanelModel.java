@@ -6,6 +6,7 @@ import java.util.Observable;
 
 import javax.annotation.Nonnull;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
 
@@ -70,16 +71,13 @@ public class SetupPanelModel extends Observable {
    */
   public void showClient(final Component ui) {
     final ClientModel model = new ClientModel(gameSelectorModel, this);
-    if (Interruptibles.awaitResult(() -> GameRunner
-        .newBackgroundTaskRunner().runInBackgroundAndReturn("Loading game...", () -> {
-          if (!model.createClientMessenger(ui)) {
-            model.cancel();
-            return false;
-          }
-          return true;
-        })).result.orElse(false)) {
-      setGameTypePanel(new ClientSetupPanel(model));
-    }
+    Interruptibles.await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
+      if (model.createClientMessenger(ui)) {
+        SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
+      } else {
+        model.cancel();
+      }
+    }));
   }
 
   protected void setGameTypePanel(final ISetupPanel panel) {
