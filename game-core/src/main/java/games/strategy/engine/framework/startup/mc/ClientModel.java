@@ -219,7 +219,7 @@ public class ClientModel implements IMessengerErrorListener {
     channelMessenger = new ChannelMessenger(unifiedMessenger);
     remoteMessenger = new RemoteMessenger(unifiedMessenger);
     channelMessenger.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
-    chatPanel = new ChatPanel(messenger, channelMessenger, remoteMessenger, ServerModel.CHAT_NAME,
+    chatPanel = ChatPanel.createChatPanel(messenger, channelMessenger, remoteMessenger, ServerModel.CHAT_NAME,
         Chat.ChatSoundProfile.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
