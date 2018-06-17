@@ -167,18 +167,25 @@ public class ClientModel implements IMessengerErrorListener {
     }
     // load in the saved name!
     final String playername = ClientSetting.PLAYER_NAME.value();
-    final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
-    options.setLocationRelativeTo(ui);
-    options.setVisible(true);
-    options.dispose();
-    if (!options.getOkPressed()) {
-      return null;
+    final Interruptibles.Result<ClientProps> result = Interruptibles.awaitResult(() -> SwingAction
+        .invokeAndWaitResult(() -> {
+          final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
+          options.setLocationRelativeTo(ui);
+          options.setVisible(true);
+          options.dispose();
+          if (!options.getOkPressed()) {
+            return null;
+          }
+          final ClientProps props = new ClientProps();
+          props.setHost(options.getAddress());
+          props.setName(options.getName());
+          props.setPort(options.getPort());
+          return props;
+        }));
+    if (!result.completed) {
+      throw new IllegalStateException("Error during component creation of ClientOptions.");
     }
-    final ClientProps props = new ClientProps();
-    props.setHost(options.getAddress());
-    props.setName(options.getName());
-    props.setPort(options.getPort());
-    return props;
+    return result.result.orElse(null);
   }
 
   boolean createClientMessenger(final Component ui) {
@@ -219,7 +226,7 @@ public class ClientModel implements IMessengerErrorListener {
     channelMessenger = new ChannelMessenger(unifiedMessenger);
     remoteMessenger = new RemoteMessenger(unifiedMessenger);
     channelMessenger.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
-    chatPanel = new ChatPanel(messenger, channelMessenger, remoteMessenger, ServerModel.CHAT_NAME,
+    chatPanel = ChatPanel.createChatPanel(messenger, channelMessenger, remoteMessenger, ServerModel.CHAT_NAME,
         Chat.ChatSoundProfile.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);

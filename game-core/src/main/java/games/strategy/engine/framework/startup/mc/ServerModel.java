@@ -280,7 +280,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         chatPanel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
-        chatPanel = new ChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+        chatPanel = ChatPanel.createChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       }
 

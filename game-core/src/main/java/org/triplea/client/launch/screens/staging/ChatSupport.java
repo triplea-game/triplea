@@ -40,7 +40,7 @@ public class ChatSupport {
       final RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
       final ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
 
-      chatPanel = new ChatPanel(clientMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+      chatPanel = ChatPanel.createChatPanel(clientMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
           Chat.ChatSoundProfile.GAME_CHATROOM);
     } catch (final IOException e) {
       throw new RuntimeException(e);

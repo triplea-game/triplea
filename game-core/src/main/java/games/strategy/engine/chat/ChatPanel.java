@@ -12,6 +12,8 @@ import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
+import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 
 /**
  * A Chat window.
@@ -30,12 +32,22 @@ public class ChatPanel extends JPanel implements IChatPanel {
   private ChatPlayerPanel chatPlayerPanel;
   private ChatMessagePanel chatMessagePanel;
 
-  /** Creates a new instance of ChatPanel. */
-  public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    init();
+  /**
+   * Creates a Chat object instance on the current thread based on the provided arguments
+   * and calls the ChatPanel constructor with it on the EDT.
+   * This is to allow for easy off-EDT initialisation of this ChatPanel.
+   * Note that if this method is being called on the EDT It will still work,
+   * but the UI might freeze for a long time.
+   */
+  public static ChatPanel createChatPanel(
+      final IMessenger messenger,
+      final IChannelMessenger channelMessenger,
+      final IRemoteMessenger remoteMessenger,
+      final String chatName,
+      final ChatSoundProfile chatSoundProfile) {
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
-    setChat(chat);
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat)))
+        .result.orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
 
   public ChatPanel(final Chat chat) {
