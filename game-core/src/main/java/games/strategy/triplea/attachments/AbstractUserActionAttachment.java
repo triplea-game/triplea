@@ -127,7 +127,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     if (m_costPU != 0) {
       final Resource r = getData().getResourceList().getResource(Constants.PUS);
       m_costResources.add(r, m_costPU);
-      m_costPU = 0;
     }
     return m_costResources;
   }
