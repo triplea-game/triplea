@@ -1,13 +1,13 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.JToolTip;
-import javax.swing.PopupFactory;
-import javax.swing.Popup;
-import javax.swing.Timer;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JToolTip;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
+import javax.swing.Timer;
 
 
 /**
@@ -26,6 +26,7 @@ public class MapUnitTooltipManager implements ActionListener {
     // Note: Timer not started yet.
   }
 
+  /** Updates the tooltip. */
   public void updateTooltip(String tipText) {
     if (tipText.equals(text)) {
       return;
@@ -43,6 +44,7 @@ public class MapUnitTooltipManager implements ActionListener {
     }
   }
 
+  @Override
   public void actionPerformed(ActionEvent e) {
     if (text.length() > 0) {
       final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
