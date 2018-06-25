@@ -506,11 +506,9 @@ public class MapPanel extends ImageScrollerLargeView {
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
       for (final Tile tile : tileList) {
         final Image img = tile.getImage(gameData, uiContext.getMapData());
-        if (img != null) {
-          final AffineTransform t = new AffineTransform();
-          t.translate((tile.getBounds().x - bounds.getX()) * scale, (tile.getBounds().y - bounds.getY()) * scale);
-          g2d.drawImage(img, t, this);
-        }
+        final AffineTransform t = AffineTransform.getTranslateInstance(
+            (tile.getBounds().x - bounds.getX()) * scale,(tile.getBounds().y - bounds.getY()) * scale);
+        g2d.drawImage(img, t, this);
       }
     } finally {
       gameData.releaseReadLock();
@@ -622,8 +620,9 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       } else {
         final Image img = tile.getImage(data, uiContext.getMapData());
-        final AffineTransform t = new AffineTransform();
-        t.translate(scale * (tile.getBounds().x - bounds.getX()), scale * (tile.getBounds().y - bounds.getY()));
+        final AffineTransform t = AffineTransform.getTranslateInstance(
+            scale * (tile.getBounds().x - bounds.getX()),
+            scale * (tile.getBounds().y - bounds.getY()));
         g.drawImage(img, t, this);
       }
     }
