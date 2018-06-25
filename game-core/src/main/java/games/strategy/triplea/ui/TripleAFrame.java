@@ -213,7 +213,6 @@ public class TripleAFrame extends MainGameFrame {
   private PlayerID currentStepPlayer;
   private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
-  private final MapUnitTooltipManager tooltipManager;
   private boolean isCtrlPressed = false;
 
   /**
@@ -268,12 +267,8 @@ public class TripleAFrame extends MainGameFrame {
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new MapPanelSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
-    tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(mapSelectionListener);
-    final MouseOverUnitListener mouseOverUnitListener = (units, territory, me) -> {
-      unitsBeingMousedOver = units;
-      tooltipManager.updateTooltip(getUnitInfo());
-    };
+    final MouseOverUnitListener mouseOverUnitListener = (units, territory, me) -> unitsBeingMousedOver = units;
     mapPanel.addMouseOverUnitListener(mouseOverUnitListener);
     // link the small and large images
     SwingUtilities.invokeLater(mapPanel::initSmallMap);
@@ -1550,23 +1545,6 @@ public class TripleAFrame extends MainGameFrame {
     };
   }
 
-  private String getUnitInfo() {
-    String unitInfo = "";
-    if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
-      final Unit unit = unitsBeingMousedOver.get(0);
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua != null) {
-        String unitText = "Unit:";
-        if (unitsBeingMousedOver.size() != 1) {
-          unitText = unitsBeingMousedOver.size() + " Units";
-        }
-        unitInfo = "<b>" + unitText + "</b><br>" + unit.getType().getName() + ": "
-                + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
-      }
-    }
-    return unitInfo;
-  }
-
   private KeyListener getArrowKeyListener() {
     return new KeyListener() {
       @Override
@@ -1589,7 +1567,15 @@ public class TripleAFrame extends MainGameFrame {
         }
         // I for info
         if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V) {
-          String unitInfo = getUnitInfo();
+          String unitInfo = "";
+          if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
+            final Unit unit = unitsBeingMousedOver.get(0);
+            final UnitAttachment ua = UnitAttachment.get(unit.getType());
+            if (ua != null) {
+              unitInfo = "<b>Unit:</b><br>" + unit.getType().getName() + ": "
+                  + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
+            }
+          }
           String terrInfo = "";
           if (territoryLastEntered != null) {
             final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
