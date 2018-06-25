@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +39,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.Operation;
 import games.strategy.triplea.ui.screen.drawable.BaseMapDrawable;
@@ -80,63 +82,26 @@ public class TileManager {
 
   /**
    * Selects tiles which fall into rectangle bounds.
+   * Normalizes the rectangle if it exceeds the maps bounds.
    *
-   * @param bounds
-   *        rectangle for selection
+   * @param bounds rectangle for selection
    * @return tiles which fall into the rectangle
    */
   public List<Tile> getTiles(final Rectangle2D bounds) {
-    // if the rectangle exceeds the map dimensions we to do shift the rectangle and check for each shifted rectangle as
-    // well as the original
-    // rectangle
     final MapData mapData = uiContext.getMapData();
     final Dimension mapDimensions = mapData.getMapDimensions();
-    final boolean testXshift =
-        (mapData.scrollWrapX() && (bounds.getMaxX() > mapDimensions.width || bounds.getMinX() < 0));
-    final boolean testYshift =
-        (mapData.scrollWrapY() && (bounds.getMaxY() > mapDimensions.height || bounds.getMinY() < 0));
-    Rectangle2D boundsXshift = null;
-    if (testXshift) {
-      if (bounds.getMinX() < 0) {
-        boundsXshift = new Rectangle((int) bounds.getMinX() + mapDimensions.width, (int) bounds.getMinY(),
-            (int) bounds.getWidth(), (int) bounds.getHeight());
-      } else {
-        boundsXshift = new Rectangle((int) bounds.getMinX() - mapDimensions.width, (int) bounds.getMinY(),
-            (int) bounds.getWidth(), (int) bounds.getHeight());
-      }
-    }
-    Rectangle2D boundsYshift = null;
-    if (testYshift) {
-      if (bounds.getMinY() < 0) {
-        boundsYshift = new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY() + mapDimensions.height,
-            (int) bounds.getWidth(), (int) bounds.getHeight());
-      } else {
-        boundsYshift = new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY() - mapDimensions.height,
-            (int) bounds.getWidth(), (int) bounds.getHeight());
-      }
-    }
     acquireLock();
     try {
+      final List<AffineTransform> translations = new RouteCalculator(mapData.scrollWrapY(), mapData.scrollWrapX(),
+          mapDimensions.width, mapDimensions.height)
+          .getPossibleTranslations();
       final List<Tile> tilesInBounds = new ArrayList<>();
       for (final Tile tile : tiles) {
         final Rectangle tileBounds = tile.getBounds();
-        if (bounds.contains(tileBounds) || tileBounds.intersects(bounds)) {
-          tilesInBounds.add(tile);
-        }
-      }
-      if (boundsXshift != null) {
-        for (final Tile tile : tiles) {
-          final Rectangle tileBounds = tile.getBounds();
-          if (boundsXshift.contains(tileBounds) || tileBounds.intersects(boundsXshift)) {
+        for (AffineTransform transform : translations) {
+          if (transform.createTransformedShape(tileBounds).intersects(bounds)) {
             tilesInBounds.add(tile);
-          }
-        }
-      }
-      if (boundsYshift != null) {
-        for (final Tile tile : tiles) {
-          final Rectangle tileBounds = tile.getBounds();
-          if (boundsYshift.contains(tileBounds) || tileBounds.intersects(boundsYshift)) {
-            tilesInBounds.add(tile);
+            break;
           }
         }
       }

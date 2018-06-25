@@ -87,9 +87,6 @@ public class Tile {
     }
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(Tile.class.getName()), Level.FINEST,
         "Drawing Tile at" + bounds);
-    // clear
-    g.setColor(Color.BLACK);
-    g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
     for (final List<IDrawable> list : contents.values()) {
       for (final IDrawable drawable : list) {
         drawable.draw(bounds, data, g, mapData, unscaled, scaled);
