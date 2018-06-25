@@ -611,7 +611,12 @@ public class MapPanel extends ImageScrollerLargeView {
       if (tile.isDirty()) {
         if (!tile.hasDrawingStarted()) {
           executor.execute(() -> {
-            tile.getImage(data, uiContext.getMapData());
+            try {
+              data.acquireReadLock();
+              tile.getImage(data, uiContext.getMapData());
+            } finally {
+              data.releaseReadLock();
+            }
             SwingUtilities.invokeLater(this::repaint);
           });
         }
