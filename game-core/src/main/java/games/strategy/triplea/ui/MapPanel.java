@@ -505,16 +505,11 @@ public class MapPanel extends ImageScrollerLargeView {
       final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
       final Collection<Tile> tileList = tileManager.getTiles(bounds);
       for (final Tile tile : tileList) {
-        tile.acquireLock();
-        try {
-          final Image img = tile.getImage(gameData, uiContext.getMapData());
-          if (img != null) {
-            final AffineTransform t = new AffineTransform();
-            t.translate((tile.getBounds().x - bounds.getX()) * scale, (tile.getBounds().y - bounds.getY()) * scale);
-            g2d.drawImage(img, t, this);
-          }
-        } finally {
-          tile.releaseLock();
+        final Image img = tile.getImage(gameData, uiContext.getMapData());
+        if (img != null) {
+          final AffineTransform t = new AffineTransform();
+          t.translate((tile.getBounds().x - bounds.getX()) * scale, (tile.getBounds().y - bounds.getY()) * scale);
+          g2d.drawImage(img, t, this);
         }
       }
     } finally {
@@ -529,8 +524,6 @@ public class MapPanel extends ImageScrollerLargeView {
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
     int x = model.getX();
     int y = model.getY();
-    final List<Tile> images = new ArrayList<>();
-    final List<Tile> undrawnTiles = new ArrayList<>();
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
     // make sure we use the same data for the entire paint
     final GameData data = gameData;
@@ -549,21 +542,21 @@ public class MapPanel extends ImageScrollerLargeView {
         if (fitAxisY && y < 0) {
           final Rectangle2D.Double leftUpperBounds =
               new Rectangle2D.Double(model.getMaxWidth() + x, model.getMaxHeight() + y, -x, -y);
-          drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
+          drawTiles(g2d, data, leftUpperBounds);
         }
         final Rectangle2D.Double leftBounds =
             new Rectangle2D.Double(model.getMaxWidth() + x, y, -x, getScaledHeight());
-        drawTiles(g2d, images, data, leftBounds, undrawnTiles);
+        drawTiles(g2d, data, leftBounds);
       }
       if (fitAxisY && y < 0) {
         final Rectangle2D.Double upperBounds =
             new Rectangle2D.Double(x, model.getMaxHeight() + y, getScaledWidth(), -y);
-        drawTiles(g2d, images, data, upperBounds, undrawnTiles);
+        drawTiles(g2d, data, upperBounds);
       }
     }
     // handle non overlap
     final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-    drawTiles(g2d, images, data, mainBounds, undrawnTiles);
+    drawTiles(g2d, data, mainBounds);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
       t.translate(scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
@@ -598,23 +591,6 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       }
     }
-    // draw the tiles nearest us first
-    // then draw farther away
-    updateUndrawnTiles(undrawnTiles, 30, true);
-    updateUndrawnTiles(undrawnTiles, 257, true);
-    // when we are this far away, don't force the tiles to stay in memory
-    updateUndrawnTiles(undrawnTiles, 513, false);
-    updateUndrawnTiles(undrawnTiles, 767, false);
-    clearPendingDrawOperations();
-    undrawnTiles.forEach(tile -> executor.execute(() -> {
-      data.acquireReadLock();
-      try {
-        tile.getImage(data, MapPanel.this.getUiContext().getMapData());
-      } finally {
-        data.releaseReadLock();
-      }
-      SwingUtilities.invokeLater(MapPanel.this::repaint);
-    }));
     stopWatch.done();
   }
 
@@ -630,47 +606,18 @@ public class MapPanel extends ImageScrollerLargeView {
     return model.getMaxHeight() < getScaledHeight();
   }
 
-  /**
-   * If we have nothing left undrawn, draw the tiles within preDrawMargin of us, optionally
-   * forcing the tiles to remain in memory.
-   */
-  private void updateUndrawnTiles(final List<Tile> undrawnTiles, final int preDrawMargin, final boolean forceInMemory) {
-    // draw tiles near us if we have nothing left to draw
-    // that way when we scroll slowly we wont notice a glitch
-    if (undrawnTiles.isEmpty()) {
-      final Rectangle2D extendedBounds = new Rectangle2D.Double(Math.max(model.getX() - preDrawMargin, 0),
-          Math.max(model.getY() - preDrawMargin, 0), getScaledWidth() + (2 * preDrawMargin),
-          getScaledHeight() + (2 * preDrawMargin));
-      final List<Tile> tileList = tileManager.getTiles(extendedBounds);
-      for (final Tile tile : tileList) {
-        if (tile.isDirty()) {
-          undrawnTiles.add(tile);
-        }
-      }
-    }
-  }
-
-  private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data,
-      final Rectangle2D.Double bounds, final List<Tile> undrawn) {
+  private void drawTiles(final Graphics2D g, final GameData data, final Rectangle2D.Double bounds) {
     for (final Tile tile : tileManager.getTiles(bounds)) {
-      tile.acquireLock();
-      try {
-        final Image img;
-        if (tile.isDirty()) {
-          // take what we can get to avoid screen flicker
-          undrawn.add(tile);
-          img = tile.getRawImage();
-        } else {
-          img = tile.getImage(data, uiContext.getMapData());
-          images.add(tile);
-        }
-        if (img != null) {
-          final AffineTransform t = new AffineTransform();
-          t.translate(scale * (tile.getBounds().x - bounds.getX()), scale * (tile.getBounds().y - bounds.getY()));
-          g.drawImage(img, t, this);
-        }
-      } finally {
-        tile.releaseLock();
+      if (tile.isDirty()) {
+        executor.execute(() -> {
+          tile.getImage(data, uiContext.getMapData());
+          SwingUtilities.invokeLater(this::repaint);
+        });
+      } else {
+        final Image img = tile.getImage(data, uiContext.getMapData());
+        final AffineTransform t = new AffineTransform();
+        t.translate(scale * (tile.getBounds().x - bounds.getX()), scale * (tile.getBounds().y - bounds.getY()));
+        g.drawImage(img, t, this);
       }
     }
   }

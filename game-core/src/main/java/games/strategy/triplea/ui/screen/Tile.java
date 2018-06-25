@@ -8,6 +8,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -25,15 +26,13 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 public class Tile {
-  public static final LockUtil LOCK_UTIL = LockUtil.INSTANCE;
-
-  private boolean isDirty = true;
+  private volatile boolean isDirty = true;
 
   private final Image image;
   private final Rectangle bounds;
   private final double scale;
   private final Lock lock = new ReentrantLock();
-  private final SortedMap<Integer, List<IDrawable>> contents = new TreeMap<>();
+  private final SortedMap<Integer, List<IDrawable>> contents = Collections.synchronizedSortedMap(new TreeMap<>());
 
   Tile(final Rectangle bounds, final double scale) {
     this.bounds = bounds;
@@ -42,46 +41,31 @@ public class Tile {
   }
 
   public boolean isDirty() {
-    acquireLock();
-    try {
-      return isDirty;
-    } finally {
-      releaseLock();
-    }
+    return isDirty;
   }
 
-  public void acquireLock() {
-    LOCK_UTIL.acquireLock(lock);
+  private void acquireLock() {
+    LockUtil.INSTANCE.acquireLock(lock);
   }
 
-  public void releaseLock() {
-    LOCK_UTIL.releaseLock(lock);
+  private void releaseLock() {
+    LockUtil.INSTANCE.releaseLock(lock);
   }
 
   public Image getImage(final GameData data, final MapData mapData) {
-    acquireLock();
-    try {
-      if (isDirty) {
+    if (isDirty) {
+      try {
+        acquireLock();
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         draw(g, data, mapData);
         g.dispose();
+      } finally {
+        releaseLock();
       }
-      return image;
-    } finally {
-      releaseLock();
     }
-  }
-
-  /**
-   * This image may not reflect our current drawables.
-   * Use getImage() to get a correct image
-   *
-   * @return the image we currently have.
-   */
-  public Image getRawImage() {
     return image;
   }
 
