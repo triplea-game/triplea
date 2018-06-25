@@ -49,6 +49,7 @@ import games.strategy.io.IoUtils;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Interruptibles;
 
@@ -148,6 +149,9 @@ public class ServerGame extends AbstractGame {
     channelMessenger.registerChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     setupDelegateMessaging(data);
     randomStats = new RandomStats(remoteMessenger);
+    // Import dice stats from history if there is any (e.g. loading a saved game).
+    importDiceStats((HistoryNode)gameData.getHistory().getRoot());
+
     final IServerRemote serverRemote = () -> {
       try {
         return IoUtils.writeToMemory(this::saveGame);
@@ -156,6 +160,27 @@ public class ServerGame extends AbstractGame {
       }
     };
     remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
+  }
+
+  private void importDiceStats(HistoryNode node)  {
+    if (node instanceof EventChild) {
+      EventChild childNode = (EventChild) node;
+      if (childNode.getRenderingData() instanceof DiceRoll) {
+        String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
+        PlayerID playerId = gameData.getPlayerList().getPlayerId(playerName);
+
+        DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
+        int[] rolls = new int[diceRoll.size()];
+        for (int i = 0; i < rolls.length; i++) {
+          rolls[i] = diceRoll.getDie(i).getValue();
+        }
+        randomStats.addRandom(rolls, playerId, RandomStats.DiceType.COMBAT);
+      }
+    }
+
+    for (int i = 0 ; i < node.getChildCount() ; i++) {
+      importDiceStats((HistoryNode)node.getChildAt(i));
+    }
   }
 
   public void addObserver(final IObserverWaitingToJoin blockingObserver,

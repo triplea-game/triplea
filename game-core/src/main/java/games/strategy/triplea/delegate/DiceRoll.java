@@ -1027,8 +1027,22 @@ public class DiceRoll implements Externalizable {
     return ra != null && ra.getNegateDominatingFirstRoundAttack();
   }
 
+  /**
+   * Parses the player name from the given annotation that has been produced by getAnnotation().
+   *
+   * @param annotation The annotation string.
+   * @return The player's name.
+   */
+  public static String getPlayerNameFromAnnotation(String annotation) {
+    // This parses the "Germany rolls dice for " format produced by getAnnotation() below.
+    return annotation.split(" ", 2)[0];
+  }
+
   static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
+    // Note: This pattern is parsed when loading saved games to restore dice stats to get the player name via the
+    // getPlayerNameFromAnnotation() function above. When changing this format, update getPlayerNameFromAnnotation(),
+    // preferably in a way that is backwards compatible (can parse previous formats too).
     buffer.append(player.getName()).append(" roll dice for ").append(MyFormatter.unitsToTextNoOwner(units));
     if (battle != null) {
       buffer.append(" in ")
