@@ -609,10 +609,12 @@ public class MapPanel extends ImageScrollerLargeView {
   private void drawTiles(final Graphics2D g, final GameData data, final Rectangle2D.Double bounds) {
     for (final Tile tile : tileManager.getTiles(bounds)) {
       if (tile.isDirty()) {
-        executor.execute(() -> {
-          tile.getImage(data, uiContext.getMapData());
-          SwingUtilities.invokeLater(this::repaint);
-        });
+        if (!tile.hasDrawingStarted()) {
+          executor.execute(() -> {
+            tile.getImage(data, uiContext.getMapData());
+            SwingUtilities.invokeLater(this::repaint);
+          });
+        }
       } else {
         final Image img = tile.getImage(data, uiContext.getMapData());
         final AffineTransform t = new AffineTransform();

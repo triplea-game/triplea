@@ -27,6 +27,7 @@ import games.strategy.ui.Util;
 
 public class Tile {
   private volatile boolean isDirty = true;
+  private volatile boolean drawingStarted = false;
 
   private final Image image;
   private final Rectangle bounds;
@@ -44,6 +45,10 @@ public class Tile {
     return isDirty;
   }
 
+  public boolean hasDrawingStarted() {
+    return drawingStarted;
+  }
+
   private void acquireLock() {
     LockUtil.INSTANCE.acquireLock(lock);
   }
@@ -56,6 +61,7 @@ public class Tile {
     if (isDirty) {
       try {
         acquireLock();
+        drawingStarted = true;
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -63,6 +69,7 @@ public class Tile {
         draw(g, data, mapData);
         g.dispose();
       } finally {
+        drawingStarted = false;
         releaseLock();
       }
     }
