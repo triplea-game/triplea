@@ -1,7 +1,5 @@
 package games.strategy.net;
 
-import games.strategy.engine.framework.system.SystemProperties;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -10,6 +8,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
+
+import games.strategy.engine.framework.system.SystemProperties;
 
 /**
  * Written very often over the network, so make externalizable to make faster and reduce traffic.
@@ -29,6 +29,7 @@ public class Node implements INode, Externalizable {
     }
   }
 
+  /** Returns the localhost InetAddress. */
   public static InetAddress getLocalHost() throws UnknownHostException {
     // On Mac, InetAddress.getLocalHost() can be extremely slow (30 seconds)
     // due to a bug in macOS Sierra and higher. Use a work around to avoid
