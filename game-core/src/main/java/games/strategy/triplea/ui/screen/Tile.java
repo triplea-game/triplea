@@ -8,7 +8,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -33,7 +32,7 @@ public class Tile {
   private final Rectangle bounds;
   private final double scale;
   private final Lock lock = new ReentrantLock();
-  private final SortedMap<Integer, List<IDrawable>> contents = Collections.synchronizedSortedMap(new TreeMap<>());
+  private final SortedMap<Integer, List<IDrawable>> contents = new TreeMap<>();
 
   Tile(final Rectangle bounds, final double scale) {
     this.bounds = bounds;
