@@ -100,6 +100,12 @@ public final class LookAndFeel {
 
   private static void setupLookAndFeel(final String lookAndFeelName) {
     checkState(SwingUtilities.isEventDispatchThread());
+
+    // On Mac, have the menubar appear at the top of the screen to match how Mac apps are expected to behave.
+    if (SystemProperties.isMac()) {
+      System.setProperty("apple.laf.useScreenMenuBar", "true");
+    }
+
     try {
       UIManager.setLookAndFeel(lookAndFeelName);
     } catch (final Throwable t) {
