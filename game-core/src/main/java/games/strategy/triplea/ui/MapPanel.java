@@ -522,7 +522,8 @@ public class MapPanel extends ImageScrollerLargeView {
     super.paint(g2d);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
-    final Rectangle2D.Double mainBounds = new Rectangle2D.Double(model.getX(), model.getY(), getScaledWidth(), getScaledHeight());
+    final Rectangle2D.Double mainBounds = new Rectangle2D
+        .Double(model.getX(), model.getY(), getScaledWidth(), getScaledHeight());
     drawTiles(g2d, gameData, mainBounds);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
