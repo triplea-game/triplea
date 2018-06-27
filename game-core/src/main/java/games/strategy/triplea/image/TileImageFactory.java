@@ -141,7 +141,7 @@ public final class TileImageFactory {
     if (resourceLoader.getResource(fileName) == null) {
       return null;
     }
-    return getImage(fileName, false);
+    return getImage(fileName, true);
   }
 
   public Image getUnscaledUncachedBaseTile(final int x, final int y) {
@@ -150,7 +150,7 @@ public final class TileImageFactory {
     if (url == null) {
       return null;
     }
-    return loadImage(url, fileName, false, false, false);
+    return loadImage(url, fileName, true, false, false);
   }
 
   private static String getBaseTileImageName(final int x, final int y) {

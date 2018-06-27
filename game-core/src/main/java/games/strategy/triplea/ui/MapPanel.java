@@ -51,6 +51,7 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -520,41 +521,9 @@ public class MapPanel extends ImageScrollerLargeView {
     final Graphics2D g2d = (Graphics2D) g;
     super.paint(g2d);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
-    int x = model.getX();
-    int y = model.getY();
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
-    // make sure we use the same data for the entire paint
-    final GameData data = gameData;
-    // if the map fits on screen, don't draw any overlap
-    final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
-    final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
-    if (fitAxisX || fitAxisY) {
-      if (fitAxisX && x + (int) getScaledWidth() > model.getMaxWidth()) {
-        x -= model.getMaxWidth();
-      }
-      if (fitAxisY && y + (int) getScaledHeight() > model.getMaxHeight()) {
-        y -= model.getMaxHeight();
-      }
-      // handle wrapping off the screen
-      if (fitAxisX && x < 0) {
-        if (fitAxisY && y < 0) {
-          final Rectangle2D.Double leftUpperBounds =
-              new Rectangle2D.Double(model.getMaxWidth() + x, model.getMaxHeight() + y, -x, -y);
-          drawTiles(g2d, data, leftUpperBounds);
-        }
-        final Rectangle2D.Double leftBounds =
-            new Rectangle2D.Double(model.getMaxWidth() + x, y, -x, getScaledHeight());
-        drawTiles(g2d, data, leftBounds);
-      }
-      if (fitAxisY && y < 0) {
-        final Rectangle2D.Double upperBounds =
-            new Rectangle2D.Double(x, model.getMaxHeight() + y, getScaledWidth(), -y);
-        drawTiles(g2d, data, upperBounds);
-      }
-    }
-    // handle non overlap
-    final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-    drawTiles(g2d, data, mainBounds);
+    final Rectangle2D.Double mainBounds = new Rectangle2D.Double(model.getX(), model.getY(), getScaledWidth(), getScaledHeight());
+    drawTiles(g2d, gameData, mainBounds);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
       t.translate(scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
@@ -596,15 +565,7 @@ public class MapPanel extends ImageScrollerLargeView {
     ((ThreadPoolExecutor) executor).getQueue().clear();
   }
 
-  private boolean mapWidthFitsOnScreen() {
-    return model.getMaxWidth() < getScaledWidth();
-  }
-
-  private boolean mapHeightFitsOnScreen() {
-    return model.getMaxHeight() < getScaledHeight();
-  }
-
-  private void drawTiles(final Graphics2D g, final GameData data, final Rectangle2D.Double bounds) {
+  private void drawTiles(final Graphics2D graphics, final GameData data, final Rectangle2D bounds) {
     for (final Tile tile : tileManager.getTiles(bounds)) {
       if (tile.isDirty()) {
         if (!tile.hasDrawingStarted()) {
@@ -620,10 +581,20 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       } else {
         final Image img = tile.getImage(data, uiContext.getMapData());
-        final AffineTransform t = AffineTransform.getTranslateInstance(
-            scale * (tile.getBounds().x - bounds.getX()),
-            scale * (tile.getBounds().y - bounds.getY()));
-        g.drawImage(img, t, this);
+        final List<AffineTransform> transforms = new RouteCalculator(model.getScrollY(), model.getScrollX(),
+            model.getMaxWidth(), model.getMaxHeight()).getPossibleTranslations();
+        for (final AffineTransform transform : transforms) {
+          final AffineTransform viewTransformation = new AffineTransform();
+          viewTransformation.scale(scale, scale);
+          viewTransformation.translate(-bounds.getX(), -bounds.getY());
+          viewTransformation.translate(tile.getBounds().x,tile.getBounds().y);
+          viewTransformation.concatenate(transform);
+          // Tile scaling is done by the tiles themselves
+          // Should be changed in the future to allow for seamless scaling
+          // to all sizes
+          viewTransformation.scale(1 / scale, 1 / scale);
+          graphics.drawImage(img, viewTransformation, this);
+        }
       }
     }
   }
