@@ -150,7 +150,7 @@ public final class TileImageFactory {
     if ((!showMapBlends || !showReliefImages) && url == null) {
       return null;
     }
-    return loadImage(url, fileName, true, true, true);
+    return loadImage(url, fileName);
   }
 
   public Image getReliefTile(final int a, final int b) {
@@ -176,14 +176,13 @@ public final class TileImageFactory {
     return compatibleImage;
   }
 
-  private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
-      final boolean cache, final boolean scale) {
-    return (showMapBlends && showReliefImages && transparent)
-        ? loadBlendedImage(fileName, cache, scale)
-        : loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
+  private Image loadImage(final URL imageLocation, final String fileName) {
+    return (showMapBlends && showReliefImages)
+        ? loadBlendedImage(fileName)
+        : loadUnblendedImage(imageLocation, fileName);
   }
 
-  private Image loadBlendedImage(final String fileName, final boolean cache, final boolean scaled) {
+  private Image loadBlendedImage(final String fileName) {
     BufferedImage reliefFile = null;
     BufferedImage baseFile = null;
     // The relief tile
@@ -235,21 +234,16 @@ public final class TileImageFactory {
       g2.setComposite(blendComposite);
       g2.drawImage(baseFile, 0, 0, null);
       final SoftReference<Image> ref = new SoftReference<>(blendedImage);
-      if (cache) {
-        imageCache.put(fileName, ref);
-      }
+      imageCache.put(fileName, ref);
       return blendedImage;
     }
 
     final SoftReference<Image> ref = new SoftReference<>(baseFile);
-    if (cache) {
-      imageCache.put(fileName, ref);
-    }
+    imageCache.put(fileName, ref);
     return baseFile;
   }
 
-  private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent,
-      final boolean cache, final boolean scaled) {
+  private Image loadUnblendedImage(final URL imageLocation, final String fileName) {
     Image image;
     try {
       final Stopwatch loadingImages = new Stopwatch(logger, Level.FINE, "Loading image:" + imageLocation);
@@ -262,7 +256,7 @@ public final class TileImageFactory {
       // this step is a significant bottle neck in the image drawing process
       // we should try to find a way to avoid it, and load the
       // png directly as the right type
-      image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+      image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), true);
       final Graphics2D g = (Graphics2D) image.getGraphics();
       g.drawImage(fromFile, 0, 0, null);
       g.dispose();
@@ -272,9 +266,7 @@ public final class TileImageFactory {
       ClientLogger.logError("Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
-    if (cache) {
-      imageCache.put(fileName, new SoftReference<>(image));
-    }
+    imageCache.put(fileName, new SoftReference<>(image));
     return image;
   }
 
