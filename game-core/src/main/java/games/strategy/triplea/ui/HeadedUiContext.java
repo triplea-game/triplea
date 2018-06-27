@@ -64,12 +64,6 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public void setScale(final double scale) {
-    super.setScale(scale);
-    tileImageFactory.setScale(scale);
-  }
-
-  @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
     final Stopwatch stopWatch = new Stopwatch(logger, Level.FINE, "Loading UI Context");
     resourceLoader = ResourceLoader.getMapResourceLoader(dir);
@@ -94,7 +88,6 @@ public class HeadedUiContext extends AbstractUiContext {
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setMapDir(resourceLoader);
-    tileImageFactory.setScale(scale);
     // load map data
     mapImage.loadMaps(resourceLoader);
     mapDir = dir;

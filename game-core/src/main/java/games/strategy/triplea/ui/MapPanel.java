@@ -588,12 +588,8 @@ public class MapPanel extends ImageScrollerLargeView {
           final AffineTransform viewTransformation = new AffineTransform();
           viewTransformation.scale(scale, scale);
           viewTransformation.translate(-bounds.getX(), -bounds.getY());
-          viewTransformation.translate(tile.getBounds().x,tile.getBounds().y);
+          viewTransformation.translate(tile.getBounds().x, tile.getBounds().y);
           viewTransformation.concatenate(transform);
-          // Tile scaling is done by the tiles themselves
-          // Should be changed in the future to allow for seamless scaling
-          // to all sizes
-          viewTransformation.scale(1 / scale, 1 / scale);
           graphics.drawImage(img, viewTransformation, this);
         }
       }
@@ -694,7 +690,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
             category.getOwner().getName(), place, category.getDamaged(), category.getBombingDamage(),
             category.getDisabled(), false, "", uiContext);
-        drawer.draw(bounds, gameData, g, uiContext.getMapData(), null, null);
+        drawer.draw(bounds, gameData, g, uiContext.getMapData());
         i++;
       }
     } finally {

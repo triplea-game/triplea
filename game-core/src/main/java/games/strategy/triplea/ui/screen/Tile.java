@@ -30,14 +30,12 @@ public class Tile {
 
   private final Image image;
   private final Rectangle bounds;
-  private final double scale;
   private final Lock lock = new ReentrantLock();
   private final SortedMap<Integer, List<IDrawable>> contents = new TreeMap<>();
 
-  Tile(final Rectangle bounds, final double scale) {
+  Tile(final Rectangle bounds) {
     this.bounds = bounds;
-    this.scale = scale;
-    image = Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
+    image = Util.createImage((int) bounds.getWidth(), (int) bounds.getHeight(), true);
   }
 
   public boolean isDirty() {
@@ -76,20 +74,11 @@ public class Tile {
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
-    final AffineTransform unscaled = g.getTransform();
-    final AffineTransform scaled;
-    if (scale != 1) {
-      scaled = new AffineTransform();
-      scaled.scale(scale, scale);
-      g.setTransform(scaled);
-    } else {
-      scaled = unscaled;
-    }
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(Tile.class.getName()), Level.FINEST,
         "Drawing Tile at" + bounds);
     for (final List<IDrawable> list : contents.values()) {
       for (final IDrawable drawable : list) {
-        drawable.draw(bounds, data, g, mapData, unscaled, scaled);
+        drawable.draw(bounds, data, g, mapData);
       }
     }
     isDirty = false;

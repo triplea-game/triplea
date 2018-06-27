@@ -8,7 +8,6 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Transparency;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -43,7 +42,6 @@ public final class TileImageFactory {
   private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
-  private double scale = 1.0;
   // maps image name to ImageRef
   private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());
   private ResourceLoader resourceLoader;
@@ -70,14 +68,6 @@ public final class TileImageFactory {
 
   private static float getShowMapBlendAlpha() {
     return showMapBlendAlpha;
-  }
-
-  public void setScale(final double newScale) {
-    if (newScale > 1) {
-      throw new IllegalArgumentException("Wrong scale");
-    }
-    scale = newScale;
-    imageCache.clear();
   }
 
   public static void setShowReliefImages(final boolean showReliefImages) {
@@ -141,16 +131,7 @@ public final class TileImageFactory {
     if (resourceLoader.getResource(fileName) == null) {
       return null;
     }
-    return getImage(fileName, true);
-  }
-
-  public Image getUnscaledUncachedBaseTile(final int x, final int y) {
-    final String fileName = getBaseTileImageName(x, y);
-    final URL url = resourceLoader.getResource(fileName);
-    if (url == null) {
-      return null;
-    }
-    return loadImage(url, fileName, true, false, false);
+    return getImage(fileName);
   }
 
   private static String getBaseTileImageName(final int x, final int y) {
@@ -158,7 +139,7 @@ public final class TileImageFactory {
     return "baseTiles" + "/" + x + "_" + y + ".png";
   }
 
-  private Image getImage(final String fileName, final boolean transparent) {
+  private Image getImage(final String fileName) {
     final Image image = isImageLoaded(fileName);
     if (image != null) {
       return image;
@@ -166,24 +147,15 @@ public final class TileImageFactory {
     // This is null if there is no image
     final URL url = resourceLoader.getResource(fileName);
 
-    if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
+    if ((!showMapBlends || !showReliefImages) && url == null) {
       return null;
     }
-    return loadImage(url, fileName, transparent, true, true);
+    return loadImage(url, fileName, true, true, true);
   }
 
   public Image getReliefTile(final int a, final int b) {
     final String fileName = getReliefTileImageName(a, b);
-    return getImage(fileName, true);
-  }
-
-  public Image getUnscaledUncachedReliefTile(final int x, final int y) {
-    final String fileName = getReliefTileImageName(x, y);
-    final URL url = resourceLoader.getResource(fileName);
-    if (url == null) {
-      return null;
-    }
-    return loadImage(url, fileName, true, false, false);
+    return getImage(fileName);
   }
 
   private static String getReliefTileImageName(final int x, final int y) {
@@ -257,11 +229,6 @@ public final class TileImageFactory {
       final BufferedImage blendedImage =
           new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g2 = blendedImage.createGraphics();
-      if (scaled && scale != 1.0) {
-        final AffineTransform transform = new AffineTransform();
-        transform.scale(scale, scale);
-        g2.setTransform(transform);
-      }
       g2.drawImage(reliefFile, 0, 0, null);
       final BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
       final BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
@@ -297,11 +264,6 @@ public final class TileImageFactory {
       // png directly as the right type
       image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
-      if (scaled && scale != 1.0) {
-        final AffineTransform transform = new AffineTransform();
-        transform.scale(scale, scale);
-        g.setTransform(transform);
-      }
       g.drawImage(fromFile, 0, 0, null);
       g.dispose();
       fromFile.flush();
