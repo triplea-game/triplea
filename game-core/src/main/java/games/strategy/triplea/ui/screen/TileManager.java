@@ -39,7 +39,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.ui.logic.RouteCalculator;
+import games.strategy.triplea.ui.logic.MapScrollUtil;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.Operation;
 import games.strategy.triplea.ui.screen.drawable.BaseMapDrawable;
@@ -92,9 +92,8 @@ public class TileManager {
     final Dimension mapDimensions = mapData.getMapDimensions();
     acquireLock();
     try {
-      final List<AffineTransform> translations = new RouteCalculator(mapData.scrollWrapY(), mapData.scrollWrapX(),
-          mapDimensions.width, mapDimensions.height)
-          .getPossibleTranslations();
+      final List<AffineTransform> translations = MapScrollUtil.getPossibleTranslations(
+          mapData.scrollWrapX(), mapData.scrollWrapY(), mapDimensions.width, mapDimensions.height);
       final List<Tile> tilesInBounds = new ArrayList<>();
       for (final Tile tile : tiles) {
         final Rectangle tileBounds = tile.getBounds();

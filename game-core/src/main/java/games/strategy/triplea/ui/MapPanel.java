@@ -51,7 +51,7 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.logic.RouteCalculator;
+import games.strategy.triplea.ui.logic.MapScrollUtil;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -581,8 +581,8 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       } else {
         final Image img = tile.getImage(data, uiContext.getMapData());
-        final List<AffineTransform> transforms = new RouteCalculator(model.getScrollY(), model.getScrollX(),
-            model.getMaxWidth(), model.getMaxHeight()).getPossibleTranslations();
+        final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
+            model.getScrollX(), model.getScrollY(), model.getMaxWidth(), model.getMaxHeight());
         for (final AffineTransform transform : transforms) {
           final AffineTransform viewTransformation = new AffineTransform();
           viewTransformation.scale(scale, scale);
