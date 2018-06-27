@@ -126,8 +126,8 @@ final class ViewMenu extends JMenu {
   private void addZoomMenu() {
     final Action mapZoom = SwingAction.of("Map Zoom", e -> {
       final SpinnerNumberModel model = new SpinnerNumberModel();
-      model.setMaximum(100);
-      model.setMinimum(15);
+      model.setMaximum(200);
+      model.setMinimum(10);
       model.setStepSize(1);
       model.setValue((int)Math.round(frame.getMapPanel().getScale() * 100));
       final JSpinner spinner = new JSpinner(model);

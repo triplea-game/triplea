@@ -304,12 +304,6 @@ public class ImageScrollerLargeView extends JComponent {
    *        If out of bounds the nearest boundary value is used.
    */
   public void setScale(double value) {
-    if (value < 0.15) {
-      value = 0.15;
-    }
-    if (value > 1) {
-      value = 1;
-    }
     // we want the ratio to be a multiple of 1/256
     // so that the tiles have integer widths and heights
     value = ((int) (value * 256)) / ((double) 256);
