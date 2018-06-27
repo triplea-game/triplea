@@ -24,12 +24,11 @@ import lombok.Builder;
 /**
  * Utility class to calculate a smooth route to draw on the map.
  */
-@AllArgsConstructor(access =  AccessLevel.PUBLIC)
 @Builder
 public class RouteCalculator {
 
-  public final boolean isInfiniteY;
   public final boolean isInfiniteX;
+  public final boolean isInfiniteY;
 
   private final int mapWidth;
   private final int mapHeight;
