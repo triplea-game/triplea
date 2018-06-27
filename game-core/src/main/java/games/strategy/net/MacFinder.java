@@ -70,7 +70,7 @@ public final class MacFinder {
     // the mac, we can't login to the lobby
     // First, try to get the mac address of the local host network interface
     try {
-      final InetAddress address = InetAddress.getLocalHost();
+      final InetAddress address = Node.getLocalHost();
       final NetworkInterface localHostNetworkInterface = NetworkInterface.getByInetAddress(address);
       if (localHostNetworkInterface != null) {
         final byte[] rawMac = localHostNetworkInterface.getHardwareAddress();
