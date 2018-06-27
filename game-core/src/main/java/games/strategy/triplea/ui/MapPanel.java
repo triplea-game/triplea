@@ -636,7 +636,6 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     }
     uiContext.setScale(normalizedScale);
-    recreateTiles(getData(), uiContext);
     repaint();
   }
 
