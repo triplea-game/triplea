@@ -162,15 +162,15 @@ public class ServerGame extends AbstractGame {
     remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
   }
 
-  private void importDiceStats(HistoryNode node)  {
+  private void importDiceStats(final HistoryNode node)  {
     if (node instanceof EventChild) {
-      EventChild childNode = (EventChild) node;
+      final EventChild childNode = (EventChild) node;
       if (childNode.getRenderingData() instanceof DiceRoll) {
-        String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
-        PlayerID playerId = gameData.getPlayerList().getPlayerId(playerName);
+        final String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
+        final PlayerID playerId = gameData.getPlayerList().getPlayerId(playerName);
 
-        DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
-        int[] rolls = new int[diceRoll.size()];
+        final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
+        final int[] rolls = new int[diceRoll.size()];
         for (int i = 0; i < rolls.length; i++) {
           rolls[i] = diceRoll.getDie(i).getValue();
         }

@@ -1033,7 +1033,7 @@ public class DiceRoll implements Externalizable {
    * @param annotation The annotation string.
    * @return The player's name.
    */
-  public static String getPlayerNameFromAnnotation(String annotation) {
+  public static String getPlayerNameFromAnnotation(final String annotation) {
     // This parses the "Germany rolls dice for " format produced by getAnnotation() below.
     return annotation.split(" ", 2)[0];
   }
