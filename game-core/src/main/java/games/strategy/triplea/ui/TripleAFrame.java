@@ -270,11 +270,10 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(mapSelectionListener);
-    final MouseOverUnitListener mouseOverUnitListener = (units, territory, me) -> {
+    mapPanel.addMouseOverUnitListener((units, territory, me) -> {
       unitsBeingMousedOver = units;
       tooltipManager.updateTooltip(getUnitInfo());
-    };
-    mapPanel.addMouseOverUnitListener(mouseOverUnitListener);
+    });
     // link the small and large images
     SwingUtilities.invokeLater(mapPanel::initSmallMap);
     mapAndChatPanel = new JPanel();
@@ -1551,20 +1550,16 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   private String getUnitInfo() {
-    String unitInfo = "";
     if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
       final Unit unit = unitsBeingMousedOver.get(0);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua != null) {
-        String unitText = "Unit:";
-        if (unitsBeingMousedOver.size() != 1) {
-          unitText = unitsBeingMousedOver.size() + " Units";
-        }
-        unitInfo = "<b>" + unitText + "</b><br>" + unit.getType().getName() + ": "
+        final String unitText = unitsBeingMousedOver.size() == 1 ? "Unit:" : (unitsBeingMousedOver.size() + " Units");
+        return "<b>" + unitText + "</b><br>" + unit.getType().getName() + ": "
                 + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
       }
     }
-    return unitInfo;
+    return "";
   }
 
   private KeyListener getArrowKeyListener() {
@@ -1589,7 +1584,7 @@ public class TripleAFrame extends MainGameFrame {
         }
         // I for info
         if (keyCode == KeyEvent.VK_I || keyCode == KeyEvent.VK_V) {
-          String unitInfo = getUnitInfo();
+          final String unitInfo = getUnitInfo();
           String terrInfo = "";
           if (territoryLastEntered != null) {
             final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
