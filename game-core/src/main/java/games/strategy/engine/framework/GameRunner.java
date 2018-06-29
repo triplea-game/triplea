@@ -451,13 +451,14 @@ public class GameRunner {
    * After the game has been left, call this.
    */
   public static void clientLeftGame() {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
-      // closing of stream while unloading map resources.
-      Interruptibles.sleep(100);
-      setupPanelModel.showSelectType();
-      showMainFrame();
-    }));
+    if (SwingUtilities.isEventDispatchThread()) {
+      throw new IllegalStateException("This method must not be called from the EDT");
+    }
+    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+    // closing of stream while unloading map resources.
+    Interruptibles.sleep(100);
+    Interruptibles.await(() -> SwingAction.invokeAndWait(setupPanelModel::showSelectType));
+    showMainFrame();
   }
 
   public static void quitGame() {
