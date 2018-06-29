@@ -300,8 +300,10 @@ public class GameRunner {
 
       if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
         setupPanelModel.showServer(mainFrame);
+        System.clearProperty(TRIPLEA_SERVER);
       } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
         setupPanelModel.showClient(mainFrame);
+        System.clearProperty(TRIPLEA_CLIENT);
       }
     });
   }
@@ -310,7 +312,7 @@ public class GameRunner {
     Interruptibles.await(() -> newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
       gameSelectorModel.loadDefaultGameSameThread();
       final String fileName = System.getProperty(TRIPLEA_GAME, "");
-      if (fileName.length() > 0) {
+      if (!fileName.isEmpty()) {
         gameSelectorModel.load(new File(fileName), mainFrame);
       }
 
