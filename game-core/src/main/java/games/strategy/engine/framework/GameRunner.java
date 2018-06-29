@@ -137,6 +137,19 @@ public class GameRunner {
       return;
     }
 
+    if (SystemProperties.isMac()) {
+      com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
+        final String encoding = StandardCharsets.UTF_8.displayName();
+        try {
+          final String mapName = URLDecoder.decode(
+              event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
+          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+        } catch (final UnsupportedEncodingException e) {
+          throw new AssertionError(encoding + " is not a supported encoding!", e);
+        }
+      });
+    }
+
     if (HttpProxy.isUsingSystemProxy()) {
       HttpProxy.updateSystemProxy();
     }
@@ -274,20 +287,6 @@ public class GameRunner {
    * welcome (launch lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
-
-    if (SystemProperties.isMac()) {
-      com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
-        final String encoding = StandardCharsets.UTF_8.displayName();
-        try {
-          final String mapName = URLDecoder.decode(
-              event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-        } catch (final UnsupportedEncodingException e) {
-          throw new AssertionError(encoding + " is not a supported encoding!", e);
-        }
-      });
-    }
-
     SwingUtilities.invokeLater(() -> {
       mainFrame.requestFocus();
       mainFrame.toFront();
