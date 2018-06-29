@@ -614,7 +614,7 @@ public class TripleAFrame extends MainGameFrame {
       ((ClientGame) game).shutDown();
       // an ugly hack, we need a better
       // way to get the main frame
-      GameRunner.clientLeftGame();
+      new Thread(GameRunner::clientLeftGame).start();
     }
   }
 

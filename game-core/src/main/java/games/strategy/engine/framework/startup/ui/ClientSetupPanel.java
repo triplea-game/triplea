@@ -36,7 +36,7 @@ public class ClientSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 6942605803526295372L;
   private final Insets buttonInsets = new Insets(0, 0, 0, 0);
   private final ClientModel clientModel;
-  private List<PlayerRow> playerRows = Collections.emptyList();
+  private final List<PlayerRow> playerRows = new ArrayList<>();
 
   public ClientSetupPanel(final ClientModel model) {
     clientModel = model;
@@ -48,7 +48,7 @@ public class ClientSetupPanel extends SetupPanel {
 
       @Override
       public void playerListChanged() {
-        internalPlayersChanged();
+        SwingUtilities.invokeLater(ClientSetupPanel.this::internalPlayersChanged);
       }
     });
   }
@@ -63,7 +63,7 @@ public class ClientSetupPanel extends SetupPanel {
       // clients only get to change bot settings
       disableable.clear();
     }
-    playerRows = new ArrayList<>();
+    playerRows.clear();
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
