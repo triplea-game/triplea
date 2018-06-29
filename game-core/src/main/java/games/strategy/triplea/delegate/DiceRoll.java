@@ -82,11 +82,10 @@ public class DiceRoll implements Externalizable {
         chosenDiceSize = uaDiceSides;
       }
     }
-    if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1) {
-      // TODO: sadly the whole low luck section falls apart if AA are hitting at greater than half the
-      // value of dice, and I don't feel like rewriting it
-      highestAttack = chosenDiceSize / 2;
-    }
+    // TODO: determine if there are bugs in LL if AA hit at greater than half of dice value
+    // if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1) {
+    // highestAttack = chosenDiceSize / 2;
+    // }
     return Tuple.of(highestAttack, chosenDiceSize);
   }
 
