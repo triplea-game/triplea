@@ -28,11 +28,12 @@ public class ImageFactory {
   }
 
   protected Image getImage(final String key, final boolean throwIfNotFound) {
-    if (!images.containsKey(key)) {
+    if (!images.containsKey(key) || (throwIfNotFound && images.get(key) == null)) {
       final URL url = resourceLoader.getResource(key);
-      if (url == null && throwIfNotFound) {
-        throw new IllegalStateException("Image Not Found:" + key);
-      } else if (url == null) {
+      if (url == null) {
+        if (throwIfNotFound) {
+          throw new IllegalStateException("Image Not Found:" + key);
+        }
         images.put(key, null);
         return null;
       }
