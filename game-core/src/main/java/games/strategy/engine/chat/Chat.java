@@ -33,15 +33,13 @@ public class Chat {
   private final String chatChannelName;
   private final String chatName;
   private final SentMessagesHistory sentMessages;
-  private final long chatInitVersion;
+  private volatile long chatInitVersion = -1;
   // mutex used for access synchronization to nodes
   // TODO: check if this mutex is used for something else as well
   private final Object mutexNodes = new Object();
   private final List<INode> nodes;
   // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
-  // until end of
-  // initialization
-  // synchronizes access to queue
+  // until end of initialization synchronizes access to queue
   private final Object mutexQueue = new Object();
   private List<Runnable> queuedInitMessages = new ArrayList<>();
   private final List<ChatMessage> chatHistory = new ArrayList<>();
@@ -290,7 +288,7 @@ public class Chat {
         }
         return;
       }
-      if (version > chatInitVersion && nodes != null) {
+      if (version > chatInitVersion) {
         synchronized (mutexNodes) {
           nodes.add(node);
           addToNotesMap(node, tag);
