@@ -506,6 +506,6 @@ final class ViewMenu extends JMenu {
     chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     add(chatTimeBox);
-    chatTimeBox.setEnabled(GameRunner.getChat().isPresent());
+    chatTimeBox.setEnabled(frame.hasChat());
   }
 }

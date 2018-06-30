@@ -81,6 +81,7 @@ import javax.swing.tree.TreeNode;
 import com.google.common.base.Preconditions;
 
 import games.strategy.debug.ClientLogger;
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
@@ -198,7 +199,7 @@ public class TripleAFrame extends MainGameFrame {
   private HistorySynchronizer historySyncher;
   private final UiContext uiContext;
   private final JPanel mapAndChatPanel;
-  private ChatPanel chatPanel;
+  private final ChatPanel chatPanel;
   private final CommentPanel commentPanel;
   private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
@@ -219,7 +220,7 @@ public class TripleAFrame extends MainGameFrame {
   /**
    * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
    */
-  public static TripleAFrame create(final IGame game, final LocalPlayers players) {
+  public static TripleAFrame create(final IGame game, final LocalPlayers players, @Nullable final Chat chat) {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
 
     final UiContext uiContext = new HeadedUiContext();
@@ -228,12 +229,14 @@ public class TripleAFrame extends MainGameFrame {
     uiContext.setLocalPlayers(players);
 
     final TripleAFrame frame = Interruptibles.awaitResult(() -> SwingAction
-        .invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext))).result.get();
+        .invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext, chat))).result
+        .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
     frame.updateStep();
     return frame;
   }
 
-  private TripleAFrame(final IGame game, final LocalPlayers players, final UiContext uiContext) {
+  private TripleAFrame(final IGame game, final LocalPlayers players,
+      final UiContext uiContext, @Nullable final Chat chat) {
     super("TripleA - " + game.getData().getGameName(), players);
     this.game = game;
     data = game.getData();
@@ -284,7 +287,7 @@ public class TripleAFrame extends MainGameFrame {
     chatSplit.setOneTouchExpandable(true);
     chatSplit.setDividerSize(8);
     chatSplit.setResizeWeight(0.95);
-    if (GameRunner.getChat().isPresent()) {
+    if (chat != null) {
       commentSplit = new JSplitPane();
       commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
       commentSplit.setOneTouchExpandable(true);
@@ -292,7 +295,7 @@ public class TripleAFrame extends MainGameFrame {
       commentSplit.setResizeWeight(0.5);
       commentSplit.setTopComponent(commentPanel);
       commentSplit.setBottomComponent(null);
-      chatPanel = new ChatPanel(GameRunner.getChat().get());
+      chatPanel = new ChatPanel(chat);
       chatPanel.setPlayerRenderer(new PlayerChatRenderer(this.game, uiContext));
       final Dimension chatPrefSize = new Dimension((int) chatPanel.getPreferredSize().getWidth(), 95);
       chatPanel.setPreferredSize(chatPrefSize);
@@ -301,6 +304,7 @@ public class TripleAFrame extends MainGameFrame {
       mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
     } else {
       mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+      chatPanel = null;
     }
     gameMainPanel.setLayout(new BorderLayout());
     this.getContentPane().setLayout(new BorderLayout());
@@ -2085,5 +2089,9 @@ public class TripleAFrame extends MainGameFrame {
     return ServerGame.class.isAssignableFrom(getGame().getClass())
         ? Optional.ofNullable(((ServerGame) getGame()).getInGameLobbyWatcher())
         : Optional.empty();
+  }
+
+  public boolean hasChat() {
+    return chatPanel != null;
   }
 }

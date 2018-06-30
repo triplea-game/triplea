@@ -3,6 +3,9 @@ package games.strategy.engine.xml;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.DefaultUnitFactory;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.framework.IGame;
@@ -23,7 +26,8 @@ public final class TestGameLoader implements IGameLoader {
   }
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {}
+  public void startGame(final IGame game, final Set<IGamePlayer> players,
+      final boolean headless, @Nullable Chat chat) {}
 
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, String> players) {
