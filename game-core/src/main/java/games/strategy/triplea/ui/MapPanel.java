@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -498,21 +499,15 @@ public class MapPanel extends ImageScrollerLargeView {
    * @param g The graphics context on which to draw the map; must not be {@code null}.
    */
   public void drawMapImage(final Graphics g) {
-    final Graphics2D g2d = (Graphics2D) checkNotNull(g);
-    // make sure we use the same data for the entire print
-    final GameData gameData = this.gameData;
-    gameData.acquireReadLock();
+    final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
+    drawTiles((Graphics2D) checkNotNull(g), gameData, bounds);
     try {
-      final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
-      final Collection<Tile> tileList = tileManager.getTiles(bounds);
-      for (final Tile tile : tileList) {
-        final Image img = tile.getImage(gameData, uiContext.getMapData());
-        final AffineTransform t = AffineTransform.getTranslateInstance(
-            (tile.getBounds().x - bounds.getX()) * scale,(tile.getBounds().y - bounds.getY()) * scale);
-        g2d.drawImage(img, t, this);
-      }
-    } finally {
-      gameData.releaseReadLock();
+      // This makes use of the FIFO queue the executor uses
+      executor.submit(() -> drawTiles((Graphics2D) checkNotNull(g), gameData, bounds)).get();
+    } catch(final ExecutionException e) {
+      throw new IllegalStateException(e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 
