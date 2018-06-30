@@ -49,7 +49,7 @@ public class IpFinder {
   public static InetAddress findInetAddress() throws SocketException, UnknownHostException {
     final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
     if (interfaces == null) {
-      return InetAddress.getLocalHost();
+      return Node.getLocalHost();
     }
 
     return Collections.list(interfaces).stream()
@@ -58,7 +58,7 @@ public class IpFinder {
         .flatMap(Collection::stream)
         .filter(Util.not(InetAddress::isLoopbackAddress))
         .min(getInetAddressComparator())
-        .orElse(InetAddress.getLocalHost());
+        .orElse(Node.getLocalHost());
   }
 
   @VisibleForTesting

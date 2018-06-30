@@ -153,6 +153,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
     this.listener = Preconditions.checkNotNull(listener);
+    internalPlayerListingChanged(getServerStartup().getPlayerListing());
   }
 
   private static ClientProps getProps(final Component ui) {
@@ -379,16 +380,15 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private void internalPlayerListingChanged(final PlayerListing listing) {
-    SwingUtilities
-        .invokeLater(() -> gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
-            listing.getGameVersion().toString()));
+    gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
+            listing.getGameVersion().toString());
     synchronized (this) {
       playersToNodes = listing.getPlayerToNodeListing();
       playersEnabledListing = listing.getPlayersEnabledListing();
       playersAllowedToBeDisabled = listing.getPlayersAllowedToBeDisabled();
       playerNamesAndAlliancesInTurnOrder = listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
     }
-    SwingUtilities.invokeLater(() -> listener.playerListChanged());
+    listener.playerListChanged();
   }
 
   /**

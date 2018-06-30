@@ -15,7 +15,7 @@ public class HeadlessServerMessenger implements IServerMessenger {
 
   public HeadlessServerMessenger() {
     try {
-      node = new Node("dummy", InetAddress.getLocalHost(), 0);
+      node = new Node("dummy", Node.getLocalHost(), 0);
     } catch (final UnknownHostException e) {
       throw new IllegalStateException(e);
     }

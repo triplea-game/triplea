@@ -137,6 +137,19 @@ public class GameRunner {
       return;
     }
 
+    if (SystemProperties.isMac()) {
+      com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
+        final String encoding = StandardCharsets.UTF_8.displayName();
+        try {
+          final String mapName = URLDecoder.decode(
+              event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
+          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+        } catch (final UnsupportedEncodingException e) {
+          throw new AssertionError(encoding + " is not a supported encoding!", e);
+        }
+      });
+    }
+
     if (HttpProxy.isUsingSystemProxy()) {
       HttpProxy.updateSystemProxy();
     }
@@ -274,20 +287,6 @@ public class GameRunner {
    * welcome (launch lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
-
-    if (SystemProperties.isMac()) {
-      com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
-        final String encoding = StandardCharsets.UTF_8.displayName();
-        try {
-          final String mapName = URLDecoder.decode(
-              event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-        } catch (final UnsupportedEncodingException e) {
-          throw new AssertionError(encoding + " is not a supported encoding!", e);
-        }
-      });
-    }
-
     SwingUtilities.invokeLater(() -> {
       mainFrame.requestFocus();
       mainFrame.toFront();
@@ -301,8 +300,10 @@ public class GameRunner {
 
       if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
         setupPanelModel.showServer(mainFrame);
+        System.clearProperty(TRIPLEA_SERVER);
       } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
         setupPanelModel.showClient(mainFrame);
+        System.clearProperty(TRIPLEA_CLIENT);
       }
     });
   }
@@ -311,7 +312,7 @@ public class GameRunner {
     Interruptibles.await(() -> newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
       gameSelectorModel.loadDefaultGameSameThread();
       final String fileName = System.getProperty(TRIPLEA_GAME, "");
-      if (fileName.length() > 0) {
+      if (!fileName.isEmpty()) {
         gameSelectorModel.load(new File(fileName), mainFrame);
       }
 
@@ -451,13 +452,14 @@ public class GameRunner {
    * After the game has been left, call this.
    */
   public static void clientLeftGame() {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
-      // closing of stream while unloading map resources.
-      Interruptibles.sleep(100);
-      setupPanelModel.showSelectType();
-      showMainFrame();
-    }));
+    if (SwingUtilities.isEventDispatchThread()) {
+      throw new IllegalStateException("This method must not be called from the EDT");
+    }
+    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
+    // closing of stream while unloading map resources.
+    Interruptibles.sleep(100);
+    Interruptibles.await(() -> SwingAction.invokeAndWait(setupPanelModel::showSelectType));
+    showMainFrame();
   }
 
   public static void quitGame() {
