@@ -199,7 +199,7 @@ public class TripleAFrame extends MainGameFrame {
   private HistorySynchronizer historySyncher;
   private final UiContext uiContext;
   private final JPanel mapAndChatPanel;
-  private ChatPanel chatPanel;
+  private final ChatPanel chatPanel;
   private final CommentPanel commentPanel;
   private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
@@ -304,6 +304,7 @@ public class TripleAFrame extends MainGameFrame {
       mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
     } else {
       mapAndChatPanel.add(mapPanel, BorderLayout.CENTER);
+      chatPanel = null;
     }
     gameMainPanel.setLayout(new BorderLayout());
     this.getContentPane().setLayout(new BorderLayout());
@@ -2088,5 +2089,9 @@ public class TripleAFrame extends MainGameFrame {
     return ServerGame.class.isAssignableFrom(getGame().getClass())
         ? Optional.ofNullable(((ServerGame) getGame()).getInGameLobbyWatcher())
         : Optional.empty();
+  }
+
+  public boolean hasChat() {
+    return chatPanel != null;
   }
 }
