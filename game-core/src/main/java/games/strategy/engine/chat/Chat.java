@@ -290,7 +290,7 @@ public class Chat {
         }
         return;
       }
-      if (version > chatInitVersion) {
+      if (version > chatInitVersion && nodes != null) {
         synchronized (mutexNodes) {
           nodes.add(node);
           addToNotesMap(node, tag);
