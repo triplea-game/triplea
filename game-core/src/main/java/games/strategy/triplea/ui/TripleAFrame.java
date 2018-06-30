@@ -1178,9 +1178,11 @@ public class TripleAFrame extends MainGameFrame {
       final JDialog dialog = new JDialog(this, "Select units to scramble to " + scrambleTo.getName());
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
-      final JButton scrambleButton = new JButton("Scramble");
+      final String optionScramble = "Scramble";
+      final String optionNone = "None";
+      final JButton scrambleButton = new JButton(optionScramble);
       scrambleButton.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(scrambleButton));
-      final JButton noneButton = new JButton("None");
+      final JButton noneButton = new JButton(optionNone);
       noneButton.addActionListener(e -> getOptionPane((JComponent) e.getSource()).setValue(noneButton));
       final Object[] options = {scrambleButton, noneButton};
       final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE,
@@ -1256,15 +1258,15 @@ public class TripleAFrame extends MainGameFrame {
         if (!dialog.isVisible()) {
           return;
         }
-        final Object option = optionPane.getValue();
-        if (option == noneButton) {
+        final String option = ((JButton) optionPane.getValue()).getText();
+        if (option.equals(optionNone)) {
           choosers.clear();
           selection.clear();
           dialog.setVisible(false);
           dialog.removeAll();
           dialog.dispose();
           continueLatch.countDown();
-        } else if (option ==  scrambleButton) {
+        } else if (option.equals(optionScramble)) {
           for (final Tuple<Territory, UnitChooser> terrChooser : choosers) {
             selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
           }
