@@ -342,7 +342,7 @@ public class ClientModel implements IMessengerErrorListener {
         // game will be null if we loose the connection
         if (game != null) {
           try {
-            data.getGameLoader().startGame(game, playerSet, false);
+            data.getGameLoader().startGame(game, playerSet, false, getChatPanel().getChat());
             data.testLocksOnRead();
           } catch (final Exception e) {
             ClientLogger.logError("Failed to start Game", e);

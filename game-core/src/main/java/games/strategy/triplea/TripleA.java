@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.data.PlayerID;
@@ -39,6 +41,7 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 
 @MapSupport
 public class TripleA implements IGameLoader {
@@ -95,7 +98,8 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players, final boolean headless) {
+  public void startGame(final IGame game, final Set<IGamePlayer> players,
+      final boolean headless, @Nullable final Chat chat) {
     this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
@@ -119,7 +123,7 @@ public class TripleA implements IGameLoader {
       // technically not needed because we won't have any "local human players" in a headless game.
       connectPlayers(players, null);
     } else {
-      final TripleAFrame frame = TripleAFrame.create(game, localPlayers);
+      final TripleAFrame frame = TripleAFrame.create(game, localPlayers, chat);
 
       SwingUtilities.invokeLater(() -> {
         LookAndFeelSwingFrameListener.register(frame);
