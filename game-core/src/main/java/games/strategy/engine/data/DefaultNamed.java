@@ -25,12 +25,11 @@ public class DefaultNamed extends GameDataComponent implements Named {
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (!(o instanceof Named)) {
-      return false;
+  public boolean equals(final Object other) {
+    if (other instanceof Named) {
+      return Objects.equals(m_name, ((Named) other).getName());
     }
-    final Named other = (Named) o;
-    return this.m_name.equals(other.getName());
+    return false;
   }
 
   @Override
