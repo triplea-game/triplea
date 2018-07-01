@@ -96,18 +96,8 @@ public class ImageScrollerLargeView extends JComponent {
         } else {
           dy = e.getWheelRotation() * ClientSetting.WHEEL_SCROLL_AMOUNT.intValue();
         }
-        // move left and right and test for wrap
-        int newX = (this.model.getX() + dx);
-        if (newX > this.model.getMaxWidth() - getWidth()) {
-          newX -= this.model.getMaxWidth();
-        }
-        if (newX < -getWidth()) {
-          newX += this.model.getMaxWidth();
-        }
-        // move up and down and test for edges
-        final int newY = this.model.getY() + dy;
-        // update the map
-        this.model.set(newX, newY);
+        // Update the model, which will handle its own clamping or wrapping depending on the map.
+        this.model.set(this.model.getX() + dx, this.model.getY() + dy);
       } else {
         double value = scale;
         int positive = 1;
