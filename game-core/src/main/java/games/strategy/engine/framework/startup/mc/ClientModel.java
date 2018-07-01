@@ -85,7 +85,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
   private final SetupPanelModel typePanelModel;
-  private final WaitWindow gameLoadingWindow = new WaitWindow();
+  private final WaitWindow gameLoadingWindow;
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private IChannelMessenger channelMessenger;
   private IRemoteMessenger remoteMessenger;
@@ -132,7 +132,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       objectStreamFactory.setData(null);
-      Interruptibles.await(() -> SwingAction.invokeAndWait(GameRunner::showMainFrame));
+      GameRunner.showMainFrame();
     }
 
     @Override
@@ -150,6 +150,13 @@ public class ClientModel implements IMessengerErrorListener {
   public ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
+    final Interruptibles.Result<WaitWindow> window = Interruptibles
+        .awaitResult(() -> SwingAction.invokeAndWaitResult(WaitWindow::new));
+    if (!window.completed) {
+      throw new IllegalStateException("Error while creating WaitWindow");
+    }
+    gameLoadingWindow = window.result
+        .orElseThrow(() -> new IllegalStateException("Constructor did not return instance"));
   }
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
