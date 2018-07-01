@@ -55,13 +55,15 @@ public class SetupPanelModel extends Observable {
       model.cancel();
       return;
     }
-    setGameTypePanel(new ServerSetupPanel(model, gameSelectorModel));
-    // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
-    // requiring scroll bars
-    final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
-    final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
-    ui.setPreferredSize(new Dimension(x, y));
-    ui.setSize(new Dimension(x, y));
+    SwingUtilities.invokeLater(() -> {
+      setGameTypePanel(new ServerSetupPanel(model, gameSelectorModel));
+      // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
+      // requiring scroll bars
+      final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
+      final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
+      ui.setPreferredSize(new Dimension(x, y));
+      ui.setSize(new Dimension(x, y));
+    });
   }
 
   /**
@@ -70,14 +72,13 @@ public class SetupPanelModel extends Observable {
    * connection was successfully established.
    */
   public void showClient(final Component ui) {
+    Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
     final ClientModel model = new ClientModel(gameSelectorModel, this);
-    Interruptibles.await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
-      if (model.createClientMessenger(ui)) {
-        SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
-      } else {
-        model.cancel();
-      }
-    }));
+    if (model.createClientMessenger(ui)) {
+      SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
+    } else {
+      model.cancel();
+    }
   }
 
   protected void setGameTypePanel(final ISetupPanel panel) {
