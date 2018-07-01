@@ -216,28 +216,28 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     final String playername = ClientSetting.PLAYER_NAME.value();
     final Interruptibles.Result<ServerOptions> optionsResult = Interruptibles
         .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
-      final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
-      options.setLocationRelativeTo(ui);
-      options.setVisible(true);
-      options.dispose();
-      if (!options.getOkPressed()) {
-        return null;
-      }
-      final String name = options.getName();
-      logger.log(Level.FINE, "Server playing as:" + name);
-      ClientSetting.PLAYER_NAME.save(name);
-      ClientSetting.flush();
-      final int port = options.getPort();
-      if (port >= 65536 || port == 0) {
-        if (headless) {
-          System.out.println("Invalid Port: " + port);
-        } else {
-          JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return null;
-      }
-      return options;
-    }));
+          final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
+          options.setLocationRelativeTo(ui);
+          options.setVisible(true);
+          options.dispose();
+          if (!options.getOkPressed()) {
+            return null;
+          }
+          final String name = options.getName();
+          logger.log(Level.FINE, "Server playing as:" + name);
+          ClientSetting.PLAYER_NAME.save(name);
+          ClientSetting.flush();
+          final int port = options.getPort();
+          if (port >= 65536 || port == 0) {
+            if (headless) {
+              System.out.println("Invalid Port: " + port);
+            } else {
+              JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return null;
+          }
+          return options;
+        }));
     if (!optionsResult.completed) {
       throw new IllegalArgumentException("Error while gathering connection details");
     }
