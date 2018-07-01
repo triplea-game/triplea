@@ -174,51 +174,48 @@ public class MapImage {
   }
 
   public static void resetPropertyMapFont() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_MAP_FONT_SIZE_STRING);
+    removeProperty(PROPERTY_MAP_FONT_SIZE_STRING);
     propertyMapFont = new Font("Ariel", Font.BOLD, MAP_FONT_SIZE_DEFAULT);
   }
 
   public static void resetPropertyTerritoryNameAndPuAndCommentColor() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING);
+    removeProperty(PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING);
     propertyTerritoryNameAndPuAndCommentColor = TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_DEFAULT;
   }
 
   public static void resetPropertyUnitCountColor() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_UNIT_COUNT_COLOR_STRING);
+    removeProperty(PROPERTY_UNIT_COUNT_COLOR_STRING);
     propertyUnitCountColor = UNIT_COUNT_COLOR_DEFAULT;
   }
 
   public static void resetPropertyUnitCountOutline() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_UNIT_COUNT_OUTLINE_STRING);
+    removeProperty(PROPERTY_UNIT_COUNT_OUTLINE_STRING);
     propertyUnitCountOutline = UNIT_COUNT_OUTLINE_DEFAULT;
   }
 
   public static void resetPropertyUnitFactoryDamageColor() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING);
+    removeProperty(PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING);
     propertyUnitFactoryDamageColor = UNIT_FACTORY_DAMAGE_COLOR_DEFAULT;
   }
 
   public static void resetPropertyUnitFactoryDamageOutline() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE_STRING);
+    removeProperty(PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE_STRING);
     propertyUnitFactoryDamageOutline = UNIT_FACTORY_DAMAGE_OUTLINE_DEFAULT;
   }
 
   public static void resetPropertyUnitHitDamageColor() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING);
+    removeProperty(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING);
     propertyUnitHitDamageColor = UNIT_HIT_DAMAGE_COLOR_DEFAULT;
   }
 
   public static void resetPropertyUnitHitDamageOutline() {
-    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-    pref.remove(PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING);
+    removeProperty(PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING);
     propertyUnitHitDamageOutline = UNIT_HIT_DAMAGE_OUTLINE_DEFAULT;
+  }
+
+  private static void removeProperty(final String property) {
+    final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
+    pref.remove(property);
   }
 
   /** Creates a new instance of MapImage. */
