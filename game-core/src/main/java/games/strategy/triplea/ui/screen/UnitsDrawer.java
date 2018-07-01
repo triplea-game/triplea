@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
@@ -142,43 +143,26 @@ public class UnitsDrawer implements IDrawable {
           }
         }
         if (count > stackSize) {
-          final Font font = MapImage.getPropertyMapFont();
-          if (font.getSize() > 0) {
-            graphics.setColor(MapImage.getPropertyUnitCountColor());
-            graphics.setFont(font);
-            graphics.drawString(String.valueOf(count), // draws how many units there are
-                placementPoint.x - bounds.x + 2 * stackSize
-                    + (uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10),
-                placementPoint.y - 2 * stackSize - bounds.y
-                    + uiContext.getUnitImageFactory().getUnitImageHeight() / 3);
-          }
+          final String s = String.valueOf(count);
+          final int x = placementPoint.x - bounds.x + 2 * stackSize
+              + uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10;
+          final int y =
+              placementPoint.y - 2 * stackSize - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 3;
+          drawOutlinedText(graphics, s, x, y, MapImage.getPropertyMapFont(), MapImage.getPropertyUnitCountColor(),
+              MapImage.getPropertyUnitCountOutline());
         }
       } else { // Display a white number at the bottom of the unit
-        final Font font = MapImage.getPropertyMapFont();
-        if (font.getSize() > 0) {
-          graphics.setColor(MapImage.getPropertyUnitCountColor());
-          graphics.setFont(font);
-          graphics.drawString(String.valueOf(count), // draws how many units there are
-              placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()),
-              placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
-        }
+        final String s = String.valueOf(count);
+        final int x = placementPoint.x - bounds.x + uiContext.getUnitImageFactory().getUnitCounterOffsetWidth();
+        final int y = placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitCounterOffsetHeight();
+        drawOutlinedText(graphics, s, x, y, MapImage.getPropertyMapFont(), MapImage.getPropertyUnitCountColor(),
+            MapImage.getPropertyUnitCountOutline());
       }
     }
     displayHitDamage(bounds, graphics);
     // Display Factory Damage
     if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data) && Matches.unitTypeCanBeDamaged().test(type)) {
       displayFactoryDamage(bounds, graphics);
-    }
-  }
-
-  private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
-    final Font font = MapImage.getPropertyMapFont();
-    if (territoryName.length() != 0 && font.getSize() > 0 && bombingUnitDamage > 0) {
-      graphics.setColor(MapImage.getPropertyUnitFactoryDamageColor());
-      graphics.setFont(font);
-      graphics.drawString("" + bombingUnitDamage,
-          placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
     }
   }
 
@@ -197,13 +181,37 @@ public class UnitsDrawer implements IDrawable {
   }
 
   private void displayHitDamage(final Rectangle bounds, final Graphics2D graphics) {
-    final Font font = MapImage.getPropertyMapFont();
-    if (territoryName.length() != 0 && font.getSize() > 0 && damaged > 1) {
-      graphics.setColor(MapImage.getPropertyUnitHitDamageColor());
+    if (territoryName.length() != 0 && damaged > 1) {
+      final String s = String.valueOf(damaged);
+      final int x = placementPoint.x - bounds.x + uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4;
+      final int y = placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4;
+      drawOutlinedText(graphics, s, x, y, MapImage.getPropertyMapFont(), MapImage.getPropertyUnitHitDamageColor(),
+          MapImage.getPropertyUnitHitDamageOutline());
+    }
+  }
+
+  private void displayFactoryDamage(final Rectangle bounds, final Graphics2D graphics) {
+    if (territoryName.length() != 0 && bombingUnitDamage > 0) {
+      final String s = String.valueOf(bombingUnitDamage);
+      final int x = placementPoint.x - bounds.x + uiContext.getUnitImageFactory().getUnitImageWidth() / 4;
+      final int y = placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4;
+      drawOutlinedText(graphics, s, x, y, MapImage.getPropertyMapFont(), MapImage.getPropertyUnitFactoryDamageColor(),
+          MapImage.getPropertyUnitFactoryDamageOutline());
+    }
+  }
+
+  private static void drawOutlinedText(final Graphics2D graphics, final String s, final int x, final int y,
+      final Font font, final Color textColor, final Color outlineColor) {
+    if (font.getSize() > 0) {
+      graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       graphics.setFont(font);
-      graphics.drawString("" + damaged,
-          placementPoint.x - bounds.x + (uiContext.getUnitImageFactory().getUnitImageWidth() * 3 / 4),
-          placementPoint.y - bounds.y + uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
+      graphics.setColor(outlineColor);
+      graphics.drawString(s, x - 1, y - 1);
+      graphics.drawString(s, x - 1, y + 1);
+      graphics.drawString(s, x + 1, y + 1);
+      graphics.drawString(s, x + 1, y - 1);
+      graphics.setColor(textColor);
+      graphics.drawString(s, x, y);
     }
   }
 
