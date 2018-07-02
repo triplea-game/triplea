@@ -9,4 +9,4 @@ MAINTAINER "tripleabuilderbot@gmail.com"
 
 ENV POSTGRES_DB=ta_users
 
-COPY ["./lobby-db/src/main/resources/db/migration", "/docker-entrypoint-initdb.d"]
+COPY ["./src/main/resources/db/migration", "/docker-entrypoint-initdb.d"]

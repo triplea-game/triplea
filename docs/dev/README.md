@@ -65,7 +65,17 @@ Lombok:
 
 # Docker
 
-Docker images that may be useful during development and testing are available [here](https://github.com/triplea-game/triplea/tree/master/.docker).
+## Installation
+
+### Mac
+
+https://store.docker.com/editions/community/docker-ce-desktop-mac
+
+## Project-specific images
+
+The following project-specific Docker images, which may be useful during development and testing, are available:
+
+  - [Lobby database](https://github.com/triplea-game/triplea/tree/master/lobby-db/Dockerfile)
 
 # Team Communication
 
