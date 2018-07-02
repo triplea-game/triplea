@@ -1550,12 +1550,7 @@ public class TripleAFrame extends MainGameFrame {
   private String getUnitInfo() {
     if (unitsBeingMousedOver != null && !unitsBeingMousedOver.isEmpty()) {
       final Unit unit = unitsBeingMousedOver.get(0);
-      final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      if (ua != null) {
-        final String unitText = unitsBeingMousedOver.size() == 1 ? "Unit:" : (unitsBeingMousedOver.size() + " Units");
-        return "<b>" + unitText + "</b><br>" + unit.getType().getName() + ": "
-                + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
-      }
+      return MapUnitTooltipManager.getTooltipTextForUnit(unit.getType(), unit.getOwner(), unitsBeingMousedOver.size());
     }
     return "";
   }
