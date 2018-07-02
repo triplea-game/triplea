@@ -31,6 +31,7 @@ import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -133,6 +134,8 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
       if (icon.isPresent()) {
         final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
         unitsBox.add(label);
+        MapUnitTooltipManager.setUnitTooltip(label, category.getType(), category.getOwner(),
+                category.getUnits().size());
       }
     }
     unitsBox.add(Box.createHorizontalGlue());

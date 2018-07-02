@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JToolTip;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
@@ -16,6 +17,9 @@ import javax.swing.Timer;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attachments.UnitAttachment;
 
 /**
  * Responsible for showing tool tips when hovering over units on the main map.
@@ -80,6 +84,35 @@ public class MapUnitTooltipManager implements ActionListener {
     public void ancestorMoved(final AncestorEvent event) {
       updateWindowObserver();
     }
+  }
+
+  /**
+   * Sets the tooltip text on the specified label based on the passed parameters.
+   *
+   * @param label The label whose tooltip text property will be set.
+   * @param unitType The type of unit.
+   * @param player The owner of the unit.
+   * @param count The number of units.
+   */
+  public static void setUnitTooltip(JLabel label, UnitType unitType, final PlayerID player, int count) {
+    final String text = getTooltipTextForUnit(unitType, player, count);
+    label.setToolTipText("<html>" + text + "</html>");
+  }
+
+  /**
+   * Returns the tooltip text for the passed parameters.
+   *
+   * @param unitType The type of unit.
+   * @param player The owner of the unit.
+   * @param count The number of units.
+   *
+   * @return The tooltip text or an empty string
+   */
+  public static String getTooltipTextForUnit(UnitType unitType, final PlayerID player, int count) {
+    final UnitAttachment ua = UnitAttachment.get(unitType);
+    final String unitText = count == 1 ? "Unit:" : (count + " Units");
+    return "<b>" + unitText + "</b><br>" + unitType.getName() + ": "
+            + ua.toStringShortAndOnlyImportantDifferences(player, true, false);
   }
 
   /**
