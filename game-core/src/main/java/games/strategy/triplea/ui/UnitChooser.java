@@ -466,6 +466,8 @@ final class UnitChooser extends JPanel {
       UnitChooserEntryIcon(final boolean forceDamaged, final UiContext uiContext) {
         this.forceDamaged = forceDamaged;
         this.uiContext = uiContext;
+        MapUnitTooltipManager.setUnitTooltip(this, category.getType(), category.getOwner(),
+                category.getUnits().size());
       }
 
       @Override

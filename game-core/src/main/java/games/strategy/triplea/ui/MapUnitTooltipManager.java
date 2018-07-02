@@ -89,14 +89,14 @@ public class MapUnitTooltipManager implements ActionListener {
   /**
    * Sets the tooltip text on the specified label based on the passed parameters.
    *
-   * @param label The label whose tooltip text property will be set.
+   * @param component The component whose tooltip text property will be set.
    * @param unitType The type of unit.
    * @param player The owner of the unit.
    * @param count The number of units.
    */
-  public static void setUnitTooltip(JLabel label, UnitType unitType, final PlayerID player, int count) {
+  public static void setUnitTooltip(JComponent component, UnitType unitType, final PlayerID player, int count) {
     final String text = getTooltipTextForUnit(unitType, player, count);
-    label.setToolTipText("<html>" + text + "</html>");
+    component.setToolTipText("<html>" + text + "</html>");
   }
 
   /**

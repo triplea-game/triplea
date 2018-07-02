@@ -809,6 +809,8 @@ public class BattleDisplay extends JPanel {
 
   private static final class TableData {
     static final TableData NULL = new TableData();
+    private PlayerID player;
+    private UnitType unitType;
     private int count;
     private Optional<ImageIcon> icon;
 
@@ -816,7 +818,9 @@ public class BattleDisplay extends JPanel {
 
     TableData(final PlayerID player, final int count, final UnitType type, final boolean damaged,
         final boolean disabled, final UiContext uiContext) {
+      this.player = player;
       this.count = count;
+      this.unitType = type;
       icon = uiContext.getUnitImageFactory().getIcon(type, player, damaged, disabled);
     }
 
@@ -824,9 +828,11 @@ public class BattleDisplay extends JPanel {
       if (count == 0) {
         stamp.setText("");
         stamp.setIcon(null);
+        stamp.setToolTipText(null);
       } else {
         stamp.setText("x" + count);
         icon.ifPresent(stamp::setIcon);
+        MapUnitTooltipManager.setUnitTooltip(stamp, unitType, player, count);
       }
     }
   }
@@ -891,6 +897,9 @@ public class BattleDisplay extends JPanel {
                 damaged && category.hasDamageOrBombingUnitDamage(), disabled && category.getDisabled());
         final JLabel unit = unitImage.map(JLabel::new).orElseGet(JLabel::new);
         panel.add(unit);
+        // Add a tooltip, with a count of 1 so that the tooltip doesn't have a number label (so it won't get out of date
+        // when units are killed.)
+        MapUnitTooltipManager.setUnitTooltip(unit, category.getType(), category.getOwner(), 1);
         for (final UnitOwner owner : category.getDependents()) {
           unit.add(uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner()));
         }
