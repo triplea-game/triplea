@@ -7,5 +7,6 @@
 FROM postgres:9.5
 MAINTAINER "tripleabuilderbot@gmail.com"
 
-COPY ["./.docker/setup_lobby_database.sh", "/docker-entrypoint-initdb.d/setup_lobby_database.sh"]
-COPY ["./lobby-db/src/main/resources/db/migration", "/lobby/db"]
+ENV POSTGRES_DB=ta_users
+
+COPY ["./lobby-db/src/main/resources/db/migration", "/docker-entrypoint-initdb.d"]
