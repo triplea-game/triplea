@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
@@ -13,7 +16,7 @@ import games.strategy.engine.message.IRemote;
  * A game loader is responsible for telling the framework
  * what types of players are available, for creating players, and
  * starting the game.
- * The name is somewhat misleading since it doesnt actually load the
+ * The name is somewhat misleading since it doesn't actually load the
  * game data, merely performs the game specific steps for starting the game
  * and meta data needed by the engine.
  */
@@ -36,7 +39,7 @@ public interface IGameLoader extends Serializable {
   /**
    * The game is about to start.
    */
-  void startGame(IGame game, Set<IGamePlayer> players, boolean headless) throws Exception;
+  void startGame(IGame game, Set<IGamePlayer> players, boolean headless, @Nullable Chat chat) throws Exception;
 
   /**
    * Get the type of the display.
@@ -51,7 +54,7 @@ public interface IGameLoader extends Serializable {
    * Get the type of the GamePlayer.
    *
    * <p>
-   * The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be contacted remotately
+   * The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be contacted remotely
    * </p>
    */
   Class<? extends IRemote> getRemotePlayerType();

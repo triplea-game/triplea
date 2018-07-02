@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +85,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
   private final SetupPanelModel typePanelModel;
-  private final WaitWindow gameLoadingWindow = new WaitWindow();
+  private final WaitWindow gameLoadingWindow;
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private IChannelMessenger channelMessenger;
   private IRemoteMessenger remoteMessenger;
@@ -131,7 +132,7 @@ public class ClientModel implements IMessengerErrorListener {
     @Override
     public void gameReset() {
       objectStreamFactory.setData(null);
-      Interruptibles.await(() -> SwingAction.invokeAndWait(GameRunner::showMainFrame));
+      GameRunner.showMainFrame();
     }
 
     @Override
@@ -149,6 +150,13 @@ public class ClientModel implements IMessengerErrorListener {
   public ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
+    final Interruptibles.Result<WaitWindow> window = Interruptibles
+        .awaitResult(() -> SwingAction.invokeAndWaitResult(WaitWindow::new));
+    if (!window.completed) {
+      throw new IllegalStateException("Error while creating WaitWindow");
+    }
+    gameLoadingWindow = window.result
+        .orElseThrow(() -> new IllegalStateException("Constructor did not return instance"));
   }
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
@@ -342,7 +350,7 @@ public class ClientModel implements IMessengerErrorListener {
         // game will be null if we loose the connection
         if (game != null) {
           try {
-            data.getGameLoader().startGame(game, playerSet, false);
+            data.getGameLoader().startGame(game, playerSet, false, getChatPanel().getChat());
             data.testLocksOnRead();
           } catch (final Exception e) {
             ClientLogger.logError("Failed to start Game", e);
@@ -429,8 +437,10 @@ public class ClientModel implements IMessengerErrorListener {
   public void messengerInvalid(final IMessenger messenger, final Exception reason) {
     // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
     // In case for example there are many game windows open, it may not be clear which game disconnected.
-    GameRunner.getChat()
-        .ifPresent(chat -> chat.sendMessage("*** Was Disconnected ***", false));
+    if (chatPanel != null) {
+      Optional.ofNullable(chatPanel.getChat())
+          .ifPresent(chat -> chat.sendMessage("*** Was Disconnected ***", false));
+    }
     EventThreadJOptionPane.showMessageDialog(ui, "Connection to game host lost.\nPlease save and restart.",
         "Connection Lost!", JOptionPane.ERROR_MESSAGE);
   }

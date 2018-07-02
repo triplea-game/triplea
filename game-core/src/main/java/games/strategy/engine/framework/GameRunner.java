@@ -53,6 +53,8 @@ import javax.swing.filechooser.FileFilter;
 
 import org.triplea.client.ui.javafx.TripleA;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.debug.ErrorConsole;
 import games.strategy.debug.ErrorMessage;
@@ -182,6 +184,8 @@ public class GameRunner {
     frame.setIconImage(getGameIcon(frame));
     frame.setLocationRelativeTo(null);
 
+    SwingComponents.addWindowClosingListener(frame, GameRunner::exitGameIfFinished);
+
     return frame;
   }
 
@@ -291,36 +295,32 @@ public class GameRunner {
       mainFrame.requestFocus();
       mainFrame.toFront();
       mainFrame.setVisible(true);
-
-      SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
-
-      ProAi.gameOverClearCache();
-
-      loadGame();
-
-      if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
-        setupPanelModel.showServer(mainFrame);
-        System.clearProperty(TRIPLEA_SERVER);
-      } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
-        setupPanelModel.showClient(mainFrame);
-        System.clearProperty(TRIPLEA_CLIENT);
-      }
     });
+    ProAi.gameOverClearCache();
+
+    loadGame();
+
+    if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
+      setupPanelModel.showServer(mainFrame);
+      System.clearProperty(TRIPLEA_SERVER);
+    } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
+      setupPanelModel.showClient(mainFrame);
+      System.clearProperty(TRIPLEA_CLIENT);
+    }
   }
 
   private static void loadGame() {
-    Interruptibles.await(() -> newBackgroundTaskRunner().runInBackground("Loading game...", () -> {
-      gameSelectorModel.loadDefaultGameSameThread();
-      final String fileName = System.getProperty(TRIPLEA_GAME, "");
-      if (!fileName.isEmpty()) {
-        gameSelectorModel.load(new File(fileName), mainFrame);
-      }
+    Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
+    gameSelectorModel.loadDefaultGameSameThread();
+    final String fileName = System.getProperty(TRIPLEA_GAME, "");
+    if (!fileName.isEmpty()) {
+      gameSelectorModel.load(new File(fileName), mainFrame);
+    }
 
-      final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
-      if (!downloadableMap.isEmpty()) {
-        SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
-      }
-    }));
+    final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
+    if (!downloadableMap.isEmpty()) {
+      SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+    }
   }
 
   private static void usage() {
@@ -439,25 +439,12 @@ public class GameRunner {
   }
 
   /**
-   * Get the chat for the game, or empty if there is no chat (eg: headless).
-   */
-  public static Optional<Chat> getChat() {
-    final ISetupPanel model = setupPanelModel.getPanel();
-    return ((model instanceof ServerSetupPanel) || (model instanceof ClientSetupPanel))
-        ? Optional.ofNullable(model.getChatPanel().getChat())
-        : Optional.empty();
-  }
-
-  /**
    * After the game has been left, call this.
    */
   public static void clientLeftGame() {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This method must not be called from the EDT");
     }
-    // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused by
-    // closing of stream while unloading map resources.
-    Interruptibles.sleep(100);
     Interruptibles.await(() -> SwingAction.invokeAndWait(setupPanelModel::showSelectType));
     showMainFrame();
   }

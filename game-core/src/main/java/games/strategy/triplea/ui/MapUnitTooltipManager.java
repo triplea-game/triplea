@@ -2,14 +2,20 @@ package games.strategy.triplea.ui;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JToolTip;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -20,6 +26,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
  */
 public class MapUnitTooltipManager implements ActionListener {
   private final JComponent parent;
+  private final WindowDeactivationObserver deactivationObserver;
   private final Timer timer;
   private String text;
   private Popup popup;
@@ -29,6 +36,54 @@ public class MapUnitTooltipManager implements ActionListener {
     this.timer = new Timer(1000, this);
     this.timer.setRepeats(false);
     // Note: Timer not started yet.
+
+    // Close tooltips when the window becomes inactive - so they don't overlap opened dialogs.
+    deactivationObserver = new WindowDeactivationObserver();
+  }
+
+  private class WindowDeactivationObserver extends WindowAdapter implements AncestorListener {
+    private Window window;
+
+    public WindowDeactivationObserver() {
+      // Listen to ancestor events as the component may not have a Window yet.
+      parent.addAncestorListener(this);
+      updateWindowObserver();
+    }
+
+    private void updateWindowObserver() {
+      if (window != null) {
+        window.removeWindowListener(this);
+      }
+      window = SwingUtilities.getWindowAncestor(parent);
+      if (window != null) {
+        window.addWindowListener(this);
+      }
+    }
+
+    @Override
+    public void windowClosed(final WindowEvent e) {
+      window.removeWindowListener(this);
+    }
+
+    @Override
+    public void windowDeactivated(final WindowEvent e) {
+      updateTooltip("");
+    }
+
+    @Override
+    public void ancestorAdded(final AncestorEvent event) {
+      updateWindowObserver();
+    }
+
+    @Override
+    public void ancestorRemoved(final AncestorEvent event) {
+      updateWindowObserver();
+    }
+
+    @Override
+    public void ancestorMoved(final AncestorEvent event) {
+      updateWindowObserver();
+    }
   }
 
   /**

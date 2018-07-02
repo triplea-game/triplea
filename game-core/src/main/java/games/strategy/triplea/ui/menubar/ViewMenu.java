@@ -391,15 +391,24 @@ final class ViewMenu extends JMenu {
           MapImage.getPropertyTerritoryNameAndPuAndCommentColor());
       final ColorProperty unitCountColor =
           new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
+      final ColorProperty unitCountOutline =
+          new ColorProperty("Unit Count Outline", null, MapImage.getPropertyUnitCountOutline());
       final ColorProperty factoryDamageColor =
           new ColorProperty("Factory Damage Color", null, MapImage.getPropertyUnitFactoryDamageColor());
+      final ColorProperty factoryDamageOutline =
+          new ColorProperty("Factory Damage Outline", null, MapImage.getPropertyUnitFactoryDamageOutline());
       final ColorProperty hitDamageColor =
           new ColorProperty("Hit Damage Color", null, MapImage.getPropertyUnitHitDamageColor());
+      final ColorProperty hitDamageOutline =
+          new ColorProperty("Hit Damage Outline", null, MapImage.getPropertyUnitHitDamageOutline());
       properties.add(fontsize);
       properties.add(territoryNameColor);
       properties.add(unitCountColor);
+      properties.add(unitCountOutline);
       properties.add(factoryDamageColor);
+      properties.add(factoryDamageOutline);
       properties.add(hitDamageColor);
+      properties.add(hitDamageOutline);
       final PropertiesUi pui = new PropertiesUi(properties, true);
       final JPanel ui = new JPanel();
       ui.setLayout(new BorderLayout());
@@ -418,15 +427,21 @@ final class ViewMenu extends JMenu {
         MapImage.resetPropertyMapFont();
         MapImage.resetPropertyTerritoryNameAndPuAndCommentColor();
         MapImage.resetPropertyUnitCountColor();
+        MapImage.resetPropertyUnitCountOutline();
         MapImage.resetPropertyUnitFactoryDamageColor();
+        MapImage.resetPropertyUnitFactoryDamageOutline();
         MapImage.resetPropertyUnitHitDamageColor();
+        MapImage.resetPropertyUnitHitDamageOutline();
         frame.getMapPanel().resetMap();
       } else if (result == 0) {
         MapImage.setPropertyMapFont(new Font("Ariel", Font.BOLD, fontsize.getValue()));
         MapImage.setPropertyTerritoryNameAndPuAndCommentColor((Color) territoryNameColor.getValue());
         MapImage.setPropertyUnitCountColor((Color) unitCountColor.getValue());
+        MapImage.setPropertyUnitCountOutline((Color) unitCountOutline.getValue());
         MapImage.setPropertyUnitFactoryDamageColor((Color) factoryDamageColor.getValue());
+        MapImage.setPropertyUnitFactoryDamageOutline((Color) factoryDamageOutline.getValue());
         MapImage.setPropertyUnitHitDamageColor((Color) hitDamageColor.getValue());
+        MapImage.setPropertyUnitHitDamageOutline((Color) hitDamageOutline.getValue());
         frame.getMapPanel().resetMap();
       }
     });
@@ -506,6 +521,6 @@ final class ViewMenu extends JMenu {
     chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
     chatTimeBox.setSelected(false);
     add(chatTimeBox);
-    chatTimeBox.setEnabled(GameRunner.getChat().isPresent());
+    chatTimeBox.setEnabled(frame.hasChat());
   }
 }
