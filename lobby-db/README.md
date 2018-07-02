@@ -72,7 +72,7 @@ sudo apt install psql
 
 ### Install docker
 
-- we'll use docker to launch a local postgres DB. Steps for that are in .docker/README.md
+- we'll use docker to launch a local postgres DB. Steps for that are given below in the [Docker](#docker) section.
 
 
 ### How to use for developers
@@ -114,3 +114,22 @@ Typical commands:
 - https://flywaydb.org/documentation/gradle/migrate
 - https://github.com/triplea-game/lobby
 
+## Docker
+
+There is a Dockerfile in this project for building a lobby database image that can be used for development/testing.
+
+### Build
+
+Build the lobby database image using the following command (run from this directory):
+
+```
+$ docker build --tag triplea/lobby-db:latest .
+```
+
+### Run
+
+Start a new lobby database container using the following command:
+
+```
+$ docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db
+```

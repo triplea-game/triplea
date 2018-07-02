@@ -1,9 +1,0 @@
-.git
-.gradle
-
-game-core/.remote-libs
-game-core/bin
-game-core/build
-
-lobby/bin
-lobby/build
