@@ -1942,4 +1942,11 @@
     <br>
     <br>An alternate history World War 2 scenario.
     <br>
-
+ - mapName:European War
+   mapCategory: EXPERIMENTAL
+   url: https://github.com/triplea-maps/schultz-european-war.git
+   version: 1
+   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/description/TripleA_ww2_global_1940_mini.png
+   description:
+    <br>
+    <br>Schultz's WWI Mod
