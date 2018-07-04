@@ -17,6 +17,7 @@ import javax.swing.Timer;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import com.sun.xml.internal.ws.util.StringUtils;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -33,7 +34,8 @@ public class MapUnitTooltipManager implements ActionListener {
 
   public MapUnitTooltipManager(final JComponent parent) {
     this.parent = parent;
-    this.timer = new Timer(1000, this);
+    // Timeout to show tooltip is 2 seconds.
+    this.timer = new Timer(2000, this);
     this.timer.setRepeats(false);
     // Note: Timer not started yet.
 
@@ -106,13 +108,13 @@ public class MapUnitTooltipManager implements ActionListener {
    * @param player The owner of the unit.
    * @param count The number of units.
    *
-   * @return The tooltip text or an empty string
+   * @return The tooltip text.
    */
-  public static String getTooltipTextForUnit(UnitType unitType, final PlayerID player, int count) {
+  public static String getTooltipTextForUnit(final UnitType unitType, final PlayerID player, final int count) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
-    final String unitText = count == 1 ? "Unit:" : (count + " Units");
-    return "<b>" + unitText + "</b><br>" + unitType.getName() + ": "
-            + ua.toStringShortAndOnlyImportantDifferences(player, true, false);
+    final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
+            StringUtils.capitalize(unitType.getName()), player.getName());
+    return firstLine + ua.toStringShortAndOnlyImportantDifferences(player, true, false);
   }
 
   /**
@@ -144,7 +146,7 @@ public class MapUnitTooltipManager implements ActionListener {
       final PopupFactory popupFactory = PopupFactory.getSharedInstance();
       final JToolTip info = new JToolTip();
       info.setTipText("<html>" + text + "</html>");
-      popup = popupFactory.getPopup(parent, info, currentPoint.x + 5, currentPoint.y + 5);
+      popup = popupFactory.getPopup(parent, info, currentPoint.x + 20, currentPoint.y - 20);
       popup.show();
     }
   }
