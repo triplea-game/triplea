@@ -17,7 +17,6 @@ import javax.swing.Timer;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
-import com.sun.xml.internal.ws.util.StringUtils;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -113,7 +112,7 @@ public class MapUnitTooltipManager implements ActionListener {
   public static String getTooltipTextForUnit(final UnitType unitType, final PlayerID player, final int count) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
     final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
-            StringUtils.capitalize(unitType.getName()), player.getName());
+            unitType.getNameCapitalized(), player.getName());
     return firstLine + ua.toStringShortAndOnlyImportantDifferences(player, true, false);
   }
 

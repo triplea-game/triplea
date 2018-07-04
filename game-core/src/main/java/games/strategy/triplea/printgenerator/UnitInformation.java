@@ -23,10 +23,6 @@ import games.strategy.triplea.util.TuvUtils;
 class UnitInformation {
   private GameData data;
 
-  private static String capitalizeFirst(final String s) {
-    return (s.length() > 0) ? Character.toUpperCase(s.charAt(0)) + s.substring(1) : s;
-  }
-
   void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
     data = printData.getData();
     printData.getOutDir().mkdir();
@@ -50,7 +46,7 @@ class UnitInformation {
         if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
           unitInformation.write(currentType.getName() + ",");
         } else {
-          unitInformation.write(capitalizeFirst(currentType.getName()) + ",");
+          unitInformation.write(currentType.getNameCapitalized() + ",");
         }
         unitInformation.write(getCostInformation(currentType) + ",");
         unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + ","
