@@ -458,7 +458,11 @@ public class MapPanel extends ImageScrollerLargeView {
       if (!playersWithTechChange.isEmpty()
           || UnitIconProperties.getInstance(gameData).testIfConditionsHaveChanged(gameData)) {
         tileManager.resetTiles(gameData, uiContext.getMapData());
-        SwingUtilities.invokeLater(() -> repaint());
+        try {
+          SwingUtilities.invokeAndWait(() -> repaint());
+        } catch (final Exception e) {
+          // ignore failed repaint
+        }
       }
     }
 
