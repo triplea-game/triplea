@@ -5,7 +5,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,8 +23,7 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
     final Set<PlayerID> players = new HashSet<>();
     for (final Unit u : data.getMap().getTerritory(territoryName).getUnits()) {
       if (!TripleAUnit.get(u).getSubmerged()) {

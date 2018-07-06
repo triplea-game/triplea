@@ -552,15 +552,14 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   /**
-   * @param value
-   *        a number between 15 and 100.
+   * @param value a number between 10 and 200.
    */
   public void setScale(final double value) {
     getMapPanel().setScale(value / 100);
   }
 
   /**
-   * @return a scale between 15 and 100.
+   * @return a scale between 10 and 200.
    */
   private double getScale() {
     return getMapPanel().getScale() * 100;

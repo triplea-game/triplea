@@ -26,8 +26,7 @@ public class ConvoyZoneDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
     final Image img;
     if (mapData.useNation_convoyFlags()) {
       img = uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerId(player));

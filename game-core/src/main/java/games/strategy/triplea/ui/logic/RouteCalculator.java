@@ -21,12 +21,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-@AllArgsConstructor(access =  AccessLevel.PUBLIC)
+/**
+ * Utility class to calculate a smooth route to draw on the map.
+ */
 @Builder
 public class RouteCalculator {
 
-  public final boolean isInfiniteY;
   public final boolean isInfiniteX;
+  public final boolean isInfiniteY;
 
   private final int mapWidth;
   private final int mapHeight;
@@ -73,7 +75,9 @@ public class RouteCalculator {
    *         size may vary
    */
   public List<Point2D> getPossiblePoints(final Point2D point) {
-    return getPossibleTranslations().stream()
+    return MapScrollUtil
+        .getPossibleTranslations(isInfiniteX, isInfiniteY, mapWidth, mapHeight)
+        .stream()
         .map(t -> t.transform(point, null))
         .collect(Collectors.toList());
   }
@@ -128,45 +132,10 @@ public class RouteCalculator {
    */
   public List<Path2D> getAllNormalizedLines(final double[] xcoords, final double[] ycoords) {
     final Path2D path = getNormalizedLines(xcoords, ycoords);
-    return getPossibleTranslations().stream()
+    return MapScrollUtil
+        .getPossibleTranslations(isInfiniteX, isInfiniteY, mapWidth, mapHeight)
+        .stream()
         .map(t -> new Path2D.Double(path, t))
         .collect(Collectors.toList());
-  }
-
-
-  /**
-   * Creates an unmodifiable List of possible translations on the given map.
-   * If a map has "fixed borders" i.e. you can't infinitely scroll along at least one axis
-   * the returned list will just contain a single identity {@linkplain AffineTransform}.
-   *
-   * <p>
-   * If the map however is infinitely scrolling along an axis, the amount of {@linkplain AffineTransform}s
-   * will multiply by 3.
-   * Each {@linkplain AffineTransform} is a translation by a multiple (between -1 and 1) of mapHeight/mapWidth.
-   * </p>
-   *
-   * @return An unmodifiable List containing 9-1 {@linkplain AffineTransform}s
-   */
-  public List<AffineTransform> getPossibleTranslations() {
-    final List<AffineTransform> result = new ArrayList<>(3); // 3 is probably the most common value
-    result.add(new AffineTransform());
-    if (isInfiniteX && isInfiniteY) {
-      result.addAll(Arrays.asList(
-          AffineTransform.getTranslateInstance(-mapWidth, -mapHeight),
-          AffineTransform.getTranslateInstance(-mapWidth, +mapHeight),
-          AffineTransform.getTranslateInstance(+mapWidth, -mapHeight),
-          AffineTransform.getTranslateInstance(+mapWidth, +mapHeight)));
-    }
-    if (isInfiniteX) {
-      result.addAll(Arrays.asList(
-          AffineTransform.getTranslateInstance(-mapWidth, 0),
-          AffineTransform.getTranslateInstance(+mapWidth, 0)));
-    }
-    if (isInfiniteY) {
-      result.addAll(Arrays.asList(
-          AffineTransform.getTranslateInstance(0, -mapHeight),
-          AffineTransform.getTranslateInstance(0, +mapHeight)));
-    }
-    return Collections.unmodifiableList(result);
   }
 }

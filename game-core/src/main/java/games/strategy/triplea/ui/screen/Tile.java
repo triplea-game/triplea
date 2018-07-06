@@ -25,84 +25,60 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 public class Tile {
-  public static final LockUtil LOCK_UTIL = LockUtil.INSTANCE;
-
-  private boolean isDirty = true;
+  private volatile boolean isDirty = true;
+  private volatile boolean drawingStarted = false;
 
   private final Image image;
   private final Rectangle bounds;
-  private final double scale;
   private final Lock lock = new ReentrantLock();
   private final SortedMap<Integer, List<IDrawable>> contents = new TreeMap<>();
 
-  Tile(final Rectangle bounds, final double scale) {
+  Tile(final Rectangle bounds) {
     this.bounds = bounds;
-    this.scale = scale;
-    image = Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
+    image = Util.createImage((int) bounds.getWidth(), (int) bounds.getHeight(), true);
   }
 
   public boolean isDirty() {
-    acquireLock();
-    try {
-      return isDirty;
-    } finally {
-      releaseLock();
-    }
+    return isDirty;
   }
 
-  public void acquireLock() {
-    LOCK_UTIL.acquireLock(lock);
+  public boolean hasDrawingStarted() {
+    return drawingStarted;
   }
 
-  public void releaseLock() {
-    LOCK_UTIL.releaseLock(lock);
+  private void acquireLock() {
+    LockUtil.INSTANCE.acquireLock(lock);
+  }
+
+  private void releaseLock() {
+    LockUtil.INSTANCE.releaseLock(lock);
   }
 
   public Image getImage(final GameData data, final MapData mapData) {
-    acquireLock();
-    try {
-      if (isDirty) {
+    if (isDirty) {
+      try {
+        acquireLock();
+        drawingStarted = true;
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         draw(g, data, mapData);
         g.dispose();
+      } finally {
+        drawingStarted = false;
+        releaseLock();
       }
-      return image;
-    } finally {
-      releaseLock();
     }
-  }
-
-  /**
-   * This image may not reflect our current drawables.
-   * Use getImage() to get a correct image
-   *
-   * @return the image we currently have.
-   */
-  public Image getRawImage() {
     return image;
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
-    final AffineTransform unscaled = g.getTransform();
-    final AffineTransform scaled;
-    if (scale != 1) {
-      scaled = new AffineTransform();
-      scaled.scale(scale, scale);
-      g.setTransform(scaled);
-    } else {
-      scaled = unscaled;
-    }
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(Tile.class.getName()), Level.FINEST,
         "Drawing Tile at" + bounds);
-    // clear
-    g.setColor(Color.BLACK);
-    g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
     for (final List<IDrawable> list : contents.values()) {
       for (final IDrawable drawable : list) {
-        drawable.draw(bounds, data, g, mapData, unscaled, scaled);
+        drawable.draw(bounds, data, g, mapData);
       }
     }
     isDirty = false;
