@@ -489,33 +489,15 @@ final class UnitChooser extends JPanel {
       }
 
       @Override
-      public int getWidth() {
-        // we draw a unit symbol for each dependent
-        return uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + category.getDependents().size());
-      }
-
-      @Override
-      public int getHeight() {
-        return uiContext.getUnitImageFactory().getUnitImageHeight();
-      }
-
-      @Override
-      public Dimension getMaximumSize() {
-        return getDimension();
-      }
-
-      @Override
       public Dimension getMinimumSize() {
-        return getDimension();
+        return getPreferredSize();
       }
 
       @Override
       public Dimension getPreferredSize() {
-        return getDimension();
-      }
-
-      Dimension getDimension() {
-        return new Dimension(getWidth(), getHeight());
+        final int width = uiContext.getUnitImageFactory().getUnitImageWidth() * (1 + category.getDependents().size());
+        final int height = uiContext.getUnitImageFactory().getUnitImageHeight();
+        return new Dimension(width, height);
       }
     }
   }
