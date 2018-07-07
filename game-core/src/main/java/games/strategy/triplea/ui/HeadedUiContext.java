@@ -202,11 +202,6 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public void resetDrawTerritoryBordersAgain() {
-    extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
-  }
-
-  @Override
   public void setDrawTerritoryBordersAgainToMedium() {
     extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
   }
