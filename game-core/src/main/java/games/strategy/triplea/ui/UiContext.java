@@ -96,8 +96,6 @@ public interface UiContext {
 
   void setDrawTerritoryBordersAgain(OptionalExtraBorderLevel level);
 
-  void resetDrawTerritoryBordersAgain();
-
   void setDrawTerritoryBordersAgainToMedium();
 
   void setShowTerritoryEffects(boolean showTerritoryEffects);

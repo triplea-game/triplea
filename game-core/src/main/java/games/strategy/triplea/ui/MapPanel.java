@@ -499,8 +499,13 @@ public class MapPanel extends ImageScrollerLargeView {
    * @param g The graphics context on which to draw the map; must not be {@code null}.
    */
   public void drawMapImage(final Graphics g) {
+    final Graphics2D graphics = (Graphics2D) checkNotNull(g);
+    graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+        RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+    graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
-    drawTiles((Graphics2D) checkNotNull(g), gameData, bounds);
+    drawTiles(graphics, gameData, bounds);
     try {
       // This makes use of the FIFO queue the executor uses
       executor.submit(() -> drawTiles((Graphics2D) checkNotNull(g), gameData, bounds)).get();
@@ -514,6 +519,10 @@ public class MapPanel extends ImageScrollerLargeView {
   @Override
   public void paint(final Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
+    g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+        RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
+    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     super.paint(g2d);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
@@ -615,20 +624,7 @@ public class MapPanel extends ImageScrollerLargeView {
   public void setScale(final double newScale) {
     super.setScale(newScale);
     // setScale will check bounds, and normalize the scale correctly
-    final double normalizedScale = scale;
-    final OptionalExtraBorderLevel drawBorderOption = uiContext.getDrawTerritoryBordersAgain();
-    // so what is happening here is that when we zoom out, the territory borders get blurred or even removed
-    // so we have a special setter to have them be drawn a second time, on top of the relief tiles
-    if (normalizedScale >= 1) {
-      if (drawBorderOption != OptionalExtraBorderLevel.LOW) {
-        uiContext.resetDrawTerritoryBordersAgain();
-      }
-    } else {
-      if (drawBorderOption == OptionalExtraBorderLevel.LOW) {
-        uiContext.setDrawTerritoryBordersAgainToMedium();
-      }
-    }
-    uiContext.setScale(normalizedScale);
+    uiContext.setScale(scale);
     repaint();
   }
 
