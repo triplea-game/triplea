@@ -272,7 +272,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final Point p = uiContext.getMapData().getCenter(territory);
-    // when centering dont want the map to wrap around,
+    // when centering don't want the map to wrap around,
     // eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
@@ -583,6 +583,7 @@ public class MapPanel extends ImageScrollerLargeView {
           });
         }
       }
+      final Image image = tile.getImage();
       final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
           model.getScrollX(), model.getScrollY(), model.getMaxWidth(), model.getMaxHeight());
       for (final AffineTransform transform : transforms) {
@@ -591,7 +592,7 @@ public class MapPanel extends ImageScrollerLargeView {
         viewTransformation.translate(-bounds.getX(), -bounds.getY());
         viewTransformation.translate(tile.getBounds().x, tile.getBounds().y);
         viewTransformation.concatenate(transform);
-        graphics.drawImage(tile.getImage(), viewTransformation, this);
+        graphics.drawImage(image, viewTransformation, this);
       }
     }
   }
