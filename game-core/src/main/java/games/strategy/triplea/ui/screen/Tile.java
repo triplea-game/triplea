@@ -8,6 +8,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -23,13 +24,12 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 public class Tile {
-  final Object mutex = new Object();
   private volatile boolean isDirty = true;
   private final AtomicBoolean drawingStarted = new AtomicBoolean(false);
 
   private final Image image;
   private final Rectangle bounds;
-  private final SortedMap<Integer, List<IDrawable>> contents = new TreeMap<>();
+  private final SortedMap<Integer, List<IDrawable>> contents = Collections.synchronizedSortedMap(new TreeMap<>());
 
   Tile(final Rectangle bounds) {
     this.bounds = bounds;
@@ -61,9 +61,7 @@ public class Tile {
       g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
       draw(g, data, mapData);
       final Graphics2D imageGraphics = (Graphics2D) image.getGraphics();
-      synchronized (mutex) {
-        imageGraphics.drawImage(writeBuffer, new AffineTransform(), null);
-      }
+      imageGraphics.drawImage(writeBuffer, new AffineTransform(), null);
       imageGraphics.dispose();
       g.dispose();
     } finally {

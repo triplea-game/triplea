@@ -147,13 +147,11 @@ public class TileManager {
       acquireLock();
       try {
         for (final Tile tile : tiles) {
-          synchronized (tile.mutex) {
-            tile.clear();
-            final int x = tile.getBounds().x / TILE_SIZE;
-            final int y = tile.getBounds().y / TILE_SIZE;
-            tile.addDrawable(new BaseMapDrawable(x, y, uiContext));
-            tile.addDrawable(new ReliefMapDrawable(x, y, uiContext));
-          }
+          tile.clear();
+          final int x = tile.getBounds().x / TILE_SIZE;
+          final int y = tile.getBounds().y / TILE_SIZE;
+          tile.addDrawable(new BaseMapDrawable(x, y, uiContext));
+          tile.addDrawable(new ReliefMapDrawable(x, y, uiContext));
         }
         for (Territory territory : data.getMap().getTerritories()) {
           clearTerritory(territory);
