@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
@@ -54,25 +52,26 @@ public class UnitIconProperties extends PropertyFile {
   }
 
   /**
-   * Get all unit icon images for given player and unit type that are currently true.
+   * Get all unit icon images for given player and unit type that are currently true, ensuring order
+   * from the properties file.
    */
   public List<String> getImagePaths(final String player, final String unitType, final GameData data) {
     final List<String> imagePaths = new ArrayList<>();
     final String gameName =
         FileNameUtils.replaceIllegalCharacters(data.getGameName(), '_').replaceAll(" ", "_");
     final String startOfKey = gameName + "." + player + "." + unitType;
-    for (final Entry<Object, Object> entry : properties.entrySet()) {
+    for (final Object key : properties.keySet()) {
       try {
-        final String key = entry.getKey().toString();
-        final String[] keyParts = key.split(";");
+        final String keyString = key.toString();
+        final String[] keyParts = keyString.split(";");
         if (startOfKey.equals(keyParts[0])) {
           if (keyParts.length == 2) {
             final ICondition condition = AbstractPlayerRulesAttachment.getCondition(player, keyParts[1], data);
             if (conditionsStatus.get(condition)) {
-              imagePaths.add(entry.getValue().toString());
+              imagePaths.add(properties.get(key).toString());
             }
           } else {
-            imagePaths.add(entry.getValue().toString());
+            imagePaths.add(properties.get(key).toString());
           }
         }
       } catch (final Exception e) {
@@ -81,10 +80,6 @@ public class UnitIconProperties extends PropertyFile {
       }
     }
     return imagePaths;
-  }
-
-  public Set<Entry<Object, Object>> entrySet() {
-    return properties.entrySet();
   }
 
   public boolean testIfConditionsHaveChanged(final GameData data) {
