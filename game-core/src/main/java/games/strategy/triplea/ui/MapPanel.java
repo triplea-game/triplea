@@ -575,25 +575,23 @@ public class MapPanel extends ImageScrollerLargeView {
           executor.execute(() -> {
             try {
               data.acquireReadLock();
-              tile.getImage(data, uiContext.getMapData());
+              tile.drawImage(data, uiContext.getMapData());
             } finally {
               data.releaseReadLock();
             }
             SwingUtilities.invokeLater(this::repaint);
           });
         }
-      } else {
-        final Image img = tile.getImage(data, uiContext.getMapData());
-        final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
-            model.getScrollX(), model.getScrollY(), model.getMaxWidth(), model.getMaxHeight());
-        for (final AffineTransform transform : transforms) {
-          final AffineTransform viewTransformation = new AffineTransform();
-          viewTransformation.scale(scale, scale);
-          viewTransformation.translate(-bounds.getX(), -bounds.getY());
-          viewTransformation.translate(tile.getBounds().x, tile.getBounds().y);
-          viewTransformation.concatenate(transform);
-          graphics.drawImage(img, viewTransformation, this);
-        }
+      }
+      final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
+          model.getScrollX(), model.getScrollY(), model.getMaxWidth(), model.getMaxHeight());
+      for (final AffineTransform transform : transforms) {
+        final AffineTransform viewTransformation = new AffineTransform();
+        viewTransformation.scale(scale, scale);
+        viewTransformation.translate(-bounds.getX(), -bounds.getY());
+        viewTransformation.translate(tile.getBounds().x, tile.getBounds().y);
+        viewTransformation.concatenate(transform);
+        graphics.drawImage(tile.getImage(), viewTransformation, this);
       }
     }
   }

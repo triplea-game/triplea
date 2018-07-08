@@ -1,11 +1,9 @@
 package games.strategy.triplea.ui.screen;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +52,11 @@ public class Tile {
     LockUtil.INSTANCE.releaseLock(lock);
   }
 
-  public Image getImage(final GameData data, final MapData mapData) {
+  public Image getImage() {
+    return image;
+  }
+
+  public void drawImage(final GameData data, final MapData mapData) {
     if (isDirty) {
       try {
         acquireLock();
@@ -70,7 +72,6 @@ public class Tile {
         releaseLock();
       }
     }
-    return image;
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
