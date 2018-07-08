@@ -68,7 +68,7 @@ public class TileManager {
   private static final Logger logger = Logger.getLogger(TileManager.class.getName());
   public static final int TILE_SIZE = 256;
 
-  private List<Tile> tiles = new ArrayList<>();
+  private final List<Tile> tiles = new ArrayList<>();
   private final Lock lock = new ReentrantLock();
   private final Map<String, IDrawable> territoryOverlays = new HashMap<>();
   private final Map<String, Set<IDrawable>> territoryDrawables = new HashMap<>();
@@ -130,8 +130,7 @@ public class TileManager {
   public void createTiles(final Rectangle bounds) {
     acquireLock();
     try {
-      // create our tiles
-      tiles = new ArrayList<>();
+      tiles.clear();
       for (int x = 0; x * TILE_SIZE < bounds.width; x++) {
         for (int y = 0; y * TILE_SIZE < bounds.height; y++) {
           tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)));
@@ -147,7 +146,7 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        for (Tile tile : tiles) {
+        for (final Tile tile : tiles) {
           tile.clear();
           final int x = tile.getBounds().x / TILE_SIZE;
           final int y = tile.getBounds().y / TILE_SIZE;
