@@ -22,6 +22,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
+
 /**
  * A class representing a Tile of the Map and storing the image to be rendered
  * on the screen.
