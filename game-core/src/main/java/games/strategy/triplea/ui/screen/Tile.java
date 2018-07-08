@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ import games.strategy.ui.Util;
  */
 public class Tile {
   private volatile boolean isDirty = true;
-  private final AtomicBoolean drawingStarted = new AtomicBoolean(false);
+  private volatile boolean drawingStarted = false;
 
   private final Image image;
   private final Rectangle bounds;
@@ -48,7 +47,7 @@ public class Tile {
   }
 
   public boolean hasDrawingStarted() {
-    return drawingStarted.get();
+    return drawingStarted;
   }
 
   public Image getImage() {
@@ -67,9 +66,7 @@ public class Tile {
    */
   public void drawImage(final GameData data, final MapData mapData) {
     try {
-      if (drawingStarted.getAndSet(true)) {
-        return;
-      }
+      drawingStarted = true;
       final BufferedImage writeBuffer = Util.createImage(image.getWidth(null),
           image.getHeight(null), true);
       final Graphics2D g = (Graphics2D) writeBuffer.getGraphics();
@@ -77,12 +74,13 @@ public class Tile {
       g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
       g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
       draw(g, data, mapData);
+
       final Graphics2D imageGraphics = (Graphics2D) image.getGraphics();
       imageGraphics.drawImage(writeBuffer, new AffineTransform(), null);
       imageGraphics.dispose();
       g.dispose();
     } finally {
-      drawingStarted.set(false);
+      drawingStarted = false;
     }
   }
 
