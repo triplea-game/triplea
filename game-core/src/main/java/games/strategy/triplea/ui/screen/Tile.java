@@ -22,7 +22,13 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
-
+/**
+ * A class representing a Tile of the Map and storing the image to be rendered
+ * on the screen.
+ * This class doesn't guarantee to be Thread-Safe although
+ * it's safe to use this class between multiple Threads
+ * which might cause outdated Images which is totally fine.
+ */
 public class Tile {
   private volatile boolean isDirty = true;
   private final AtomicBoolean drawingStarted = new AtomicBoolean(false);
@@ -48,6 +54,16 @@ public class Tile {
     return image;
   }
 
+  /**
+   * This method draws an image based on the provided GameData and MapData.
+   * It first creates an empty image with the same size and properties
+   * as the image field, applies all of the drawing operations to it
+   * copies the resulting pixels to the stored image and disposes
+   * the resources afterwards.
+   *
+   * This is to ensure we don't draw the Tile mid-generating
+   * without having to synchronize it.
+   */
   public void drawImage(final GameData data, final MapData mapData) {
     try {
       if (drawingStarted.getAndSet(true)) {
