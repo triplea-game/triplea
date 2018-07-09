@@ -133,3 +133,14 @@ Start a new lobby database container using the following command:
 ```
 $ docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db
 ```
+
+### Usage
+
+A lobby server running on the same host as the lobby database container may connect to the database using the following properties:
+
+Property | Value | Notes
+:-- | :-- | :--
+User | `postgres` |
+Password | _&lt;any&gt;_ | The lobby database is configured with authentication disabled, thus any password may be used.
+Host | `localhost` |
+Port | `5432` |
