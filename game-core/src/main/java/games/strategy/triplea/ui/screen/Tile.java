@@ -101,7 +101,8 @@ public class Tile {
   }
 
   void addDrawable(final IDrawable d) {
-    contents.computeIfAbsent(d.getLevel(), l -> new ArrayList<>()).add(d);
+    contents.computeIfAbsent(d.getLevel(),
+        l -> Collections.synchronizedList(new ArrayList<>())).add(d);
     isDirty = true;
   }
 
