@@ -26,7 +26,7 @@ public abstract class PropertyFile {
       .expireAfterWrite(10, TimeUnit.SECONDS)
       .build();
 
-  protected final Properties properties = new Properties();
+  protected final Properties properties = new OrderedProperties();
 
   PropertyFile(final String fileName, final ResourceLoader loader) {
     final URL url = loader.getResource(fileName);
