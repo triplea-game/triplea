@@ -21,6 +21,9 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
     draw(bounds, data, graphics, mapData, 1.0f);
   }
 
+  /**
+   * Determine territory color and set saturation to then draw the territory.
+   */
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final float saturation) {
     final Territory territory = data.getMap().getTerritory(territoryName);
