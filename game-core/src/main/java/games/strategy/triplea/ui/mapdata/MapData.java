@@ -79,7 +79,7 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
-  public static final String PROPERTY_MAP_SMALLMAPTERRITORYTALPHA = "smallMap.territory.alpha";
+  public static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION = "smallMap.territory.saturation";
   public static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
   public static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR = "smallMap.viewer.borderColor";
   public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
@@ -415,8 +415,8 @@ public class MapData implements Closeable {
     return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
   }
 
-  public float getSmallMapTerritoryAlpha() {
-    return Float.parseFloat(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPTERRITORYTALPHA, "1.0f"));
+  public float getSmallMapTerritorySaturation() {
+    return Float.parseFloat(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPTERRITORYSATURATION, "1.0f"));
   }
 
   public int getSmallMapUnitSize() {
