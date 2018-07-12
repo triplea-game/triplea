@@ -374,14 +374,26 @@ class ProPurchaseAi {
     // Find all place territories
     final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories =
         ProPurchaseUtils.findPurchaseTerritories(player);
+    final Set<Territory> placeTerritories = new HashSet<>();
+    for (final Territory t : placeNonConstructionTerritories.keySet()) {
+      for (final ProPlaceTerritory ppt : placeNonConstructionTerritories.get(t).getCanPlaceTerritories()) {
+        placeTerritories.add(ppt.getTerritory());
+      }
+    }
 
     // Determine max enemy attack units and current allied defenders
+    territoryManager.populateEnemyAttackOptions(new ArrayList<>(), new ArrayList<>(placeTerritories));
     findDefendersInPlaceTerritories(placeNonConstructionTerritories);
 
     // Prioritize land territories that need defended and place additional defenders
     final List<ProPlaceTerritory> needToDefendLandTerritories =
         prioritizeTerritoriesToDefend(placeNonConstructionTerritories, true);
     placeDefenders(placeNonConstructionTerritories, needToDefendLandTerritories, placeDelegate);
+
+    // Prioritize sea territories that need defended and place additional defenders
+    final List<ProPlaceTerritory> needToDefendSeaTerritories =
+        prioritizeTerritoriesToDefend(placeNonConstructionTerritories, false);
+    placeDefenders(placeNonConstructionTerritories, needToDefendSeaTerritories, placeDelegate);
 
     // Find strategic value for each territory
     ProLogger.info("Find strategic value for place territories");
@@ -394,22 +406,20 @@ class ProPurchaseAi {
       }
     }
 
-    // Prioritize land place territories, add all territories, and then place units
-    final List<ProPlaceTerritory> prioritizedLandTerritories =
+    // Prioritize place territories
+    final List<ProPlaceTerritory> prioritizedTerritories =
         prioritizeLandTerritories(placeNonConstructionTerritories);
     for (final ProPurchaseTerritory ppt : placeNonConstructionTerritories.values()) {
       for (final ProPlaceTerritory placeTerritory : ppt.getCanPlaceTerritories()) {
-        final Territory t = placeTerritory.getTerritory();
-        if (!t.isWater() && !prioritizedLandTerritories.contains(placeTerritory)) {
-          prioritizedLandTerritories.add(placeTerritory);
+        if (!prioritizedTerritories.contains(placeTerritory)) {
+          prioritizedTerritories.add(placeTerritory);
         }
       }
     }
-    // Place regular land units
-    placeLandUnits(prioritizedLandTerritories, placeDelegate, false);
 
-    // Place isConstruction land units (needs separated since placeDelegate.getPlaceableUnits doesn't handle combined)
-    placeLandUnits(prioritizedLandTerritories, placeDelegate, true);
+    // Place regular then isConstruction units (placeDelegate.getPlaceableUnits doesn't handle combined)
+    placeUnits(prioritizedTerritories, placeDelegate, false);
+    placeUnits(prioritizedTerritories, placeDelegate, true);
 
     territoryManager = null;
   }
@@ -1842,20 +1852,20 @@ class ProPurchaseAi {
     }
   }
 
-  private void placeLandUnits(final List<ProPlaceTerritory> prioritizedLandTerritories,
+  private void placeUnits(final List<ProPlaceTerritory> prioritizedTerritories,
       final IAbstractPlaceDelegate placeDelegate, final boolean isConstruction) {
 
-    ProLogger.info("Place land with isConstruction=" + isConstruction + ", units=" + player.getUnits().getUnits());
+    ProLogger.info("Place with isConstruction=" + isConstruction + ", units=" + player.getUnits().getUnits());
 
     Predicate<Unit> unitMatch = Matches.unitIsNotConstruction();
     if (isConstruction) {
       unitMatch = Matches.unitIsConstruction();
     }
 
-    // Loop through prioritized territories and place land units
-    for (final ProPlaceTerritory placeTerritory : prioritizedLandTerritories) {
+    // Loop through prioritized territories and place units
+    for (final ProPlaceTerritory placeTerritory : prioritizedTerritories) {
       final Territory t = placeTerritory.getTerritory();
-      ProLogger.debug("Checking land place for " + t.getName());
+      ProLogger.debug("Checking place for " + t.getName());
 
       // Check if any units can be placed
       final PlaceableUnits placeableUnits = placeDelegate.getPlaceableUnits(player.getUnits().getMatches(unitMatch), t);
@@ -1873,8 +1883,8 @@ class ProPurchaseAi {
 
       // Place as many units as possible
       final List<Unit> unitsThatCanBePlaced = new ArrayList<>(placeableUnits.getUnits());
-      final int landPlaceCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
-      final List<Unit> unitsToPlace = unitsThatCanBePlaced.subList(0, landPlaceCount);
+      final int placeCount = Math.min(remainingUnitProduction, unitsThatCanBePlaced.size());
+      final List<Unit> unitsToPlace = unitsThatCanBePlaced.subList(0, placeCount);
       ProLogger.trace(t + ", placedUnits=" + unitsToPlace);
       doPlace(t, unitsToPlace, placeDelegate);
     }
