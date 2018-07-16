@@ -34,8 +34,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   public void setWidgetActivation() {}
 
   @Override
-  public boolean isMetaSetupPanelInstance() {
-    return false;
+  public boolean showCancelButton() {
+    return true;
   }
 
   @Override

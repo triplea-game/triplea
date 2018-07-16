@@ -133,8 +133,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
-  public boolean isMetaSetupPanelInstance() {
-    return false;
+  public boolean showCancelButton() {
+    return true;
   }
 
 

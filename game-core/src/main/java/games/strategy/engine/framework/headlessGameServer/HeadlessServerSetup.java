@@ -161,8 +161,8 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   @Override
-  public boolean isMetaSetupPanelInstance() {
-    return false;
+  public boolean showCancelButton() {
+    return true;
   }
 
 }

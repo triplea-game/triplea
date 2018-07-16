@@ -467,8 +467,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   @Override
-  public boolean isMetaSetupPanelInstance() {
-    return false;
+  public boolean showCancelButton() {
+    return true;
   }
 
 }
