@@ -139,9 +139,6 @@ public class MainPanel extends JPanel implements Observer {
   private void setGameSetupPanel(final ISetupPanel panel) {
     if (gameSetupPanel != null) {
       gameSetupPanel.removeObserver(this);
-      if (SetupPanel.class.isAssignableFrom(panel.getClass())) {
-        gameSetupPanelHolder.remove((SetupPanel) panel);
-      }
     }
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
