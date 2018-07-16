@@ -14,7 +14,7 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
  * entire setup model).
  */
 public interface ISetupPanel {
-  boolean isMetaSetupPanelInstance();
+  boolean showCancelButton();
 
   void addObserver(final Observer observer);
 

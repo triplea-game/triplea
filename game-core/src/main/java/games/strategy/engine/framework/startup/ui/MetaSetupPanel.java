@@ -187,8 +187,8 @@ public class MetaSetupPanel extends SetupPanel {
   public void shutDown() {}
 
   @Override
-  public boolean isMetaSetupPanelInstance() {
-    return true;
+  public boolean showCancelButton() {
+    return false;
   }
 
   @Override
