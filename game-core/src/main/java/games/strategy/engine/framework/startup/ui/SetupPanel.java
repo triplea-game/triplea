@@ -35,11 +35,6 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
   }
 
   @Override
-  public void removeObserver(final Observer observer) {
-    listeners.add(observer);
-  }
-
-  @Override
   public void notifyObservers() {
     for (final Observer observer : listeners) {
       observer.update(null, null);
