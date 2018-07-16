@@ -137,20 +137,10 @@ public class MainPanel extends JPanel implements Observer {
   }
 
   private void setGameSetupPanel(final ISetupPanel panel) {
-    SetupPanel setupPanel = null;
-    if (SetupPanel.class.isAssignableFrom(panel.getClass())) {
-      setupPanel = (SetupPanel) panel;
-    }
-    if (gameSetupPanel != null) {
-      gameSetupPanel.removeObserver(this);
-      if (setupPanel != null) {
-        gameSetupPanelHolder.remove(setupPanel);
-      }
-    }
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
-    if (setupPanel != null) {
-      gameSetupPanelHolder.add(setupPanel, BorderLayout.CENTER);
+    if (SetupPanel.class.isAssignableFrom(panel.getClass())) {
+      gameSetupPanelHolder.add((SetupPanel) panel, BorderLayout.CENTER);
     }
     panel.addObserver(this);
     setWidgetActivation();

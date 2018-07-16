@@ -18,8 +18,6 @@ public interface ISetupPanel {
 
   void addObserver(final Observer observer);
 
-  void removeObserver(final Observer observer);
-
   void notifyObservers();
 
   /**
