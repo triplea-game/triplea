@@ -14,6 +14,10 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,17 +71,26 @@ public class TileTest {
 
   @Test
   public void testDrawOrder() {
-    final IDrawable drawable2 = mock(IDrawable.class);
-    when(drawable.getLevel()).thenReturn(1);
-    when(drawable2.getLevel()).thenReturn(2);
-    tile.addDrawable(drawable2);
-    tile.addDrawable(drawable);
+    final List<IDrawable> drawables = IntStream
+        .range(0, 10)
+        .mapToObj(this::createMockWithLevel)
+        .collect(Collectors.toList());
+    Collections.shuffle(drawables);
+    tile.addDrawables(drawables);
     final GameData data = mock(GameData.class);
     final MapData mapData = mock(MapData.class);
-    final InOrder inOrder = Mockito.inOrder(drawable, drawable2);
+    final InOrder inOrder = Mockito.inOrder(drawables.toArray());
     tile.drawImage(data, mapData);
-    inOrder.verify(drawable).draw(eq(rect), eq(data), any(), eq(mapData));
-    inOrder.verify(drawable2).draw(eq(rect), eq(data), any(), eq(mapData));
+    drawables.sort(Comparator.comparingInt(IDrawable::getLevel));
+    for (final IDrawable drawable : drawables) {
+      inOrder.verify(drawable).draw(eq(rect), eq(data), any(), eq(mapData));
+    }
+  }
+
+  private IDrawable createMockWithLevel(final int level) {
+    final IDrawable drawable = mock(IDrawable.class);
+    when(drawable.getLevel()).thenReturn(level);
+    return drawable;
   }
 
   @Test
