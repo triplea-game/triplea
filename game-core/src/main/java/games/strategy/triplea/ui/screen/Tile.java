@@ -96,7 +96,8 @@ public class Tile {
   }
 
   void addDrawables(final Collection<IDrawable> drawables) {
-    drawables.forEach(this::addDrawable);
+    contents.addAll(drawables);
+    isDirty = true;
   }
 
   void addDrawable(final IDrawable d) {
