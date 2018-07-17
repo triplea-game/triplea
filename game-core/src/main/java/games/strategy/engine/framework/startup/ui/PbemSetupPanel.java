@@ -85,7 +85,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     layoutComponents();
     setupListeners();
     loadAll();
-    setWidgetActivation();
   }
 
   private void createComponents() {
@@ -129,17 +128,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     add(localPlayerSelection, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST,
         GridBagConstraints.NONE, new Insets(10, 0, 10, 0), 0, 0));
     layoutPlayerComponents(localPlayerPanel, playerTypes, gameSelectorModel.getGameData());
-    setWidgetActivation();
   }
 
   @Override
   public boolean showCancelButton() {
     return true;
   }
-
-
-  @Override
-  public void setWidgetActivation() {}
 
   private void setupListeners() {
     // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects

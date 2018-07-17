@@ -190,7 +190,6 @@ public class MainPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(() -> {
-      gameTypePanelModel.setWidgetActivation();
       playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart());
     });
   }

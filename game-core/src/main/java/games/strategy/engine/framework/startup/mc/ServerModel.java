@@ -188,7 +188,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
               playersToNodeListing.put(name, null);
             }
           } else {
-            playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
+            Optional.ofNullable(serverMessenger)
+                .ifPresent(messenger -> playersToNodeListing.put(name, messenger.getLocalNode().getName()));
           }
           playerNamesAndAlliancesInTurnOrder.put(name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
           playersEnabledListing.put(name, !player.getIsDisabled());
@@ -522,9 +523,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private void notifyChanellPlayersChanged() {
-    final IClientChannel channel =
-        (IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
-    channel.playerListingChanged(getPlayerListingInternal());
+    Optional.ofNullable(channelMessenger)
+        .ifPresent(messenger -> {
+          final IClientChannel channel =
+              (IClientChannel) messenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+          channel.playerListingChanged(getPlayerListingInternal());
+        });
   }
 
   public void takePlayer(final String playerName) {

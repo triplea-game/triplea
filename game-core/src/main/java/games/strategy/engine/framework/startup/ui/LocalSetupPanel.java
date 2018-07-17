@@ -23,15 +23,11 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     gameSelectorModel = model;
     layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData());
     setupListeners();
-    setWidgetActivation();
   }
 
   private void setupListeners() {
     gameSelectorModel.addObserver(this);
   }
-
-  @Override
-  public void setWidgetActivation() {}
 
   @Override
   public boolean showCancelButton() {
