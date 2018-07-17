@@ -26,6 +26,7 @@ public class UserActionText {
   private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
+  private static final String OTHER_NOTIFICATIONS_GO_TO_ACCEPTERS_ONLY = "OTHER_NOTIFICATIONS_GO_TO_ACCEPTERS_ONLY";
 
   protected UserActionText() {
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
@@ -85,5 +86,9 @@ public class UserActionText {
 
   public String getAcceptanceQuestion(final String actionKey) {
     return getMessage(actionKey, ACCEPT_QUESTION);
+  }
+
+  public boolean shouldNotifyAcceptersOnly() {
+    return "true".equalsIgnoreCase(properties.getProperty(OTHER_NOTIFICATIONS_GO_TO_ACCEPTERS_ONLY));
   }
 }

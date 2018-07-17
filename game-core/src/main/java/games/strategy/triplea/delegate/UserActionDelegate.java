@@ -198,8 +198,18 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private void notifySuccess(final UserActionAttachment uaa) {
     // play a sound
     getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
-    sendNotification(UserActionText.getInstance().getNotificationSucccess(uaa.getText()));
-    notifyOtherPlayers(UserActionText.getInstance().getNotificationSuccessOthers(uaa.getText()));
+    final UserActionText uat = UserActionText.getInstance();
+    sendNotification(uat.getNotificationSucccess(uaa.getText()));
+    notifyOtherPlayers(uat.getNotificationSuccessOthers(uaa.getText()), getOtherNotificationPlayers(uaa));
+  }
+
+  private Collection<PlayerID> getOtherNotificationPlayers(final UserActionAttachment uaa) {
+    if (UserActionText.getInstance().shouldNotifyAcceptersOnly()) {
+      return uaa.getActionAccept();
+    }
+    final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
+    otherPlayers.remove(player);
+    return otherPlayers;
   }
 
   /**
@@ -219,13 +229,10 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Send a notification to the other players involved in this action (all
    * players except the player starting the action).
    */
-  private void notifyOtherPlayers(final String notification) {
+  private void notifyOtherPlayers(final String notification, final Collection<PlayerID> otherPlayers) {
     if (!"NONE".equals(notification)) {
-      // we can send it to just uaa.getOtherPlayers(), or we can send it to all players. both are good options.
       final Collection<PlayerID> currentPlayer = new ArrayList<>();
       currentPlayer.add(player);
-      final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
-      otherPlayers.removeAll(currentPlayer);
       this.getDisplay().reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
     }
   }
@@ -242,8 +249,9 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     final String transcriptText =
         bridge.getPlayerId().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);
-    sendNotification(UserActionText.getInstance().getNotificationFailure(uaa.getText()));
-    notifyOtherPlayers(UserActionText.getInstance().getNotificationFailureOthers(uaa.getText()));
+    final UserActionText uat = UserActionText.getInstance();
+    sendNotification(uat.getNotificationFailure(uaa.getText()));
+    notifyOtherPlayers(uat.getNotificationFailureOthers(uaa.getText()), getOtherNotificationPlayers(uaa));
   }
 
   /**
