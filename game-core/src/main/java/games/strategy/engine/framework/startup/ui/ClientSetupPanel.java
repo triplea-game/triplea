@@ -151,10 +151,6 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public void setWidgetActivation() {
-  }
-
-  @Override
   public void shutDown() {
     clientModel.shutDown();
   }

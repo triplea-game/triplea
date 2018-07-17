@@ -37,8 +37,6 @@ public interface ISetupPanel {
    */
   boolean canGameStart();
 
-  void setWidgetActivation();
-
   void preStartGame();
 
   void postStartGame();

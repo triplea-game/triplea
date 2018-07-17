@@ -31,12 +31,6 @@ public class SetupPanelModel extends Observable {
     return gameSelectorModel;
   }
 
-  public void setWidgetActivation() {
-    if (panel != null) {
-      panel.setWidgetActivation();
-    }
-  }
-
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));
   }

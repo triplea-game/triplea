@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.Component;
+import java.util.Optional;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
@@ -15,7 +16,9 @@ class DisplayNameComboBoxRender extends DefaultListCellRenderer {
   public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
       final boolean isSelected, final boolean cellHasFocus) {
     super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-    setText(((IBean) value).getDisplayName());
+    setText(Optional.ofNullable(value)
+        .map(bean -> ((IBean) bean).getDisplayName())
+        .orElse(""));
     return this;
   }
 }

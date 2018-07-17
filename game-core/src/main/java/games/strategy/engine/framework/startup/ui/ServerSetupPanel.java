@@ -65,7 +65,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     createLobbyWatcher();
     createComponents();
     layoutComponents();
-    setWidgetActivation();
     internalPlayerListChanged();
   }
 
@@ -226,9 +225,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     invalidate();
     validate();
   }
-
-  @Override
-  public void setWidgetActivation() {}
 
   @Override
   public void shutDown() {

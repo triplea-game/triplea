@@ -50,7 +50,6 @@ public class MetaSetupPanel extends SetupPanel {
     createComponents();
     layoutComponents();
     setupListeners();
-    setWidgetActivation();
   }
 
   private void createComponents() {
@@ -161,20 +160,6 @@ public class MetaSetupPanel extends SetupPanel {
     final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties);
     GameRunner.hideMainFrame();
     lobbyFrame.setVisible(true);
-  }
-
-  @Override
-  public void setWidgetActivation() {
-    if (model == null || model.getGameSelectorModel() == null
-        || model.getGameSelectorModel().getGameData() == null) {
-      startLocal.setEnabled(false);
-      startPbem.setEnabled(false);
-      hostGame.setEnabled(false);
-    } else {
-      startLocal.setEnabled(true);
-      startPbem.setEnabled(true);
-      hostGame.setEnabled(true);
-    }
   }
 
   @Override
