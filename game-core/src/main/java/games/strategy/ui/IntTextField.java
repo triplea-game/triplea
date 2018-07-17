@@ -19,7 +19,7 @@ public class IntTextField extends JTextField {
   private static final long serialVersionUID = -7993942326354823887L;
   private int max = Integer.MAX_VALUE;
   private int min = Integer.MIN_VALUE;
-  private String terr = null;
+  private String terr;
   private final List<IntTextFieldChangeListener> listeners = new ArrayList<>();
 
   /** Creates new IntTextField. */
@@ -28,23 +28,10 @@ public class IntTextField extends JTextField {
     initTextField();
   }
 
-  public IntTextField(final int min) {
-    this();
-    setMin(min);
-  }
-
   public IntTextField(final int min, final int max) {
     this();
     setMin(min);
     setMax(max);
-  }
-
-  public IntTextField(final int min, final int max, final int current, final int columns) {
-    super(columns);
-    initTextField();
-    setMin(min);
-    setMax(max);
-    setValue(current);
   }
 
   private void initTextField() {
@@ -168,10 +155,6 @@ public class IntTextField extends JTextField {
 
   public void addChangeListener(final IntTextFieldChangeListener listener) {
     listeners.add(listener);
-  }
-
-  public void removeChangeListener(final IntTextFieldChangeListener listener) {
-    listeners.remove(listener);
   }
 
   private void notifyListeners() {

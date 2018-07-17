@@ -272,8 +272,4 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   public void addActionFactory(final IPlayerActionFactory actionFactory) {
     actionFactories.add(actionFactory);
   }
-
-  public void remove(final IPlayerActionFactory actionFactory) {
-    actionFactories.remove(actionFactory);
-  }
 }

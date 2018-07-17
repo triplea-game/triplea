@@ -39,10 +39,6 @@ public class BattleRecordsList extends GameDataComponent {
     current.removeRecord(other);
   }
 
-  public BattleRecords getCurrentRound() {
-    return battleRecords.get(getData().getSequence().getRound());
-  }
-
   private BattleRecords getCurrentRoundCopy() {
     final BattleRecords current = battleRecords.get(getData().getSequence().getRound());
     return (current == null) ? new BattleRecords() : new BattleRecords(current);

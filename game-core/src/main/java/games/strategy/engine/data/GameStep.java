@@ -97,10 +97,6 @@ public class GameStep extends GameDataComponent {
     return m_maxRunCount != -1 && m_maxRunCount <= m_runCount;
   }
 
-  public int getRunCount() {
-    return m_runCount;
-  }
-
   public void incrementRunCount() {
     m_runCount++;
   }

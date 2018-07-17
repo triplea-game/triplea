@@ -966,10 +966,6 @@ public final class DecorationPlacer {
       return canHaveMultiplePoints;
     }
 
-    public boolean isUsesCentersPoint() {
-      return usesCentersPoint;
-    }
-
     public String getDescription() {
       return description;
     }
