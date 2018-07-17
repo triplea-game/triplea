@@ -1,6 +1,5 @@
 package games.strategy.util;
 
-import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
@@ -10,16 +9,8 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * Implements AQS behind the scenes similar to CountDownLatch.
  * Class is hobbled together from various learnings and tickets on stackexchange/stackoverflow.
  */
-public class CountUpAndDownLatch implements Serializable {
-  private static final long serialVersionUID = -1656388212821764097L;
-  private final Sync sync;
-
-  /**
-   * Constructs a {@link CountUpAndDownLatch} initialized with zero.
-   */
-  public CountUpAndDownLatch() {
-    sync = new Sync();
-  }
+public class CountUpAndDownLatch {
+  private final Sync sync = new Sync();
 
   /**
    * Increment the count by one.
