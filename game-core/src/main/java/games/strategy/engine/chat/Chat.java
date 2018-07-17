@@ -37,7 +37,7 @@ public class Chat {
   // mutex used for access synchronization to nodes
   // TODO: check if this mutex is used for something else as well
   private final Object mutexNodes = new Object();
-  private final List<INode> nodes;
+  private List<INode> nodes;
   // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
   // until end of initialization synchronizes access to queue
   private final Object mutexQueue = new Object();
@@ -290,6 +290,9 @@ public class Chat {
       }
       if (version > chatInitVersion) {
         synchronized (mutexNodes) {
+          if (nodes == null) {
+            nodes = new ArrayList<>();
+          }
           nodes.add(node);
           addToNotesMap(node, tag);
           updateConnections();
