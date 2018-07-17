@@ -15,6 +15,8 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
@@ -38,8 +40,13 @@ public class Tile {
       Comparator.comparingInt(IDrawable::getLevel));
 
   Tile(final Rectangle bounds) {
+    this(bounds, Util.createImage((int) bounds.getWidth(), (int) bounds.getHeight(), true));
+  }
+
+  @VisibleForTesting
+  Tile(final Rectangle bounds, final Image image) {
     this.bounds = bounds;
-    image = Util.createImage((int) bounds.getWidth(), (int) bounds.getHeight(), true);
+    this.image = image;
   }
 
   public boolean isDirty() {
