@@ -119,10 +119,6 @@ public class IndividualUnitPanel extends JPanel {
     }
   }
 
-  public void setTitle(final String title) {
-    this.title.setText(title);
-  }
-
   public int getMax() {
     return max;
   }

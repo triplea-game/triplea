@@ -17,10 +17,6 @@ public class BombingUnitDamageChange extends Change {
     this.undoHits = undoHits;
   }
 
-  public Collection<Unit> getUnits() {
-    return hits.keySet();
-  }
-
   public BombingUnitDamageChange(final IntegerMap<Unit> hits) {
     for (final Unit u : hits.keySet()) {
       if (!(u instanceof TripleAUnit)) {

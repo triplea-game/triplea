@@ -128,7 +128,6 @@ import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
@@ -2044,11 +2043,6 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public MapPanel getMapPanel() {
-    return mapPanel;
-  }
-
-  @Override
-  public JComponent getMainPanel() {
     return mapPanel;
   }
 

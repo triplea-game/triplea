@@ -8,19 +8,7 @@ import javax.swing.JOptionPane;
 import games.strategy.engine.framework.system.SystemProperties;
 
 public class FileOpen {
-  private File file = null;
-
-  public FileOpen(final String title) {
-    this(title, ".txt", ".gif", ".png");
-  }
-
-  public FileOpen(final String title, final String... extensions) {
-    this(title, new File(SystemProperties.getUserDir()), extensions);
-  }
-
-  public FileOpen(final String title, final File currentDirectory) {
-    this(title, currentDirectory, ".txt", ".gif", ".png");
-  }
+  private File file;
 
   public FileOpen(final String title, final File currentDirectory, final String... extensions) {
     this(title, currentDirectory, null, extensions);
