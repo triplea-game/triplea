@@ -8,13 +8,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -35,11 +36,17 @@ public class Tile {
 
   private final Image image;
   private final Rectangle bounds;
-  private final SortedMap<Integer, List<IDrawable>> contents = Collections.synchronizedSortedMap(new TreeMap<>());
+  private final Queue<IDrawable> contents = new PriorityBlockingQueue<>(1,
+      Comparator.comparingInt(IDrawable::getLevel));
 
   Tile(final Rectangle bounds) {
+    this(bounds, Util.createImage((int) bounds.getWidth(), (int) bounds.getHeight(), true));
+  }
+
+  @VisibleForTesting
+  Tile(final Rectangle bounds, final Image image) {
     this.bounds = bounds;
-    image = Util.createImage((int) bounds.getWidth(), (int) bounds.getHeight(), true);
+    this.image = image;
   }
 
   public boolean isDirty() {
@@ -87,27 +94,26 @@ public class Tile {
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(Tile.class.getName()), Level.FINEST,
         "Drawing Tile at" + bounds);
-    for (final List<IDrawable> list : contents.values()) {
-      for (final IDrawable drawable : list) {
-        drawable.draw(bounds, data, g, mapData);
-      }
+    final Queue<IDrawable> clone = new PriorityBlockingQueue<>(contents);
+    while (!clone.isEmpty()) {
+      clone.remove().draw(bounds, data, g, mapData);
     }
     isDirty = false;
     stopWatch.done();
   }
 
   void addDrawables(final Collection<IDrawable> drawables) {
-    drawables.forEach(this::addDrawable);
+    contents.addAll(drawables);
+    isDirty = true;
   }
 
   void addDrawable(final IDrawable d) {
-    contents.computeIfAbsent(d.getLevel(),
-        l -> Collections.synchronizedList(new ArrayList<>())).add(d);
+    contents.add(d);
     isDirty = true;
   }
 
   void removeDrawables(final Collection<IDrawable> c) {
-    contents.values().forEach(l -> l.removeAll(c));
+    contents.removeAll(c);
     isDirty = true;
   }
 
@@ -117,9 +123,7 @@ public class Tile {
   }
 
   List<IDrawable> getDrawables() {
-    return contents.values().stream()
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+    return new ArrayList<>(contents);
   }
 
   public Rectangle getBounds() {

@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -136,6 +137,8 @@ public class TileManager {
           tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)));
         }
       }
+    } catch (final RuntimeException e) {
+      ClientLogger.logError("Error creating Tile", e);
     } finally {
       releaseLock();
     }
