@@ -22,8 +22,10 @@ public class UserActionText {
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
+  private static final String TARGET_NOTIFICATION_SUCCESS = "TARGET_NOTIFICATION_SUCCESS";
   private static final String OTHER_NOTIFICATION_SUCCESS = "OTHER_NOTIFICATION_SUCCESS";
   private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
+  private static final String TARGET_NOTIFICATION_FAILURE = "TARGET_NOTIFICATION_FAILURE";
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
@@ -59,6 +61,10 @@ public class UserActionText {
     return getString(actionKey + "." + messageKey);
   }
 
+  private boolean hasMessage(final String actionKey, final String messageKey) {
+    return properties.containsKey(actionKey + "." + messageKey);
+  }
+
   public String getButtonText(final String actionKey) {
     return getMessage(actionKey, BUTTON);
   }
@@ -75,12 +81,28 @@ public class UserActionText {
     return getMessage(actionKey, OTHER_NOTIFICATION_SUCCESS);
   }
 
+  public String getNotificationSuccessTarget(final String actionKey) {
+    if (hasMessage(actionKey, TARGET_NOTIFICATION_SUCCESS)) {
+      return getMessage(actionKey, TARGET_NOTIFICATION_SUCCESS);
+    } else {
+      return getNotificationSuccessOthers(actionKey);
+    }
+  }
+
   public String getNotificationFailure(final String actionKey) {
     return getMessage(actionKey, NOTIFICATION_FAILURE);
   }
 
   public String getNotificationFailureOthers(final String actionKey) {
     return getMessage(actionKey, OTHER_NOTIFICATION_FAILURE);
+  }
+
+  public String getNotificationFailureTarget(final String actionKey) {
+    if (hasMessage(actionKey, TARGET_NOTIFICATION_FAILURE)) {
+      return getMessage(actionKey, TARGET_NOTIFICATION_FAILURE);
+    } else {
+      return getNotificationFailureOthers(actionKey);
+    }
   }
 
   public String getAcceptanceQuestion(final String actionKey) {
