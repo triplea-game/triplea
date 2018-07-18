@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-
-import com.example.mockito.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 public final class FileUtilsTest {
   @ExtendWith(MockitoExtension.class)

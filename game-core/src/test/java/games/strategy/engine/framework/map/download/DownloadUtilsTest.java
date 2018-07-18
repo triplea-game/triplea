@@ -31,8 +31,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-
-import com.example.mockito.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
 import games.strategy.test.extensions.TemporaryFolder;
@@ -100,6 +101,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
       return Files.readAllBytes(file.toPath());
     }
 
+    @MockitoSettings(strictness = Strictness.WARN)
     @Test
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
@@ -209,6 +211,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
       return DownloadUtils.getDownloadLengthFromHost(URI, client);
     }
 
+    @MockitoSettings(strictness = Strictness.WARN)
     @Test
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);

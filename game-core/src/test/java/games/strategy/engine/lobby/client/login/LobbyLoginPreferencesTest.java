@@ -18,9 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Stubber;
-
-import com.example.mockito.MockitoExtension;
 
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences.PreferenceKeys;
 import games.strategy.security.CredentialManager;

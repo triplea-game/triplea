@@ -15,8 +15,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-
-import com.example.mockito.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.util.function.ThrowingRunnable;
 
@@ -29,8 +28,11 @@ public final class InterruptiblesTest {
 
   @Nested
   public final class AwaitTest {
+    @Mock
+    private ThrowingRunnable<InterruptedException> runnable;
+
     @Test
-    public void shouldReturnTrueWhenCompleted(@Mock final ThrowingRunnable<InterruptedException> runnable)
+    public void shouldReturnTrueWhenCompleted()
         throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 

@@ -3,11 +3,11 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'jacoco'
-    id 'com.github.ben-manes.versions' version '0.17.0'
-    id 'com.github.johnrengelman.shadow' version '2.0.2'
+    id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'com.install4j.gradle' version '7.0.1'
-    id 'de.undercouch.download' version '3.4.2'
-    id 'net.ltgt.errorprone' version '0.0.13'
+    id 'net.ltgt.errorprone' version '0.0.15'
+    id 'de.undercouch.download' version '3.4.3'
 }
 
 group = 'triplea'
@@ -52,16 +52,16 @@ repositories {
 }
 
 dependencies {
-    errorprone 'com.google.errorprone:error_prone_core:2.2.0'
+    errorprone 'com.google.errorprone:error_prone_core:2.3.1'
 
     compile project(':game-core')
 
-    compileOnly 'org.projectlombok:lombok:1.16.20'
+    compileOnly 'org.projectlombok:lombok:1.18.0'
 
-    testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.16.0'
+    testCompile 'org.mockito:mockito-core:2.19.1'
+    testCompile 'org.mockito:mockito-junit-jupiter:2.19.1'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'

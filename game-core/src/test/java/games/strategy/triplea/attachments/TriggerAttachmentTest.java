@@ -19,8 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-
-import com.example.mockito.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -78,6 +79,7 @@ public class TriggerAttachmentTest {
 
   }
 
+  @MockitoSettings(strictness = Strictness.WARN)
   @Test
   public void testTriggerProductionFrontierEditChange() {
     TriggerAttachment.triggerProductionFrontierEditChange(
