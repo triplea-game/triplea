@@ -45,10 +45,6 @@ public class FinishedBattle extends AbstractBattle {
     m_whoWon = whoWon;
   }
 
-  public void setDefendingUnits(final List<Unit> defendingUnits) {
-    m_defendingUnits = defendingUnits;
-  }
-
   @Override
   public boolean isEmpty() {
     return m_attackingUnits.isEmpty();
