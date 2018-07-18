@@ -434,11 +434,4 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     }
     return true;
   }
-
-  /**
-   * If the actual territories in the map are deleted, or new ones added, call this.
-   */
-  public void notifyChanged() {
-    getData().notifyMapDataChanged();
-  }
 }

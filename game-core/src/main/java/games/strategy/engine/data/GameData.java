@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
 import com.google.common.base.MoreObjects;
 
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataManager;
@@ -81,7 +80,6 @@ public class GameData implements Serializable {
   private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
-  private transient List<GameMapListener> gameMapListeners = new CopyOnWriteArrayList<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -293,14 +291,6 @@ public class GameData implements Serializable {
     dataChangeListeners.remove(listener);
   }
 
-  public void addGameMapListener(final GameMapListener listener) {
-    gameMapListeners.add(listener);
-  }
-
-  public void removeGameMapListener(final GameMapListener listener) {
-    gameMapListeners.remove(listener);
-  }
-
   void notifyTerritoryUnitsChanged(final Territory t) {
     territoryListeners.forEach(territoryListener -> territoryListener.unitsChanged(t));
   }
@@ -315,10 +305,6 @@ public class GameData implements Serializable {
 
   void notifyGameDataChanged(final Change change) {
     dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
-  }
-
-  void notifyMapDataChanged() {
-    gameMapListeners.forEach(GameMapListener::gameMapDataChanged);
   }
 
   public IGameLoader getGameLoader() {
@@ -378,7 +364,6 @@ public class GameData implements Serializable {
   public void postDeSerialize() {
     territoryListeners = new ArrayList<>();
     dataChangeListeners = new ArrayList<>();
-    gameMapListeners = new ArrayList<>();
   }
 
   /**
@@ -430,7 +415,6 @@ public class GameData implements Serializable {
   public void clearAllListeners() {
     dataChangeListeners.clear();
     territoryListeners.clear();
-    gameMapListeners.clear();
     if (resourceLoader != null) {
       resourceLoader.close();
       resourceLoader = null;
