@@ -26,6 +26,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -367,6 +369,7 @@ public final class LobbyLoginValidatorTest {
       @ExtendWith(MockitoExtension.class)
       @Nested
       public final class WhenUsingCurrentClientTest extends AbstractTestCase {
+        @MockitoSettings(strictness = Strictness.WARN)
         @Test
         public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
           givenUserExists();
@@ -427,6 +430,7 @@ public final class LobbyLoginValidatorTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingLegacyClientTest extends AbstractTestCase {
+      @MockitoSettings(strictness = Strictness.WARN)
       @Test
       public void shouldFailAuthentication() {
         givenMaintenanceModeIsEnabled();
@@ -453,6 +457,7 @@ public final class LobbyLoginValidatorTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingCurrentClientTest extends AbstractTestCase {
+      @MockitoSettings(strictness = Strictness.WARN)
       @Test
       public void shouldFailAuthentication() {
         givenMaintenanceModeIsEnabled();
@@ -512,6 +517,7 @@ public final class LobbyLoginValidatorTest {
     }
 
     @ExtendWith(MockitoExtension.class)
+    @MockitoSettings(strictness = Strictness.WARN)
     @Nested
     public final class WhenUserIsRegistered extends AbstractTestCase {
       @Test

@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -25,6 +27,7 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.WARN)
 public final class UserActionPanelTest {
   @Mock
   private GameData data;

@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.ILobbyGameController;
@@ -66,6 +68,7 @@ public class LobbyGameTableModelTest {
     TestUtil.waitForSwingThreads();
   }
 
+  @MockitoSettings(strictness = Strictness.WARN)
   @Test
   public void gamesAreLoadedOnInit() {
     assertThat(testObj.getRowCount(), is(1));
