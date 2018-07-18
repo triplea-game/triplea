@@ -58,7 +58,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
    * welcome screen and subsequent screens..
    */
   public MainPanel(
-      final GameSelectorModel gameSelectorModel,
+      final GameSelectorPanel gameSelectorPanel,
       final Consumer<MainPanel> launchAction,
       final Supplier<Optional<IChatPanel>> chatPanelSupplier,
       final Runnable cancelAction) {
@@ -71,7 +71,6 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
     quitButton.setToolTipText("Close TripleA.");
     cancelButton = new JButton("Cancel");
     cancelButton.setToolTipText("Go back to main screen.");
-    final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
@@ -111,9 +110,6 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
       }
     });
     cancelButton.addActionListener(e -> cancelAction.run());
-    gameSelectorModel.addObserver(this);
-
-
     setWidgetActivation();
   }
 

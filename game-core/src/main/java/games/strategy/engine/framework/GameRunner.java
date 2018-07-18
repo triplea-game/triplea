@@ -23,6 +23,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_OBSER
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
+import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FileDialog;
@@ -174,8 +175,11 @@ public class GameRunner {
     final JFrame frame = new JFrame("TripleA");
     LookAndFeelSwingFrameListener.register(frame);
 
+
+    final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
+
     final MainPanel mainPanel = new MainPanel(
-        setupPanelModel.getGameSelectorModel(),
+        gameSelectorPanel,
         uiPanel -> {
           setupPanelModel.getPanel().preStartGame();
           setupPanelModel.getPanel().getLauncher()
@@ -186,6 +190,8 @@ public class GameRunner {
             .map(ISetupPanel::getChatPanel),
         setupPanelModel::showSelectType);
     setupPanelModel.setPanelChangeListener(mainPanel);
+    gameSelectorModel.addObserver(mainPanel);
+
     frame.add(mainPanel);
     frame.pack();
 
