@@ -1,5 +1,8 @@
-package games.strategy.engine.framework.startup.ui;
+package games.strategy.engine.framework.startup.ui.panels.main;
 
+import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.SetupPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;

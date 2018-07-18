@@ -63,7 +63,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
 
-  GameSelectorPanel(final GameSelectorModel model) {
+  public GameSelectorPanel(final GameSelectorModel model) {
     this.model = model;
     this.model.addObserver(this);
     final GameData data = model.getGameData();
