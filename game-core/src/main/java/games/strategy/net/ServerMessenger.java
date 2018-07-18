@@ -255,10 +255,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private final HashMap<String, String> playersThatLeftMacsLast10 = new HashMap<>();
 
-  public HashMap<String, String> getPlayersThatLeftMacs_Last10() {
-    return playersThatLeftMacsLast10;
-  }
-
   private void notifyPlayerRemoval(final INode node) {
     synchronized (cachedListLock) {
       playersThatLeftMacsLast10.put(node.getName(), cachedMacAddresses.get(node.getName()));

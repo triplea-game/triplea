@@ -270,10 +270,6 @@ public final class TileImageFactory {
     return image;
   }
 
-  public Composite getComposite() {
-    return this.composite;
-  }
-
   private static BufferedImage loadCompatibleImage(final URL resource) throws IOException {
     final BufferedImage image = ImageIO.read(resource);
     return toCompatibleImage(image);

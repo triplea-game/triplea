@@ -53,10 +53,6 @@ public class ServerQuarantineConversation extends QuarantineConversation {
     return remoteName;
   }
 
-  public String getRemoteMac() {
-    return remoteMac;
-  }
-
   @Override
   public Action message(final Object o) {
     try {
