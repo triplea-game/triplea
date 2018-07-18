@@ -217,12 +217,11 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     final Collection<PlayerID> dontSendTo = new ArrayList<>();
     dontSendTo.add(player);
 
-    final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
-    otherPlayers.remove(player);
-
     final Collection<PlayerID> targets = uaa.getActionAccept();
     sendNotificationToPlayers(targets, dontSendTo, targetNotification);
 
+    final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
+    otherPlayers.remove(player);
     otherPlayers.removeAll(targets);
     dontSendTo.addAll(targets);
     sendNotificationToPlayers(otherPlayers, dontSendTo, notification);
