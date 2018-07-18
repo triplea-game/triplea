@@ -1,4 +1,9 @@
 #
+# ***Map Makers***  For help updating this file, see:
+# https://docs.google.com/document/d/1FfF7N0srp9QG0_if5D-c1d1Aa1QTttdhxgm1GBh3pI4
+# https://forums.triplea-game.org/topic/484/how-to-add-maps-to-triplea-downloads
+##
+#
 # This file is read live by the game whenever you click 'download maps'. Updating this file on the
 # github server will have immediate effect on all game installations. Be careful to not break old
 # game engine versions when adding new fields (but note, unrecognized yaml field names are simply ignored)
