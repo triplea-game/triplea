@@ -23,10 +23,11 @@ public class UserActionText {
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
   private static final String OTHER_NOTIFICATION_SUCCESS = "OTHER_NOTIFICATION_SUCCESS";
+  private static final String PARTICIPANTS_NOTIFICATION_SUCCESS = "PARTICIPANTS_NOTIFICATION_SUCCESS";
   private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
+  private static final String PARTICIPANTS_NOTIFICATION_FAILURE = "PARTICIPANTS_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
-  private static final String OTHER_NOTIFICATIONS_GO_TO_ACCEPTERS_ONLY = "OTHER_NOTIFICATIONS_GO_TO_ACCEPTERS_ONLY";
 
   protected UserActionText() {
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
@@ -60,6 +61,10 @@ public class UserActionText {
     return getString(actionKey + "." + messageKey);
   }
 
+  private boolean hasMessage(final String actionKey, final String messageKey) {
+    return properties.containsKey(actionKey + "." + messageKey);
+  }
+
   public String getButtonText(final String actionKey) {
     return getMessage(actionKey, BUTTON);
   }
@@ -76,6 +81,14 @@ public class UserActionText {
     return getMessage(actionKey, OTHER_NOTIFICATION_SUCCESS);
   }
 
+  public String getNotificationSuccessParticipants(final String actionKey) {
+    if (hasMessage(actionKey, PARTICIPANTS_NOTIFICATION_SUCCESS)) {
+      return getMessage(actionKey, PARTICIPANTS_NOTIFICATION_SUCCESS);
+    } else {
+      return getMessage(actionKey, OTHER_NOTIFICATION_SUCCESS);
+    }
+  }
+
   public String getNotificationFailure(final String actionKey) {
     return getMessage(actionKey, NOTIFICATION_FAILURE);
   }
@@ -84,11 +97,15 @@ public class UserActionText {
     return getMessage(actionKey, OTHER_NOTIFICATION_FAILURE);
   }
 
-  public String getAcceptanceQuestion(final String actionKey) {
-    return getMessage(actionKey, ACCEPT_QUESTION);
+  public String getNotificationFailureParticipants(final String actionKey) {
+    if (hasMessage(actionKey, PARTICIPANTS_NOTIFICATION_FAILURE)) {
+      return getMessage(actionKey, PARTICIPANTS_NOTIFICATION_FAILURE);
+    } else {
+      return getMessage(actionKey, OTHER_NOTIFICATION_FAILURE);
+    }
   }
 
-  public boolean shouldNotifyAcceptersOnly() {
-    return "true".equalsIgnoreCase(properties.getProperty(OTHER_NOTIFICATIONS_GO_TO_ACCEPTERS_ONLY));
+  public String getAcceptanceQuestion(final String actionKey) {
+    return getMessage(actionKey, ACCEPT_QUESTION);
   }
 }

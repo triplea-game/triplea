@@ -112,7 +112,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Subtract money from the players wallet
+   * Subtract money from the player's wallet.
    *
    * @param uaa
    *        the UserActionAttachment this the money is charged for.
@@ -190,29 +190,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Let all players involved in this action know the action was successful
-   *
-   * @param uaa
-   *        the UserActionAttachment that just succeeded.
-   */
-  private void notifySuccess(final UserActionAttachment uaa) {
-    // play a sound
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
-    final UserActionText uat = UserActionText.getInstance();
-    sendNotification(uat.getNotificationSucccess(uaa.getText()));
-    notifyOtherPlayers(uat.getNotificationSuccessOthers(uaa.getText()), getOtherNotificationPlayers(uaa));
-  }
-
-  private Collection<PlayerID> getOtherNotificationPlayers(final UserActionAttachment uaa) {
-    if (UserActionText.getInstance().shouldNotifyAcceptersOnly()) {
-      return uaa.getActionAccept();
-    }
-    final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
-    otherPlayers.remove(player);
-    return otherPlayers;
-  }
-
-  /**
    * Send a notification to the current player.
    *
    * @param text
@@ -225,16 +202,45 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     }
   }
 
-  /**
-   * Send a notification to the other players involved in this action (all
-   * players except the player starting the action).
-   */
-  private void notifyOtherPlayers(final String notification, final Collection<PlayerID> otherPlayers) {
-    if (!"NONE".equals(notification)) {
-      final Collection<PlayerID> currentPlayer = new ArrayList<>();
-      currentPlayer.add(player);
-      this.getDisplay().reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
+  private void sendNotificationToPlayers(final Collection<PlayerID> toPlayers, final Collection<PlayerID> dontSendTo,
+                                         final String text) {
+    if (!"NONE".equals(text)) {
+      this.getDisplay().reportMessageToPlayers(toPlayers, dontSendTo, text, text);
     }
+  }
+
+  /**
+   * Send notifications to the other players (all players except the player starting the action).
+   */
+  private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification,
+                                  final String notificationParticipants) {
+    final Collection<PlayerID> dontSendTo = new ArrayList<>();
+    dontSendTo.add(player);
+
+    final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
+    otherPlayers.remove(player);
+
+    final Collection<PlayerID> participants = uaa.getActionAccept();
+    sendNotificationToPlayers(participants, dontSendTo, notificationParticipants);
+
+    otherPlayers.removeAll(participants);
+    dontSendTo.addAll(participants);
+    sendNotificationToPlayers(otherPlayers, dontSendTo, notification);
+  }
+
+  /**
+   * Let all players involved in this action know the action was successful.
+   *
+   * @param uaa
+   *        the UserActionAttachment that just succeeded.
+   */
+  private void notifySuccess(final UserActionAttachment uaa) {
+    // play a sound
+    getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
+    final UserActionText uat = UserActionText.getInstance();
+    final String text = uaa.getText();
+    sendNotification(uat.getNotificationSucccess(text));
+    notifyOtherPlayers(uaa, uat.getNotificationSuccessOthers(text), uat.getNotificationSuccessParticipants(text));
   }
 
   /**
@@ -250,8 +256,9 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
         bridge.getPlayerId().getName() + " fails on action: " + MyFormatter.attachmentNameToText(uaa.getName());
     bridge.getHistoryWriter().addChildToEvent(transcriptText);
     final UserActionText uat = UserActionText.getInstance();
-    sendNotification(uat.getNotificationFailure(uaa.getText()));
-    notifyOtherPlayers(uat.getNotificationFailureOthers(uaa.getText()), getOtherNotificationPlayers(uaa));
+    final String text = uaa.getText();
+    sendNotification(uat.getNotificationFailure(text));
+    notifyOtherPlayers(uaa, uat.getNotificationFailureOthers(text), uat.getNotificationFailureParticipants(text));
   }
 
   /**
