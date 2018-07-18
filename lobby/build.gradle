@@ -56,7 +56,7 @@ dependencies {
 
     compile project(':game-core')
 
-    compileOnly 'org.projectlombok:lombok:1.16.20'
+    compileOnly 'org.projectlombok:lombok:1.18.0'
 
     testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
