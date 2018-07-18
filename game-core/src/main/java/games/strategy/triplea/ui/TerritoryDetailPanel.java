@@ -34,10 +34,6 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
   private Territory currentTerritory;
   private final TripleAFrame frame;
 
-  public static String getHoverText() {
-    return "Hover over or drag and drop from a territory to list those units in this panel";
-  }
-
   TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UiContext uiContext,
       final TripleAFrame frame) {
     super(data);

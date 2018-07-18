@@ -16,10 +16,6 @@ public class UnitHitsChange extends Change {
     m_undoHits = undoHits;
   }
 
-  public Collection<Unit> getUnits() {
-    return m_hits.keySet();
-  }
-
   public UnitHitsChange(final IntegerMap<Unit> hits) {
     m_hits = hits.copy();
     m_undoHits = new IntegerMap<>();

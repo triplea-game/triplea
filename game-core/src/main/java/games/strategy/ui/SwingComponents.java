@@ -160,22 +160,6 @@ public class SwingComponents {
     return group;
   }
 
-  public enum KeyboardCode {
-    D(KeyEvent.VK_D), G(KeyEvent.VK_G);
-
-
-    private final int keyEventCode;
-
-    KeyboardCode(final int keyEventCode) {
-      this.keyEventCode = keyEventCode;
-    }
-
-    int getSwingKeyEventCode() {
-      return keyEventCode;
-    }
-  }
-
-
   public static JScrollPane newJScrollPane(final Component contents) {
     final JScrollPane scroll = new JScrollPane();
     scroll.setViewportView(contents);
@@ -298,15 +282,6 @@ public class SwingComponents {
   public static void showDialog(final String title, final String message) {
     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, title,
         JOptionPane.INFORMATION_MESSAGE));
-  }
-
-  /**
-   * Builds a new menu item with title and keyboard shortcut key.
-   */
-  public static JMenu newJMenu(final String menuTitle, final KeyboardCode keyboardCode) {
-    final JMenu menu = new JMenu(menuTitle);
-    menu.setMnemonic(keyboardCode.getSwingKeyEventCode());
-    return menu;
   }
 
   /**
