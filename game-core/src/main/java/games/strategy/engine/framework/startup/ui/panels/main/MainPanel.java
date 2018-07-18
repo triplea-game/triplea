@@ -27,6 +27,7 @@ import javax.swing.border.EtchedBorder;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import games.strategy.ui.SwingAction;
 
 /**

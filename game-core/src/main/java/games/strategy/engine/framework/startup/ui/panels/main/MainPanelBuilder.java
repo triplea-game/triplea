@@ -5,6 +5,7 @@ import java.util.Optional;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 
 /**
  * Can be used to create a {@code MainPanel} UI component class, which is a UI holder. The final

@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui.panels.main;
+package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
@@ -6,8 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -65,7 +63,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
 
-  GameSelectorPanel(final GameSelectorModel model) {
+  public GameSelectorPanel(final GameSelectorModel model) {
     this.model = model;
     final GameData data = model.getGameData();
     if (data != null) {
