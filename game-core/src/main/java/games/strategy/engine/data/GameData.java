@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -81,7 +82,6 @@ public class GameData implements Serializable {
   private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
-  private transient List<GameMapListener> gameMapListeners = new CopyOnWriteArrayList<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -309,10 +309,6 @@ public class GameData implements Serializable {
     dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
   }
 
-  void notifyMapDataChanged() {
-    gameMapListeners.forEach(GameMapListener::gameMapDataChanged);
-  }
-
   public IGameLoader getGameLoader() {
     return loader;
   }
@@ -370,7 +366,6 @@ public class GameData implements Serializable {
   public void postDeSerialize() {
     territoryListeners = new ArrayList<>();
     dataChangeListeners = new ArrayList<>();
-    gameMapListeners = new ArrayList<>();
   }
 
   /**
@@ -422,7 +417,6 @@ public class GameData implements Serializable {
   public void clearAllListeners() {
     dataChangeListeners.clear();
     territoryListeners.clear();
-    gameMapListeners.clear();
     if (resourceLoader != null) {
       resourceLoader.close();
       resourceLoader = null;
