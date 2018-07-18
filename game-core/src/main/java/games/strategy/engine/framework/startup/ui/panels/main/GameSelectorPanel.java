@@ -72,25 +72,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
       setOriginalPropertiesMap(data);
       gamePropertiesCache.loadCachedGamePropertiesInto(data);
     }
-    createComponents();
-    layoutComponents();
-    setupListeners();
-    setWidgetActivation();
-    updateGameData();
-  }
-
-  private void updateGameData() {
-    SwingAction.invokeNowOrLater(() -> {
-      nameText.setText(model.getGameName());
-      versionText.setText(model.getGameVersion());
-      roundText.setText(model.getGameRound());
-      fileNameText.setText(model.getFormattedFileNameText());
-    });
-  }
-
-
-
-  private void createComponents() {
     engineVersionLabel = new JLabel("Engine Version:");
     final String version = ClientContext.engineVersion().getExactVersion();
     engineVersionText = new JLabel(version);
@@ -110,11 +91,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     gameOptions = new JButton("Map Options");
     gameOptions.setToolTipText("<html>Set options for the currently selected game, <br>such as enabling/disabling "
         + "Low Luck, or Technology, etc.</html>");
-  }
 
-
-
-  private void layoutComponents() {
     setLayout(new GridBagLayout());
     add(engineVersionLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
     add(engineVersionText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
@@ -148,31 +125,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // spacer
     add(new JPanel(), new GridBagConstraints(0, 10, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
-  }
 
-
-  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
-    return buildGrid(x, y, insets, 1);
-  }
-
-  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
-    return buildGrid(x, y, insets, 2);
-  }
-
-  private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
-    final int gridHeight = 1;
-    final double weigthX = 0;
-    final double weigthY = 0;
-    final int anchor = GridBagConstraints.WEST;
-    final int fill = GridBagConstraints.NONE;
-    final int ipadx = 0;
-    final int ipady = 0;
-
-    return new GridBagConstraints(x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
-  }
-
-
-  private void setupListeners() {
     loadNewGame.addActionListener(e -> {
       if (canSelectLocalGameData()) {
         selectGameFile(false);
@@ -215,6 +168,28 @@ public class GameSelectorPanel extends JPanel implements Observer {
         }
       }
     });
+
+    setWidgetActivation();
+  }
+
+  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
+    return buildGrid(x, y, insets, 1);
+  }
+
+  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
+    return buildGrid(x, y, insets, 2);
+  }
+
+  private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
+    final int gridHeight = 1;
+    final double weigthX = 0;
+    final double weigthY = 0;
+    final int anchor = GridBagConstraints.WEST;
+    final int fill = GridBagConstraints.NONE;
+    final int ipadx = 0;
+    final int ipady = 0;
+
+    return new GridBagConstraints(x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
   }
 
   private void setOriginalPropertiesMap(final GameData data) {
@@ -267,6 +242,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(() -> {
+      nameText.setText(model.getGameName());
+      versionText.setText(model.getGameVersion());
+      roundText.setText(model.getGameRound());
+      fileNameText.setText(model.getFormattedFileNameText());
+
       final boolean canSelectGameData = canSelectLocalGameData();
       final boolean canChangeHostBotGameData = canChangeHostBotGameData();
       loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
@@ -291,7 +271,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   @Override
   public void update(final Observable o, final Object arg) {
-    updateGameData();
     setWidgetActivation();
   }
 
