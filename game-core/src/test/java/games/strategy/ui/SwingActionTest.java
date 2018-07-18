@@ -37,9 +37,17 @@ public class SwingActionTest {
   private static final Supplier<?> SUPPLIER_THROWING_EXCEPTION = () -> {
     throw new IllegalStateException();
   };
+  @Mock
+  private Runnable action;
+  @Mock
+  private ActionEvent event;
+  @Mock
+  private ActionListener listener;
+  @Mock
+  private Consumer<KeyEvent> consumer;
 
   @Test
-  public void testActionOf(@Mock final ActionEvent event, @Mock final ActionListener listener) {
+  public void testActionOf() {
     final Action action = SwingAction.of("Name1234", listener);
     assertEquals("Name1234", action.getValue(Action.NAME));
     action.actionPerformed(event);
@@ -47,15 +55,15 @@ public class SwingActionTest {
   }
 
   @Test
-  public void testKeyReleaseListener(@Mock final Consumer<KeyEvent> listener) {
+  public void testKeyReleaseListener() {
     final KeyEvent event = mock(KeyEvent.class);
-    final KeyListener action = SwingAction.keyReleaseListener(listener);
+    final KeyListener action = SwingAction.keyReleaseListener(consumer);
     action.keyReleased(event);
-    verify(listener).accept(event);
+    verify(consumer).accept(event);
   }
 
   @Test
-  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOffEdt(@Mock final Runnable action)
+  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOffEdt()
       throws Exception {
     SwingAction.invokeAndWait(action);
 
@@ -63,7 +71,7 @@ public class SwingActionTest {
   }
 
   @Test
-  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOnEdt(@Mock final Runnable action)
+  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOnEdt()
       throws Exception {
     SwingUtilities.invokeAndWait(() -> {
       assertTrue(Interruptibles.await(() -> SwingAction.invokeAndWait(action)), "should not be interrupted");

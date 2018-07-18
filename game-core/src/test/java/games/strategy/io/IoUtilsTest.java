@@ -19,6 +19,10 @@ import games.strategy.util.function.ThrowingFunction;
 @ExtendWith(MockitoExtension.class)
 public final class IoUtilsTest {
   private final byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+  @Mock
+  private ThrowingConsumer<InputStream, IOException> consumer;
+  @Mock
+  private ThrowingFunction<InputStream, ?, IOException> function;
 
   private void thenStreamContainsExpectedBytes(final InputStream is) throws Exception {
     final byte[] bytesRead = new byte[bytes.length];
@@ -28,9 +32,7 @@ public final class IoUtilsTest {
   }
 
   @Test
-  public void consumeFromMemory_ShouldPassBytesToConsumer(
-      @Mock final ThrowingConsumer<InputStream, IOException> consumer)
-      throws Exception {
+  public void consumeFromMemory_ShouldPassBytesToConsumer() throws Exception {
     IoUtils.consumeFromMemory(bytes, consumer);
 
     final ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
@@ -39,9 +41,7 @@ public final class IoUtilsTest {
   }
 
   @Test
-  public void readFromMemory_ShouldPassBytesToFunction(
-      @Mock final ThrowingFunction<InputStream, ?, IOException> function)
-      throws Exception {
+  public void readFromMemory_ShouldPassBytesToFunction() throws Exception {
     IoUtils.readFromMemory(bytes, function);
 
     final ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);

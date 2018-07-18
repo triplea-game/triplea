@@ -28,8 +28,11 @@ public final class InterruptiblesTest {
 
   @Nested
   public final class AwaitTest {
+    @Mock
+    private ThrowingRunnable<InterruptedException> runnable;
+
     @Test
-    public void shouldReturnTrueWhenCompleted(@Mock final ThrowingRunnable<InterruptedException> runnable)
+    public void shouldReturnTrueWhenCompleted()
         throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 
