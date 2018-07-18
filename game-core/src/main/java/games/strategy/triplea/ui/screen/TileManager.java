@@ -137,8 +137,6 @@ public class TileManager {
           tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)));
         }
       }
-    } catch (final RuntimeException e) {
-      ClientLogger.logError("Error creating Tile", e);
     } finally {
       releaseLock();
     }
