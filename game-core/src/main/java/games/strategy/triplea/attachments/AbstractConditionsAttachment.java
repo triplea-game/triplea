@@ -31,7 +31,6 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   private static final long serialVersionUID = -9008441256118867078L;
   protected static final String AND = "AND";
   protected static final String OR = "OR";
-  protected static final String XOR = "XOR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
   public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";

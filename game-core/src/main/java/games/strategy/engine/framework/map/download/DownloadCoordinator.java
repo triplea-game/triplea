@@ -88,12 +88,6 @@ public final class DownloadCoordinator {
     }
   }
 
-  Set<DownloadFile> getActiveDownloads() {
-    synchronized (lock) {
-      return new HashSet<>(activeDownloads);
-    }
-  }
-
   Set<DownloadFile> getPendingDownloads() {
     synchronized (lock) {
       return new HashSet<>(pendingDownloads);

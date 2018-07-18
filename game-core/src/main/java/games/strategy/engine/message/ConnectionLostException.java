@@ -13,8 +13,4 @@ public class ConnectionLostException extends MessengerException {
   public ConnectionLostException(final String message) {
     super(message);
   }
-
-  public ConnectionLostException(final String message, final Throwable cause) {
-    super(message, cause);
-  }
 }

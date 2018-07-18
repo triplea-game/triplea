@@ -191,10 +191,6 @@ public class ClientSetupPanel extends SetupPanel {
       return playerLabel;
     }
 
-    public String getPlayerName() {
-      return playerNameLabel.getText();
-    }
-
     public JLabel getAlliance() {
       return alliance;
     }
@@ -230,16 +226,8 @@ public class ClientSetupPanel extends SetupPanel {
       enabledCheckBox.setEnabled(disableable);
     }
 
-    public boolean isPlaying() {
-      return playerLabel.getText().equals(clientModel.getMessenger().getLocalNode().getName());
-    }
-
     public JComponent getPlayerComponent() {
       return playerComponent;
-    }
-
-    public String getLocalType() {
-      return localPlayerType;
     }
 
     private final Action takeAction =
