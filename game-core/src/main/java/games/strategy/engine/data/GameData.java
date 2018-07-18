@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -21,7 +20,6 @@ import javax.swing.SwingUtilities;
 import com.google.common.base.MoreObjects;
 
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.data.events.GameMapListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameDataManager;
