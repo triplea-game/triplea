@@ -82,10 +82,6 @@ class EndPoint {
     }
   }
 
-  public boolean isSingleThreaded() {
-    return singleThreaded;
-  }
-
   public int getLocalImplementorCount() {
     synchronized (implementorsMutex) {
       return implementors.size();
@@ -102,14 +98,6 @@ class EndPoint {
       }
       return implementors.isEmpty();
     }
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public Class<?> getRemoteClass() {
-    return remoteClass;
   }
 
   /*
