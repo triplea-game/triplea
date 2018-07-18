@@ -59,24 +59,6 @@ public class ObjectivePanel extends AbstractStatPanel {
   ObjectivePanel(final GameData data) {
     super(data);
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
-    initLayout();
-  }
-
-  @Override
-  public String getName() {
-    return ObjectiveProperties.getInstance().getName();
-  }
-
-  public boolean isEmpty() {
-    return statsObjective.isEmpty();
-  }
-
-  public void removeDataChangeListener() {
-    objectiveModel.removeDataChangeListener();
-  }
-
-  @Override
-  protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     objectiveModel = new ObjectiveTableModel();
     final JTable table = new JTable(objectiveModel);
@@ -100,6 +82,20 @@ public class ObjectivePanel extends AbstractStatPanel {
     add(refresh);
     add(Box.createVerticalStrut(6));
     add(scroll);
+  }
+
+
+  @Override
+  public String getName() {
+    return ObjectiveProperties.getInstance().getName();
+  }
+
+  public boolean isEmpty() {
+    return statsObjective.isEmpty();
+  }
+
+  public void removeDataChangeListener() {
+    objectiveModel.removeDataChangeListener();
   }
 
   class ObjectiveTableModel extends AbstractTableModel implements GameDataChangeListener {

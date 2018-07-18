@@ -34,11 +34,6 @@ public class EconomyPanel extends AbstractStatPanel {
   public EconomyPanel(final GameData data, final UiContext uiContext) {
     super(data);
     this.uiContext = uiContext;
-    initLayout();
-  }
-
-  @Override
-  protected void initLayout() {
     setLayout(new GridLayout(1, 1));
     resourceModel = new ResourceTableModel();
     final JTable table = new JTable(resourceModel);

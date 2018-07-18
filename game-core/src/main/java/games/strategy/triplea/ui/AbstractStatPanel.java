@@ -30,11 +30,6 @@ public abstract class AbstractStatPanel extends JPanel {
     gameData = data;
   }
 
-  /**
-   * You will need to call this yourself.
-   */
-  protected abstract void initLayout();
-
   public abstract void setGameData(final GameData data);
 
   /**
