@@ -213,18 +213,18 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Send notifications to the other players (all players except the player starting the action).
    */
   private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification,
-                                  final String notificationParticipants) {
+                                  final String targetNotification) {
     final Collection<PlayerID> dontSendTo = new ArrayList<>();
     dontSendTo.add(player);
 
     final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
     otherPlayers.remove(player);
 
-    final Collection<PlayerID> participants = uaa.getActionAccept();
-    sendNotificationToPlayers(participants, dontSendTo, notificationParticipants);
+    final Collection<PlayerID> targets = uaa.getActionAccept();
+    sendNotificationToPlayers(targets, dontSendTo, targetNotification);
 
-    otherPlayers.removeAll(participants);
-    dontSendTo.addAll(participants);
+    otherPlayers.removeAll(targets);
+    dontSendTo.addAll(targets);
     sendNotificationToPlayers(otherPlayers, dontSendTo, notification);
   }
 
@@ -240,7 +240,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     final UserActionText uat = UserActionText.getInstance();
     final String text = uaa.getText();
     sendNotification(uat.getNotificationSucccess(text));
-    notifyOtherPlayers(uaa, uat.getNotificationSuccessOthers(text), uat.getNotificationSuccessParticipants(text));
+    notifyOtherPlayers(uaa, uat.getNotificationSuccessOthers(text), uat.getNotificationSuccessTarget(text));
   }
 
   /**
@@ -258,7 +258,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     final UserActionText uat = UserActionText.getInstance();
     final String text = uaa.getText();
     sendNotification(uat.getNotificationFailure(text));
-    notifyOtherPlayers(uaa, uat.getNotificationFailureOthers(text), uat.getNotificationFailureParticipants(text));
+    notifyOtherPlayers(uaa, uat.getNotificationFailureOthers(text), uat.getNotificationFailureTarget(text));
   }
 
   /**

@@ -22,11 +22,11 @@ public class UserActionText {
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
+  private static final String TARGET_NOTIFICATION_SUCCESS = "TARGET_NOTIFICATION_SUCCESS";
   private static final String OTHER_NOTIFICATION_SUCCESS = "OTHER_NOTIFICATION_SUCCESS";
-  private static final String PARTICIPANTS_NOTIFICATION_SUCCESS = "PARTICIPANTS_NOTIFICATION_SUCCESS";
   private static final String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
+  private static final String TARGET_NOTIFICATION_FAILURE = "TARGET_NOTIFICATION_FAILURE";
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
-  private static final String PARTICIPANTS_NOTIFICATION_FAILURE = "PARTICIPANTS_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
   protected UserActionText() {
@@ -81,11 +81,11 @@ public class UserActionText {
     return getMessage(actionKey, OTHER_NOTIFICATION_SUCCESS);
   }
 
-  public String getNotificationSuccessParticipants(final String actionKey) {
-    if (hasMessage(actionKey, PARTICIPANTS_NOTIFICATION_SUCCESS)) {
-      return getMessage(actionKey, PARTICIPANTS_NOTIFICATION_SUCCESS);
+  public String getNotificationSuccessTarget(final String actionKey) {
+    if (hasMessage(actionKey, TARGET_NOTIFICATION_SUCCESS)) {
+      return getMessage(actionKey, TARGET_NOTIFICATION_SUCCESS);
     } else {
-      return getMessage(actionKey, OTHER_NOTIFICATION_SUCCESS);
+      return getNotificationSuccessOthers();
     }
   }
 
@@ -97,11 +97,11 @@ public class UserActionText {
     return getMessage(actionKey, OTHER_NOTIFICATION_FAILURE);
   }
 
-  public String getNotificationFailureParticipants(final String actionKey) {
-    if (hasMessage(actionKey, PARTICIPANTS_NOTIFICATION_FAILURE)) {
-      return getMessage(actionKey, PARTICIPANTS_NOTIFICATION_FAILURE);
+  public String getNotificationFailureTarget(final String actionKey) {
+    if (hasMessage(actionKey, TARGET_NOTIFICATION_FAILURE)) {
+      return getMessage(actionKey, TARGET_NOTIFICATION_FAILURE);
     } else {
-      return getMessage(actionKey, OTHER_NOTIFICATION_FAILURE);
+      return getNotificationFailureOthers();
     }
   }
 
