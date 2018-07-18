@@ -65,9 +65,8 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
 
-  public GameSelectorPanel(final GameSelectorModel model) {
+  GameSelectorPanel(final GameSelectorModel model) {
     this.model = model;
-    this.model.addObserver(this);
     final GameData data = model.getGameData();
     if (data != null) {
       setOriginalPropertiesMap(data);
@@ -113,6 +112,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     if (fileName.length() <= maxLength) {
       return fileName;
     }
+    +
     int cutoff = fileName.length() - maxLength;
     String secondLine = fileName.substring(cutoff);
     if (secondLine.contains("/")) {

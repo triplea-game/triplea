@@ -20,6 +20,7 @@ public class MainPanelBuilder {
       final SetupPanelModel setupPanelModel,
       final GameSelectorModel gameSelectorModel) {
     final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
+    gameSelectorModel.addObserver(gameSelectorPanel);
 
     final MainPanel mainPanel = new MainPanel(
         gameSelectorPanel,
