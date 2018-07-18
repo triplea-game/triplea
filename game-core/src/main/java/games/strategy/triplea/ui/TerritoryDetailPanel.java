@@ -49,11 +49,6 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         territoryChanged(territory);
       }
     });
-    initLayout();
-  }
-
-  @Override
-  protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
 

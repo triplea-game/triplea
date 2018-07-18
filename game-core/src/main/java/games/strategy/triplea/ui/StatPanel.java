@@ -57,11 +57,6 @@ public class StatPanel extends AbstractStatPanel {
     dataModel = new StatTableModel();
     techModel = new TechTableModel();
     fillPlayerIcons();
-    initLayout();
-  }
-
-  @Override
-  protected void initLayout() {
     final boolean hasTech = !TechAdvance.getTechAdvances(gameData, null).isEmpty();
     // do no include a grid box for tech if there is no tech
     setLayout(new GridLayout((hasTech ? 2 : 1), 1));

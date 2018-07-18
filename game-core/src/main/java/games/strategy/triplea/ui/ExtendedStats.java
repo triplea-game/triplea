@@ -22,15 +22,10 @@ import games.strategy.triplea.delegate.TechAdvance;
 
 public class ExtendedStats extends StatPanel {
   private static final long serialVersionUID = 2502397606419491543L;
-  private IStat[] statsExtended = new IStat[] {};
+  private IStat[] statsExtended = {};
 
   public ExtendedStats(final GameData data, final UiContext uiContext) {
     super(data, uiContext);
-  }
-
-  @Override
-  protected void initLayout() {
-    // no layout necessary
   }
 
   public IStat[] getStatsExtended(final GameData data) {
