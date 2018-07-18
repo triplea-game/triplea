@@ -5,7 +5,7 @@ import java.io.File;
 
 import javax.swing.AbstractAction;
 
-import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
+import games.strategy.engine.framework.startup.ui.panels.main.GameSelectorPanel;
 import games.strategy.net.IClientMessenger;
 
 /**

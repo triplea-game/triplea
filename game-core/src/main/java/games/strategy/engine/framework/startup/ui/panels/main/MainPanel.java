@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
-import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import java.awt.BorderLayout;
@@ -29,7 +28,6 @@ import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.ui.SwingAction;
 
 /**
@@ -57,7 +55,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the
    * welcome screen and subsequent screens..
    */
-  public MainPanel(
+  MainPanel(
       final GameSelectorPanel gameSelectorPanel,
       final Consumer<MainPanel> launchAction,
       final Supplier<Optional<IChatPanel>> chatPanelSupplier,

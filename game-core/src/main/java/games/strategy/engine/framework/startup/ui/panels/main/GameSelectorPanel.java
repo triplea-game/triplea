@@ -1,5 +1,7 @@
-package games.strategy.engine.framework.startup.ui;
+package games.strategy.engine.framework.startup.ui.panels.main;
 
+import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
+import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

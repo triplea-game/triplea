@@ -4,21 +4,21 @@ import java.util.Optional;
 
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 
 /**
- * When the game launches, the MainFrame is loaded which will contain
- * the MainPanel. The contents of the MainPanel are swapped out
- * until a new game has been started (TODO: check if the lobby
- * uses mainpanel at all)
+ * Can be used to create a {@code MainPanel} UI component class, which is a UI holder. The final
+ * contents are added to #MainPanel and we set up listeners so that we can change screens
+ * by swapping the contents rendered by #MainPanel.
  */
 public class MainPanelBuilder {
 
-
+  /**
+   * Creates a MainPanel instance and configures screen transition listeners.
+   */
   public MainPanel buildMainPanel(
-      SetupPanelModel setupPanelModel,
-      GameSelectorModel gameSelectorModel) {
+      final SetupPanelModel setupPanelModel,
+      final GameSelectorModel gameSelectorModel) {
     final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
 
     final MainPanel mainPanel = new MainPanel(

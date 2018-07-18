@@ -23,7 +23,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_OBSER
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
-import games.strategy.engine.framework.startup.ui.GameSelectorPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import java.awt.Component;
 import java.awt.Container;
@@ -70,8 +69,6 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
-import games.strategy.engine.framework.startup.ui.panels.main.MainPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
