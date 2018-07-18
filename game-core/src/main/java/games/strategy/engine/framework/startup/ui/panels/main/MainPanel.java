@@ -38,7 +38,7 @@ import games.strategy.ui.SwingAction;
  * until a new game has been started (TODO: check if the lobby
  * uses mainpanel at all)
  */
-public class MainPanel extends JPanel implements Observer, Consumer<ISetupPanel> {
+public class MainPanel extends JPanel implements Observer, ScreenChangeListener {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
@@ -143,7 +143,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<ISetupPanel>
    * This method will 'change' screens, swapping out one setup panel for another.
    */
   @Override
-  public void accept(ISetupPanel panel) {
+  public void screenChangeEvent(ISetupPanel panel) {
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
     if (SetupPanel.class.isAssignableFrom(panel.getClass())) {

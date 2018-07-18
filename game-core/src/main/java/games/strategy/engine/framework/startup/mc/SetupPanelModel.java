@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.mc;
 
+import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Observable;
@@ -34,7 +35,7 @@ public class SetupPanelModel {
   }
 
   @Setter
-  private Consumer<ISetupPanel> panelChangeListener;
+  private ScreenChangeListener panelChangeListener;
 
 
   public void showSelectType() {
@@ -88,7 +89,7 @@ public class SetupPanelModel {
     this.panel = panel;
 
 
-    panelChangeListener.accept(panel);
+    panelChangeListener.screenChangeEvent(panel);
   }
 
   public ISetupPanel getPanel() {
