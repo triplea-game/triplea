@@ -469,14 +469,14 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
         move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
       }
     } else if (name.endsWith("Battle")) {
-      battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
+      battle((IBattleDelegate) getPlayerBridge().getRemoteDelegate());
     } else if (name.endsWith("Politics")) {
       politicalActions();
     } else if (name.endsWith("Place")) {
       final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
       place(name.contains("Bid"), placeDel, getGameData(), id);
     } else if (name.endsWith("EndTurn")) {
-      endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), getGameData(), id);
+      endTurn((IAbstractForumPosterDelegate) getPlayerBridge().getRemoteDelegate(), id);
     }
   }
 
@@ -538,10 +538,9 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * No need to override this.
    *
    * @param endTurnForumPosterDelegate The delegate to end the turn with.
-   * @param data The game data.
    * @param player The player whose turn is ending.
    */
-  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
+  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate,
       final PlayerID player) {
     // we should not override this...
   }
@@ -552,12 +551,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    *
    * @param battleDelegate
    *        the battle delegate to query for battles not fought and the
-   * @param data
-   *        - the current GameData
-   * @param player
-   *        - the player to fight for
    */
-  protected void battle(final IBattleDelegate battleDelegate, final GameData data, final PlayerID player) {
+  protected void battle(final IBattleDelegate battleDelegate) {
     // generally all AI's will follow the same logic.
     // loop until all battles are fought.
     // rather than try to analyze battles to figure out which must be fought before others

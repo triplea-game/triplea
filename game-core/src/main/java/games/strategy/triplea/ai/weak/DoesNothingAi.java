@@ -55,8 +55,7 @@ public class DoesNothingAi extends AbstractAi {
   }
 
   @Override
-  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final GameData data,
-      final PlayerID player) {
+  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final PlayerID player) {
     // destroy whatever we have
     final ResourceCollection resourceCollection = player.getResources();
     final Change removeChange = ChangeFactory.removeResourceCollection(player, resourceCollection);
