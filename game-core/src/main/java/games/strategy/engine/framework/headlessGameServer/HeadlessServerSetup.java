@@ -20,6 +20,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.util.Interruptibles;
+import javax.swing.JComponent;
 
 /**
  * Server setup model.
@@ -149,6 +150,12 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   public void postStartGame() {
     final GameData data = gameSelectorModel.getGameData();
     data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
+  }
+
+  @Override
+  public JComponent getDrawable() {
+    throw new UnsupportedOperationException("HeadlessServerSetup should not use UI components. "
+        + "Bot setup code should not execute this code path.");
   }
 
   @Override

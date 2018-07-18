@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
-import games.strategy.engine.framework.startup.ui.SetupPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -140,9 +139,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
   public void screenChangeEvent(ISetupPanel panel) {
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
-    if (SetupPanel.class.isAssignableFrom(panel.getClass())) {
-      gameSetupPanelHolder.add((SetupPanel) panel, BorderLayout.CENTER);
-    }
+    gameSetupPanelHolder.add(panel.getDrawable(), BorderLayout.CENTER);
     panel.addObserver(this);
     setWidgetActivation();
     // add the cancel button if we are not choosing the type.
@@ -187,5 +184,4 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
   public void update(final Observable o, final Object arg) {
     setWidgetActivation();
   }
-
 }

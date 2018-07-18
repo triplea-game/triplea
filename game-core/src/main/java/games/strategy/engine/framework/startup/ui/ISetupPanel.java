@@ -8,12 +8,15 @@ import javax.swing.Action;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
+import javax.swing.JComponent;
 
 /**
  * Made so that we can have a headless setup. (this is probably a hack, but used because i do not want to rewrite the
  * entire setup model).
  */
 public interface ISetupPanel {
+  JComponent getDrawable();
+
   boolean showCancelButton();
 
   void addObserver(final Observer observer);

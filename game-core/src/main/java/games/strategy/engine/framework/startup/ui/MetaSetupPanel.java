@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -179,5 +180,10 @@ public class MetaSetupPanel extends SetupPanel {
   @Override
   public void cancel() {
     // nothing to do
+  }
+
+  @Override
+  public JComponent getDrawable() {
+    return this;
   }
 }
