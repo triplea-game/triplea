@@ -295,4 +295,35 @@ public class GameSelectorModel extends Observable {
     }
     return selectedGame;
   }
+
+  /**
+   * Formats the file name text to two lines.
+   * The separation focuses on the second line being at least the filename while the first line
+   * should show the the path including '...' in case it does not fit
+   *
+   * @return filename formatted file name - in case it is too long (> maxLength) to two lines,
+   */
+  public String getFormattedFileNameText() {
+    final int maxLength = Math.max(22, 3 + gameName.length() + gameName.length());
+    if (fileName.length() <= maxLength) {
+      return fileName;
+    }
+    int cutoff = fileName.length() - maxLength;
+    String secondLine = fileName.substring(cutoff);
+    if (secondLine.contains("/")) {
+      cutoff += secondLine.indexOf("/") + 1;
+    }
+    secondLine = fileName.substring(cutoff);
+    String firstLine = fileName.substring(0, cutoff);
+    if (firstLine.length() > maxLength) {
+      firstLine = firstLine.substring(0, maxLength - 4);
+      if (firstLine.contains("/")) {
+        cutoff = firstLine.lastIndexOf("/") + 1;
+        firstLine = firstLine.substring(0, cutoff) + ".../";
+      } else {
+        firstLine = firstLine + "...";
+      }
+    }
+    return "<html><p>" + firstLine + "<br/>" + secondLine + "</p></html>";
+  }
 }

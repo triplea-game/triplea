@@ -84,53 +84,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
       nameText.setText(model.getGameName());
       versionText.setText(model.getGameVersion());
       roundText.setText(model.getGameRound());
-      String fileName = model.getFileName();
-      if (fileName != null && fileName.length() > 1) {
-        try {
-          fileName = URLDecoder.decode(fileName, "UTF-8");
-        } catch (final IllegalArgumentException | UnsupportedEncodingException e) { // ignore
-        }
-      }
-      fileNameText.setText(getFormattedFileNameText(fileName,
-          Math.max(22, 3 + nameText.getText().length() + nameLabel.getText().length())));
-      fileNameText.setToolTipText(fileName);
+      fileNameText.setText(model.getFormattedFileNameText());
     });
   }
 
-  /**
-   * Formats the file name text to two lines.
-   * The separation focuses on the second line being at least the filename while the first line
-   * should show the the path including '...' in case it does not fit
-   *
-   * @param fileName
-   *        full file name
-   * @param maxLength
-   *        maximum number of characters per line
-   * @return filename formatted file name - in case it is too long (> maxLength) to two lines
-   */
-  private static String getFormattedFileNameText(final String fileName, final int maxLength) {
-    if (fileName.length() <= maxLength) {
-      return fileName;
-    }
-    +
-    int cutoff = fileName.length() - maxLength;
-    String secondLine = fileName.substring(cutoff);
-    if (secondLine.contains("/")) {
-      cutoff += secondLine.indexOf("/") + 1;
-    }
-    secondLine = fileName.substring(cutoff);
-    String firstLine = fileName.substring(0, cutoff);
-    if (firstLine.length() > maxLength) {
-      firstLine = firstLine.substring(0, maxLength - 4);
-      if (firstLine.contains("/")) {
-        cutoff = firstLine.lastIndexOf("/") + 1;
-        firstLine = firstLine.substring(0, cutoff) + ".../";
-      } else {
-        firstLine = firstLine + "...";
-      }
-    }
-    return "<html><p>" + firstLine + "<br/>" + secondLine + "</p></html>";
-  }
+
 
   private void createComponents() {
     engineVersionLabel = new JLabel("Engine Version:");
