@@ -136,6 +136,9 @@ public class MainPanel extends JPanel implements Observer, Consumer<ISetupPanel>
     isChatShowing = chat != null;
   }
 
+  /**
+   * This method will 'change' screens, swapping out one setup panel for another.
+   */
   @Override
   public void accept(ISetupPanel panel) {
     gameSetupPanel = panel;
@@ -150,7 +153,9 @@ public class MainPanel extends JPanel implements Observer, Consumer<ISetupPanel>
       final JPanel cancelPanel = new JPanel();
       cancelPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
       cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-      createUserActionMenu(gameSetupPanel, cancelPanel);
+      if (!gameSetupPanel.getUserActions().isEmpty()) {
+        createUserActionMenu(gameSetupPanel, cancelPanel);
+      }
       cancelPanel.add(cancelButton);
       gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
     }
@@ -162,9 +167,6 @@ public class MainPanel extends JPanel implements Observer, Consumer<ISetupPanel>
   }
 
   private static void createUserActionMenu(final ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
-    if (gameSetupPanel.getUserActions().isEmpty()) {
-      return;
-    }
     // if we need this for something other than network, add a way to set it
     final JButton button = new JButton("Network...");
     button.addActionListener(e -> {
