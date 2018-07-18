@@ -85,7 +85,7 @@ public class UserActionText {
     if (hasMessage(actionKey, TARGET_NOTIFICATION_SUCCESS)) {
       return getMessage(actionKey, TARGET_NOTIFICATION_SUCCESS);
     } else {
-      return getNotificationSuccessOthers();
+      return getNotificationSuccessOthers(actionKey);
     }
   }
 
@@ -101,7 +101,7 @@ public class UserActionText {
     if (hasMessage(actionKey, TARGET_NOTIFICATION_FAILURE)) {
       return getMessage(actionKey, TARGET_NOTIFICATION_FAILURE);
     } else {
-      return getNotificationFailureOthers();
+      return getNotificationFailureOthers(actionKey);
     }
   }
 
