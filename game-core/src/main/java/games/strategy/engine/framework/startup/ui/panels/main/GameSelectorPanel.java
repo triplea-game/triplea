@@ -1,7 +1,5 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
-import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
-import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -33,6 +31,8 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
+import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;

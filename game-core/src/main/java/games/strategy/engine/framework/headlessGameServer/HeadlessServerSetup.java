@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -20,7 +21,6 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.util.Interruptibles;
-import javax.swing.JComponent;
 
 /**
  * Server setup model.

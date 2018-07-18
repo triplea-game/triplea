@@ -6,13 +6,14 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 
+import javax.swing.JComponent;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LauncherFactory;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.ui.SwingAction;
-import javax.swing.JComponent;
 
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {

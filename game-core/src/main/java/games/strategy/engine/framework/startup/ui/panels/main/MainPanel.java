@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,6 +26,7 @@ import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.ui.SwingAction;
 
 /**

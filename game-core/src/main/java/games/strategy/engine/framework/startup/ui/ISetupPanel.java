@@ -5,10 +5,10 @@ import java.util.Observer;
 import java.util.Optional;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
-import javax.swing.JComponent;
 
 /**
  * Made so that we can have a headless setup. (this is probably a hack, but used because i do not want to rewrite the
