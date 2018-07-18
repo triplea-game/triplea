@@ -293,14 +293,6 @@ public class GameData implements Serializable {
     dataChangeListeners.remove(listener);
   }
 
-  public void addGameMapListener(final GameMapListener listener) {
-    gameMapListeners.add(listener);
-  }
-
-  public void removeGameMapListener(final GameMapListener listener) {
-    gameMapListeners.remove(listener);
-  }
-
   void notifyTerritoryUnitsChanged(final Territory t) {
     territoryListeners.forEach(territoryListener -> territoryListener.unitsChanged(t));
   }
