@@ -58,10 +58,10 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.0'
 
-    testCompile 'com.github.junit-team.junit5-samples:junit5-mockito-extension:e9b64bd'
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.16.0'
+    testCompile 'org.mockito:mockito-core:2.19.1'
+    testCompile 'org.mockito:mockito-junit-jupiter:2.19.1'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
