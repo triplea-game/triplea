@@ -89,8 +89,4 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   public void stopGame() {
     isStoppedGame = true;
   }
-
-  public boolean isGameStopped() {
-    return isStoppedGame;
-  }
 }
