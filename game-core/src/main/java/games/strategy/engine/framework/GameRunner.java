@@ -63,16 +63,13 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.auto.health.check.LocalSystemChecker;
 import games.strategy.engine.auto.update.UpdateChecks;
-import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.MainPanel;
-import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -163,8 +160,8 @@ public class GameRunner {
       Application.launch(TripleA.class, args);
     } else {
       SwingUtilities.invokeLater(() -> {
-        setupPanelModel.showSelectType();
         mainFrame = newMainFrame();
+        setupPanelModel.showSelectType();
       });
 
       showMainFrame();
@@ -177,7 +174,19 @@ public class GameRunner {
     final JFrame frame = new JFrame("TripleA");
     LookAndFeelSwingFrameListener.register(frame);
 
-    frame.add(new MainPanel(setupPanelModel));
+    final MainPanel mainPanel = new MainPanel(
+        setupPanelModel.getGameSelectorModel(),
+        uiPanel -> {
+          setupPanelModel.getPanel().preStartGame();
+          setupPanelModel.getPanel().getLauncher()
+              .ifPresent(launcher -> launcher.launch(uiPanel));
+          setupPanelModel.getPanel().postStartGame();
+        },
+        () -> Optional.ofNullable(setupPanelModel.getPanel())
+            .map(ISetupPanel::getChatPanel),
+        setupPanelModel::showSelectType);
+    setupPanelModel.setPanelChangeListener(mainPanel);
+    frame.add(mainPanel);
     frame.pack();
 
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

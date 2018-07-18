@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Observable;
 
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -18,8 +19,9 @@ import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.util.Interruptibles;
+import lombok.Setter;
 
-public class SetupPanelModel extends Observable {
+public class SetupPanelModel {
   protected final GameSelectorModel gameSelectorModel;
   protected ISetupPanel panel = null;
 
@@ -30,6 +32,10 @@ public class SetupPanelModel extends Observable {
   public GameSelectorModel getGameSelectorModel() {
     return gameSelectorModel;
   }
+
+  @Setter
+  private Consumer<ISetupPanel> panelChangeListener;
+
 
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));
@@ -80,9 +86,9 @@ public class SetupPanelModel extends Observable {
       this.panel.cancel();
     }
     this.panel = panel;
-    super.setChanged();
-    super.notifyObservers(this.panel);
-    super.clearChanged();
+
+
+    panelChangeListener.accept(panel);
   }
 
   public ISetupPanel getPanel() {
