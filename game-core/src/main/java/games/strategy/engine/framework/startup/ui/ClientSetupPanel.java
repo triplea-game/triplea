@@ -8,7 +8,6 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -268,6 +267,11 @@ public class ClientSetupPanel extends SetupPanel {
     actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_EVEN));
     actions.add(clientModel.getHostBotGetGameSaveClientAction(this));
     return actions;
+  }
+
+  @Override
+  public JComponent getDrawable() {
+    return this;
   }
 
   @Override

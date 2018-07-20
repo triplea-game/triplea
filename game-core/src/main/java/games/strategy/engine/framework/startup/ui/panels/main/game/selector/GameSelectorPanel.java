@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui;
+package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
@@ -6,8 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -31,6 +29,8 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
+import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
@@ -63,74 +63,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
 
-  GameSelectorPanel(final GameSelectorModel model) {
+  public GameSelectorPanel(final GameSelectorModel model) {
     this.model = model;
-    this.model.addObserver(this);
     final GameData data = model.getGameData();
     if (data != null) {
       setOriginalPropertiesMap(data);
       gamePropertiesCache.loadCachedGamePropertiesInto(data);
     }
-    createComponents();
-    layoutComponents();
-    setupListeners();
-    setWidgetActivation();
-    updateGameData();
-  }
-
-  private void updateGameData() {
-    SwingAction.invokeNowOrLater(() -> {
-      nameText.setText(model.getGameName());
-      versionText.setText(model.getGameVersion());
-      roundText.setText(model.getGameRound());
-      String fileName = model.getFileName();
-      if (fileName != null && fileName.length() > 1) {
-        try {
-          fileName = URLDecoder.decode(fileName, "UTF-8");
-        } catch (final IllegalArgumentException | UnsupportedEncodingException e) { // ignore
-        }
-      }
-      fileNameText.setText(getFormattedFileNameText(fileName,
-          Math.max(22, 3 + nameText.getText().length() + nameLabel.getText().length())));
-      fileNameText.setToolTipText(fileName);
-    });
-  }
-
-  /**
-   * Formats the file name text to two lines.
-   * The separation focuses on the second line being at least the filename while the first line
-   * should show the the path including '...' in case it does not fit
-   *
-   * @param fileName
-   *        full file name
-   * @param maxLength
-   *        maximum number of characters per line
-   * @return filename formatted file name - in case it is too long (> maxLength) to two lines
-   */
-  private static String getFormattedFileNameText(final String fileName, final int maxLength) {
-    if (fileName.length() <= maxLength) {
-      return fileName;
-    }
-    int cutoff = fileName.length() - maxLength;
-    String secondLine = fileName.substring(cutoff);
-    if (secondLine.contains("/")) {
-      cutoff += secondLine.indexOf("/") + 1;
-    }
-    secondLine = fileName.substring(cutoff);
-    String firstLine = fileName.substring(0, cutoff);
-    if (firstLine.length() > maxLength) {
-      firstLine = firstLine.substring(0, maxLength - 4);
-      if (firstLine.contains("/")) {
-        cutoff = firstLine.lastIndexOf("/") + 1;
-        firstLine = firstLine.substring(0, cutoff) + ".../";
-      } else {
-        firstLine = firstLine + "...";
-      }
-    }
-    return "<html><p>" + firstLine + "<br/>" + secondLine + "</p></html>";
-  }
-
-  private void createComponents() {
     engineVersionLabel = new JLabel("Engine Version:");
     final String version = ClientContext.engineVersion().getExactVersion();
     engineVersionText = new JLabel(version);
@@ -150,11 +89,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     gameOptions = new JButton("Map Options");
     gameOptions.setToolTipText("<html>Set options for the currently selected game, <br>such as enabling/disabling "
         + "Low Luck, or Technology, etc.</html>");
-  }
 
-
-
-  private void layoutComponents() {
     setLayout(new GridBagLayout());
     add(engineVersionLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
     add(engineVersionText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
@@ -188,31 +123,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     // spacer
     add(new JPanel(), new GridBagConstraints(0, 10, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
-  }
 
-
-  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
-    return buildGrid(x, y, insets, 1);
-  }
-
-  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
-    return buildGrid(x, y, insets, 2);
-  }
-
-  private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
-    final int gridHeight = 1;
-    final double weigthX = 0;
-    final double weigthY = 0;
-    final int anchor = GridBagConstraints.WEST;
-    final int fill = GridBagConstraints.NONE;
-    final int ipadx = 0;
-    final int ipady = 0;
-
-    return new GridBagConstraints(x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
-  }
-
-
-  private void setupListeners() {
     loadNewGame.addActionListener(e -> {
       if (canSelectLocalGameData()) {
         selectGameFile(false);
@@ -255,6 +166,28 @@ public class GameSelectorPanel extends JPanel implements Observer {
         }
       }
     });
+
+    setWidgetActivation();
+  }
+
+  private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
+    return buildGrid(x, y, insets, 1);
+  }
+
+  private static GridBagConstraints buildGridRow(final int x, final int y, final Insets insets) {
+    return buildGrid(x, y, insets, 2);
+  }
+
+  private static GridBagConstraints buildGrid(final int x, final int y, final Insets insets, final int width) {
+    final int gridHeight = 1;
+    final double weigthX = 0;
+    final double weigthY = 0;
+    final int anchor = GridBagConstraints.WEST;
+    final int fill = GridBagConstraints.NONE;
+    final int ipadx = 0;
+    final int ipady = 0;
+
+    return new GridBagConstraints(x, y, width, gridHeight, weigthX, weigthY, anchor, fill, insets, ipadx, ipady);
   }
 
   private void setOriginalPropertiesMap(final GameData data) {
@@ -307,6 +240,11 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(() -> {
+      nameText.setText(model.getGameName());
+      versionText.setText(model.getGameVersion());
+      roundText.setText(model.getGameRound());
+      fileNameText.setText(model.getFormattedFileNameText());
+
       final boolean canSelectGameData = canSelectLocalGameData();
       final boolean canChangeHostBotGameData = canChangeHostBotGameData();
       loadSavedGame.setEnabled(canSelectGameData || canChangeHostBotGameData);
@@ -331,7 +269,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   @Override
   public void update(final Observable o, final Object arg) {
-    updateGameData();
     setWidgetActivation();
   }
 

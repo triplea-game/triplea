@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.startup.ui;
+package games.strategy.engine.framework.startup.ui.panels.main;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -10,6 +10,9 @@ import java.awt.Insets;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -23,8 +26,8 @@ import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 import games.strategy.ui.SwingAction;
 
 /**
@@ -33,7 +36,7 @@ import games.strategy.ui.SwingAction;
  * until a new game has been started (TODO: check if the lobby
  * uses mainpanel at all)
  */
-public class MainPanel extends JPanel implements Observer {
+public class MainPanel extends JPanel implements Observer, ScreenChangeListener {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
@@ -42,20 +45,22 @@ public class MainPanel extends JPanel implements Observer {
   private ISetupPanel gameSetupPanel;
   private final JPanel gameSetupPanelHolder;
   private JPanel chatPanelHolder;
-  private final SetupPanelModel gameTypePanelModel;
   private final JPanel mainPanel = new JPanel();
   private final JSplitPane chatSplit;
 
   private boolean isChatShowing;
+  private final Supplier<Optional<IChatPanel>> chatPanelSupplier;
 
   /**
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the
    * welcome screen and subsequent screens..
    */
-  public MainPanel(final SetupPanelModel typePanelModel) {
-    gameTypePanelModel = typePanelModel;
-    final GameSelectorModel gameSelectorModel = typePanelModel.getGameSelectorModel();
-
+  MainPanel(
+      final GameSelectorPanel gameSelectorPanel,
+      final Consumer<MainPanel> launchAction,
+      final Supplier<Optional<IChatPanel>> chatPanelSupplier,
+      final Runnable cancelAction) {
+    this.chatPanelSupplier = chatPanelSupplier;
     playButton = new JButton("Play");
     playButton.setToolTipText("<html>Start your game! <br>"
         + "If not enabled, then you must select a way to play your game first: <br>"
@@ -64,7 +69,6 @@ public class MainPanel extends JPanel implements Observer {
     quitButton.setToolTipText("Close TripleA.");
     cancelButton = new JButton("Cancel");
     cancelButton.setToolTipText("Go back to main screen.");
-    final GameSelectorPanel gameSelectorPanel = new GameSelectorPanel(gameSelectorModel);
     gameSelectorPanel.setBorder(new EtchedBorder());
     gameSetupPanelHolder = new JPanel();
     gameSetupPanelHolder.setLayout(new BorderLayout());
@@ -95,8 +99,7 @@ public class MainPanel extends JPanel implements Observer {
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
 
-    gameTypePanelModel.addObserver((o, arg) -> setGameSetupPanel(gameTypePanelModel.getPanel()));
-    playButton.addActionListener(e -> play(gameSetupPanel, gameTypePanelModel, this));
+    playButton.addActionListener(e -> launchAction.accept(this));
     quitButton.addActionListener(e -> {
       try {
         gameSetupPanel.shutDown();
@@ -104,21 +107,15 @@ public class MainPanel extends JPanel implements Observer {
         GameRunner.quitGame();
       }
     });
-    cancelButton.addActionListener(e -> gameTypePanelModel.showSelectType());
-    gameSelectorModel.addObserver(this);
-
-
+    cancelButton.addActionListener(e -> cancelAction.run());
     setWidgetActivation();
-    if (typePanelModel.getPanel() != null) {
-      setGameSetupPanel(typePanelModel.getPanel());
-    }
   }
 
   private void addChat() {
     remove(mainPanel);
     remove(chatSplit);
     chatPanelHolder.removeAll();
-    final IChatPanel chat = gameTypePanelModel.getPanel().getChatPanel();
+    final IChatPanel chat = chatPanelSupplier.get().orElse(null);
     if (chat != null && !chat.isHeadless()) {
       chatPanelHolder = new JPanel();
       chatPanelHolder.setLayout(new BorderLayout());
@@ -136,12 +133,14 @@ public class MainPanel extends JPanel implements Observer {
     isChatShowing = chat != null;
   }
 
-  private void setGameSetupPanel(final ISetupPanel panel) {
+  /**
+   * This method will 'change' screens, swapping out one setup panel for another.
+   */
+  @Override
+  public void screenChangeEvent(ISetupPanel panel) {
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
-    if (SetupPanel.class.isAssignableFrom(panel.getClass())) {
-      gameSetupPanelHolder.add((SetupPanel) panel, BorderLayout.CENTER);
-    }
+    gameSetupPanelHolder.add(panel.getDrawable(), BorderLayout.CENTER);
     panel.addObserver(this);
     setWidgetActivation();
     // add the cancel button if we are not choosing the type.
@@ -149,11 +148,13 @@ public class MainPanel extends JPanel implements Observer {
       final JPanel cancelPanel = new JPanel();
       cancelPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
       cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-      createUserActionMenu(gameSetupPanel, cancelPanel);
+      if (!gameSetupPanel.getUserActions().isEmpty()) {
+        createUserActionMenu(gameSetupPanel, cancelPanel);
+      }
       cancelPanel.add(cancelButton);
       gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
     }
-    final boolean panelHasChat = (gameTypePanelModel.getPanel().getChatPanel() != null);
+    final boolean panelHasChat = chatPanelSupplier.get().isPresent();
     if (panelHasChat != isChatShowing) {
       addChat();
     }
@@ -161,9 +162,6 @@ public class MainPanel extends JPanel implements Observer {
   }
 
   private static void createUserActionMenu(final ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
-    if (gameSetupPanel.getUserActions().isEmpty()) {
-      return;
-    }
     // if we need this for something other than network, add a way to set it
     final JButton button = new JButton("Network...");
     button.addActionListener(e -> {
@@ -175,17 +173,6 @@ public class MainPanel extends JPanel implements Observer {
       menu.show(button, 0, button.getHeight());
     });
     cancelPanel.add(button);
-  }
-
-
-  private static void play(final ISetupPanel gameSetupPanel, final SetupPanelModel gameTypePanelModel,
-      final MainPanel mainPanel) {
-    gameSetupPanel.preStartGame();
-
-    gameTypePanelModel.getPanel().getLauncher()
-        .ifPresent(launcher -> launcher.launch(mainPanel));
-
-    gameSetupPanel.postStartGame();
   }
 
   private void setWidgetActivation() {

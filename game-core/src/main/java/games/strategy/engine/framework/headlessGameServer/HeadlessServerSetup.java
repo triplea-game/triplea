@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -149,6 +150,12 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   public void postStartGame() {
     final GameData data = gameSelectorModel.getGameData();
     data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
+  }
+
+  @Override
+  public JComponent getDrawable() {
+    throw new UnsupportedOperationException("HeadlessServerSetup should not use UI components. "
+        + "Bot setup code should not execute this code path.");
   }
 
   @Override

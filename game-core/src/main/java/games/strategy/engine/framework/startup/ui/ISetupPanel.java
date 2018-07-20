@@ -5,6 +5,7 @@ import java.util.Observer;
 import java.util.Optional;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -14,6 +15,8 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
  * entire setup model).
  */
 public interface ISetupPanel {
+  JComponent getDrawable();
+
   boolean showCancelButton();
 
   void addObserver(final Observer observer);

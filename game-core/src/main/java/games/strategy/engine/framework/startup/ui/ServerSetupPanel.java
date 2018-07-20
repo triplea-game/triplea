@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -445,6 +446,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
           launcher.setInGameLobbyWatcher(lobbyWatcher);
           return launcher;
         });
+  }
+
+  @Override
+  public JComponent getDrawable() {
+    return this;
   }
 
   @Override

@@ -6,6 +6,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 
+import javax.swing.JComponent;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LauncherFactory;
@@ -70,4 +72,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
     return Optional.of(LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes));
   }
 
+  @Override
+  public JComponent getDrawable() {
+    return this;
+  }
 }

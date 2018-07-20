@@ -2,7 +2,6 @@ package games.strategy.engine.framework.startup.mc;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.Observable;
 
 import javax.annotation.Nonnull;
 import javax.swing.JPanel;
@@ -10,16 +9,20 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
-import games.strategy.util.Interruptibles;
+import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
+import lombok.Setter;
 
-public class SetupPanelModel extends Observable {
+/**
+ * This class provides a way to switch between different ISetupPanel displays.
+ * TODO: rename this to MainPanelController
+ */
+public class SetupPanelModel {
   protected final GameSelectorModel gameSelectorModel;
   protected ISetupPanel panel = null;
 
@@ -30,6 +33,10 @@ public class SetupPanelModel extends Observable {
   public GameSelectorModel getGameSelectorModel() {
     return gameSelectorModel;
   }
+
+  @Setter
+  private ScreenChangeListener panelChangeListener;
+
 
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));
@@ -80,9 +87,9 @@ public class SetupPanelModel extends Observable {
       this.panel.cancel();
     }
     this.panel = panel;
-    super.setChanged();
-    super.notifyObservers(this.panel);
-    super.clearChanged();
+
+
+    panelChangeListener.screenChangeEvent(panel);
   }
 
   public ISetupPanel getPanel() {

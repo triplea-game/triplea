@@ -47,13 +47,6 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
   }
 
   @Override
-  public abstract void cancel();
-
-  @Override
-  public abstract boolean canGameStart();
-
-
-  @Override
   public void preStartGame() {}
 
   @Override
