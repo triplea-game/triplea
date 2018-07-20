@@ -30,10 +30,6 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     m_players.put(player.getName(), player);
   }
 
-  void addPlayerIds(final Collection<PlayerID> playerIds) {
-    playerIds.forEach(this::addPlayerId);
-  }
-
   public int size() {
     return m_players.size();
   }
