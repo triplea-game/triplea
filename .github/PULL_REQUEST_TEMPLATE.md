@@ -4,7 +4,7 @@
 ## Functional Changes
 
 
-## Testing Performed
+## Manual Testing Performed
 - ..
 
 ## Before & After Screen Shots
