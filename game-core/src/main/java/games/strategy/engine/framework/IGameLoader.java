@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
@@ -21,20 +22,13 @@ import games.strategy.engine.message.IRemote;
  * and meta data needed by the engine.
  */
 public interface IGameLoader extends Serializable {
-  String CLIENT_PLAYER_TYPE = "Client";
-
-  /**
-   * Return an array of player types that can play on the server.
-   */
-  String[] getServerPlayerTypes();
-
   /**
    * Create the players. Given a map of playerName -> type,
-   * where type is one of the Strings returned by a getServerPlayerTypes() or IGameLoader.CLIENT_PLAYER_TYPE.
+   * where type is one of the Strings returned by a getServerPlayerTypes() or PlayerType.CLIENT_PLAYER.
    *
    * @return a Set of GamePlayers
    */
-  Set<IGamePlayer> createPlayers(Map<String, String> players);
+  Set<IGamePlayer> createPlayers(Map<String, PlayerType> players);
 
   /**
    * The game is about to start.

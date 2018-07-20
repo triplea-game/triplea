@@ -8,7 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.triplea.NetworkData;
 import games.strategy.util.Version;
 
 /**
@@ -19,6 +22,7 @@ import games.strategy.util.Version;
  * (updated by veqryn to be the object that, besides game options, determines the starting setup for game. ie: who is
  * playing what)
  */
+@NetworkData
 public class PlayerListing implements Serializable {
   // keep compatability with older versions
   private static final long serialVersionUID = -8913538086737733980L;
@@ -39,15 +43,19 @@ public class PlayerListing implements Serializable {
    * Creates a new instance of PlayerListing.
    */
   public PlayerListing(final Map<String, String> playerToNodeListing, final Map<String, Boolean> playersEnabledListing,
-      final Map<String, String> localPlayerTypes, final Version gameVersion, final String gameName,
+      final Map<String, PlayerType> localPlayerTypes, final Version gameVersion, final String gameName,
       final String gameRound, final Collection<String> playersAllowedToBeDisabled,
       final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder) {
     m_playerToNodeListing =
         playerToNodeListing == null ? new HashMap<>() : new HashMap<>(playerToNodeListing);
     m_playersEnabledListing = playersEnabledListing == null ? new HashMap<>()
         : new HashMap<>(playersEnabledListing);
-    m_localPlayerTypes =
-        localPlayerTypes == null ? new HashMap<>() : new HashMap<>(localPlayerTypes);
+    m_localPlayerTypes = (localPlayerTypes == null)
+        ? new HashMap<>()
+        : localPlayerTypes.entrySet()
+            .stream()
+            // convert Map<String,PlayerType> -> Map<String,String>
+            .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getLabel()));
     m_playersAllowedToBeDisabled =
         playersAllowedToBeDisabled == null ? new HashSet<>() : new HashSet<>(playersAllowedToBeDisabled);
     m_gameVersion = gameVersion;
@@ -98,7 +106,10 @@ public class PlayerListing implements Serializable {
     return m_gameRound;
   }
 
-  public Map<String, String> getLocalPlayerTypes() {
-    return m_localPlayerTypes;
+  public Map<String, PlayerType> getLocalPlayerTypeMap() {
+    return m_localPlayerTypes.entrySet()
+        .stream()
+        .collect(Collectors.toMap(Entry::getKey, e -> PlayerType.fromLabel(e.getValue())));
   }
+
 }

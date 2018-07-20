@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -49,6 +50,7 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.server.NullModeratorController;
@@ -107,7 +109,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private Component ui;
   private IChatPanel chatPanel;
   private ChatController chatController;
-  private final Map<String, String> localPlayerTypes = new HashMap<>();
+  private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
@@ -159,7 +161,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     remoteModelListener = listener;
   }
 
-  public void setLocalPlayerType(final String player, final String type) {
+  public void setLocalPlayerType(final String player, final PlayerType type) {
     synchronized (this) {
       localPlayerTypes.put(player, type);
     }
@@ -178,10 +180,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           if (headless) {
             if (player.getIsDisabled()) {
               playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
-              // the 2nd in the list should be Weak AI
-              final int indexPosition =
-                  Math.max(0, Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1));
-              localPlayerTypes.put(name, data.getGameLoader().getServerPlayerTypes()[indexPosition]);
+              localPlayerTypes.put(name, PlayerType.WEAK_AI);
             } else {
               // we generally do not want a headless host bot to be doing any AI turns, since that
               // is taxing on the system
@@ -503,10 +502,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         if (enabled) {
           playersToNodeListing.put(playerName, null);
         } else {
-          localPlayerTypes.put(playerName,
-              data.getGameLoader().getServerPlayerTypes()[Math.max(0,
-                  // the 2nd in the list should be Weak AI
-                  Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1))]);
+          localPlayerTypes.put(playerName, PlayerType.WEAK_AI);
         }
       }
     }
@@ -638,23 +634,23 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     removeConnectionsLatch = null;
   }
 
-  private Map<String, String> getLocalPlayerTypes() {
-    final Map<String, String> localPlayerMappings = new HashMap<>();
+  private Map<String, PlayerType> getLocalPlayerTypes() {
     if (data == null) {
-      return localPlayerMappings;
+      return Collections.emptyMap();
     }
+
+    final Map<String, PlayerType> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final String defaultLocalType = headless
-        ? data.getGameLoader().getServerPlayerTypes()[Math.max(0,
-            Math.min(data.getGameLoader().getServerPlayerTypes().length - 1, 1))]
-        : data.getGameLoader().getServerPlayerTypes()[0];
+    final PlayerType defaultLocalType = headless
+        ? PlayerType.WEAK_AI
+        : PlayerType.HUMAN_PLAYER;
     for (final String player : playersToNodeListing.keySet()) {
       final String playedBy = playersToNodeListing.get(player);
       if (playedBy == null) {
         continue;
       }
       if (playedBy.equals(serverMessenger.getLocalNode().getName())) {
-        String type = defaultLocalType;
+        PlayerType type = defaultLocalType;
         if (localPlayerTypes.containsKey(player)) {
           type = localPlayerTypes.get(player);
         }

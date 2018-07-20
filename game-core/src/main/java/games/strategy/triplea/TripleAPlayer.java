@@ -22,6 +22,7 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.net.GUID;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -57,13 +58,14 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import lombok.Getter;
 
 /**
  * As a rule, nothing that changes GameData should be in here.
  * It should be using a Change done in a delegate, and done through an IDelegate, which we get through
  * getPlayerBridge().getRemote()
  */
-public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements ITripleAPlayer {
+public abstract class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements ITripleAPlayer {
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
   private boolean soundPlayedAlreadyPurchase = false;
@@ -72,9 +74,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
   private boolean soundPlayedAlreadyEndTurn = false;
   private boolean soundPlayedAlreadyPlacement = false;
 
-  /** Creates new TripleAPlayer. */
-  public TripleAPlayer(final String name, final String type) {
-    super(name, type);
+  public TripleAPlayer(final String name) {
+    super(name);
   }
 
   @Override

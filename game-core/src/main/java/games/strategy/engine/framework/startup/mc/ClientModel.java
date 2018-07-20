@@ -39,7 +39,6 @@ import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.network.ui.ChangeGameOptionsClientAction;
 import games.strategy.engine.framework.network.ui.ChangeGameToSaveGameClientAction;
@@ -49,6 +48,7 @@ import games.strategy.engine.framework.network.ui.SetMapClientAction;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -338,9 +338,9 @@ public class ClientModel implements IMessengerErrorListener {
       return;
     }
     objectStreamFactory.setData(data);
-    final Map<String, String> playerMapping = playersToNodes.entrySet().stream()
+    final Map<String, PlayerType> playerMapping = playersToNodes.entrySet().stream()
         .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
-        .collect(Collectors.toMap(Map.Entry::getKey, e -> IGameLoader.CLIENT_PLAYER_TYPE));
+        .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
     final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
     final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
     game = new ClientGame(data, playerSet, players, messengers);

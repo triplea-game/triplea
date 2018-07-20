@@ -21,7 +21,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleA;
 
 /**
  * Represents a player selection row worth of data, during initial setup this is a row where a player can choose
@@ -46,7 +45,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
       final Map<String, String> reloadSelections, final Collection<String> disableable,
       final HashMap<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
-      final String[] types, final SetupPanel parent, final GameProperties gameProperties) {
+      final SetupPanel parent, final GameProperties gameProperties) {
     this.disableable = disableable;
     this.parent = parent;
     playerName = player.getName();
@@ -60,11 +59,11 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
         if (enabledCheckBox.isSelected()) {
           enabled = true;
           // the 1st in the list should be human
-          playerTypes.setSelectedItem(types[0]);
+          playerTypes.setSelectedItem(PlayerType.HUMAN_PLAYER);
         } else {
           enabled = false;
           // the 2nd in the list should be Weak AI
-          playerTypes.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 1))]);
+          playerTypes.setSelectedItem(PlayerType.WEAK_AI);
         }
         setWidgetActivation();
       }
@@ -73,12 +72,12 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
     enabledCheckBox.setSelected(playersEnablementListing.get(playerName));
     enabledCheckBox.setEnabled(disableable.contains(playerName));
 
-    playerTypes = new JComboBox<>(types);
+    playerTypes = new JComboBox<>(PlayerType.playerTypes());
     String previousSelection = reloadSelections.get(playerName);
     if (previousSelection.equalsIgnoreCase("Client")) {
-      previousSelection = types[0];
+      previousSelection = PlayerType.HUMAN_PLAYER.name();
     }
-    if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
+    if (Arrays.asList(PlayerType.playerTypes()).contains(previousSelection)) {
       playerTypes.setSelectedItem(previousSelection);
     } else {
       setDefaultPlayerType();
@@ -170,11 +169,11 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
   void setDefaultPlayerType() {
     if (player.isDefaultTypeAi()) {
-      playerTypes.setSelectedItem(TripleA.PRO_COMPUTER_PLAYER_TYPE);
+      playerTypes.setSelectedItem(PlayerType.PRO_AI.getLabel());
     } else if (player.isDefaultTypeDoesNothing()) {
-      playerTypes.setSelectedItem(TripleA.DOESNOTHINGAI_COMPUTER_PLAYER_TYPE);
+      playerTypes.setSelectedItem(PlayerType.DOES_NOTHING_AI.getLabel());
     } else {
-      playerTypes.setSelectedItem(TripleA.HUMAN_PLAYER_TYPE);
+      playerTypes.setSelectedItem(PlayerType.HUMAN_PLAYER.getLabel());
     }
   }
 
@@ -184,8 +183,8 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   }
 
   @Override
-  public String getPlayerType() {
-    return (String) playerTypes.getSelectedItem();
+  public PlayerType getPlayerType() {
+    return PlayerType.fromLabel(String.valueOf(playerTypes.getSelectedItem()));
   }
 
   @Override

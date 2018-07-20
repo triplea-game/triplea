@@ -124,7 +124,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     // so for example, it should be "AI:Hard (AI)"
     final String[] s = encodedPlayerTypeAndName.split(":");
     if (s.length != 2) {
-      throw new IllegalStateException("whoAmI must have two strings, separated by a colon");
+      throw new IllegalStateException(String.format("whoAmI '%s' must have two strings, separated by a colon",
+          encodedPlayerTypeAndName));
     }
     if (!(s[0].equalsIgnoreCase("AI") || s[0].equalsIgnoreCase("Human") || s[0].equalsIgnoreCase("null"))) {
       throw new IllegalStateException("whoAmI first part must be, ai or human or client");

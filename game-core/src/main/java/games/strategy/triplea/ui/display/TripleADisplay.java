@@ -7,7 +7,7 @@ import java.util.Map;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
@@ -113,7 +113,7 @@ public class TripleADisplay implements ITripleADisplay {
         // if we have any local players, we are not an observer
         isObserver = false;
         if (player instanceof TripleAPlayer) {
-          if (IGameLoader.CLIENT_PLAYER_TYPE.equals(player.getType())) {
+          if (player.getPlayerType() == PlayerType.CLIENT_PLAYER) {
             isClient = true;
           } else {
             isHost = true;

@@ -8,7 +8,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleA;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.player.ITripleAPlayer;
@@ -26,7 +25,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
    * Creates a new instance of the Delegate.
    */
   public BaseTripleADelegate() {
-    super();
   }
 
   /**
@@ -119,7 +117,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   protected static ITripleAPlayer getRemotePlayer(final PlayerID player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
-      return new WeakAi(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+      return new WeakAi(player.getName());
     }
     return (ITripleAPlayer) bridge.getRemotePlayer(player);
   }

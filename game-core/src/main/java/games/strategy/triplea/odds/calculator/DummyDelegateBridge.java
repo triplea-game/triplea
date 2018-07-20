@@ -41,9 +41,9 @@ public class DummyDelegateBridge implements IDelegateBridge {
       final List<Unit> attackerOrderOfLosses, final List<Unit> defenderOrderOfLosses,
       final boolean attackerKeepOneLandUnit, final int retreatAfterRound, final int retreatAfterXUnitsLeft,
       final boolean retreatWhenOnlyAirLeft) {
-    attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", "None (AI)", attackerOrderOfLosses,
+    attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", attackerOrderOfLosses,
         attackerKeepOneLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
-    defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", "None (AI)", defenderOrderOfLosses, false,
+    defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", defenderOrderOfLosses, false,
         retreatAfterRound, -1, false);
     gameData = data;
     this.attacker = attacker;

@@ -121,7 +121,7 @@ public class ServerLauncher extends AbstractLauncher {
       abortLaunch = testShouldWeAbort();
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<IGamePlayer> localPlayerSet =
-          gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
+          gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypeMap());
       final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
       serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers);
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);

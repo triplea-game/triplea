@@ -81,7 +81,6 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
     final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
-    final String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
     final List<PlayerID> players = data.getPlayerList().getPlayers();
 
     int gridx = 0;
@@ -97,7 +96,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     final JLabel nameLabel = new JLabel("Name");
     panel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
-    final JComboBox<String> setAllTypes = new JComboBox<>(playerTypes);
+    final JComboBox<String> setAllTypes = new JComboBox<>(PlayerType.playerTypes());
     setAllTypes.insertItemAt(SET_ALL_DEFAULT_LABEL, 0);
     setAllTypes.setSelectedIndex(-1);
     panel.add(setAllTypes, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -126,7 +125,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     for (final PlayerID player : players) {
       final PlayerSelectorRow selector =
           new PlayerSelectorRow(playerRows, player, reloadSelections, disableable, playersEnablementListing,
-              data.getAllianceTracker().getAlliancesPlayerIsIn(player), playerTypes, this, data.getProperties());
+              data.getAllianceTracker().getAlliancesPlayerIsIn(player),  this, data.getProperties());
       playerRows.add(selector);
       if (!player.isHidden()) {
         selector.layout(++gridy, panel);
