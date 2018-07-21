@@ -3,6 +3,7 @@ package swinglib;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Font;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.UIManager;
@@ -39,15 +40,14 @@ public class JButtonBuilder {
    * Values that must be set: title, actionlistener
    */
   public JButton build() {
-    Preconditions.checkNotNull(title);
-    Preconditions.checkState(!enabled || actionListener != null,
-        "Was enabled? " + enabled + ", action listener == null? " + (actionListener == null));
+    checkNotNull(title);
 
     final JButton button = new JButton(title);
     if (toolTip != null) {
       button.setToolTipText(toolTip);
     }
-    button.addActionListener(e -> actionListener.run());
+    Optional.ofNullable(actionListener)
+        .ifPresent(listener -> button.addActionListener(e -> listener.run()));
     button.setEnabled(enabled);
 
     if (biggerFont > 0) {

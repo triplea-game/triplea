@@ -1,11 +1,9 @@
 package games.strategy.engine.framework.startup.ui.panels.main.game.selector;
 
-import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -24,18 +22,15 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
-import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import swinglib.JButtonBuilder;
@@ -45,23 +40,33 @@ import swinglib.JButtonBuilder;
  */
 public class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
-
-  private JLabel engineVersionLabel;
-  private JLabel engineVersionText;
-  private JLabel nameText;
-  private JLabel versionText;
-  private JLabel fileNameLabel;
-  private JLabel fileNameText;
-  private JLabel nameLabel;
-  private JLabel versionLabel;
-  private JLabel roundLabel;
-  private JLabel roundText;
-  private JButton loadSavedGame;
-  private JButton loadNewGame;
-  private JButton gameOptions;
   private final GameSelectorModel model;
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
+  private final JLabel engineVersionLabel = new JLabel("Engine Version:");
+  private final JLabel engineVersionText = new JLabel(ClientContext.engineVersion().getExactVersion());
+  private final JLabel nameText = new JLabel();
+  private final JLabel versionText = new JLabel();
+  private final JLabel fileNameLabel = new JLabel("File Name:");
+  private final JLabel fileNameText = new JLabel();
+  private final JLabel nameLabel = new JLabel("Map Name:");
+  private final JLabel versionLabel = new JLabel("Map Version:");
+  private final JLabel roundLabel = new JLabel("Game Round:");
+  private final JLabel roundText = new JLabel();
+  private final JButton loadSavedGame = JButtonBuilder.builder()
+      .title("Open Saved Game")
+      .toolTip("Open a previously saved game, or an autosave.")
+      .build();
+  private final JButton loadNewGame = JButtonBuilder.builder()
+      .title("Select Map")
+      .toolTip("<html>Select a game from all the maps/games that come with TripleA, <br>and the ones "
+          + "you have downloaded.</html>")
+      .build();
+  private final JButton gameOptions = JButtonBuilder.builder()
+      .title("Map Options")
+      .toolTip("<html>Set options for the currently selected game, <br>such as enabling/disabling "
+          + "Low Luck, or Technology, etc.</html>")
+      .build();
 
   public GameSelectorPanel(final GameSelectorModel model) {
     this.model = model;
@@ -70,25 +75,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
       setOriginalPropertiesMap(data);
       gamePropertiesCache.loadCachedGamePropertiesInto(data);
     }
-    engineVersionLabel = new JLabel("Engine Version:");
-    final String version = ClientContext.engineVersion().getExactVersion();
-    engineVersionText = new JLabel(version);
-    nameLabel = new JLabel("Map Name:");
-    versionLabel = new JLabel("Map Version:");
-    roundLabel = new JLabel("Game Round:");
-    fileNameLabel = new JLabel("File Name:");
-    nameText = new JLabel();
-    versionText = new JLabel();
-    roundText = new JLabel();
-    fileNameText = new JLabel();
-    loadNewGame = new JButton("Select Map");
-    loadNewGame.setToolTipText("<html>Select a game from all the maps/games that come with TripleA, <br>and the ones "
-        + "you have downloaded.</html>");
-    loadSavedGame = new JButton("Open Saved Game");
-    loadSavedGame.setToolTipText("Open a previously saved game, or an autosave.");
-    gameOptions = new JButton("Map Options");
-    gameOptions.setToolTipText("<html>Set options for the currently selected game, <br>such as enabling/disabling "
-        + "Low Luck, or Technology, etc.</html>");
 
     setLayout(new GridBagLayout());
     add(engineVersionLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
@@ -126,7 +112,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     loadNewGame.addActionListener(e -> {
       if (canSelectLocalGameData()) {
-        selectGameFile(false);
+        selectGameFile();
       } else if (canChangeHostBotGameData()) {
         final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
         if (clientModelForHostBots != null) {
@@ -136,7 +122,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     });
     loadSavedGame.addActionListener(e -> {
       if (canSelectLocalGameData()) {
-        selectGameFile(true);
+        selectSavedGameFile();
       } else if (canChangeHostBotGameData()) {
         final ClientModel clientModelForHostBots = model.getClientModelForHostBots();
         if (clientModelForHostBots != null) {
@@ -167,7 +153,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
       }
     });
 
-    setWidgetActivation();
+    updateGameData();
   }
 
   private static GridBagConstraints buildGridCell(final int x, final int y, final Insets insets) {
@@ -238,7 +224,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     }
   }
 
-  private void setWidgetActivation() {
+  private void updateGameData() {
     SwingAction.invokeNowOrLater(() -> {
       nameText.setText(model.getGameName());
       versionText.setText(model.getGameVersion());
@@ -269,67 +255,49 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
   @Override
   public void update(final Observable o, final Object arg) {
-    setWidgetActivation();
+    updateGameData();
   }
 
-  public static File selectGameFile() {
-    if (SystemProperties.isMac()) {
-      final FileDialog fileDialog = GameRunner.newFileDialog();
-      fileDialog.setMode(FileDialog.LOAD);
-      fileDialog.setDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()).getPath());
-      fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
-      fileDialog.setVisible(true);
-      final String fileName = fileDialog.getFile();
-      final String dirName = fileDialog.getDirectory();
-      return (fileName == null) ? null : new File(dirName, fileName);
-    }
-
-    return GameRunner.showSaveGameFileChooser().orElse(null);
-  }
-
-  private void selectGameFile(final boolean saved) {
+  private void selectSavedGameFile() {
     // For some strange reason,
     // the only way to get a Mac OS X native-style file dialog
     // is to use an AWT FileDialog instead of a Swing JDialog
-    if (saved) {
-      final File file = selectGameFile();
-      if (file == null || !file.exists()) {
-        return;
-      }
+    GameFileSelector.selectGameFile()
+        .ifPresent(file -> Interruptibles
+            .await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
+              model.load(file, this);
+              setOriginalPropertiesMap(model.getGameData());
+            })));
+  }
 
-      Interruptibles.await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
-        model.load(file, this);
-        setOriginalPropertiesMap(model.getGameData());
-      }));
-    } else {
-      try {
-        final GameChooserEntry entry =
-            GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
-        if (entry != null) {
-          GameRunner.newBackgroundTaskRunner().runInBackground("Loading map...", () -> {
-            if (!entry.isGameDataLoaded()) {
-              try {
-                entry.fullyParseGameData();
-              } catch (final GameParseException e) {
-                // TODO remove bad entries from the underlying model
-                return;
-              }
+  private void selectGameFile() {
+    try {
+      final GameChooserEntry entry =
+          GameChooser.chooseGame(JOptionPane.getFrameForComponent(this), model.getGameName());
+      if (entry != null) {
+        GameRunner.newBackgroundTaskRunner().runInBackground("Loading map...", () -> {
+          if (!entry.isGameDataLoaded()) {
+            try {
+              entry.fullyParseGameData();
+            } catch (final GameParseException e) {
+              // TODO remove bad entries from the underlying model
+              return;
             }
-            model.load(entry);
-          });
-          // warning: NPE check is not to protect against concurrency, another thread could still null out game data.
-          // The NPE check is to protect against the case where there are errors loading game, in which case
-          // we'll have a null game data.
-          if (model.getGameData() != null) {
-            setOriginalPropertiesMap(model.getGameData());
-            // only for new games, not saved games, we set the default options, and set them only once
-            // (the first time it is loaded)
-            gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
           }
+          model.load(entry);
+        });
+        // warning: NPE check is not to protect against concurrency, another thread could still null out game data.
+        // The NPE check is to protect against the case where there are errors loading game, in which case
+        // we'll have a null game data.
+        if (model.getGameData() != null) {
+          setOriginalPropertiesMap(model.getGameData());
+          // only for new games, not saved games, we set the default options, and set them only once
+          // (the first time it is loaded)
+          gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
         }
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
       }
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 }
