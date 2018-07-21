@@ -18,20 +18,14 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Getter
   private final String name; // what nation are we playing? ex: "Americans"
   @Getter
-  private final String type; // what are we? ex: "Human" or "AI"
-  @Getter
   private PlayerID playerId;
   @Getter
   private IPlayerBridge playerBridge;
   private boolean isStoppedGame = false;
 
-  /**
-   * @param name
-   *        - the name of the player.
-   */
-  public AbstractBasePlayer(final String name, final String type) {
+
+  public AbstractBasePlayer(final String name) {
     this.name = name;
-    this.type = type;
   }
 
   /**

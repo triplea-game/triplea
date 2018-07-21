@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai.fast;
 
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
@@ -12,8 +13,8 @@ public class FastAi extends ProAi {
   // Odds estimator
   private static final IOddsCalculator estimator = new FastOddsEstimator();
 
-  public FastAi(final String name, final String type) {
-    super(name, type);
+  public FastAi(final String name) {
+    super(name);
   }
 
   @Override
@@ -21,4 +22,8 @@ public class FastAi extends ProAi {
     calc = new ProOddsCalculator(estimator);
   }
 
+  @Override
+  public PlayerType getPlayerType() {
+    return PlayerType.FAST_AI;
+  }
 }

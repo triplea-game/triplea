@@ -26,7 +26,6 @@ public class NavigationPanelFactory {
     final JButton playButton = JButtonBuilder.builder()
         .biggerFont()
         .title("Play")
-        .enabled(true)
         .actionListener(() -> {
           playButtonAction.run();
           gameStartedCallback.gameIsStarted();
@@ -40,7 +39,6 @@ public class NavigationPanelFactory {
         .add(Box.createHorizontalStrut(50))
         .add(JButtonBuilder.builder()
             .title("Back")
-            .enabled(true)
             .actionListener(() -> LaunchScreenWindow.draw(previousScreen))
             .build())
         .add(Box.createHorizontalStrut(50))
@@ -60,7 +58,7 @@ public class NavigationPanelFactory {
     final JButton playButton = JButtonBuilder.builder()
         .biggerFont()
         .title("Play")
-        .enabled(false)
+        .disabled()
         .build();
 
     return JPanelBuilder.builder()
@@ -71,7 +69,6 @@ public class NavigationPanelFactory {
         .addIf(screenWindow.getPreviousScreen()
             .map(prevScreen -> JButtonBuilder.builder()
                 .title("Back")
-                .enabled(true)
                 .actionListener(() -> LaunchScreenWindow.draw(prevScreen))
                 .build()))
         .add(Box.createHorizontalStrut(50))

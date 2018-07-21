@@ -13,6 +13,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.IGameModifiedChannel;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -41,7 +42,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final GameData gameData;
   private final ObjectivePanelDummyPlayer dummyAi =
-      new ObjectivePanelDummyPlayer("objective panel dummy", "None (AI)");
+      new ObjectivePanelDummyPlayer("objective panel dummy");
 
   public ObjectiveDummyDelegateBridge(final GameData data) {
     gameData = data;
@@ -144,8 +145,8 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   }
 
   static class ObjectivePanelDummyPlayer extends AbstractAi {
-    public ObjectivePanelDummyPlayer(final String name, final String type) {
-      super(name, type);
+    public ObjectivePanelDummyPlayer(final String name) {
+      super(name);
     }
 
     @Override
@@ -228,6 +229,10 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
         final Collection<Unit> bombers) {
       throw new UnsupportedOperationException();
     }
-  }
 
+    @Override
+    public PlayerType getPlayerType() {
+      return PlayerType.BATTLE_CALC_DUMMY;
+    }
+  }
 }

@@ -24,6 +24,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -48,9 +49,15 @@ import games.strategy.util.IntegerMap;
  */
 public class WeakAi extends AbstractAi {
 
-  public WeakAi(final String name, final String type) {
-    super(name, type);
+  public WeakAi(final String name) {
+    super(name);
   }
+
+  @Override
+  public PlayerType getPlayerType() {
+    return PlayerType.WEAK_AI;
+  }
+
 
   @Override
   protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {}

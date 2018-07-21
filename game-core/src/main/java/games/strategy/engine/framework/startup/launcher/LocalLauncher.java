@@ -18,6 +18,9 @@ import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.Interruptibles;
 
+/**
+ * Launcher for a local or a client game. A launcher will start the game UI and begin game play.
+ */
 public class LocalLauncher extends AbstractLauncher {
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
@@ -48,7 +51,8 @@ public class LocalLauncher extends AbstractLauncher {
     try {
       gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new HeadlessServerMessenger());
-      final Set<IGamePlayer> gamePlayers = gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypes());
+      final Set<IGamePlayer> gamePlayers =
+          gameData.getGameLoader().createPlayers(playerListing.getLocalPlayerTypeMap());
       final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers);
       game.setRandomSource(randomSource);
       gameData.getGameLoader().startGame(game, gamePlayers, headless, null);
