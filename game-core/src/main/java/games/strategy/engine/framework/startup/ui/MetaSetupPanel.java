@@ -10,8 +10,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.triplea.client.launch.screens.LaunchScreenWindow;
-
 import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
@@ -118,15 +116,6 @@ public class MetaSetupPanel extends SetupPanel {
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
-
-    if (ClientSetting.SHOW_BETA_FEATURES.booleanValue()) {
-      final JButton newUiButton = JButtonBuilder.builder()
-          .title("Launch new UI")
-          .actionListener(LaunchScreenWindow::show)
-          .build();
-      add(newUiButton, new GridBagConstraints(0, 13, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-          new Insets(10, 0, 0, 0), 0, 0));
-    }
   }
 
   private void setupListeners() {
@@ -147,7 +136,6 @@ public class MetaSetupPanel extends SetupPanel {
   private static void helpPage() {
     SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
   }
-
 
   private void connectToLobby() {
     final LobbyServerProperties lobbyServerProperties = new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
