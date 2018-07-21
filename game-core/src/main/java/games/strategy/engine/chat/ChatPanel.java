@@ -72,18 +72,6 @@ public class ChatPanel extends JPanel implements IChatPanel {
   }
 
   @Override
-  public void shutDown() {
-    // get first, before below turns it null
-    final Chat chat = getChat();
-    chatMessagePanel.shutDown();
-    chatPlayerPanel.shutDown();
-    if (chat != null) {
-      // now shut down
-      chat.shutdown();
-    }
-  }
-
-  @Override
   public void setChat(final Chat chat) {
     chatMessagePanel.setChat(chat);
     chatPlayerPanel.setChat(chat);

@@ -53,11 +53,6 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
-  public void shutDown() {
-    gameSelectorModel.deleteObserver(this);
-  }
-
-  @Override
   public void cancel() {
     gameSelectorModel.deleteObserver(this);
   }

@@ -98,13 +98,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
     final JButton quitButton = JButtonBuilder.builder()
         .title("Quit")
         .toolTip("Close TripleA.")
-        .actionListener(() -> {
-          try {
-            gameSetupPanel.shutDown();
-          } finally {
-            GameRunner.quitGame();
-          }
-        })
+        .actionListener(GameRunner::quitGame)
         .build();
     final JPanel buttonsPanel = JPanelBuilder.builder()
         .borderEtched()

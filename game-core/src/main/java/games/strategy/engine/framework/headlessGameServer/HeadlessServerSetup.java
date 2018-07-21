@@ -64,13 +64,6 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   @Override
-  public void shutDown() {
-    model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
-    model.shutDown();
-    lobbyWatcher.shutDown();
-  }
-
-  @Override
   public void cancel() {
     model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
     model.cancel();

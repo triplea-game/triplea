@@ -134,16 +134,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     headless = (interactionMode == InteractionMode.HEADLESS);
   }
 
-  public void shutDown() {
-    gameSelectorModel.deleteObserver(gameSelectorObserver);
-    if (serverMessenger != null) {
-      chatController.deactivate();
-      serverMessenger.shutDown();
-      serverMessenger.removeErrorListener(this);
-      chatPanel.shutDown();
-    }
-  }
-
   public void cancel() {
     gameSelectorModel.deleteObserver(gameSelectorObserver);
     if (serverMessenger != null) {

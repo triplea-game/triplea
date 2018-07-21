@@ -10,8 +10,6 @@ import javax.swing.DefaultListCellRenderer;
 public interface IChatPanel {
   boolean isHeadless();
 
-  void shutDown();
-
   void setChat(final Chat chat);
 
   Chat getChat();

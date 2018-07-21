@@ -74,16 +74,6 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     hiddenPlayers.add(name);
   }
 
-  void shutDown() {
-    if (chat != null) {
-      chat.removeChatListener(this);
-      chat.getStatusManager().removeStatusListener(statusListener);
-    }
-    chat = null;
-    this.setVisible(false);
-    this.removeAll();
-  }
-
   public void setChat(final Chat chat) {
     if (this.chat != null) {
       this.chat.removeChatListener(this);

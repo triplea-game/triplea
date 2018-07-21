@@ -254,11 +254,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     return cached == null ? instance : cached;
   }
 
-  @Override
-  public void shutDown() {
-    gameSelectorModel.deleteObserver(this);
-  }
-
   /**
    * Called when the current game changes.
    */

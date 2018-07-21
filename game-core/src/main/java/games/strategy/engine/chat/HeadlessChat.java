@@ -66,15 +66,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   public void updatePlayerList(final Collection<INode> players) {}
 
   @Override
-  public void shutDown() {
-    if (chat != null) {
-      chat.removeChatListener(this);
-      chat.shutdown();
-    }
-    chat = null;
-  }
-
-  @Override
   public void setChat(final Chat chat) {
     if (this.chat != null) {
       this.chat.removeChatListener(this);
