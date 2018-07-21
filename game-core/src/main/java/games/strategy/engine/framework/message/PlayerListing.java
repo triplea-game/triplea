@@ -64,16 +64,16 @@ public class PlayerListing implements Serializable {
         Optional.ofNullable(playerNamesAndAlliancesInTurnOrder).orElse(Collections.emptyMap());
 
     // make sure none of the collection values are null.
-    Preconditions.checkArgument(playerToNodeListing.values().stream().noneMatch(Objects::isNull),
-        playerToNodeListing.toString());
-    Preconditions.checkArgument(playersEnabledListing.values().stream().noneMatch(Objects::isNull),
-        playerToNodeListing.toString());
-    Preconditions.checkArgument(playersEnabledListing.values().stream().noneMatch(Objects::isNull),
-        playerToNodeListing.toString());
-    Preconditions.checkArgument(playersAllowedToBeDisabled.stream().noneMatch(Objects::isNull),
-        playerToNodeListing.toString());
-    Preconditions.checkArgument(playerNamesAndAlliancesInTurnOrder.values().stream().noneMatch(Objects::isNull),
-        playerToNodeListing.toString());
+    Preconditions.checkArgument(m_playerToNodeListing.values().stream().noneMatch(Objects::isNull),
+        m_playerToNodeListing.toString());
+    Preconditions.checkArgument(m_playersEnabledListing.values().stream().noneMatch(Objects::isNull),
+        m_playersEnabledListing.toString());
+    Preconditions.checkArgument(m_localPlayerTypes.values().stream().noneMatch(Objects::isNull),
+        m_localPlayerTypes.toString());
+    Preconditions.checkArgument(m_playersAllowedToBeDisabled.stream().noneMatch(Objects::isNull),
+        m_playersAllowedToBeDisabled.toString());
+    Preconditions.checkArgument(m_playerNamesAndAlliancesInTurnOrder.values().stream().noneMatch(Objects::isNull),
+        m_playerNamesAndAlliancesInTurnOrder.toString());
   }
 
   public Collection<String> getPlayersAllowedToBeDisabled() {
