@@ -22,12 +22,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   private boolean endBaseStepsFinished = false;
 
   /**
-   * Creates a new instance of the Delegate.
-   */
-  public BaseTripleADelegate() {
-  }
-
-  /**
    * Called before the delegate will run.
    * All classes should call super.start if they override this.
    * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in
