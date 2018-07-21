@@ -25,7 +25,7 @@ public class JButtonBuilder {
   private String title;
   private String toolTip;
   private Runnable actionListener;
-  private boolean enabled = false;
+  private boolean enabled = true;
   private boolean selected = false;
   private int biggerFont = 0;
 
@@ -119,15 +119,14 @@ public class JButtonBuilder {
    */
   public JButtonBuilder actionListener(final Runnable actionListener) {
     this.actionListener = checkNotNull(actionListener);
-    enabled = true;
     return this;
   }
 
   /**
    * Whether the button can be clicked on or not.
    */
-  public JButtonBuilder enabled(final boolean enabled) {
-    this.enabled = enabled;
+  public JButtonBuilder disabled() {
+    enabled = false;
     return this;
   }
 }

@@ -2,6 +2,7 @@ package swinglib;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -32,6 +34,12 @@ import com.google.common.base.Strings;
 
 import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import swinglib.GridBagHelper.Anchor;
+import swinglib.GridBagHelper.ColumnSpan;
+import swinglib.GridBagHelper.Fill;
 
 /**
  * Example usage:.
@@ -54,6 +62,7 @@ public class JPanelBuilder {
   private boolean useGridBagHelper = false;
   private int gridBagHelperColumns;
   private boolean flowLayoutWrapper = false;
+  private Integer preferredHeight;
 
   private JPanelBuilder() {
 
@@ -120,7 +129,13 @@ public class JPanelBuilder {
 
       if (panelProperties.borderLayoutPosition == BorderLayoutPosition.DEFAULT) {
         if (gridBagHelper != null) {
-          gridBagHelper.add(child.getFirst(), panelProperties.columnSpan);
+
+          gridBagHelper.add(
+              child.getFirst(),
+              panelProperties.columnSpan,
+              panelProperties.anchor,
+              panelProperties.fill);
+
         } else {
           panel.add(child.getFirst());
         }
@@ -157,6 +172,10 @@ public class JPanelBuilder {
           .flowLayout()
           .add(panel)
           .build();
+    }
+
+    if (preferredHeight != null) {
+      panel.setPreferredSize(new Dimension(panel.getWidth(), preferredHeight));
     }
     return panel;
   }
@@ -255,6 +274,10 @@ public class JPanelBuilder {
     return this;
   }
 
+  public JPanelBuilder borderEmpty() {
+    return borderEmpty(0);
+  }
+
   public JPanelBuilder borderEmpty(final int borderWidth) {
     return borderEmpty(borderWidth, borderWidth, borderWidth, borderWidth);
   }
@@ -289,7 +312,11 @@ public class JPanelBuilder {
   }
 
   public JPanelBuilder flowLayout() {
-    layout = new FlowLayout();
+    return flowLayout(FlowLayoutJustification.DEFAULT);
+  }
+
+  public JPanelBuilder flowLayout(FlowLayoutJustification flowLayoutDirection) {
+    layout = flowLayoutDirection.layoutSupplier.get();
     return this;
   }
 
@@ -325,6 +352,14 @@ public class JPanelBuilder {
     components.add(new Pair<>(component, new PanelProperties(columnSpan)));
     return this;
   }
+
+
+  public JPanelBuilder add(final Component component, final GridBagHelper.Anchor anchor,
+      final GridBagHelper.Fill fill) {
+    components.add(new Pair<>(component, new PanelProperties(anchor, fill)));
+    return this;
+  }
+
 
   public JPanelBuilder flowLayoutWrapper() {
     flowLayoutWrapper = true;
@@ -401,6 +436,11 @@ public class JPanelBuilder {
     return addLabel("");
   }
 
+  public JPanelBuilder preferredHeight(final int height) {
+    preferredHeight = height;
+    return this;
+  }
+
   /**
    * BoxLayout needs a reference to the panel component that is using the layout, so we cannot create the layout
    * until after we create the component. Thus we use a flag to create it, rather than creating and storing
@@ -419,23 +459,47 @@ public class JPanelBuilder {
 
 
   /**
+   * Type-safe alias for magic values in {@code FlowLayout}.
+   */
+  @AllArgsConstructor
+  public enum FlowLayoutJustification {
+    DEFAULT(FlowLayout::new),
+
+    CENTER(() -> new FlowLayout(FlowLayout.CENTER)),
+
+    LEFT(() -> new FlowLayout(FlowLayout.LEFT)),
+
+    RIGHT(() -> new FlowLayout(FlowLayout.RIGHT));
+
+    Supplier<FlowLayout> layoutSupplier;
+  }
+
+
+  /**
    * Struct-like class for the various properties and styles that can be applied to a panel.
    */
+  @Builder
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
   private static final class PanelProperties {
     BorderLayoutPosition borderLayoutPosition = BorderLayoutPosition.DEFAULT;
     GridBagHelper.ColumnSpan columnSpan = GridBagHelper.ColumnSpan.of(1);
+    GridBagHelper.Fill fill = Fill.NONE;
+    GridBagHelper.Anchor anchor = Anchor.WEST;
 
-    PanelProperties(final BorderLayoutPosition borderLayoutPosition) {
-      Preconditions.checkNotNull(borderLayoutPosition);
+
+    PanelProperties(BorderLayoutPosition borderLayoutPosition) {
       this.borderLayoutPosition = borderLayoutPosition;
     }
 
-    public PanelProperties(final GridBagHelper.ColumnSpan columnSpan) {
-      Preconditions.checkNotNull(columnSpan);
+    PanelProperties(ColumnSpan columnSpan) {
       this.columnSpan = columnSpan;
     }
-  }
 
+    PanelProperties(Anchor anchor, Fill fill) {
+      this.anchor = anchor;
+      this.fill = fill;
+    }
+  }
 
   /**
    * Class that represents simple top/bottom + left/right padding.
