@@ -6,6 +6,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
@@ -14,8 +15,14 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 
 public class DoesNothingAi extends AbstractAi {
-  public DoesNothingAi(final String name, final String type) {
-    super(name, type);
+
+  public DoesNothingAi(final String name) {
+    super(name);
+  }
+
+  @Override
+  public PlayerType getPlayerType() {
+    return PlayerType.DOES_NOTHING_AI;
   }
 
   @Override
@@ -23,7 +30,7 @@ public class DoesNothingAi extends AbstractAi {
       final GameData data, final PlayerID player) {
     // spend whatever we have
     if (!player.getResources().isEmpty()) {
-      (new WeakAi(this.getName(), this.getType())).purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
+      (new WeakAi(this.getName())).purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
     }
     pause();
   }
@@ -44,7 +51,7 @@ public class DoesNothingAi extends AbstractAi {
       final PlayerID player) {
     // place whatever we have
     if (!player.getUnits().isEmpty()) {
-      (new WeakAi(this.getName(), this.getType())).place(placeForBid, placeDelegate, data, player);
+      (new WeakAi(this.getName())).place(placeForBid, placeDelegate, data, player);
     }
     pause();
   }

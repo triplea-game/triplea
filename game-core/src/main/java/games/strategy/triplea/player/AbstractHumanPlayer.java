@@ -11,12 +11,8 @@ import games.strategy.triplea.ui.MainGameFrame;
 public abstract class AbstractHumanPlayer<T extends MainGameFrame> extends AbstractBasePlayer {
   protected T ui;
 
-  /**
-   * @param name
-   *        - the name of the player.
-   */
-  public AbstractHumanPlayer(final String name, final String type) {
-    super(name, type);
+  public AbstractHumanPlayer(final String name) {
+    super(name);
   }
 
   public final void setFrame(final T frame) {

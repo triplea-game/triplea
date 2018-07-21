@@ -74,8 +74,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
 
   private static final Logger logger = Logger.getLogger(AbstractAi.class.getName());
 
-  public AbstractAi(final String name, final String type) {
-    super(name, type);
+  public AbstractAi(final String name) {
+    super(name);
   }
 
   @Override

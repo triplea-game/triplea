@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.common.base.MoreObjects;
+import lombok.ToString;
 
+/**
+ * Wrapper around the set of players in a game to provide utility functions and methods.
+ */
+@ToString
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID> {
   private static final long serialVersionUID = -3895068111754745446L;
   // maps String playerName -> PlayerID
@@ -41,9 +45,6 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     return m_players.get(name);
   }
 
-  /**
-   * @return a new arraylist copy of the players.
-   */
   public List<PlayerID> getPlayers() {
     return new ArrayList<>(m_players.values());
   }
@@ -69,12 +70,5 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
       playersEnabledListing.put(p.getName(), !p.getIsDisabled());
     }
     return playersEnabledListing;
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("players", m_players)
-        .toString();
   }
 }

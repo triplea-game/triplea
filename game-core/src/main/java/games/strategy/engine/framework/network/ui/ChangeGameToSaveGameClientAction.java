@@ -1,11 +1,10 @@
 package games.strategy.engine.framework.network.ui;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 import javax.swing.AbstractAction;
 
-import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
+import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.net.IClientMessenger;
 
 /**
@@ -22,10 +21,7 @@ public class ChangeGameToSaveGameClientAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final File file = GameSelectorPanel.selectGameFile();
-    if (file == null || !file.exists()) {
-      return;
-    }
-    clientMessenger.changeToGameSave(file, file.getName());
+    GameFileSelector.selectGameFile()
+        .ifPresent(file -> clientMessenger.changeToGameSave(file, file.getName()));
   }
 }

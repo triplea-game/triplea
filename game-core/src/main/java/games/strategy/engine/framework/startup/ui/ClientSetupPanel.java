@@ -66,7 +66,7 @@ public class ClientSetupPanel extends SetupPanel {
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
-          IGameLoader.CLIENT_PLAYER_TYPE, enabledPlayers.get(name));
+          enabledPlayers.get(name));
       playerRows.add(playerRow);
       SwingUtilities.invokeLater(() -> playerRow.update(players.get(name), disableable.contains(name)));
     }
@@ -170,13 +170,10 @@ public class ClientSetupPanel extends SetupPanel {
     private final JLabel playerNameLabel = new JLabel();
     private final JLabel playerLabel = new JLabel();
     private JComponent playerComponent = new JLabel();
-    private final String localPlayerType;
     private final JLabel alliance;
 
-    PlayerRow(final String playerName, final Collection<String> playerAlliances, final String localPlayerType,
-        final boolean enabled) {
+    PlayerRow(final String playerName, final Collection<String> playerAlliances, final boolean enabled) {
       playerNameLabel.setText(playerName);
-      this.localPlayerType = localPlayerType;
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       enabledCheckBox.setSelected(enabled);
       alliance = new JLabel(playerAlliances.contains(playerName) ? "" : playerAlliances.toString());

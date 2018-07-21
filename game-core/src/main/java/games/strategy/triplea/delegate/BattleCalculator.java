@@ -468,7 +468,7 @@ public class BattleCalculator {
     final GameData data = bridge.getData();
     final boolean isEditMode = BaseEditDelegate.getEditMode(data);
     final ITripleAPlayer tripleaPlayer = player.isNull()
-        ? new WeakAi(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE)
+        ? new WeakAi(player.getName())
         : (ITripleAPlayer) bridge.getRemotePlayer(player);
     final Map<Unit, Collection<Unit>> dependents = headLess ? Collections.emptyMap() : getDependents(targetsToPickFrom);
     if (isEditMode && !headLess) {

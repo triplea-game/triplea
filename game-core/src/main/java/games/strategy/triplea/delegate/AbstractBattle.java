@@ -320,7 +320,7 @@ abstract class AbstractBattle implements IBattle {
   protected static ITripleAPlayer getRemote(final PlayerID player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
-      return new WeakAi(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+      return new WeakAi(player.getName());
     }
     return (ITripleAPlayer) bridge.getRemotePlayer(player);
   }

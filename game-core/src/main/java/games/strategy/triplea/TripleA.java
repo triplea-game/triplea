@@ -1,9 +1,9 @@
 package games.strategy.triplea;
 
 import java.awt.Frame;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
@@ -19,6 +19,7 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
@@ -27,56 +28,35 @@ import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.ai.fast.FastAi;
-import games.strategy.triplea.ai.pro.ProAi;
-import games.strategy.triplea.ai.weak.DoesNothingAi;
-import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.HeadedUiContext;
 import games.strategy.triplea.ui.HeadlessUiContext;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
-import games.strategy.ui.SwingAction;
-import games.strategy.util.Interruptibles;
 
 @MapSupport
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
-  public static final String HUMAN_PLAYER_TYPE = "Human";
-  public static final String WEAK_COMPUTER_PLAYER_TYPE = "Easy (AI)";
-  public static final String FAST_COMPUTER_PLAYER_TYPE = "Fast (AI)";
-  public static final String PRO_COMPUTER_PLAYER_TYPE = "Hard (AI)";
-  public static final String DOESNOTHINGAI_COMPUTER_PLAYER_TYPE = "Does Nothing (AI)";
+
   protected transient ITripleADisplay display;
 
   protected transient ISound soundChannel;
   protected transient IGame game;
 
   @Override
-  public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames) {
-    final Set<IGamePlayer> players = new HashSet<>();
-    for (final String name : playerNames.keySet()) {
-      final String type = playerNames.get(name);
-      if (type.equals(WEAK_COMPUTER_PLAYER_TYPE)) {
-        players.add(new WeakAi(name, type));
-      } else if (type.equals(FAST_COMPUTER_PLAYER_TYPE)) {
-        players.add(new FastAi(name, type));
-      } else if (type.equals(PRO_COMPUTER_PLAYER_TYPE)) {
-        players.add(new ProAi(name, type));
-      } else if (type.equals(DOESNOTHINGAI_COMPUTER_PLAYER_TYPE)) {
-        players.add(new DoesNothingAi(name, type));
-      } else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE)) {
-        final TripleAPlayer player = new TripleAPlayer(name, type);
-        players.add(player);
-      } else {
-        throw new IllegalStateException("Player type not recognized:" + type);
-      }
-    }
-    return players;
+  public Set<IGamePlayer> createPlayers(final Map<String, PlayerType> playerNames) {
+    return playerNames.entrySet()
+        .stream()
+        .map(TripleA::toGamePlayer)
+        .collect(Collectors.toSet());
+  }
+
+  private static IGamePlayer toGamePlayer(Map.Entry<String, PlayerType> namePlayerType) {
+    return namePlayerType.getValue()
+        .createPlayerWithName(namePlayerType.getKey());
   }
 
   @Override
@@ -151,11 +131,7 @@ public class TripleA implements IGameLoader {
     }
   }
 
-  @Override
-  public String[] getServerPlayerTypes() {
-    return new String[] {HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, FAST_COMPUTER_PLAYER_TYPE,
-        PRO_COMPUTER_PLAYER_TYPE, DOESNOTHINGAI_COMPUTER_PLAYER_TYPE};
-  }
+
 
   @Override
   public Class<? extends IChannelSubscribor> getDisplayType() {
@@ -182,10 +158,5 @@ public class TripleA implements IGameLoader {
         return new TripleAUnit(type, owner, data);
       }
     };
-  }
-
-  @Override
-  public String toString() {
-    return "TripleA[]";
   }
 }
