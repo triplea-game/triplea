@@ -26,7 +26,7 @@ public final class LobbyPropertyReader {
   private static PropertyReader getReader() {
     // fall back to a secondary path if primary is not available (to help support development)
     return readPropertyFile(LOBBY_PROPERTIES_FILE_PATH_1)
-        .orElse(readPropertyFile(LOBBY_PROPERTIES_FILE_PATH_2)
+        .orElseGet(() -> readPropertyFile(LOBBY_PROPERTIES_FILE_PATH_2)
             .orElseThrow(() -> new IllegalStateException(String.format(
                 "Could not find property file at either: %s, or %s",
                 new File(LOBBY_PROPERTIES_FILE_PATH_1).getAbsolutePath(),
