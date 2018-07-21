@@ -531,9 +531,6 @@ public class HeadlessGameServer {
     Optional.ofNullable(setupPanelModel)
         .ifPresent(model -> model.getPanel().cancel());
 
-    if (gameSelectorModel != null && gameSelectorModel.getGameData() != null) {
-      gameSelectorModel.getGameData().clearAllListeners();
-    }
     System.out.println("Shutdown Script Finished.");
   }
 
