@@ -2,6 +2,9 @@ package games.strategy.engine.config.lobby;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.File;
+import java.util.Optional;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.config.FilePropertyReader;
@@ -11,12 +14,30 @@ import games.strategy.engine.config.PropertyReader;
  * Reads property values from the lobby configuration file.
  */
 public final class LobbyPropertyReader {
-  private static final String LOBBY_PROPERTIES_FILE = "config/lobby/lobby.properties";
+  private static final String LOBBY_PROPERTIES_FILE_PATH_1 = "config/lobby/lobby.properties";
+  private static final String LOBBY_PROPERTIES_FILE_PATH_2 = "lobby.properties";
 
   private final PropertyReader propertyReader;
 
   public LobbyPropertyReader() {
-    this(new FilePropertyReader(LOBBY_PROPERTIES_FILE));
+    this(getReader());
+  }
+
+  private static PropertyReader getReader() {
+    // fall back to a secondary path if primary is not available (to help support development)
+    return readPropertyFile(LOBBY_PROPERTIES_FILE_PATH_1)
+        .orElse(readPropertyFile(LOBBY_PROPERTIES_FILE_PATH_2)
+            .orElseThrow(() -> new IllegalStateException(String.format(
+                "Could not find property file at either: %s, or %s",
+                new File(LOBBY_PROPERTIES_FILE_PATH_1).getAbsolutePath(),
+                new File(LOBBY_PROPERTIES_FILE_PATH_2).getAbsolutePath()))));
+  }
+
+  private static Optional<PropertyReader> readPropertyFile(String path) {
+    if (!new File(path).exists()) {
+      return Optional.empty();
+    }
+    return Optional.of(new FilePropertyReader(path));
   }
 
   @VisibleForTesting
