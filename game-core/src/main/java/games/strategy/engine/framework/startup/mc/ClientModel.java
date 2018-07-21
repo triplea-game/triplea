@@ -271,7 +271,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   /**
-   * Same as @{code shutdown()} but keeps chat alive.
+   * Resets stats and nulls out references, keeps chat alive.
    */
   public void cancel() {
     if (messenger == null) {
