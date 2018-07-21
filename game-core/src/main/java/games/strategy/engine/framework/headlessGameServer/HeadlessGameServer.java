@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -527,16 +528,12 @@ public class HeadlessGameServer {
     } catch (final Exception e) {
       logger.log(Level.SEVERE, "Failed to stop game", e);
     }
-    try {
-      if (gameSelectorModel != null && gameSelectorModel.getGameData() != null) {
-        gameSelectorModel.getGameData().clearAllListeners();
-      }
-    } catch (final Exception e) {
-      logger.log(Level.SEVERE, "Failed to clear all game data listeners", e);
+    Optional.ofNullable(setupPanelModel)
+        .ifPresent(model -> model.getPanel().cancel());
+
+    if (gameSelectorModel != null && gameSelectorModel.getGameData() != null) {
+      gameSelectorModel.getGameData().clearAllListeners();
     }
-    instance = null;
-    setupPanelModel = null;
-    game = null;
     System.out.println("Shutdown Script Finished.");
   }
 
