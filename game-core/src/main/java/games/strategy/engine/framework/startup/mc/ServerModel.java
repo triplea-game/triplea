@@ -650,11 +650,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         continue;
       }
       if (playedBy.equals(serverMessenger.getLocalNode().getName())) {
-        PlayerType type = defaultLocalType;
-        if (localPlayerTypes.containsKey(player)) {
-          type = localPlayerTypes.get(player);
-        }
-        localPlayerMappings.put(player, type);
+        localPlayerMappings.put(player, localPlayerTypes.getOrDefault(player, defaultLocalType));
       }
     }
     return localPlayerMappings;
