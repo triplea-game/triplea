@@ -228,13 +228,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   @Override
-  public void shutDown() {
-    model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
-    model.shutDown();
-    lobbyWatcher.shutDown();
-  }
-
-  @Override
   public void cancel() {
     model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
     model.cancel();

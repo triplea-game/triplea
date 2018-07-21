@@ -100,13 +100,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
     setPreferredSize(initialSize);
 
     playButton.addActionListener(e -> launchAction.accept(this));
-    quitButton.addActionListener(e -> {
-      try {
-        gameSetupPanel.shutDown();
-      } finally {
-        GameRunner.quitGame();
-      }
-    });
+    quitButton.addActionListener(e -> GameRunner.quitGame());
     cancelButton.addActionListener(e -> cancelAction.run());
     setWidgetActivation();
   }

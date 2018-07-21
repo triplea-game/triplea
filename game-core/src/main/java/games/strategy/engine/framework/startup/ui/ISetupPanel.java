@@ -33,8 +33,6 @@ public interface ISetupPanel {
    */
   void cancel();
 
-  void shutDown();
-
   /**
    * Indicates we can start the game.
    */

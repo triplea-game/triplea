@@ -170,9 +170,6 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   @Override
-  public void shutDown() {}
-
-  @Override
   public boolean showCancelButton() {
     return false;
   }

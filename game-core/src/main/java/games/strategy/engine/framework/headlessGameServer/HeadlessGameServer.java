@@ -528,16 +528,6 @@ public class HeadlessGameServer {
       logger.log(Level.SEVERE, "Failed to stop game", e);
     }
     try {
-      if (setupPanelModel != null) {
-        final ISetupPanel setup = setupPanelModel.getPanel();
-        if (setup instanceof HeadlessServerSetup) {
-          setup.shutDown();
-        }
-      }
-    } catch (final Exception e) {
-      logger.log(Level.SEVERE, "Failed to shutdown setup panel", e);
-    }
-    try {
       if (gameSelectorModel != null && gameSelectorModel.getGameData() != null) {
         gameSelectorModel.getGameData().clearAllListeners();
       }

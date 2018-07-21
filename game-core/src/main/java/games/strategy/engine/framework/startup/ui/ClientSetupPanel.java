@@ -150,11 +150,6 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public void shutDown() {
-    clientModel.shutDown();
-  }
-
-  @Override
   public void cancel() {
     clientModel.cancel();
   }

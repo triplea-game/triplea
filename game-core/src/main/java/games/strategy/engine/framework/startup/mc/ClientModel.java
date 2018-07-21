@@ -271,25 +271,6 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   /**
-   * Nulls everything out and flags everything for shutdown.
-   */
-  // TODO: do we really have to null everything out?? can we just null out the gameSelectorModel?
-  public void shutDown() {
-    if (messenger == null) {
-      return;
-    }
-    objectStreamFactory.setData(null);
-    messenger.shutDown();
-    chatPanel.shutDown();
-    gameSelectorModel.setGameData(null);
-    gameSelectorModel.setCanSelect(false);
-    hostIsHeadlessBot = false;
-    gameSelectorModel.setIsHostHeadlessBot(false);
-    gameSelectorModel.setClientModelForHostBots(null);
-    messenger.removeErrorListener(this);
-  }
-
-  /**
    * Same as @{code shutdown()} but keeps chat alive.
    */
   public void cancel() {
