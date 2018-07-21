@@ -137,7 +137,6 @@ public class MetaSetupPanel extends SetupPanel {
     SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
   }
 
-
   private void connectToLobby() {
     final LobbyServerProperties lobbyServerProperties = new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
     final LobbyLogin login = new LobbyLogin(
