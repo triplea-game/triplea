@@ -306,8 +306,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow newPlayerRow =
-          new PlayerRow(name, reloadSelections, playerNamesAndAlliancesInTurnOrder.get(name),
-              gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
+          new PlayerRow(name, reloadSelections, playerNamesAndAlliancesInTurnOrder.get(name));
       playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);
     }
@@ -322,10 +321,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final JCheckBox enabledCheckBox;
     private final JComboBox<String> type;
     private final JLabel alliance;
-    private final String[] types;
 
     PlayerRow(final String playerName, final Map<String, String> reloadSelections,
-        final Collection<String> playerAlliances, final String[] types) {
+        final Collection<String> playerAlliances) {
       nameLabel = new JLabel(playerName);
       playerLabel = new JLabel(model.getMessenger().getLocalNode().getName());
       localCheckBox = new JCheckBox();
@@ -335,19 +333,19 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       // this gets updated later
       enabledCheckBox.setSelected(true);
-      this.types = types;
-      type = new JComboBox<>(types);
+      String[] playerTypes = PlayerType.playerTypes();
+      type = new JComboBox<>(playerTypes);
       String previousSelection = reloadSelections.get(playerName);
       if (previousSelection.equalsIgnoreCase("Client")) {
-        previousSelection = types[0];
+        previousSelection = playerTypes[0];
       }
-      if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection)) {
+      if (!(previousSelection.equals("no_one")) && Arrays.asList(playerTypes).contains(previousSelection)) {
         type.setSelectedItem(previousSelection);
-        model.setLocalPlayerType(nameLabel.getText(), (String) type.getSelectedItem());
+        model.setLocalPlayerType(nameLabel.getText(), PlayerType.fromLabel((String) type.getSelectedItem()));
       } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {
         // the 4th in the list should be Pro AI (Hard AI)
-        type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 3))]);
-        model.setLocalPlayerType(nameLabel.getText(), (String) type.getSelectedItem());
+        type.setSelectedItem(PlayerType.PRO_AI.getLabel());
+        model.setLocalPlayerType(nameLabel.getText(), PlayerType.PRO_AI);
       }
       if (playerAlliances.contains(playerName)) {
         alliance = new JLabel();
@@ -355,7 +353,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
         alliance = new JLabel(playerAlliances.toString());
       }
       type.addActionListener(
-          e -> model.setLocalPlayerType(nameLabel.getText(), (String) type.getSelectedItem()));
+          e -> model.setLocalPlayerType(nameLabel.getText(),
+              PlayerType.fromLabel((String) type.getSelectedItem())));
     }
 
     public JComboBox<String> getType() {
@@ -418,12 +417,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       public void actionPerformed(final ActionEvent e) {
         if (enabledCheckBox.isSelected()) {
           model.enablePlayer(nameLabel.getText());
-          // the 1st in the list should be human
-          type.setSelectedItem(types[0]);
+          type.setSelectedItem(PlayerType.HUMAN_PLAYER);
         } else {
           model.disablePlayer(nameLabel.getText());
-          // the 2nd in the list should be Weak AI
-          type.setSelectedItem(types[Math.max(0, Math.min(types.length - 1, 1))]);
+          type.setSelectedItem(PlayerType.WEAK_AI.name());
         }
         setWidgetActivation();
       }

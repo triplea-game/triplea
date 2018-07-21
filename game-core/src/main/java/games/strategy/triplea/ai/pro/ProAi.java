@@ -15,6 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
@@ -74,8 +75,8 @@ public class ProAi extends AbstractAi {
   private List<PoliticalActionAttachment> storedPoliticalActions;
   private List<Territory> storedStrafingTerritories;
 
-  public ProAi(final String name, final String type) {
-    super(name, type);
+  public ProAi(final String name) {
+    super(name);
     initializeCalc();
     combatMoveAi = new ProCombatMoveAi(this);
     nonCombatMoveAi = new ProNonCombatMoveAi(this);
@@ -88,6 +89,11 @@ public class ProAi extends AbstractAi {
     storedPurchaseTerritories = null;
     storedPoliticalActions = null;
     storedStrafingTerritories = new ArrayList<>();
+  }
+
+  @Override
+  public PlayerType getPlayerType() {
+    return PlayerType.PRO_AI;
   }
 
   protected void initializeCalc() {

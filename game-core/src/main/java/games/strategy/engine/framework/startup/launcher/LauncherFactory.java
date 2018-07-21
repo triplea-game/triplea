@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.random.PlainRandomSource;
 
 /**
@@ -21,7 +22,7 @@ public class LauncherFactory {
       final GameSelectorModel gameSelectorModel,
       final Collection<? extends PlayerCountrySelection> playerRows) {
 
-    final Map<String, String> playerTypes = playerRows.stream()
+    final Map<String, PlayerType> playerTypes = playerRows.stream()
         .collect(Collectors.toMap(PlayerCountrySelection::getPlayerName, PlayerCountrySelection::getPlayerType));
 
     final Map<String, Boolean> playersEnabled = playerRows.stream()

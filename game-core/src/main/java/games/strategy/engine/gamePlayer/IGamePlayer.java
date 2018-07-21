@@ -1,6 +1,7 @@
 package games.strategy.engine.gamePlayer;
 
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 
 /**
  * A player of the game.
@@ -16,14 +17,11 @@ public interface IGamePlayer extends IRemotePlayer {
   void initialize(IPlayerBridge bridge, PlayerID id);
 
   /**
-   * @return The name of the game player (what nation we are).
+   * Returns the nation name.
    */
   String getName();
 
-  /**
-   * @return The type of player we are (human or a kind of ai).
-   */
-  String getType();
+  PlayerType getPlayerType();
 
   /**
    * Start the given step. stepName appears as it does in the game xml file.

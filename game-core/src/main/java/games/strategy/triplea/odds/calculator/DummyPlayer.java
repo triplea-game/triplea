@@ -10,6 +10,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
@@ -36,10 +37,10 @@ class DummyPlayer extends AbstractAi {
   private final List<Unit> orderOfLosses;
 
   DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name,
-      final String type, final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand,
+      final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand,
       final int retreatAfterRound,
       final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft) {
-    super(name, type);
+    super(name);
     this.keepAtLeastOneLand = keepAtLeastOneLand;
     this.retreatAfterRound = retreatAfterRound;
     this.retreatAfterXUnitsLeft = retreatAfterXUnitsLeft;
@@ -47,6 +48,11 @@ class DummyPlayer extends AbstractAi {
     bridge = dummyDelegateBridge;
     isAttacker = attacker;
     this.orderOfLosses = orderOfLosses;
+  }
+
+  @Override
+  public PlayerType getPlayerType() {
+    return PlayerType.BATTLE_CALC_DUMMY;
   }
 
   private MustFightBattle getBattle() {

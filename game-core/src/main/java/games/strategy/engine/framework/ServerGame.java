@@ -30,6 +30,7 @@ import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -584,9 +585,9 @@ public class ServerGame extends AbstractGame {
               player.getName()
                   + ((player.getName().endsWith("s") || player.getName().endsWith("ese")
                       || player.getName().endsWith("ish")) ? " are" : " is")
-                  + " now being played by: " + player.getType());
+                  + " now being played by: " + player.getPlayerType().getLabel());
       final PlayerID p = data.getPlayerList().getPlayerId(player.getName());
-      final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getType());
+      final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getPlayerType().getLabel());
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
       }
