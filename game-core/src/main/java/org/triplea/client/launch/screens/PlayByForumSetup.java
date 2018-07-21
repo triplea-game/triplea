@@ -38,7 +38,7 @@ class PlayByForumSetup {
 
     final JButton viewForumButton = JButtonBuilder.builder()
         .title("View Forum")
-        .enabled(false)
+        .disabled()
         .actionListener(
             () -> OpenFileUtility.openUrl(UrlConstants.TRIPLEA_FORUM.toString() + "/topic/" + topicIdField.getText()))
         .build();
@@ -46,7 +46,7 @@ class PlayByForumSetup {
 
     final JButton testPostButton = JButtonBuilder.builder()
         .title("Test Post")
-        .enabled(false)
+        .disabled()
         .actionListener(() -> {
         })
         .build();
