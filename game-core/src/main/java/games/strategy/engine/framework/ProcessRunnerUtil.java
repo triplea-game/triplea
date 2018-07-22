@@ -19,13 +19,6 @@ import games.strategy.engine.framework.system.SystemProperties;
  */
 public class ProcessRunnerUtil {
 
-  public static void runClass(final Class<?> mainClass) {
-    final List<String> commands = new ArrayList<>();
-    populateBasicJavaArgs(commands);
-    commands.add(mainClass.getName());
-    exec(commands);
-  }
-
   public static void populateBasicJavaArgs(final List<String> commands) {
     populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath());
   }

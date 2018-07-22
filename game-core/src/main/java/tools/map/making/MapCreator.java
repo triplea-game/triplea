@@ -29,6 +29,7 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;
 import tools.image.DecorationPlacer;
@@ -63,12 +64,17 @@ public class MapCreator extends JFrame {
     SwingAction.invokeAndWait(() -> {
       ClientSetting.initialize();
       LookAndFeel.setupLookAndFeel();
+    });
+    openMapCreatorWindow();
+  }
 
+  public static void openMapCreatorWindow() {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       final MapCreator creator = new MapCreator();
       creator.setSize(800, 600);
       creator.setLocationRelativeTo(null);
       creator.setVisible(true);
-    });
+    }));
   }
 
   private MapCreator() {
