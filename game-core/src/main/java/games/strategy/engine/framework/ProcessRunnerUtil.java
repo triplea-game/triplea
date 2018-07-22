@@ -26,19 +26,11 @@ public class ProcessRunnerUtil {
     exec(commands);
   }
 
-  public static void populateBasicJavaArgs(final List<String> commands) {
-    populateBasicJavaArgs(commands, null);
-  }
-
-  static void populateBasicJavaArgs(final List<String> commands, final String classpath) {
+  static void populateBasicJavaArgs(final List<String> commands) {
     final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
     commands.add("-classpath");
-    if (classpath != null && classpath.length() > 0) {
-      commands.add(classpath);
-    } else {
-      commands.add(SystemProperties.getJavaClassPath());
-    }
+    commands.add(SystemProperties.getJavaClassPath());
 
     final Optional<String> maxMemory = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
         .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst();

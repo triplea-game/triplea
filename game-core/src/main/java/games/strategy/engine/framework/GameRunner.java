@@ -411,7 +411,7 @@ public class GameRunner {
 
   private static void joinGame(final int port, final String hostAddressIp, final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, null);
+    ProcessRunnerUtil.populateBasicJavaArgs(commands);
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT + "=true");
     commands.add(prefix + TRIPLEA_PORT + "=" + port);
