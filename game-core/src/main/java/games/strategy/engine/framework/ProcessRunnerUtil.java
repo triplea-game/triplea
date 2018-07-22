@@ -36,10 +36,7 @@ public class ProcessRunnerUtil {
         .filter(s -> s.toLowerCase().startsWith("-xmx"))
         .map(s -> s.substring(4))
         .findFirst();
-    if (maxMemory.isPresent()) {
-      System.out.println("Setting memory for new triplea process to: " + maxMemory.get());
-      commands.add("-Xmx" + maxMemory.get());
-    }
+    maxMemory.ifPresent(max -> commands.add("-Xmx" + max));
     if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
