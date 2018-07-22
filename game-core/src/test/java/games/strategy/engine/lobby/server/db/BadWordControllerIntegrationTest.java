@@ -13,11 +13,10 @@ import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
 @Integration
-public class BadWordControllerIntegrationTest {
-
+public final class BadWordControllerIntegrationTest extends AbstractControllerTestCase {
   @Test
   public void testInsertAndRemoveBadWord() throws Exception {
-    final BadWordController controller = new BadWordController();
+    final BadWordController controller = new BadWordController(database);
     final String word = Util.createUniqueTimeStamp();
     controller.addBadWord(word);
     assertTrue(controller.list().contains(word));
@@ -27,7 +26,7 @@ public class BadWordControllerIntegrationTest {
 
   @Test
   public void testDuplicateBadWord() {
-    final BadWordController controller = new BadWordController();
+    final BadWordController controller = new BadWordController(database);
     final String word = Util.createUniqueTimeStamp();
     final int previousCount = controller.list().size();
     controller.addBadWord(word);
@@ -36,8 +35,8 @@ public class BadWordControllerIntegrationTest {
     assertEquals(previousCount + 1, controller.list().size());
   }
 
-  private static void removeBadWord(final String word) throws Exception {
-    try (Connection con = Database.getPostgresConnection();
+  private void removeBadWord(final String word) throws Exception {
+    try (Connection con = database.newConnection();
         PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
       ps.setString(1, word);
       ps.execute();

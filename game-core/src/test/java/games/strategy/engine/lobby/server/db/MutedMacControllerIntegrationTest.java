@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.lobby.server.User;
 
 public final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final MutedMacController controller = spy(new MutedMacController());
+  private final MutedMacController controller = spy(new MutedMacController(database));
 
   @Test
   public void testMuteMacForever() {

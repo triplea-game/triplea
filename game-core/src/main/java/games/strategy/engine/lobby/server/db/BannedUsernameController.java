@@ -18,6 +18,10 @@ import games.strategy.util.Tuple;
  * Utility class to create/read/delete banned usernames (there is no update).
  */
 public class BannedUsernameController extends TimedController implements BannedUsernameDao {
+  public BannedUsernameController(final Database database) {
+    super(database);
+  }
+
   @Override
   public void addBannedUsername(final User bannedUser, final @Nullable Instant banTill, final User moderator) {
     checkNotNull(bannedUser);
@@ -38,7 +42,7 @@ public class BannedUsernameController extends TimedController implements BannedU
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, bannedUser.getUsername());
       ps.setString(2, bannedUser.getInetAddress().getHostAddress());
@@ -54,8 +58,8 @@ public class BannedUsernameController extends TimedController implements BannedU
     }
   }
 
-  private static void removeBannedUsername(final String username) {
-    try (Connection con = Database.getPostgresConnection();
+  private void removeBannedUsername(final String username) {
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?")) {
       ps.setString(1, username);
       ps.execute();
@@ -71,7 +75,7 @@ public class BannedUsernameController extends TimedController implements BannedU
   @Override
   public Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned(final String username) {
     final String sql = "select username, ban_till from banned_usernames where username = ?";
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {

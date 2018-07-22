@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.function.Supplier;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -15,17 +14,12 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
-public class UserController implements UserDao {
-  private final Supplier<Connection> connectionSupplier;
-
-
-  public UserController() {
-    this(Database::getPostgresConnection);
-  }
-
-  @VisibleForTesting
-  UserController(final Supplier<Connection> connectionSupplier) {
-    this.connectionSupplier = connectionSupplier;
+/**
+ * Implementation of {@link UserDao} for a Postgres database.
+ */
+public final class UserController extends AbstractController implements UserDao {
+  public UserController(final Database database) {
+    super(database);
   }
 
   @Override
@@ -39,7 +33,7 @@ public class UserController implements UserDao {
   }
 
   private HashedPassword getPassword(final String username, final boolean legacy) {
-    try (Connection con = connectionSupplier.get();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con
             .prepareStatement("select password, coalesce(bcrypt_password, password) from ta_users where username=?")) {
       ps.setString(1, username);
@@ -57,7 +51,8 @@ public class UserController implements UserDao {
   @Override
   public boolean doesUserExist(final String username) {
     final String sql = "select username from ta_users where upper(username) = upper(?)";
-    try (Connection con = connectionSupplier.get(); final PreparedStatement ps = con.prepareStatement(sql)) {
+    try (Connection con = newDatabaseConnection();
+        PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         return rs.next();
@@ -71,7 +66,7 @@ public class UserController implements UserDao {
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
-    try (Connection con = connectionSupplier.get();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(
             String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
       ps.setString(1, hashedPassword.value);
@@ -109,7 +104,7 @@ public class UserController implements UserDao {
   public void makeAdmin(final DBUser user) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
-    try (Connection con = connectionSupplier.get();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement("update ta_users set admin=? where username = ?")) {
       ps.setBoolean(1, user.isAdmin());
       ps.setString(2, user.getName());
@@ -125,7 +120,7 @@ public class UserController implements UserDao {
     Preconditions.checkState(hashedPassword.isHashedWithSalt());
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
-    try (Connection con = connectionSupplier.get();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(
             "insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
       ps.setString(1, user.getName());
@@ -142,7 +137,7 @@ public class UserController implements UserDao {
 
   @Override
   public boolean login(final String username, final HashedPassword hashedPassword) {
-    try (Connection con = connectionSupplier.get()) {
+    try (Connection con = newDatabaseConnection()) {
       if (hashedPassword.isHashedWithSalt()) {
         try (PreparedStatement ps =
             con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
@@ -181,7 +176,7 @@ public class UserController implements UserDao {
   @Override
   public DBUser getUserByName(final String username) {
     final String sql = "select * from ta_users where username = ?";
-    try (Connection con = connectionSupplier.get();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {

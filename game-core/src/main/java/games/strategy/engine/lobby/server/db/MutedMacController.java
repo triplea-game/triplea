@@ -18,6 +18,10 @@ import games.strategy.engine.lobby.server.User;
  * Utility class to create/read/delete muted macs (there is no update).
  */
 public class MutedMacController extends TimedController {
+  public MutedMacController(final Database database) {
+    super(database);
+  }
+
   /**
    * Mute the given mac. If muteTill is not null, the mute will expire when muteTill is reached.
    *
@@ -50,7 +54,7 @@ public class MutedMacController extends TimedController {
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mutedUser.getUsername());
       ps.setString(2, mutedUser.getInetAddress().getHostAddress());
@@ -66,8 +70,8 @@ public class MutedMacController extends TimedController {
     }
   }
 
-  private static void removeMutedMac(final String mac) {
-    try (Connection con = Database.getPostgresConnection();
+  private void removeMutedMac(final String mac) {
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
@@ -91,7 +95,7 @@ public class MutedMacController extends TimedController {
    */
   public Optional<Instant> getMacUnmuteTime(final String mac) {
     final String sql = "select mac, mute_till from muted_macs where mac=?";
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (ResultSet rs = ps.executeQuery()) {

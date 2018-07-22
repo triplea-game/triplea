@@ -1,47 +1,51 @@
 package games.strategy.engine.lobby.server.db;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
-import games.strategy.engine.lobby.server.LobbyContext;
 
 /**
- * Utility to get connections to the database.
+ * Utility to get connections to the Postgres lobby database.
+ *
+ * <p>
+ * Instances of this class are thread-safe if the underlying {@link LobbyPropertyReader} is thread-safe.
+ * </p>
  */
+@ThreadSafe
 public final class Database {
-  private static final Properties connectionProperties = getConnectionProperties();
+  private final LobbyPropertyReader lobbyPropertyReader;
 
-  private Database() {}
+  public Database(final LobbyPropertyReader lobbyPropertyReader) {
+    checkNotNull(lobbyPropertyReader);
 
-  private static Properties getConnectionProperties() {
-    final Properties props = new Properties();
-    props.put("user", LobbyContext.lobbyPropertyReader().getPostgresUser());
-    props.put("password", LobbyContext.lobbyPropertyReader().getPostgresPassword());
-    return props;
+    this.lobbyPropertyReader = lobbyPropertyReader;
   }
 
-  /**
-   * Creates and returns a new database connection.
-   */
-  public static Connection getPostgresConnection() {
-    try {
-      final Connection connection = DriverManager.getConnection(getConnectionUrl(), connectionProperties);
-      connection.setAutoCommit(false);
-      return connection;
-    } catch (final SQLException e) {
-      throw new RuntimeException("Failure getting db connection", e);
-    }
+  public Connection newConnection() throws SQLException {
+    final Connection connection = DriverManager.getConnection(getConnectionUrl(), getConnectionProperties());
+    connection.setAutoCommit(false);
+    return connection;
   }
 
-  private static String getConnectionUrl() {
-    final LobbyPropertyReader lobbyPropertyReader = LobbyContext.lobbyPropertyReader();
+  private String getConnectionUrl() {
     return String.format(
         "jdbc:postgresql://%s:%d/%s",
         lobbyPropertyReader.getPostgresHost(),
         lobbyPropertyReader.getPostgresPort(),
         lobbyPropertyReader.getPostgresDatabase());
+  }
+
+  private Properties getConnectionProperties() {
+    final Properties props = new Properties();
+    props.put("user", lobbyPropertyReader.getPostgresUser());
+    props.put("password", lobbyPropertyReader.getPostgresPassword());
+    return props;
   }
 }

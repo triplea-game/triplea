@@ -30,6 +30,8 @@ import javax.annotation.Nullable;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
+import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.MutedMacController;
 import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
@@ -60,13 +62,57 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
+  /**
+   * The lobby database if this instance is for use by a lobby or {@code null} if this instance is for use by a game
+   * host.
+   */
+  private final @Nullable Database database;
+
+  /**
+   * Creates a new server messenger for use by a <strong>GAME HOST</strong> using the default object stream factory.
+   *
+   * <p>
+   * <strong>DO NOT</strong> use this constructor to create a server messenger for use by a lobby. Use
+   * {@link #ServerMessenger(String, LobbyPropertyReader)} instead.
+   * </p>
+   */
   public ServerMessenger(final String name, final int requestedPortNumber) throws IOException {
     this(name, requestedPortNumber, new DefaultObjectStreamFactory());
   }
 
-  // A hack, till I think of something better
+  /**
+   * Creates a new server messenger for use by a <strong>GAME HOST</strong> using the specified object stream factory.
+   *
+   * <p>
+   * <strong>DO NOT</strong> use this constructor to create a server messenger for use by a lobby. Use
+   * {@link #ServerMessenger(String, LobbyPropertyReader)} instead.
+   * </p>
+   */
   public ServerMessenger(final String name, final int requestedPortNumber, final IObjectStreamFactory streamFactory)
       throws IOException {
+    this(name, requestedPortNumber, streamFactory, null);
+  }
+
+  /**
+   * Creates a new server messenger for use by a <strong>LOBBY</strong>.
+   *
+   * <p>
+   * <strong>DO NOT</strong> use this constructor to create a server messenger for use by a game host. Use
+   * {@link #ServerMessenger(String, int)} or {@link #ServerMessenger(String, int, IObjectStreamFactory)} instead.
+   * </p>
+   */
+  public ServerMessenger(final String name, final LobbyPropertyReader lobbyPropertyReader) throws IOException {
+    this(name, lobbyPropertyReader.getPort(), new DefaultObjectStreamFactory(), new Database(lobbyPropertyReader));
+  }
+
+  // A hack, till I think of something better
+  private ServerMessenger(
+      final String name,
+      final int requestedPortNumber,
+      final IObjectStreamFactory streamFactory,
+      final @Nullable Database database)
+      throws IOException {
+    this.database = database;
     socketChannel = ServerSocketChannel.open();
     socketChannel.configureBlocking(false);
     socketChannel.socket().setReuseAddress(true);
@@ -230,7 +276,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       if (isLobby()) {
         final String realName = uniquePlayerName.split(" ")[0];
         if (!liveMutedUsernames.contains(realName)) {
-          final Optional<Instant> muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
+          final Optional<Instant> muteTill = new MutedUsernameController(database).getUsernameUnmuteTime(realName);
           muteTill.ifPresent(instant -> {
             if (instant.isAfter(Instant.now())) {
               // Signal the player as muted
@@ -240,7 +286,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
           });
         }
         if (!liveMutedMacAddresses.contains(mac)) {
-          final Optional<Instant> muteTill = new MutedMacController().getMacUnmuteTime(mac);
+          final Optional<Instant> muteTill = new MutedMacController(database).getMacUnmuteTime(mac);
           muteTill.ifPresent(instant -> {
             if (instant.isAfter(Instant.now())) {
               // Signal the player as muted
@@ -582,7 +628,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private TimerTask getUsernameUnmuteTask(final String username) {
     return createUnmuteTimerTask(
-        () -> (isLobby() && !new MutedUsernameController().isUsernameMuted(username)) || isGame(),
+        () -> (isLobby() && !new MutedUsernameController(database).isUsernameMuted(username)) || isGame(),
         () -> liveMutedUsernames.remove(username));
   }
 
@@ -601,7 +647,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private TimerTask getMacUnmuteTask(final String mac) {
     return createUnmuteTimerTask(
-        () -> (isLobby() && !new MutedMacController().isMacMuted(mac)) || isGame(),
+        () -> (isLobby() && !new MutedMacController(database).isMacMuted(mac)) || isGame(),
         () -> liveMutedMacAddresses.remove(mac));
   }
 

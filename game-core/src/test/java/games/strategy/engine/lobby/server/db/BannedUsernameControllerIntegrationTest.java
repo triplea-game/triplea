@@ -18,7 +18,7 @@ import games.strategy.engine.lobby.server.User;
 import games.strategy.util.Tuple;
 
 public final class BannedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final BannedUsernameController controller = spy(new BannedUsernameController());
+  private final BannedUsernameController controller = spy(new BannedUsernameController(database));
 
   @Test
   public void testBanUsernameForever() {

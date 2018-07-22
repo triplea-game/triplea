@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.lobby.server.User;
 
 public final class MutedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final MutedUsernameController controller = spy(new MutedUsernameController());
+  private final MutedUsernameController controller = spy(new MutedUsernameController(database));
 
   @Test
   public void testMuteUsernameForever() {

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
@@ -18,19 +19,19 @@ public class LobbyServer {
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
 
-  LobbyServer(final int port) {
+  LobbyServer(final LobbyPropertyReader lobbyPropertyReader) {
     final IServerMessenger server;
     try {
-      server = new ServerMessenger(ADMIN_USERNAME, port);
+      server = new ServerMessenger(ADMIN_USERNAME, lobbyPropertyReader);
     } catch (final IOException ex) {
       logger.log(Level.SEVERE, ex.toString());
       throw new IllegalStateException(ex.getMessage());
     }
     final Messengers messengers = new Messengers(server);
-    server.setLoginValidator(new LobbyLoginValidator());
+    server.setLoginValidator(new LobbyLoginValidator(lobbyPropertyReader));
     // setup common objects
-    new UserManager().register(messengers.getRemoteMessenger());
-    final ModeratorController moderatorController = new ModeratorController(server, messengers);
+    new UserManager(lobbyPropertyReader).register(messengers.getRemoteMessenger());
+    final ModeratorController moderatorController = new ModeratorController(server, messengers, lobbyPropertyReader);
     moderatorController.register(messengers.getRemoteMessenger());
     new ChatController(LOBBY_CHAT, messengers, moderatorController);
 
