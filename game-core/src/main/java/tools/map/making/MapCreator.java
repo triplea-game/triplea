@@ -58,16 +58,8 @@ public class MapCreator extends JFrame {
   private final JPanel panel4 = new JPanel();
 
   /**
-   * Entry point for the map-making utilities application.
+   * Opens a map creator window.
    */
-  public static void main(final String[] args) throws Exception {
-    SwingAction.invokeAndWait(() -> {
-      ClientSetting.initialize();
-      LookAndFeel.setupLookAndFeel();
-    });
-    openMapCreatorWindow();
-  }
-
   public static void openMapCreatorWindow() {
     Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       final MapCreator creator = new MapCreator();
@@ -110,10 +102,10 @@ public class MapCreator extends JFrame {
     part3.addActionListener(SwingAction.of("Part 3", e -> setupMainPanel(panel3)));
     part4.addActionListener(SwingAction.of("Part 4", e -> setupMainPanel(panel4)));
     // set up the menu actions
-    final Action exitAction = SwingAction.of("Exit", e -> System.exit(0));
-    exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+    final Action closeAction = SwingAction.of("Close", e -> this.dispose());
+    closeAction.putValue(Action.SHORT_DESCRIPTION, "Close Window");
     // set up the menu items
-    final JMenuItem exitItem = new JMenuItem(exitAction);
+    final JMenuItem exitItem = new JMenuItem(closeAction);
     // set up the menu bar
     final JMenuBar menuBar = new JMenuBar();
     setJMenuBar(menuBar);
