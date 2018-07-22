@@ -13,8 +13,8 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Semaphore;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -237,10 +237,11 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
       final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
-      final Semaphore semaphore = new Semaphore(0);
+      final CountDownLatch clientReadySignal = new CountDownLatch(1);
+      final CountDownLatch testCompleteSignal = new CountDownLatch(1);
       final IFoo foo = () -> {
-        semaphore.release();
-        Interruptibles.await(semaphore::acquire);
+        clientReadySignal.countDown();
+        Interruptibles.await(testCompleteSignal);
       };
       clientRemoteMessenger.registerRemote(foo, test);
       serverUnifiedMessenger.getHub().waitForNodesToImplement(test.getName());
@@ -249,10 +250,10 @@ public class RemoteMessengerTest {
         final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
         remoteFoo.foo();
       });
-      // Wait for each other
-      Interruptibles.await(semaphore::acquire);
+      // wait for client to start
+      Interruptibles.await(clientReadySignal);
       client.shutDown();
-      semaphore.release();
+      testCompleteSignal.countDown();
       final Exception e = assertThrows(ExecutionException.class, future::get);
       assertTrue(ConnectionLostException.class.isInstance(e.getCause().getCause()));
     } finally {
