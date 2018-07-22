@@ -2826,7 +2826,7 @@ public class UnitAttachment extends DefaultAttachment {
 
     final List<UnitSupportAttachment> supports = CollectionUtils.getMatches(UnitSupportAttachment.get(unitType),
         Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
-    if (supports.size() > 2) {
+    if (supports.size() > 3) {
       tuples.add(Tuple.of("Can Provide Support to Units", ""));
     } else if (supports.size() > 0) {
       for (final UnitSupportAttachment support : supports) {
@@ -2834,10 +2834,10 @@ public class UnitAttachment extends DefaultAttachment {
           continue;
         }
         final StringBuilder sb = new StringBuilder();
-        sb.append(support.getBonus())
+        sb.append(support.getBonus()).append(" ").append(support.getBonusType())
             .append(support.getStrength() && support.getRoll() ? " Power&Rolls"
                 : (support.getStrength() ? " Power" : " Rolls"))
-            .append(" To ").append(support.getNumber())
+            .append(" to ").append(support.getNumber())
             .append(support.getAllied() && support.getEnemy() ? " Allied&Enemy "
                 : (support.getAllied() ? " Allied " : " Enemy "))
             .append(support.getUnitType().size() > 4 ? "Units"
@@ -3101,8 +3101,8 @@ public class UnitAttachment extends DefaultAttachment {
       sb.append(aa).append("/")
           .append(aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
           .append(" ").append(getTypeAa())
-          .append(" With ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
-          .append(" Attacks For ").append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds");
+          .append(" with ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
+          .append(" Attacks for ").append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds");
       tuples.add(Tuple.of(startOfKey + getAaKey(), sb.toString()));
     }
   }
@@ -3110,16 +3110,16 @@ public class UnitAttachment extends DefaultAttachment {
   private String getAaKey() {
     if (getIsAaForCombatOnly() && getIsAaForFlyOverOnly()
         && !Properties.getAaTerritoryRestricted(getData())) {
-      return " For Combat & Move Through";
+      return " for Combat & Move Through";
     } else if (getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()
         && !Properties.getAaTerritoryRestricted(getData())) {
-      return " For Raids & Move Through";
+      return " for Raids & Move Through";
     } else if (getIsAaForCombatOnly()) {
-      return " For Combat";
+      return " for Combat";
     } else if (getIsAaForBombingThisUnitOnly()) {
-      return " For Raids";
+      return " for Raids";
     } else if (getIsAaForFlyOverOnly()) {
-      return " For Move Through";
+      return " for Move Through";
     }
     return "";
   }
@@ -3127,7 +3127,7 @@ public class UnitAttachment extends DefaultAttachment {
   private static String joinRequiredUnits(final List<String[]> units) {
     return units.stream()
         .map(required -> required.length == 1 ? required[0] : Arrays.toString(required))
-        .collect(Collectors.joining(" Or "));
+        .collect(Collectors.joining(" or "));
   }
 
   /**
