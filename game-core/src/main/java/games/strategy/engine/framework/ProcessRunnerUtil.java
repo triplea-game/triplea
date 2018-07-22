@@ -42,7 +42,7 @@ public class ProcessRunnerUtil {
       commands.add("-Xdock:name=\"TripleA\"");
       final File icons = new File(ClientFileSystemHelper.getRootFolder(), "icons/triplea_icon.png");
       if (icons.exists()) {
-        commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
+        commands.add("-Xdock:icon=" + icons.getAbsolutePath());
       }
     }
   }
