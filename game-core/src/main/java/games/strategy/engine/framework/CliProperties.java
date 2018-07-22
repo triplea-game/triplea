@@ -6,7 +6,6 @@ package games.strategy.engine.framework;
 public class CliProperties {
   private CliProperties() {}
 
-  public static final String GAME_HOST_CONSOLE = "triplea.game.host.console";
   public static final String TRIPLEA_GAME = "triplea.game";
   public static final String TRIPLEA_MAP_DOWNLOAD = "triplea.map.download";
   public static final String TRIPLEA_SERVER = "triplea.server";
