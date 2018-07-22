@@ -30,10 +30,6 @@ public class ProcessRunnerUtil {
     populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath());
   }
 
-  public static void populateBasicJavaArgs(final List<String> commands, final long maxMemory) {
-    populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath(), Optional.of(String.valueOf(maxMemory)));
-  }
-
   static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
     populateBasicJavaArgs(commands, newClasspath, ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
         .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst());
