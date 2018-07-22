@@ -48,7 +48,6 @@ public class ProcessRunnerUtil {
   }
 
   public static void exec(final List<String> commands) {
-    // System.out.println("Commands: " + commands);
     final ProcessBuilder builder = new ProcessBuilder(commands);
     // merge the streams, so we only have to start one reader thread
     builder.redirectErrorStream(true);
