@@ -27,7 +27,7 @@ public class ProcessRunnerUtil {
   }
 
   public static void populateBasicJavaArgs(final List<String> commands) {
-    populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath());
+    populateBasicJavaArgs(commands, null);
   }
 
   static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
