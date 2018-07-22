@@ -406,13 +406,12 @@ public class GameRunner {
           "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), null, messengers);
+    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), messengers);
   }
 
-  private static void joinGame(final int port, final String hostAddressIp, final @Nullable String newClassPath,
-      final Messengers messengers) {
+  private static void joinGame(final int port, final String hostAddressIp, final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
+    ProcessRunnerUtil.populateBasicJavaArgs(commands, null);
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT + "=true");
     commands.add(prefix + TRIPLEA_PORT + "=" + port);
