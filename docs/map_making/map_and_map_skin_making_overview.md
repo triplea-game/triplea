@@ -196,15 +196,10 @@ Files:
 </p>
 <br>
 <p>
-	Now for the map creator.
-	<br>To run the map creator, you can start TripleA, then click "Engine Preferences", then click "Map Creator".
-	<br>Alternatively, you can run it by command line:
-	<b>How to run the Map Creator</b>
+<h3>Now for the map creator</h3>
+<p>
+    To run the map creator, you can start TripleA, then click "Run Map Creator".
 </p>
-<pre><code>cd bin<br>java -Xmx512m -classpath triplea.jar util/image/MapCreator</code></pre>
-<br>Example:
-<br><img src="https://cloud.githubusercontent.com/assets/12397753/21297550/3c3b3ad2-c537-11e6-91d3-da344e2fb4f1.png" alt="map image">
-<br>
 <p>
 	Now that it is running, you will see a simple screen with some options on the left, and some options in the middle.
 	<br>The first button will load this html tutorial you are reading now.
