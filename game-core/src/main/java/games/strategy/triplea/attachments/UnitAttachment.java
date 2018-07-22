@@ -2736,39 +2736,39 @@ public class UnitAttachment extends DefaultAttachment {
    * m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy.
    */
   public String toStringShortAndOnlyImportantDifferences(final PlayerID player) {
-    final Map<String, String> map = new LinkedHashMap<>();
+    final List<Tuple<String, String>> tuples = new ArrayList<>();
     final UnitType unitType = (UnitType) this.getAttachedTo();
 
     if (getIsAir()) {
-      map.put("Type", "Air");
+      tuples.add(Tuple.of("Type", "Air"));
     } else if (getIsSea()) {
-      map.put("Type", "Sea");
+      tuples.add(Tuple.of("Type", "Sea"));
     } else {
-      map.put("Type", "Land");
+      tuples.add(Tuple.of("Type", "Land"));
     }
     final int attackRolls = getAttackRolls(player);
     final int defenseRolls = getDefenseRolls(player);
     final String attack = (attackRolls > 1 ? (attackRolls + "x") : "") + getAttack(player);
     final String defense = (defenseRolls > 1 ? (defenseRolls + "x") : "") + getDefense(player);
     final String movement = String.valueOf(getMovement(player));
-    map.put("Att|Def|Mov", attack + "|" + defense + "|" + movement);
+    tuples.add(Tuple.of("Att|Def|Mov", attack + "|" + defense + "|" + movement));
     if (getHitPoints() > 1) {
-      map.put("HP", String.valueOf(getHitPoints()));
+      tuples.add(Tuple.of("HP", String.valueOf(getHitPoints())));
     }
 
     if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
-      map.put("Can Produce Units up to Territory Value", "");
+      tuples.add(Tuple.of("Can Produce Units up to Territory Value", ""));
     } else if (getCanProduceUnits() && getCanProduceXUnits() > 0) {
-      map.put("Can Produce Units", String.valueOf(getCanProduceXUnits()));
+      tuples.add(Tuple.of("Can Produce Units", String.valueOf(getCanProduceXUnits())));
     }
-    addIntegerMapDescription("Creates Units each Turn", getCreatesUnitsList(), map);
-    addIntegerMapDescription("Produces Resources each Turn", getCreatesResourcesList(), map);
+    addIntegerMapDescription("Creates Units each Turn", getCreatesUnitsList(), tuples);
+    addIntegerMapDescription("Produces Resources each Turn", getCreatesResourcesList(), tuples);
 
-    addIntegerMapDescription("Fuel Cost per Movement", getFuelCost(), map);
-    addIntegerMapDescription("Fuel Cost each Turn if Moved", getFuelFlatCost(), map);
+    addIntegerMapDescription("Fuel Cost per Movement", getFuelCost(), tuples);
+    addIntegerMapDescription("Fuel Cost each Turn if Moved", getFuelFlatCost(), tuples);
 
-    addAaDescription("Targeted Attack", getOffensiveAttackAa(player), getOffensiveAttackAaMaxDieSides(), map);
-    addAaDescription("Targeted Defense", getAttackAa(player), getAttackAaMaxDieSides(), map);
+    addAaDescription("Targeted Attack", getOffensiveAttackAa(player), getOffensiveAttackAaMaxDieSides(), tuples);
+    addAaDescription("Targeted Defense", getAttackAa(player), getAttackAaMaxDieSides(), tuples);
 
     // TODO: Rework rocket description
     if (getIsRocket() && playerHasRockets(player)) {
@@ -2784,14 +2784,14 @@ public class UnitAttachment extends DefaultAttachment {
       } else {
         sb.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
       }
-      map.put(sb.toString(), "");
+      tuples.add(Tuple.of(sb.toString(), ""));
     }
 
     if (getIsInfrastructure()) {
-      map.put("Can be Captured", "");
+      tuples.add(Tuple.of("Can be Captured", ""));
     }
     if (getIsConstruction()) {
-      map.put("Can be Placed Without Factory", "");
+      tuples.add(Tuple.of("Can be Placed Without Factory", ""));
     }
 
     // TODO: Rework damaged description
@@ -2811,22 +2811,23 @@ public class UnitAttachment extends DefaultAttachment {
       if (getCanDieFromReachingMaxDamage()) {
         sb.append("Dies if Max Damage Reached, ");
       }
-      map.put(sb.toString(), "");
+      tuples.add(Tuple.of(sb.toString(), ""));
     } else if (getCanBeDamaged()) {
-      map.put("Can be Damaged by Raids", "");
+      tuples.add(Tuple.of("Can be Damaged by Raids", ""));
     }
 
     if (getIsAirBase() && Properties.getScrambleRulesInEffect(getData())) {
-      map.put("Allows Scrambling", "");
+      tuples.add(Tuple.of("Allows Scrambling", ""));
     }
     if (getCanScramble() && Properties.getScrambleRulesInEffect(getData())) {
-      map.put("Scramble Range", String.valueOf(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1));
+      tuples
+          .add(Tuple.of("Scramble Range", String.valueOf(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)));
     }
 
     final List<UnitSupportAttachment> supports = CollectionUtils.getMatches(UnitSupportAttachment.get(unitType),
         Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
     if (supports.size() > 2) {
-      map.put("Can Provide Support to Units", "");
+      tuples.add(Tuple.of("Can Provide Support to Units", ""));
     } else if (supports.size() > 0) {
       for (final UnitSupportAttachment support : supports) {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
@@ -2843,24 +2844,25 @@ public class UnitAttachment extends DefaultAttachment {
                 : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
         final String key = "Support-" + (support.getOffence() && support.getDefence() ? "Attack/Defense"
             : (support.getOffence() ? "Attack" : "Defense"));
-        map.put(key, sb.toString());
+        tuples.add(Tuple.of(key, sb.toString()));
       }
     }
 
     if (getIsMarine() != 0) {
-      map.put("Amphibious Attack Modifier", String.valueOf(getIsMarine()));
+      tuples.add(Tuple.of("Amphibious Attack Modifier", String.valueOf(getIsMarine())));
     }
     if (getCanBlitz(player)) {
-      map.put("Can Blitz", "");
+      tuples.add(Tuple.of("Can Blitz", ""));
     }
 
     if (!getReceivesAbilityWhenWith().isEmpty()) {
       if (getReceivesAbilityWhenWith().size() <= 2) {
         for (final String ability : getReceivesAbilityWhenWith()) {
-          map.put("Receives Ability", ability.split(":")[0] + " when Paired with " + ability.split(":")[1]);
+          tuples
+              .add(Tuple.of("Receives Ability", ability.split(":")[0] + " when Paired with " + ability.split(":")[1]));
         }
       } else {
-        map.put("Receives Abilities when Paired with Other Units", "");
+        tuples.add(Tuple.of("Receives Abilities when Paired with Other Units", ""));
       }
     }
 
@@ -2876,79 +2878,79 @@ public class UnitAttachment extends DefaultAttachment {
         sb.append("1-").append(getData().getDiceSides());
       }
       sb.append(" Damage");
-      map.put("Can Perform Raids", sb.toString());
+      tuples.add(Tuple.of("Can Perform Raids", sb.toString()));
     }
 
     if (getAirAttack(player) > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
-      map.put("Air Attack", attackRolls > 1 ? (attackRolls + "x") : "" + getAirAttack(player));
+      tuples.add(Tuple.of("Air Attack", attackRolls > 1 ? (attackRolls + "x") : "" + getAirAttack(player)));
     }
     if (getAirDefense(player) > 0 && (getCanIntercept() || getCanAirBattle())) {
-      map.put("Air Defense", defenseRolls > 1 ? (defenseRolls + "x") : "" + getAirDefense(player));
+      tuples.add(Tuple.of("Air Defense", defenseRolls > 1 ? (defenseRolls + "x") : "" + getAirDefense(player)));
     }
 
     if (getIsSub()) {
-      map.put("Is Stealth", "");
+      tuples.add(Tuple.of("Is Stealth", ""));
     }
     if (getIsDestroyer()) {
-      map.put("Is Anti-Stealth", "");
+      tuples.add(Tuple.of("Is Anti-Stealth", ""));
     }
 
     if (getCanBombard(player) && getBombard() > 0) {
-      map.put("Bombard", attackRolls > 1 ? (attackRolls + "x") : "" + getBombard());
+      tuples.add(Tuple.of("Bombard", attackRolls > 1 ? (attackRolls + "x") : "" + getBombard()));
     }
 
     if (getBlockade() > 0) {
-      map.put("Blockade Loss", String.valueOf(getBlockade()));
+      tuples.add(Tuple.of("Blockade Loss", String.valueOf(getBlockade())));
     }
 
     if (getIsSuicide()) {
-      map.put("Suicide/Munition Unit", "");
+      tuples.add(Tuple.of("Suicide/Munition Unit", ""));
     }
     if (getIsSuicideOnHit()) {
-      map.put("Suicide on Hit Unit", "");
+      tuples.add(Tuple.of("Suicide on Hit Unit", ""));
     }
     if (getIsAir() && (getIsKamikaze() || Properties.getKamikazeAirplanes(getData()))) {
-      map.put("Is Kamikaze", "Can use all Movement to Attack Target");
+      tuples.add(Tuple.of("Is Kamikaze", "Can use all Movement to Attack Target"));
     }
 
     if ((getIsInfantry() || getIsLandTransportable()) && playerHasMechInf(player)) {
-      map.put("Can be Land Transported", "");
+      tuples.add(Tuple.of("Can be Land Transported", ""));
     }
     if (getIsLandTransport() && playerHasMechInf(player)) {
-      map.put("Is a Land Transport", "");
+      tuples.add(Tuple.of("Is a Land Transport", ""));
     }
     if (getIsAirTransportable() && playerHasParatroopers(player)) {
-      map.put("Can be Air Transported", "");
+      tuples.add(Tuple.of("Can be Air Transported", ""));
     }
     if (getIsAirTransport() && playerHasParatroopers(player)) {
-      map.put("Is an Air Transport", "");
+      tuples.add(Tuple.of("Is an Air Transport", ""));
     }
     if (getIsCombatTransport() && getTransportCapacity() > 0) {
-      map.put("Is a Combat Transport", "");
+      tuples.add(Tuple.of("Is a Combat Transport", ""));
     } else if (getTransportCapacity() > 0 && getIsSea()) {
-      map.put("Is a Sea Transport", "");
+      tuples.add(Tuple.of("Is a Sea Transport", ""));
     }
     if (getTransportCost() > -1) {
-      map.put("Transporting Cost", String.valueOf(getTransportCost()));
+      tuples.add(Tuple.of("Transporting Cost", String.valueOf(getTransportCost())));
     }
     if (getTransportCapacity() > 0 && (getIsSea() || (getIsAir() && playerHasParatroopers(player))
         || (playerHasMechInf(player) && !getIsSea() && !getIsAir()))) {
-      map.put("Transporting Capacity", String.valueOf(getTransportCapacity()));
+      tuples.add(Tuple.of("Transporting Capacity", String.valueOf(getTransportCapacity())));
     }
 
     if (getCarrierCost() > -1) {
-      map.put("Carrier Cost", String.valueOf(getCarrierCost()));
+      tuples.add(Tuple.of("Carrier Cost", String.valueOf(getCarrierCost())));
     }
     if (getCarrierCapacity() > 0) {
-      map.put("Carrier Capacity", String.valueOf(getCarrierCapacity()));
+      tuples.add(Tuple.of("Carrier Capacity", String.valueOf(getCarrierCapacity())));
     }
 
     if (!getWhenCombatDamaged().isEmpty()) {
-      map.put("When Hit Loses Certain Abilities", "");
+      tuples.add(Tuple.of("When Hit Loses Certain Abilities", ""));
     }
 
     if (getMaxBuiltPerPlayer() > -1) {
-      map.put("Max Built Allowed", String.valueOf(getMaxBuiltPerPlayer()));
+      tuples.add(Tuple.of("Max Built Allowed", String.valueOf(getMaxBuiltPerPlayer())));
     }
 
     if (getRepairsUnits() != null && !getRepairsUnits().isEmpty()
@@ -2956,30 +2958,31 @@ public class UnitAttachment extends DefaultAttachment {
         && (Properties.getBattleshipsRepairAtBeginningOfRound(getData())
             || Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
       if (getRepairsUnits().size() <= 4) {
-        map.put("Can Repair", MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false));
+        tuples.add(
+            Tuple.of("Can Repair", MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false)));
       } else {
-        map.put("Can Repair some Units", "");
+        tuples.add(Tuple.of("Can Repair some Units", ""));
       }
     }
 
     if (getGivesMovement() != null && getGivesMovement().totalValues() > 0
         && Properties.getUnitsMayGiveBonusMovement(getData())) {
       if (getGivesMovement().size() <= 4) {
-        map.put("Can Modify Unit Movement",
-            MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false));
+        tuples.add(Tuple.of("Can Modify Unit Movement",
+            MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false)));
       } else {
-        map.put("Can Modify Unit Movement", "");
+        tuples.add(Tuple.of("Can Modify Unit Movement", ""));
       }
     }
 
     if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1) {
-      map.put("Unit is an Upgrade Of", getConsumesUnits().keySet().iterator().next().getName());
+      tuples.add(Tuple.of("Unit is an Upgrade Of", getConsumesUnits().keySet().iterator().next().getName()));
     } else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0) {
       if (getConsumesUnits().size() <= 4) {
-        map.put("Unit Consumes on Placement",
-            MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true));
+        tuples.add(Tuple.of("Unit Consumes on Placement",
+            MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true)));
       } else {
-        map.put("Unit Consumes Other Units on Placement", "");
+        tuples.add(Tuple.of("Unit Consumes Other Units on Placement", ""));
       }
     }
 
@@ -2990,9 +2993,9 @@ public class UnitAttachment extends DefaultAttachment {
         totalUnitsListed.addAll(Arrays.asList(list));
       }
       if (totalUnitsListed.size() > 4) {
-        map.put("Has Placement Requirements", "");
+        tuples.add(Tuple.of("Has Placement Requirements", ""));
       } else {
-        map.put("Placement Requirements", joinRequiredUnits(getRequiresUnits()));
+        tuples.add(Tuple.of("Placement Requirements", joinRequiredUnits(getRequiresUnits())));
       }
     }
 
@@ -3002,28 +3005,28 @@ public class UnitAttachment extends DefaultAttachment {
         totalUnitsListed.addAll(Arrays.asList(list));
       }
       if (totalUnitsListed.size() > 4) {
-        map.put("Has Movement Requirements", "");
+        tuples.add(Tuple.of("Has Movement Requirements", ""));
       } else {
-        map.put("Movement Requirements", joinRequiredUnits(getRequiresUnitsToMove()));
+        tuples.add(Tuple.of("Movement Requirements", joinRequiredUnits(getRequiresUnitsToMove())));
       }
     }
 
     if (getUnitPlacementRestrictions() != null
         && Properties.getUnitPlacementRestrictions(getData())) {
       if (getUnitPlacementRestrictions().length > 4) {
-        map.put("Has Placement Restrictions", "");
+        tuples.add(Tuple.of("Has Placement Restrictions", ""));
       } else {
-        map.put("Placement Restrictions", Arrays.toString(getUnitPlacementRestrictions()));
+        tuples.add(Tuple.of("Placement Restrictions", Arrays.toString(getUnitPlacementRestrictions())));
       }
     }
     if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0
         && Properties.getUnitPlacementRestrictions(getData())) {
-      map.put("Must be Placed in Territory with Value of at Least",
-          String.valueOf(getCanOnlyBePlacedInTerritoryValuedAtX()));
+      tuples.add(Tuple.of("Must be Placed in Territory with Value of at Least",
+          String.valueOf(getCanOnlyBePlacedInTerritoryValuedAtX())));
     }
 
     if (getCanNotMoveDuringCombatMove()) {
-      map.put("Cannot Combat Move", "");
+      tuples.add(Tuple.of("Cannot Combat Move", ""));
     }
 
     if (getMovementLimit() != null) {
@@ -3032,10 +3035,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        map.put("Max " + getMovementLimit().getSecond() + " Units Moving per Territory", "1");
+        tuples.add(Tuple.of("Max " + getMovementLimit().getSecond() + " Units Moving per Territory", "1"));
       } else if (getMovementLimit().getFirst() < 10000) {
-        map.put("Max " + getMovementLimit().getSecond() + " Units Moving per Territory",
-            String.valueOf(getMovementLimit().getFirst()));
+        tuples.add(Tuple.of("Max " + getMovementLimit().getSecond() + " Units Moving per Territory",
+            String.valueOf(getMovementLimit().getFirst())));
       }
     }
 
@@ -3045,10 +3048,10 @@ public class UnitAttachment extends DefaultAttachment {
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        map.put("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory", "1");
+        tuples.add(Tuple.of("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory", "1"));
       } else if (getAttackingLimit().getFirst() < 10000) {
-        map.put("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory",
-            String.valueOf(getAttackingLimit().getFirst()));
+        tuples.add(Tuple.of("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory",
+            String.valueOf(getAttackingLimit().getFirst())));
       }
     }
 
@@ -3058,18 +3061,18 @@ public class UnitAttachment extends DefaultAttachment {
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        map.put("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory", "1");
+        tuples.add(Tuple.of("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory", "1"));
       } else if (getPlacementLimit().getFirst() < 10000) {
-        map.put("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory",
-            String.valueOf(getPlacementLimit().getFirst()));
+        tuples.add(Tuple.of("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory",
+            String.valueOf(getPlacementLimit().getFirst())));
       }
     }
 
     final StringBuilder result = new StringBuilder();
-    for (final Entry<String, String> entry : map.entrySet()) {
-      result.append(entry.getKey());
-      if (!entry.getValue().isEmpty()) {
-        result.append(": <b>").append(entry.getValue()).append("</b>");
+    for (final Tuple<String, String> tuple : tuples) {
+      result.append(tuple.getFirst());
+      if (!tuple.getSecond().isEmpty()) {
+        result.append(": <b>").append(tuple.getSecond()).append("</b>");
       }
       result.append("<br />");
     }
@@ -3077,7 +3080,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private static <T extends DefaultNamed> void addIntegerMapDescription(final String key,
-      final IntegerMap<T> integerMap, final Map<String, String> map) {
+      final IntegerMap<T> integerMap, final List<Tuple<String, String>> tuples) {
     if (integerMap != null && integerMap.size() > 0) {
       final StringBuilder sb = new StringBuilder();
       if (integerMap.size() > 4) {
@@ -3087,12 +3090,12 @@ public class UnitAttachment extends DefaultAttachment {
           sb.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
         }
       }
-      map.put(key, sb.toString());
+      tuples.add(Tuple.of(key, sb.toString()));
     }
   }
 
   private void addAaDescription(final String startOfKey, final int aa, final int aaMaxDieSides,
-      final Map<String, String> map) {
+      final List<Tuple<String, String>> tuples) {
     if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly()) && (aa > 0)) {
       final StringBuilder sb = new StringBuilder();
       sb.append(aa).append("/")
@@ -3100,7 +3103,7 @@ public class UnitAttachment extends DefaultAttachment {
           .append(" ").append(getTypeAa())
           .append(" With ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
           .append(" Attacks For ").append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds");
-      map.put(startOfKey + getAaKey(), sb.toString());
+      tuples.add(Tuple.of(startOfKey + getAaKey(), sb.toString()));
     }
   }
 
