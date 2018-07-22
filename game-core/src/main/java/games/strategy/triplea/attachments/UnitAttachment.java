@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
@@ -2734,325 +2735,254 @@ public class UnitAttachment extends DefaultAttachment {
    * Shows all except for: m_constructionType, m_constructionsPerTerrPerTypePerTurn, m_maxConstructionsPerTypePerTerr,
    * m_canBeGivenByTerritoryTo, m_destroyedWhenCapturedBy, m_canBeCapturedOnEnteringBy.
    */
-  public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHtml,
-      final boolean includeAttachedToName) {
-    final StringBuilder stats = new StringBuilder();
+  public String toStringShortAndOnlyImportantDifferences(final PlayerID player) {
+    final Map<String, String> map = new LinkedHashMap<>();
     final UnitType unitType = (UnitType) this.getAttachedTo();
-    if (includeAttachedToName && unitType != null) {
-      stats.append(unitType.getName()).append(":  ");
-    }
+
     if (getIsAir()) {
-      stats.append("Air unit, ");
+      map.put("Type", "Air");
     } else if (getIsSea()) {
-      stats.append("Sea unit, ");
+      map.put("Type", "Sea");
     } else {
-      stats.append("Land unit, ");
+      map.put("Type", "Land");
     }
     final int attackRolls = getAttackRolls(player);
     final int defenseRolls = getDefenseRolls(player);
-    if (getAttack(player) > 0) {
-      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(getAttack(player)).append(" Attack, ");
-    }
-    if (getDefense(player) > 0) {
-      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(getDefense(player)).append(" Defense, ");
-    }
-    if (getMovement(player) > 0) {
-      stats.append(getMovement(player)).append(" Movement, ");
-    }
+    final String attack = (attackRolls > 1 ? (attackRolls + "x") : "") + getAttack(player);
+    final String defense = (defenseRolls > 1 ? (defenseRolls + "x") : "") + getDefense(player);
+    final String movement = String.valueOf(getMovement(player));
+    map.put("Att|Def|Mov", attack + "|" + defense + "|" + movement);
     if (getHitPoints() > 1) {
-      stats.append(getHitPoints()).append(" Hitpoints, ");
+      map.put("HP", String.valueOf(getHitPoints()));
     }
+
     if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
-      stats.append("can Produce Units Up To Territory Value, ");
+      map.put("Can Produce Units up to Territory Value", "");
     } else if (getCanProduceUnits() && getCanProduceXUnits() > 0) {
-      stats.append("can Produce ").append(getCanProduceXUnits()).append(" Units, ");
+      map.put("Can Produce Units", String.valueOf(getCanProduceXUnits()));
     }
-    if (getCreatesUnitsList() != null && getCreatesUnitsList().size() > 0) {
-      if (getCreatesUnitsList().size() > 4) {
-        stats.append("Produces ").append(getCreatesUnitsList().totalValues()).append(" Units Each Turn, ");
-      } else {
-        stats.append("Produces ");
-        for (final Entry<UnitType, Integer> entry : getCreatesUnitsList().entrySet()) {
-          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
-        }
-        stats.append("Each Turn, ");
-      }
-    }
-    if (getCreatesResourcesList() != null && getCreatesResourcesList().size() > 0) {
-      if (getCreatesResourcesList().size() > 4) {
-        stats.append("Produces ").append(getCreatesResourcesList().totalValues()).append(" Resources Each Turn, ");
-      } else {
-        stats.append("Produces ");
-        for (final Entry<Resource, Integer> entry : getCreatesResourcesList().entrySet()) {
-          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
-        }
-        stats.append("Each Turn, ");
-      }
-    }
-    if (getFuelCost() != null && getFuelCost().size() > 0) {
-      if (getFuelCost().size() > 4) {
-        stats.append("Uses ").append(m_fuelCost.totalValues()).append(" Resources Each movement point, ");
-      } else {
-        stats.append("Uses ");
-        for (final Entry<Resource, Integer> entry : getFuelCost().entrySet()) {
-          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
-        }
-        stats.append("Each movement point, ");
-      }
-    }
-    if (getFuelFlatCost() != null && getFuelFlatCost().size() > 0) {
-      if (getFuelFlatCost().size() > 4) {
-        stats.append("Uses ").append(m_fuelFlatCost.totalValues()).append(" Resources Each turn if moved, ");
-      } else {
-        stats.append("Uses ");
-        for (final Entry<Resource, Integer> entry : getFuelFlatCost().entrySet()) {
-          stats.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
-        }
-        stats.append("Each turn if moved, ");
-      }
-    }
-    if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly())
-        && (getAttackAa(player) > 0 || getOffensiveAttackAa(player) > 0)) {
-      if (getOffensiveAttackAa(player) > 0) {
-        stats.append(getOffensiveAttackAa(player)).append("/").append(
-            getOffensiveAttackAaMaxDieSides() != -1 ? getOffensiveAttackAaMaxDieSides() : getData().getDiceSides())
-            .append(" Att ");
-      }
-      if (getAttackAa(player) > 0) {
-        stats.append(getAttackAa(player)).append("/")
-            .append(getAttackAaMaxDieSides() != -1 ? getAttackAaMaxDieSides() : getData().getDiceSides())
-            .append(" Def ");
-      }
-      stats.append(getTypeAa());
-      if (getIsAaForCombatOnly() && getIsAaForFlyOverOnly()
-          && !Properties.getAaTerritoryRestricted(getData())) {
-        stats.append(" for Combat & Move Through ");
-      } else if (getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()
-          && !Properties.getAaTerritoryRestricted(getData())) {
-        stats.append(" for Raids & Move Through ");
-      } else if (getIsAaForCombatOnly()) {
-        stats.append(" for Combat ");
-      } else if (getIsAaForBombingThisUnitOnly()) {
-        stats.append(" for Raids ");
-      } else if (getIsAaForFlyOverOnly()) {
-        stats.append(" for Move Through ");
-      }
-      stats.append("with ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited").append(" Attacks for ");
-      stats.append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds, ");
-    }
+    addIntegerMapDescription("Creates Units each Turn", getCreatesUnitsList(), map);
+    addIntegerMapDescription("Produces Resources each Turn", getCreatesResourcesList(), map);
+
+    addIntegerMapDescription("Fuel Cost per Movement", getFuelCost(), map);
+    addIntegerMapDescription("Fuel Cost each Turn if Moved", getFuelFlatCost(), map);
+
+    addAaDescription("Targeted Attack", getOffensiveAttackAa(player), getOffensiveAttackAaMaxDieSides(), map);
+    addAaDescription("Targeted Defense", getAttackAa(player), getAttackAaMaxDieSides(), map);
+
+    // TODO: Rework rocket description
     if (getIsRocket() && playerHasRockets(player)) {
-      stats.append("can Rocket Attack, ");
+      final StringBuilder sb = new StringBuilder();
+      sb.append("Can Rocket Attack, ");
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
+        sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
             .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + bombingBonus
                 : getData().getDiceSides() + bombingBonus)
             .append(" Rocket Damage, ");
       } else {
-        stats.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
+        sb.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
       }
+      map.put(sb.toString(), "");
     }
-    // line break
-    if (useHtml) {
-      stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
-    }
+
     if (getIsInfrastructure()) {
-      stats.append("can be Captured, ");
+      map.put("Can be Captured", "");
     }
     if (getIsConstruction()) {
-      stats.append("can be Placed Without Factory, ");
+      map.put("Can be Placed Without Factory", "");
     }
+
+    // TODO: Rework damaged description
     if ((getCanBeDamaged())
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
-      stats.append("can be Damaged By Raids, ");
+      final StringBuilder sb = new StringBuilder();
+      sb.append("Can be Damaged by Raids, ");
       if (getMaxOperationalDamage() > -1) {
-        stats.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
+        sb.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
       }
       if ((getCanProduceUnits()) && getCanProduceXUnits() < 0) {
-        stats.append("Total Damage up to ").append(getMaxDamage() > -1 ? getMaxDamage() : 2)
+        sb.append("Total Damage up to ").append(getMaxDamage() > -1 ? getMaxDamage() : 2)
             .append("x Territory Value, ");
       } else if (getMaxDamage() > -1) {
-        stats.append(getMaxDamage()).append(" Max Total Damage, ");
+        sb.append(getMaxDamage()).append(" Max Total Damage, ");
       }
       if (getCanDieFromReachingMaxDamage()) {
-        stats.append("will Die If Max Damage Reached, ");
+        sb.append("Dies if Max Damage Reached, ");
       }
+      map.put(sb.toString(), "");
     } else if (getCanBeDamaged()) {
-      stats.append("can be Attacked By Raids, ");
+      map.put("Can be Damaged by Raids", "");
     }
+
     if (getIsAirBase() && Properties.getScrambleRulesInEffect(getData())) {
-      stats.append("can Allow Scrambling, ");
+      map.put("Allows Scrambling", "");
     }
     if (getCanScramble() && Properties.getScrambleRulesInEffect(getData())) {
-      stats.append("can Scramble ").append(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)
-          .append(" Distance, ");
+      map.put("Scramble Range", String.valueOf(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1));
     }
-    if (getArtillery()) {
-      stats.append("can Give Attack Bonus To Other Units, ");
-    } else {
-      final List<UnitSupportAttachment> supports =
-          CollectionUtils.getMatches(UnitSupportAttachment.get(unitType),
-              Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
-      if (supports.size() > 0) {
-        if (supports.size() > 2) {
-          stats.append("can Modify Power Of Other Units, ");
-        } else {
-          for (final UnitSupportAttachment support : supports) {
-            if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
-              continue;
-            }
-            stats.append("gives ").append(support.getBonus())
-                .append(support.getStrength() && support.getRoll() ? " Power&Rolls"
-                    : (support.getStrength() ? " Power" : " Rolls"))
-                .append(" to ").append(support.getNumber())
-                .append(support.getAllied() && support.getEnemy() ? " Allied&Enemy "
-                    : (support.getAllied() ? " Allied " : " Enemy "))
-                .append(support.getUnitType().size() > 4 ? "Units"
-                    : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false))
-                .append(" when ")
-                .append(support.getOffence() && support.getDefence() ? "Att/Def"
-                    : (support.getOffence() ? "Attacking" : "Defending"))
-                .append(", ");
-          }
+
+    final List<UnitSupportAttachment> supports = CollectionUtils.getMatches(UnitSupportAttachment.get(unitType),
+        Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
+    if (supports.size() > 2) {
+      map.put("Can Provide Support to Units", "");
+    } else if (supports.size() > 0) {
+      for (final UnitSupportAttachment support : supports) {
+        if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
+          continue;
         }
+        final StringBuilder sb = new StringBuilder();
+        sb.append(support.getBonus())
+            .append(support.getStrength() && support.getRoll() ? " Power&Rolls"
+                : (support.getStrength() ? " Power" : " Rolls"))
+            .append(" To ").append(support.getNumber())
+            .append(support.getAllied() && support.getEnemy() ? " Allied&Enemy "
+                : (support.getAllied() ? " Allied " : " Enemy "))
+            .append(support.getUnitType().size() > 4 ? "Units"
+                : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
+        final String key = "Support-" + (support.getOffence() && support.getDefence() ? "Attack/Defense"
+            : (support.getOffence() ? "Attack" : "Defense"));
+        map.put(key, sb.toString());
       }
     }
-    if (getArtillerySupportable()) {
-      stats.append("can Receive Attack Bonus From Other Units, ");
-    }
+
     if (getIsMarine() != 0) {
-      stats.append(getIsMarine()).append(" Amphibious Attack Modifier, ");
+      map.put("Amphibious Attack Modifier", String.valueOf(getIsMarine()));
     }
     if (getCanBlitz(player)) {
-      stats.append("can Blitz, ");
+      map.put("Can Blitz", "");
     }
+
     if (!getReceivesAbilityWhenWith().isEmpty()) {
       if (getReceivesAbilityWhenWith().size() <= 2) {
         for (final String ability : getReceivesAbilityWhenWith()) {
-          stats.append("receives ").append(ability.split(":")[0]).append(" when paired with ")
-              .append(ability.split(":")[1]).append(", ");
+          map.put("Receives Ability", ability.split(":")[0] + " when Paired with " + ability.split(":")[1]);
         }
       } else {
-        stats.append("receives Abilities When Paired with Other Units, ");
+        map.put("Receives Abilities when Paired with Other Units", "");
       }
     }
+
     if (getIsStrategicBomber()) {
-      stats.append("can Perform Raids, ");
+      final StringBuilder sb = new StringBuilder();
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        stats.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
+        sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
             .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + bombingBonus
-                : getData().getDiceSides() + bombingBonus)
-            .append(" Raid Damage, ");
+                : getData().getDiceSides() + bombingBonus);
       } else {
-        stats.append("1-").append(getData().getDiceSides()).append(" Raid Damage, ");
+        sb.append("1-").append(getData().getDiceSides());
       }
+      sb.append(" Damage");
+      map.put("Can Perform Raids", sb.toString());
     }
-    final int airAttack = getAirAttack(player);
-    final int airDefense = getAirDefense(player);
-    if (airAttack > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
-      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(airAttack).append(" Air Attack, ");
+
+    if (getAirAttack(player) > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
+      map.put("Air Attack", attackRolls > 1 ? (attackRolls + "x") : "" + getAirAttack(player));
     }
-    if (airDefense > 0 && (getCanIntercept() || getCanAirBattle())) {
-      stats.append(defenseRolls > 1 ? (defenseRolls + "x ") : "").append(airDefense).append(" Air Defense, ");
+    if (getAirDefense(player) > 0 && (getCanIntercept() || getCanAirBattle())) {
+      map.put("Air Defense", defenseRolls > 1 ? (defenseRolls + "x") : "" + getAirDefense(player));
     }
+
     if (getIsSub()) {
-      stats.append("is Stealth, ");
+      map.put("Is Stealth", "");
     }
     if (getIsDestroyer()) {
-      stats.append("is Anti-Stealth, ");
+      map.put("Is Anti-Stealth", "");
     }
+
     if (getCanBombard(player) && getBombard() > 0) {
-      stats.append(attackRolls > 1 ? (attackRolls + "x ") : "").append(getBombard()).append(" Bombard, ");
+      map.put("Bombard", attackRolls > 1 ? (attackRolls + "x") : "" + getBombard());
     }
+
     if (getBlockade() > 0) {
-      stats.append(getBlockade()).append(" Blockade Loss, ");
+      map.put("Blockade Loss", String.valueOf(getBlockade()));
     }
+
     if (getIsSuicide()) {
-      stats.append("Suicide/Munition Unit, ");
+      map.put("Suicide/Munition Unit", "");
     }
     if (getIsSuicideOnHit()) {
-      stats.append("SuicideOnHit Unit, ");
+      map.put("Suicide on Hit Unit", "");
     }
     if (getIsAir() && (getIsKamikaze() || Properties.getKamikazeAirplanes(getData()))) {
-      stats.append("can use All Movement To Attack Target, ");
+      map.put("Is Kamikaze", "Can use all Movement to Attack Target");
     }
+
     if ((getIsInfantry() || getIsLandTransportable()) && playerHasMechInf(player)) {
-      stats.append("can be Transported By Land, ");
+      map.put("Can be Land Transported", "");
     }
     if (getIsLandTransport() && playerHasMechInf(player)) {
-      stats.append("is a Land Transport, ");
+      map.put("Is a Land Transport", "");
     }
     if (getIsAirTransportable() && playerHasParatroopers(player)) {
-      stats.append("can be Transported By Air, ");
+      map.put("Can be Air Transported", "");
     }
     if (getIsAirTransport() && playerHasParatroopers(player)) {
-      stats.append("is an Air Transport, ");
+      map.put("Is an Air Transport", "");
     }
     if (getIsCombatTransport() && getTransportCapacity() > 0) {
-      stats.append("is a Combat Transport, ");
+      map.put("Is a Combat Transport", "");
     } else if (getTransportCapacity() > 0 && getIsSea()) {
-      stats.append("is a Sea Transport, ");
+      map.put("Is a Sea Transport", "");
     }
     if (getTransportCost() > -1) {
-      stats.append(getTransportCost()).append(" Transporting Cost, ");
+      map.put("Transporting Cost", String.valueOf(getTransportCost()));
     }
-    if (getTransportCapacity() > 0 && getIsSea()) {
-      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
-    } else if (getTransportCapacity() > 0 && getIsAir() && playerHasParatroopers(player)) {
-      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
-    } else if (getTransportCapacity() > 0 && playerHasMechInf(player) && !getIsSea() && !getIsAir()) {
-      stats.append(getTransportCapacity()).append(" Transporting Capacity, ");
+    if (getTransportCapacity() > 0 && (getIsSea() || (getIsAir() && playerHasParatroopers(player))
+        || (playerHasMechInf(player) && !getIsSea() && !getIsAir()))) {
+      map.put("Transporting Capacity", String.valueOf(getTransportCapacity()));
     }
+
     if (getCarrierCost() > -1) {
-      stats.append(getCarrierCost()).append(" Carrier Cost, ");
+      map.put("Carrier Cost", String.valueOf(getCarrierCost()));
     }
     if (getCarrierCapacity() > 0) {
-      stats.append(getCarrierCapacity()).append(" Carrier Capacity, ");
+      map.put("Carrier Capacity", String.valueOf(getCarrierCapacity()));
     }
+
     if (!getWhenCombatDamaged().isEmpty()) {
-      stats.append("when hit this unit loses certain abilities, ");
+      map.put("When Hit Loses Certain Abilities", "");
     }
-    // line break
-    if (useHtml) {
-      stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
-    }
+
     if (getMaxBuiltPerPlayer() > -1) {
-      stats.append(getMaxBuiltPerPlayer()).append(" Max Built Allowed, ");
+      map.put("Max Built Allowed", String.valueOf(getMaxBuiltPerPlayer()));
     }
+
     if (getRepairsUnits() != null && !getRepairsUnits().isEmpty()
         && Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
         && (Properties.getBattleshipsRepairAtBeginningOfRound(getData())
             || Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
       if (getRepairsUnits().size() <= 4) {
-        stats.append("can Repair: ")
-            .append(MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false)).append(", ");
+        map.put("Can Repair", MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false));
       } else {
-        stats.append("can Repair Some Units, ");
+        map.put("Can Repair some Units", "");
       }
     }
+
     if (getGivesMovement() != null && getGivesMovement().totalValues() > 0
         && Properties.getUnitsMayGiveBonusMovement(getData())) {
       if (getGivesMovement().size() <= 4) {
-        stats.append("can Modify Unit Movement: ")
-            .append(MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false)).append(", ");
+        map.put("Can Modify Unit Movement",
+            MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false));
       } else {
-        stats.append("can Modify Unit Movement, ");
+        map.put("Can Modify Unit Movement", "");
       }
     }
+
     if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1) {
-      stats.append("unit is an Upgrade Of ").append(getConsumesUnits().keySet().iterator().next().getName())
-          .append(", ");
+      map.put("Unit is an Upgrade Of", getConsumesUnits().keySet().iterator().next().getName());
     } else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0) {
       if (getConsumesUnits().size() <= 4) {
-        stats.append("unit Consumes On Placement: ")
-            .append(MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true)).append(", ");
+        map.put("Unit Consumes on Placement",
+            MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true));
       } else {
-        stats.append("unit Consumes Other Units On Placement, ");
+        map.put("Unit Consumes Other Units on Placement", "");
       }
     }
+
     if (getRequiresUnits() != null && getRequiresUnits().size() > 0
         && Properties.getUnitPlacementRestrictions(getData())) {
       final List<String> totalUnitsListed = new ArrayList<>();
@@ -3060,78 +2990,135 @@ public class UnitAttachment extends DefaultAttachment {
         totalUnitsListed.addAll(Arrays.asList(list));
       }
       if (totalUnitsListed.size() > 4) {
-        stats.append("unit Requires Other Units Present To Be Placed, ");
+        map.put("Has Placement Requirements", "");
       } else {
-        stats.append("unit can only be Placed Where There Is: ");
-        stats.append(joinRequiredUnits(getRequiresUnits()));
-        stats.append(", ");
+        map.put("Placement Requirements", joinRequiredUnits(getRequiresUnits()));
       }
     }
+
     if (getRequiresUnitsToMove() != null && !getRequiresUnitsToMove().isEmpty()) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnitsToMove()) {
         totalUnitsListed.addAll(Arrays.asList(list));
       }
       if (totalUnitsListed.size() > 4) {
-        stats.append("unit Requires Other Units Present To Be Moved, ");
+        map.put("Has Movement Requirements", "");
       } else {
-        stats.append("unit can only be Moved Where There Is: ");
-        stats.append(joinRequiredUnits(getRequiresUnitsToMove()));
-        stats.append(", ");
+        map.put("Movement Requirements", joinRequiredUnits(getRequiresUnitsToMove()));
       }
     }
+
     if (getUnitPlacementRestrictions() != null
         && Properties.getUnitPlacementRestrictions(getData())) {
-      stats.append("has Placement Restrictions, ");
+      if (getUnitPlacementRestrictions().length > 4) {
+        map.put("Has Placement Restrictions", "");
+      } else {
+        map.put("Placement Restrictions", Arrays.toString(getUnitPlacementRestrictions()));
+      }
     }
     if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0
         && Properties.getUnitPlacementRestrictions(getData())) {
-      stats.append("must be Placed In Territory Valued >=").append(getCanOnlyBePlacedInTerritoryValuedAtX())
-          .append(", ");
+      map.put("Must be Placed in Territory with Value of at Least",
+          String.valueOf(getCanOnlyBePlacedInTerritoryValuedAtX()));
     }
+
     if (getCanNotMoveDuringCombatMove()) {
-      stats.append("cannot Combat Move, ");
+      map.put("Cannot Combat Move", "");
     }
+
     if (getMovementLimit() != null) {
       if (getMovementLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        stats.append("max of 1 ").append(getMovementLimit().getSecond()).append(" moving per territory, ");
+        map.put("Max " + getMovementLimit().getSecond() + " Units Moving per Territory", "1");
       } else if (getMovementLimit().getFirst() < 10000) {
-        stats.append("max of ").append(getMovementLimit().getFirst()).append(" ").append(getMovementLimit().getSecond())
-            .append(" moving per territory, ");
+        map.put("Max " + getMovementLimit().getSecond() + " Units Moving per Territory",
+            String.valueOf(getMovementLimit().getFirst()));
       }
     }
+
     if (getAttackingLimit() != null) {
       if (getAttackingLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        stats.append("max of 1 ").append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
+        map.put("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory", "1");
       } else if (getAttackingLimit().getFirst() < 10000) {
-        stats.append("max of ").append(getAttackingLimit().getFirst()).append(" ")
-            .append(getAttackingLimit().getSecond()).append(" attacking per territory, ");
+        map.put("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory",
+            String.valueOf(getAttackingLimit().getFirst()));
       }
     }
+
     if (getPlacementLimit() != null) {
       if (getPlacementLimit().getFirst() == Integer.MAX_VALUE
           && (getIsAaForBombingThisUnitOnly() || getIsAaForCombatOnly())
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        stats.append("max of 1 ").append(getPlacementLimit().getSecond()).append(" placed per territory, ");
+        map.put("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory", "1");
       } else if (getPlacementLimit().getFirst() < 10000) {
-        stats.append("max of ").append(getPlacementLimit().getFirst()).append(" ")
-            .append(getPlacementLimit().getSecond()).append(" placed per territory, ");
+        map.put("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory",
+            String.valueOf(getPlacementLimit().getFirst()));
       }
     }
-    if (stats.indexOf(", ") > -1) {
-      stats.delete(stats.lastIndexOf(", "), stats.length() - 1);
+
+    final StringBuilder result = new StringBuilder();
+    for (final Entry<String, String> entry : map.entrySet()) {
+      result.append(entry.getKey());
+      if (!entry.getValue().isEmpty()) {
+        result.append(": <b>").append(entry.getValue()).append("</b>");
+      }
+      result.append("<br />");
     }
-    return stats.toString();
+    return result.toString();
+  }
+
+  private static <T extends DefaultNamed> void addIntegerMapDescription(final String key,
+      final IntegerMap<T> integerMap, final Map<String, String> map) {
+    if (integerMap != null && integerMap.size() > 0) {
+      final StringBuilder sb = new StringBuilder();
+      if (integerMap.size() > 4) {
+        sb.append(String.valueOf(integerMap.totalValues()));
+      } else {
+        for (final Entry<T, Integer> entry : integerMap.entrySet()) {
+          sb.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
+        }
+      }
+      map.put(key, sb.toString());
+    }
+  }
+
+  private void addAaDescription(final String startOfKey, final int aa, final int aaMaxDieSides,
+      final Map<String, String> map) {
+    if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly()) && (aa > 0)) {
+      final StringBuilder sb = new StringBuilder();
+      sb.append(aa).append("/")
+          .append(aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
+          .append(" ").append(getTypeAa())
+          .append(" With ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
+          .append(" Attacks For ").append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds");
+      map.put(startOfKey + getAaKey(), sb.toString());
+    }
+  }
+
+  private String getAaKey() {
+    if (getIsAaForCombatOnly() && getIsAaForFlyOverOnly()
+        && !Properties.getAaTerritoryRestricted(getData())) {
+      return " For Combat & Move Through";
+    } else if (getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()
+        && !Properties.getAaTerritoryRestricted(getData())) {
+      return " For Raids & Move Through";
+    } else if (getIsAaForCombatOnly()) {
+      return " For Combat";
+    } else if (getIsAaForBombingThisUnitOnly()) {
+      return " For Raids";
+    } else if (getIsAaForFlyOverOnly()) {
+      return " For Move Through";
+    }
+    return "";
   }
 
   private static String joinRequiredUnits(final List<String[]> units) {
