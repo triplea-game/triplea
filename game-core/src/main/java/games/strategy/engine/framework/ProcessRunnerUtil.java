@@ -33,7 +33,9 @@ public class ProcessRunnerUtil {
     commands.add(SystemProperties.getJavaClassPath());
 
     final Optional<String> maxMemory = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-        .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst();
+        .filter(s -> s.toLowerCase().startsWith("-xmx"))
+        .map(s -> s.substring(4))
+        .findFirst();
     if (maxMemory.isPresent()) {
       System.out.println("Setting memory for new triplea process to: " + maxMemory.get());
       commands.add("-Xmx" + maxMemory.get());
