@@ -30,13 +30,7 @@ public class ProcessRunnerUtil {
     populateBasicJavaArgs(commands, null);
   }
 
-  static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
-    populateBasicJavaArgs(commands, newClasspath, ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-        .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst());
-  }
-
-  private static void populateBasicJavaArgs(final List<String> commands, final String classpath,
-      final Optional<String> maxMemory) {
+  static void populateBasicJavaArgs(final List<String> commands, final String classpath) {
     final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
     commands.add("-classpath");
@@ -45,6 +39,9 @@ public class ProcessRunnerUtil {
     } else {
       commands.add(SystemProperties.getJavaClassPath());
     }
+
+    final Optional<String> maxMemory = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+        .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst();
     if (maxMemory.isPresent()) {
       System.out.println("Setting memory for new triplea process to: " + maxMemory.get());
       commands.add("-Xmx" + maxMemory.get());
