@@ -78,13 +78,12 @@ public class PlayerListing implements Serializable {
         .map(HashSet::new)
         .orElse(new HashSet<>(0));
 
-    final Map<String, Collection<String>> allianceMap =
+    m_playerNamesAndAlliancesInTurnOrder =
         Optional.ofNullable(playerNamesAndAlliancesInTurnOrder)
-            .orElse(Collections.emptyMap());
-
-    m_playerNamesAndAlliancesInTurnOrder = allianceMap.entrySet()
-        .stream()
-        .collect(Collectors.toMap(Entry::getKey, e -> Sets.newHashSet(e.getValue())));
+            .orElse(Collections.emptyMap())
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(Entry::getKey, e -> Sets.newHashSet(e.getValue())));
 
     // make sure none of the collection values are null.
     Preconditions.checkArgument(m_playerToNodeListing.values().stream().noneMatch(Objects::isNull),
