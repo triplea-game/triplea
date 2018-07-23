@@ -24,6 +24,10 @@ import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 
+/**
+ * Model class that tracks the currently 'selected' game. This is the info that appears in the
+ * game selector panel on the staging screens, eg: map, round, filename.
+ */
 public class GameSelectorModel extends Observable {
   private GameData gameData = null;
   private String gameName = "";
@@ -60,6 +64,9 @@ public class GameSelectorModel extends Observable {
     ClientSetting.flush();
   }
 
+  /**
+   * Loads game data by parsing a given file.
+   */
   public void load(final File file) {
     Preconditions.checkArgument(file.exists() && file.isFile(),
         "File should exist at: " + file.getAbsolutePath());
