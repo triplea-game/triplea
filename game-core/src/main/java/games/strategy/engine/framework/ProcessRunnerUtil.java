@@ -19,45 +19,28 @@ import games.strategy.engine.framework.system.SystemProperties;
  */
 public class ProcessRunnerUtil {
 
-  public static void populateBasicJavaArgs(final List<String> commands) {
-    populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath());
-  }
-
-  public static void populateBasicJavaArgs(final List<String> commands, final long maxMemory) {
-    populateBasicJavaArgs(commands, SystemProperties.getJavaClassPath(), Optional.of(String.valueOf(maxMemory)));
-  }
-
-  static void populateBasicJavaArgs(final List<String> commands, final String newClasspath) {
-    populateBasicJavaArgs(commands, newClasspath, ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-        .filter(s -> s.toLowerCase().startsWith("-xmx")).map(s -> s.substring(4)).findFirst());
-  }
-
-  private static void populateBasicJavaArgs(final List<String> commands, final String classpath,
-      final Optional<String> maxMemory) {
+  static void populateBasicJavaArgs(final List<String> commands) {
     final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
     commands.add("-classpath");
-    if (classpath != null && classpath.length() > 0) {
-      commands.add(classpath);
-    } else {
-      commands.add(SystemProperties.getJavaClassPath());
-    }
-    if (maxMemory.isPresent()) {
-      System.out.println("Setting memory for new triplea process to: " + maxMemory.get());
-      commands.add("-Xmx" + maxMemory.get());
-    }
+    commands.add(SystemProperties.getJavaClassPath());
+
+    final Optional<String> maxMemory = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+        .filter(s -> s.toLowerCase().startsWith("-xmx"))
+        .map(s -> s.substring(4))
+        .findFirst();
+    maxMemory.ifPresent(max -> commands.add("-Xmx" + max));
     if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");
       commands.add("-Xdock:name=\"TripleA\"");
       final File icons = new File(ClientFileSystemHelper.getRootFolder(), "icons/triplea_icon.png");
       if (icons.exists()) {
-        commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
+        commands.add("-Xdock:icon=" + icons.getAbsolutePath());
       }
     }
   }
 
   public static void exec(final List<String> commands) {
-    // System.out.println("Commands: " + commands);
     final ProcessBuilder builder = new ProcessBuilder(commands);
     // merge the streams, so we only have to start one reader thread
     builder.redirectErrorStream(true);
