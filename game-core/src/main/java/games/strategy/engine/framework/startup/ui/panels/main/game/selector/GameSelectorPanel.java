@@ -265,7 +265,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
     GameFileSelector.selectGameFile()
         .ifPresent(file -> Interruptibles
             .await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
-              model.load(file, this);
+              model.load(file);
               setOriginalPropertiesMap(model.getGameData());
             })));
   }

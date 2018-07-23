@@ -231,7 +231,7 @@ public class ServerLauncher extends AbstractLauncher {
                 ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
                 SaveGameFileChooser.getAutoSaveFileName());
             if (f1.exists()) {
-              gameSelectorModel.load(f1, null);
+              gameSelectorModel.load(f1);
             } else {
               gameSelectorModel.resetGameDataToNull();
             }

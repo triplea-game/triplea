@@ -82,10 +82,12 @@ public class HeadlessGameServer {
     availableGames = new AvailableGames();
     gameSelectorModel = new GameSelectorModel();
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (fileName.length() > 0) {
+    if (!fileName.isEmpty()) {
       try {
         final File file = new File(fileName);
-        gameSelectorModel.load(file, null);
+        if(file.exists()) {
+          gameSelectorModel.load(file);
+        }
       } catch (final Exception e) {
         gameSelectorModel.resetGameDataToNull();
       }
@@ -148,7 +150,7 @@ public class HeadlessGameServer {
       if (file == null || !file.exists()) {
         return;
       }
-      gameSelectorModel.load(file, null);
+      gameSelectorModel.load(file);
       System.out.println("Changed to save: " + file.getName());
     }
   }
