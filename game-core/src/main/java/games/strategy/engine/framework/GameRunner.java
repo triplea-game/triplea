@@ -309,8 +309,8 @@ public class GameRunner {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
     gameSelectorModel.loadDefaultGameSameThread();
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (!fileName.isEmpty()) {
-      gameSelectorModel.load(new File(fileName), mainFrame);
+    if (!fileName.isEmpty() && new File(fileName).exists()) {
+      gameSelectorModel.load(new File(fileName));
     }
 
     final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
