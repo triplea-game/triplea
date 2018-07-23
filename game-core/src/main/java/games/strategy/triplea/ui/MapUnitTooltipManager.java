@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JToolTip;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
@@ -95,7 +95,8 @@ public class MapUnitTooltipManager implements ActionListener {
    * @param player The owner of the unit.
    * @param count The number of units.
    */
-  public static void setUnitTooltip(JComponent component, UnitType unitType, final PlayerID player, int count) {
+  public static void setUnitTooltip(final JComponent component, final UnitType unitType, final PlayerID player,
+      final int count) {
     final String text = getTooltipTextForUnit(unitType, player, count);
     component.setToolTipText("<html>" + text + "</html>");
   }
@@ -112,8 +113,8 @@ public class MapUnitTooltipManager implements ActionListener {
   public static String getTooltipTextForUnit(final UnitType unitType, final PlayerID player, final int count) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
     final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
-            unitType.getNameCapitalized(), player.getName());
-    return firstLine + ua.toStringShortAndOnlyImportantDifferences(player, true, false);
+        unitType.getNameCapitalized(), player.getName());
+    return firstLine + ua.toStringShortAndOnlyImportantDifferences(player);
   }
 
   /**
