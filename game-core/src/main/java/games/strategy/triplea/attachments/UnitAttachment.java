@@ -2835,14 +2835,14 @@ public class UnitAttachment extends DefaultAttachment {
         }
         final StringBuilder sb = new StringBuilder();
         sb.append(support.getBonus()).append(" ").append(support.getBonusType())
-            .append(support.getStrength() && support.getRoll() ? " Power&Rolls"
+            .append(support.getStrength() && support.getRoll() ? " Power & Rolls"
                 : (support.getStrength() ? " Power" : " Rolls"))
             .append(" to ").append(support.getNumber())
-            .append(support.getAllied() && support.getEnemy() ? " Allied&Enemy "
+            .append(support.getAllied() && support.getEnemy() ? " Allied & Enemy "
                 : (support.getAllied() ? " Allied " : " Enemy "))
             .append(support.getUnitType().size() > 4 ? "Units"
                 : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
-        final String key = "Support-" + (support.getOffence() && support.getDefence() ? "Attack/Defense"
+        final String key = "Support on " + (support.getOffence() && support.getDefence() ? "Attack & Defense"
             : (support.getOffence() ? "Attack" : "Defense"));
         tuples.add(Tuple.of(key, sb.toString()));
       }
