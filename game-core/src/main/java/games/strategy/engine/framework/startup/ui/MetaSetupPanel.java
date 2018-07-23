@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -104,7 +105,7 @@ public class MetaSetupPanel extends SetupPanel {
 
     final JButton mapCreator = JButtonBuilder.builder()
         .title("Run the Map Creator")
-        .actionListener(() -> ProcessRunnerUtil.runClass(MapCreator.class))
+        .actionListener(MapCreator::openMapCreatorWindow)
         .build();
 
     add(mapCreator, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
