@@ -80,9 +80,7 @@ public class GameSelectorModel extends Observable {
         newData = GameDataManager.loadGame(file);
       }
       if (newData != null) {
-        synchronized (this) {
-          fileName = file.getName();
-        }
+        fileName = file.getName();
         setGameData(newData);
       }
     } catch (final EngineVersionException e) {
