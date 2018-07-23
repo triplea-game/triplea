@@ -399,7 +399,6 @@ public class GameRunner {
       return;
     }
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
-    final String newClassPath = null;
     if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(engineVersionOfGameToJoin)) {
       JOptionPane.showMessageDialog(parent,
           "Host is using version " + engineVersionOfGameToJoin.toStringFull()
@@ -407,13 +406,12 @@ public class GameRunner {
           "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), newClassPath, messengers);
+    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), messengers);
   }
 
-  private static void joinGame(final int port, final String hostAddressIp, final @Nullable String newClassPath,
-      final Messengers messengers) {
+  private static void joinGame(final int port, final String hostAddressIp, final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
-    ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
+    ProcessRunnerUtil.populateBasicJavaArgs(commands);
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT + "=true");
     commands.add(prefix + TRIPLEA_PORT + "=" + port);
