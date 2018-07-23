@@ -18,8 +18,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
 import java.awt.Component;
@@ -332,8 +330,6 @@ public class GameRunner {
         + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
         + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
         + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-        + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME + "=<seconds to wait for all clients to start the game>\n"
-        + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME + "=<seconds to wait for an observer joining the game>\n"
         + "   " + MAP_FOLDER + "=mapFolder"
         + "\n"
         + "   You must start the Name and HostedBy with \"Bot\".\n"

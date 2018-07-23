@@ -12,8 +12,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME;
 
 import java.io.File;
 import java.io.InputStream;
@@ -485,7 +483,6 @@ public class HeadlessGameServer {
         TRIPLEA_NAME, LOBBY_HOST, LOBBY_PORT,
         LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, LOBBY_GAME_SUPPORT_EMAIL,
         LOBBY_GAME_SUPPORT_PASSWORD, LOBBY_GAME_RECONNECTION,
-        TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME, TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
         MAP_FOLDER));
   }
 
@@ -666,10 +663,6 @@ public class HeadlessGameServer {
         + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
         + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
         + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-        + "   " + TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME
-        + "=<seconds to wait for all clients to start the game>\n"
-        + "   " + TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME
-        + "=<seconds to wait for an observer joining the game>\n"
         + "   " + MAP_FOLDER + "=mapFolder"
         + "\n"
         + "   You must start the Name and HostedBy with \"Bot\".\n"

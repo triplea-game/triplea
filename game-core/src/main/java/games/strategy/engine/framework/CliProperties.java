@@ -24,8 +24,5 @@ public class CliProperties {
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
   public static final String DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
 
-  public static final String TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME = "triplea.server.startGameSyncWaitTime";
-  public static final String TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME = "triplea.server.observerJoinWaitTime";
-
   public static final String MAP_FOLDER = "mapFolder";
 }
