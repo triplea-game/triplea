@@ -11,9 +11,10 @@ import java.util.Observable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
@@ -23,6 +24,10 @@ import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 
+/**
+ * Model class that tracks the currently 'selected' game. This is the info that appears in the
+ * game selector panel on the staging screens, eg: map, round, filename.
+ */
 public class GameSelectorModel extends Observable {
   private GameData gameData = null;
   private String gameName = "";
@@ -59,21 +64,19 @@ public class GameSelectorModel extends Observable {
     ClientSetting.flush();
   }
 
-  public void load(final File file, final Component ui) {
-    if (!file.exists()) {
-      error("Could not find file:" + file, ui);
-      return;
-    }
-    if (file.isDirectory()) {
-      error("Cannot load a directory:" + file, ui);
-      return;
-    }
+  /**
+   * Loads game data by parsing a given file.
+   */
+  public void load(final File file) {
+    Preconditions.checkArgument(file.exists() && file.isFile(),
+        "File should exist at: " + file.getAbsolutePath());
+
     final GameData newData;
     try {
       // if the file name is xml, load it as a new game
       if (file.getName().toLowerCase().endsWith("xml")) {
-        try (InputStream fis = new FileInputStream(file)) {
-          newData = GameParser.parse(file.getAbsolutePath(), fis);
+        try (InputStream inputStream = new FileInputStream(file)) {
+          newData = GameParser.parse(file.getAbsolutePath(), inputStream);
         }
       } else {
         // try to load it as a saved game whatever the extension
@@ -83,18 +86,11 @@ public class GameSelectorModel extends Observable {
         fileName = file.getName();
         setGameData(newData);
       }
-    } catch (final EngineVersionException e) {
-      System.out.println(e.getMessage());
     } catch (final Exception e) {
-      String message = e.getMessage();
-      if (message == null && e.getStackTrace() != null) {
-        message = e.getClass().getName() + "  at  " + e.getStackTrace()[0].toString();
-      }
-      message = "Exception while parsing: " + file.getName() + " : " + message;
-      ClientLogger.logQuietly(message, e);
-      if (ui != null) {
-        error(message + "\r\nPlease see console for full error log!", ui);
-      }
+      ClientLogger.logError(
+          String.format("Error loading game file: %s, %s",
+              file.getAbsolutePath(), e.getMessage()),
+          e);
     }
   }
 
