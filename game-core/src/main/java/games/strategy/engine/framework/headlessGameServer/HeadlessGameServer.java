@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.headlessGameServer;
 
-import static games.strategy.engine.framework.CliProperties.GAME_HOST_CONSOLE;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_RECONNECTION;
@@ -479,7 +478,7 @@ public class HeadlessGameServer {
   }
 
   private static Set<String> getProperties() {
-    return new HashSet<>(Arrays.asList(TRIPLEA_GAME, GAME_HOST_CONSOLE,
+    return new HashSet<>(Arrays.asList(TRIPLEA_GAME,
         TRIPLEA_SERVER, TRIPLEA_PORT,
         TRIPLEA_NAME, LOBBY_HOST, LOBBY_PORT,
         LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, LOBBY_GAME_SUPPORT_EMAIL,
@@ -654,7 +653,6 @@ public class HeadlessGameServer {
     // TODO replace this method with the generated usage of commons-cli
     System.out.println("\nUsage and Valid Arguments:\n"
         + "   " + TRIPLEA_GAME + "=<FILE_NAME>\n"
-        + "   " + GAME_HOST_CONSOLE + "=<true/false>\n"
         + "   " + TRIPLEA_SERVER + "=true\n"
         + "   " + TRIPLEA_PORT + "=<PORT>\n"
         + "   " + TRIPLEA_NAME + "=<PLAYER_NAME>\n"
