@@ -50,7 +50,7 @@ public final class ChatIntegrationTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    serverMessenger = new ServerMessenger("Server", 0);
+    serverMessenger = ServerMessenger.newInstanceForGameHost("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();

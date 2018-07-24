@@ -22,7 +22,7 @@ public class LobbyServer {
   LobbyServer(final LobbyPropertyReader lobbyPropertyReader) {
     final IServerMessenger server;
     try {
-      server = new ServerMessenger(ADMIN_USERNAME, lobbyPropertyReader);
+      server = ServerMessenger.newInstanceForLobby(ADMIN_USERNAME, lobbyPropertyReader);
     } catch (final IOException ex) {
       logger.log(Level.SEVERE, ex.toString());
       throw new IllegalStateException(ex.getMessage());

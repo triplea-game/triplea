@@ -131,7 +131,7 @@ public class RemoteMessengerTest {
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = new ServerMessenger("server", 0);
+      server = ServerMessenger.newInstanceForGameHost("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();
@@ -175,7 +175,7 @@ public class RemoteMessengerTest {
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = new ServerMessenger("server", 0);
+      server = ServerMessenger.newInstanceForGameHost("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();
@@ -203,7 +203,7 @@ public class RemoteMessengerTest {
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = new ServerMessenger("server", 0);
+      server = ServerMessenger.newInstanceForGameHost("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();
@@ -229,7 +229,7 @@ public class RemoteMessengerTest {
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = new ServerMessenger("server", 0);
+      server = ServerMessenger.newInstanceForGameHost("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();

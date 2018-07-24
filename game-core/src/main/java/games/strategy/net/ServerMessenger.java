@@ -63,47 +63,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
   /**
-   * The lobby database if this instance is for use by a lobby or {@code null} if this instance is for use by a game
-   * host.
+   * The lobby database if this instance is for use by a lobby; otherwise {@code null}.
    */
   private final @Nullable Database database;
-
-  /**
-   * Creates a new server messenger for use by a <strong>GAME HOST</strong> using the default object stream factory.
-   *
-   * <p>
-   * <strong>DO NOT</strong> use this constructor to create a server messenger for use by a lobby. Use
-   * {@link #ServerMessenger(String, LobbyPropertyReader)} instead.
-   * </p>
-   */
-  public ServerMessenger(final String name, final int requestedPortNumber) throws IOException {
-    this(name, requestedPortNumber, new DefaultObjectStreamFactory());
-  }
-
-  /**
-   * Creates a new server messenger for use by a <strong>GAME HOST</strong> using the specified object stream factory.
-   *
-   * <p>
-   * <strong>DO NOT</strong> use this constructor to create a server messenger for use by a lobby. Use
-   * {@link #ServerMessenger(String, LobbyPropertyReader)} instead.
-   * </p>
-   */
-  public ServerMessenger(final String name, final int requestedPortNumber, final IObjectStreamFactory streamFactory)
-      throws IOException {
-    this(name, requestedPortNumber, streamFactory, null);
-  }
-
-  /**
-   * Creates a new server messenger for use by a <strong>LOBBY</strong>.
-   *
-   * <p>
-   * <strong>DO NOT</strong> use this constructor to create a server messenger for use by a game host. Use
-   * {@link #ServerMessenger(String, int)} or {@link #ServerMessenger(String, int, IObjectStreamFactory)} instead.
-   * </p>
-   */
-  public ServerMessenger(final String name, final LobbyPropertyReader lobbyPropertyReader) throws IOException {
-    this(name, lobbyPropertyReader.getPort(), new DefaultObjectStreamFactory(), new Database(lobbyPropertyReader));
-  }
 
   // A hack, till I think of something better
   private ServerMessenger(
@@ -122,6 +84,32 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     acceptorSelector = Selector.open();
     node = new Node(name, IpFinder.findInetAddress(), boundPortNumber);
     new Thread(new ConnectionHandler(), "Server Messenger Connection Handler").start();
+  }
+
+  public static ServerMessenger newInstanceForGameHost(
+      final String name,
+      final int requestedPortNumber)
+      throws IOException {
+    return newInstanceForGameHost(name, requestedPortNumber, new DefaultObjectStreamFactory());
+  }
+
+  public static ServerMessenger newInstanceForGameHost(
+      final String name,
+      final int requestedPortNumber,
+      final IObjectStreamFactory streamFactory)
+      throws IOException {
+    return new ServerMessenger(name, requestedPortNumber, streamFactory, null);
+  }
+
+  public static ServerMessenger newInstanceForLobby(
+      final String name,
+      final LobbyPropertyReader lobbyPropertyReader)
+      throws IOException {
+    return new ServerMessenger(
+        name,
+        lobbyPropertyReader.getPort(),
+        new DefaultObjectStreamFactory(),
+        new Database(lobbyPropertyReader));
   }
 
   @Override
