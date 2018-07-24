@@ -173,10 +173,7 @@ You are **strongly encouraged** to run the `check` task before submitting a PR.
 
 ## How to upgrade gradle
 
-- Gradle distributions can be found at: https://services.gradle.org/distributions/ (we use a '-all' version)
-- Update the gradle version in: https://github.com/triplea-game/triplea/blob/master/gradle/wrapper/gradle-wrapper.properties
-- Execute: `./gradlew wrapper`
-- Change the gradle zip back to '-all' from '-bin' in gradle-wrapper.properties
+- Execute: `./gradlew wrapper --gradle-version=<version> --distribution-type=ALL`, where `<version>` is replaced with the desired Gradle version (e.g. `4.8.1`, `4.9`, etc.)
 - Commit everything
 - Do some smoke testing and submit a PR
 
