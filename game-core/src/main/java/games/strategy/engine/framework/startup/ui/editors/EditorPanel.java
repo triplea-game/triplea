@@ -30,7 +30,7 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * registers a listener for editor changes
+   * Registers a listener for editor changes.
    *
    * @param listener
    *        the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent

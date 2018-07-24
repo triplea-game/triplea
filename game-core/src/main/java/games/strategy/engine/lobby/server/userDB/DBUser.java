@@ -116,7 +116,7 @@ public final class DBUser implements Serializable {
   }
 
   /**
-   * Example usage:
+   * Returns an error message String if {@code userName} is not valid; otherwise {@code null}. Example usage:
    *
    * <pre>
    * <code>

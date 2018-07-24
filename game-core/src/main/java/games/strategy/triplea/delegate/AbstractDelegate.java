@@ -119,7 +119,7 @@ public abstract class AbstractDelegate implements IDelegate {
   /**
    * You should override this class with some variation of the following code (changing the AI to be something
    * meaningful if needed)
-   * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote:
+   * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote.
    * <p>
    * if (player.isNull()) {
    * return new WeakAi(player.getName(), TripleA.WEAK_AI);

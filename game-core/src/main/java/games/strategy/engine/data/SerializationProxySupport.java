@@ -2,7 +2,8 @@ package games.strategy.engine.data;
 
 
 /**
- * Annotation to mark magic 'writeReplace' methods that are used to support the serialization proxy pattern:
+ * Annotation to mark magic 'writeReplace' methods that are used to support the serialization proxy pattern. See the
+ * following references:
  *
  * <ul>
  * <li>https://github.com/triplea-game/triplea/issues/814</li>

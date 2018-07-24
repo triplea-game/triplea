@@ -564,7 +564,7 @@ public class AirMovementValidator {
   }
 
   /**
-   * Can this airunit reach safe land at this point in the route?
+   * Indicates this airunit reach safe land at this point in the route.
    *
    * @param unit
    *        the airunit in question

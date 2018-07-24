@@ -232,7 +232,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
 
   /**
    * Let the player know he is being charged for money or that he hasn't got
-   * enough money
+   * enough money.
    *
    * @param paa
    *        the actionattachment the player is notified about
@@ -249,7 +249,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   /**
-   * Subtract money from the players wallet
+   * Subtract money from the players wallet.
    *
    * @param paa
    *        the politicalactionattachment this the money is charged for.
@@ -292,7 +292,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   /**
-   * Let all players involved in this action know the action was successful
+   * Let all players involved in this action know the action was successful.
    *
    * @param paa the political action attachment that just succeeded.
    */

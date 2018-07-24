@@ -9,7 +9,7 @@ public class CasualtyDetails extends CasualtyList {
   private final boolean m_autoCalculated;
 
   /**
-   * Creates new SelectCasualtyMessage
+   * Creates new SelectCasualtyMessage.
    *
    * @param killed
    *        killed units

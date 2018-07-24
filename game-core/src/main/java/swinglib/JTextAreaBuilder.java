@@ -6,7 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
- * Example usage:
+ * Builder for Swing text areas. Example usage:
  * <code><pre>
  *   JTextAreaBuilder textArea = JTextAreaBuilder.builder()
  *     .text(setting.description)

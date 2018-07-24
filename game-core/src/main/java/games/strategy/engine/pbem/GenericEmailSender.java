@@ -240,7 +240,7 @@ public class GenericEmailSender implements IEmailSender {
 
   /**
    * Set the send timeout, after the Email sender is connected to the SMTP server this is the maximum amount of time
-   * it will wait before aborting the send operation
+   * it will wait before aborting the send operation.
    *
    * @param timeout
    *        the timeout in milli seconds. The default is 60 seconds (60000 milli seconds)

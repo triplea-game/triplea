@@ -1,7 +1,7 @@
 package games.strategy.engine.message;
 
 /**
- * Very similar to RMI
+ * Very similar to RMI.
  *
  * <p>
  * Objects can be registered with a remote messenger under a public name and

@@ -213,7 +213,7 @@ public class Vault {
   }
 
   /**
-   * Allow all data associated with the given vault id to be released and garbage collected
+   * Allow all data associated with the given vault id to be released and garbage collected.
    *
    * <p>
    * An id can be released by any node.

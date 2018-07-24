@@ -840,7 +840,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * checks if all relationship requirements are set
+   * Checks if all relationship requirements are set.
    *
    * @return whether all relationships as are required are set correctly.
    */

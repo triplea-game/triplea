@@ -411,7 +411,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     }
 
     /**
-     * adds a new Serializable to the cache
+     * Adds a new Serializable to the cache.
      *
      * @param key the key the serializable should be stored under. Take care not to override a serializable stored by
      *        other code it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as

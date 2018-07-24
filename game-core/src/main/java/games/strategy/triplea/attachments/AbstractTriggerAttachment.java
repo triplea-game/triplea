@@ -59,7 +59,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   /**
-   * DO NOT REMOVE THIS (or else you will break a lot of older xmls)
+   * DO NOT REMOVE THIS (or else you will break a lot of older xmls).
    *
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
