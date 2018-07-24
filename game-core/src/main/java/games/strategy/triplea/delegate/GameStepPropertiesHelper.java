@@ -272,6 +272,8 @@ public class GameStepPropertiesHelper {
   }
 
   /**
+   * Returns the collection of players whose units can be repaired by the specified player.
+   *
    * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
    *         not the set could be
    *         empty. never null.

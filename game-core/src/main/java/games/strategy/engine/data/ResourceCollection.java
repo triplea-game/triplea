@@ -105,7 +105,7 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * @return new ResourceCollection containing the difference between both collections.
+   * Returns new ResourceCollection containing the difference between both collections.
    */
   public ResourceCollection difference(final ResourceCollection otherCollection) {
     final ResourceCollection returnCollection = new ResourceCollection(getData(), m_resources);
@@ -239,6 +239,8 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
+   * Adds {@code times - 1} copies of each resource in this collection.
+   *
    * @param times
    *        multiply this Collection times times.
    */

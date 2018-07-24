@@ -46,30 +46,18 @@ public class RemoteMethodCall implements Externalizable {
     methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
   }
 
-  /**
-   * @return Returns the channelName.
-   */
   public String getRemoteName() {
     return remoteName;
   }
 
-  /**
-   * @return Returns the methodName.
-   */
   public String getMethodName() {
     return methodName;
   }
 
-  /**
-   * @return Returns the args.
-   */
   public Object[] getArgs() {
     return args;
   }
 
-  /**
-   * @return Returns the argTypes.
-   */
   public Class<?>[] getArgTypes() {
     return stringsToClasses(argTypes, args);
   }

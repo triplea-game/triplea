@@ -25,7 +25,7 @@ import games.strategy.util.CollectionUtils;
 public class AiUtils {
 
   /**
-   * @return a comparator that sorts cheaper units before expensive ones.
+   * Returns a comparator that sorts cheaper units before expensive ones.
    */
   public static Comparator<Unit> getCostComparator() {
     return Comparator.comparingInt(o -> getCost(o.getType(), o.getOwner(), o.getData()));

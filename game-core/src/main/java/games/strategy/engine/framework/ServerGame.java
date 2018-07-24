@@ -82,6 +82,8 @@ public class ServerGame extends AbstractGame {
   private volatile boolean delegateExecutionStopped = false;
 
   /**
+   * Initializes a new instance of the ServerGame class.
+   *
    * @param data
    *        game data.
    * @param localPlayers

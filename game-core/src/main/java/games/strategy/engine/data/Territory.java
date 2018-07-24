@@ -38,7 +38,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   /**
-   * @return The territory owner; will be {@link PlayerID#NULL_PLAYERID} if the territory is not owned.
+   * Returns the territory owner; will be {@link PlayerID#NULL_PLAYERID} if the territory is not owned.
    */
   public PlayerID getOwner() {
     return m_owner;

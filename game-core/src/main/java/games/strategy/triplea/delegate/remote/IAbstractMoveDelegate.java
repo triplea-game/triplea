@@ -19,6 +19,8 @@ public interface IAbstractMoveDelegate<T> extends IRemote, IDelegate {
   List<T> getMovesMade();
 
   /**
+   * Undoes the move at the specified index.
+   *
    * @param moveIndex
    *        - an index in the list getMovesMade.
    * @return an error string if the move could not be undone, null otherwise

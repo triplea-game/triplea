@@ -3131,12 +3131,16 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   /**
+   * Parses the specified value and sets whether or not the unit is a paratroop.
+   *
    * @deprecated does nothing, kept to avoid breaking maps, do not remove.
    */
   @Deprecated
   private void setIsParatroop(@SuppressWarnings("unused") final String s) {}
 
   /**
+   * Parses the specified value and sets whether or not the unit is mechanized.
+   *
    * @deprecated does nothing, used to keep compatibility with older xml files, do not remove.
    */
   @Deprecated

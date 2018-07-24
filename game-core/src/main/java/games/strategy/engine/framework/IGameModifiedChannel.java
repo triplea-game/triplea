@@ -18,6 +18,8 @@ public interface IGameModifiedChannel extends IChannelSubscribor {
   void addChildToEvent(final String text, final Object renderingData);
 
   /**
+   * Invoked when a game step has changed.
+   *
    * @param loadedFromSavedGame
    *        - true if the game step has changed because we were loaded from a saved game.
    */

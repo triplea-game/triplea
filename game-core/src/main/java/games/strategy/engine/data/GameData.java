@@ -160,7 +160,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return a collection of all units in the game.
+   * Returns a collection of all units in the game.
    */
   public UnitsList getUnits() {
     // ensureLockHeld();
@@ -168,14 +168,14 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return list of Players in the game.
+   * Returns list of Players in the game.
    */
   public PlayerList getPlayerList() {
     return playerList;
   }
 
   /**
-   * @return list of resources available in the game.
+   * Returns list of resources available in the game.
    */
   public ResourceList getResourceList() {
     ensureLockHeld();
@@ -183,7 +183,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return list of production Frontiers for this game.
+   * Returns list of production Frontiers for this game.
    */
   public ProductionFrontierList getProductionFrontierList() {
     ensureLockHeld();
@@ -191,7 +191,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return list of Production Rules for the game.
+   * Returns list of Production Rules for the game.
    */
   public ProductionRuleList getProductionRuleList() {
     ensureLockHeld();
@@ -199,14 +199,14 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return The Technology Frontier for this game.
+   * Returns the Technology Frontier for this game.
    */
   public TechnologyFrontier getTechnologyFrontier() {
     return technologyFrontier;
   }
 
   /**
-   * @return The list of production Frontiers for this game.
+   * Returns the list of production Frontiers for this game.
    */
   public RepairFrontierList getRepairFrontierList() {
     ensureLockHeld();
@@ -214,7 +214,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return The list of Production Rules for the game.
+   * Returns the list of Production Rules for the game.
    */
   public RepairRuleList getRepairRuleList() {
     ensureLockHeld();
@@ -222,7 +222,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return The Alliance Tracker for the game.
+   * Returns the Alliance Tracker for the game.
    */
   public AllianceTracker getAllianceTracker() {
     ensureLockHeld();
@@ -230,8 +230,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return whether we should throw an error if changes to this game data are made outside of the swing
-   *         event thread.
+   * Returns whether we should throw an error if changes to this game data are made outside of the swing
+   * event thread.
    */
   public boolean areChangesOnlyInSwingEventThread() {
     return forceInSwingEventThread;
@@ -405,8 +405,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return boolean, whether readWriteLock is missing
-   *         This can happen in very odd circumstances while deserializing.
+   * Indicates whether readWriteLock is missing.
+   * This can happen in very odd circumstances while deserializing.
    */
   private boolean readWriteLockMissing() {
     return readWriteLock == null;
@@ -439,9 +439,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the
-   *         Nullplayer / Neutral)
-   *         and the SelfRelation (Relation with yourself) all other relations are mapdesigner defined.
+   * Returns all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the
+   * Null player / Neutral) and the SelfRelation (Relation with yourself) all other relations are map designer defined.
    */
   public RelationshipTypeList getRelationshipTypeList() {
     ensureLockHeld();
@@ -449,7 +448,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * @return a tracker which tracks all current relationships that exist between all players.
+   * Returns a tracker which tracks all current relationships that exist between all players.
    */
   public RelationshipTracker getRelationshipTracker() {
     ensureLockHeld();

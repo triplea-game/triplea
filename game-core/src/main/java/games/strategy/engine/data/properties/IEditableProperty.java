@@ -21,7 +21,7 @@ public interface IEditableProperty {
   Object getValue();
 
   /**
-   * @return is the object a valid object for setting as our value.
+   * Indicates the object is a valid object for setting as our value.
    */
   boolean validate(Object value);
 
@@ -36,7 +36,7 @@ public interface IEditableProperty {
   void setValue(Object value) throws ClassCastException;
 
   /**
-   * @return component used to edit this property.
+   * Returns the component used to edit this property.
    */
   JComponent getEditorComponent();
 

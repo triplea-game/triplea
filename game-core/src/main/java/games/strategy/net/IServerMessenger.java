@@ -44,7 +44,7 @@ public interface IServerMessenger extends IMessenger {
   void notifyUsernameMiniBanningOfPlayer(String username, Instant expires);
 
   /**
-   * @return The hashed MAC address for the user with the specified name or {@code null} if unknown.
+   * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.
    */
   @Nullable
   String getPlayerMac(String name);

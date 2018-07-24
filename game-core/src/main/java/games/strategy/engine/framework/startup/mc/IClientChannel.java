@@ -14,6 +14,8 @@ public interface IClientChannel extends IChannelSubscribor {
   void playerListingChanged(PlayerListing listing);
 
   /**
+   * Invoked when all players have been selected. This event indicates the game is ready to start.
+   *
    * @param players
    *        who is playing who.
    */

@@ -50,6 +50,8 @@ public final class TileImageReconstructor {
   private TileImageReconstructor() {}
 
   /**
+   * Runs the tile image reconstructor tool.
+   *
    * @throws IllegalStateException If not invoked on the EDT.
    */
   public static void run(final String[] args) {

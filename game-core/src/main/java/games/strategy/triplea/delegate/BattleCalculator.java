@@ -450,6 +450,8 @@ public class BattleCalculator {
   }
 
   /**
+   * Selects casualties for the specified battle.
+   *
    * @param battleId
    *        may be null if we are not in a battle (eg, if this is an aa fire due to moving).
    */
@@ -970,35 +972,35 @@ public class BattleCalculator {
   }
 
   /**
-   * @return Can transports be used as cannon fodder.
+   * Indicates transports can be used as cannon fodder.
    */
   private static boolean isTransportCasualtiesRestricted(final GameData data) {
     return Properties.getTransportCasualtiesRestricted(data);
   }
 
   /**
-   * @return Random AA Casualties - casualties randomly assigned.
+   * Indicates AA casualties are randomly assigned.
    */
   private static boolean isRandomAaCasualties(final GameData data) {
     return Properties.getRandomAaCasualties(data);
   }
 
   /**
-   * @return Roll AA Individually - roll against each aircraft.
+   * Indicates AA is rolled against each aircraft.
    */
   private static boolean isRollAaIndividually(final GameData data) {
     return Properties.getRollAaIndividually(data);
   }
 
   /**
-   * @return Choose AA - attacker selects casualties.
+   * Indicates attacker selects AA casualties.
    */
   private static boolean isChooseAa(final GameData data) {
     return Properties.getChooseAaCasualties(data);
   }
 
   /**
-   * @return Can the attacker retreat non-amphibious units.
+   * Indicates the attacker can retreat non-amphibious units.
    */
   private static boolean isPartialAmphibiousRetreat(final GameData data) {
     return Properties.getPartialAmphibiousRetreat(data);

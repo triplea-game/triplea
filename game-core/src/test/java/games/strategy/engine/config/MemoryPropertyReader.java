@@ -22,6 +22,8 @@ public final class MemoryPropertyReader extends AbstractPropertyReader {
   }
 
   /**
+   * Initializes a new instance of the MemoryPropertyReader class from the specified properties.
+   *
    * @throws IllegalArgumentException If {@code properties} contains a {@code null} key or value.
    */
   public MemoryPropertyReader(final Map<String, String> properties) {

@@ -9,6 +9,8 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePlacement> {
   /**
+   * Places the specified units in the specified territry.
+   *
    * @param units
    *        units to place.
    * @param at
@@ -39,9 +41,9 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
   PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
 
   /**
-   * @return The number of placements made so far.
-   *         this is not the number of units placed, but the number
-   *         of times we have made successful placements.
+   * Returns the number of placements made so far.
+   * this is not the number of units placed, but the number
+   * of times we have made successful placements.
    */
   int getPlacementsMade();
 

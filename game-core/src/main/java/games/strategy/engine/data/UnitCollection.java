@@ -79,11 +79,12 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /**
+   * Returns up to count units of a given type currently in the collection.
+   *
    * @param type
    *        referring unit type
    * @param maxUnits
    *        maximal number of units
-   * @return up to count units of a given type currently in the collection.
    */
   public Collection<Unit> getUnits(final UnitType type, final int maxUnits) {
     if (maxUnits == 0) {
@@ -105,9 +106,10 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /**
+   * Returns collection of units of each type up to max.
+   *
    * @param types
    *        map of unit types
-   * @return collection of units of each type up to max.
    */
   public Collection<Unit> getUnits(final IntegerMap<UnitType> types) {
     final Collection<Unit> units = new ArrayList<>();
@@ -122,7 +124,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /**
-   * @return integer map of UnitType.
+   * Returns integer map of UnitType.
    */
   public IntegerMap<UnitType> getUnitsByType() {
     final IntegerMap<UnitType> units = new IntegerMap<>();
@@ -136,9 +138,10 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /**
+   * Returns map of UnitType (only of units for the specified player).
+   *
    * @param id
    *        referring player ID
-   * @return map of UnitType (only of units for the specified player).
    */
   public IntegerMap<UnitType> getUnitsByType(final PlayerID id) {
     final IntegerMap<UnitType> count = new IntegerMap<>();
@@ -157,7 +160,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /**
-   * @return a Set of all players who have units in this collection.
+   * Returns a Set of all players who have units in this collection.
    */
   public Set<PlayerID> getPlayersWithUnits() {
     // note nulls are handled by PlayerID.NULL_PLAYERID
@@ -165,7 +168,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   /**
-   * @return The count of units each player has in this collection.
+   * Returns the count of units each player has in this collection.
    */
   public IntegerMap<PlayerID> getPlayerUnitCounts() {
     final IntegerMap<PlayerID> count = new IntegerMap<>();

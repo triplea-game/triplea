@@ -42,6 +42,8 @@ public final class TileImageBreaker {
   private TileImageBreaker() {}
 
   /**
+   * Runs the tile image breaker tool.
+   *
    * @throws IllegalStateException If not invoked on the EDT.
    */
   public static void run(final String[] args) {

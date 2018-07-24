@@ -91,9 +91,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * @return The ArcheType of this relationshipType, this really shouldn't be called, typically you should call
-   *         isNeutral, isAllied or
-   *         isWar().
+   * Returns the ArcheType of this relationshipType, this really shouldn't be called, typically you should call
+   * isNeutral, isAllied or isWar().
    */
   public String getArcheType() {
     return m_archeType;
@@ -367,21 +366,21 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   }
 
   /**
-   * @return whether this relationship is based on the WAR_ARCHETYPE.
+   * Indicates whether this relationship is based on the WAR_ARCHETYPE.
    */
   public boolean isWar() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_WAR);
   }
 
   /**
-   * @return whether this relationship is based on the ALLIED_ARCHETYPE.
+   * Indicates whether this relationship is based on the ALLIED_ARCHETYPE.
    */
   public boolean isAllied() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_ALLIED);
   }
 
   /**
-   * @return whether this relationship is based on the NEUTRAL_ARCHETYPE.
+   * Indicates whether this relationship is based on the NEUTRAL_ARCHETYPE.
    */
   public boolean isNeutral() {
     return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);

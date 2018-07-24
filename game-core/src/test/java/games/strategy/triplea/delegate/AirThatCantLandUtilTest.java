@@ -315,6 +315,8 @@ public class AirThatCantLandUtilTest {
   }
 
   /**
+   * Returns a new dummy player.
+   *
    * @deprecated Use a mock object instead.
    */
   @Deprecated

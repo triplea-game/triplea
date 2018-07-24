@@ -109,8 +109,8 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * @return site of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null
-   *         Relation).
+   * Returns size of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null
+   * Relation).
    */
   public int size() {
     return m_relationshipTypes.size();

@@ -758,10 +758,6 @@ public final class GameParser {
         .forEach(data.getUnitTypeList()::addUnitType);
   }
 
-  /**
-   * @param root
-   *        root node containing the playerList.
-   */
   private void parsePlayerList(final Element root) {
     final PlayerList playerList = data.getPlayerList();
     for (final Element current : getChildren("player", root)) {

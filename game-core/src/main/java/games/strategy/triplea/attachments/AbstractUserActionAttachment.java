@@ -29,6 +29,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
   protected String m_text = "";
   /**
+   * The cost in PUs to attempt this action.
+   *
    * @deprecated Replaced by costResources.
    */
   @Deprecated
@@ -54,22 +56,18 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return true if there is no condition to this action or if the condition is satisfied.
+   * Indicates there is no condition to this action or if the condition is satisfied.
    */
   public boolean canPerform(final HashMap<ICondition, Boolean> testedConditions) {
     return m_conditions == null || isSatisfied(testedConditions);
   }
 
-  /**
-   * @param text
-   *        the Key that is used in politicstext.properties or other .properties for all the texts
-   */
   private void setText(final String text) {
     m_text = text;
   }
 
   /**
-   * @return The Key that is used in politicstext.properties or other .properties for all the texts.
+   * Returns the Key that is used in politicstext.properties or other .properties for all the texts.
    */
   public String getText() {
     return m_text;
@@ -152,7 +150,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return a list of players that must accept this action before it takes effect.
+   * Returns a list of players that must accept this action before it takes effect.
    */
   public List<PlayerID> getActionAccept() {
     return m_actionAccept;
@@ -163,6 +161,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
+   * Sets the amount of times you can try this Action per Round.
+   *
    * @param s
    *        the amount of times you can try this Action per Round.
    */
@@ -177,7 +177,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   /**
-   * @return The amount of times you can try this Action per Round.
+   * Returns the amount of times you can try this Action per Round.
    */
   private int getAttemptsPerTurn() {
     return m_attemptsPerTurn;
@@ -187,10 +187,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     m_attemptsPerTurn = 1;
   }
 
-  /**
-   * @param attempts
-   *        left this turn.
-   */
   private void setAttemptsLeftThisTurn(final int attempts) {
     m_attemptsLeftThisTurn = attempts;
   }
@@ -199,9 +195,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     setAttemptsLeftThisTurn(getInt(attempts));
   }
 
-  /**
-   * @return attempts that are left this turn.
-   */
   private int getAttemptsLeftThisTurn() {
     return m_attemptsLeftThisTurn;
   }

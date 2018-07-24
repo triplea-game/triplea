@@ -155,10 +155,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     return m_props.getProperty("infotext");
   }
 
-  /**
-   * @throws IOException
-   *         if there was an error parsing the string.
-   */
   @Override
   public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException {
     final String errorStartString = m_props.getProperty("error.start");

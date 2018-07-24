@@ -99,7 +99,7 @@ public class DownloadFileDescription {
   }
 
   /**
-   * @return Name of the zip file.
+   * Returns the name of the zip file.
    */
   String getMapZipFileName() {
     return (url != null && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1, url.length()) : "";

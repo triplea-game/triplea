@@ -252,7 +252,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   /**
-   * @return The number you need to roll to get the action to succeed format "1:10" for 10% chance.
+   * Returns the number you need to roll to get the action to succeed format "1:10" for 10% chance.
    */
   private String getChance() {
     return m_chance;

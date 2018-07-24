@@ -22,9 +22,6 @@ public class VaultID implements Serializable {
     m_generatedOn = generatedOn;
   }
 
-  /**
-   * @return Returns the generatedOn.
-   */
   INode getGeneratedOn() {
     return m_generatedOn;
   }

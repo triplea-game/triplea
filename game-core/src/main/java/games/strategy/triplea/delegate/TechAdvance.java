@@ -183,7 +183,8 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /**
-   * @return first is air&naval, second is land&production.
+   * Returns a tuple, where the first element contains air &amp; naval tech advances, and the second element contains
+   * land &amp; production tech advances.
    */
   private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
     data.acquireReadLock();

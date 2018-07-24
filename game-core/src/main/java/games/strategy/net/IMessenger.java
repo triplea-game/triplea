@@ -66,7 +66,7 @@ public interface IMessenger {
   boolean isServer();
 
   /**
-   * @return local node if we are a server node.
+   * Returns the local node if we are a server node.
    */
   INode getServerNode();
 

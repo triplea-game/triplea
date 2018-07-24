@@ -15,6 +15,8 @@ public class SystemCheck {
   private final Optional<Exception> exception;
 
   /**
+   * Initializes a new instance of the SystemCheck class.
+   *
    * @param msg Message that is printed along with success/fail, should describe what the system check did.
    * @param r The runnable that represents the system check, should verify that an action can be performed.
    */
@@ -32,21 +34,21 @@ public class SystemCheck {
   }
 
   /**
-   * @return True if the system check (Runnable constructor arg) completed without exception.
+   * Returns true if the system check (Runnable constructor arg) completed without exception.
    */
   public boolean wasSuccess() {
     return result;
   }
 
   /**
-   * @return A status message indicating if the system check passed or succeeded.
+   * Returns a status message indicating if the system check passed or succeeded.
    */
   public String getResultMessage() {
     return msg + ": " + result;
   }
 
   /**
-   * @return Any exceptions that may have happened while executing the system check.
+   * Returns any exception that may have happened while executing the system check.
    */
   public Optional<Exception> getException() {
     return exception;

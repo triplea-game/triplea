@@ -56,6 +56,8 @@ class MainMenuPane extends BorderPane {
   private VBox mainOptions;
 
   /**
+   * Initializes a new instance of the MainMenuPane class.
+   *
    * @param triplea The root pane.
    * @throws IOException If the FXML file is not present.
    */

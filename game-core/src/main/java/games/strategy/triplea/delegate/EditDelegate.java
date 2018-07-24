@@ -121,7 +121,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   /**
-   * @return gets the production of the territory, ignores whether the territory was an original factory.
+   * Returns the production of the territory, ignores whether the territory was an original factory.
    */
   protected int getProduction(final Territory territory) {
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);

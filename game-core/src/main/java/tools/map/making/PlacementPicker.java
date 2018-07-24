@@ -74,6 +74,8 @@ public final class PlacementPicker {
   }
 
   /**
+   * Runs the placement picker tool.
+   *
    * @throws IllegalStateException If not invoked on the EDT.
    */
   public static void run(final String[] args) {
@@ -527,6 +529,8 @@ public final class PlacementPicker {
     }
 
     /**
+     * Updates tool state based on the specified mouse event.
+     *
      * <ul>
      * <li>Left button: Start in territory.</li>
      * <li>Left button + control: Add point.</li>

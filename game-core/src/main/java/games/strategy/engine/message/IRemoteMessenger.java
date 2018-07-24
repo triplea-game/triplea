@@ -70,22 +70,26 @@ package games.strategy.engine.message;
  */
 public interface IRemoteMessenger {
   /**
+   * Returns a remote reference to the registered remote.
+   *
    * @param name
    *        the name the remote is registered under.
-   * @return a remote reference to the registered remote.
    */
   IRemote getRemote(RemoteName name);
 
   /**
+   * Returns a remote reference to the registered remote.
+   *
    * @param name
    *        the name the remote is registered under.
    * @param ignoreResults
    *        whether we need to wait for the results or not
-   * @return a remote reference to the registered remote.
    */
   IRemote getRemote(RemoteName name, boolean ignoreResults);
 
   /**
+   * Registers the specified remote under the given name.
+   *
    * @param implementor
    *        An object that implements remoteInterface.
    * @param name

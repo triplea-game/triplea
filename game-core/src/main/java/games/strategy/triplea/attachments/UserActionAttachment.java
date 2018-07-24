@@ -152,7 +152,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * @return gets the valid actions for this player.
+   * Returns the valid actions for this player.
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions) {

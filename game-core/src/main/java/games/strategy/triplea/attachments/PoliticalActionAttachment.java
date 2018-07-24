@@ -107,7 +107,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * @return a set of all other players involved in this PoliticalAction.
+   * Returns a set of all other players involved in this PoliticalAction.
    */
   public Set<PlayerID> getOtherPlayers() {
     final Set<PlayerID> otherPlayers = new LinkedHashSet<>();
@@ -121,7 +121,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * @return gets the valid actions for this player.
+   * Returns the valid actions for this player.
    */
   public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,
       final HashMap<ICondition, Boolean> testedConditions, final GameData data) {

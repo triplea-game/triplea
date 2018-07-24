@@ -22,6 +22,8 @@ final class DefaultColors {
   private final Iterator<Color> colorIterator = COLORS.iterator();
 
   /**
+   * Returns the next available default color.
+   *
    * @throws NoSuchElementException If the available default colors have been exhausted.
    */
   Color nextColor() {

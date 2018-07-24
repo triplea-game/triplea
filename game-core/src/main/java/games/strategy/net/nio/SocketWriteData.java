@@ -49,6 +49,8 @@ class SocketWriteData {
   }
 
   /**
+   * Writes any pending data to the specified channel.
+   *
    * @return true if the write has written the entire message.
    */
   boolean write(final SocketChannel channel) throws IOException {

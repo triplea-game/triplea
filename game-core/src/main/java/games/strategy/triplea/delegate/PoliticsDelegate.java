@@ -363,6 +363,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   /**
+   * Executes the specified action.
+   *
    * @param paa
    *        the action to check if it succeeds
    * @return true if the action succeeds, usually because the die-roll succeeded.

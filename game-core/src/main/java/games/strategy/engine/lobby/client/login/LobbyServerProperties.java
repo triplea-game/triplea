@@ -55,7 +55,7 @@ public class LobbyServerProperties {
   }
 
   /**
-   * @return True if the server is available. If not then see <code>serverErrorMessage</code>
+   * Returns true if the server is available. If not then see <code>serverErrorMessage</code>
    */
   public boolean isServerAvailable() {
     return serverErrorMessage.isEmpty();

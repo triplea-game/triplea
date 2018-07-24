@@ -71,6 +71,8 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   /**
+   * Initializes a new instance of the TechAttachment class.
+   *
    * @deprecated Since many maps do not include a tech attachment for each player (and no maps include tech attachments
    *             for the Null
    *             Player),

@@ -26,7 +26,7 @@ public interface GameSettingUiBinding<T> {
   Map<GameSetting, String> readValues();
 
   /**
-   * @return Helpful description message of what values are valid.
+   * Returns helpful description message of what values are valid.
    */
   String validValueDescription();
 

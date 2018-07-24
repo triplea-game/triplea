@@ -14,11 +14,12 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   /**
+   * Indicates whether player p1 is allied to player p2.
+   *
    * @param p1
    *        first referring player
    * @param p2
    *        second referring player
-   * @return whether player p1 is allied to player p2.
    */
   public boolean isAllied(final PlayerID p1, final PlayerID p2) {
     return Matches.relationshipTypeIsAllied().test((getRelationshipType(p1, p2)));
@@ -68,11 +69,12 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   /**
+   * Indicates whether player1 is neutral to player2.
+   *
    * @param p1
    *        player1
    * @param p2
    *        player2
-   * @return whether player1 is neutral to player2.
    */
   public boolean isNeutral(final PlayerID p1, final PlayerID p2) {
     return Matches.relationshipTypeIsNeutral().test((getRelationshipType(p1, p2)));

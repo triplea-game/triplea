@@ -109,6 +109,7 @@ public final class LobbyServerPropertiesFetcher {
   }
 
   /**
+   * Downloads the lobby properties file from the specified URL and returns the parsed properties.
    *
    * @param lobbyPropFileUrl The taret URL to scrape for a lobby properties file.
    * @param currentVersion Our current engine version. The properties file can contain

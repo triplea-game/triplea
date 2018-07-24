@@ -31,7 +31,7 @@ public class PlaceableUnits implements Serializable {
   }
 
   /**
-   * @return -1 if no limit.
+   * Returns the maximum number of units that can be placed or -1 if no limit.
    */
   public int getMaxUnits() {
     return m_maxUnits;

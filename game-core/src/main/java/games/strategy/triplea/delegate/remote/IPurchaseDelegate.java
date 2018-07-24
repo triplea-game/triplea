@@ -11,6 +11,8 @@ import games.strategy.util.IntegerMap;
 
 public interface IPurchaseDelegate extends IRemote, IDelegate {
   /**
+   * Purchases the specified units.
+   *
    * @param productionRules
    *        - units maps ProductionRule -> count.
    * @return null if units bought, otherwise an error message

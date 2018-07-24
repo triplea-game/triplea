@@ -18,6 +18,8 @@ public class ChangeAttachmentChange extends Change {
   }
 
   /**
+   * Initializes a new instance of the ChangeAttachmentChange class.
+   *
    * @param attachment An attachment object which we will update via reflexion
    * @param newValue The new value for the property
    * @param property The property by String name.

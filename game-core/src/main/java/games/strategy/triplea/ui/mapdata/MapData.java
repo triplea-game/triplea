@@ -511,8 +511,8 @@ public class MapData implements Closeable {
   }
 
   /**
-   * @return a Set of territory names as Strings. generally this shouldnt be
-   *         used, instead you should use aGameData.getMap().getTerritories()
+   * Returns a Set of territory names as Strings. generally this shouldn't be
+   * used, instead you should use aGameData.getMap().getTerritories()
    */
   public Set<String> getTerritories() {
     return polys.keySet();

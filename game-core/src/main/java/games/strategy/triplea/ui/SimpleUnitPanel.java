@@ -39,6 +39,8 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   /**
+   * Adds units to the panel based on the specified production rules.
+   *
    * @param units
    *        a HashMap in the form ProductionRule -> number of units
    *        assumes that each production rule has 1 result, which is simple the number of units.
@@ -56,6 +58,8 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   /**
+   * Adds units to the panel based on the specified repair rules.
+   *
    * @param units
    *        a HashMap in the form RepairRule -> number of units
    *        assumes that each repair rule has 1 result, which is simply the number of units.
@@ -82,6 +86,8 @@ public class SimpleUnitPanel extends JPanel {
   }
 
   /**
+   * Adds units to the panel based on the specified unit categories.
+   *
    * @param categories
    *        a collection of UnitCategories.
    */

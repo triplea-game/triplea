@@ -63,7 +63,7 @@ public class AllianceTracker implements Serializable {
   }
 
   /**
-   * @return a set of all the games alliances, this will return an empty set if you aren't using alliances.
+   * Returns a set of all the games alliances, this will return an empty set if you aren't using alliances.
    */
   public Set<String> getAlliances() {
     return new HashSet<>(alliances.values());

@@ -63,6 +63,8 @@ public final class PolygonGrabber {
   private PolygonGrabber() {}
 
   /**
+   * Runs the polygon grabber tool.
+   *
    * @throws IllegalStateException If not invoked on the EDT.
    */
   public static void run(final String[] args) {
