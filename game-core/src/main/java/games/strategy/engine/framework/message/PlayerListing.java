@@ -62,10 +62,10 @@ public class PlayerListing implements Serializable {
 
     m_playerToNodeListing = Optional.ofNullable(playerToNodeListing)
         .map(HashMap::new)
-        .orElse(new HashMap<>(0));
+        .orElseGet(HashMap::new);
     m_playersEnabledListing = Optional.ofNullable(playersEnabledListing)
         .map(HashMap::new)
-        .orElse(new HashMap<>(0));
+        .orElseGet(HashMap::new);
     m_localPlayerTypes = Optional.ofNullable(localPlayerTypes.entrySet()
         .stream()
         // convert Map<String,PlayerType> -> Map<String,String>
@@ -76,7 +76,7 @@ public class PlayerListing implements Serializable {
     m_gameRound = gameRound;
     m_playersAllowedToBeDisabled = Optional.ofNullable(playersAllowedToBeDisabled)
         .map(HashSet::new)
-        .orElse(new HashSet<>(0));
+        .orElseGet(HashSet::new);
 
     m_playerNamesAndAlliancesInTurnOrder =
         Optional.ofNullable(playerNamesAndAlliancesInTurnOrder)
