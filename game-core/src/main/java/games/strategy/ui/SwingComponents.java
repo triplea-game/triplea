@@ -386,7 +386,7 @@ public class SwingComponents {
   /**
    * Runs the specified task on a background thread while displaying a progress dialog.
    *
-   * @param<T> The type of the task result.
+   * @param <T> The type of the task result.
    *
    * @param frame The {@code Frame} from which the progress dialog is displayed or {@code null} to use a shared, hidden
    *        frame as the owner of the progress dialog.
