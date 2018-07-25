@@ -91,7 +91,7 @@ public class HeadlessGameServer {
     }
     new Thread(() -> {
       log.info("Headless Start");
-      setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel, null);
+      setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
       setupPanelModel.showSelectType();
       log.info("Waiting for users to connect.");
       waitForUsersHeadless();
