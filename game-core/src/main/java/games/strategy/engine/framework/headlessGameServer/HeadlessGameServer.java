@@ -25,7 +25,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.debug.DebugUtils;
 import games.strategy.engine.chat.Chat;
@@ -678,6 +677,13 @@ public class HeadlessGameServer {
 
   private static void handleHeadlessGameServerArgs() {
     boolean printUsage = false;
+
+    final String mapFolder = ClientSetting.MAP_FOLDER_OVERRIDE.value();
+    if (mapFolder.isEmpty() || !(new File(mapFolder).exists()) || !(new File(mapFolder).isDirectory())) {
+      log.warning("Invalid '" + MAP_FOLDER + "' param, map folder must exist: " + mapFolder);
+      printUsage = true;
+    }
+
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
     final String hostName = System.getProperty(LOBBY_GAME_HOSTED_BY, "");
     if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
