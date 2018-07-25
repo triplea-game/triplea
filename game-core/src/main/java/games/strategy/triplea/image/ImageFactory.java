@@ -38,8 +38,6 @@ public class ImageFactory {
         return null;
       }
       try {
-        // We're implementing our own caching system
-        ImageIO.setUseCache(false);
         images.put(key, ImageIO.read(url));
       } catch (final IOException e) {
         throw new IllegalStateException(e);
