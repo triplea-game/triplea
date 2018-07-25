@@ -191,7 +191,7 @@ public class MapPanel extends ImageScrollerLargeView {
     addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
-      updateMouseHoverState(convert(e), e.getX(), e.getY());
+        updateMouseHoverState(convert(e), e.getX(), e.getY());
       }
     });
     // When map is scrolled, update information about what we're hovering over.
@@ -525,9 +525,9 @@ public class MapPanel extends ImageScrollerLargeView {
     try {
       // This makes use of the FIFO queue the executor uses
       executor.submit(() -> drawTiles((Graphics2D) checkNotNull(g), gameData, bounds)).get();
-    } catch(final ExecutionException e) {
+    } catch (final ExecutionException e) {
       throw new IllegalStateException(e);
-    } catch (InterruptedException e) {
+    } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
     }
   }
