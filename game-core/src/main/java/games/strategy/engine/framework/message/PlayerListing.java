@@ -3,6 +3,8 @@ package games.strategy.engine.framework.message;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -11,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.NetworkData;
@@ -44,13 +47,25 @@ public class PlayerListing implements Serializable {
   /**
    * Creates a new instance of PlayerListing.
    */
-  public PlayerListing(final Map<String, String> playerToNodeListing, final Map<String, Boolean> playersEnabledListing,
-      final Map<String, PlayerType> localPlayerTypes, final Version gameVersion, final String gameName,
-      final String gameRound, final Collection<String> playersAllowedToBeDisabled,
+  public PlayerListing(
+      final Map<String, String> playerToNodeListing,
+      final Map<String, Boolean> playersEnabledListing,
+      final Map<String, PlayerType> localPlayerTypes,
+      final Version gameVersion,
+      final String gameName,
+      final String gameRound,
+      final Collection<String> playersAllowedToBeDisabled,
       final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder) {
 
-    m_playerToNodeListing = Optional.ofNullable(playerToNodeListing).orElse(Collections.emptyMap());
-    m_playersEnabledListing = Optional.ofNullable(playersEnabledListing).orElse(Collections.emptyMap());
+    // Note: Sets from guava immutables are not necessarily serializable (!)
+    // We use copy constructors here to avoid this problem.
+
+    m_playerToNodeListing = Optional.ofNullable(playerToNodeListing)
+        .map(HashMap::new)
+        .orElseGet(HashMap::new);
+    m_playersEnabledListing = Optional.ofNullable(playersEnabledListing)
+        .map(HashMap::new)
+        .orElseGet(HashMap::new);
     m_localPlayerTypes = Optional.ofNullable(localPlayerTypes.entrySet()
         .stream()
         // convert Map<String,PlayerType> -> Map<String,String>
@@ -59,9 +74,16 @@ public class PlayerListing implements Serializable {
     m_gameVersion = gameVersion;
     m_gameName = gameName;
     m_gameRound = gameRound;
-    m_playersAllowedToBeDisabled = Optional.ofNullable(playersAllowedToBeDisabled).orElse(Collections.emptySet());
+    m_playersAllowedToBeDisabled = Optional.ofNullable(playersAllowedToBeDisabled)
+        .map(HashSet::new)
+        .orElseGet(HashSet::new);
+
     m_playerNamesAndAlliancesInTurnOrder =
-        Optional.ofNullable(playerNamesAndAlliancesInTurnOrder).orElse(Collections.emptyMap());
+        Optional.ofNullable(playerNamesAndAlliancesInTurnOrder)
+            .orElse(Collections.emptyMap())
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(Entry::getKey, e -> Sets.newHashSet(e.getValue())));
 
     // make sure none of the collection values are null.
     Preconditions.checkArgument(m_playerToNodeListing.values().stream().noneMatch(Objects::isNull),
@@ -75,6 +97,7 @@ public class PlayerListing implements Serializable {
     Preconditions.checkArgument(m_playerNamesAndAlliancesInTurnOrder.values().stream().noneMatch(Objects::isNull),
         m_playerNamesAndAlliancesInTurnOrder.toString());
   }
+
 
   public Collection<String> getPlayersAllowedToBeDisabled() {
     return m_playersAllowedToBeDisabled;
