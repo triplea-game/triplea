@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.mc;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.swing.JPanel;
@@ -88,8 +89,8 @@ public class SetupPanelModel {
     }
     this.panel = panel;
 
-
-    panelChangeListener.screenChangeEvent(panel);
+    Optional.ofNullable(panelChangeListener)
+        .ifPresent(listener -> listener.screenChangeEvent(panel));
   }
 
   public ISetupPanel getPanel() {
