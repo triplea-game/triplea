@@ -319,7 +319,9 @@ public class ClientModel implements IMessengerErrorListener {
       return;
     }
     objectStreamFactory.setData(data);
-    final Map<String, PlayerType> playerMapping = playersToNodes.entrySet().stream()
+    final Map<String, PlayerType> playerMapping = playersToNodes.entrySet()
+        .stream()
+        .filter(e -> e.getValue() != null)
         .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
         .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
     final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
