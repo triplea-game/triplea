@@ -219,8 +219,8 @@ public final class ConnectionFinder {
   /**
    * Creates the xml territory definitions.
    *
-   * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a
-   *        territory is water
+   * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex expression that
+   *        indicates that a territory is water
    * @return StringBuffer containing XML representing these connections
    */
   private static StringBuilder doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {

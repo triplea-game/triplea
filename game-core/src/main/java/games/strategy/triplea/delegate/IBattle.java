@@ -52,9 +52,8 @@ public interface IBattle extends Serializable {
    *
    * @param route - attack route
    * @param units - attacking units
-   * @param targets - Can be NULL if this does not apply. A list of defending units with the collection of attacking units
-   *        targetting them mapped to
-   *        each defending unit.
+   * @param targets Can be NULL if this does not apply. A list of defending units with the collection of attacking units
+   *        targeting them mapped to each defending unit.
    * @return attack change object
    */
   Change addAttackChange(Route route, Collection<Unit> units, HashMap<Unit, HashSet<Unit>> targets);

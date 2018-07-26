@@ -18,8 +18,8 @@ public interface ISound extends IChannelSubscribor {
    * (because all users have these).
    *
    * @param clipName The name of the sound clip to play, found in SoundPath.java
-   * @param playerId The player who's sound we want to play (ie: russians infantry might make different sounds from german
-   *        infantry, etc). Can be null.
+   * @param playerId The player who's sound we want to play (ie: russians infantry might make different sounds from
+   *        german infantry, etc). Can be null.
    */
   void playSoundForAll(final String clipName, final PlayerID playerId);
 
@@ -31,9 +31,9 @@ public interface ISound extends IChannelSubscribor {
    *
    * @param clipName The name of the sound clip to play, found in SoundPath.java
    * @param playersToSendTo The machines controlling these PlayerID's who we want to hear this sound.
-   * @param butNotThesePlayers The machines controlling these PlayerID's who we do not want to hear this sound. If the machine controls
-   *        players in both
-   *        playersToSendTo and butNotThesePlayers, they will not hear a sound. (Can be null.)
+   * @param butNotThesePlayers The machines controlling these PlayerID's who we do not want to hear this sound. If the
+   *        machine controls players in both playersToSendTo and butNotThesePlayers, they will not hear a sound. (Can be
+   *        null.)
    * @param includeObservers Whether to include non-playing machines
    */
   void playSoundToPlayers(final String clipName,
