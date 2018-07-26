@@ -591,9 +591,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param to - Territory to be placed in.
    * @param units - Units to be placed.
    * @param player - Player doing the placing.
-   * @param simpleCheck - If true you return true even if a factory is not present. Used when you do not want an infinite loop
-   *        (getAllProducers ->
-   *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+   * @param simpleCheck If true you return true even if a factory is not present. Used when you do not want an infinite
+   *        loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - null if allowed to produce, otherwise an error String.
    */
   protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units,
@@ -670,9 +669,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param to - Territory to place in.
    * @param player - player that is placing.
    * @param unitsToPlace - Can be null, otherwise is the units that will be produced.
-   * @param simpleCheck - If true you return true even if a factory is not present. Used when you do not want an infinite loop
-   *        (getAllProducers ->
-   *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+   * @param simpleCheck If true you return true even if a factory is not present. Used when you do not want an infinite
+   *        loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - List of territories that can produce here.
    */
   protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
@@ -1326,9 +1324,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * territory has one of the required combos as well).
    *
    * @param to - Territory we are testing for required units
-   * @param doNotCountNeighbors - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the
-   *        required units as
-   *        well.
+   * @param doNotCountNeighbors If false, and 'to' is water, then we will test neighboring land territories to see if
+   *        they have any of the required units as well.
    */
   public Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
     return unitWhichRequiresUnits -> {

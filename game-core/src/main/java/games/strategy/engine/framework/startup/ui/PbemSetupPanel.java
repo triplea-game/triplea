@@ -74,7 +74,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   /**
    * Creates a new instance.
    *
-   * @param model the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
+   * @param model the GameSelectionModel, though which changes are obtained when new games are chosen, or save games
+   *        loaded
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
