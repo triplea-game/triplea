@@ -36,8 +36,7 @@ import tools.util.ToolLogger;
  * and a field '[name]' which is public, then it will take these and create an editable UI component
  * for each of these based on the games.strategy.engine.data.properties classes.
  *
- * @param <T>
- *        parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
+ * @param <T> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
 public class MapPropertyWrapper<T> extends AEditableProperty {
   private static final long serialVersionUID = 6406798101396215624L;

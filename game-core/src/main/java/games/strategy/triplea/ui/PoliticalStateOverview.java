@@ -39,10 +39,8 @@ public class PoliticalStateOverview extends JPanel {
   /**
    * Constructs this panel.
    *
-   * @param data
-   *        gamedata to get the info from
-   * @param uiContext
-   *        uicontext to use to show this panel.
+   * @param data gamedata to get the info from
+   * @param uiContext uicontext to use to show this panel.
    */
   public PoliticalStateOverview(final GameData data, final UiContext uiContext, final boolean editable) {
     this.uiContext = uiContext;
@@ -162,8 +160,7 @@ public class PoliticalStateOverview extends JPanel {
   /**
    * returns a color to represent the relationship.
    *
-   * @param relType
-   *        which relationship to get the color for
+   * @param relType which relationship to get the color for
    * @return the color to represent this relationship
    */
   private static Color getRelationshipTypeColor(final RelationshipType relType) {
@@ -184,8 +181,7 @@ public class PoliticalStateOverview extends JPanel {
   /**
    * Gets a label showing the flag + name of this player.
    *
-   * @param player
-   *        the player to get the label for
+   * @param player the player to get the label for
    * @return the label representing this player
    */
   protected JLabel getPlayerLabel(final PlayerID player) {

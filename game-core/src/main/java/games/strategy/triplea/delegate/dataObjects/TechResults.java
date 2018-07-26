@@ -36,16 +36,11 @@ public class TechResults implements Serializable {
   /**
    * Creates a new TechResults.
    *
-   * @param rolls
-   *        rolls
-   * @param remainder
-   *        remainder
-   * @param hits
-   *        number of hits
-   * @param advances
-   *        a List of Strings
-   * @param id
-   *        player id
+   * @param rolls rolls
+   * @param remainder remainder
+   * @param hits number of hits
+   * @param advances a List of Strings
+   * @param id player id
    */
   public TechResults(final int[] rolls, final int remainder, final int hits, final List<String> advances,
       final PlayerID id) {

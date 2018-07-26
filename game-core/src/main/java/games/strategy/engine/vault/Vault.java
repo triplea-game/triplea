@@ -110,8 +110,7 @@ public class Vault {
    * The same key used to encrypt the KNOWN_VALUE so that nodes can verify the key when it is used to decrypt the data.
    * </p>
    *
-   * @param data
-   *        - the data to lock
+   * @param data - the data to lock
    * @return the VaultId of the data
    */
   public VaultID lock(final byte[] data) {
@@ -163,8 +162,7 @@ public class Vault {
    * You can only unlock data that was locked by the same instance of the Vault
    * </p>
    *
-   * @param id
-   *        - the vault id to unlock
+   * @param id - the vault id to unlock
    */
   public void unlock(final VaultID id) {
     if (!id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {

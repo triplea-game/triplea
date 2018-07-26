@@ -41,10 +41,8 @@ public class SelectAndViewEditor extends EditorPanel {
   /**
    * creates a new editor.
    *
-   * @param labelTitle
-   *        the title in front of the combo box
-   * @param defaultHelp
-   *        the name of the Help file to use when no bean is selected (when disabled)
+   * @param labelTitle the title in front of the combo box
+   * @param defaultHelp the name of the Help file to use when no bean is selected (when disabled)
    */
   public SelectAndViewEditor(final String labelTitle, final String defaultHelp) {
     super();

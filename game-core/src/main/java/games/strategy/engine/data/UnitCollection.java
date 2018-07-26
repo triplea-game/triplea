@@ -81,10 +81,8 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   /**
    * Returns up to count units of a given type currently in the collection.
    *
-   * @param type
-   *        referring unit type
-   * @param maxUnits
-   *        maximal number of units
+   * @param type referring unit type
+   * @param maxUnits maximal number of units
    */
   public Collection<Unit> getUnits(final UnitType type, final int maxUnits) {
     if (maxUnits == 0) {
@@ -108,8 +106,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   /**
    * Returns collection of units of each type up to max.
    *
-   * @param types
-   *        map of unit types
+   * @param types map of unit types
    */
   public Collection<Unit> getUnits(final IntegerMap<UnitType> types) {
     final Collection<Unit> units = new ArrayList<>();
@@ -140,8 +137,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   /**
    * Returns map of UnitType (only of units for the specified player).
    *
-   * @param id
-   *        referring player ID
+   * @param id referring player ID
    */
   public IntegerMap<UnitType> getUnitsByType(final PlayerID id) {
     final IntegerMap<UnitType> count = new IntegerMap<>();

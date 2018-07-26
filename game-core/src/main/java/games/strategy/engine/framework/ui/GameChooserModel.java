@@ -138,8 +138,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   /**
    * From a given URI, creates a GameChooserEntry and adds to the given entries list.
    *
-   * @param uri
-   *        URI of the new entry
+   * @param uri URI of the new entry
    */
   private static Optional<GameChooserEntry> createGameChooserEntry(final URI uri) {
     try {

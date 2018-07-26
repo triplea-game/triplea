@@ -278,12 +278,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   /**
    * Places the specified units in the specified territory.
    *
-   * @param producer
-   *        territory that produces the new units.
-   * @param placeableUnits
-   *        the new units
-   * @param at
-   *        territory where the new units get placed
+   * @param producer territory that produces the new units.
+   * @param placeableUnits the new units
+   * @param at territory where the new units get placed
    */
   protected void performPlaceFrom(final Territory producer, final Collection<Unit> placeableUnits, final Territory at,
       final PlayerID player) {
@@ -339,10 +336,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * This only works if one of the placements is done for another territory, more specific for a sea zone.
    * If such placements exists it will be tried to let them be done by other adjacent territories.
    *
-   * @param producer
-   *        territory that needs more placement capacity
-   * @param freeSize
-   *        amount of capacity that is requested
+   * @param producer territory that needs more placement capacity
+   * @param freeSize amount of capacity that is requested
    */
   protected void freePlacementCapacity(final Territory producer, final int freeSize,
       final Collection<Unit> unitsLeftToPlace, final Territory at, final PlayerID player) {
@@ -592,16 +587,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   /**
    * Tests if this territory can produce units. (Does not check if it has space left to do so)
    *
-   * @param producer
-   *        - Territory doing the producing.
-   * @param to
-   *        - Territory to be placed in.
-   * @param units
-   *        - Units to be placed.
-   * @param player
-   *        - Player doing the placing.
-   * @param simpleCheck
-   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop
+   * @param producer - Territory doing the producing.
+   * @param to - Territory to be placed in.
+   * @param units - Units to be placed.
+   * @param player - Player doing the placing.
+   * @param simpleCheck - If true you return true even if a factory is not present. Used when you do not want an infinite loop
    *        (getAllProducers ->
    *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - null if allowed to produce, otherwise an error String.
@@ -677,14 +667,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * empty list if no
    * suitable territory could be found.
    *
-   * @param to
-   *        - Territory to place in.
-   * @param player
-   *        - player that is placing.
-   * @param unitsToPlace
-   *        - Can be null, otherwise is the units that will be produced.
-   * @param simpleCheck
-   *        - If true you return true even if a factory is not present. Used when you do not want an infinite loop
+   * @param to - Territory to place in.
+   * @param player - player that is placing.
+   * @param unitsToPlace - Can be null, otherwise is the units that will be produced.
+   * @param simpleCheck - If true you return true even if a factory is not present. Used when you do not want an infinite loop
    *        (getAllProducers ->
    *        canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
    * @return - List of territories that can produce here.
@@ -1216,12 +1202,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   /**
    * Calculates how many of each of the specified construction units can be placed in the specified territory.
    *
-   * @param to
-   *        referring territory.
-   * @param units
-   *        units to place
-   * @param player
-   *        PlayerID
+   * @param to referring territory.
+   * @param units units to place
+   * @param player PlayerID
    * @return an empty IntegerMap if you can't produce any constructions (will never return null)
    */
   public IntegerMap<String> howManyOfEachConstructionCanPlace(final Territory to, final Territory producer,
@@ -1342,10 +1325,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land
    * territory has one of the required combos as well).
    *
-   * @param to
-   *        - Territory we are testing for required units
-   * @param doNotCountNeighbors
-   *        - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the
+   * @param to - Territory we are testing for required units
+   * @param doNotCountNeighbors - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the
    *        required units as
    *        well.
    */
@@ -1486,8 +1467,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   /**
    * Returns a collection of units that were there in the specified territory at start of turn.
    *
-   * @param to
-   *        referring territory.
+   * @param to referring territory.
    */
   public Collection<Unit> unitsAtStartOfStepInTerritory(final Territory to) {
     if (to == null) {

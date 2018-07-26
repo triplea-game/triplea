@@ -208,8 +208,7 @@ public final class CenterPicker {
      * creates the image map and makes sure
      * it is properly loaded.
      *
-     * @param mapName
-     *        .lang.String mapName the path of image map
+     * @param mapName .lang.String mapName the path of image map
      */
     private void createImage(final String mapName) {
       image = Toolkit.getDefaultToolkit().createImage(mapName);

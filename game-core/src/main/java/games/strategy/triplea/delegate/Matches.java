@@ -1501,12 +1501,9 @@ public final class Matches {
    * (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can
    * repair this unit.)
    *
-   * @param territory
-   *        referring territory
-   * @param player
-   *        referring player
-   * @param data
-   *        game data
+   * @param territory referring territory
+   * @param player referring player
+   * @param data game data
    */
   public static Predicate<Unit> unitCanBeRepairedByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
@@ -1574,12 +1571,9 @@ public final class Matches {
    * unit (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can give
    * bonus movement to this unit.)
    *
-   * @param territory
-   *        referring territory
-   * @param player
-   *        referring player
-   * @param data
-   *        game data
+   * @param territory referring territory
+   * @param player referring player
+   * @param data game data
    */
   public static Predicate<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
@@ -2010,14 +2004,10 @@ public final class Matches {
    * If player is null, this predicate will return true if ANY of the relationship changes match the conditions. (since
    * paa's can have more than 1 change).
    *
-   * @param player
-   *        CAN be null
-   * @param currentRelation
-   *        cannot be null
-   * @param newRelation
-   *        cannot be null
-   * @param data
-   *        cannot be null
+   * @param player CAN be null
+   * @param currentRelation cannot be null
+   * @param newRelation cannot be null
+   * @param data cannot be null
    */
   public static Predicate<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(final PlayerID player,
       final Predicate<RelationshipType> currentRelation, final Predicate<RelationshipType> newRelation,

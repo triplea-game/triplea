@@ -22,8 +22,7 @@ public class MustMoveWithDetails implements Serializable {
   /**
    * Creates new MustMoveWithDetails.
    *
-   * @param mapping
-   *        a mapping of unit (that must move) -> collection of units
+   * @param mapping a mapping of unit (that must move) -> collection of units
    */
   public MustMoveWithDetails(final Map<Unit, Collection<Unit>> mapping) {
     m_mapping = mapping;

@@ -242,8 +242,7 @@ public class GenericEmailSender implements IEmailSender {
    * Set the send timeout, after the Email sender is connected to the SMTP server this is the maximum amount of time
    * it will wait before aborting the send operation.
    *
-   * @param timeout
-   *        the timeout in milli seconds. The default is 60 seconds (60000 milli seconds)
+   * @param timeout the timeout in milli seconds. The default is 60 seconds (60000 milli seconds)
    */
   public void setTimeout(final long timeout) {
     m_timeout = timeout;
@@ -261,8 +260,7 @@ public class GenericEmailSender implements IEmailSender {
   /**
    * Set the smtp server host or IP address.
    *
-   * @param host
-   *        the host
+   * @param host the host
    */
   public void setHost(final String host) {
     m_host = host;
@@ -280,8 +278,7 @@ public class GenericEmailSender implements IEmailSender {
   /**
    * Set the SMTP server port.
    *
-   * @param port
-   *        the port
+   * @param port the port
    */
   public void setPort(final int port) {
     m_port = port;
@@ -299,8 +296,7 @@ public class GenericEmailSender implements IEmailSender {
   /**
    * Sets the message encryption.
    *
-   * @param encryption
-   *        the encryption
+   * @param encryption the encryption
    */
   public void setEncryption(final Encryption encryption) {
     m_encryption = encryption;
@@ -309,8 +305,7 @@ public class GenericEmailSender implements IEmailSender {
   /**
    * Sets the to address field, if multiple email addresses are given they must be separated by space.
    *
-   * @param to
-   *        the to addresses
+   * @param to the to addresses
    */
   public void setToAddress(final String to) {
     m_toAddress = to;

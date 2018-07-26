@@ -163,8 +163,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   /**
    * Sets the amount of times you can try this Action per Round.
    *
-   * @param s
-   *        the amount of times you can try this Action per Round.
+   * @param s the amount of times you can try this Action per Round.
    */
   private void setAttemptsPerTurn(final String s) {
     m_attemptsPerTurn = getInt(s);

@@ -203,10 +203,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    * If t.getWhen() is empty, and beforeOrAfter and stepName are both null, then this returns true.
    * Otherwise, all must be not null, and one of when's values must match the arguments.
    *
-   * @param beforeOrAfter
-   *        can be null, or must be "before" or "after"
-   * @param stepName
-   *        can be null, or must be exact name of a specific stepName
+   * @param beforeOrAfter can be null, or must be "before" or "after"
+   * @param stepName can be null, or must be exact name of a specific stepName
    * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise
    *         false
    */

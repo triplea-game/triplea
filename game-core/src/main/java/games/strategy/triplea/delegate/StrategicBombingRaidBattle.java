@@ -57,14 +57,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   /**
    * Creates new StrategicBombingRaidBattle.
    *
-   * @param battleSite
-   *        - battle territory
-   * @param data
-   *        - game data
-   * @param attacker
-   *        - attacker PlayerID
-   * @param battleTracker
-   *        - BattleTracker
+   * @param battleSite - battle territory
+   * @param data - game data
+   * @param attacker - attacker PlayerID
+   * @param battleTracker - BattleTracker
    */
   public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker,
       final BattleTracker battleTracker) {

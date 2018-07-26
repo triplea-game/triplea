@@ -33,12 +33,9 @@ public class UnitSeperator {
    * Break the units into discrete categories.
    * Do this based on unit owner, and optionally dependent units and movement
    *
-   * @param dependent
-   *        - can be null
-   * @param categorizeMovement
-   *        - whether to categorize by movement
-   * @param categorizeTrnMovement
-   *        - whether to categorize transports by movement
+   * @param dependent - can be null
+   * @param categorizeMovement - whether to categorize by movement
+   * @param categorizeTrnMovement - whether to categorize transports by movement
    * @param sort If true then sort the categories in UnitCategory order;
    *        if false, then leave categories in original order (based on units).
    * @return a Collection of UnitCategories
@@ -90,10 +87,8 @@ public class UnitSeperator {
    * Break the units into discrete categories.
    * Do this based on unit owner, and optionally dependent units and movement
    *
-   * @param dependent
-   *        - can be null
-   * @param categorizeMovement
-   *        - whether to categorize by movement
+   * @param dependent - can be null
+   * @param categorizeMovement - whether to categorize by movement
    * @return a Collection of UnitCategories
    */
   public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,

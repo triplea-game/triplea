@@ -169,10 +169,8 @@ public class BattleDisplay extends JPanel {
   /**
    * updates the panel content according to killed units for the player.
    *
-   * @param killedUnits
-   *        list of units killed
-   * @param playerId
-   *        player kills belongs to
+   * @param killedUnits list of units killed
+   * @param playerId player kills belongs to
    */
   private Collection<Unit> updateKilledUnits(final Collection<Unit> killedUnits, final PlayerID playerId) {
     final JPanel casualtyPanel;

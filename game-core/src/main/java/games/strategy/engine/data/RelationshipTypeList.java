@@ -35,8 +35,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   /**
    * Constructs a new RelationshipTypeList.
    *
-   * @param data
-   *        GameData used for construction
+   * @param data GameData used for construction
    */
   protected RelationshipTypeList(final GameData data) {
     super(data);
@@ -58,12 +57,9 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   /**
    * Creates a default relationship.
    *
-   * @param relationshipTypeConstant
-   *        the type of relationship
-   * @param relationshipArcheType
-   *        the archetype of the relationship
-   * @param data
-   *        the GameData object for this relationship
+   * @param relationshipTypeConstant the type of relationship
+   * @param relationshipArcheType the archetype of the relationship
+   * @param data the GameData object for this relationship
    * @throws GameParseException
    *         if the wrong relationshipArcheType is used
    */
@@ -83,8 +79,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   /**
    * adds a new RelationshipType, this should only be called by the GameParser.
    *
-   * @param p
-   *        RelationshipType
+   * @param p RelationshipType
    * @return the RelationshipType just created (convenience method for the GameParser)
    */
   protected RelationshipType addRelationshipType(final RelationshipType p) {
@@ -95,8 +90,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   /**
    * Gets a relationshipType from the list by name.
    *
-   * @param name
-   *        name of the relationshipType
+   * @param name name of the relationshipType
    * @return RelationshipType with this name
    */
   public RelationshipType getRelationshipType(final String name) {

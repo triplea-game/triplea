@@ -50,10 +50,8 @@ public class EmailSenderEditor extends EditorPanel {
   /**
    * creates a new instance.
    *
-   * @param bean
-   *        the EmailSender to edit
-   * @param editorConfiguration
-   *        configures which editor fields should be visible
+   * @param bean the EmailSender to edit
+   * @param editorConfiguration configures which editor fields should be visible
    */
   public EmailSenderEditor(final GenericEmailSender bean, final EditorConfiguration editorConfiguration) {
     super();

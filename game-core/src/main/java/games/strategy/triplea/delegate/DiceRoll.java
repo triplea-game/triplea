@@ -173,10 +173,8 @@ public class DiceRoll implements Externalizable {
    * they will go out of
    * sync.
    *
-   * @param dice
-   *        = Rolled Dice numbers from bridge. Can be null if we do not want to return hits or fill the sortedDice
-   * @param sortedDice
-   *        List of dice we are recording. Can be null if we do not want to return hits or fill the sortedDice
+   * @param dice = Rolled Dice numbers from bridge. Can be null if we do not want to return hits or fill the sortedDice
+   * @param sortedDice List of dice we are recording. Can be null if we do not want to return hits or fill the sortedDice
    * @return an object containing 3 things: first is the total power of the defendingAA who will be rolling, second is
    *         number of hits,
    *         third is true/false are all rolls using the same hitAt (example: if all the rolls are at 1, we would return
@@ -377,8 +375,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Roll n-sided dice.
    *
-   * @param annotation
-   *        0 based, add 1 to get actual die roll
+   * @param annotation 0 based, add 1 to get actual die roll
    */
   public static DiceRoll rollNDice(final IDelegateBridge bridge, final int rollCount, final int sides,
       final PlayerID playerRolling, final DiceType diceType, final String annotation) {
@@ -396,8 +393,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Returns the power (strength) and rolls for each of the specified units.
    *
-   * @param unitsGettingPowerFor
-   *        should be sorted from weakest to strongest, before the method is called, for the actual battle.
+   * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is called, for the actual battle.
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final List<Unit> unitsGettingPowerFor, final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
@@ -414,8 +410,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Returns the power (strength) and rolls for each of the specified units.
    *
-   * @param unitsGettingPowerFor
-   *        should be sorted from weakest to strongest, before the method is called, for the actual battle.
+   * @param unitsGettingPowerFor should be sorted from weakest to strongest, before the method is called, for the actual battle.
    */
   protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
       final List<Unit> unitsGettingPowerFor,
@@ -607,16 +602,11 @@ public class DiceRoll implements Externalizable {
   /**
    * Fills a set and map with the support possibly given by these units.
    *
-   * @param supportsAvailable
-   *        an empty set that will be filled with all support rules grouped into lists of non-stacking rules
-   * @param supportLeft
-   *        an empty map that will be filled with all the support that can be given in the form of counters
-   * @param supportUnitsLeft
-   *        an empty map that will be filled with all the support that can be given in the form of counters
-   * @param defence
-   *        are the receiving units defending?
-   * @param allies
-   *        are the receiving units allied to the giving units?
+   * @param supportsAvailable an empty set that will be filled with all support rules grouped into lists of non-stacking rules
+   * @param supportLeft an empty map that will be filled with all the support that can be given in the form of counters
+   * @param supportUnitsLeft an empty map that will be filled with all the support that can be given in the form of counters
+   * @param defence are the receiving units defending?
+   * @param allies are the receiving units allied to the giving units?
    */
   public static void getSupport(final List<Unit> unitsGivingTheSupport,
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
@@ -1062,8 +1052,7 @@ public class DiceRoll implements Externalizable {
    * @param dice int[] the dice, 0 based
    * @param hits int - the number of hits
    * @param rollAt int - what we roll at, [0,Constants.MAX_DICE]
-   * @param hitOnlyIfEquals
-   *        boolean - do we get a hit only if we are equals, or do we hit
+   * @param hitOnlyIfEquals boolean - do we get a hit only if we are equals, or do we hit
    *        when we are equal or less than for example a 5 is a hit when
    *        rolling at 6 for equal and less than, but is not for equals
    */
@@ -1102,8 +1091,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Returns all rolls that are equal to the specified value.
    *
-   * @param rollAt
-   *        the strength of the roll, eg infantry roll at 2, expecting a
+   * @param rollAt the strength of the roll, eg infantry roll at 2, expecting a
    *        number in [1,6]
    * @return in int[] which shouldnt be modifed, the int[] is 0 based, ie
    *         0..MAX_DICE

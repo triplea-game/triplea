@@ -10,8 +10,7 @@ public class ResourceCollection extends GameDataComponent {
   /**
    * Creates new ResourceCollection.
    *
-   * @param data
-   *        game data
+   * @param data game data
    */
   public ResourceCollection(final GameData data) {
     super(data);
@@ -44,10 +43,8 @@ public class ResourceCollection extends GameDataComponent {
   /**
    * You cannot remove more than the collection contains.
    *
-   * @param resource
-   *        referring resource
-   * @param quantity
-   *        quantity of the resource that should be removed
+   * @param resource referring resource
+   * @param quantity quantity of the resource that should be removed
    */
   public void removeResource(final Resource resource, final int quantity) {
     if (quantity < 0) {
@@ -151,8 +148,7 @@ public class ResourceCollection extends GameDataComponent {
    * divide by 2, use
    * 0.5 as the double)
    *
-   * @param roundType
-   *        (1 = floor, 2 = round, 3 = ceil)
+   * @param roundType (1 = floor, 2 = round, 3 = ceil)
    */
   public void multiplyAllValuesBy(final double multiplyBy, final int roundType) {
     m_resources.multiplyAllValuesBy(multiplyBy, roundType);
@@ -241,8 +237,7 @@ public class ResourceCollection extends GameDataComponent {
   /**
    * Adds {@code times - 1} copies of each resource in this collection.
    *
-   * @param times
-   *        multiply this Collection times times.
+   * @param times multiply this Collection times times.
    */
   public void multiply(final int times) {
     final IntegerMap<Resource> base = new IntegerMap<>(m_resources);

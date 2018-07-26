@@ -114,8 +114,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Subtract money from the player's wallet.
    *
-   * @param uaa
-   *        the UserActionAttachment this the money is charged for.
+   * @param uaa the UserActionAttachment this the money is charged for.
    */
   private void chargeForAction(final UserActionAttachment uaa) {
     final IntegerMap<Resource> cost = uaa.getCostResources();
@@ -138,8 +137,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Executes the specified action.
    *
-   * @param uaa
-   *        the action to check if it succeeds
+   * @param uaa the action to check if it succeeds
    * @return true if the action succeeds, usually because the die-roll succeeded.
    */
   private boolean actionRollSucceeds(final UserActionAttachment uaa) {
@@ -168,8 +166,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Get a list of players that should accept this action and then ask each
    * player if it accepts this action.
    *
-   * @param uaa
-   *        the UserActionAttachment that should be accepted
+   * @param uaa the UserActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final UserActionAttachment uaa) {
     for (final PlayerID player : uaa.getActionAccept()) {
@@ -184,8 +181,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Fire triggers.
    *
-   * @param uaa
-   *        the UserActionAttachment to activate triggers for
+   * @param uaa the UserActionAttachment to activate triggers for
    */
   private void activateTriggers(final UserActionAttachment uaa) {
     UserActionAttachment.fireTriggers(uaa, getTestedConditions(), bridge);
@@ -194,8 +190,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Send a notification to the current player.
    *
-   * @param text
-   *        if NONE don't send a notification
+   * @param text if NONE don't send a notification
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
@@ -232,8 +227,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Let all players involved in this action know the action was successful.
    *
-   * @param uaa
-   *        the UserActionAttachment that just succeeded.
+   * @param uaa the UserActionAttachment that just succeeded.
    */
   private void notifySuccess(final UserActionAttachment uaa) {
     // play a sound
@@ -247,8 +241,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   /**
    * Let all players involved in this action know the action has failed.
    *
-   * @param uaa
-   *        the UserActionAttachment that just failed.
+   * @param uaa the UserActionAttachment that just failed.
    */
   private void notifyFailure(final UserActionAttachment uaa) {
     // play a sound
@@ -266,8 +259,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Let the player know he is being charged for money or that he hasn't got
    * enough money.
    *
-   * @param uaa
-   *        the UserActionAttachment the player is notified about
+   * @param uaa the UserActionAttachment the player is notified about
    *
    */
   private void notifyMoney(final UserActionAttachment uaa) {

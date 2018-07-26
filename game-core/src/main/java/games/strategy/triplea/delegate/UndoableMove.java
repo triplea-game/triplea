@@ -156,8 +156,7 @@ public class UndoableMove extends AbstractUndoableMove {
   /**
    * Update the dependencies.
    *
-   * @param undoableMoves
-   *        list of moves that should be undone
+   * @param undoableMoves list of moves that should be undone
    */
   public void initializeDependencies(final List<UndoableMove> undoableMoves) {
     for (final UndoableMove other : undoableMoves) {

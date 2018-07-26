@@ -67,12 +67,9 @@ public class AiUtils {
   /**
    * Get a quick and dirty estimate of the strength of some units in a battle.
    *
-   * @param units
-   *        - the units to measure
-   * @param attacking
-   *        - are the units on attack or defense
-   * @param sea
-   *        - calculate the strength of the units in a sea or land battle?
+   * @param units - the units to measure
+   * @param attacking - are the units on attack or defense
+   * @param sea - calculate the strength of the units in a sea or land battle?
    */
   public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea) {
     float strength = 0;

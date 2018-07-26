@@ -15,12 +15,9 @@ public interface IEmailSender extends IBean, Cloneable {
    * Sends an email with the given subject, optionally attaches a save game file.
    * The address, and credentials must be stored by the implementing class
    *
-   * @param subject
-   *        the subject of the email
-   * @param htmlMessage
-   *        the html email body
-   * @param saveGame
-   *        the savegame or null
+   * @param subject the subject of the email
+   * @param htmlMessage the html email body
+   * @param saveGame the savegame or null
    * @throws IOException
    *         if an error occurs
    */
@@ -66,16 +63,14 @@ public interface IEmailSender extends IBean, Cloneable {
   /**
    * Set the userName used for authentication with the smtp server.
    *
-   * @param userName
-   *        the userName or null if no authentication is required
+   * @param userName the userName or null if no authentication is required
    */
   void setUserName(String userName);
 
   /**
    * Set the password to authenticate with.
    *
-   * @param password
-   *        the password or null
+   * @param password the password or null
    */
   void setPassword(String password);
 
@@ -97,8 +92,7 @@ public interface IEmailSender extends IBean, Cloneable {
   /**
    * Configure if we should also post at the end of combat move.
    *
-   * @param postAlso
-   *        true if the save game should be included
+   * @param postAlso true if the save game should be included
    */
   void setAlsoPostAfterCombatMove(boolean postAlso);
 }

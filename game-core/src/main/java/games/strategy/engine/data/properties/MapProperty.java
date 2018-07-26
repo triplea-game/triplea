@@ -13,10 +13,8 @@ import javax.swing.JComponent;
 /**
  * Basically creates a map of other properties.
  *
- * @param <T>
- *        String or something with a valid toString()
- * @param <U>
- *        parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
+ * @param <T> String or something with a valid toString()
+ * @param <U> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
 public class MapProperty<T, U> extends AEditableProperty {
   private static final long serialVersionUID = -8021039503574228146L;

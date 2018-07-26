@@ -41,8 +41,7 @@ public class SimpleUnitPanel extends JPanel {
   /**
    * Adds units to the panel based on the specified production rules.
    *
-   * @param units
-   *        a HashMap in the form ProductionRule -> number of units
+   * @param units a HashMap in the form ProductionRule -> number of units
    *        assumes that each production rule has 1 result, which is simple the number of units.
    */
   void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player) {
@@ -60,8 +59,7 @@ public class SimpleUnitPanel extends JPanel {
   /**
    * Adds units to the panel based on the specified repair rules.
    *
-   * @param units
-   *        a HashMap in the form RepairRule -> number of units
+   * @param units a HashMap in the form RepairRule -> number of units
    *        assumes that each repair rule has 1 result, which is simply the number of units.
    */
   public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
@@ -88,8 +86,7 @@ public class SimpleUnitPanel extends JPanel {
   /**
    * Adds units to the panel based on the specified unit categories.
    *
-   * @param categories
-   *        a collection of UnitCategories.
+   * @param categories a collection of UnitCategories.
    */
   public void setUnitsFromCategories(final Collection<UnitCategory> categories) {
     removeAll();

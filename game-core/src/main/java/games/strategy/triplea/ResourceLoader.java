@@ -224,8 +224,7 @@ public class ResourceLoader implements Closeable {
   /**
    * Returns the URL of the resource at the specified path or {@code null} if the resource does not exist.
    *
-   * @param inputPath
-   *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
+   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
    *        File.separator)
    */
   public @Nullable URL getResource(final String inputPath) {

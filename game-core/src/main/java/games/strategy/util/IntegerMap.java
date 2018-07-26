@@ -102,8 +102,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
    * Can be used to divide all numbers, if given a fractional double
    * (ie: to divide by 2, use 0.5 as the double)
    *
-   * @param roundType
-   *        (1 = floor, 2 = round, 3 = ceil)
+   * @param roundType (1 = floor, 2 = round, 3 = ceil)
    */
   public void multiplyAllValuesBy(final double multiplyBy, final int roundType) {
     for (final T t : keySet()) {

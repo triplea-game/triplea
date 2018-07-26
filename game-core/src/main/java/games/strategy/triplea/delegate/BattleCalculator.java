@@ -452,8 +452,7 @@ public class BattleCalculator {
   /**
    * Selects casualties for the specified battle.
    *
-   * @param battleId
-   *        may be null if we are not in a battle (eg, if this is an aa fire due to moving).
+   * @param battleId may be null if we are not in a battle (eg, if this is an aa fire due to moving).
    */
   public static CasualtyDetails selectCasualties(final String step, final PlayerID player,
       final Collection<Unit> targetsToPickFrom, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
@@ -888,10 +887,8 @@ public class BattleCalculator {
    * Checks if the given collections target are all of one category as defined
    * by UnitSeperator.categorize and they are not two hit units.
    *
-   * @param targets
-   *        a collection of target units
-   * @param dependents
-   *        map of depend units for target units
+   * @param targets a collection of target units
+   * @param dependents map of depend units for target units
    */
   private static boolean allTargetsOneTypeOneHitPoint(final Collection<Unit> targets,
       final Map<Unit, Collection<Unit>> dependents) {

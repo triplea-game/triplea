@@ -12,10 +12,8 @@ public interface IForumPoster extends IBean {
   /**
    * Called when the turn summary should be posted.
    *
-   * @param summary
-   *        the forum summary
-   * @param subject
-   *        the forum subject
+   * @param summary the forum summary
+   * @param subject the forum subject
    * @return true if the post was successful
    */
   boolean postTurnSummary(String summary, final String subject);
@@ -38,8 +36,7 @@ public interface IForumPoster extends IBean {
   /**
    * Configure if the save game should be included in the summary post.
    *
-   * @param include
-   *        true if the save game should be included
+   * @param include true if the save game should be included
    */
   void setIncludeSaveGame(boolean include);
 
@@ -53,16 +50,14 @@ public interface IForumPoster extends IBean {
   /**
    * Configure if we should also post at the end of combat move.
    *
-   * @param postAlso
-   *        true if the save game should be included
+   * @param postAlso true if the save game should be included
    */
   void setAlsoPostAfterCombatMove(boolean postAlso);
 
   /**
    * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true.
    *
-   * @param saveGame
-   *        the save game file
+   * @param saveGame the save game file
    */
   void addSaveGame(File saveGame, String fileName);
 
@@ -120,24 +115,21 @@ public interface IForumPoster extends IBean {
   /**
    * Set the forum id.
    *
-   * @param forumId
-   *        the new forum id
+   * @param forumId the new forum id
    */
   void setTopicId(String forumId);
 
   /**
    * Set the user name.
    *
-   * @param username
-   *        the new user name
+   * @param username the new user name
    */
   void setUsername(String username);
 
   /**
    * Set the password.
    *
-   * @param password
-   *        the new password
+   * @param password the new password
    */
   void setPassword(String password);
 

@@ -14,8 +14,7 @@ public class PlaceableUnits implements Serializable {
   /**
    * Creates new PlaceableUnits.
    *
-   * @param errorMessage
-   *        error message
+   * @param errorMessage error message
    */
   public PlaceableUnits(final String errorMessage) {
     m_errorMessage = errorMessage;

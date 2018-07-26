@@ -11,16 +11,14 @@ public interface IGamePropertiesCache {
   /**
    * Caches the gameOptions stored in the game data, and associates with this game.
    *
-   * @param gameData
-   *        the game which options you want to cache
+   * @param gameData the game which options you want to cache
    */
   void cacheGameProperties(GameData gameData);
 
   /**
    * Loads cached game options into the gameData.
    *
-   * @param gameData
-   *        the game to load the cached game options into
+   * @param gameData the game to load the cached game options into
    */
   void loadCachedGamePropertiesInto(GameData gameData);
 }

@@ -30,8 +30,7 @@ public interface IRemoteDiceServer extends IBean {
   /**
    * Set the to address.
    *
-   * @param toAddress
-   *        the new to address
+   * @param toAddress the new to address
    */
   void setToAddress(String toAddress);
 
@@ -45,8 +44,7 @@ public interface IRemoteDiceServer extends IBean {
   /**
    * Set the cc address.
    *
-   * @param ccAddress
-   *        the address or null if not configured
+   * @param ccAddress the address or null if not configured
    */
   void setCcAddress(String ccAddress);
 
@@ -75,8 +73,7 @@ public interface IRemoteDiceServer extends IBean {
    * Set the game id used for this instance.
    * If you don't provide a game id, the TripleA GUID will be used
    *
-   * @param gameId
-   *        the new game id
+   * @param gameId the new game id
    */
   void setGameId(String gameId);
 

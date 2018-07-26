@@ -84,14 +84,10 @@ public class ServerGame extends AbstractGame {
   /**
    * Initializes a new instance of the ServerGame class.
    *
-   * @param data
-   *        game data.
-   * @param localPlayers
-   *        Set - A set of GamePlayers
-   * @param remotePlayerMapping
-   *        Map
-   * @param messengers
-   *        IServerMessenger
+   * @param data game data.
+   * @param localPlayers Set - A set of GamePlayers
+   * @param remotePlayerMapping Map
+   * @param messengers IServerMessenger
    */
   public ServerGame(final GameData data, final Set<IGamePlayer> localPlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {

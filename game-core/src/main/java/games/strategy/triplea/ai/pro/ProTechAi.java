@@ -347,8 +347,7 @@ final class ProTechAi {
   /**
    * Determine the enemy potential for blitzing a territory - all enemies are combined.
    *
-   * @param blitzHere
-   *        - Territory expecting to be blitzed
+   * @param blitzHere - Territory expecting to be blitzed
    * @return actual strength of enemy units (armor)
    */
   private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,

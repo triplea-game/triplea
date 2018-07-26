@@ -496,40 +496,29 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   /**
    * It is the AI's turn to roll for technology.
    *
-   * @param techDelegate
-   *        - the tech delegate to roll for
-   * @param data
-   *        - the game data
-   * @param player
-   *        - the player to roll tech for
+   * @param techDelegate - the tech delegate to roll for
+   * @param data - the game data
+   * @param player - the player to roll tech for
    */
   protected abstract void tech(ITechDelegate techDelegate, GameData data, PlayerID player);
 
   /**
    * It is the AI's turn to move. Make all moves before returning from this method.
    *
-   * @param nonCombat
-   *        - are we moving in combat, or non combat
-   * @param moveDel
-   *        - the move delegate to make moves with
-   * @param data
-   *        - the current game data
-   * @param player
-   *        - the player to move with
+   * @param nonCombat - are we moving in combat, or non combat
+   * @param moveDel - the move delegate to make moves with
+   * @param data - the current game data
+   * @param player - the player to move with
    */
   protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player);
 
   /**
    * It is the AI's turn to place units. get the units available to place with player.getUnits()
    *
-   * @param placeForBid
-   *        - is this a placement for bid
-   * @param placeDelegate
-   *        - the place delegate to place with
-   * @param data
-   *        - the current Game Data
-   * @param player
-   *        - the player to place for
+   * @param placeForBid - is this a placement for bid
+   * @param placeDelegate - the place delegate to place with
+   * @param data - the current Game Data
+   * @param player - the player to place for
    */
   protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data,
       PlayerID player);
@@ -549,8 +538,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * It is the AI's turn to fight. Subclasses may override this if they want, but
    * generally the AI does not need to worry about the order of fighting battles.
    *
-   * @param battleDelegate
-   *        the battle delegate to query for battles not fought and the
+   * @param battleDelegate the battle delegate to query for battles not fought and the
    */
   protected void battle(final IBattleDelegate battleDelegate) {
     // generally all AI's will follow the same logic.

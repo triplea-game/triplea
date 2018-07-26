@@ -50,12 +50,9 @@ public interface IBattle extends Serializable {
   /**
    * Add a bunch of attacking units to the battle.
    *
-   * @param route
-   *        - attack route
-   * @param units
-   *        - attacking units
-   * @param targets
-   *        - Can be NULL if this does not apply. A list of defending units with the collection of attacking units
+   * @param route - attack route
+   * @param units - attacking units
+   * @param targets - Can be NULL if this does not apply. A list of defending units with the collection of attacking units
    *        targetting them mapped to
    *        each defending unit.
    * @return attack change object
@@ -83,8 +80,7 @@ public interface IBattle extends Serializable {
   /**
    * Fight this battle.
    *
-   * @param bridge
-   *        - IDelegateBridge
+   * @param bridge - IDelegateBridge
    */
   void fight(IDelegateBridge bridge);
 
@@ -98,12 +94,9 @@ public interface IBattle extends Serializable {
    * This is needed to remove dependent units who have been
    * lost in another battle.
    *
-   * @param battle
-   *        - other battle
-   * @param units
-   *        - referring units
-   * @param bridge
-   *        - IDelegateBridge
+   * @param battle - other battle
+   * @param units - referring units
+   * @param bridge - IDelegateBridge
    */
   void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
       boolean withdrawn);
@@ -111,8 +104,7 @@ public interface IBattle extends Serializable {
   /**
    * Add a bombardment unit.
    *
-   * @param u
-   *        - unit to add
+   * @param u - unit to add
    */
   void addBombardingUnit(Unit u);
 
@@ -124,10 +116,8 @@ public interface IBattle extends Serializable {
   /**
    * This occurs when a move has been undone.
    *
-   * @param route
-   *        - attacking route
-   * @param units
-   *        - attacking units
+   * @param route - attacking route
+   * @param units - attacking units
    */
   void removeAttack(Route route, Collection<Unit> units);
 

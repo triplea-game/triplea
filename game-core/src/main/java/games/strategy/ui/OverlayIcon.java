@@ -17,12 +17,9 @@ public class OverlayIcon implements Icon {
   /**
    * Create a composite icon by overlaying the front icon over the back icon.
    *
-   * @param back
-   *        back icon
-   * @param front
-   *        front icon
-   * @param x
-   *        , y position of front icon relative to back icon.
+   * @param back back icon
+   * @param front front icon
+   * @param x , y position of front icon relative to back icon.
    */
   public OverlayIcon(final Icon back, final Icon front, final int x, final int y) {
     this.back = back;

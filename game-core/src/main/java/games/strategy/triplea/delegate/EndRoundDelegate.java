@@ -250,8 +250,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   /**
    * Notify all players that the game is over.
    *
-   * @param status
-   *        the "game over" text to be displayed to each user.
+   * @param status the "game over" text to be displayed to each user.
    */
   public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge bridge) {
     // TO NOT USE playerBridge, because it might be null here! use aBridge instead.

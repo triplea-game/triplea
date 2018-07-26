@@ -28,8 +28,7 @@ public class DiceServerEditor extends EditorPanel {
   /**
    * Creating a new instance.
    *
-   * @param diceServer
-   *        the DiceServer bean to edit
+   * @param diceServer the DiceServer bean to edit
    */
   public DiceServerEditor(final IRemoteDiceServer diceServer) {
     remoteDiceServer = diceServer;

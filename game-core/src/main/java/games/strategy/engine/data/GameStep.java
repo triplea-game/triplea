@@ -48,18 +48,12 @@ public class GameStep extends GameDataComponent {
   /**
    * Creates new GameStep.
    *
-   * @param name
-   *        name of the game step
-   * @param displayName
-   *        name that gets displayed
-   * @param player
-   *        player who executes the game step
-   * @param delegate
-   *        delegate for the game step
-   * @param data
-   *        game data
-   * @param stepProperties
-   *        properties of the game step
+   * @param name name of the game step
+   * @param displayName name that gets displayed
+   * @param player player who executes the game step
+   * @param delegate delegate for the game step
+   * @param data game data
+   * @param stepProperties properties of the game step
    */
   public GameStep(final String name, final String displayName, final PlayerID player, final IDelegate delegate,
       final GameData data, final Properties stepProperties) {

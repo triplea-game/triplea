@@ -221,8 +221,7 @@ public class ChangeFactory {
   /**
    * Mark units as having no movement.
    *
-   * @param units
-   *        referring units
+   * @param units referring units
    * @return change that contains marking of units as having no movement
    */
   public static Change markNoMovementChange(final Collection<Unit> units) {

@@ -158,8 +158,7 @@ public class Chat {
   /**
    * Call only when mutex for node is locked.
    *
-   * @param chatters
-   *        map from node to tag
+   * @param chatters map from node to tag
    */
   private void assignNodeTags(final Map<INode, Tag> chatters) {
     for (final Map.Entry<INode, Tag> entry : chatters.entrySet()) {

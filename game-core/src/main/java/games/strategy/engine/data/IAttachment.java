@@ -9,8 +9,7 @@ public interface IAttachment extends Serializable, DynamicallyModifiable {
   /**
    * Called after ALL attachments are created. IF an error occurs should throw an exception to halt the parsing.
    *
-   * @param data
-   *        game data
+   * @param data game data
    * @throws GameParseException
    *         an error has occurred while validation
    */

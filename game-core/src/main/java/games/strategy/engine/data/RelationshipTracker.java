@@ -19,12 +19,9 @@ public class RelationshipTracker extends RelationshipInterpreter {
   /**
    * Method for setting a relationship between two players, this should only be called through the Change Factory.
    *
-   * @param p1
-   *        Player1 that will get the relationship
-   * @param p2
-   *        Player2 that will get the relationship
-   * @param r
-   *        the RelationshipType between those two players that will be set.
+   * @param p1 Player1 that will get the relationship
+   * @param p2 Player2 that will get the relationship
+   * @param r the RelationshipType between those two players that will be set.
    */
   public void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r) {
     m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r));
@@ -65,10 +62,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two
    * players.
    *
-   * @param p1
-   *        Player 1 in the relationship
-   * @param p2
-   *        Player 2 in the relationship
+   * @param p1 Player 1 in the relationship
+   * @param p2 Player 2 in the relationship
    * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2
    *         players
    */
