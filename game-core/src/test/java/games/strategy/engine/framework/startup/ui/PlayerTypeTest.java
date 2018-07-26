@@ -2,19 +2,15 @@ package games.strategy.engine.framework.startup.ui;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;
-
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import javazoom.jl.player.Player;
 
 class PlayerTypeTest {
 

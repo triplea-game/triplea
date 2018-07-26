@@ -4,7 +4,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -13,7 +12,6 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;

@@ -22,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.IChatPanel;
-import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.ui.SaveGameFileChooser.AUTOSAVE_TYPE;

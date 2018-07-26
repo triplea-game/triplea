@@ -22,7 +22,6 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.net.GUID;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -58,7 +57,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
-import lombok.Getter;
 
 /**
  * As a rule, nothing that changes GameData should be in here.

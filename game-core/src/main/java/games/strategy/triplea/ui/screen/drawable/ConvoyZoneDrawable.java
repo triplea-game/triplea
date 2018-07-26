@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;

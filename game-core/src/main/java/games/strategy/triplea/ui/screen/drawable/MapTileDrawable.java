@@ -3,8 +3,6 @@ package games.strategy.triplea.ui.screen.drawable;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.UiContext;

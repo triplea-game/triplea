@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.HubInvocationResults;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
@@ -24,9 +23,7 @@ import games.strategy.engine.message.SpokeInvocationResults;
 import games.strategy.engine.message.SpokeInvoke;
 import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.net.GUID;
-import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
-import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.util.Interruptibles;
 
