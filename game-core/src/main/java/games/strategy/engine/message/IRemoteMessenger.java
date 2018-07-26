@@ -72,28 +72,23 @@ public interface IRemoteMessenger {
   /**
    * Returns a remote reference to the registered remote.
    *
-   * @param name
-   *        the name the remote is registered under.
+   * @param name the name the remote is registered under.
    */
   IRemote getRemote(RemoteName name);
 
   /**
    * Returns a remote reference to the registered remote.
    *
-   * @param name
-   *        the name the remote is registered under.
-   * @param ignoreResults
-   *        whether we need to wait for the results or not
+   * @param name the name the remote is registered under.
+   * @param ignoreResults whether we need to wait for the results or not
    */
   IRemote getRemote(RemoteName name, boolean ignoreResults);
 
   /**
    * Registers the specified remote under the given name.
    *
-   * @param implementor
-   *        An object that implements remoteInterface.
-   * @param name
-   *        The name that implementor will be registered under.
+   * @param implementor An object that implements remoteInterface.
+   * @param name The name that implementor will be registered under.
    */
   void registerRemote(Object implementor, RemoteName name);
 

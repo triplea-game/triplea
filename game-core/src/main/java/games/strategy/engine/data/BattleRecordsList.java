@@ -104,10 +104,8 @@ public class BattleRecordsList extends GameDataComponent {
   /**
    * Determines if there were any battles that match the specified criteria.
    *
-   * @param attacker
-   *        if null then any player
-   * @param defender
-   *        if null then any player
+   * @param attacker if null then any player
+   * @param defender if null then any player
    */
   public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender,
       final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,

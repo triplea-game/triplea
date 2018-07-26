@@ -31,8 +31,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
    * Caches the gameOptions stored in the game data, and associates with this game. only values that are serializable
    * (which they should all be) will be stored
    *
-   * @param gameData
-   *        the game which options you want to cache
+   * @param gameData the game which options you want to cache
    */
   @Override
   public void cacheGameProperties(final GameData gameData) {
@@ -83,8 +82,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   /**
    * Calculates the cache filename and location based on the game data.
    *
-   * @param gameData
-   *        the game data
+   * @param gameData the game data
    * @return the File where the cached game options should be stored or read from
    */
   private static File getCacheFile(final GameData gameData) {
@@ -95,8 +93,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   /**
    * Removes any special characters from the file name.
    *
-   * @param gameName
-   *        the name of the game
+   * @param gameName the name of the game
    * @return the fileName on disk
    */
   private static String getFileName(final String gameName) {

@@ -156,10 +156,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   /**
    * Returns the route that a unit used to move into the given territory.
    *
-   * @param unit
-   *        referring unit.
-   * @param end
-   *        target territory
+   * @param unit referring unit.
+   * @param end target territory
    */
   public Route getRouteUsedToMoveInto(final Unit unit, final Territory end) {
     return AbstractMoveDelegate.getRouteUsedToMoveInto(movesToUndo, unit, end);
@@ -168,12 +166,9 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   /**
    * This method is static so it can be called from the client side.
    *
-   * @param undoableMoves
-   *        list of moves that have been done
-   * @param unit
-   *        referring unit
-   * @param end
-   *        target territory
+   * @param undoableMoves list of moves that have been done
+   * @param unit referring unit
+   * @param end target territory
    * @return the route that a unit used to move into the given territory.
    */
   public static Route getRouteUsedToMoveInto(final List<UndoableMove> undoableMoves, final Unit unit,

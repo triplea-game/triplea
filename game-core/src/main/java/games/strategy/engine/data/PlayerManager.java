@@ -48,8 +48,7 @@ public class PlayerManager {
   /**
    * Indicates the given node is playing as anyone.
    *
-   * @param node
-   *        referring node
+   * @param node referring node
    */
   public boolean isPlaying(final INode node) {
     return playerMapping.containsValue(node);
@@ -70,10 +69,8 @@ public class PlayerManager {
    * Get a player from an opposing side, if possible, else
    * get a player playing at a remote computer, if possible.
    *
-   * @param localNode
-   *        local node
-   * @param data
-   *        game data
+   * @param localNode local node
+   * @param data game data
    * @return player found
    */
   public PlayerID getRemoteOpponent(final INode localNode, final GameData data) {

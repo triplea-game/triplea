@@ -16,12 +16,9 @@ public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbs
   /**
    * Moves the specified units along the specified route.
    *
-   * @param units
-   *        - the units to move.
-   * @param route
-   *        - the route to move along
-   * @param transportsThatCanBeLoaded
-   *        - transports that can be loaded while moving, must be non null
+   * @param units - the units to move.
+   * @param route - the route to move along
+   * @param transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
   String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded);
@@ -29,14 +26,10 @@ public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbs
   /**
    * Moves the specified units along the specified route accounting for dependents.
    *
-   * @param units
-   *        - the units to move.
-   * @param route
-   *        - the route to move along
-   * @param transportsThatCanBeLoaded
-   *        - transports that can be loaded while moving, must be non null
-   * @param newDependents
-   *        - units that will be made into new dependents if this move is successful, must be non null
+   * @param units - the units to move.
+   * @param route - the route to move along
+   * @param transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
+   * @param newDependents - units that will be made into new dependents if this move is successful, must be non null
    * @return an error message if the move can't be made, null otherwise
    */
   String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded,
@@ -45,10 +38,8 @@ public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbs
   /**
    * equivalent to move(units, route, Collections.EMPTY_LIST)
    *
-   * @param units
-   *        - the units to move
-   * @param route
-   *        - the route to move along
+   * @param units - the units to move
+   * @param route - the route to move along
    * @return an error message if the move cant be made, null otherwise
    */
   String move(Collection<Unit> units, Route route);
@@ -56,8 +47,7 @@ public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbs
   /**
    * Get what air units must move before the end of the players turn.
    *
-   * @param player
-   *        referring player ID
+   * @param player referring player ID
    * @return a list of territories with air units that must move of player ID
    */
   Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player);

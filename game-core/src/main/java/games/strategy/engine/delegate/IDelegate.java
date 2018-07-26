@@ -24,8 +24,7 @@ public interface IDelegate {
   /**
    * Called before the delegate will run and before "start" is called.
    *
-   * @param delegateBridge
-   *        the IDelegateBridge
+   * @param delegateBridge the IDelegateBridge
    */
   void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge);
 
@@ -55,8 +54,7 @@ public interface IDelegate {
   /**
    * Loads the delegate state.
    *
-   * @param state
-   *        the delegates state.
+   * @param state the delegates state.
    */
   void loadState(final Serializable state);
 

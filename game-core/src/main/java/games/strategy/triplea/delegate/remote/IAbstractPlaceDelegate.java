@@ -11,10 +11,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
   /**
    * Places the specified units in the specified territry.
    *
-   * @param units
-   *        units to place.
-   * @param at
-   *        territory to place
+   * @param units units to place.
+   * @param at territory to place
    * @return an error code if the placement was not successful
    */
   String placeUnits(Collection<Unit> units, Territory at, BidMode bidMode);
@@ -32,10 +30,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
    * ProductionResponse may indicate an error string that there
    * can be no units placed in a given territory
    *
-   * @param units
-   *        place-able units
-   * @param at
-   *        referring territory
+   * @param units place-able units
+   * @param at referring territory
    * @return object that contains place-able units
    */
   PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);

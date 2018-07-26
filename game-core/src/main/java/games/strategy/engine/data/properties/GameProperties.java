@@ -45,8 +45,7 @@ public class GameProperties extends GameDataComponent {
   /**
    * Creates a new instance of GameProperties.
    *
-   * @param data
-   *        game data
+   * @param data game data
    */
   public GameProperties(final GameData data) {
     super(data);
@@ -56,10 +55,8 @@ public class GameProperties extends GameDataComponent {
    * Setting a property to null has the effect of unbinding the key.
    * package access to prevent outsiders from setting properties
    *
-   * @param key
-   *        key of property
-   * @param value
-   *        property
+   * @param key key of property
+   * @param value property
    */
   public void set(final String key, final Object value) {
     // TODO should only accept serializable, not object
@@ -76,8 +73,7 @@ public class GameProperties extends GameDataComponent {
    * Returns property with key or null if property is not contained in the list.
    * (The object returned should not be modified, as modifications will not appear globally.)
    *
-   * @param key
-   *        referring key
+   * @param key referring key
    */
   public Object get(final String key) {
     if (editableProperties.containsKey(key)) {

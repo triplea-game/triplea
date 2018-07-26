@@ -88,8 +88,7 @@ public class PBEMMessagePoster implements Serializable {
   /**
    * Post summary to form and/or email, and writes the action performed to the history writer.
    *
-   * @param historyWriter
-   *        the history writer (which has no effect since save game has already be generated...) // todo (kg)
+   * @param historyWriter the history writer (which has no effect since save game has already be generated...) // todo (kg)
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title, final boolean includeSaveGame) {
@@ -152,8 +151,7 @@ public class PBEMMessagePoster implements Serializable {
   /**
    * Converts text to html, by transforming \n to &lt;br/&gt;.
    *
-   * @param string
-   *        the string to transform
+   * @param string the string to transform
    * @return the transformed string
    */
   private static String convertToHtml(final String string) {

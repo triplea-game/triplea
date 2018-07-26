@@ -102,8 +102,7 @@ public class StatPanel extends AbstractStatPanel {
   /**
    * Gets the small flag for a given PlayerID.
    *
-   * @param player
-   *        the player to get the flag for
+   * @param player the player to get the flag for
    * @return ImageIcon small flag
    */
   protected ImageIcon getIcon(final PlayerID player) {

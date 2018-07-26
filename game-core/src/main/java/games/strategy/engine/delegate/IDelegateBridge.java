@@ -57,8 +57,7 @@ public interface IDelegateBridge {
    * Delegates should not use random data that comes from any other source.
    * <p>
    *
-   * @param annotation
-   *        -
+   * @param annotation -
    *        a string used to describe the random event.
    *        <p>
    */

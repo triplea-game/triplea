@@ -19,8 +19,7 @@ public final class SoundOptions {
   /**
    * Adds the "Sound Options" menu item to the specified menu.
    *
-   * @param parentMenu
-   *        menu where to add the menu item "Sound Options".
+   * @param parentMenu menu where to add the menu item "Sound Options".
    */
   public static void addToMenu(final JMenu parentMenu) {
     final JMenuItem soundOptions = new JMenuItem("Sound Options");

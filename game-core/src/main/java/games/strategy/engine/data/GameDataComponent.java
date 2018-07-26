@@ -15,8 +15,7 @@ public class GameDataComponent implements Serializable {
   /**
    * Creates new GameDataComponent.
    *
-   * @param data
-   *        game data
+   * @param data game data
    */
   public GameDataComponent(final GameData data) {
     m_data = data;

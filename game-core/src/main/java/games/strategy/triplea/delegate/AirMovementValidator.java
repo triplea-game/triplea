@@ -525,12 +525,9 @@ public class AirMovementValidator {
   /**
    * Returns the combination of units that fly here and the existing owned units.
    *
-   * @param units
-   *        the units flying this route.
-   * @param route
-   *        the route flown
-   * @param player
-   *        the player owning the units
+   * @param units the units flying this route.
+   * @param route the route flown
+   * @param player the player owning the units
    */
   private static List<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route,
       final PlayerID player) {
@@ -567,10 +564,8 @@ public class AirMovementValidator {
   /**
    * Indicates this airunit reach safe land at this point in the route.
    *
-   * @param unit
-   *        the airunit in question
-   * @param route
-   *        the current spot from which he needs to reach safe land.
+   * @param unit the airunit in question
+   * @param route the current spot from which he needs to reach safe land.
    * @return whether the air-unit can find a stretch of friendly land to land on given her current spot and the
    *         remaining range.
    */

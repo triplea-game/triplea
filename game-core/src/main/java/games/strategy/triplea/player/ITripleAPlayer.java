@@ -26,36 +26,21 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Select casualties.
    *
-   * @param selectFrom
-   *        - the units to select casualties from
-   * @param dependents
-   *        - dependents of the units to select from
-   * @param count
-   *        - the number of casualties to select
-   * @param message
-   *        - ui message to display
-   * @param dice
-   *        - the dice rolled for the casualties
-   * @param hit
-   *        - the player hit
-   * @param friendlyUnits
-   *        - all friendly units in the battle (or moving)
-   * @param enemyPlayer
-   *        - the player who has hit you
-   * @param enemyUnits
-   *        - all enemy units in the battle (or defending aa)
-   * @param amphibious
-   *        - is the battle amphibious?
-   * @param amphibiousLandAttackers
-   *        - can be null
-   * @param defaultCasualties
-   *        - default casualties as selected by the game
-   * @param battleId
-   *        - the battle we are fighting in, may be null if this is an aa casualty selection during a move
-   * @param battlesite
-   *        - the territory where this happened
-   * @param allowMultipleHitsPerUnit
-   *        - can units be hit more than one time if they have more than one hitpoints left?
+   * @param selectFrom - the units to select casualties from
+   * @param dependents - dependents of the units to select from
+   * @param count - the number of casualties to select
+   * @param message - ui message to display
+   * @param dice - the dice rolled for the casualties
+   * @param hit - the player hit
+   * @param friendlyUnits - all friendly units in the battle (or moving)
+   * @param enemyPlayer - the player who has hit you
+   * @param enemyUnits - all enemy units in the battle (or defending aa)
+   * @param amphibious - is the battle amphibious?
+   * @param amphibiousLandAttackers - can be null
+   * @param defaultCasualties - default casualties as selected by the game
+   * @param battleId - the battle we are fighting in, may be null if this is an aa casualty selection during a move
+   * @param battlesite - the territory where this happened
+   * @param allowMultipleHitsPerUnit - can units be hit more than one time if they have more than one hitpoints left?
    * @return CasualtyDetails
    */
   CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count,
@@ -66,16 +51,11 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Select a fixed dice roll
    *
-   * @param numDice
-   *        - the number of dice rolls
-   * @param hitAt
-   *        - the lowest roll that constitutes a hit (0 for none)
-   * @param hitOnlyIfEquals
-   *        - whether to count rolls greater than hitAt as hits
-   * @param title
-   *        - the title for the DiceChooser
-   * @param diceSides
-   *        - the number of sides on the die, found by data.getDiceSides()
+   * @param numDice - the number of dice rolls
+   * @param hitAt - the lowest roll that constitutes a hit (0 for none)
+   * @param hitOnlyIfEquals - whether to count rolls greater than hitAt as hits
+   * @param title - the title for the DiceChooser
+   * @param diceSides - the number of sides on the die, found by data.getDiceSides()
    * @return the resulting dice array
    */
   int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides);
@@ -84,12 +64,9 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Select the territory to bombard with the bombarding capable unit (eg battleship).
    *
-   * @param unit
-   *        - the bombarding unit
-   * @param unitTerritory
-   *        - where the bombarding unit is
-   * @param territories
-   *        - territories where the unit can bombard
+   * @param unit - the bombarding unit
+   * @param unitTerritory - where the bombarding unit is
+   * @param territories - territories where the unit can bombard
    * @return the Territory to bombard in, null if the unit should not bombard
    */
   Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories,
@@ -98,32 +75,28 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Ask if the player wants to attack lone subs.
    *
-   * @param unitTerritory
-   *        - where the potential battle is
+   * @param unitTerritory - where the potential battle is
    */
   boolean selectAttackSubs(Territory unitTerritory);
 
   /**
    * Ask if the player wants to attack lone transports.
    *
-   * @param unitTerritory
-   *        - where the potential battle is
+   * @param unitTerritory - where the potential battle is
    */
   boolean selectAttackTransports(Territory unitTerritory);
 
   /**
    * Ask if the player wants to attack units.
    *
-   * @param unitTerritory
-   *        - where the potential battle is
+   * @param unitTerritory - where the potential battle is
    */
   boolean selectAttackUnits(Territory unitTerritory);
 
   /**
    * Ask if the player wants to shore bombard.
    *
-   * @param unitTerritory
-   *        - where the potential battle is
+   * @param unitTerritory - where the potential battle is
    */
   boolean selectShoreBombard(Territory unitTerritory);
 
@@ -131,8 +104,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Report an error to the user.
    *
-   * @param error
-   *        that an error occurred
+   * @param error that an error occurred
    */
   void reportError(String error);
 
@@ -157,10 +129,8 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Choose where my rockets should fire.
    *
-   * @param candidates
-   *        - a collection of Territories, the possible territories to attack
-   * @param from
-   *        - where the rockets are launched from, null for WW2V1 rules
+   * @param candidates - a collection of Territories, the possible territories to attack
+   * @param from - where the rockets are launched from, null for WW2V1 rules
    * @return the territory to attack, null if no territory should be attacked
    */
   Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from);
@@ -168,10 +138,8 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Get the fighters to move to a newly produced carrier.
    *
-   * @param fightersThatCanBeMoved
-   *        - the fighters that can be moved
-   * @param from
-   *        - the territory containing the factory
+   * @param fightersThatCanBeMoved - the fighters that can be moved
+   * @param from - the territory containing the factory
    * @return - the fighters to move
    */
   Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from);
@@ -179,8 +147,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Some carriers were lost while defending. We must select where to land some air units.
    *
-   * @param candidates
-   *        - a list of territories - these are the places where air units can land
+   * @param candidates - a list of territories - these are the places where air units can land
    * @return - the territory to land the fighters in, must be non null
    */
   Territory selectTerritoryForAirToLand(Collection<Territory> candidates, final Territory currentTerritory,
@@ -189,8 +156,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * The attempted move will incur aa fire, confirm that you still want to move.
    *
-   * @param aaFiringTerritories
-   *        - the territories where aa will fire
+   * @param aaFiringTerritories - the territories where aa will fire
    */
   boolean confirmMoveInFaceOfAa(Collection<Territory> aaFiringTerritories);
 
@@ -207,14 +173,10 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Ask the player if he wishes to retreat.
    *
-   * @param battleId
-   *        - the battle
-   * @param submerge
-   *        - is submerging possible (means the retreat territory CAN be the current battle territory)
-   * @param possibleTerritories
-   *        - where the player can retreat to
-   * @param message
-   *        - user displayable message
+   * @param battleId - the battle
+   * @param submerge - is submerging possible (means the retreat territory CAN be the current battle territory)
+   * @param possibleTerritories - where the player can retreat to
+   * @param message - user displayable message
    * @return the territory to retreat to, or null if the player doesnt wish to retreat
    */
   Territory retreatQuery(GUID battleId, boolean submerge, Territory battleTerritory,
@@ -223,10 +185,8 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Ask the player which units, if any, they want to scramble to defend against the attacker.
    *
-   * @param scrambleTo
-   *        - the territory we are scrambling to defend in, where the units will end up if scrambled
-   * @param possibleScramblers
-   *        - possible units which we could scramble, with where they are from and how many allowed from that location
+   * @param scrambleTo - the territory we are scrambling to defend in, where the units will end up if scrambled
+   * @param possibleScramblers - possible units which we could scramble, with where they are from and how many allowed from that location
    * @return a list of units to scramble mapped to where they are coming from
    */
   HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo,
@@ -247,10 +207,8 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Indicates the player accepts the proposed action.
    *
-   * @param acceptanceQuestion
-   *        the question that should be asked to this player
-   * @param politics
-   *        is this from politics delegate?
+   * @param acceptanceQuestion the question that should be asked to this player
+   * @param politics is this from politics delegate?
    * @return whether the player accepts the action proposal
    */
   boolean acceptAction(PlayerID playerSendingProposal, String acceptanceQuestion, boolean politics);

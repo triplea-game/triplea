@@ -21,12 +21,9 @@ public class CollectionProperty<T> extends AEditableProperty {
   /**
    * Initializes a new instance of the CollectionProperty class.
    *
-   * @param name
-   *        name of the property.
-   * @param description
-   *        description of the property.
-   * @param values
-   *        collection of values.
+   * @param name name of the property.
+   * @param description description of the property.
+   * @param values collection of values.
    */
   public CollectionProperty(final String name, final String description, final Collection<T> values) {
     super(name, description);

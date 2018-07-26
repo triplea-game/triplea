@@ -74,8 +74,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   /**
    * Creates a new instance.
    *
-   * @param model
-   *        the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
+   * @param model the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
@@ -158,8 +157,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   /**
    * Load the dice rollers from cache, if the game was a save game, the dice roller store is selected.
    *
-   * @param data
-   *        the game data
+   * @param data the game data
    */
   private void loadDiceServer(final GameData data) {
     final List<IRemoteDiceServer> diceRollers = new ArrayList<>(PropertiesDiceRoller.loadFromFile());
@@ -215,8 +213,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    * Configures the list of Email senders. If the game was saved we use this email sender.
    * Since passwords are not stored in save games, the LocalBeanCache is checked
    *
-   * @param data
-   *        the game data
+   * @param data the game data
    */
   private void loadEmailSender(final GameData data) {
     // The list of email, either loaded from cache or created
@@ -439,8 +436,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     /**
      * Get a serializable from the cache.
      *
-     * @param key
-     *        the key ot was stored under
+     * @param key the key ot was stored under
      * @return the serializable or null if one doesn't exists under the given key
      */
     IBean getSerializable(final String key) {

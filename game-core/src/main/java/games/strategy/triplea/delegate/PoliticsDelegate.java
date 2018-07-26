@@ -160,8 +160,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * Get a list of players that should accept this action and then ask each
    * player if it accepts this action.
    *
-   * @param paa
-   *        the politicalActionAttachment that should be accepted
+   * @param paa the politicalActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final PoliticalActionAttachment paa) {
     final GameData data = getData();
@@ -234,10 +233,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * Let the player know he is being charged for money or that he hasn't got
    * enough money.
    *
-   * @param paa
-   *        the actionattachment the player is notified about
-   * @param enough
-   *        is this a notification about enough or not enough money.
+   * @param paa the actionattachment the player is notified about
+   * @param enough is this a notification about enough or not enough money.
    */
   private void notifyMoney(final PoliticalActionAttachment paa, final boolean enough) {
     final String cost = ResourceCollection.toString(paa.getCostResources(), getData());
@@ -251,8 +248,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /**
    * Subtract money from the players wallet.
    *
-   * @param paa
-   *        the politicalactionattachment this the money is charged for.
+   * @param paa the politicalactionattachment this the money is charged for.
    */
   private void chargeForAction(final PoliticalActionAttachment paa) {
     final IntegerMap<Resource> cost = paa.getCostResources();
@@ -279,8 +275,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /**
    * Let all players involved in this action know the action has failed.
    *
-   * @param paa
-   *        the political action attachment that just failed.
+   * @param paa the political action attachment that just failed.
    */
   private void notifyFailure(final PoliticalActionAttachment paa) {
     getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, player);
@@ -320,8 +315,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /**
    * Send a notification to the current player.
    *
-   * @param text
-   *        if NONE don't send a notification
+   * @param text if NONE don't send a notification
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
@@ -332,8 +326,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /**
    * Changes all relationships.
    *
-   * @param paa
-   *        the political action to change the relationships for
+   * @param paa the political action to change the relationships for
    */
   private void changeRelationships(final PoliticalActionAttachment paa) {
     getMyselfOutOfAlliance(paa, player, bridge);
@@ -365,8 +358,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   /**
    * Executes the specified action.
    *
-   * @param paa
-   *        the action to check if it succeeds
+   * @param paa the action to check if it succeeds
    * @return true if the action succeeds, usually because the die-roll succeeded.
    */
   private boolean actionRollSucceeds(final PoliticalActionAttachment paa) {

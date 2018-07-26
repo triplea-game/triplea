@@ -86,8 +86,7 @@ public class BattleTracker implements Serializable {
   /**
    * Indicates whether a battle is to be fought in the given territory.
    *
-   * @param t
-   *        referring territory.
+   * @param t referring territory.
    */
   public boolean hasPendingBattle(final Territory t, final boolean bombing) {
     return getPendingBattle(t, bombing, null) != null;
@@ -100,8 +99,7 @@ public class BattleTracker implements Serializable {
   /**
    * Indicates whether territory was conquered.
    *
-   * @param t
-   *        referring territory.
+   * @param t referring territory.
    */
   public boolean wasConquered(final Territory t) {
     return m_conquered.contains(t);
@@ -114,8 +112,7 @@ public class BattleTracker implements Serializable {
   /**
    * Indicates whether territory was conquered by blitz.
    *
-   * @param t
-   *        referring territory.
+   * @param t referring territory.
    */
   public boolean wasBlitzed(final Territory t) {
     return m_blitzed.contains(t);
@@ -970,8 +967,7 @@ public class BattleTracker implements Serializable {
   /**
    * Returns a collection of territories where battles are pending.
    *
-   * @param bombing
-   *        whether only battles where there is bombing.
+   * @param bombing whether only battles where there is bombing.
    */
   public Collection<Territory> getPendingBattleSites(final boolean bombing) {
     final Collection<IBattle> pending = new HashSet<>(m_pendingBattles);
@@ -1003,8 +999,7 @@ public class BattleTracker implements Serializable {
   /**
    * Returns the battle that must occur before dependent can occur.
    *
-   * @param blocked
-   *        the battle that is blocked.
+   * @param blocked the battle that is blocked.
    */
   public Collection<IBattle> getDependentOn(final IBattle blocked) {
     final Collection<IBattle> dependent = m_dependencies.get(blocked);
@@ -1017,8 +1012,7 @@ public class BattleTracker implements Serializable {
   /**
    * Returns the battles that cannot occur until the given battle occurs.
    *
-   * @param blocking
-   *        the battle that is blocking the other battles.
+   * @param blocking the battle that is blocking the other battles.
    */
   public Collection<IBattle> getBlocked(final IBattle blocking) {
     return m_dependencies.keySet().stream()

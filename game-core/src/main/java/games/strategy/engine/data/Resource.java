@@ -11,10 +11,8 @@ public class Resource extends NamedAttachable {
   /**
    * Creates new Resource.
    *
-   * @param name
-   *        name of the resource
-   * @param data
-   *        game data
+   * @param name name of the resource
+   * @param data game data
    */
   public Resource(final String name, final GameData data) {
     this(name, data, new ArrayList<>());

@@ -39,10 +39,8 @@ public class TuvUtils {
    * will have their costs rounded up on a per unit basis (so NWO artillery will become 4).
    * Therefore, this map should NOT be used for Purchasing information!
    *
-   * @param player
-   *        The player to get costs schedule for
-   * @param data
-   *        The game data.
+   * @param player The player to get costs schedule for
+   * @param data The game data.
    * @return a map of unit types to PU cost
    */
   public static IntegerMap<UnitType> getCostsForTuv(final PlayerID player, final GameData data) {
@@ -315,10 +313,8 @@ public class TuvUtils {
   /**
    * Return the total unit value.
    *
-   * @param units
-   *        A collection of units
-   * @param costs
-   *        An integer map of unit types to costs.
+   * @param units A collection of units
+   * @param costs An integer map of unit types to costs.
    * @return the total unit value.
    */
   public static int getTuv(final Collection<Unit> units, final IntegerMap<UnitType> costs) {
@@ -333,12 +329,9 @@ public class TuvUtils {
   /**
    * Return the total unit value for a certain player and his allies.
    *
-   * @param units
-   *        A collection of units
-   * @param player
-   *        The player to calculate the TUV for.
-   * @param costs
-   *        An integer map of unit types to costs
+   * @param units A collection of units
+   * @param player The player to calculate the TUV for.
+   * @param costs An integer map of unit types to costs
    * @return the total unit value.
    */
   public static int getTuv(final Collection<Unit> units, final PlayerID player, final IntegerMap<UnitType> costs,

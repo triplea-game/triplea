@@ -20,12 +20,9 @@ public class PropertiesSelector {
   /**
    * Displays a property selection window.
    * 
-   * @param parent
-   *        parent component
-   * @param properties
-   *        properties that will get displayed
-   * @param buttonOptions
-   *        button options. They will be displayed in a row on the bottom
+   * @param parent parent component
+   * @param properties properties that will get displayed
+   * @param buttonOptions button options. They will be displayed in a row on the bottom
    * @return pressed button
    */
   public static Object getButton(final JComponent parent, final String title,

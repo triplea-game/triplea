@@ -17,8 +17,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   /**
    * Creates new UnitTypeCollection.
    *
-   * @param data
-   *        game data
+   * @param data game data
    */
   public UnitTypeList(final GameData data) {
     super(data);

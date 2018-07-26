@@ -33,24 +33,15 @@ public interface ITripleADisplay extends IDisplay {
    * Display info about the battle.
    * This is the first message to be displayed in a battle
    *
-   * @param battleId
-   *        - a unique id for the battle
-   * @param location
-   *        - where the battle occurs
-   * @param battleTitle
-   *        - the title of the battle
-   * @param attackingUnits
-   *        - attacking units
-   * @param defendingUnits
-   *        - defending units
-   * @param killedUnits
-   *        - killed units
-   * @param dependentUnits
-   *        - unit dependencies, maps Unit->Collection of units
-   * @param attacker
-   *        - PlayerID of attacker
-   * @param defender
-   *        - PlayerID of defender
+   * @param battleId - a unique id for the battle
+   * @param location - where the battle occurs
+   * @param battleTitle - the title of the battle
+   * @param attackingUnits - attacking units
+   * @param defendingUnits - defending units
+   * @param killedUnits - killed units
+   * @param dependentUnits - unit dependencies, maps Unit->Collection of units
+   * @param attacker - PlayerID of attacker
+   * @param defender - PlayerID of defender
    */
   void showBattle(GUID battleId, Territory location, String battleTitle, Collection<Unit> attackingUnits,
       Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
@@ -61,10 +52,8 @@ public interface ITripleADisplay extends IDisplay {
   /**
    * Displays the steps for the specified battle.
    *
-   * @param battleId
-   *        - the battle we are listing steps for.
-   * @param steps
-   *        - a collection of strings denoting all steps in the battle
+   * @param battleId - the battle we are listing steps for.
+   * @param steps - a collection of strings denoting all steps in the battle
    */
   void listBattleSteps(GUID battleId, List<String> steps);
 

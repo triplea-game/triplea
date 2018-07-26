@@ -21,8 +21,7 @@ public class BattleListing implements Serializable {
   /**
    * Creates new BattleListing.
    *
-   * @param battles
-   *        battles to list
+   * @param battles battles to list
    */
   public BattleListing(final Map<BattleType, Collection<Territory>> battles) {
     m_battles = battles;

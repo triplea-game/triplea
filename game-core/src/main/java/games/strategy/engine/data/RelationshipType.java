@@ -8,10 +8,8 @@ public class RelationshipType extends NamedAttachable {
   /**
    * create new RelationshipType.
    *
-   * @param name
-   *        name of the relationshipType
-   * @param data
-   *        GameData Object used for construction
+   * @param name name of the relationshipType
+   * @param data GameData Object used for construction
    */
   public RelationshipType(final String name, final GameData data) {
     super(name, data);

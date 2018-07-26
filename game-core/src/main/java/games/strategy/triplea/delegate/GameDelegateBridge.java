@@ -22,8 +22,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   /**
    * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge.
    *
-   * @param bridge
-   *        delegate bridge
+   * @param bridge delegate bridge
    */
   public GameDelegateBridge(final IDelegateBridge bridge) {
     this.bridge = bridge;

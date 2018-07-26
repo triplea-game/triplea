@@ -68,8 +68,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
    * These attachments returned are not conditions to be tested, they are special rules affecting a player
    * (for example: being able to produce without factories, or not being able to move out of specific territories).
    *
-   * @param player
-   *        PlayerID
+   * @param player PlayerID
    * @return new rule attachment
    */
   public static RulesAttachment get(final PlayerID player) {

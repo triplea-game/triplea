@@ -28,8 +28,7 @@ public interface IEditableProperty {
   /**
    * Set the value of the property (programmatically), GUI would normally use the editor.
    *
-   * @param value
-   *        the new value
+   * @param value the new value
    * @throws ClassCastException
    *         if the type of value is wrong
    */

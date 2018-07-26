@@ -357,8 +357,7 @@ public class ClipPlayer {
   /**
    * Returns a collection of clip files found at the specified location.
    *
-   * @param resourceAndPathUrl
-   *        (URL uses '/', not File.separator or '\')
+   * @param resourceAndPathUrl (URL uses '/', not File.separator or '\')
    */
   protected List<URL> findClipFiles(final String resourceAndPathUrl) {
     final List<URL> availableSounds = new ArrayList<>();

@@ -138,8 +138,7 @@ public class MapData implements Closeable {
    * Constructor TerritoryData(java.lang.String)
    * Sets the map directory for this instance of TerritoryData
    *
-   * @param loader
-   *        .lang.String
+   * @param loader .lang.String
    *        mapNameDir the given map directory
    */
   public MapData(final ResourceLoader loader) {

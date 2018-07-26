@@ -11,12 +11,9 @@ public class CasualtyDetails extends CasualtyList {
   /**
    * Creates new SelectCasualtyMessage.
    *
-   * @param killed
-   *        killed units
-   * @param damaged
-   *        damaged units (Can have multiple of the same unit, to show multiple hits to that unit.)
-   * @param autoCalculated
-   *        whether casualties should be selected automatically
+   * @param killed killed units
+   * @param damaged damaged units (Can have multiple of the same unit, to show multiple hits to that unit.)
+   * @param autoCalculated whether casualties should be selected automatically
    */
   public CasualtyDetails(final List<Unit> killed, final List<Unit> damaged, final boolean autoCalculated) {
     super(killed, damaged);

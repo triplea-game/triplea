@@ -25,10 +25,8 @@ public class CompositeRouteFinder {
    * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any
    * way.
    *
-   * @param map
-   *        - Game map found through &lt;gamedata>.getMap()
-   * @param matches
-   *        - Set of matches and scores. The lower a match is scored, the more favorable it is.
+   * @param map - Game map found through &lt;gamedata>.getMap()
+   * @param matches - Set of matches and scores. The lower a match is scored, the more favorable it is.
    */
   public CompositeRouteFinder(final GameMap map, final Map<Predicate<Territory>, Integer> matches) {
     this.map = map;

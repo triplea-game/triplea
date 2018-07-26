@@ -16,12 +16,9 @@ public interface ILoginValidator {
   /**
    * Validates a login attempt.
    *
-   * @param propertiesReadFromClient
-   *        - client properties written by the client after receiving the challange string.
-   * @param remoteAddress
-   *        - the remote adress
-   * @param clientName
-   *        - the user name given by the client
+   * @param propertiesReadFromClient - client properties written by the client after receiving the challange string.
+   * @param remoteAddress - the remote adress
+   * @param clientName - the user name given by the client
    * @return - null if the attempt was successful, an error message otherwise
    */
   String verifyConnection(Map<String, String> propertiesSentToClient,

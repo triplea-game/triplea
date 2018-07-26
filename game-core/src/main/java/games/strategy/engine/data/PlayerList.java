@@ -23,8 +23,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   /**
    * Creates new PlayerList.
    *
-   * @param data
-   *        game data
+   * @param data game data
    */
   public PlayerList(final GameData data) {
     super(data);

@@ -210,8 +210,7 @@ public class PoliticsPanel extends ActionPanel {
    * Convenient method to get a JCompenent showing the flags involved in this
    * action.
    *
-   * @param paa
-   *        the political action attachment to get the "otherflags" for
+   * @param paa the political action attachment to get the "otherflags" for
    * @return a JComponent with the flags involved.
    */
   private JPanel getOtherPlayerFlags(final PoliticalActionAttachment paa) {

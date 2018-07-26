@@ -11,8 +11,7 @@ public class EmailValidator implements IValidator {
   /**
    * create a new instance.
    *
-   * @param validIfEmpty
-   *        is the text valid if empty
+   * @param validIfEmpty is the text valid if empty
    */
   public EmailValidator(final boolean validIfEmpty) {
     this.validIfEmpty = validIfEmpty;

@@ -15,8 +15,7 @@ public class CasualtyList implements Serializable {
   /**
    * Creates a new CasualtyList.
    *
-   * @param damaged
-   *        (can have multiple of the same unit, to show multiple hits to that unit)
+   * @param damaged (can have multiple of the same unit, to show multiple hits to that unit)
    */
   public CasualtyList(final List<Unit> killed, final List<Unit> damaged) {
     if (killed == null) {

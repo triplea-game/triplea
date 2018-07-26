@@ -32,8 +32,7 @@ public abstract class EditorPanel extends JPanel {
   /**
    * Registers a listener for editor changes.
    *
-   * @param listener
-   *        the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
+   * @param listener the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
    *        will both be null
    */
   @Override
@@ -44,10 +43,8 @@ public abstract class EditorPanel extends JPanel {
   /**
    * Validates that a text field is not empty. if the content is not valid the associated label is marked in red
    *
-   * @param field
-   *        the field to validate
-   * @param label
-   *        the associated label (or null)
+   * @param field the field to validate
+   * @param label the associated label (or null)
    * @return true if text field content is valid
    */
   protected boolean validateTextFieldNotEmpty(final JTextField field, final JLabel label) {
@@ -58,12 +55,9 @@ public abstract class EditorPanel extends JPanel {
    * Validates a the contents of a text field using a specified validator. if the content is not valid the associated
    * label is marked in red
    *
-   * @param field
-   *        the field to validate
-   * @param label
-   *        the associated label (or null)
-   * @param validator
-   *        the validator
+   * @param field the field to validate
+   * @param label the associated label (or null)
+   * @param validator the validator
    * @return true if text field content is valid
    */
   protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator validator) {
@@ -74,12 +68,9 @@ public abstract class EditorPanel extends JPanel {
    * Validates a the contents of textusing a specified validator. if the content is not valid the associated label is
    * marked in red
    *
-   * @param text
-   *        the text to validate
-   * @param label
-   *        the associated label (or null)
-   * @param validator
-   *        the validator
+   * @param text the text to validate
+   * @param label the associated label (or null)
+   * @param validator the validator
    * @return true if text field content is valid
    */
   protected boolean validateText(final String text, final JLabel label, final IValidator validator) {

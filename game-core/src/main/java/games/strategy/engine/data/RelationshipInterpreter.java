@@ -16,10 +16,8 @@ public class RelationshipInterpreter extends GameDataComponent {
   /**
    * Indicates whether player p1 is allied to player p2.
    *
-   * @param p1
-   *        first referring player
-   * @param p2
-   *        second referring player
+   * @param p1 first referring player
+   * @param p2 second referring player
    */
   public boolean isAllied(final PlayerID p1, final PlayerID p2) {
     return Matches.relationshipTypeIsAllied().test((getRelationshipType(p1, p2)));
@@ -45,10 +43,8 @@ public class RelationshipInterpreter extends GameDataComponent {
   /**
    * returns true if p1 is at war with p2.
    *
-   * @param p1
-   *        player1
-   * @param p2
-   *        player2
+   * @param p1 player1
+   * @param p2 player2
    * @return whether p1 is at war with p2
    */
   public boolean isAtWar(final PlayerID p1, final PlayerID p2) {
@@ -71,10 +67,8 @@ public class RelationshipInterpreter extends GameDataComponent {
   /**
    * Indicates whether player1 is neutral to player2.
    *
-   * @param p1
-   *        player1
-   * @param p2
-   *        player2
+   * @param p1 player1
+   * @param p2 player2
    */
   public boolean isNeutral(final PlayerID p1, final PlayerID p2) {
     return Matches.relationshipTypeIsNeutral().test((getRelationshipType(p1, p2)));
@@ -128,10 +122,8 @@ public class RelationshipInterpreter extends GameDataComponent {
    * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2
    * players.
    *
-   * @param p1
-   *        Player1 in the relationship
-   * @param p2
-   *        Player2 in the relationship
+   * @param p1 Player1 in the relationship
+   * @param p2 Player2 in the relationship
    * @return the current RelationshipType between those two players
    */
   RelationshipType getRelationshipType(final PlayerID p1, final PlayerID p2) {

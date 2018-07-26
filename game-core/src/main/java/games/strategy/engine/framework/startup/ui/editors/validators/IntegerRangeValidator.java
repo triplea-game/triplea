@@ -10,10 +10,8 @@ public class IntegerRangeValidator implements IValidator {
   /**
    * create a new instance.
    *
-   * @param min
-   *        the minimal value
-   * @param max
-   *        the maximal value
+   * @param min the minimal value
+   * @param max the maximal value
    */
   public IntegerRangeValidator(final int min, final int max) {
     this.min = min;

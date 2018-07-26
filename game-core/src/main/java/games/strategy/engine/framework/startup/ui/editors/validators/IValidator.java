@@ -7,8 +7,7 @@ public interface IValidator {
   /**
    * Validates that the give input is valid.
    *
-   * @param text
-   *        the text to be validated
+   * @param text the text to be validated
    * @return true if the data is valid
    */
   boolean isValid(String text);

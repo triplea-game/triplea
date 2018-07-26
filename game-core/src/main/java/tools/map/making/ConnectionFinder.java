@@ -219,8 +219,7 @@ public final class ConnectionFinder {
   /**
    * Creates the xml territory definitions.
    *
-   * @param waterString
-   *        a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a
+   * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a
    *        territory is water
    * @return StringBuffer containing XML representing these connections
    */
@@ -247,8 +246,7 @@ public final class ConnectionFinder {
   /**
    * Converts a map of connections to XML formatted text with the connections.
    *
-   * @param connections
-   *        a map of connections between Territories
+   * @param connections a map of connections between Territories
    * @return a StringBuffer containing XML representing these connections
    */
   private static StringBuilder convertToXml(final Map<String, Collection<String>> connections) {
@@ -268,8 +266,7 @@ public final class ConnectionFinder {
   /**
    * Returns the size of the area of the bounding box of the polygon.
    *
-   * @param area
-   *        the area of which the boundingbox size is measured
+   * @param area the area of which the boundingbox size is measured
    * @return the size of the area of the boundingbox of this area
    */
   private static double sizeOfArea(final Area area) {
@@ -379,10 +376,8 @@ public final class ConnectionFinder {
    * Returns a scaled version of the given shape, calculated by the given scale factor.
    * The scaling will be calculated around the centroid of the shape.
    *
-   * @param sx
-   *        how much to scale on the x-axis
-   * @param sy
-   *        how much to scale on the y-axis
+   * @param sx how much to scale on the x-axis
+   * @param sy how much to scale on the y-axis
    * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
    */
   private static Shape scale(final Shape currentPolygon, final double sx, final double sy) {

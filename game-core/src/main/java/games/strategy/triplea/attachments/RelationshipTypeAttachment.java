@@ -71,8 +71,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * Or you could base it on NEUTRAL_ARCHETYPE but override the options like "canAttackAtSea" and "canFireAA" to mimic a
    * uneasy peace.
    *
-   * @param archeType
-   *        the template used to base this relationType on, can be war, allied or neutral, default archeType =
+   * @param archeType the template used to base this relationType on, can be war, allied or neutral, default archeType =
    *        WAR_ARCHETYPE
    * @throws GameParseException
    *         if archeType isn't set to war, allied or neutral
@@ -107,8 +106,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * isAllied or isWar();
    * Just for future reference, doesn't do anything right now.
    *
-   * @param canFlyOver
-   *        should be "true", "false" or "default"
+   * @param canFlyOver should be "true", "false" or "default"
    */
   private void setCanMoveAirUnitsOverOwnedLand(final String canFlyOver) {
     m_canMoveAirUnitsOverOwnedLand = canFlyOver;

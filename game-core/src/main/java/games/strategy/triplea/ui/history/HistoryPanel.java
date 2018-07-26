@@ -293,8 +293,7 @@ public class HistoryPanel extends JPanel {
   /**
    * collapses parents of last path if it is not in the list of expanded path until the new path is a descendant.
    *
-   * @param newPath
-   *        new path
+   * @param newPath new path
    */
   private void collapseUpFromLastParent(final TreePath newPath) {
     TreePath currentParent = lastParent;
@@ -308,8 +307,7 @@ public class HistoryPanel extends JPanel {
   /**
    * Indicates whether the expanded path list contains a descendant of parentPath.
    *
-   * @param parentPath
-   *        tree path for which descendants should be check.
+   * @param parentPath tree path for which descendants should be check.
    */
   private boolean stayExpandedContainsDescendantOf(final TreePath parentPath) {
     for (final TreePath currentPath : stayExpandedPaths) {
@@ -323,8 +321,7 @@ public class HistoryPanel extends JPanel {
   /**
    * collapses expanded paths except if new path is a descendant.
    *
-   * @param newPath
-   *        new path
+   * @param newPath new path
    */
   private void collapseExpanded(final TreePath newPath) {
     if (!stayExpandedPaths.isEmpty()) {

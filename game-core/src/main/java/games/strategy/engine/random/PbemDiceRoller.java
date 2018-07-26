@@ -116,18 +116,12 @@ public class PbemDiceRoller implements IRandomSource {
     /**
      * Initializes a new instance of the HttpDiceRollerDialog class.
      *
-     * @param owner
-     *        owner frame.
-     * @param sides
-     *        the number of sides on the dice
-     * @param count
-     *        the number of dice rolled
-     * @param subjectMessage
-     *        the subject for the email the dice roller will send (if it sends emails)
-     * @param diceServer
-     *        the dice server implementation
-     * @param gameUuid
-     *        the TripleA game UUID or null
+     * @param owner owner frame.
+     * @param sides the number of sides on the dice
+     * @param count the number of dice rolled
+     * @param subjectMessage the subject for the email the dice roller will send (if it sends emails)
+     * @param diceServer the dice server implementation
+     * @param gameUuid the TripleA game UUID or null
      */
     HttpDiceRollerDialog(final Frame owner, final int sides, final int count, final String subjectMessage,
         final IRemoteDiceServer diceServer, final String gameUuid) {
