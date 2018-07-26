@@ -77,14 +77,14 @@ public class UnitType extends NamedAttachable {
    */
   public String getTooltip(final PlayerID playerId) {
     final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
-    if (customTip != null && customTip.trim().length() > 0) {
-      return LocalizeHtml.localizeImgLinksInHtml(customTip.trim());
+    if (!customTip.isEmpty()) {
+      return LocalizeHtml.localizeImgLinksInHtml(customTip);
     }
     final String generated = UnitAttachment.get(this)
         .toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId));
     final String appendedTip = TooltipProperties.getInstance().getAppendedToolTip(this, playerId);
-    if (appendedTip != null && appendedTip.trim().length() > 0) {
-      return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip.trim());
+    if (!appendedTip.isEmpty()) {
+      return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
     }
     return generated;
   }
