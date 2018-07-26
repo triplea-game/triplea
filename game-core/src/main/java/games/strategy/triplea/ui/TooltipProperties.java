@@ -46,11 +46,21 @@ public class TooltipProperties {
     return ttp;
   }
 
+  public String getAppendedToolTip(final UnitType ut, final PlayerID playerId) {
+    return getToolTip(ut, playerId, true);
+  }
+
   public String getToolTip(final UnitType ut, final PlayerID playerId) {
+    return getToolTip(ut, playerId, false);
+  }
+
+  private String getToolTip(final UnitType ut, final PlayerID playerId, final boolean isAppending) {
+    final String append = isAppending ? ".append" : "";
     final String tooltip = properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "."
-        + (playerId == null ? PlayerID.NULL_PLAYERID.getName() : playerId.getName()), "");
+        + (playerId == null ? PlayerID.NULL_PLAYERID.getName() : playerId.getName()) + append, "");
     return (tooltip == null || tooltip.isEmpty())
-        ? properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName(), "")
+        ? properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + append, "")
         : tooltip;
   }
+
 }

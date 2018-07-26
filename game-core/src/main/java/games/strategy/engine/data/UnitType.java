@@ -72,13 +72,21 @@ public class UnitType extends NamedAttachable {
     return Objects.hashCode(getName());
   }
 
+  /**
+   * Get unit type tooltip checking for custom tooltip content.
+   */
   public String getTooltip(final PlayerID playerId) {
     final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
-    if (customTip == null || customTip.trim().length() <= 0) {
-      return UnitAttachment.get(this).toStringShortAndOnlyImportantDifferences(
-          (playerId == null ? PlayerID.NULL_PLAYERID : playerId));
+    if (!customTip.isEmpty()) {
+      return LocalizeHtml.localizeImgLinksInHtml(customTip);
     }
-    return LocalizeHtml.localizeImgLinksInHtml(customTip.trim());
+    final String generated = UnitAttachment.get(this)
+        .toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId));
+    final String appendedTip = TooltipProperties.getInstance().getAppendedToolTip(this, playerId);
+    if (!appendedTip.isEmpty()) {
+      return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
+    }
+    return generated;
   }
 
   /**
