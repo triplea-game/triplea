@@ -17,15 +17,8 @@ public class UpdateChecks {
     new Thread(UpdateChecks::checkForUpdates).start();
   }
 
-
   private static void checkForUpdates() {
     if (!shouldRun()) {
-      return;
-    }
-
-    // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
-    final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (fileName.trim().length() > 0) {
       return;
     }
 
@@ -40,6 +33,8 @@ public class UpdateChecks {
   private static boolean shouldRun() {
     return !System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")
         && !System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")
-        && !System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true");
+        && !System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")
+        // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+        && System.getProperty(TRIPLEA_GAME, "").isEmpty();
   }
 }
