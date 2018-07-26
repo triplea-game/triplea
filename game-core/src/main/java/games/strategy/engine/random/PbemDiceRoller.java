@@ -114,6 +114,8 @@ public class PbemDiceRoller implements IRandomSource {
     private Window owner;
 
     /**
+     * Initializes a new instance of the HttpDiceRollerDialog class.
+     *
      * @param owner
      *        owner frame.
      * @param sides

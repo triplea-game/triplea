@@ -15,6 +15,8 @@ public interface IRemoteDiceServer extends IBean {
   /**
    * Given the html page returned from postRequest, return the dice []
    * throw an InvocationTargetException to indicate an error message to be returned.
+   *
+   * @throws IOException If there was an error parsing the string.
    */
   int[] getDice(String string, int count) throws IOException, InvocationTargetException;
 

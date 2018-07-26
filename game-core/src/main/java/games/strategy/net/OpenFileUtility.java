@@ -51,7 +51,7 @@ public final class OpenFileUtility {
   }
 
   /**
-   * Opens the specified web page in the user's default browser
+   * Opens the specified web page in the user's default browser.
    *
    * @param url A URL of a web page (ex: "http://www.google.com/")
    */

@@ -9,6 +9,8 @@ import games.strategy.util.IntegerMap;
 
 public interface ITechDelegate extends IRemote, IDelegate {
   /**
+   * Rolls for the specified tech.
+   *
    * @param rollCount
    *        the number of tech rolls
    * @param techToRollFor

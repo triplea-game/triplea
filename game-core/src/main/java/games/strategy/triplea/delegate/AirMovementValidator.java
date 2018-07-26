@@ -523,13 +523,14 @@ public class AirMovementValidator {
   }
 
   /**
+   * Returns the combination of units that fly here and the existing owned units.
+   *
    * @param units
    *        the units flying this route.
    * @param route
    *        the route flown
    * @param player
    *        the player owning the units
-   * @return the combination of units that fly here and the existing owned units
    */
   private static List<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route,
       final PlayerID player) {
@@ -564,7 +565,7 @@ public class AirMovementValidator {
   }
 
   /**
-   * Can this airunit reach safe land at this point in the route?
+   * Indicates this airunit reach safe land at this point in the route.
    *
    * @param unit
    *        the airunit in question

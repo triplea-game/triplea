@@ -38,7 +38,7 @@ public abstract class AbstractStatPanel extends JPanel {
   public abstract void setGameData(final GameData data);
 
   /**
-   * @return all the alliances with more than one player.
+   * Returns all the alliances with more than one player.
    */
   public Collection<String> getAlliances() {
     return getAllianceMap().keySet();

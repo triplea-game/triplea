@@ -2191,6 +2191,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   /**
+   * Returns only the relevant non-combatant units present in the specified collection.
+   *
    * @return a collection containing all the combatants in units non
    *         combatants include such things as factories, aaguns, land units
    *         in a water battle.

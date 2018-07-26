@@ -10,6 +10,8 @@ class SoundOptionCheckBox extends BooleanProperty {
   final String clipName;
 
   /**
+   * Initializes a new instance of the SoundOptionsCheckBox class.
+   *
    * @param clipName
    *        sound file name.
    * @param title

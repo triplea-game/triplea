@@ -36,6 +36,8 @@ class SettingsPane extends StackPane {
 
 
   /**
+   * Initializes a new instance of the SettingsPane class.
+   *
    * @param triplea The root pane.
    * @throws IOException If the FXML file is not present.
    */

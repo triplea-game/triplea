@@ -313,7 +313,7 @@ public class TuvUtils {
   }
 
   /**
-   * Return the total unit value
+   * Return the total unit value.
    *
    * @param units
    *        A collection of units
@@ -331,7 +331,7 @@ public class TuvUtils {
   }
 
   /**
-   * Return the total unit value for a certain player and his allies
+   * Return the total unit value for a certain player and his allies.
    *
    * @param units
    *        A collection of units

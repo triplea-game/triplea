@@ -306,9 +306,10 @@ public class HistoryPanel extends JPanel {
   }
 
   /**
+   * Indicates whether the expanded path list contains a descendant of parentPath.
+   *
    * @param parentPath
    *        tree path for which descendants should be check.
-   * @return whether the expanded path list contains a descendant of parentPath
    */
   private boolean stayExpandedContainsDescendantOf(final TreePath parentPath) {
     for (final TreePath currentPath : stayExpandedPaths) {

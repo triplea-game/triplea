@@ -76,6 +76,8 @@ public final class MapPropertiesMaker {
   }
 
   /**
+   * Runs the map properties maker tool.
+   *
    * @throws IllegalStateException If not invoked on the EDT.
    */
   public static void run(final String[] args) {

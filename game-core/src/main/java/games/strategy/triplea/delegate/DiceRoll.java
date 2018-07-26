@@ -394,6 +394,8 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
+   * Returns the power (strength) and rolls for each of the specified units.
+   *
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle.
    */
@@ -410,6 +412,8 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
+   * Returns the power (strength) and rolls for each of the specified units.
+   *
    * @param unitsGettingPowerFor
    *        should be sorted from weakest to strongest, before the method is called, for the actual battle.
    */
@@ -1053,6 +1057,8 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
+   * Initializes a new instance of the DiceRoll class.
+   *
    * @param dice int[] the dice, 0 based
    * @param hits int - the number of hits
    * @param rollAt int - what we roll at, [0,Constants.MAX_DICE]
@@ -1094,6 +1100,8 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
+   * Returns all rolls that are equal to the specified value.
+   *
    * @param rollAt
    *        the strength of the roll, eg infantry roll at 2, expecting a
    *        number in [1,6]

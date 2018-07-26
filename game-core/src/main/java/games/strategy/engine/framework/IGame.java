@@ -68,7 +68,7 @@ public interface IGame {
   boolean isGameOver();
 
   /**
-   * @return a listing of who is playing who.
+   * Returns a listing of who is playing who.
    */
   PlayerManager getPlayerManager();
 

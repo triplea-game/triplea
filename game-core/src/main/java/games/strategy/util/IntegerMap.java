@@ -164,7 +164,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
   }
 
   /**
-   * @return The sum of all keys.
+   * Returns the sum of all keys.
    */
   public int totalValues() {
     return mapValues.values().stream()

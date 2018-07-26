@@ -101,6 +101,8 @@ public final class DecorationPlacer {
   private DecorationPlacer() {}
 
   /**
+   * Runs the decoration placer tool.
+   *
    * @throws IllegalStateException If not invoked on the EDT.
    */
   public static void run(final String[] args) {

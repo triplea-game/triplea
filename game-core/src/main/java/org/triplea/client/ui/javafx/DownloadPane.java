@@ -13,6 +13,8 @@ class DownloadPane extends VBox {
   private final TripleA triplea;
 
   /**
+   * Initializes a new instance of the DownloadPane class.
+   *
    * @param triplea The root pane.
    * @throws IOException If the FXML file is not present.
    */

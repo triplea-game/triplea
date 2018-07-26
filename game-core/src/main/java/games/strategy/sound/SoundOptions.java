@@ -17,6 +17,8 @@ import games.strategy.engine.framework.ui.PropertiesSelector;
 public final class SoundOptions {
 
   /**
+   * Adds the "Sound Options" menu item to the specified menu.
+   *
    * @param parentMenu
    *        menu where to add the menu item "Sound Options".
    */

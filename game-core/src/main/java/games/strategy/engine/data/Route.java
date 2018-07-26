@@ -132,7 +132,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return start territory for this route.
+   * Returns start territory for this route.
    */
   public Territory getStart() {
     return m_start;
@@ -171,8 +171,9 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
+   * Returns the total cost of the route including modifications due to territoryEffects and territoryConnections.
+   *
    * @param u unit that is moving on this route
-   * @return the total cost of the route including modifications due to territoryEffects and territoryConnections.
    */
   public int getMovementCost(final Unit u) {
     // TODO implement me
@@ -180,23 +181,23 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return The number of steps in this route. Does not include start.
+   * Returns the number of steps in this route. Does not include start.
    */
   public int numberOfSteps() {
     return m_steps.size();
   }
 
   /**
-   * @return The number of steps in this route. DOES include start.
+   * Returns the number of steps in this route. DOES include start.
    */
   public int numberOfStepsIncludingStart() {
     return this.getAllTerritories().size();
   }
 
   /**
+   * Returns territory we will be in after the i'th step for this route has been made.
+   *
    * @param i step number
-   * @return territory we will be in after the i'th step for this route has
-   *         been made.
    */
   public Territory getTerritoryAtStep(final int i) {
     return m_steps.get(i);
@@ -213,8 +214,9 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
+   * Indicates whether all territories in this route match the given match (start and end territories are not tested).
+   *
    * @param match referring match
-   * @return whether all territories in this route match the given match (start and end territories are not tested).
    */
   public boolean allMatchMiddleSteps(final Predicate<Territory> match, final boolean defaultWhenNoMiddleSteps) {
     final List<Territory> middle = getMiddleSteps();
@@ -230,8 +232,9 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
+   * Returns all territories in this route match the given match (start territory is not tested).
+   *
    * @param match referring match
-   * @return all territories in this route match the given match (start territory is not tested).
    */
   public Collection<Territory> getMatches(final Predicate<Territory> match) {
     return CollectionUtils.getMatches(m_steps, match);
@@ -254,7 +257,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return collection of all territories in this route, without the start.
+   * Returns collection of all territories in this route, without the start.
    */
   public List<Territory> getSteps() {
     if (numberOfSteps() > 0) {
@@ -264,7 +267,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return collection of all territories in this route without the start or the end.
+   * Returns collection of all territories in this route without the start or the end.
    */
   public List<Territory> getMiddleSteps() {
     if (numberOfSteps() > 1) {
@@ -274,7 +277,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return last territory in the route.
+   * Returns last territory in the route.
    */
   public Territory getEnd() {
     if (m_steps.isEmpty()) {
@@ -289,14 +292,14 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return whether this route has any steps.
+   * Indicates whether this route has any steps.
    */
   public boolean hasSteps() {
     return !m_steps.isEmpty();
   }
 
   /**
-   * @return whether this route has no steps.
+   * Indicates whether this route has no steps.
    */
   public boolean hasNoSteps() {
     return !hasSteps();
@@ -345,14 +348,14 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return whether this route has more then one step.
+   * Indicates whether this route has more then one step.
    */
   public boolean hasMoreThenOneStep() {
     return m_steps.size() > 1;
   }
 
   /**
-   * @return whether there are territories before the end where the territory is owned by null and is not sea.
+   * Indicates whether there are territories before the end where the territory is owned by null and is not sea.
    */
   public boolean hasNeutralBeforeEnd() {
     for (final Territory current : getMiddleSteps()) {
@@ -365,14 +368,14 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * @return whether there is some water in the route including start and end.
+   * Indicates whether there is some water in the route including start and end.
    */
   public boolean hasWater() {
     return getStart().isWater() || getSteps().stream().anyMatch(Matches.territoryIsWater());
   }
 
   /**
-   * @return whether there is some land in the route including start and end.
+   * Indicates whether there is some land in the route including start and end.
    */
   public boolean hasLand() {
     return !getStart().isWater()

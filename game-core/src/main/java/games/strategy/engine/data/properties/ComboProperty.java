@@ -21,6 +21,8 @@ public class ComboProperty<T> extends AEditableProperty {
   private T value;
 
   /**
+   * Initializes a new instance of the ComboProperty class.
+   *
    * @param name name of the property.
    * @param defaultValue default string value
    * @param possibleValues collection of values

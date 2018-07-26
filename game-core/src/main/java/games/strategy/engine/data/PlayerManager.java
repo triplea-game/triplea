@@ -46,9 +46,10 @@ public class PlayerManager {
   }
 
   /**
+   * Indicates the given node is playing as anyone.
+   *
    * @param node
    *        referring node
-   * @return whether the given node playing as anyone.
    */
   public boolean isPlaying(final INode node) {
     return playerMapping.containsValue(node);

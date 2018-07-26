@@ -86,7 +86,7 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   /**
-   * Post summary to form and/or email, and writes the action performed to the history writer
+   * Post summary to form and/or email, and writes the action performed to the history writer.
    *
    * @param historyWriter
    *        the history writer (which has no effect since save game has already be generated...) // todo (kg)

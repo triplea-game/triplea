@@ -210,7 +210,7 @@ public class ActionButtons extends JPanel {
   }
 
   /**
-   * Blocks until the user selects a political action to attempt
+   * Blocks until the user selects a political action to attempt.
    *
    * @return null if no action was picked.
    */
@@ -220,7 +220,7 @@ public class ActionButtons extends JPanel {
   }
 
   /**
-   * Blocks until the user selects a user action to attempt
+   * Blocks until the user selects a user action to attempt.
    *
    * @return null if no action was picked.
    */

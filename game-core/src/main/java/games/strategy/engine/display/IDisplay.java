@@ -11,6 +11,8 @@ public interface IDisplay extends IChannelSubscribor {
   void shutDown();
 
   /**
+   * Initializes the display.
+   *
    * @deprecated Kept around for backwards compatibility.
    */
   @Deprecated

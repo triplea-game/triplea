@@ -1363,13 +1363,13 @@ public final class Matches {
   }
 
   /**
+   * Returns a predicate that tests the TripleAUnit getTransportedBy value (also tests for para-troopers, and for
+   * dependent allied fighters sitting as cargo on a ship).
+   *
    * @param units Referring unit.
    * @param currentPlayer Current player
    * @param data Game data.
    * @param forceLoadParatroopersIfPossible Should we load paratroopers? (if not, we assume they are already loaded).
-   *
-   * @return Predicate that tests the TripleAUnit getTransportedBy value (also tests for para-troopers, and for
-   *         dependent allied fighters sitting as cargo on a ship).
    */
   public static Predicate<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(final Collection<Unit> units,
       final PlayerID currentPlayer, final GameData data,
@@ -1497,15 +1497,16 @@ public final class Matches {
   }
 
   /**
+   * Returns a predicate that will return true if the territory contains a unit that can repair this unit
+   * (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can
+   * repair this unit.)
+   *
    * @param territory
    *        referring territory
    * @param player
    *        referring player
    * @param data
    *        game data
-   * @return Predicate that will return true if the territory contains a unit that can repair this unit
-   *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can
-   *         repair this unit.)
    */
   public static Predicate<Unit> unitCanBeRepairedByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {
@@ -1569,15 +1570,16 @@ public final class Matches {
   }
 
   /**
+   * Returns a predicate that will return true if the territory contains a unit that can give bonus movement to this
+   * unit (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can give
+   * bonus movement to this unit.)
+   *
    * @param territory
    *        referring territory
    * @param player
    *        referring player
    * @param data
    *        game data
-   * @return Predicate that will return true if the territory contains a unit that can give bonus movement to this unit
-   *         (It will also return true if this unit is Sea and an adjacent land territory has a land unit that can give
-   *         bonus movement to this unit.)
    */
   public static Predicate<Unit> unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(final Territory territory,
       final PlayerID player, final GameData data) {

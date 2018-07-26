@@ -154,11 +154,12 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   /**
+   * Returns the route that a unit used to move into the given territory.
+   *
    * @param unit
    *        referring unit.
    * @param end
    *        target territory
-   * @return the route that a unit used to move into the given territory
    */
   public Route getRouteUsedToMoveInto(final Unit unit, final Territory end) {
     return AbstractMoveDelegate.getRouteUsedToMoveInto(movesToUndo, unit, end);
@@ -210,7 +211,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   /**
-   * @return The number of PUs that have been lost by bombing, rockets, etc.
+   * Returns the number of PUs that have been lost by bombing, rockets, etc.
    */
   public abstract int pusAlreadyLost(final Territory t);
 

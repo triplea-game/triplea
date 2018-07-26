@@ -222,11 +222,11 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
+   * Returns the URL of the resource at the specified path or {@code null} if the resource does not exist.
+   *
    * @param inputPath
    *        (The name of a resource is a '/'-separated path name that identifies the resource. Do not use '\' or
    *        File.separator)
-   *
-   * @return The resource URL or {@code null} if the resource does not exist.
    */
   public @Nullable URL getResource(final String inputPath) {
     final String path = resourceLocationTracker.getMapPrefix() + inputPath;
@@ -244,8 +244,8 @@ public class ResourceLoader implements Closeable {
   }
 
   /**
-   * @return An input stream for the specified resource or {@code null} if the resource does not exist. The caller is
-   *         responsible for closing the returned input stream.
+   * Returns an input stream for the specified resource or {@code null} if the resource does not exist. The caller is
+   * responsible for closing the returned input stream.
    *
    * @throws IllegalStateException If the specified resource exists but the input stream cannot be opened.
    */

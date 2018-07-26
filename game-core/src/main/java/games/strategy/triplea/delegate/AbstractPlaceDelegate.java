@@ -124,8 +124,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
+   * Returns a COPY of the collection of units that are produced at territory t.
+   *
    * @param t territory of interest.
-   * @return a COPY of the collection of units that are produced at territory t
    */
   protected Collection<Unit> getAlreadyProduced(final Territory t) {
     // this list might be modified later
@@ -146,7 +147,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * @return The actual produced variable, allowing direct editing of the variable.
+   * Returns the actual produced variable, allowing direct editing of the variable.
    */
   protected final Map<Territory, Collection<Unit>> getProduced() {
     return produced;
@@ -275,6 +276,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
+   * Places the specified units in the specified territory.
+   *
    * @param producer
    *        territory that produces the new units.
    * @param placeableUnits
@@ -1203,7 +1206,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * @return gets the production of the territory.
+   * Returns the production of the territory.
    */
   protected int getProduction(final Territory territory) {
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
@@ -1211,6 +1214,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
+   * Calculates how many of each of the specified construction units can be placed in the specified territory.
+   *
    * @param to
    *        referring territory.
    * @param units
@@ -1333,16 +1338,16 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
+   * Returns a predicate that indicates whether the territory contains one of the required combos of units
+   * (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land
+   * territory has one of the required combos as well).
+   *
    * @param to
    *        - Territory we are testing for required units
    * @param doNotCountNeighbors
    *        - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the
    *        required units as
    *        well.
-   * @return - Whether the territory contains one of the required combos of units
-   *         (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land
-   *         territory has one of the
-   *         required combos as well).
    */
   public Predicate<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors) {
     return unitWhichRequiresUnits -> {
@@ -1479,9 +1484,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
+   * Returns a collection of units that were there in the specified territory at start of turn.
+   *
    * @param to
    *        referring territory.
-   * @return collection of units that were there at start of turn
    */
   public Collection<Unit> unitsAtStartOfStepInTerritory(final Territory to) {
     if (to == null) {
@@ -1510,9 +1516,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
+   * Indicates whether there was an owned unit capable of producing, in this territory at the start of this phase/step.
+   *
    * @param to referring territory.
    * @param player PlayerID
-   * @return whether there was an owned unit capable of producing, in this territory at the start of this phase/step
    */
   public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to,
       final PlayerID player) {

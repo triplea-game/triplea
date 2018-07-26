@@ -13,32 +13,18 @@ public class PrintGenerationData {
    */
   PrintGenerationData() {}
 
-  /**
-   * @return The outDir.
-   */
   File getOutDir() {
     return outDir;
   }
 
-  /**
-   * @param outDir
-   *        the outDir to set.
-   */
   void setOutDir(final File outDir) {
     this.outDir = outDir;
   }
 
-  /**
-   * @return The data.
-   */
   protected GameData getData() {
     return gameData;
   }
 
-  /**
-   * @param data
-   *        the data to set.
-   */
   protected void setData(final GameData data) {
     gameData = data;
   }

@@ -21,7 +21,7 @@ import games.strategy.sound.ISound;
  */
 public interface IDelegateBridge {
   /**
-   * equivalent to getRemotePlayer(getPlayerID())
+   * Equivalent to getRemotePlayer(getPlayerID()).
    *
    * @return remote for the current player.
    */
@@ -95,7 +95,7 @@ public interface IDelegateBridge {
   ISound getSoundChannelBroadcaster();
 
   /**
-   * @return The properties for this step.
+   * Returns the properties for this step.
    */
   Properties getStepProperties();
 

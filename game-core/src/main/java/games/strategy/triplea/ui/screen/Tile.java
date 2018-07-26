@@ -68,8 +68,10 @@ public class Tile {
    * copies the resulting pixels to the stored image and disposes
    * the resources afterwards.
    *
+   * <p>
    * This is to ensure we don't draw the Tile mid-generating
    * without having to synchronize it.
+   * </p>
    */
   public void drawImage(final GameData data, final MapData mapData) {
     try {

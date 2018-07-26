@@ -51,7 +51,7 @@ class SoundProperties {
   }
 
   /**
-   * @return The string property, or null if not found.
+   * Returns the string property, or null if not found.
    */
   String getProperty(final String key) {
     return properties.getProperty(key);

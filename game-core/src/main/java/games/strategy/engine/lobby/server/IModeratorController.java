@@ -27,6 +27,8 @@ public interface IModeratorController extends IRemote {
   void banUsername(INode node, @Nullable Date banExpires);
 
   /**
+   * Ban the IP address of the given INode.
+   *
    * @param node The node to ban.
    * @param banExpires {@code null} for a permanent ban.
    *
@@ -58,6 +60,8 @@ public interface IModeratorController extends IRemote {
   void muteUsername(INode node, @Nullable Date muteExpires);
 
   /**
+   * Mute the IP address of the given INode.
+   *
    * @param node The node to mute.
    * @param muteExpires {@code null} for a permanent mute.
    *

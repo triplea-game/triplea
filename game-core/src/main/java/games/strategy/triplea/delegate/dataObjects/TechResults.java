@@ -20,14 +20,14 @@ public class TechResults implements Serializable {
   }
 
   /**
-   * @return whether there was an error.
+   * Indicates whether there was an error.
    */
   public boolean isError() {
     return m_errorString != null;
   }
 
   /**
-   * @return string error or null if no error occurred (use isError to see if there was an error).
+   * Returns string error or null if no error occurred (use isError to see if there was an error).
    */
   public String getErrorString() {
     return m_errorString;
@@ -72,9 +72,6 @@ public class TechResults implements Serializable {
     return m_rolls;
   }
 
-  /**
-   * @return a List of Strings.
-   */
   public List<String> getAdvances() {
     return m_advances;
   }

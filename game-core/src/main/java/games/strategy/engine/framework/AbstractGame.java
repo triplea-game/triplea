@@ -72,6 +72,8 @@ public abstract class AbstractGame implements IGame {
   }
 
   /**
+   * Notifies game step listeners that a game step has changed.
+   *
    * @param stepName
    *        step name.
    * @param delegateName

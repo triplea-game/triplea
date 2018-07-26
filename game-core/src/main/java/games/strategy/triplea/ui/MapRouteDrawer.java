@@ -160,7 +160,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Centripetal parameterization
+   * Centripetal parameterization.
    *
    * <p>
    * Check <a href="http://stackoverflow.com/a/37370620/5769952">http://stackoverflow.com/a/37370620/5769952</a> for
@@ -280,7 +280,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Draws a smooth curve through the given array of points
+   * Draws a smooth curve through the given array of points.
    *
    * <p>
    * This algorithm is called Spline-Interpolation

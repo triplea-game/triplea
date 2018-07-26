@@ -75,7 +75,7 @@ public class InGameLobbyWatcher {
   private final IMessengerErrorListener messengerErrorListener;
 
   /**
-   * Reads SystemProperties to see if we should connect to a lobby server
+   * Reads SystemProperties to see if we should connect to a lobby server.
    *
    * <p>
    * After creation, those properties are cleared, since we should watch the first start game.

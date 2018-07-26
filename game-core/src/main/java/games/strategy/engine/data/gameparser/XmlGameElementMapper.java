@@ -48,7 +48,7 @@ import games.strategy.triplea.delegate.UserActionDelegate;
 import games.strategy.twoIfBySea.delegate.InitDelegate;
 
 /**
- * This class creates objects referred to by game XMLs via the 'javaClass' property, eg:
+ * This class creates objects referred to by game XMLs via the 'javaClass' property. For example:
  *
  * <pre>
  * &lt;attachment name="territoryAttachment" attachTo="Rason"

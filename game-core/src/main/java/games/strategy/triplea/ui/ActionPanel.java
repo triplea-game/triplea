@@ -83,7 +83,7 @@ public abstract class ActionPanel extends JPanel {
   }
 
   /**
-   * Release the latch acquired by waitOnNewLatch()
+   * Release the latch acquired by waitOnNewLatch().
    *
    * <p>
    * This method will crossed on entering this method.

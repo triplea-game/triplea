@@ -38,7 +38,7 @@ public class CasualtyList implements Serializable {
   }
 
   /**
-   * @return list of killed units.
+   * Returns the list of killed units.
    */
   public List<Unit> getKilled() {
     return m_killed;

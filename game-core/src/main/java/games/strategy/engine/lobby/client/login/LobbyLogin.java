@@ -30,7 +30,7 @@ public class LobbyLogin {
   }
 
   /**
-   * Attempt to login to the LobbyServer
+   * Attempt to login to the LobbyServer.
    *
    * <p>
    * If we could not login, return null.

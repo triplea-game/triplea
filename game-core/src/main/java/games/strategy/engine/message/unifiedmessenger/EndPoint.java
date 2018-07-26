@@ -69,6 +69,8 @@ class EndPoint {
   }
 
   /**
+   * Adds the specified implementation of this end point's remote interface.
+   *
    * @return is this the first implementor.
    */
   public boolean addImplementor(final Object implementor) {
@@ -89,6 +91,8 @@ class EndPoint {
   }
 
   /**
+   * Removes the specified implementation of this end point's remote interface.
+   *
    * @return we have no more implementors.
    */
   boolean removeImplementor(final Object implementor) {

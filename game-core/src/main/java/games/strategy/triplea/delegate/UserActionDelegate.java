@@ -136,6 +136,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
+   * Executes the specified action.
+   *
    * @param uaa
    *        the action to check if it succeeds
    * @return true if the action succeeds, usually because the die-roll succeeded.

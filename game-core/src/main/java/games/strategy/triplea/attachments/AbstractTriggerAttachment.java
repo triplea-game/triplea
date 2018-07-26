@@ -59,7 +59,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   /**
-   * DO NOT REMOVE THIS (or else you will break a lot of older xmls)
+   * DO NOT REMOVE THIS (or else you will break a lot of older xmls).
    *
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
@@ -69,6 +69,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   /**
+   * Returns the attached rule attachments.
+   *
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
   @Deprecated
@@ -77,6 +79,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   /**
+   * Resets (clears) the attached rule attachments.
+   *
    * @deprecated please use setConditions, getConditions, clearConditions, instead.
    */
   @Deprecated

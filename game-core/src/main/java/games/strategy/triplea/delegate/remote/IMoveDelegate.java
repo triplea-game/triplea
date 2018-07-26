@@ -14,6 +14,8 @@ import games.strategy.triplea.delegate.UndoableMove;
  */
 public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbstractForumPosterDelegate {
   /**
+   * Moves the specified units along the specified route.
+   *
    * @param units
    *        - the units to move.
    * @param route
@@ -25,6 +27,8 @@ public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbs
   String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded);
 
   /**
+   * Moves the specified units along the specified route accounting for dependents.
+   *
    * @param units
    *        - the units to move.
    * @param route

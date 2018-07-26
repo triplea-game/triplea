@@ -15,7 +15,7 @@ import games.strategy.util.CollectionUtils;
 @MapSupport
 public class PlaceDelegate extends AbstractPlaceDelegate {
   /**
-   * @return gets the production of the territory, ignores whether the territory was an original factory.
+   * Returns the production of the territory, ignores whether the territory was an original factory.
    */
   @Override
   protected int getProduction(final Territory territory) {

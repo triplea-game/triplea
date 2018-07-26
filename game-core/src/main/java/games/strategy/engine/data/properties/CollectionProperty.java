@@ -10,6 +10,8 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 
 /**
+ * User editable property representing a collection.
+ *
  * @param <T> The type of elements in the collection.
  */
 public class CollectionProperty<T> extends AEditableProperty {
@@ -17,6 +19,8 @@ public class CollectionProperty<T> extends AEditableProperty {
   private List<T> m_values;
 
   /**
+   * Initializes a new instance of the CollectionProperty class.
+   *
    * @param name
    *        name of the property.
    * @param description

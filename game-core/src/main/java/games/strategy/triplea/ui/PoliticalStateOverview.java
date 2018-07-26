@@ -37,7 +37,7 @@ public class PoliticalStateOverview extends JPanel {
   private final Set<Triple<PlayerID, PlayerID, RelationshipType>> editChanges = new HashSet<>();
 
   /**
-   * Constructs this panel
+   * Constructs this panel.
    *
    * @param data
    *        gamedata to get the info from

@@ -14,6 +14,8 @@ public interface ILoginValidator {
   Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress);
 
   /**
+   * Validates a login attempt.
+   *
    * @param propertiesReadFromClient
    *        - client properties written by the client after receiving the challange string.
    * @param remoteAddress

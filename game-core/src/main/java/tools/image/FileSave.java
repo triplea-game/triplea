@@ -27,6 +27,8 @@ public class FileSave {
   }
 
   /**
+   * Initializes a new instance of the FileSave class with the specified file selection mode and selected file.
+   *
    * @param fileSelectionMode The type of files to be displayed. Must be one of {@link JFileChooser#FILES_ONLY},
    *        {@link JFileChooser#DIRECTORIES_ONLY}, or {@link JFileChooser#FILES_AND_DIRECTORIES}.
    */
@@ -36,6 +38,9 @@ public class FileSave {
   }
 
   /**
+   * Initializes a new instance of the FileSave class with the specified file selection mode, selected file, and file
+   * filter.
+   *
    * @param fileSelectionMode The type of files to be displayed. Must be one of {@link JFileChooser#FILES_ONLY},
    *        {@link JFileChooser#DIRECTORIES_ONLY}, or {@link JFileChooser#FILES_AND_DIRECTORIES}.
    */

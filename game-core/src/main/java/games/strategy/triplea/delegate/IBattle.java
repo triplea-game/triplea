@@ -76,7 +76,7 @@ public interface IBattle extends Serializable {
   BattleType getBattleType();
 
   /**
-   * @return territory this battle is occurring in.
+   * Returns the territory this battle is occurring in.
    */
   Territory getTerritory();
 
@@ -89,7 +89,7 @@ public interface IBattle extends Serializable {
   void fight(IDelegateBridge bridge);
 
   /**
-   * @return whether this battle is over or not.
+   * Indicates whether this battle is over or not.
    */
   boolean isOver();
 
@@ -117,7 +117,7 @@ public interface IBattle extends Serializable {
   void addBombardingUnit(Unit u);
 
   /**
-   * @return whether battle is amphibious.
+   * Indicates whether battle is amphibious.
    */
   boolean isAmphibious();
 
@@ -144,32 +144,32 @@ public interface IBattle extends Serializable {
   boolean isEmpty();
 
   /**
-   * @return units which are dependent on the given units.
+   * Returns units which are dependent on the given units.
    */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
   /**
-   * @return units which are actually assaulting amphibiously.
+   * Returns units which are actually assaulting amphibiously.
    */
   Collection<Unit> getAmphibiousLandAttackers();
 
   /**
-   * @return units which are actually bombarding.
+   * Returns units which are actually bombarding.
    */
   Collection<Unit> getBombardingUnits();
 
   /**
-   * @return what round this battle is in.
+   * Returns what round this battle is in.
    */
   int getBattleRound();
 
   /**
-   * @return units which are attacking.
+   * Returns units which are attacking.
    */
   Collection<Unit> getAttackingUnits();
 
   /**
-   * @return units which are defending.
+   * Returns units which are defending.
    */
   Collection<Unit> getDefendingUnits();
 

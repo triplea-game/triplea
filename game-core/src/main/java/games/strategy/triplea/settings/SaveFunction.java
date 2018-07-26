@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 /**
- * Executes a 'save' action
+ * Executes a 'save' action.
  * <p>
  * Input: set of settings
  * Output: SaveResult with message and dialog code, which can be used to create a confirmation or a warning dialog.

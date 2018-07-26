@@ -110,17 +110,19 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Returns the territory with the given name, or null if no territory can be found (case sensitive).
+   *
    * @param s name of the searched territory (case sensitive)
-   * @return the territory with the given name, or null if no territory can be found (case sensitive).
    */
   public Territory getTerritory(final String s) {
     return m_territoryLookup.get(s);
   }
 
   /**
+   * Returns all adjacent neighbors of the starting territory.
+   * Does NOT include the original/starting territory in the returned Set.
+   *
    * @param t referring territory
-   * @return All adjacent neighbors of the starting territory.
-   *         Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory t) {
     // ok since all entries in connections are already unmodifiable
@@ -132,10 +134,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Returns all adjacent neighbors of the starting territory that match the condition.
+   * Does NOT include the original/starting territory in the returned Set.
+   *
    * @param t referring territory
    * @param cond condition the neighboring territories have to match
-   * @return All adjacent neighbors of the starting territory that match the condition.
-   *         Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory t, @Nullable final Predicate<Territory> cond) {
     if (cond == null) {
@@ -147,10 +150,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Returns all neighbors within a certain distance of the starting territory that match the condition.
+   * Does NOT include the original/starting territory in the returned Set.
+   *
    * @param territory referring territory
    * @param distance maximal distance of the neighboring territories
-   * @return All neighbors within a certain distance of the starting territory that match the condition.
-   *         Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory territory, int distance) {
     if (distance < 0) {
@@ -169,8 +173,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @return All neighbors within a certain distance of the starting territory that match the condition.
-   *         Does NOT include the original/starting territory in the returned Set.
+   * Returns all neighbors within a certain distance of the starting territory that match the condition.
+   * Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory territory, int distance, final Predicate<Territory> cond) {
     if (distance < 0) {
@@ -189,9 +193,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @return All neighbors within a certain distance of the starting territory set that match the condition.
-   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
-   *         other.
+   * Returns all neighbors within a certain distance of the starting territory set that match the condition.
+   * Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
+   * other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance,
       final Predicate<Territory> cond) {
@@ -201,9 +205,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * @return All neighbors within a certain distance of the starting territory set.
-   *         Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
-   *         other.
+   * Returns all neighbors within a certain distance of the starting territory set.
+   * Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
+   * other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance) {
     final Set<Territory> neighbors = getNeighbors(frontier, new HashSet<>(frontier), distance);
@@ -231,20 +235,22 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Returns the shortest route between two territories or null if no route exists.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
-   * @return the shortest route between two territories or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2) {
     return getRoute(t1, t2, Matches.territoryIsLandOrWater());
   }
 
   /**
+   * Returns the shortest route between two territories so that covered territories match the condition
+   * or null if no route exists.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
-   * @return the shortest route between two territories so that covered territories match the condition
-   *         or null if no route exists.
    */
   public Route getRoute(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     if (t1 == t2) {
@@ -257,18 +263,20 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Returns the shortest land route between two territories or null if no route exists.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
-   * @return the shortest land route between two territories or null if no route exists.
    */
   public Route getLandRoute(final Territory t1, final Territory t2) {
     return getRoute(t1, t2, Matches.territoryIsLand());
   }
 
   /**
+   * Returns the shortest water route between two territories or null if no route exists.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
-   * @return the shortest water route between two territories or null if no route exists.
    */
   public Route getWaterRoute(final Territory t1, final Territory t2) {
     return getRoute(t1, t2, Matches.territoryIsWater());
@@ -313,20 +321,22 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Returns the distance between two territories or -1 if they are not connected.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
-   * @return the distance between two territories or -1 if they are not connected.
    */
   public int getDistance(final Territory t1, final Territory t2) {
     return getDistance(t1, t2, Matches.territoryIsLandOrWater());
   }
 
   /**
+   * Returns the distance between two territories where the covered territories of the route satisfy the condition
+   * or -1 if they are not connected.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
-   * @return the distance between two territories where the covered territories of the route satisfy the condition
-   *         or -1 if they are not connected.
    */
   public int getDistance(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     if (t1.equals(t2)) {
@@ -374,29 +384,32 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Returns the land distance between two territories or -1 if they are not connected.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
-   * @return the land distance between two territories or -1 if they are not connected.
    */
   public int getLandDistance(final Territory t1, final Territory t2) {
     return getDistance(t1, t2, Matches.territoryIsLand());
   }
 
   /**
+   * Returns the water distance between two territories or -1 if they are not connected.
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
-   * @return the water distance between two territories or -1 if they are not connected.
    */
   public int getWaterDistance(final Territory t1, final Territory t2) {
     return getDistance(t1, t2, Matches.territoryIsWater());
   }
 
   /**
+   * Returns the distance between two territories where the covered territories of the route (except the end) satisfy
+   * the condition or -1 if they are not connected. (Distance includes to the end)
+   *
    * @param t1 start territory of the route
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match EXCEPT FOR THE END
-   * @return the distance between two territories where the covered territories of the route (except the end) satisfy
-   *         the condition or -1 if they are not connected. (Distance includes to the end)
    */
   public int getDistance_IgnoreEndForCondition(final Territory t1, final Territory t2,
       final Predicate<Territory> cond) {
@@ -419,8 +432,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
+   * Indicates whether each territory is connected to the preceding territory.
+   *
    * @param route route containing the territories in question
-   * @return whether each territory is connected to the preceding territory.
    */
   public boolean isValidRoute(final Route route) {
     Territory previous = null;

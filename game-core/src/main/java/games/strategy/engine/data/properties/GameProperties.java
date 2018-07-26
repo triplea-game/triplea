@@ -73,10 +73,11 @@ public class GameProperties extends GameDataComponent {
   }
 
   /**
+   * Returns property with key or null if property is not contained in the list.
+   * (The object returned should not be modified, as modifications will not appear globally.)
+   *
    * @param key
    *        referring key
-   * @return property with key or null if property is not contained in the list
-   *         (The object returned should not be modified, as modifications will not appear globally.)
    */
   public Object get(final String key) {
     if (editableProperties.containsKey(key)) {

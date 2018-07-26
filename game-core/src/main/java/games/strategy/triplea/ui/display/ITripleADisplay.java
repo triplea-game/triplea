@@ -59,6 +59,8 @@ public interface ITripleADisplay extends IDisplay {
       final Collection<Unit> amphibiousLandAttackers);
 
   /**
+   * Displays the steps for the specified battle.
+   *
    * @param battleId
    *        - the battle we are listing steps for.
    * @param steps

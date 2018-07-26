@@ -16,7 +16,7 @@ import com.google.common.base.Strings;
 import games.strategy.ui.SwingAction;
 
 /**
- * Example usage:
+ * Builder for Swing dialogs. Example usage:
  * <code><pre>
  *   JDialog dialog = JDialogBuilder.builder()
  *     .parentFrame(parent)

@@ -15,7 +15,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<>();
 
   /**
-   * convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself)
+   * Convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself).
    *
    * @return the relation one has with oneself.
    */
@@ -24,7 +24,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * convenience method to return the RELATIONSHIP_TYPE_NULL relation (the relation you have with the Neutral Player)
+   * Convenience method to return the RELATIONSHIP_TYPE_NULL relation (the relation you have with the Neutral Player).
    *
    * @return the relation one has with the Neutral.
    */
@@ -109,8 +109,8 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * @return site of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null
-   *         Relation).
+   * Returns size of the relationshipTypeList, be aware that the standard size = 4 (Allied, War, Self and Null
+   * Relation).
    */
   public int size() {
     return m_relationshipTypes.size();

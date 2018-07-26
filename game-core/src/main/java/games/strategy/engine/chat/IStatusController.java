@@ -16,7 +16,7 @@ public interface IStatusController extends IRemote {
   void setStatus(String newStatus);
 
   /**
-   * @return The status for all nodes.
+   * Returns the status for all nodes.
    */
   Map<INode, String> getAllStatus();
 }

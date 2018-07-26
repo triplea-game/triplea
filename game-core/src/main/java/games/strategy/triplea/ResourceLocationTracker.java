@@ -18,6 +18,7 @@ class ResourceLocationTracker {
   private final String mapPrefix;
 
   /**
+   * Initializes a new instance of the ResourceLocationTracker class.
    *
    * @param mapName Used to construct any special resource loading path prefixes, used as needed depending upon which
    *        resources are in the path

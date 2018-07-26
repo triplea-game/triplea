@@ -51,6 +51,8 @@ public final class CenterPicker {
   private CenterPicker() {}
 
   /**
+   * Runs the center picker tool.
+   *
    * @throws IllegalStateException If not invoked on the EDT.
    */
   public static void run(final String[] args) {
