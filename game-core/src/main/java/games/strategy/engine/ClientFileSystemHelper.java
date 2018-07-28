@@ -98,7 +98,7 @@ public final class ClientFileSystemHelper {
   }
 
   /**
-   * Returns location of the folder containing downloaded TripleA maps.
+   * Returns location of the folder containing downloaded TripleA maps. The folder will be created if it does not exist.
    *
    * @return Folder where maps are downloaded and stored. Default location is relative
    *         to users home folder and not the engine install folder, this allows it to be
