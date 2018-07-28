@@ -45,7 +45,7 @@ public class TabbedProductionPanel extends ProductionPanel {
   protected void initLayout() {
     this.removeAll();
     this.setLayout(new GridBagLayout());
-    add(new JLabel("Attack/Defense/Movement"),
+    add(new JLabel("Attack | Defense | Movement"),
         new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
             new Insets(8, 8, 8, 0), 0, 0));
     final JTabbedPane tabs = new JTabbedPane();
