@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.Dimension;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import games.strategy.engine.framework.GameRunner;

@@ -1,7 +1,6 @@
 package games.strategy.net;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;

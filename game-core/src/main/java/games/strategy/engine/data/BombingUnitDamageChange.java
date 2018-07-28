@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-import java.util.Collection;
 import java.util.Set;
 
 import games.strategy.triplea.TripleAUnit;

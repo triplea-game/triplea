@@ -3,7 +3,6 @@ package games.strategy.engine.pbem;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.apache.http.NameValuePair;

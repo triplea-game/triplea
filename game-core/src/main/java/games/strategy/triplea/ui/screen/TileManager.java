@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
