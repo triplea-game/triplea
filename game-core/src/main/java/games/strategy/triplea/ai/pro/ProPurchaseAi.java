@@ -79,7 +79,7 @@ class ProPurchaseAi {
         .and(Matches.unitCanProduceUnits())
         .and(Matches.unitIsInfrastructure());
     final List<Territory> rfactories = CollectionUtils.getMatches(data.getMap().getTerritories(),
-        ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+        ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
     if (player.getRepairFrontier() != null
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       ProLogger.debug("Factories can be damaged");
@@ -578,8 +578,8 @@ class ProPurchaseAi {
         }
 
         // Find defenders that can be produced in this territory
-        final List<ProPurchaseOption> purchaseOptionsForTerritory =
-            ProPurchaseUtils.findPurchaseOptionsForTerritory(player, defensePurchaseOptions, t, isBid);
+        final List<ProPurchaseOption> purchaseOptionsForTerritory = ProPurchaseUtils.findPurchaseOptionsForTerritory(
+            player, defensePurchaseOptions, t, purchaseTerritory.getTerritory(), isBid);
         purchaseOptionsForTerritory.addAll(airPurchaseOptions);
 
         // Purchase necessary defenders
@@ -999,9 +999,8 @@ class ProPurchaseAi {
       }
 
       // Determine units that can be produced in this territory
-      final List<ProPurchaseOption> purchaseOptionsForTerritory =
-          ProPurchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getFactoryOptions(), maxTerritory,
-              isBid);
+      final List<ProPurchaseOption> purchaseOptionsForTerritory = ProPurchaseUtils
+          .findPurchaseOptionsForTerritory(player, purchaseOptions.getFactoryOptions(), maxTerritory, isBid);
       resourceTracker.removeTempPurchase(maxPlacedOption);
       ProPurchaseUtils.removeInvalidPurchaseOptions(player, startOfTurnData, purchaseOptionsForTerritory,
           resourceTracker, 1, new ArrayList<>(), purchaseTerritories);
@@ -1172,7 +1171,7 @@ class ProPurchaseAi {
           // Determine sea and transport units that can be produced in this territory
           final List<ProPurchaseOption> seaPurchaseOptionsForTerritory =
               ProPurchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getSeaDefenseOptions(), t,
-                  isBid);
+                  purchaseTerritory.getTerritory(), isBid);
           seaPurchaseOptionsForTerritory.addAll(purchaseOptions.getAirOptions());
 
           // Purchase enough sea defenders to hold territory
@@ -1316,8 +1315,8 @@ class ProPurchaseAi {
         }
 
         // Determine sea and transport units that can be produced in this territory
-        final List<ProPurchaseOption> seaPurchaseOptionsForTerritory =
-            ProPurchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getSeaDefenseOptions(), t, isBid);
+        final List<ProPurchaseOption> seaPurchaseOptionsForTerritory = ProPurchaseUtils.findPurchaseOptionsForTerritory(
+            player, purchaseOptions.getSeaDefenseOptions(), t, purchaseTerritory.getTerritory(), isBid);
         seaPurchaseOptionsForTerritory.addAll(purchaseOptions.getAirOptions());
         while (true) {
 
@@ -1379,9 +1378,8 @@ class ProPurchaseAi {
         final List<Unit> ownedLocalAmphibUnits = landTerritory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
 
         // Determine sea and transport units that can be produced in this territory
-        final List<ProPurchaseOption> seaTransportPurchaseOptionsForTerritory =
-            ProPurchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getSeaTransportOptions(), t,
-                isBid);
+        final List<ProPurchaseOption> seaTransportPurchaseOptionsForTerritory = ProPurchaseUtils
+            .findPurchaseOptionsForTerritory(player, purchaseOptions.getSeaTransportOptions(), t, landTerritory, isBid);
         final List<ProPurchaseOption> amphibPurchaseOptionsForTerritory =
             ProPurchaseUtils.findPurchaseOptionsForTerritory(player, purchaseOptions.getLandOptions(), landTerritory,
                 isBid);
@@ -1890,7 +1888,7 @@ class ProPurchaseAi {
     }
   }
 
-  private static void addUnitsToPlaceTerritory(final ProPlaceTerritory placeTerritory, final List<Unit> unitsToPlace,
+  private void addUnitsToPlaceTerritory(final ProPlaceTerritory placeTerritory, final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     // Add units to place territory
@@ -1898,7 +1896,8 @@ class ProPurchaseAi {
       for (final ProPlaceTerritory ppt : purchaseTerritory.getCanPlaceTerritories()) {
 
         // If place territory is equal to the current place territory and has remaining production
-        if (placeTerritory.equals(ppt) && purchaseTerritory.getRemainingUnitProduction() > 0) {
+        if (placeTerritory.equals(ppt) && purchaseTerritory.getRemainingUnitProduction() > 0 && ProPurchaseUtils
+            .canUnitsBePlaced(unitsToPlace, player, ppt.getTerritory(), purchaseTerritory.getTerritory(), isBid)) {
 
           // Place max number of units
           final int numUnits = Math.min(purchaseTerritory.getRemainingUnitProduction(), unitsToPlace.size());
