@@ -2829,12 +2829,13 @@ public class UnitAttachment extends DefaultAttachment {
     if (supports.size() > 3) {
       tuples.add(Tuple.of("Can Provide Support to Units", ""));
     } else if (supports.size() > 0) {
+      final boolean moreThanOneSupportType = UnitSupportAttachment.get(getData()).size() > 1;
       for (final UnitSupportAttachment support : supports) {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
           continue;
         }
         final StringBuilder sb = new StringBuilder();
-        sb.append(support.getBonus()).append(" ").append(support.getBonusType())
+        sb.append(support.getBonus()).append(moreThanOneSupportType ? " " + support.getBonusType() : "")
             .append(support.getStrength() && support.getRoll() ? " Power & Rolls"
                 : (support.getStrength() ? " Power" : " Rolls"))
             .append(" to ").append(support.getNumber())
