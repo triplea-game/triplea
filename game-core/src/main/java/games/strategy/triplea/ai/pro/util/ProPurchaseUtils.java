@@ -46,9 +46,15 @@ public class ProPurchaseUtils {
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerID player,
       final List<ProPurchaseOption> purchaseOptions, final Territory t, final boolean isBid) {
+    return findPurchaseOptionsForTerritory(player, purchaseOptions, t, t, isBid);
+  }
+
+  public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerID player,
+      final List<ProPurchaseOption> purchaseOptions, final Territory t, final Territory factoryTerritory,
+      final boolean isBid) {
     final List<ProPurchaseOption> result = new ArrayList<>();
     for (final ProPurchaseOption ppo : purchaseOptions) {
-      if (canTerritoryUsePurchaseOption(player, ppo, t, isBid)) {
+      if (canTerritoryUsePurchaseOption(player, ppo, t, factoryTerritory, isBid)) {
         result.add(ppo);
       }
     }
@@ -56,21 +62,28 @@ public class ProPurchaseUtils {
   }
 
   private static boolean canTerritoryUsePurchaseOption(final PlayerID player, final ProPurchaseOption ppo,
-      final Territory t, final boolean isBid) {
+      final Territory t, final Territory factoryTerritory, final boolean isBid) {
     if (ppo == null) {
       return false;
     }
     final List<Unit> units = ppo.getUnitType().create(ppo.getQuantity(), player, true);
-    return canUnitsBePlaced(units, player, t, isBid);
+    return canUnitsBePlaced(units, player, t, factoryTerritory, isBid);
   }
 
   public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t,
       final boolean isBid) {
-    final GameData data = ProData.getData();
+    return canUnitsBePlaced(units, player, t, t, isBid);
+  }
 
+  public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t,
+      final Territory factoryTerritory, final boolean isBid) {
+    final GameData data = player.getData();
     AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
     if (isBid) {
       placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
+    } else if (!t.equals(factoryTerritory) && !units.stream().allMatch(Matches
+        .unitWhichRequiresUnitsHasRequiredUnitsInList(placeDelegate.unitsAtStartOfStepInTerritory(factoryTerritory)))) {
+      return false;
     }
     final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -237,7 +250,7 @@ public class ProPurchaseUtils {
       ownedAndNotConqueredFactoryTerritories = data.getMap().getTerritoriesOwnedBy(player);
     } else {
       ownedAndNotConqueredFactoryTerritories = CollectionUtils.getMatches(data.getMap().getTerritories(),
-          ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+          ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
     }
     ownedAndNotConqueredFactoryTerritories = CollectionUtils.getMatches(ownedAndNotConqueredFactoryTerritories,
         ProMatches.territoryCanMoveLandUnits(player, data, false));
@@ -282,7 +295,7 @@ public class ProPurchaseUtils {
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
-    for (Unit factory2 : factoryUnits) {
+    for (final Unit factory2 : factoryUnits) {
       if (player.equals(OriginalOwnerTracker.getOriginalOwner(factory2))) {
         return OriginalOwnerTracker.getOriginalOwner(factory2);
       }
