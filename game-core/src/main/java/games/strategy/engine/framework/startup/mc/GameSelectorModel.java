@@ -1,15 +1,11 @@
 package games.strategy.engine.framework.startup.mc;
 
-import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
 
@@ -112,16 +108,6 @@ public class GameSelectorModel extends Observable {
 
   public synchronized boolean isSavedGame() {
     return !fileName.endsWith(".xml");
-  }
-
-  private static void error(final String message, final Component ui) {
-    if (ui == null) {
-      System.out.println(message);
-    } else {
-      SwingUtilities.invokeLater(
-          () -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game",
-              JOptionPane.ERROR_MESSAGE));
-    }
   }
 
   void setCanSelect(final boolean canSelect) {
