@@ -2751,7 +2751,7 @@ public class UnitAttachment extends DefaultAttachment {
     final String attack = (attackRolls > 1 ? (attackRolls + "x") : "") + getAttack(player);
     final String defense = (defenseRolls > 1 ? (defenseRolls + "x") : "") + getDefense(player);
     final String movement = String.valueOf(getMovement(player));
-    tuples.add(Tuple.of("Att|Def|Mov", attack + "|" + defense + "|" + movement));
+    tuples.add(Tuple.of("Att | Def | Mov", attack + " | " + defense + " | " + movement));
     if (getHitPoints() > 1) {
       tuples.add(Tuple.of("HP", String.valueOf(getHitPoints())));
     }

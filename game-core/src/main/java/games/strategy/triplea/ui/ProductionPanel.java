@@ -132,7 +132,7 @@ public class ProductionPanel extends JPanel {
     this.setLayout(new GridBagLayout());
     final JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());
-    final JLabel legendLabel = new JLabel("Attack/Defense/Movement");
+    final JLabel legendLabel = new JLabel("Attack | Defense | Movement");
     this.add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
     int rows = rules.size() / 7;
@@ -245,7 +245,7 @@ public class ProductionPanel extends JPanel {
           final int attack = attach.getAttack(id);
           final int movement = attach.getMovement(id);
           final int defense = attach.getDefense(id);
-          info.setText(attack + "/" + defense + "/" + movement);
+          info.setText(attack + " | " + defense + " | " + movement);
           tooltip.append(type.getName()).append(": ").append(type.getTooltip(id));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
