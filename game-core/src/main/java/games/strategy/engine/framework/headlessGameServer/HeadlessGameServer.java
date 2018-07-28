@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import games.strategy.debug.DebugUtils;
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -678,8 +679,8 @@ public class HeadlessGameServer {
   private static void handleHeadlessGameServerArgs() {
     boolean printUsage = false;
 
-    final String mapFolder = ClientSetting.MAP_FOLDER_OVERRIDE.value();
-    if (mapFolder.isEmpty() || !(new File(mapFolder).exists()) || !(new File(mapFolder).isDirectory())) {
+    final File mapFolder = ClientFileSystemHelper.getUserMapsFolder();
+    if (!mapFolder.isDirectory()) {
       log.warning("Invalid '" + MAP_FOLDER + "' param, map folder must exist: " + mapFolder);
       printUsage = true;
     }
