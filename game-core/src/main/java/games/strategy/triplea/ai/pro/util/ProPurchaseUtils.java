@@ -75,6 +75,9 @@ public class ProPurchaseUtils {
     return canUnitsBePlaced(units, player, t, t, isBid);
   }
 
+  /**
+   * Check if units can be placed in given territory by specified factory.
+   */
   public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t,
       final Territory factoryTerritory, final boolean isBid) {
     final GameData data = player.getData();
