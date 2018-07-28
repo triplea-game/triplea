@@ -51,7 +51,7 @@ public class MapScrollUtilTest {
     assertTrue(transforms.get(0).isIdentity());
   }
 
-  private Predicate<AffineTransform> transCriteria(final int xoffset, final int yoffset) {
+  private static Predicate<AffineTransform> transCriteria(final int xoffset, final int yoffset) {
     return trans -> trans.getTranslateX() == xoffset
           && trans.getTranslateY() == yoffset
           && trans.getType() == AffineTransform.TYPE_TRANSLATION;

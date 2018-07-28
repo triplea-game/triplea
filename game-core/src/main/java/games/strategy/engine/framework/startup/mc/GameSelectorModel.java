@@ -265,7 +265,7 @@ public class GameSelectorModel extends Observable {
     ClientSetting.flush();
   }
 
-  private GameChooserEntry selectByName() {
+  private static GameChooserEntry selectByName() {
     final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
 
     final GameChooserModel model = new GameChooserModel();
