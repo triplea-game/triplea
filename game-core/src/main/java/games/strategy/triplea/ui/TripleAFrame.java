@@ -76,7 +76,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 
 import com.google.common.base.Preconditions;
 
@@ -1781,8 +1780,7 @@ public class TripleAFrame extends MainGameFrame {
                 // TODO: this could be solved easily if rounds/steps were changes,
                 // but that could greatly increase the file size :(
                 // TODO: this also does not undo the runcount of each delegate step
-                @SuppressWarnings("unchecked")
-                final Enumeration<TreeNode> enumeration =
+                final Enumeration<?> enumeration =
                     ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
                 enumeration.nextElement();
                 int round = 0;
