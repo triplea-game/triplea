@@ -216,14 +216,22 @@ public class ProMatches {
     return territoryHasInfraFactoryAndIsLand().and(enemyOrOwnedCantBeHeld);
   }
 
-  public static Predicate<Territory> territoryHasInfraFactoryAndIsNotConqueredOwnedLand(final PlayerID player,
+  public static Predicate<Territory> territoryHasFactoryAndIsNotConqueredOwnedLand(final PlayerID player,
       final GameData data) {
-    return territoryIsNotConqueredOwnedLand(player, data).and(territoryHasInfraFactoryAndIsOwnedLand(player));
+    return territoryIsNotConqueredOwnedLand(player, data).and(territoryHasFactoryAndIsOwnedLand(player));
   }
 
-  public static Predicate<Territory> territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(final PlayerID player,
+  private static Predicate<Territory> territoryHasFactoryAndIsOwnedLand(final PlayerID player) {
+    final Predicate<Unit> factoryMatch = Matches.unitIsOwnedBy(player)
+        .and(Matches.unitCanProduceUnits());
+    return Matches.isTerritoryOwnedBy(player)
+        .and(Matches.territoryIsLand())
+        .and(Matches.territoryHasUnitsThatMatch(factoryMatch));
+  }
+
+  public static Predicate<Territory> territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(final PlayerID player,
       final GameData data) {
-    return territoryHasNonMobileInfraFactory().and(territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+    return territoryHasNonMobileInfraFactory().and(territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
   }
 
   private static Predicate<Territory> territoryHasNonMobileInfraFactory() {
