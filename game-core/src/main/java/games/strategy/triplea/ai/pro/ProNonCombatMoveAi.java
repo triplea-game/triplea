@@ -248,7 +248,7 @@ class ProNonCombatMoveAi {
 
       // Add max defenders that can be purchased to each territory
       for (final Territory t : moveMap.keySet()) {
-        if (ProMatches.territoryHasNonMobileInfraFactoryAndIsNotConqueredOwnedLand(player, data).test(t)) {
+        if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player, data).test(t)) {
           moveMap.get(t).getCantMoveUnits()
               .addAll(ProPurchaseUtils.findMaxPurchaseDefenders(player, t, landPurchaseOptions));
         }
@@ -521,7 +521,7 @@ class ProNonCombatMoveAi {
 
     // Add best sea production territory for sea factories
     List<Territory> seaFactories = CollectionUtils.getMatches(data.getMap().getTerritories(),
-        ProMatches.territoryHasInfraFactoryAndIsNotConqueredOwnedLand(player, data));
+        ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
     seaFactories = CollectionUtils.getMatches(seaFactories,
         ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data));
     for (final Territory t : seaFactories) {
