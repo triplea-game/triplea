@@ -69,7 +69,7 @@ public class MapCreator extends JFrame {
 
   private MapCreator() {
     super("TripleA Map Creator");
-    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     // components
     mainPanel = new JPanel();
     final JPanel sidePanel = new JPanel();
@@ -100,7 +100,7 @@ public class MapCreator extends JFrame {
     part3.addActionListener(SwingAction.of("Part 3", e -> setupMainPanel(panel3)));
     part4.addActionListener(SwingAction.of("Part 4", e -> setupMainPanel(panel4)));
     // set up the menu actions
-    final Action closeAction = SwingAction.of("Close", e -> this.dispose());
+    final Action closeAction = SwingAction.of("Close", e -> dispose());
     closeAction.putValue(Action.SHORT_DESCRIPTION, "Close Window");
     // set up the menu items
     final JMenuItem exitItem = new JMenuItem(closeAction);
