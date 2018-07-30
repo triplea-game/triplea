@@ -632,12 +632,7 @@ public class HeadlessGameServer {
     ClientSetting.initialize();
 
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    // TODO: get properties from a configuration file instead of CLI.
-    if (!new ArgParser(getProperties()).handleCommandLineArgs(args)) {
-      usage();
-      return;
-    }
-
+    new ArgParser().handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
     try {
