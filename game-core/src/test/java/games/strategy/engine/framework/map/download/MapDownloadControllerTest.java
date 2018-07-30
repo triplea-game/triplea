@@ -21,8 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import games.strategy.engine.framework.map.download.MapDownloadController.DownloadedMaps;
 import games.strategy.engine.framework.map.download.MapDownloadController.TutorialMapPreferences;
@@ -122,11 +120,9 @@ public final class MapDownloadControllerTest {
       assertThat(outOfDateMapNames, not(contains(mapName)));
     }
 
-    @MockitoSettings(strictness = Strictness.WARN)
     @Test
     public void shouldExcludeMapWhenDownloadIsNull() {
       final Collection<DownloadFileDescription> downloads = givenDownload(null);
-      givenDownloadedMapVersionIs(version1);
 
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(downloads);
 

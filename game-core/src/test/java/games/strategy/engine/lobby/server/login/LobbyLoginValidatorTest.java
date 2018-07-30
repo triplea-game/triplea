@@ -12,9 +12,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,8 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -62,10 +58,10 @@ public final class LobbyLoginValidatorTest {
     private BadWordDao badWordDao;
 
     @Mock
-    private BannedMacDao bannedMacDao;
+    BannedMacDao bannedMacDao;
 
     @Mock
-    private BannedUsernameDao bannedUsernameDao;
+    BannedUsernameDao bannedUsernameDao;
 
     private final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();
 
@@ -85,7 +81,7 @@ public final class LobbyLoginValidatorTest {
     private final String md5CryptSalt = Md5Crypt.newSalt();
 
     @BeforeEach
-    public void setUp() throws IOException, GeneralSecurityException {
+    public void createLobbyLoginValidator() throws Exception {
       lobbyLoginValidator = new LobbyLoginValidator(
           new LobbyPropertyReader(memoryPropertyReader),
           badWordDao,
@@ -95,9 +91,6 @@ public final class LobbyLoginValidatorTest {
           accessLog,
           new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
           () -> bcryptSalt);
-
-      givenNoMacIsBanned();
-      givenNoUsernameIsBanned();
     }
 
     final String bcrypt(final String password) {
@@ -138,14 +131,6 @@ public final class LobbyLoginValidatorTest {
 
     final void givenMaintenanceModeIsEnabled() {
       memoryPropertyReader.setProperty(LobbyPropertyReader.PropertyKeys.MAINTENANCE_MODE, String.valueOf(true));
-    }
-
-    private void givenNoMacIsBanned() {
-      when(bannedMacDao.isMacBanned(anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
-    }
-
-    private void givenNoUsernameIsBanned() {
-      when(bannedUsernameDao.isUsernameBanned(anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
     }
 
     final void givenUserDoesNotExist() {
@@ -233,11 +218,27 @@ public final class LobbyLoginValidatorTest {
     }
   }
 
+  abstract class AbstractNoBansTestCase extends AbstractTestCase {
+    @BeforeEach
+    public void givenNoBans() {
+      givenNoMacIsBanned();
+      givenNoUsernameIsBanned();
+    }
+
+    private void givenNoMacIsBanned() {
+      when(bannedMacDao.isMacBanned(anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
+    }
+
+    private void givenNoUsernameIsBanned() {
+      when(bannedUsernameDao.isUsernameBanned(anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
+    }
+  }
+
   @Nested
   public final class DatabaseInteractionTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
-    public final class WhenUserIsAnonymousTest extends AbstractTestCase {
+    public final class WhenUserIsAnonymousTest extends AbstractNoBansTestCase {
       @Test
       public void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
@@ -271,7 +272,7 @@ public final class LobbyLoginValidatorTest {
     public final class WhenUserDoesNotExistTest {
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingLegacyClientTest extends AbstractTestCase {
+      public final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
         @Test
         public void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
           givenUserDoesNotExist();
@@ -294,7 +295,7 @@ public final class LobbyLoginValidatorTest {
 
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingCurrentClientTest extends AbstractTestCase {
+      public final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
         @Test
         public void shouldCreateNewUserWithBothPasswords() {
           givenUserDoesNotExist();
@@ -322,7 +323,7 @@ public final class LobbyLoginValidatorTest {
     public final class WhenUserExistsTest {
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingLegacyClientTest extends AbstractTestCase {
+      public final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
         @Test
         public void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
           givenUserDoesNotHaveBcryptedPassword();
@@ -368,11 +369,9 @@ public final class LobbyLoginValidatorTest {
 
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingCurrentClientTest extends AbstractTestCase {
-        @MockitoSettings(strictness = Strictness.WARN)
+      public final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
         @Test
         public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
-          givenUserExists();
           givenUserHasMd5CryptedPassword();
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
@@ -430,7 +429,6 @@ public final class LobbyLoginValidatorTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingLegacyClientTest extends AbstractTestCase {
-      @MockitoSettings(strictness = Strictness.WARN)
       @Test
       public void shouldFailAuthentication() {
         givenMaintenanceModeIsEnabled();
@@ -457,7 +455,6 @@ public final class LobbyLoginValidatorTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
     public final class WhenUsingCurrentClientTest extends AbstractTestCase {
-      @MockitoSettings(strictness = Strictness.WARN)
       @Test
       public void shouldFailAuthentication() {
         givenMaintenanceModeIsEnabled();
@@ -488,7 +485,7 @@ public final class LobbyLoginValidatorTest {
   public final class AccessLogTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
-    public final class WhenUserIsAnonymous extends AbstractTestCase {
+    public final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
       @Test
       public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
@@ -517,12 +514,10 @@ public final class LobbyLoginValidatorTest {
     }
 
     @ExtendWith(MockitoExtension.class)
-    @MockitoSettings(strictness = Strictness.WARN)
     @Nested
-    public final class WhenUserIsRegistered extends AbstractTestCase {
+    public final class WhenUserIsRegistered extends AbstractNoBansTestCase {
       @Test
       public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
-        givenUserExists();
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
 
@@ -534,7 +529,6 @@ public final class LobbyLoginValidatorTest {
 
       @Test
       public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
-        givenUserExists();
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndFail();
 

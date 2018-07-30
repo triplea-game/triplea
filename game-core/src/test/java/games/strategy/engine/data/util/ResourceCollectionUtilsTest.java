@@ -3,7 +3,6 @@ package games.strategy.engine.data.util;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
@@ -26,7 +23,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.WARN)
 public final class ResourceCollectionUtilsTest {
   @Mock
   private GameData data;
@@ -77,7 +73,7 @@ public final class ResourceCollectionUtilsTest {
 
   @Test
   public void testExcludeByNames_ShouldExcludeSpecifiedResources() {
-    givenGameResources(pus, techTokens, vps);
+    givenGameResources(pus, vps);
     final ResourceCollection unfiltered = createResourceCollection(pus, techTokens, vps);
 
     final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus.getName(), vps.getName());
@@ -89,7 +85,6 @@ public final class ResourceCollectionUtilsTest {
 
   private void givenGameResources(final Resource... resources) {
     final ResourceList gameResources = mock(ResourceList.class);
-    doReturn(null).when(gameResources).getResource(anyString());
     for (final Resource resource : resources) {
       doReturn(resource).when(gameResources).getResource(resource.getName());
     }
@@ -99,7 +94,7 @@ public final class ResourceCollectionUtilsTest {
   @Test
   public void testExcludeByNames_ShouldIgnoreUnregisteredResourceNames() {
     final Resource gold = createResource("gold");
-    givenGameResources(pus);
+    givenGameResources();
     final ResourceCollection unfiltered = createResourceCollection(pus);
 
     final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, gold.getName());
@@ -110,7 +105,7 @@ public final class ResourceCollectionUtilsTest {
   @Test
   public void testGetProductionResources_ShouldIncludeAllResourcesExceptTechTokensAndVPs() {
     final Resource gold = createResource("gold");
-    givenGameResources(gold, pus, techTokens, vps);
+    givenGameResources(techTokens, vps);
     final ResourceCollection unfiltered = createResourceCollection(gold, pus, techTokens, vps);
 
     final ResourceCollection filtered = ResourceCollectionUtils.getProductionResources(unfiltered);
