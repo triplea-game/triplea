@@ -47,26 +47,20 @@ public class TileTest {
   public void testIsDirty() {
     assertSame(image, tile.getImage());
     assertTrue(tile.isDirty());
-    assertFalse(tile.hasDrawingStarted());
     tile.drawImage(null, null);
     assertFalse(tile.isDirty());
-    assertFalse(tile.hasDrawingStarted());
 
     tile.addDrawable(drawable);
 
     assertTrue(tile.isDirty());
-    assertFalse(tile.hasDrawingStarted());
     tile.drawImage(null, null);
     assertFalse(tile.isDirty());
-    assertFalse(tile.hasDrawingStarted());
 
     tile.addDrawables(Collections.singleton(drawable));
 
     assertTrue(tile.isDirty());
-    assertFalse(tile.hasDrawingStarted());
     tile.drawImage(null, null);
     assertFalse(tile.isDirty());
-    assertFalse(tile.hasDrawingStarted());
   }
 
   @Test
