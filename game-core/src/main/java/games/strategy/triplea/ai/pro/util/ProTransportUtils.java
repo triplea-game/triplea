@@ -175,7 +175,7 @@ public class ProTransportUtils {
     }
     units.sort(Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
         .thenComparing(getDecreasingAttackComparator(player)));
-    final List<Unit> results = new ArrayList<Unit>();
+    final List<Unit> results = new ArrayList<>();
     results.add(unit);
     if (Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
       results.add(units.get(0));

@@ -34,11 +34,7 @@ public class Node implements INode, Externalizable {
     // On Mac, InetAddress.getLocalHost() can be extremely slow (30 seconds)
     // due to a bug in macOS Sierra and higher. Use a work around to avoid
     // this. See: https://thoeni.io/post/macos-sierra-java/
-    if (SystemProperties.isMac()) {
-      return InetAddress.getByName("localhost");
-    } else {
-      return InetAddress.getLocalHost();
-    }
+    return SystemProperties.isMac() ? InetAddress.getByName("localhost") : InetAddress.getLocalHost();
   }
 
   // needed to support Externalizable

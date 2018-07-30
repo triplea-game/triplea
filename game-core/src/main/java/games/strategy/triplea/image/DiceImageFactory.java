@@ -54,7 +54,7 @@ public class DiceImageFactory {
             side -> getImageOrFallback(resourceLoader, imageFactory, color, side)));
   }
 
-  private Image getImageOrFallback(
+  private static Image getImageOrFallback(
       @Nullable final ResourceLoader loader,
       final ImageFactory factory,
       final Color color,
@@ -68,7 +68,7 @@ public class DiceImageFactory {
     return drawFallbackDie(dieSide, color);
   }
 
-  private String getDiceResourceName(final Color color, final int dieSide) {
+  private static String getDiceResourceName(final Color color, final int dieSide) {
     final String suffix = ImmutableMap
         .<Color, String>builder()
         .put(Color.BLACK, "")
@@ -79,7 +79,7 @@ public class DiceImageFactory {
     return "dice/" + dieSide + Objects.requireNonNull(suffix) + ".png";
   }
 
-  private Image drawFallbackDie(final int dieSide, final Color color) {
+  private static Image drawFallbackDie(final int dieSide, final Color color) {
     final int pipSize = 6;
     final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
     final Graphics2D graphics = (Graphics2D) canvas.getGraphics();

@@ -813,7 +813,7 @@ public final class DecorationPlacer {
 
   enum ImagePointType {
     decorations(
-        "decorations.txt", "misc", "decorationExample.png", true, true, true, false, true, true,
+        "decorations.txt", "misc", "decorationExample.png", true, true, true, false, true,
         "decorations.txt will place any kind of image you want anywhere, using the 'misc' folder",
         "<html>decorations.txt will allow for multiple points per image. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
@@ -821,7 +821,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     name_place(
-        "name_place.txt", "territoryNames", "territoryName.png", true, false, true, true, false, false,
+        "name_place.txt", "territoryNames", "territoryName.png", true, false, true, true, false,
         "name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' "
             + "folder",
         "<html>name_place.txt only allows 1 point per image/territory. <br>"
@@ -830,7 +830,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     pu_place(
-        "pu_place.txt", "PUs", "2.png", false, false, true, true, false, false,
+        "pu_place.txt", "PUs", "2.png", false, false, true, true, false,
         "pu_place.txt is the point where the PUs get shown,"
             + " and picks the PU images (like '2.png') from the 'PUs' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
@@ -839,7 +839,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     capitols(
-        "capitols.txt", "flags", "Neutral_large.png", false, false, false, false, false, true,
+        "capitols.txt", "flags", "Neutral_large.png", false, false, false, false, false,
         "capitols.txt is the point where a capitol flag is shown,"
             + " and picks the <name>_large.png image from the 'flags' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
@@ -848,7 +848,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     vc(
-        "vc.txt", "misc", "vc.png", false, false, false, false, false, true,
+        "vc.txt", "misc", "vc.png", false, false, false, false, false,
         "vc.txt is the point where a Victory City icon is shown, and picks the 'vc.png' image from the 'misc' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
@@ -856,7 +856,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     blockade(
-        "blockade.txt", "misc", "blockade.png", false, false, false, false, false, true,
+        "blockade.txt", "misc", "blockade.png", false, false, false, false, false,
         "blockade.txt is the point where a blockade zone icon is shown, and picks the 'blockade.png' image from the "
             + "'misc' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
@@ -865,7 +865,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     convoy(
-        "convoy.txt", "flags", "Neutral.png", false, false, false, false, false, true,
+        "convoy.txt", "flags", "Neutral.png", false, false, false, false, false,
         "convoy.txt is the point where a nation flag is shown on any sea zone that has production ability,"
             + " and picks the <name>.png image from the 'flags' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
@@ -874,7 +874,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     comments(
-        "comments.txt", "misc", "exampleConvoyText.png", false, false, false, true, false, false,
+        "comments.txt", "misc", "exampleConvoyText.png", false, false, false, true, false,
         "comments.txt is the point where text details about a convoy zone or route is shown, and it does not use any "
             + "image, instead it writes the text in-game",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
@@ -883,7 +883,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     kamikaze_place(
-        "kamikaze_place.txt", "flags", "Neutral_fade.png", false, false, false, false, false, true,
+        "kamikaze_place.txt", "flags", "Neutral_fade.png", false, false, false, false, false,
         "kamikaze_place.txt is the point where a kamikaze zone symbol is shown,"
             + " and it picks the <name>_fade.png image from the 'flags' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
@@ -892,7 +892,7 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     territory_effects(
-        "territory_effects.txt", "territoryEffects", "mountain.png", false, false, false, false, true, true,
+        "territory_effects.txt", "territoryEffects", "mountain.png", false, false, false, false, true,
         "territory_effects.txt is the point where a territory effect image is shown,"
             + " and it picks the <effect>.png image from the 'territoryEffects' folder",
         "<html>pu_place.txt will allow for multiple points per image. <br>"
@@ -910,7 +910,6 @@ public final class DecorationPlacer {
     private final boolean fillAll;
     private final boolean canUseBottomLeftPoint;
     private final boolean canHaveMultiplePoints;
-    private final boolean usesCentersPoint;
     private final String description;
     private final String instructions;
 
@@ -921,8 +920,7 @@ public final class DecorationPlacer {
 
     ImagePointType(final String fileName, final String folderName, final String imageName, final boolean useFolder,
         final boolean endInPng, final boolean fillAll, final boolean canUseBottomLeftPoint,
-        final boolean canHaveMultiplePoints, final boolean usesCentersPoint, final String description,
-        final String instructions) {
+        final boolean canHaveMultiplePoints, final String description, final String instructions) {
       this.fileName = fileName;
       this.folderName = folderName;
       this.imageName = imageName;
@@ -931,7 +929,6 @@ public final class DecorationPlacer {
       this.fillAll = fillAll;
       this.canUseBottomLeftPoint = canUseBottomLeftPoint;
       this.canHaveMultiplePoints = canHaveMultiplePoints;
-      this.usesCentersPoint = usesCentersPoint;
       this.description = description;
       this.instructions = instructions;
     }

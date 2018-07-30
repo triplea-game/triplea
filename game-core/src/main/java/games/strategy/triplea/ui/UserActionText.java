@@ -82,11 +82,9 @@ public class UserActionText {
   }
 
   public String getNotificationSuccessTarget(final String actionKey) {
-    if (hasMessage(actionKey, TARGET_NOTIFICATION_SUCCESS)) {
-      return getMessage(actionKey, TARGET_NOTIFICATION_SUCCESS);
-    } else {
-      return getNotificationSuccessOthers(actionKey);
-    }
+    return hasMessage(actionKey, TARGET_NOTIFICATION_SUCCESS)
+        ? getMessage(actionKey, TARGET_NOTIFICATION_SUCCESS)
+        : getNotificationSuccessOthers(actionKey);
   }
 
   public String getNotificationFailure(final String actionKey) {
@@ -98,11 +96,9 @@ public class UserActionText {
   }
 
   public String getNotificationFailureTarget(final String actionKey) {
-    if (hasMessage(actionKey, TARGET_NOTIFICATION_FAILURE)) {
-      return getMessage(actionKey, TARGET_NOTIFICATION_FAILURE);
-    } else {
-      return getNotificationFailureOthers(actionKey);
-    }
+    return hasMessage(actionKey, TARGET_NOTIFICATION_FAILURE)
+      ? getMessage(actionKey, TARGET_NOTIFICATION_FAILURE)
+      : getNotificationFailureOthers(actionKey);
   }
 
   public String getAcceptanceQuestion(final String actionKey) {
