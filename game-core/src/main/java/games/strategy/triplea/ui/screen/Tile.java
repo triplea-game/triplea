@@ -32,7 +32,6 @@ import games.strategy.ui.Util;
  */
 public class Tile {
   private volatile boolean isDirty = true;
-  private volatile boolean drawingStarted = false;
 
   private final Image image;
   private final Rectangle bounds;
@@ -53,10 +52,6 @@ public class Tile {
     return isDirty;
   }
 
-  public boolean hasDrawingStarted() {
-    return drawingStarted;
-  }
-
   public Image getImage() {
     return image;
   }
@@ -74,23 +69,18 @@ public class Tile {
    * </p>
    */
   public void drawImage(final GameData data, final MapData mapData) {
-    try {
-      drawingStarted = true;
-      final BufferedImage writeBuffer = Util.createImage(image.getWidth(null),
-          image.getHeight(null), true);
-      final Graphics2D g = (Graphics2D) writeBuffer.getGraphics();
-      g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-      g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-      g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-      draw(g, data, mapData);
+    final BufferedImage writeBuffer = Util.createImage(image.getWidth(null),
+        image.getHeight(null), true);
+    final Graphics2D g = (Graphics2D) writeBuffer.getGraphics();
+    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    draw(g, data, mapData);
 
-      final Graphics2D imageGraphics = (Graphics2D) image.getGraphics();
-      imageGraphics.drawImage(writeBuffer, new AffineTransform(), null);
-      imageGraphics.dispose();
-      g.dispose();
-    } finally {
-      drawingStarted = false;
-    }
+    final Graphics2D imageGraphics = (Graphics2D) image.getGraphics();
+    imageGraphics.drawImage(writeBuffer, new AffineTransform(), null);
+    imageGraphics.dispose();
+    g.dispose();
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
