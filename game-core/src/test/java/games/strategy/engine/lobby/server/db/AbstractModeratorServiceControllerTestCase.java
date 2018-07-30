@@ -19,7 +19,7 @@ import games.strategy.util.function.ThrowingConsumer;
  * Superclass for fixtures that test a moderator service controller.
  */
 @Integration
-public abstract class AbstractModeratorServiceControllerTestCase {
+public abstract class AbstractModeratorServiceControllerTestCase extends AbstractControllerTestCase {
   protected final User user = newUser();
   protected final User moderator = newUser();
 
@@ -43,12 +43,12 @@ public abstract class AbstractModeratorServiceControllerTestCase {
    *        for the user.
    * @param unknownUserMessage The failure message to be used when the requested user does not exist.
    */
-  protected static void assertUserEquals(
+  protected void assertUserEquals(
       final User expected,
       final String userQuerySql,
       final ThrowingConsumer<PreparedStatement, SQLException> preparedStatementInitializer,
       final String unknownUserMessage) {
-    try (Connection conn = Database.getPostgresConnection();
+    try (Connection conn = database.newConnection();
         PreparedStatement ps = conn.prepareStatement(userQuerySql)) {
       preparedStatementInitializer.accept(ps);
       try (ResultSet rs = ps.executeQuery()) {

@@ -1,9 +1,13 @@
 package games.strategy.engine.lobby.server;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.logging.Logger;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
+import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -13,6 +17,14 @@ import games.strategy.net.INode;
 
 public class UserManager implements IUserManager {
   private static final Logger logger = Logger.getLogger(UserManager.class.getName());
+
+  private final Database database;
+
+  public UserManager(final LobbyPropertyReader lobbyPropertyReader) {
+    checkNotNull(lobbyPropertyReader);
+
+    database = new Database(lobbyPropertyReader);
+  }
 
   public void register(final IRemoteMessenger messenger) {
     messenger.registerRemote(this, IUserManager.USER_MANAGER);
@@ -35,7 +47,7 @@ public class UserManager implements IUserManager {
     final HashedPassword password = new HashedPassword(hashedPassword);
 
     try {
-      new UserController().updateUser(user,
+      new UserController(database).updateUser(user,
           password.isHashedWithSalt() ? password : new HashedPassword(BCrypt.hashpw(hashedPassword, BCrypt.gensalt())));
     } catch (final IllegalStateException e) {
       return e.getMessage();
@@ -50,6 +62,6 @@ public class UserManager implements IUserManager {
       logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
-    return new UserController().getUserByName(userName);
+    return new UserController(database).getUserByName(userName);
   }
 }

@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.server;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.time.Instant;
 import java.util.Date;
 
@@ -7,8 +9,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.db.BannedMacController;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
+import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.MutedMacController;
 import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.lobby.server.db.UserController;
@@ -21,8 +25,17 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 
 public class ModeratorController extends AbstractModeratorController {
-  public ModeratorController(final IServerMessenger serverMessenger, final Messengers messengers) {
+  private final Database database;
+
+  public ModeratorController(
+      final IServerMessenger serverMessenger,
+      final Messengers messengers,
+      final LobbyPropertyReader lobbyPropertyReader) {
     super(serverMessenger, messengers);
+
+    checkNotNull(lobbyPropertyReader);
+
+    database = new Database(lobbyPropertyReader);
   }
 
   @Override
@@ -38,7 +51,7 @@ public class ModeratorController extends AbstractModeratorController {
 
     final User bannedUser = getUserForNode(node);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new BannedUsernameController().addBannedUsername(bannedUser, banExpires, moderator);
+    new BannedUsernameController(database).addBannedUsername(bannedUser, banExpires, moderator);
     logger.info(String.format(
         "User was banned from the lobby (by username); "
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
@@ -62,7 +75,7 @@ public class ModeratorController extends AbstractModeratorController {
   @Override
   public boolean isPlayerAdmin(final INode node) {
     final User user = getUserForNode(node);
-    final DBUser dbUser = new UserController().getUserByName(user.getUsername());
+    final DBUser dbUser = new UserController(database).getUserByName(user.getUsername());
     return dbUser != null && dbUser.isAdmin();
   }
 
@@ -98,7 +111,7 @@ public class ModeratorController extends AbstractModeratorController {
 
     final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new BannedMacController().addBannedMac(bannedUser, banExpires, moderator);
+    new BannedMacController(database).addBannedMac(bannedUser, banExpires, moderator);
     logger.info(String.format(
         "User was banned from the lobby (by MAC); "
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
@@ -120,7 +133,7 @@ public class ModeratorController extends AbstractModeratorController {
 
     final User mutedUser = getUserForNode(node);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new MutedUsernameController().addMutedUsername(mutedUser, muteExpires, moderator);
+    new MutedUsernameController(database).addMutedUsername(mutedUser, muteExpires, moderator);
     serverMessenger.notifyUsernameMutingOfPlayer(mutedUser.getUsername(), muteExpires);
     logger.info(String.format(
         "User was muted in the lobby (by username); "
@@ -143,7 +156,7 @@ public class ModeratorController extends AbstractModeratorController {
 
     final User mutedUser = getUserForNode(node);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new MutedMacController().addMutedMac(mutedUser, muteExpires, moderator);
+    new MutedMacController(database).addMutedMac(mutedUser, muteExpires, moderator);
     serverMessenger.notifyMacMutingOfPlayer(mutedUser.getHashedMacAddress(), muteExpires);
     logger.info(String.format(
         "User was muted in the lobby (by MAC); "

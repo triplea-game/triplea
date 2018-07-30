@@ -21,8 +21,10 @@ import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
+import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.db.BadWordController;
+import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -34,7 +36,8 @@ import games.strategy.util.Util;
 
 @Integration
 public class LobbyLoginValidatorIntegrationTest {
-  private final ILoginValidator loginValidator = new LobbyLoginValidator();
+  private final Database database = new Database(TestLobbyPropertyReaders.INTEGRATION_TEST);
+  private final ILoginValidator loginValidator = new LobbyLoginValidator(TestLobbyPropertyReaders.INTEGRATION_TEST);
 
   @Test
   public void testLegacyCreateNewUser() {
@@ -67,8 +70,10 @@ public class LobbyLoginValidatorIntegrationTest {
     };
   }
 
-  private static void createUser(final String name, final String email, final HashedPassword password) {
-    new UserController().createUser(new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)), password);
+  private void createUser(final String name, final String email, final HashedPassword password) {
+    new UserController(database).createUser(
+        new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)),
+        password);
   }
 
   private static String md5Crypt(final String value) {
@@ -91,7 +96,7 @@ public class LobbyLoginValidatorIntegrationTest {
       response.putAll(RsaAuthenticator.newResponse(challenge, "wrong"));
       return response;
     }));
-    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new UserController().getPassword(name).value));
+    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new UserController(database).getPassword(name).value));
   }
 
   @Test
@@ -119,7 +124,7 @@ public class LobbyLoginValidatorIntegrationTest {
   public void testAnonymousLoginBadName() {
     final String name = "bitCh" + Util.createUniqueTimeStamp();
     try {
-      new BadWordController().addBadWord("bitCh");
+      new BadWordController(database).addBadWord("bitCh");
     } catch (final Exception ignore) {
       // this is probably a duplicate insertion error, we can ignore that as it only means we already added the bad
       // word previously

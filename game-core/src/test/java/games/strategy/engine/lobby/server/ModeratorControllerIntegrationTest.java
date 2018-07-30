@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 
+import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
+import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -43,12 +45,12 @@ public class ModeratorControllerIntegrationTest {
 
   @BeforeEach
   public void setUp() throws UnknownHostException {
-    moderatorController = new ModeratorController(serverMessenger, null);
+    moderatorController = new ModeratorController(serverMessenger, null, TestLobbyPropertyReaders.INTEGRATION_TEST);
     final String adminName = Util.createUniqueTimeStamp();
 
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
-    final UserController userController = new UserController();
+    final UserController userController = new UserController(new Database(TestLobbyPropertyReaders.INTEGRATION_TEST));
     userController.createUser(dbUser, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
     userController.makeAdmin(dbUser);
 

@@ -4,10 +4,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import games.strategy.engine.lobby.server.User;
-import games.strategy.engine.lobby.server.db.AccessLogController;
 import games.strategy.engine.lobby.server.db.AccessLogDao;
 
 /**
@@ -19,11 +16,6 @@ final class CompositeAccessLog implements AccessLog {
 
   private final AccessLogDao accessLogDao;
 
-  CompositeAccessLog() {
-    this(new AccessLogController());
-  }
-
-  @VisibleForTesting
   CompositeAccessLog(final AccessLogDao accessLogDao) {
     this.accessLogDao = accessLogDao;
   }

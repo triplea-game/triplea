@@ -17,15 +17,16 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
-import games.strategy.engine.lobby.server.LobbyContext;
 import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.User;
+import games.strategy.engine.lobby.server.db.AccessLogController;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.BadWordDao;
 import games.strategy.engine.lobby.server.db.BannedMacController;
 import games.strategy.engine.lobby.server.db.BannedMacDao;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
 import games.strategy.engine.lobby.server.db.BannedUsernameDao;
+import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;
 import games.strategy.engine.lobby.server.db.UserDao;
@@ -74,14 +75,18 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final RsaAuthenticator rsaAuthenticator;
   private final UserDao userDao;
 
-  public LobbyLoginValidator() {
+  public LobbyLoginValidator(final LobbyPropertyReader lobbyPropertyReader) {
+    this(lobbyPropertyReader, new Database(lobbyPropertyReader));
+  }
+
+  private LobbyLoginValidator(final LobbyPropertyReader lobbyPropertyReader, final Database database) {
     this(
-        LobbyContext.lobbyPropertyReader(),
-        new BadWordController(),
-        new BannedMacController(),
-        new BannedUsernameController(),
-        new UserController(),
-        new CompositeAccessLog(),
+        lobbyPropertyReader,
+        new BadWordController(database),
+        new BannedMacController(database),
+        new BannedUsernameController(database),
+        new UserController(database),
+        new CompositeAccessLog(new AccessLogController(database)),
         new RsaAuthenticator(),
         BCrypt::gensalt);
   }

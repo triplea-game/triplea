@@ -10,10 +10,14 @@ import java.util.List;
 /**
  * Utility class to create/read/delete bad words (there is no update).
  */
-public final class BadWordController implements BadWordDao {
+public final class BadWordController extends AbstractController implements BadWordDao {
+  public BadWordController(final Database database) {
+    super(database);
+  }
+
   @Override
   public void addBadWord(final String word) {
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         // If the word already is present we don't need to add it twice.
         PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?) on conflict do nothing")) {
       ps.setString(1, word);
@@ -28,7 +32,7 @@ public final class BadWordController implements BadWordDao {
   public List<String> list() {
     final String sql = "select word from bad_words";
 
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql);
         ResultSet rs = ps.executeQuery()) {
       final List<String> badWords = new ArrayList<>();

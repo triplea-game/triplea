@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -23,10 +22,8 @@ import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 
 @Integration
-public class UserControllerIntegrationTest {
-
-  private static final Supplier<Connection> connectionSupplier = Database::getPostgresConnection;
-  private final UserController controller = new UserController(connectionSupplier);
+public final class UserControllerIntegrationTest extends AbstractControllerTestCase {
+  private final UserController controller = new UserController(database);
 
   @Test
   public void testCreate() throws Exception {
@@ -80,7 +77,7 @@ public class UserControllerIntegrationTest {
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
-    try (Connection con = connectionSupplier.get()) {
+    try (Connection con = database.newConnection()) {
       final String sql = " select * from ta_users where username = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
@@ -107,8 +104,8 @@ public class UserControllerIntegrationTest {
     return user;
   }
 
-  private static int getUserCount() throws Exception {
-    try (Connection dbConnection = connectionSupplier.get()) {
+  private int getUserCount() throws Exception {
+    try (Connection dbConnection = database.newConnection()) {
       final String sql = "select count(*) from TA_USERS";
       final ResultSet rs = dbConnection.createStatement().executeQuery(sql);
       assertTrue(rs.next());

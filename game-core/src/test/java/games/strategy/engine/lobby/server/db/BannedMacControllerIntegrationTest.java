@@ -18,7 +18,7 @@ import games.strategy.engine.lobby.server.User;
 import games.strategy.util.Tuple;
 
 public final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final BannedMacController controller = spy(new BannedMacController());
+  private final BannedMacController controller = spy(new BannedMacController(database));
 
   @Test
   public void testBanMacForever() {

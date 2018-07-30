@@ -17,8 +17,8 @@ import games.strategy.engine.lobby.server.login.UserType;
 import games.strategy.test.Integration;
 
 @Integration
-public final class AccessLogControllerIntegrationTest {
-  private final AccessLogController accessLogController = new AccessLogController();
+public final class AccessLogControllerIntegrationTest extends AbstractControllerTestCase {
+  private final AccessLogController accessLogController = new AccessLogController(database);
 
   @Test
   public void insert_ShouldInsertNewRecord() throws Exception {
@@ -31,9 +31,9 @@ public final class AccessLogControllerIntegrationTest {
     }
   }
 
-  private static void thenAccessLogRecordShouldExist(final User user, final UserType userType) throws Exception {
+  private void thenAccessLogRecordShouldExist(final User user, final UserType userType) throws Exception {
     final String sql = "select access_time from access_log where username=? and ip=?::inet and mac=? and registered=?";
-    try (Connection conn = Database.getPostgresConnection();
+    try (Connection conn = database.newConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getInetAddress().getHostAddress());

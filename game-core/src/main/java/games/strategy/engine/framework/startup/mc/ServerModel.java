@@ -261,7 +261,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
 
     try {
-      serverMessenger = new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      serverMessenger = ServerMessenger.newInstanceForGameHost(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
       clientLoginValidator.setGamePassword(props.getPassword());
       serverMessenger.setLoginValidator(clientLoginValidator);

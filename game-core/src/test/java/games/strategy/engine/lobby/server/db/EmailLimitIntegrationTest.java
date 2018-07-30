@@ -6,13 +6,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.google.common.base.Strings;
 
+import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
 import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
@@ -23,14 +22,7 @@ import games.strategy.util.Util;
  */
 @Integration
 public class EmailLimitIntegrationTest {
-
-  private static Connection connection;
-
-  @BeforeAll
-  public static void setup() throws SQLException {
-    connection = Database.getPostgresConnection();
-    connection.setAutoCommit(true);
-  }
+  private final Database database = new Database(TestLobbyPropertyReaders.INTEGRATION_TEST);
 
   @Test
   public void testAllowsMaximumLength() {
@@ -46,18 +38,14 @@ public class EmailLimitIntegrationTest {
     return Strings.padStart(Util.createUniqueTimeStamp(), length, 'a');
   }
 
-  private static void createAccountWithEmail(final String email) throws SQLException {
-    try (PreparedStatement ps =
-        connection.prepareStatement("insert into ta_users (username, email, bcrypt_password) values (?, ?, ?)")) {
+  private void createAccountWithEmail(final String email) throws SQLException {
+    try (Connection connection = database.newConnection();
+        PreparedStatement ps =
+            connection.prepareStatement("insert into ta_users (username, email, bcrypt_password) values (?, ?, ?)")) {
       ps.setString(1, Util.createUniqueTimeStamp());
       ps.setString(2, email);
       ps.setString(3, BCrypt.hashpw("password", BCrypt.gensalt()));
       ps.execute();
     }
-  }
-
-  @AfterAll
-  public static void tearDown() throws SQLException {
-    connection.close();
   }
 }

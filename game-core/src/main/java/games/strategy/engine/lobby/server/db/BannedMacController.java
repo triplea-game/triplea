@@ -18,6 +18,10 @@ import games.strategy.util.Tuple;
  * Utility class to create/read/delete banned macs (there is no update).
  */
 public class BannedMacController extends TimedController implements BannedMacDao {
+  public BannedMacController(final Database database) {
+    super(database);
+  }
+
   @Override
   public void addBannedMac(final User bannedUser, final @Nullable Instant banTill, final User moderator) {
     checkNotNull(bannedUser);
@@ -38,7 +42,7 @@ public class BannedMacController extends TimedController implements BannedMacDao
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, bannedUser.getUsername());
       ps.setString(2, bannedUser.getInetAddress().getHostAddress());
@@ -54,8 +58,8 @@ public class BannedMacController extends TimedController implements BannedMacDao
     }
   }
 
-  private static void removeBannedMac(final String mac) {
-    try (Connection con = Database.getPostgresConnection();
+  private void removeBannedMac(final String mac) {
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
@@ -72,7 +76,7 @@ public class BannedMacController extends TimedController implements BannedMacDao
   public Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(final String mac) {
     final String sql = "select mac, ban_till from banned_macs where mac=?";
 
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (ResultSet rs = ps.executeQuery()) {

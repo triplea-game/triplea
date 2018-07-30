@@ -3,6 +3,8 @@ package games.strategy.engine.lobby.server;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import games.strategy.engine.config.FilePropertyReader;
+import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.sound.ClipPlayer;
 
 /**
@@ -18,9 +20,11 @@ public class LobbyRunner {
   public static void main(final String[] args) {
     try {
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-      final int port = LobbyContext.lobbyPropertyReader().getPort();
-      logger.info("Trying to listen on port:" + port);
-      new LobbyServer(port);
+
+      final LobbyPropertyReader lobbyPropertyReader =
+          new LobbyPropertyReader(new FilePropertyReader("config/lobby/lobby.properties"));
+      logger.info("Trying to listen on port " + lobbyPropertyReader.getPort());
+      new LobbyServer(lobbyPropertyReader);
       logger.info("Lobby started");
     } catch (final Exception ex) {
       logger.log(Level.SEVERE, ex.toString(), ex);

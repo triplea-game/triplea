@@ -18,6 +18,10 @@ import games.strategy.engine.lobby.server.User;
  * Utility class to create/read/delete muted usernames (there is no update).
  */
 public class MutedUsernameController extends TimedController {
+  public MutedUsernameController(final Database database) {
+    super(database);
+  }
+
   /**
    * Mute the given username. If muteTill is not null, the mute will expire when muteTill is reached.
    *
@@ -50,7 +54,7 @@ public class MutedUsernameController extends TimedController {
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mutedUser.getUsername());
       ps.setString(2, mutedUser.getInetAddress().getHostAddress());
@@ -66,8 +70,8 @@ public class MutedUsernameController extends TimedController {
     }
   }
 
-  private static void removeMutedUsername(final String username) {
-    try (Connection con = Database.getPostgresConnection();
+  private void removeMutedUsername(final String username) {
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
       ps.setString(1, username);
       ps.execute();
@@ -91,7 +95,7 @@ public class MutedUsernameController extends TimedController {
    */
   public Optional<Instant> getUsernameUnmuteTime(final String username) {
     final String sql = "select username, mute_till from muted_usernames where username = ?";
-    try (Connection con = Database.getPostgresConnection();
+    try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
