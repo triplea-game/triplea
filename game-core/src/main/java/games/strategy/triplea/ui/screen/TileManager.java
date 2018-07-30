@@ -110,6 +110,15 @@ public class TileManager {
     }
   }
 
+  public List<Tile> getTiles() {
+    acquireLock();
+    try {
+      return new ArrayList<>(tiles);
+    } finally {
+      releaseLock();
+    }
+  }
+
   private void acquireLock() {
     LockUtil.INSTANCE.acquireLock(lock);
   }

@@ -239,8 +239,11 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private void recreateTiles(final GameData data, final UiContext uiContext) {
-    this.tileManager.createTiles(new Rectangle(this.uiContext.getMapData().getMapDimensions()));
-    this.tileManager.resetTiles(data, uiContext.getMapData());
+    tileManager.createTiles(new Rectangle(this.uiContext.getMapData().getMapDimensions()));
+    tileManager.resetTiles(data, uiContext.getMapData());
+    for (final Tile tile : tileManager.getTiles()) {
+      enqueueTile(tile, data);
+    }
   }
 
   GameData getData() {
@@ -588,17 +591,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private void drawTiles(final Graphics2D graphics, final GameData data, final Rectangle2D bounds) {
     for (final Tile tile : tileManager.getTiles(bounds)) {
       if (tile.isDirty()) {
-        if (!tile.hasDrawingStarted()) {
-          executor.execute(() -> {
-            try {
-              data.acquireReadLock();
-              tile.drawImage(data, uiContext.getMapData());
-            } finally {
-              data.releaseReadLock();
-            }
-            SwingUtilities.invokeLater(this::repaint);
-          });
-        }
+        enqueueTile(tile, data);
       }
       final Image image = tile.getImage();
       final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
@@ -612,6 +605,18 @@ public class MapPanel extends ImageScrollerLargeView {
         graphics.drawImage(image, viewTransformation, this);
       }
     }
+  }
+
+  private void enqueueTile(final Tile tile, final GameData data) {
+    executor.execute(() -> {
+      try {
+        data.acquireReadLock();
+        tile.drawImage(data, uiContext.getMapData());
+      } finally {
+        data.releaseReadLock();
+      }
+      SwingUtilities.invokeLater(this::repaint);
+    });
   }
 
   Image getTerritoryImage(final Territory territory) {
