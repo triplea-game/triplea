@@ -83,7 +83,6 @@ public class HeadlessGameServer {
       log.info("Running ShutdownHook.");
       shutDown = true;
       shutdownListeners.stream()
-          .parallel()
           .forEach(Runnable::run);
     }));
     availableGames = new AvailableGames();
