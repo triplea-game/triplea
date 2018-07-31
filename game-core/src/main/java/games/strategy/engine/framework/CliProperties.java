@@ -14,7 +14,6 @@ public class CliProperties {
   public static final String TRIPLEA_PORT = "triplea.port";
   public static final String TRIPLEA_NAME = "triplea.name";
   public static final String SERVER_PASSWORD = "triplea.server.password";
-  public static final String TRIPLEA_STARTED = "triplea.started";
   public static final String LOBBY_HOST = "triplea.lobby.host";
   public static final String LOBBY_PORT = "triplea.lobby.port";
   public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";

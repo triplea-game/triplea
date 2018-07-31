@@ -18,7 +18,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -105,7 +104,7 @@ public class GameRunner {
   private static final Set<String> COMMAND_LINE_ARGS = new HashSet<>(Arrays.asList(
       TRIPLEA_GAME, TRIPLEA_MAP_DOWNLOAD, TRIPLEA_SERVER, TRIPLEA_CLIENT,
       TRIPLEA_HOST, TRIPLEA_PORT, TRIPLEA_NAME, SERVER_PASSWORD,
-      TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
+      LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
       DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER));
 
 
