@@ -1430,6 +1430,7 @@ public class MoveValidator {
     // no impassable or restricted territories
     final Predicate<Territory> noImpassable =
         PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player, data))
+            .and(Matches.territoryEffectsAllowUnits(units))
             // if we have air or land, we don't want to move over territories owned by players who's
             // relationships will not let us move into them
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))
