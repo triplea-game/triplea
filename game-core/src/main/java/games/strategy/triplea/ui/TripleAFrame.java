@@ -1423,9 +1423,9 @@ public class TripleAFrame extends MainGameFrame {
     } finally {
       data.releaseReadLock();
     }
-    int round;
-    String stepDisplayName;
-    PlayerID player;
+    final int round;
+    final String stepDisplayName;
+    final PlayerID player;
     data.acquireReadLock();
     try {
       round = data.getSequence().getRound();

@@ -1,5 +1,9 @@
 package games.strategy.engine.data;
 
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
 public class Territory extends NamedAttachable implements NamedUnitHolder, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
   private final boolean m_water;
@@ -44,11 +48,8 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     return m_owner;
   }
 
-  public void setOwner(PlayerID newOwner) {
-    if (newOwner == null) {
-      newOwner = PlayerID.NULL_PLAYERID;
-    }
-    m_owner = newOwner;
+  public void setOwner(final @Nullable PlayerID owner) {
+    m_owner = Optional.ofNullable(owner).orElse(PlayerID.NULL_PLAYERID);
     getData().notifyTerritoryOwnerChanged(this);
   }
 

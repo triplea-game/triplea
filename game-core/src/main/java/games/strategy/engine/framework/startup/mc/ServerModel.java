@@ -144,11 +144,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  public void setRemoteModelListener(IRemoteModelListener listener) {
-    if (listener == null) {
-      listener = IRemoteModelListener.NULL_LISTENER;
-    }
-    remoteModelListener = listener;
+  public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
+    remoteModelListener = Optional.ofNullable(listener).orElse(IRemoteModelListener.NULL_LISTENER);
   }
 
   public void setLocalPlayerType(final String player, final PlayerType type) {

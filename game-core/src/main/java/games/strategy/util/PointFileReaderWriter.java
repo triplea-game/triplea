@@ -252,14 +252,13 @@ public final class PointFileReaderWriter {
   }
 
   @VisibleForTesting
-  static void readStream(final InputStream stream, Consumer<String> lineParser)
-      throws IOException {
+  static void readStream(final InputStream stream, final Consumer<String> lineParser) throws IOException {
     try (Reader inputStreamReader = new InputStreamReader(new CloseShieldInputStream(stream), StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputStreamReader)) {
       reader.lines()
           .filter(current -> current.trim().length() != 0)
           .forEachOrdered(lineParser);
-    } catch (IllegalArgumentException e) {
+    } catch (final IllegalArgumentException e) {
       throw new IOException(e);
     }
   }

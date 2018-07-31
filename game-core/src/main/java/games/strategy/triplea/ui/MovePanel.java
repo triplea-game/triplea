@@ -453,7 +453,7 @@ public class MovePanel extends AbstractMovePanel {
     sortUnitsToMove(best, route);
     Collections.reverse(best);
     List<Unit> bestWithDependents = addMustMoveWith(best);
-    MoveValidationResult allResults;
+    final MoveValidationResult allResults;
     getData().acquireReadLock();
     try {
       allResults = AbstractMoveDelegate.validateMove(moveType, bestWithDependents, route, getCurrentPlayer(),

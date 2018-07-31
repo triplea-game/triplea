@@ -23,7 +23,7 @@ public final class TestGameLoader implements IGameLoader {
 
   @Override
   public void startGame(final IGame game, final Set<IGamePlayer> players,
-      final boolean headless, @Nullable Chat chat) {}
+      final boolean headless, final @Nullable Chat chat) {}
 
   @Override
   public Set<IGamePlayer> createPlayers(final Map<String, PlayerType> players) {

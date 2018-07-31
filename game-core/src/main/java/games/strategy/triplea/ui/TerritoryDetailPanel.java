@@ -81,7 +81,7 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
     }
     add(new JLabel(labelText));
     gameData.acquireReadLock();
-    Collection<Unit> unitsInTerritory;
+    final Collection<Unit> unitsInTerritory;
     try {
       unitsInTerritory = territory.getUnits().getUnits();
     } finally {

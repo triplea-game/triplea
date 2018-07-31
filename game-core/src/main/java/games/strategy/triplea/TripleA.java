@@ -54,7 +54,7 @@ public class TripleA implements IGameLoader {
         .collect(Collectors.toSet());
   }
 
-  private static IGamePlayer toGamePlayer(Map.Entry<String, PlayerType> namePlayerType) {
+  private static IGamePlayer toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
     return namePlayerType.getValue()
         .createPlayerWithName(namePlayerType.getKey());
   }

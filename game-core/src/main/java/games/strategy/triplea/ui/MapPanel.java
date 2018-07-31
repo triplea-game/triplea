@@ -380,28 +380,28 @@ public class MapPanel extends ImageScrollerLargeView {
     return gameData.getMap().getTerritory(name);
   }
 
-  private double normalizeX(double x) {
+  private double normalizeX(final double x) {
     if (!uiContext.getMapData().scrollWrapX()) {
       return x;
     }
     final int imageWidth = (int) getImageDimensions().getWidth();
     if (x < 0) {
-      x += imageWidth;
+      return x + imageWidth;
     } else if (x > imageWidth) {
-      x -= imageWidth;
+      return x - imageWidth;
     }
     return x;
   }
 
-  private double normalizeY(double y) {
+  private double normalizeY(final double y) {
     if (!uiContext.getMapData().scrollWrapY()) {
       return y;
     }
     final int imageHeight = (int) getImageDimensions().getHeight();
     if (y < 0) {
-      y += imageHeight;
+      return y + imageHeight;
     } else if (y > imageHeight) {
-      y -= imageHeight;
+      return y - imageHeight;
     }
     return y;
   }

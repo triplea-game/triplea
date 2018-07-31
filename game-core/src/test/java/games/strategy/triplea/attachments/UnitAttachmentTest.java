@@ -134,8 +134,7 @@ public class UnitAttachmentTest {
     assertEquals(Tuple.of(falseString, expected2), mapReference.get(from + ":" + to));
   }
 
-
-  private String concatWithColon(String... args) {
+  private static String concatWithColon(final String... args) {
     return Arrays.stream(args).collect(Collectors.joining(":"));
   }
 }

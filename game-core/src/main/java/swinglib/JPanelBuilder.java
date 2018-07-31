@@ -315,7 +315,7 @@ public class JPanelBuilder {
     return flowLayout(FlowLayoutJustification.DEFAULT);
   }
 
-  public JPanelBuilder flowLayout(FlowLayoutJustification flowLayoutDirection) {
+  public JPanelBuilder flowLayout(final FlowLayoutJustification flowLayoutDirection) {
     layout = flowLayoutDirection.layoutSupplier.get();
     return this;
   }
@@ -487,15 +487,15 @@ public class JPanelBuilder {
     GridBagHelper.Anchor anchor = Anchor.WEST;
 
 
-    PanelProperties(BorderLayoutPosition borderLayoutPosition) {
+    PanelProperties(final BorderLayoutPosition borderLayoutPosition) {
       this.borderLayoutPosition = borderLayoutPosition;
     }
 
-    PanelProperties(ColumnSpan columnSpan) {
+    PanelProperties(final ColumnSpan columnSpan) {
       this.columnSpan = columnSpan;
     }
 
-    PanelProperties(Anchor anchor, Fill fill) {
+    PanelProperties(final Anchor anchor, final Fill fill) {
       this.anchor = anchor;
       this.fill = fill;
     }

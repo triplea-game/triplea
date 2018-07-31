@@ -58,7 +58,7 @@ public enum PlayerType {
   private final boolean visible;
   private final Function<String, IGamePlayer> playerFactory;
 
-  PlayerType(String label, Function<String, IGamePlayer> playerFactory) {
+  PlayerType(final String label, final Function<String, IGamePlayer> playerFactory) {
     this(label, true, playerFactory);
   }
 
@@ -75,10 +75,10 @@ public enum PlayerType {
   }
 
   /**
-   * Each PlayerType is backed by an @{code IGamePlayer} instance. Given a playername this method
-   * will create the corresponding @{code IGamePlayer} instance.
+   * Each PlayerType is backed by an {@code IGamePlayer} instance. Given a player name this method
+   * will create the corresponding {@code IGamePlayer} instance.
    */
-  public IGamePlayer createPlayerWithName(String name) {
+  public IGamePlayer createPlayerWithName(final String name) {
     return playerFactory.apply(name);
   }
 
