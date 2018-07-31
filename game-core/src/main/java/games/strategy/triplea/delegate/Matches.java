@@ -904,6 +904,13 @@ public final class Matches {
     };
   }
 
+  public static Predicate<Territory> territoryEffectsAllowUnits(final Collection<Unit> units) {
+    return t -> {
+      return units.stream()
+          .noneMatch(Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(t)));
+    };
+  }
+
   public static Predicate<Territory> territoryIsNotImpassable() {
     return territoryIsImpassable().negate();
   }
