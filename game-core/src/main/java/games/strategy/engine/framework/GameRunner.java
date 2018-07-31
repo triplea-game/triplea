@@ -1,15 +1,10 @@
 package games.strategy.engine.framework;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.engine.framework.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_RECONNECTION;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
-import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
@@ -18,7 +13,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -34,10 +28,8 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -102,13 +94,6 @@ public class GameRunner {
   private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
   private static JFrame mainFrame;
 
-  private static final Set<String> COMMAND_LINE_ARGS = new HashSet<>(Arrays.asList(
-      TRIPLEA_GAME, TRIPLEA_MAP_DOWNLOAD, TRIPLEA_SERVER, TRIPLEA_CLIENT,
-      TRIPLEA_HOST, TRIPLEA_PORT, TRIPLEA_NAME, SERVER_PASSWORD,
-      TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY,
-      DO_NOT_CHECK_FOR_UPDATES, MAP_FOLDER));
-
-
   /**
    * Launches the "main" TripleA gui enabled game client.
    * No args will launch a client, additional args can be supplied to specify additional behavior.
@@ -126,10 +111,7 @@ public class GameRunner {
       }));
     }
 
-    if (!new ArgParser(COMMAND_LINE_ARGS).handleCommandLineArgs(args)) {
-      usage();
-      return;
-    }
+    new ArgParser().handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
       com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
@@ -314,35 +296,6 @@ public class GameRunner {
       SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
     }
   }
-
-  private static void usage() {
-    System.out.println("\nUsage and Valid Arguments:\n"
-        + "   " + TRIPLEA_GAME + "=<FILE_NAME>\n"
-        + "   " + TRIPLEA_SERVER + "=true\n"
-        + "   " + TRIPLEA_PORT + "=<PORT>\n"
-        + "   " + TRIPLEA_NAME + "=<PLAYER_NAME>\n"
-        + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
-        + "   " + LOBBY_PORT + "=<LOBBY_PORT>\n"
-        + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
-        + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
-        + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
-        + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-        + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
-        + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-        + "   " + MAP_FOLDER + "=mapFolder"
-        + "\n"
-        + "   You must start the Name and HostedBy with \"Bot\".\n"
-        + "   Game Comments must have this string in it: \"automated_host\".\n"
-        + "   You must include a support email for your host, so that you can be alerted by lobby admins when your "
-        + "host has an error."
-        + " (For example they may email you when your host is down and needs to be restarted.)\n"
-        + "   Support password is a remote access password that will allow lobby admins to remotely take the "
-        + "following actions: ban player, stop game, shutdown server."
-        + " (Please email this password to one of the lobby moderators, or private message an admin on the "
-        + "TripleaWarClub.org website forum.)\n");
-  }
-
-
 
   public static Image getGameIcon(final Window frame) {
     Image img = null;
