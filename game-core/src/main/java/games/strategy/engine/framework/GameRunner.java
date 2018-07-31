@@ -114,16 +114,16 @@ public class GameRunner {
    * No args will launch a client, additional args can be supplied to specify additional behavior.
    * Warning: game engine code invokes this method to spawn new game clients.
    */
-  public static void main(final String[] args) throws InterruptedException {
+  public static void main(final String[] args) {
     LoggingConfiguration.initialize();
     ClientSetting.initialize();
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      SwingAction.invokeAndWait(() -> {
+      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
         LookAndFeel.setupLookAndFeel();
         ErrorConsole.createConsole();
         ErrorMessage.INSTANCE.init();
-      });
+      }));
     }
 
     if (!new ArgParser(COMMAND_LINE_ARGS).handleCommandLineArgs(args)) {
