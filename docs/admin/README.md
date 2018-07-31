@@ -16,38 +16,6 @@
   - https://forums.triplea-game.org/category/1/announcements
   - http://www.axisandallies.org/forums/index.php?board=53.0
 
-# Server Ops
-
-## Lobby
-
-### Installation
-https://github.com/triplea-game/lobby/blob/master/install_lobby
-
-
-### Starting and Stopping
-```
-sudo service triplea-lobby start|stop|status|restart
-```
-Be advised, restarting the lobby quits all connections to all bots.
-Even if the lobby restarts, the bots won't reconnect automatically, they will have to be restarted on their own.
-
-_This command is currently restricted to users with full sudo rights._
-
-## [The Dice server](https://github.com/triplea-game/dice-server)
-
-Installed on the 'warclub' server
-
-### Installation
-TODO
-
-### Check status
-TODO
-
-### Starting and Stopping
-
-```
-sudo service nginx restart
-```
 
 ## [NodeBB Forums](https://forums.triplea-game.org)
 - Runs on the "NJ" linode server
@@ -137,11 +105,3 @@ An admin owned account used for automated build tasks that require repository wr
       Travis ruby set up program when first configuring travis with TripleA.
   - *Stored Location*: encrypted in the travis.yml file
   - *Usage*: [travis.yml](https://github.com/triplea-game/triplea/blob/master/.travis.yml#L32)
-
-
-## Regenerating Travis Environment Variables:
-
-Can be done through the Travis UI. Note they are write-once, so they just need to be deleted and re-created with known values.
-
-The config can be found here (You must be logged in as the bot or with admin/write-access to TripleA): [travis-ci.org/triplea-game/triplea/settings](https://travis-ci.org/triplea-game/triplea/settings)
-![Travis](https://cloud.githubusercontent.com/assets/12397753/26811735/6e69c5de-4a28-11e7-8996-49338f428349.png)
