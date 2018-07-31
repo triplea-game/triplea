@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -66,6 +67,13 @@ public class HeadlessGameServer {
   private ServerGame game = null;
   private boolean shutDown = false;
 
+  private final List<Runnable> shutdownListeners = Arrays.asList(
+      lobbyWatcherResetupThread::shutdown,
+      () -> Optional.ofNullable(game).ifPresent(ServerGame::stopGame),
+      () -> Optional.ofNullable(setupPanelModel)
+          .ifPresent(model -> model.getPanel().cancel()));
+
+
   private HeadlessGameServer() {
     if (instance != null) {
       throw new IllegalStateException("Instance already exists");
@@ -73,7 +81,9 @@ public class HeadlessGameServer {
     instance = this;
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       log.info("Running ShutdownHook.");
-      shutdown();
+      shutDown = true;
+      shutdownListeners.stream()
+          .forEach(Runnable::run);
     }));
     availableGames = new AvailableGames();
     gameSelectorModel = new GameSelectorModel();
@@ -509,26 +519,6 @@ public class HeadlessGameServer {
         + "\n\n"
         + DebugUtils.getMemory()
         + "\n\nDump finished.\n");
-  }
-
-  synchronized void shutdown() {
-    shutDown = true;
-    try {
-      lobbyWatcherResetupThread.shutdown();
-    } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to shutdown lobby watcher resetup thread", e);
-    }
-    try {
-      if (game != null) {
-        game.stopGame();
-      }
-    } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to stop game", e);
-    }
-    Optional.ofNullable(setupPanelModel)
-        .ifPresent(model -> model.getPanel().cancel());
-
-    log.info("Shutdown Script Finished.");
   }
 
   private void waitForUsersHeadless() {
