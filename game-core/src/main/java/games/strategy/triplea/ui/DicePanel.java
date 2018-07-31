@@ -1,7 +1,9 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Dimension;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -44,7 +46,10 @@ public class DicePanel extends JPanel {
     SwingAction.invokeNowOrLater(() -> {
       removeAll();
       for (int i = 1; i <= data.getDiceSides(); i++) {
-        final List<Die> dice = diceRoll.getRolls(i);
+        final int index = i;
+        final List<Die> dice = Optional.ofNullable(diceRoll)
+            .map(roll -> roll.getRolls(index))
+            .orElse(Collections.emptyList());
         if (dice.isEmpty()) {
           continue;
         }
@@ -52,7 +57,11 @@ public class DicePanel extends JPanel {
         add(create(diceRoll.getRolls(i)));
       }
       add(Box.createVerticalGlue());
-      add(new JLabel("Total hits:" + diceRoll.getHits()));
+      final String hitCount = Optional.ofNullable(diceRoll)
+          .map(DiceRoll::getHits)
+          .map(String::valueOf)
+          .orElse("0");
+      add(new JLabel("Total hits:" + hitCount));
       validate();
       invalidate();
       repaint();
