@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -32,8 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
 import games.strategy.test.extensions.TemporaryFolder;
@@ -72,13 +72,13 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
       file = temporaryFolder.newFile(getClass().getName());
 
       when(client.execute(any())).thenReturn(response);
-      when(response.getEntity()).thenReturn(entity);
       when(response.getStatusLine()).thenReturn(statusLine);
-      when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
     }
 
     @Test
     public void shouldCopyEntityToFileWhenHappyPath() throws Exception {
+      when(response.getEntity()).thenReturn(entity);
+      when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
       final byte[] bytes = givenEntityContentIs(new byte[] {42, 43, 44, 45});
 
       downloadToFile();
@@ -101,7 +101,6 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
       return Files.readAllBytes(file.toPath());
     }
 
-    @MockitoSettings(strictness = Strictness.WARN)
     @Test
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
@@ -114,6 +113,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     @Test
     public void shouldThrowExceptionWhenEntityIsAbsent() {
       when(response.getEntity()).thenReturn(null);
+      when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
 
       final Exception e = assertThrows(IOException.class, () -> downloadToFile());
 
@@ -193,25 +193,28 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     @BeforeEach
     public void setUp() throws Exception {
       when(client.execute(any())).thenReturn(response);
-      when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(contentLengthHeader);
       when(response.getStatusLine()).thenReturn(statusLine);
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
     }
 
     @Test
     public void shouldReturnLengthWhenContentLengthHeaderIsPresent() throws Exception {
-      when(contentLengthHeader.getValue()).thenReturn("42");
+      givenContentLengthHeaderValueIs("42");
 
       final Optional<Long> length = getDownloadLengthFromHost();
 
       assertThat(length, is(Optional.of(42L)));
     }
 
+    private void givenContentLengthHeaderValueIs(final @Nullable String value) {
+      when(contentLengthHeader.getValue()).thenReturn(value);
+      when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(contentLengthHeader);
+    }
+
     private Optional<Long> getDownloadLengthFromHost() throws Exception {
       return DownloadUtils.getDownloadLengthFromHost(URI, client);
     }
 
-    @MockitoSettings(strictness = Strictness.WARN)
     @Test
     public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
@@ -232,7 +235,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
 
     @Test
     public void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() {
-      when(contentLengthHeader.getValue()).thenReturn(null);
+      givenContentLengthHeaderValueIs(null);
 
       final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 
@@ -241,7 +244,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
 
     @Test
     public void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() {
-      when(contentLengthHeader.getValue()).thenReturn("value");
+      givenContentLengthHeaderValueIs("value");
 
       final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
 

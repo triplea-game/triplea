@@ -15,8 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -48,12 +46,13 @@ public class SaveFunctionTest {
   private void givenValidationResults(final boolean first, final boolean second) {
     Mockito.when(mockBinding.isValid()).thenReturn(first);
     Mockito.when(mockBinding.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
-    Mockito.when(mockSetting.value()).thenReturn("");
+    if (first) {
+      Mockito.when(mockSetting.value()).thenReturn("");
+    }
     Mockito.when(mockBinding2.isValid()).thenReturn(second);
     Mockito.when(mockBinding2.readValues()).thenReturn(ImmutableMap.of(mockSetting, "abc"));
   }
 
-  @MockitoSettings(strictness = Strictness.WARN)
   @Test
   public void messageOnNotValidResultIsWarning() {
     givenValidationResults(false, false);
