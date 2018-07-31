@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Dimension;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
