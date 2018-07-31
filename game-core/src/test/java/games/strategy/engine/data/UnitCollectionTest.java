@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,14 +17,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.WARN)
 public class UnitCollectionTest {
 
   @Mock
@@ -61,10 +59,6 @@ public class UnitCollectionTest {
   public void setup() {
     unitTypeOne = new UnitType("Unit Type 1", mockGameData);
     unitTypeTwo = new UnitType("Unit Type 2", mockGameData);
-    final UnitTypeList unitTypeList = new UnitTypeList(mockGameData);
-    unitTypeList.addUnitType(unitTypeOne);
-    unitTypeList.addUnitType(unitTypeTwo);
-    Mockito.when(mockGameData.getUnitTypeList()).thenReturn(unitTypeList);
 
     unitCollection = new UnitCollection(defaultPlayerId, mockGameData);
 
@@ -294,10 +288,18 @@ public class UnitCollectionTest {
 
   @Test
   public void getUnitsByType() {
+    givenUnitTypeList();
     final UnitCollection allDefaultPlayerUnitCollection = addAllDefaultPlayerUnitsToUnitCollection(unitCollection);
     final IntegerMap<UnitType> unitsByType = allDefaultPlayerUnitCollection.getUnitsByType();
     assertThat(unitsByType.getInt(unitTypeOne), is(equalTo(unitCountDefaultPlayerUnitTypeOne)));
     assertThat(unitsByType.getInt(unitTypeTwo), is(equalTo(unitCountDefaultPlayerUnitTypeTwo)));
+  }
+
+  private void givenUnitTypeList() {
+    final UnitTypeList unitTypeList = new UnitTypeList(mockGameData);
+    unitTypeList.addUnitType(unitTypeOne);
+    unitTypeList.addUnitType(unitTypeTwo);
+    when(mockGameData.getUnitTypeList()).thenReturn(unitTypeList);
   }
 
   @Test
@@ -316,6 +318,7 @@ public class UnitCollectionTest {
 
   @Test
   public void getUnitsWithUnityByTypeIntegerMap() {
+    givenUnitTypeList();
     final UnitCollection allDefaultPlayerUnitCollection = addAllDefaultPlayerUnitsToUnitCollection(unitCollection);
     final IntegerMap<UnitType> unitsByType = allDefaultPlayerUnitCollection.getUnitsByType();
     final Collection<Unit> expAllUnitsOfDefaultPlayer = allDefaultPlayerUnitCollection.getUnits(unitsByType);

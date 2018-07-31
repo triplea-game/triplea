@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -66,6 +67,13 @@ public class HeadlessGameServer {
   private ServerGame game = null;
   private boolean shutDown = false;
 
+  private final List<Runnable> shutdownListeners = Arrays.asList(
+      lobbyWatcherResetupThread::shutdown,
+      () -> Optional.ofNullable(game).ifPresent(ServerGame::stopGame),
+      () -> Optional.ofNullable(setupPanelModel)
+          .ifPresent(model -> model.getPanel().cancel()));
+
+
   private HeadlessGameServer() {
     if (instance != null) {
       throw new IllegalStateException("Instance already exists");
@@ -73,7 +81,9 @@ public class HeadlessGameServer {
     instance = this;
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       log.info("Running ShutdownHook.");
-      shutdown();
+      shutDown = true;
+      shutdownListeners.stream()
+          .forEach(Runnable::run);
     }));
     availableGames = new AvailableGames();
     gameSelectorModel = new GameSelectorModel();
@@ -240,8 +250,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         log.info("Remote Shutdown Initiated.");
         System.exit(0);
@@ -257,8 +266,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       final ServerGame serverGame = game;
       if (serverGame != null) {
         new Thread(() -> {
@@ -284,8 +292,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       final IChatPanel chat = getServerModel().getChatPanel();
       if (chat == null || chat.getAllText() == null) {
         return "Empty or null chat";
@@ -302,10 +309,9 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     // (48 hours max)
     final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
@@ -346,8 +352,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
@@ -384,10 +389,9 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     // milliseconds (30 days max)
     final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
@@ -511,26 +515,6 @@ public class HeadlessGameServer {
         + "\n\nDump finished.\n");
   }
 
-  synchronized void shutdown() {
-    shutDown = true;
-    try {
-      lobbyWatcherResetupThread.shutdown();
-    } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to shutdown lobby watcher resetup thread", e);
-    }
-    try {
-      if (game != null) {
-        game.stopGame();
-      }
-    } catch (final Exception e) {
-      log.log(Level.SEVERE, "Failed to stop game", e);
-    }
-    Optional.ofNullable(setupPanelModel)
-        .ifPresent(model -> model.getPanel().cancel());
-
-    log.info("Shutdown Script Finished.");
-  }
-
   private void waitForUsersHeadless() {
     setServerGame(null);
 
@@ -632,12 +616,7 @@ public class HeadlessGameServer {
     ClientSetting.initialize();
 
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    // TODO: get properties from a configuration file instead of CLI.
-    if (!new ArgParser(getProperties()).handleCommandLineArgs(args)) {
-      usage();
-      return;
-    }
-
+    new ArgParser().handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
     try {

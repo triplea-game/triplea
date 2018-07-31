@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.annotations.VisibleForTesting;
+
 public class ProductionFrontierList extends GameDataComponent {
   private static final long serialVersionUID = -7565214499087021809L;
   private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<>();
@@ -12,7 +14,8 @@ public class ProductionFrontierList extends GameDataComponent {
     super(data);
   }
 
-  protected void addProductionFrontier(final ProductionFrontier pf) {
+  @VisibleForTesting
+  public void addProductionFrontier(final ProductionFrontier pf) {
     m_productionFrontiers.put(pf.getName(), pf);
   }
 

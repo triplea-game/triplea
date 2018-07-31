@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Window;
@@ -8,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JToolTip;
 import javax.swing.Popup;
@@ -24,14 +27,17 @@ import games.strategy.triplea.attachments.UnitAttachment;
 /**
  * Responsible for showing tool tips when hovering over units on the main map.
  */
-public class MapUnitTooltipManager implements ActionListener {
+public final class MapUnitTooltipManager implements ActionListener {
   private final JComponent parent;
-  private final WindowDeactivationObserver deactivationObserver;
+  private final WindowDeactivationObserver windowDeactivationObserver = new WindowDeactivationObserver();
   private final Timer timer;
-  private String text;
-  private Popup popup;
+  private @Nullable String text;
+  private @Nullable Popup popup;
+  private @Nullable Window window;
 
   public MapUnitTooltipManager(final JComponent parent) {
+    checkNotNull(parent);
+
     this.parent = parent;
     // Timeout to show tooltip is 2 seconds.
     this.timer = new Timer(2000, this);
@@ -39,31 +45,15 @@ public class MapUnitTooltipManager implements ActionListener {
     // Note: Timer not started yet.
 
     // Close tooltips when the window becomes inactive - so they don't overlap opened dialogs.
-    deactivationObserver = new WindowDeactivationObserver();
+    // Listen to ancestor events as the component may not have a Window yet.
+    parent.addAncestorListener(windowDeactivationObserver);
+    attachWindowListener();
   }
 
-  private class WindowDeactivationObserver extends WindowAdapter implements AncestorListener {
-    private Window window;
-
-    public WindowDeactivationObserver() {
-      // Listen to ancestor events as the component may not have a Window yet.
-      parent.addAncestorListener(this);
-      updateWindowObserver();
-    }
-
-    private void updateWindowObserver() {
-      if (window != null) {
-        window.removeWindowListener(this);
-      }
-      window = SwingUtilities.getWindowAncestor(parent);
-      if (window != null) {
-        window.addWindowListener(this);
-      }
-    }
-
+  private final class WindowDeactivationObserver extends WindowAdapter implements AncestorListener {
     @Override
     public void windowClosed(final WindowEvent e) {
-      window.removeWindowListener(this);
+      detachWindowListener();
     }
 
     @Override
@@ -73,17 +63,35 @@ public class MapUnitTooltipManager implements ActionListener {
 
     @Override
     public void ancestorAdded(final AncestorEvent event) {
-      updateWindowObserver();
+      reattachWindowListener();
     }
 
     @Override
     public void ancestorRemoved(final AncestorEvent event) {
-      updateWindowObserver();
+      reattachWindowListener();
     }
 
     @Override
     public void ancestorMoved(final AncestorEvent event) {
-      updateWindowObserver();
+      reattachWindowListener();
+    }
+  }
+
+  private void reattachWindowListener() {
+    detachWindowListener();
+    attachWindowListener();
+  }
+
+  private void detachWindowListener() {
+    if (window != null) {
+      window.removeWindowListener(windowDeactivationObserver);
+    }
+  }
+
+  private void attachWindowListener() {
+    window = SwingUtilities.getWindowAncestor(parent);
+    if (window != null) {
+      window.addWindowListener(windowDeactivationObserver);
     }
   }
 
