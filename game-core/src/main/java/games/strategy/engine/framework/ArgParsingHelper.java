@@ -21,17 +21,17 @@ import lombok.NoArgsConstructor;
  * return them as part of a {@code Properties} object.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ArgParsingHelper {
+final class ArgParsingHelper {
   @VisibleForTesting
   static final String TRIPLEA_PROPERTY_PREFIX = "P";
 
-  public static Properties getTripleaProperties(final String... args) {
+  static Properties getTripleaProperties(final String... args) {
     final Options options = getOptions();
     final CommandLineParser parser = new DefaultParser();
     try {
       final CommandLine cli = parser.parse(options, args);
       return cli.getOptionProperties(TRIPLEA_PROPERTY_PREFIX);
-    } catch (ParseException e) {
+    } catch (final ParseException e) {
       throw new IllegalArgumentException("Failed to parse args: " + Arrays.asList(args), e);
     }
   }
