@@ -32,7 +32,7 @@ final class ArgParsingHelper {
       final CommandLine cli = parser.parse(options, args);
       return cli.getOptionProperties(TRIPLEA_PROPERTY_PREFIX);
     } catch (final ParseException e) {
-      throw new IllegalArgumentException("Failed to parse args: " + Arrays.asList(args), e);
+      throw new IllegalArgumentException("Failed to parse args: " + Arrays.toString(args), e);
     }
   }
 
