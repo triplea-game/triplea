@@ -250,8 +250,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         log.info("Remote Shutdown Initiated.");
         System.exit(0);
@@ -267,8 +266,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       final ServerGame serverGame = game;
       if (serverGame != null) {
         new Thread(() -> {
@@ -294,8 +292,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       final IChatPanel chat = getServerModel().getChatPanel();
       if (chat == null || chat.getAllText() == null) {
         return "Empty or null chat";
@@ -312,10 +309,9 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     // (48 hours max)
     final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
@@ -356,8 +352,7 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
@@ -394,10 +389,9 @@ public class HeadlessGameServer {
     if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
-    final String localPassword = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     // milliseconds (30 days max)
     final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
-    if (hashPassword(localPassword, salt).equals(hashedPassword)) {
+    if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
           return;
