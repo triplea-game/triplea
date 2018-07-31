@@ -401,7 +401,7 @@ final class ExportMenu extends JMenu {
     final JMenuItem menuFileExport = new JMenuItem(SwingAction.of("Export Setup Charts", e -> {
       final JFrame frame = new JFrame("Export Setup Charts");
       frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      GameData clonedGameData;
+      final GameData clonedGameData;
       gameData.acquireReadLock();
       try {
         clonedGameData = GameDataUtils.cloneGameData(gameData);

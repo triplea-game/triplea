@@ -466,7 +466,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     m_directOwnershipTerritories = null;
   }
 
-  private void setUnitPresence(String value) throws GameParseException {
+  private void setUnitPresence(final String value) throws GameParseException {
     final String[] s = value.split(":");
     if (s.length <= 1) {
       throw new GameParseException("unitPresence must have at least 2 fields. Format value=unit1 count=number, or "
@@ -484,8 +484,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
-    value = value.replaceFirst(s[0] + ":", "");
-    m_unitPresence.put(value, n);
+    m_unitPresence.put(value.replaceFirst(s[0] + ":", ""), n);
   }
 
   private void setUnitPresence(final IntegerMap<String> value) {

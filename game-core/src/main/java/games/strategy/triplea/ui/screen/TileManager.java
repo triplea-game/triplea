@@ -97,7 +97,7 @@ public class TileManager {
       final List<Tile> tilesInBounds = new ArrayList<>();
       for (final Tile tile : tiles) {
         final Rectangle tileBounds = tile.getBounds();
-        for (AffineTransform transform : translations) {
+        for (final AffineTransform transform : translations) {
           if (transform.createTransformedShape(tileBounds).intersects(bounds)) {
             tilesInBounds.add(tile);
             break;
@@ -162,7 +162,7 @@ public class TileManager {
           tile.addDrawable(new BaseMapDrawable(x, y, uiContext));
           tile.addDrawable(new ReliefMapDrawable(x, y, uiContext));
         }
-        for (Territory territory : data.getMap().getTerritories()) {
+        for (final Territory territory : data.getMap().getTerritories()) {
           clearTerritory(territory);
           drawTerritory(territory, data, mapData);
         }
@@ -194,7 +194,7 @@ public class TileManager {
         if (territories == null) {
           return;
         }
-        for (Territory territory : territories) {
+        for (final Territory territory : territories) {
           updateTerritory(territory, data, mapData);
         }
       } finally {
@@ -229,7 +229,7 @@ public class TileManager {
     if (drawables == null || drawables.isEmpty()) {
       return;
     }
-    for (Tile tile : territoryTiles.get(territory.getName())) {
+    for (final Tile tile : territoryTiles.get(territory.getName())) {
       tile.removeDrawables(drawables);
     }
     allUnitDrawables.removeAll(drawables);
@@ -285,7 +285,7 @@ public class TileManager {
       drawing.add(new VcDrawable(territory));
     }
     // add to the relevant tiles
-    for (Tile tile : getTiles(mapData.getBoundingRect(territory.getName()))) {
+    for (final Tile tile : getTiles(mapData.getBoundingRect(territory.getName()))) {
       drawnOn.add(tile);
       tile.addDrawables(drawing);
     }
@@ -330,7 +330,7 @@ public class TileManager {
           category.getDisabled(), overflow, territory.getName(), uiContext);
       drawing.add(drawable);
       allUnitDrawables.add(drawable);
-      for (Tile tile : getTiles(
+      for (final Tile tile : getTiles(
           new Rectangle(lastPlace.x, lastPlace.y, uiContext.getUnitImageFactory().getUnitImageWidth(),
               uiContext.getUnitImageFactory().getUnitImageHeight()))) {
         tile.addDrawable(drawable);

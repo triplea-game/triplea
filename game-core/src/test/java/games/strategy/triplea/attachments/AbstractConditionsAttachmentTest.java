@@ -19,7 +19,7 @@ public class AbstractConditionsAttachmentTest {
         private static final long serialVersionUID = -40443726954483090L;
 
         @Override
-        public void validate(GameData data) {}
+        public void validate(final GameData data) {}
       };
 
   @Test

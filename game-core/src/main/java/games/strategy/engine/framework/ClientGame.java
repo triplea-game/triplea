@@ -171,7 +171,7 @@ public class ClientGame extends AbstractGame {
       remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(channelMessenger.getLocalNode()));
       vault.shutDown();
       for (final IGamePlayer gp : gamePlayers.values()) {
-        PlayerID player;
+        final PlayerID player;
         gameData.acquireReadLock();
         try {
           player = gameData.getPlayerList().getPlayerId(gp.getName());

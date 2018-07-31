@@ -326,7 +326,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       // this gets updated later
       enabledCheckBox.setSelected(true);
-      String[] playerTypes = PlayerType.playerTypes();
+      final String[] playerTypes = PlayerType.playerTypes();
       type = new JComboBox<>(playerTypes);
       String previousSelection = reloadSelections.get(playerName);
       if (previousSelection.equalsIgnoreCase("Client")) {

@@ -180,7 +180,7 @@ public class TechPanel extends ActionPanel {
 
     final int pus = currentPlayer.getResources().getQuantity(Constants.PUS);
     // see if anyone will help us to pay
-    Collection<PlayerID> helpPay;
+    final Collection<PlayerID> helpPay;
     final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
     if (pa != null) {
       helpPay = pa.getHelpPayTechCost();

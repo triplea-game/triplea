@@ -131,7 +131,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
    * This method will 'change' screens, swapping out one setup panel for another.
    */
   @Override
-  public void screenChangeEvent(ISetupPanel panel) {
+  public void screenChangeEvent(final ISetupPanel panel) {
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
     gameSetupPanelHolder.add(panel.getDrawable(), BorderLayout.CENTER);

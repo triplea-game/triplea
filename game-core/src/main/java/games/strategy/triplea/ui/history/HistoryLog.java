@@ -388,7 +388,7 @@ public class HistoryLog extends JFrame {
   }
 
   public void printTerritorySummary(final HistoryNode printNode, final GameData data) {
-    Collection<Territory> territories;
+    final Collection<Territory> territories;
     final PlayerID player = getPlayerId(printNode);
     data.acquireReadLock();
     try {
@@ -402,8 +402,8 @@ public class HistoryLog extends JFrame {
   }
 
   private void printTerritorySummary(final GameData data) {
-    Collection<Territory> territories;
-    PlayerID player;
+    final Collection<Territory> territories;
+    final PlayerID player;
     data.acquireReadLock();
     try {
       player = data.getSequence().getStep().getPlayerId();
@@ -421,7 +421,7 @@ public class HistoryLog extends JFrame {
       printTerritorySummary(data);
       return;
     }
-    Collection<Territory> territories;
+    final Collection<Territory> territories;
     data.acquireReadLock();
     try {
       territories = data.getMap().getTerritories();
@@ -478,8 +478,8 @@ public class HistoryLog extends JFrame {
 
   public void printProductionSummary(final GameData data) {
     final PrintWriter logWriter = printWriter;
-    Collection<PlayerID> players;
-    Resource pus;
+    final Collection<PlayerID> players;
+    final Resource pus;
     data.acquireReadLock();
     try {
       pus = data.getResourceList().getResource(Constants.PUS);

@@ -305,11 +305,10 @@ public class ImageScrollerLargeView extends JComponent {
    * @param value The new scale value. Constrained to the bounds of no less than 0.15 and no greater than 1.
    *        If out of bounds the nearest boundary value is used.
    */
-  public void setScale(double value) {
+  public void setScale(final double value) {
     // we want the ratio to be a multiple of 1/256
     // so that the tiles have integer widths and heights
-    value = ((int) (value * 256)) / ((double) 256);
-    scale = value;
+    scale = ((int) (value * 256)) / ((double) 256);
     refreshBoxSize();
   }
 

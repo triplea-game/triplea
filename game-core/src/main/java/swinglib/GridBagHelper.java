@@ -88,7 +88,7 @@ public final class GridBagHelper {
     return nextConstraint(Anchor.WEST, Fill.NONE);
   }
 
-  GridBagConstraints nextConstraint(Anchor anchor, Fill fill) {
+  GridBagConstraints nextConstraint(final Anchor anchor, final Fill fill) {
     final int x = elementCount % columns;
     final int y = elementCount / columns;
 
@@ -156,7 +156,7 @@ public final class GridBagHelper {
     private final int weightX;
     private final int weightY;
 
-    Fill(int gridBagConstraintValue) {
+    Fill(final int gridBagConstraintValue) {
       this(gridBagConstraintValue, 0, 0);
     }
   }

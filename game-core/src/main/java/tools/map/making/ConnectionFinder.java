@@ -105,7 +105,7 @@ public final class ConnectionFinder {
       mapFolderLocation = polyFile.getParentFile();
     }
     final Map<String, List<Area>> territoryAreas = new HashMap<>();
-    Map<String, List<Polygon>> mapOfPolygons;
+    final Map<String, List<Polygon>> mapOfPolygons;
     try (InputStream in = new FileInputStream(polyFile)) {
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
       for (final Entry<String, List<Polygon>> entry : mapOfPolygons.entrySet()) {

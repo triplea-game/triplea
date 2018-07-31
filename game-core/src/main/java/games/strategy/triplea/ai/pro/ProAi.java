@@ -184,7 +184,7 @@ public class ProAi extends AbstractAi {
       ProLogger.info("Starting simulation for purchase phase");
 
       // Setup data copy and delegates
-      GameData dataCopy;
+      final GameData dataCopy;
       try {
         data.acquireWriteLock();
         dataCopy = GameDataUtils.cloneGameDataWithoutHistory(data, true);

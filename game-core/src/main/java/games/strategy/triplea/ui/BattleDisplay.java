@@ -179,7 +179,7 @@ public class BattleDisplay extends JPanel {
     } else {
       casualtyPanel = casualtiesInstantPanelAttacker;
     }
-    Map<Unit, Collection<Unit>> dependentsMap;
+    final Map<Unit, Collection<Unit>> dependentsMap;
     gameData.acquireReadLock();
     try {
       dependentsMap = BattleCalculator.getDependents(killedUnits);
@@ -187,7 +187,7 @@ public class BattleDisplay extends JPanel {
       gameData.releaseReadLock();
     }
     final Collection<Unit> dependentUnitsReturned = new ArrayList<>();
-    for (Collection<Unit> dependentCollection : dependentsMap.values()) {
+    for (final Collection<Unit> dependentCollection : dependentsMap.values()) {
       dependentUnitsReturned.addAll(dependentCollection);
     }
     for (final UnitCategory category : UnitSeperator.categorize(killedUnits, dependentsMap, false, false)) {

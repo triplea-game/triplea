@@ -58,7 +58,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
 
   private void setIconMap() {
     final PlayerManager playerManager = game.getPlayerManager();
-    PlayerList playerList;
+    final PlayerList playerList;
     game.getData().acquireReadLock();
     try {
       playerList = game.getData().getPlayerList();

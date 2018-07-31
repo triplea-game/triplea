@@ -188,7 +188,7 @@ public abstract class TechAdvance extends NamedAttachable {
    */
   private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
     data.acquireReadLock();
-    List<TechAdvance> allAdvances;
+    final List<TechAdvance> allAdvances;
     try {
       allAdvances = new ArrayList<>(data.getTechnologyFrontier().getTechs());
     } finally {

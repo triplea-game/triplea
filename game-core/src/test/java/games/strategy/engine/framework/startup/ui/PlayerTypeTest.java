@@ -30,12 +30,12 @@ class PlayerTypeTest {
 
   @Test
   void createPlayerWithName() {
-    String testName = "example";
+    final String testName = "example";
 
     stream(PlayerType.values())
         .filter(playerType -> playerType != PlayerType.BATTLE_CALC_DUMMY)
         .forEach(playerType -> {
-          IGamePlayer result = playerType.createPlayerWithName(testName);
+          final IGamePlayer result = playerType.createPlayerWithName(testName);
           assertThat(
               "The player type should match after construction, input type: " + playerType,
               result.getPlayerType(),
