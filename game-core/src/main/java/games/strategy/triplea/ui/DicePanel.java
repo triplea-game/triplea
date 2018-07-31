@@ -47,21 +47,16 @@ public class DicePanel extends JPanel {
       removeAll();
       for (int i = 1; i <= data.getDiceSides(); i++) {
         final int index = i;
-        final List<Die> dice = Optional.ofNullable(diceRoll)
-            .map(roll -> roll.getRolls(index))
-            .orElse(Collections.emptyList());
-        if (dice.isEmpty()) {
-          continue;
-        }
-        add(new JLabel("Rolled at " + (i) + ":"));
-        add(create(diceRoll.getRolls(i)));
+        Optional.ofNullable(diceRoll)
+            .ifPresent(roll -> {
+              add(new JLabel("Rolled at " + (index) + ":"));
+              add(create(roll.getRolls(index)));
+            });
       }
       add(Box.createVerticalGlue());
-      final String hitCount = Optional.ofNullable(diceRoll)
+      add(new JLabel("Total hits: " + Optional.ofNullable(diceRoll)
           .map(DiceRoll::getHits)
-          .map(String::valueOf)
-          .orElse("0");
-      add(new JLabel("Total hits:" + hitCount));
+          .orElse(0)));
       validate();
       invalidate();
       repaint();
