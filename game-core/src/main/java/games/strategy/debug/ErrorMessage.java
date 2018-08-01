@@ -26,6 +26,7 @@ import swinglib.JPanelBuilder;
  * to be user friendly, clicking 'show details' would show full details of all error messages.
  * </p>
  */
+@SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
 public enum ErrorMessage {
   INSTANCE;
 

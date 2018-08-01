@@ -39,6 +39,7 @@ import swinglib.JTextAreaBuilder;
  *
  * @see ClientSetting
  */
+@SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
 public enum SettingsWindow {
   INSTANCE;
 
