@@ -70,9 +70,9 @@ interface SaveFunction {
     final String message;
     final int dialogType;
 
-    private SaveResult(final String message, final int dialogtype) {
+    private SaveResult(final String message, final int dialogType) {
       this.message = message;
-      this.dialogType = dialogtype;
+      this.dialogType = dialogType;
     }
   }
 }
