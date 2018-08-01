@@ -1,5 +1,7 @@
 package games.strategy.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -19,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * A collection of methods useful for rendering the UI.
+ */
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
@@ -158,5 +163,17 @@ public final class Util {
    */
   public static boolean isTerritoryNameIndicatingWater(final String territoryName) {
     return territoryName.endsWith(TERRITORY_SEA_ZONE_INFIX) || territoryName.startsWith(TERRITORY_SEA_ZONE_INFIX);
+  }
+
+  /**
+   * Returns a new polygon that is a copy of {@code polygon} translated by {@code deltaX} along the x-axis and by
+   * {@code deltaY} along the y-axis.
+   */
+  public static Polygon translatePolygon(final Polygon polygon, final int deltaX, final int deltaY) {
+    checkNotNull(polygon);
+
+    final Polygon translatedPolygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+    translatedPolygon.translate(deltaX, deltaY);
+    return translatedPolygon;
   }
 }

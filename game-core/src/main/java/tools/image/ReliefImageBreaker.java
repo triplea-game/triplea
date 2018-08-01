@@ -183,10 +183,8 @@ public final class ReliefImageBreaker {
     final int width = bounds.width;
     final int height = bounds.height;
     final BufferedImage alphaChannelImage = Util.createImage(bounds.width, bounds.height, true);
-    for (Polygon item : mapData.getPolygons(territory)) {
-      item = new Polygon(item.xpoints, item.ypoints, item.npoints);
-      item.translate(-bounds.x, -bounds.y);
-      alphaChannelImage.getGraphics().fillPolygon(item);
+    for (final Polygon polygon : mapData.getPolygons(territory)) {
+      alphaChannelImage.getGraphics().fillPolygon(Util.translatePolygon(polygon, -bounds.x, -bounds.y));
     }
     final GraphicsConfiguration localGraphicSystem =
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
