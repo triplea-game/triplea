@@ -15,9 +15,9 @@ import lombok.ToString;
 @ToString(exclude = "playerBridge")
 public abstract class AbstractBasePlayer implements IGamePlayer {
 
-  @Getter
+  @Getter(onMethod_ = {@Override})
   private final String name; // what nation are we playing? ex: "Americans"
-  @Getter
+  @Getter(onMethod_ = {@Override})
   private PlayerID playerId;
   @Getter
   private IPlayerBridge playerBridge;

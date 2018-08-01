@@ -25,7 +25,7 @@ import lombok.Getter;
  */
 public class DefaultPlayerBridge implements IPlayerBridge {
   private final IGame game;
-  @Getter
+  @Getter(onMethod_ = {@Override})
   private String stepName;
   private String currentDelegate;
 
