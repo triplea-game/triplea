@@ -18,7 +18,7 @@ public final class LobbyRunner {
    * Launches a lobby instance.
    * Lobby stays running until the process is killed or the lobby is shutdown.
    */
-  public static void main(final String[] args) {
+  public static void main(final String... args) {
     try {
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 
