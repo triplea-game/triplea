@@ -1,18 +1,17 @@
 package games.strategy.engine.lobby.server;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.sound.ClipPlayer;
+import lombok.extern.java.Log;
 
 /**
  * A 'main' class to launch the lobby server.
  */
+@Log
 public final class LobbyRunner {
-  private static final Logger logger = Logger.getLogger(LobbyRunner.class.getName());
-
   private LobbyRunner() {}
 
   /**
@@ -25,11 +24,11 @@ public final class LobbyRunner {
 
       final LobbyPropertyReader lobbyPropertyReader =
           new LobbyPropertyReader(new FilePropertyReader("config/lobby/lobby.properties"));
-      logger.info("Trying to listen on port " + lobbyPropertyReader.getPort());
+      log.info("Starting lobby on port " + lobbyPropertyReader.getPort());
       new LobbyServer(lobbyPropertyReader);
-      logger.info("Lobby started");
-    } catch (final Exception ex) {
-      logger.log(Level.SEVERE, ex.toString(), ex);
+      log.info("Lobby started");
+    } catch (final Exception e) {
+      log.log(Level.SEVERE, "Failed to start lobby", e);
     }
   }
 }
