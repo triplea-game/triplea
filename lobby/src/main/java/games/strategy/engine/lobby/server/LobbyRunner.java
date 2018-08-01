@@ -8,15 +8,15 @@ import games.strategy.sound.ClipPlayer;
 import lombok.extern.java.Log;
 
 /**
- * A 'main' class to launch the lobby server.
+ * Runs a lobby server.
  */
 @Log
 public final class LobbyRunner {
   private LobbyRunner() {}
 
   /**
-   * Launches a lobby instance.
-   * Lobby stays running until the process is killed or the lobby is shutdown.
+   * Entry point for running a new lobby server. The lobby server runs until the process is killed or the lobby server
+   * is shut down via administrative command.
    */
   public static void main(final String... args) {
     try {
