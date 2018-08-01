@@ -191,14 +191,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private Optional<ServerConnectionProps> getServerProps(final Component ui) {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
         && System.getProperty(TRIPLEA_STARTED, "").isEmpty()) {
-      final ServerConnectionProps props = new ServerConnectionProps();
-      props.setName(System.getProperty(TRIPLEA_NAME));
-      props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT)));
-      if (System.getProperty(SERVER_PASSWORD) != null) {
-        props.setPassword(System.getProperty(SERVER_PASSWORD));
-      }
       System.setProperty(TRIPLEA_STARTED, "true");
-      return Optional.of(props);
+      return Optional.of(ServerConnectionProps.builder()
+          .name(System.getProperty(TRIPLEA_NAME))
+          .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
+          .password(System.getProperty(SERVER_PASSWORD))
+          .build());
     }
     final String playername = ClientSetting.PLAYER_NAME.value();
     final Interruptibles.Result<ServerOptions> optionsResult = Interruptibles
@@ -228,13 +226,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     if (!optionsResult.completed) {
       throw new IllegalArgumentException("Error while gathering connection details");
     }
-    return optionsResult.result.map(options -> {
-      final ServerConnectionProps props = new ServerConnectionProps();
-      props.setName(options.getName());
-      props.setPort(options.getPort());
-      props.setPassword(options.getPassword());
-      return props;
-    });
+    return optionsResult.result.map(options -> ServerConnectionProps.builder()
+        .name(options.getName())
+        .port(options.getPort())
+        .password(options.getPassword())
+        .build());
   }
 
   /**
