@@ -28,10 +28,6 @@ public class DicePanel extends JPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   }
 
-  public void clear() {
-    removeAll();
-  }
-
   void setDiceRollForBombing(final List<Die> dice, final int cost) {
     removeAll();
     add(create(dice));

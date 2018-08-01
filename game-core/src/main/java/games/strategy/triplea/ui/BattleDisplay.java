@@ -495,7 +495,7 @@ public class BattleDisplay extends JPanel {
           } else {
             final CasualtyDetails response = new CasualtyDetails(killed, damaged, false);
             casualtyDetails.set(response);
-            dicePanel.clear();
+            dicePanel.removeAll();
             actionButton.setEnabled(false);
             actionButton.setAction(nullAction);
             continueLatch.countDown();
