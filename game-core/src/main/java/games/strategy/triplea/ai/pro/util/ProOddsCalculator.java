@@ -91,7 +91,7 @@ public class ProOddsCalculator {
     final boolean hasNoDefenders = defendingUnits.stream().noneMatch(Matches.unitIsNotInfrastructure());
     final boolean isLandAndCanOnlyBeAttackedByAir =
         !t.isWater() && !attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir());
-    if (attackingUnits.size() == 0 || hasNoDefenders && isLandAndCanOnlyBeAttackedByAir) {
+    if (attackingUnits.size() == 0 || (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir)) {
       return new ProBattleResult();
     } else if (hasNoDefenders) {
       return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);

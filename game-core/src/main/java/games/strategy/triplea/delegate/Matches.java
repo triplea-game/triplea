@@ -133,7 +133,7 @@ public final class Matches {
   public static Predicate<Unit> unitIsNotTransportButCouldBeCombatTransport() {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
-      return ua.getTransportCapacity() == -1 || ua.getIsCombatTransport() && ua.getIsSea();
+      return ua.getTransportCapacity() == -1 || (ua.getIsCombatTransport() && ua.getIsSea());
     };
   }
 
@@ -2124,8 +2124,7 @@ public final class Matches {
 
   static Predicate<Territory> territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(final PlayerID movingPlayer) {
     return t -> t.getOwner().equals(movingPlayer)
-        || (t.getOwner().equals(PlayerID.NULL_PLAYERID)
-            && t.isWater()
+        || ((t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater())
             || t.getData().getRelationshipTracker().canMoveIntoDuringCombatMove(movingPlayer, t.getOwner()));
   }
 
