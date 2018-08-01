@@ -4,7 +4,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
 import java.awt.Component;
 import java.io.IOException;
@@ -39,6 +38,7 @@ import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.network.ui.ChangeGameOptionsClientAction;
 import games.strategy.engine.framework.network.ui.ChangeGameToSaveGameClientAction;
@@ -166,12 +166,12 @@ public class ClientModel implements IMessengerErrorListener {
 
   private static ClientProps getProps(final Component ui) {
     if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")
-        && System.getProperty(TRIPLEA_STARTED, "").isEmpty()) {
+        && GameState.notStarted()) {
       final ClientProps props = new ClientProps();
       props.setHost(System.getProperty(TRIPLEA_HOST));
       props.setName(System.getProperty(TRIPLEA_NAME));
       props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT)));
-      System.setProperty(TRIPLEA_STARTED, "true");
+      GameState.setStarted();
       return props;
     }
     // load in the saved name!
