@@ -95,7 +95,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         ++cancelCurrentOperation;
         // increment our token, so that we can set the data in a different thread and return from this one
         latchWorkerThreadsCreation.increment();
-        executor.submit(() -> createWorkers(data));
+        executor.execute(() -> createWorkers(data));
       }
     }
   }
@@ -164,7 +164,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           final CountDownLatch workerLatch = new CountDownLatch(currentThreads - 1);
           while (i < (currentThreads - 1)) {
             ++i;
-            executor.submit(() -> {
+            executor.execute(() -> {
               if (cancelCurrentOperation >= 0) {
                 workers.add(new OddsCalculator(newData, false));
               }
