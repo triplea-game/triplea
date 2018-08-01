@@ -4,7 +4,6 @@ import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_STARTED;
 
 import java.awt.Component;
 import java.io.BufferedInputStream;
@@ -46,6 +45,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
@@ -190,14 +190,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private Optional<ServerConnectionProps> getServerProps(final Component ui) {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
-        && System.getProperty(TRIPLEA_STARTED, "").isEmpty()) {
+        && GameState.notStarted()) {
       final ServerConnectionProps props = new ServerConnectionProps();
       props.setName(System.getProperty(TRIPLEA_NAME));
       props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT)));
       if (System.getProperty(SERVER_PASSWORD) != null) {
         props.setPassword(System.getProperty(SERVER_PASSWORD));
       }
-      System.setProperty(TRIPLEA_STARTED, "true");
+      GameState.setStarted();
       return Optional.of(props);
     }
     final String playername = ClientSetting.PLAYER_NAME.value();
