@@ -10,8 +10,10 @@ import games.strategy.sound.ClipPlayer;
 /**
  * A 'main' class to launch the lobby server.
  */
-public class LobbyRunner {
+public final class LobbyRunner {
   private static final Logger logger = Logger.getLogger(LobbyRunner.class.getName());
+
+  private LobbyRunner() {}
 
   /**
    * Launches a lobby instance.
