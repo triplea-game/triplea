@@ -491,10 +491,8 @@ public class TileManager {
     }
     graphics.setStroke(new BasicStroke(10));
     graphics.setColor(Color.RED);
-    for (Polygon poly : mapData.getPolygons(selected)) {
-      poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
-      poly.translate(-bounds.x, -bounds.y);
-      graphics.drawPolygon(poly);
+    for (final Polygon polygon : mapData.getPolygons(selected)) {
+      graphics.drawPolygon(Util.translatePolygon(polygon, -bounds.x, -bounds.y));
     }
   }
 
