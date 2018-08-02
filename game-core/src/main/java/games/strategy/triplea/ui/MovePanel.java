@@ -124,6 +124,7 @@ public class MovePanel extends AbstractMovePanel {
       final Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
       ClientLogger.logQuietly(
           "Programming error, route should not be null here. Aborting sort operation and returning.", nullRouteError);
+      return;
     }
 
     final Comparator<Unit> unitComparator;
