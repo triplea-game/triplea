@@ -18,7 +18,7 @@ public final class LobbyRunner {
    * Entry point for running a new lobby server. The lobby server runs until the process is killed or the lobby server
    * is shut down via administrative command.
    */
-  public static void main(final String... args) {
+  public static void main(final String[] args) {
     try {
       ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 
