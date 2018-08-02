@@ -5,6 +5,8 @@ import com.apple.eawt.Application;
 import com.apple.eawt.QuitHandler;
 import com.apple.eawt.QuitResponse;
 
+import games.strategy.util.ExitStatus;
+
 /**
  * Utility class to wrap Mac OS X-specific shutdown handler.
  *
@@ -27,7 +29,7 @@ public class MacQuitMenuWrapper {
         if (shutdownFrame != null) {
           shutdownFrame.shutdown();
         } else {
-          System.exit(0);
+          ExitStatus.SUCCESS.exit();
         }
       }
     });

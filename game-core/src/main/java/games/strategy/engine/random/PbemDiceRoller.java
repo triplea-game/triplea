@@ -21,6 +21,7 @@ import javax.swing.WindowConstants;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
+import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 
 /**
@@ -133,7 +134,7 @@ public class PbemDiceRoller implements IRandomSource {
       this.diceServer = diceServer;
       this.gameUuid = gameUuid;
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-      exitButton.addActionListener(e -> System.exit(-1));
+      exitButton.addActionListener(e -> ExitStatus.FAILURE.exit());
       exitButton.setEnabled(false);
       reRollButton.addActionListener(e -> rollInternal());
       okButton.addActionListener(e -> closeAndReturn());

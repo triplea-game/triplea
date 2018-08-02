@@ -2,6 +2,8 @@ package games.strategy.engine.lobby.client.ui;
 
 import com.apple.eawt.Application;
 
+import games.strategy.util.ExitStatus;
+
 /**
  * TODO This class should be merged with games.strategy.triplea.ui.MacQuitMenuWrapper.
  */
@@ -14,7 +16,7 @@ public class MacLobbyWrapper {
       if (frame != null) {
         frame.shutdown();
       } else {
-        System.exit(0);
+        ExitStatus.SUCCESS.exit();
       }
     });
   }
