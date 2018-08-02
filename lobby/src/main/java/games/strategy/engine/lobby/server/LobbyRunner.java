@@ -1,21 +1,22 @@
 package games.strategy.engine.lobby.server;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.sound.ClipPlayer;
+import lombok.extern.java.Log;
 
 /**
- * A 'main' class to launch the lobby server.
+ * Runs a lobby server.
  */
-public class LobbyRunner {
-  private static final Logger logger = Logger.getLogger(LobbyRunner.class.getName());
+@Log
+public final class LobbyRunner {
+  private LobbyRunner() {}
 
   /**
-   * Launches a lobby instance.
-   * Lobby stays running until the process is killed or the lobby is shutdown.
+   * Entry point for running a new lobby server. The lobby server runs until the process is killed or the lobby server
+   * is shut down via administrative command.
    */
   public static void main(final String[] args) {
     try {
@@ -23,11 +24,12 @@ public class LobbyRunner {
 
       final LobbyPropertyReader lobbyPropertyReader =
           new LobbyPropertyReader(new FilePropertyReader("config/lobby/lobby.properties"));
-      logger.info("Trying to listen on port " + lobbyPropertyReader.getPort());
+      log.info("Starting lobby on port " + lobbyPropertyReader.getPort());
       new LobbyServer(lobbyPropertyReader);
-      logger.info("Lobby started");
-    } catch (final Exception ex) {
-      logger.log(Level.SEVERE, ex.toString(), ex);
+      log.info("Lobby started");
+    } catch (final RuntimeException e) {
+      log.log(Level.SEVERE, "Failed to start lobby", e);
+      System.exit(1);
     }
   }
 }
