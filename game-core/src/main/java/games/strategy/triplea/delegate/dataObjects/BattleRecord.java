@@ -13,6 +13,7 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  */
+@SuppressWarnings("InconsistentCapitalization") // Field names cannot be changed to maintain backwards compatibility
 public class BattleRecord implements Serializable {
 
   public enum BattleResultDescription {
