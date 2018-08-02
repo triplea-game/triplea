@@ -35,6 +35,8 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.headless.game.server.ArgValidationResult;
+import games.strategy.engine.framework.headless.game.server.HeadlessGameServerCliParam;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -613,8 +615,19 @@ public class HeadlessGameServer {
    * Launches a bot server. Most properties are passed via command line-like arguments.
    */
   public static void main(final String[] args) {
-    ClientSetting.initialize();
+    final ArgValidationResult validation = HeadlessGameServerCliParam.validateArgs(args);
+    if (!validation.isValid()) {
+      log.log(Level.SEVERE,
+          String.format("Failed to start, improper args: %s\n"
+                  + "Errors:\n- %s\n"
+                  + "Example usage: %s",
+              Arrays.toString(args),
+              String.join("\n- ", validation.getErrorMessages()),
+              HeadlessGameServerCliParam.exampleUsage()));
+      return;
+    }
 
+    ClientSetting.initialize();
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     new ArgParser().handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
