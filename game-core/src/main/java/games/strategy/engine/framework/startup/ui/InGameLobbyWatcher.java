@@ -95,10 +95,6 @@ public class InGameLobbyWatcher {
     System.clearProperty(LOBBY_HOST);
     System.clearProperty(LOBBY_PORT);
     System.clearProperty(LOBBY_GAME_HOSTED_BY);
-    // add them as temporary properties (in case we load an old savegame and need them again)
-    System.setProperty(LOBBY_HOST + GameRunner.OLD_EXTENSION, host);
-    System.setProperty(LOBBY_PORT + GameRunner.OLD_EXTENSION, port);
-    System.setProperty(LOBBY_GAME_HOSTED_BY + GameRunner.OLD_EXTENSION, hostedBy);
     final IConnectionLogin login = challengeProperties -> {
       final Map<String, String> properties = new HashMap<>();
       properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());

@@ -85,8 +85,6 @@ public class GameRunner {
 
   // not arguments:
   public static final int PORT = 3300;
-  // do not include this in the getProperties list. they are only for loading an old savegame.
-  public static final String OLD_EXTENSION = ".old";
 
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
 

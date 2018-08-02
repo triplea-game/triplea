@@ -85,7 +85,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     System.out.println("Restarting lobby watcher");
     shutDownLobbyWatcher();
     Interruptibles.sleep(1000);
-    HeadlessGameServer.resetLobbyHostOldExtensionProperties();
     createLobbyWatcher();
   }
 
