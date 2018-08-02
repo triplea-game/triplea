@@ -9,10 +9,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.StreamSupport;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+
 import org.junit.jupiter.api.Test;
+
+import org.triplea.test.lib.MatchBuilder;
 
 import com.google.common.collect.Maps;
 
@@ -66,35 +67,21 @@ public class ResourceLoaderTest extends AbstractClientSettingTestCase {
   }
 
   private static Matcher<Iterable<File>> containsDirectoryEndingWith(final String name) {
-    return new TypeSafeMatcher<Iterable<File>>() {
-      @Override
-      public void describeTo(final Description description) {
-        description.appendText("iterable containing file with name ").appendValue(name);
-      }
-
-      @Override
-      protected boolean matchesSafely(final Iterable<File> files) {
-        return StreamSupport.stream(files.spliterator(), false)
+    return MatchBuilder.<Iterable<File>>builder()
+        .description("iterable with directionending with: " + name)
+        .checkCondition(files -> StreamSupport.stream(files.spliterator(), false)
             .map(File::getPath)
-            .anyMatch(p -> p.endsWith(name));
-      }
-    };
+            .anyMatch(p -> p.endsWith(name)))
+        .build();
   }
 
   private static Matcher<Iterable<File>> containsFileWithName(final String name) {
-    return new TypeSafeMatcher<Iterable<File>>() {
-      @Override
-      public void describeTo(final Description description) {
-        description.appendText("iterable containing file with name ").appendValue(name);
-      }
-
-      @Override
-      protected boolean matchesSafely(final Iterable<File> files) {
-        return StreamSupport.stream(files.spliterator(), false)
+    return MatchBuilder.<Iterable<File>>builder()
+        .description("iterable containing file with name " + name)
+        .checkCondition(files -> StreamSupport.stream(files.spliterator(), false)
             .map(File::getName)
-            .anyMatch(name::equals);
-      }
-    };
+            .anyMatch(name::equals))
+        .build();
   }
 
   @Test
