@@ -555,7 +555,7 @@ public class HeadlessGameServer {
     final HeadlessGameServer server = getInstance();
     if (server == null) {
       System.err.println("Couldn't find instance.");
-      System.exit(-1);
+      System.exit(1);
     } else {
       log.info("Waiting for users to connect.");
       server.waitForUsersHeadless();
@@ -694,7 +694,7 @@ public class HeadlessGameServer {
 
     if (printUsage) {
       usage();
-      System.exit(-1);
+      System.exit(1);
     }
   }
 }

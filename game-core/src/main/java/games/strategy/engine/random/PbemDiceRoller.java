@@ -133,7 +133,7 @@ public class PbemDiceRoller implements IRandomSource {
       this.diceServer = diceServer;
       this.gameUuid = gameUuid;
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-      exitButton.addActionListener(e -> System.exit(-1));
+      exitButton.addActionListener(e -> System.exit(1));
       exitButton.setEnabled(false);
       reRollButton.addActionListener(e -> rollInternal());
       okButton.addActionListener(e -> closeAndReturn());

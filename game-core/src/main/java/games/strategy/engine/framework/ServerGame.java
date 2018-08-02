@@ -321,7 +321,7 @@ public class ServerGame extends AbstractGame {
         // Try one more time
         if (!delegateExecutionManager.blockDelegateExecution(16000)) {
           System.err.println("Exiting...");
-          System.exit(-1);
+          System.exit(1);
         }
       }
     } catch (final InterruptedException e) {

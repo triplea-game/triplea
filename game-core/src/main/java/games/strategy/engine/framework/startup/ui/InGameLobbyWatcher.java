@@ -229,7 +229,7 @@ public class InGameLobbyWatcher {
                 + "The server tried to connect to your external ip: " + addressUsed;
             if (HeadlessGameServer.headless()) {
               System.out.println(message);
-              System.exit(-1);
+              System.exit(1);
             }
             final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
             if (JOptionPane.showConfirmDialog(parentComponent,
@@ -237,7 +237,7 @@ public class InGameLobbyWatcher {
                 "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
               OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
             }
-            System.exit(-1);
+            System.exit(1);
           });
         }
       }
