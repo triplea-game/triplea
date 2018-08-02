@@ -10,8 +10,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,11 +19,14 @@ import lombok.NoArgsConstructor;
  * return them as part of a {@code Properties} object.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ArgParsingHelper {
-  @VisibleForTesting
-  static final String TRIPLEA_PROPERTY_PREFIX = "P";
+public final class ArgParsingHelper {
+  public static final String TRIPLEA_PROPERTY_PREFIX = "P";
 
-  static Properties getTripleaProperties(final String... args) {
+  /**
+   * Parses the set of input parameters for things that look like "-Pkey=value" and will
+   * return the key/value pairs as a Properties object.
+   */
+  public static Properties getTripleaProperties(final String... args) {
     final Options options = getOptions();
     final CommandLineParser parser = new DefaultParser();
     try {
