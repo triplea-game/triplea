@@ -190,7 +190,7 @@ public class ProPurchaseOption {
     if (needDestroyer && isDestroyer) {
       seaFactor = 8;
     }
-    if (isAir || carrierCapacity > 0 && unusedLocalCarrierCapacity <= 0) {
+    if (isAir || (carrierCapacity > 0 && unusedLocalCarrierCapacity <= 0)) {
       seaFactor = 4;
     }
     return calculateEfficiency(0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);

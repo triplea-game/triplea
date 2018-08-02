@@ -53,14 +53,14 @@ public final class GUID implements Externalizable {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null) {
-      return false;
+    if (o == this) {
+      return true;
     }
     if (!(o instanceof GUID)) {
       return false;
     }
     final GUID other = (GUID) o;
-    return other == this || this.id == other.id && Objects.equals(this.prefix, other.prefix);
+    return this.id == other.id && Objects.equals(this.prefix, other.prefix);
   }
 
   @Override
