@@ -19,7 +19,5 @@
 
 <!--
 Code standards and PR guidelines can be found at:
-- Code Standards: https://github.com/triplea-game/triplea/blob/master/docs/dev/code_standards.md
-- Code Format: https://github.com/triplea-game/triplea/blob/master/docs/dev/code_format.md
-- Review Process: https://github.com/triplea-game/triplea/blob/master/docs/dev/code_reviews.md
+https://github.com/triplea-game/triplea/tree/master/docs/dev
 -->
