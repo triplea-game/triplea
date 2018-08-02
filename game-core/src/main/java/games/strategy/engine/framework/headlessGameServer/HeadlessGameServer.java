@@ -47,6 +47,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Md5Crypt;
 import games.strategy.util.TimeManager;
@@ -253,7 +254,7 @@ public class HeadlessGameServer {
     if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         log.info("Remote Shutdown Initiated.");
-        System.exit(0);
+        ExitStatus.SUCCESS.exit();
       }).start();
       return null;
     }
@@ -555,7 +556,7 @@ public class HeadlessGameServer {
     final HeadlessGameServer server = getInstance();
     if (server == null) {
       System.err.println("Couldn't find instance.");
-      System.exit(1);
+      ExitStatus.FAILURE.exit();
     } else {
       log.info("Waiting for users to connect.");
       server.waitForUsersHeadless();
@@ -694,7 +695,7 @@ public class HeadlessGameServer {
 
     if (printUsage) {
       usage();
-      System.exit(1);
+      ExitStatus.FAILURE.exit();
     }
   }
 }

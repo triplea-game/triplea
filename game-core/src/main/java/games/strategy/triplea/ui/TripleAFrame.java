@@ -159,6 +159,7 @@ import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.ExitStatus;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.LocalizeHtml;
@@ -599,7 +600,7 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     stopGame();
-    System.exit(0);
+    ExitStatus.SUCCESS.exit();
   }
 
   @Override

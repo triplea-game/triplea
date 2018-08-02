@@ -68,6 +68,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 import javafx.application.Application;
@@ -371,7 +372,7 @@ public class GameRunner {
       final boolean allFramesClosed = Arrays.stream(Frame.getFrames())
           .noneMatch(Component::isVisible);
       if (allFramesClosed) {
-        System.exit(0);
+        ExitStatus.SUCCESS.exit();
       }
     });
   }

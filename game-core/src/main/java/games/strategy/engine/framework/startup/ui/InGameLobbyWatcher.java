@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -44,6 +43,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.util.ExitStatus;
 
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
@@ -229,7 +229,7 @@ public class InGameLobbyWatcher {
                 + "The server tried to connect to your external ip: " + addressUsed;
             if (HeadlessGameServer.headless()) {
               System.out.println(message);
-              System.exit(1);
+              ExitStatus.FAILURE.exit();
             }
             final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
             if (JOptionPane.showConfirmDialog(parentComponent,
@@ -237,7 +237,7 @@ public class InGameLobbyWatcher {
                 "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
               OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
             }
-            System.exit(1);
+            ExitStatus.FAILURE.exit();
           });
         }
       }

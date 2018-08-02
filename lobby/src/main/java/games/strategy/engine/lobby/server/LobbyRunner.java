@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.sound.ClipPlayer;
+import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
 
 /**
@@ -29,7 +30,7 @@ public final class LobbyRunner {
       log.info("Lobby started");
     } catch (final RuntimeException e) {
       log.log(Level.SEVERE, "Failed to start lobby", e);
-      System.exit(1);
+      ExitStatus.FAILURE.exit();
     }
   }
 }

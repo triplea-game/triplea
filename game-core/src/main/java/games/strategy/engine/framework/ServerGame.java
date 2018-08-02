@@ -51,6 +51,7 @@ import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 
 /**
@@ -321,7 +322,7 @@ public class ServerGame extends AbstractGame {
         // Try one more time
         if (!delegateExecutionManager.blockDelegateExecution(16000)) {
           System.err.println("Exiting...");
-          System.exit(1);
+          ExitStatus.FAILURE.exit();
         }
       }
     } catch (final InterruptedException e) {
