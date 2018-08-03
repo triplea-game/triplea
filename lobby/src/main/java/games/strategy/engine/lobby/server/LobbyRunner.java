@@ -26,7 +26,7 @@ public final class LobbyRunner {
       final LobbyPropertyReader lobbyPropertyReader =
           new LobbyPropertyReader(new FilePropertyReader("config/lobby/lobby.properties"));
       log.info("Starting lobby on port " + lobbyPropertyReader.getPort());
-      new LobbyServer(lobbyPropertyReader);
+      LobbyServer.start(lobbyPropertyReader);
       log.info("Lobby started");
     } catch (final RuntimeException e) {
       log.log(Level.SEVERE, "Failed to start lobby", e);

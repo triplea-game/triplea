@@ -13,13 +13,15 @@ import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import games.strategy.util.Version;
 
-public class LobbyServer {
+public final class LobbyServer {
   public static final String ADMIN_USERNAME = "Admin";
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
   private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
 
-  LobbyServer(final LobbyPropertyReader lobbyPropertyReader) {
+  private LobbyServer() {}
+
+  static void start(final LobbyPropertyReader lobbyPropertyReader) {
     final IServerMessenger server;
     try {
       server = ServerMessenger.newInstanceForLobby(ADMIN_USERNAME, lobbyPropertyReader);
