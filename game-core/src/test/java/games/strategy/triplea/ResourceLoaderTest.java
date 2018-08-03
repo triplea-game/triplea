@@ -13,7 +13,7 @@ import org.hamcrest.Matcher;
 
 import org.junit.jupiter.api.Test;
 
-import org.triplea.test.lib.MatchBuilder;
+import org.triplea.test.lib.CustomMatcher;
 
 import com.google.common.collect.Maps;
 
@@ -67,7 +67,7 @@ public class ResourceLoaderTest extends AbstractClientSettingTestCase {
   }
 
   private static Matcher<Iterable<File>> containsDirectoryEndingWith(final String name) {
-    return MatchBuilder.<Iterable<File>>builder()
+    return CustomMatcher.<Iterable<File>>builder()
         .description("iterable with directionending with: " + name)
         .checkCondition(files -> StreamSupport.stream(files.spliterator(), false)
             .map(File::getPath)
@@ -76,7 +76,7 @@ public class ResourceLoaderTest extends AbstractClientSettingTestCase {
   }
 
   private static Matcher<Iterable<File>> containsFileWithName(final String name) {
-    return MatchBuilder.<Iterable<File>>builder()
+    return CustomMatcher.<Iterable<File>>builder()
         .description("iterable containing file with name " + name)
         .checkCondition(files -> StreamSupport.stream(files.spliterator(), false)
             .map(File::getName)

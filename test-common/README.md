@@ -19,7 +19,7 @@ in all other projects.
         expectValid(true));
   }
    private static Matcher<ArgValidationResult> expectValid(final boolean valid) {
-    return MatchBuilder.<ArgValidationResult>builder()
+    return CustomMatcher.<ArgValidationResult>builder()
         .description("Expecting result to be valid? " + valid)
         .checkCondition(result -> result.isValid() == valid)
         .debug(result -> "Optional Custom debug info of actual value tested," 

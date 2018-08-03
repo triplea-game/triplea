@@ -28,7 +28,7 @@ class MatchBuilderTest {
 
 
   private Matcher<Integer> numberIsEqualToExampleMatcher(final int expected) {
-    return MatchBuilder.<Integer>builder()
+    return CustomMatcher.<Integer>builder()
         .description("Test value should have been equal to: " + expected)
         .checkCondition(testValue -> testValue == expected)
         .build();
@@ -72,7 +72,7 @@ class MatchBuilderTest {
   }
 
   private Matcher<String> hashCodesMatch(final String stringWithHashToMatch) {
-    return MatchBuilder.<String>builder()
+    return CustomMatcher.<String>builder()
         .description(
             "Expected hashcode: " + stringWithHashToMatch.hashCode() + " ( hashed from: " + stringWithHashToMatch + ")")
         .checkCondition(testValue -> testValue.hashCode() == stringWithHashToMatch.hashCode())

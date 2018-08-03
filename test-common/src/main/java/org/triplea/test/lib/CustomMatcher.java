@@ -32,7 +32,7 @@ import lombok.NonNull;
  *        value, then this would be of type 'HashMap'
  */
 @Builder
-public class MatchBuilder<T> extends BaseMatcher<T> {
+public class CustomMatcher<T> extends BaseMatcher<T> {
   @NonNull
   private final String description;
   @NonNull
