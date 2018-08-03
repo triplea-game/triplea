@@ -23,6 +23,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProPlaceTerritory;
@@ -90,7 +91,13 @@ public class ProPurchaseUtils {
     }
     final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
-    final String s = placeDelegate.canUnitsBePlaced(t, units, player);
+    final String s;
+    if (t.isWater() && Properties.getProduceFightersOnCarriers(data) && units.stream().anyMatch(Matches.unitIsAir())
+        && units.stream().anyMatch(Matches.unitIsCarrier())) {
+      s = placeDelegate.canUnitsBePlaced(t, CollectionUtils.getMatches(units, Matches.unitIsNotAir()), player);
+    } else {
+      s = placeDelegate.canUnitsBePlaced(t, units, player);
+    }
     return s == null;
   }
 
