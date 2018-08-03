@@ -1,13 +1,11 @@
 package games.strategy.engine.framework;
 
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.framework.headless.game.server.HeadlessGameServerCliParam;
@@ -15,11 +13,6 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 
 public class ArgParserTest extends AbstractClientSettingTestCase {
-
-  @AfterEach
-  public void teardown() {
-    System.clearProperty(TRIPLEA_GAME);
-  }
 
   @Test
   public void argsTurnIntoSystemProps() {
@@ -37,14 +30,6 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     new ArgParser().handleCommandLineArgs(new String[] {"-Pa="});
     assertThat("expecting the system property to be empty string instead of null",
         System.getProperty("a"), is(""));
-  }
-
-  @Test
-  public void singleFileArgIsAssumedToBeGameProperty() {
-    new ArgParser()
-        .handleCommandLineArgs(new String[] {TestData.propValue});
-    assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
-        System.getProperty(TRIPLEA_GAME), is(TestData.propValue));
   }
 
   @Test

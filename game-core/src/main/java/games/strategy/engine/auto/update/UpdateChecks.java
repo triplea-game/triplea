@@ -2,7 +2,6 @@ package games.strategy.engine.auto.update;
 
 import static games.strategy.engine.framework.CliProperties.DO_NOT_CHECK_FOR_UPDATES;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import games.strategy.engine.framework.map.download.MapDownloadController;
@@ -33,8 +32,6 @@ public class UpdateChecks {
   private static boolean shouldRun() {
     return !System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")
         && !System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")
-        && !System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")
-        // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
-        && System.getProperty(TRIPLEA_GAME, "").isEmpty();
+        && !System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true");
   }
 }

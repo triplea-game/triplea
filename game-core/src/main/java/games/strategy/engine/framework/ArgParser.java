@@ -20,8 +20,6 @@ public final class ArgParser {
 
     if ((args.length == 1) && args[0].startsWith(TRIPLEA_PROTOCOL)) {
       handleMapDownloadArg(args[0]);
-    } else if ((args.length == 1) && !args[0].contains("=")) {
-      System.setProperty(CliProperties.TRIPLEA_GAME, args[0]);
     } else {
       ArgParsingHelper.getTripleaProperties(args)
           .forEach((key, value) -> setSystemPropertyOrClientSetting((String) key, (String) value));
