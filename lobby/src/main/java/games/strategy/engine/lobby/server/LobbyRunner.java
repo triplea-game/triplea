@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
 
@@ -21,8 +20,6 @@ public final class LobbyRunner {
    */
   public static void main(final String[] args) {
     try {
-      ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-
       final LobbyPropertyReader lobbyPropertyReader =
           new LobbyPropertyReader(new FilePropertyReader("config/lobby/lobby.properties"));
       log.info("Starting lobby on port " + lobbyPropertyReader.getPort());

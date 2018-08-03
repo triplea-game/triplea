@@ -9,6 +9,7 @@ import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.util.Version;
 
 public final class LobbyServer {
@@ -19,6 +20,8 @@ public final class LobbyServer {
   private LobbyServer() {}
 
   static void start(final LobbyPropertyReader lobbyPropertyReader) throws IOException {
+    ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
+
     final IServerMessenger server = ServerMessenger.newInstanceForLobby(ADMIN_USERNAME, lobbyPropertyReader);
     final Messengers messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator(lobbyPropertyReader));
