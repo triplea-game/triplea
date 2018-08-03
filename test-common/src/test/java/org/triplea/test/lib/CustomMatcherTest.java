@@ -7,7 +7,7 @@ import org.hamcrest.MatcherAssert;
 
 import org.junit.jupiter.api.Test;
 
-class MatchBuilderTest {
+class CustomMatcherTest {
 
 
   /**
