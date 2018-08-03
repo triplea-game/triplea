@@ -35,7 +35,7 @@ class CustomMatcherTest {
   }
 
   @Test
-  void basicMMismatchCase() {
+  void basicMismatchCase() {
     assertThrows(AssertionError.class, () -> MatcherAssert.assertThat(0, numberIsEqualToExampleMatcher(100)));
   }
 
