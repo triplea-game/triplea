@@ -1,8 +1,11 @@
 package games.strategy.util;
 
+import lombok.AllArgsConstructor;
+
 /**
  * A process exit status.
  */
+@AllArgsConstructor
 public enum ExitStatus {
   /** The process exited successfully (0). */
   SUCCESS(0),
@@ -11,12 +14,6 @@ public enum ExitStatus {
   FAILURE(1);
 
   private final int status;
-
-  private ExitStatus(final int status) {
-    assert status >= 0 : "exit status must be non-negative to avoid signal aliasing";
-
-    this.status = status;
-  }
 
   /**
    * Exits the host process with this status.
