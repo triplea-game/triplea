@@ -66,11 +66,10 @@ public class PlayerListing implements Serializable {
     m_playersEnabledListing = Optional.ofNullable(playersEnabledListing)
         .map(HashMap::new)
         .orElseGet(HashMap::new);
-    m_localPlayerTypes = Optional.ofNullable(localPlayerTypes.entrySet()
+    m_localPlayerTypes = localPlayerTypes.entrySet()
         .stream()
         // convert Map<String,PlayerType> -> Map<String,String>
-        .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getLabel())))
-        .orElse(Collections.emptyMap());
+        .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getLabel()));
     m_gameVersion = gameVersion;
     m_gameName = gameName;
     m_gameRound = gameRound;
