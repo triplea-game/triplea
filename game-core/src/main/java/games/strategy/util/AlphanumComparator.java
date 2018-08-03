@@ -22,8 +22,9 @@ public class AlphanumComparator implements Comparator<String>, Serializable {
   }
 
   /** Length of string is passed in for improved efficiency (only need to calculate it once). **/
-  private static String getChunk(final String s, final int slength, int marker) {
+  private static String getChunk(final String s, final int slength, final int initialMarker) {
     final StringBuilder chunk = new StringBuilder();
+    int marker = initialMarker;
     char c = s.charAt(marker);
     chunk.append(c);
     marker++;

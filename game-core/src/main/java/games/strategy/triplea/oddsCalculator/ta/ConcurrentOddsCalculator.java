@@ -215,10 +215,11 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   @Override
   public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects, int runCount) {
+      final Collection<TerritoryEffect> territoryEffects, final int initialRunCount) {
     synchronized (mutexCalcIsRunning) {
       awaitLatch();
       isCalcSet = false;
+      int runCount = initialRunCount;
       final int workerNum = workers.size();
       final int workerRunCount = Math.max(1, (runCount / Math.max(1, workerNum)));
       for (final OddsCalculator worker : workers) {

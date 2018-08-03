@@ -293,9 +293,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         .and(Matches.unitIsAirborne().negate());
   }
 
-  private static Change getNewAssignmentOfNumberLaunchedChange(int newNumberLaunched, final Collection<Unit> bases,
-      final PlayerID player, final GameData data) {
+  private static Change getNewAssignmentOfNumberLaunchedChange(
+      final int initialNewNumberLaunched,
+      final Collection<Unit> bases,
+      final PlayerID player,
+      final GameData data) {
     final CompositeChange launchedChange = new CompositeChange();
+    int newNumberLaunched = initialNewNumberLaunched;
     if (newNumberLaunched <= 0) {
       return launchedChange;
     }

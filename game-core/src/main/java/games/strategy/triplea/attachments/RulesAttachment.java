@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
@@ -601,7 +602,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public boolean isSatisfied(Map<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
+  public boolean isSatisfied(final Map<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
     if (testedConditions != null) {
       if (testedConditions.containsKey(this)) {
         return testedConditions.get(this);
@@ -612,11 +613,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
     if (m_conditions.size() > 0) {
-      if (testedConditions == null) {
-        testedConditions = testAllConditionsRecursive(
-            getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, delegateBridge);
-      }
-      objectiveMet = areConditionsMet(new ArrayList<>(m_conditions), testedConditions, m_conditionType);
+      final Map<ICondition, Boolean> actualTestedConditions = Optional.ofNullable(testedConditions)
+          .orElseGet(() -> testAllConditionsRecursive(
+              getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, delegateBridge));
+      objectiveMet = areConditionsMet(new ArrayList<>(m_conditions), actualTestedConditions, m_conditionType);
     }
     // check switch (on/off)
     if (objectiveMet) {

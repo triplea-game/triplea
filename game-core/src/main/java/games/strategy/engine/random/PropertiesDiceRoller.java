@@ -112,12 +112,10 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, String gameId,
+  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId,
       final String gameUuid) throws IOException {
-    if (gameId.trim().length() == 0) {
-      gameId = "TripleA";
-    }
-    String message = gameId + ":" + subjectMessage;
+    final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
+    String message = normalizedGameId + ":" + subjectMessage;
     final int maxLength = Integer.valueOf(m_props.getProperty("message.maxlength"));
     if (message.length() > maxLength) {
       message = message.substring(0, maxLength - 1);

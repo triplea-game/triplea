@@ -516,10 +516,10 @@ public class UnitAttachment extends DefaultAttachment {
     return m_whenCapturedSustainsDamage;
   }
 
-  private void setDestroyedWhenCapturedBy(String value) throws GameParseException {
+  private void setDestroyedWhenCapturedBy(final String initialValue) throws GameParseException {
     // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to "BY" since this
-    // this is called by
-    // destroyedWhenCapturedBy
+    // this is called by destroyedWhenCapturedBy
+    String value = initialValue;
     String byOrFrom = "BY";
     if (value.startsWith("BY:") && getData().getPlayerList().getPlayerId("BY") == null) {
       byOrFrom = "BY";
@@ -543,7 +543,8 @@ public class UnitAttachment extends DefaultAttachment {
     m_destroyedWhenCapturedBy = value;
   }
 
-  private void setDestroyedWhenCapturedFrom(String value) throws GameParseException {
+  private void setDestroyedWhenCapturedFrom(final String initialValue) throws GameParseException {
+    String value = initialValue;
     if (!(value.startsWith("BY:") || value.startsWith("FROM:"))) {
       value = "FROM:" + value;
     }

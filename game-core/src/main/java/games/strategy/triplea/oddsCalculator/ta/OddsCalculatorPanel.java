@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BorderFactory;
@@ -617,22 +618,22 @@ class OddsCalculatorPanel extends JPanel {
     return new DecimalFormat("#0.##").format(value);
   }
 
-  private void updateDefender(List<Unit> units) {
-    if (units == null) {
-      units = Collections.emptyList();
-    }
+  private void updateDefender(final List<Unit> initialUnits) {
+    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(Collections::emptyList);
     final boolean isLand = isLand();
-    units = CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand, 1, false, false, false));
-    defendingUnitsPanel.init(getDefender(), units, isLand);
+    defendingUnitsPanel.init(
+        getDefender(),
+        CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand, 1, false, false, false)),
+        isLand);
   }
 
-  private void updateAttacker(List<Unit> units) {
-    if (units == null) {
-      units = Collections.emptyList();
-    }
+  private void updateAttacker(final List<Unit> initialUnits) {
+    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(Collections::emptyList);
     final boolean isLand = isLand();
-    units = CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(true, isLand, 1, false, false, false));
-    attackingUnitsPanel.init(getAttacker(), units, isLand);
+    attackingUnitsPanel.init(
+        getAttacker(),
+        CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(true, isLand, 1, false, false, false)),
+        isLand);
   }
 
   private boolean isLand() {

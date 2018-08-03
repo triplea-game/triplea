@@ -1244,7 +1244,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void queryRetreat(final boolean defender, final RetreatType retreatType, final IDelegateBridge bridge,
-      Collection<Territory> availableTerritories) {
+      final Collection<Territory> initialAvailableTerritories) {
     final boolean planes = retreatType == RetreatType.PLANES;
     final boolean subs = retreatType == RetreatType.SUBS;
     final boolean canSubsSubmerge = canSubsSubmerge();
@@ -1252,6 +1252,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         subs && defender && Properties.getSubmarinesDefendingMaySubmergeOrRetreat(m_data);
     final boolean partialAmphib = retreatType == RetreatType.PARTIAL_AMPHIB;
     final boolean submerge = subs && canSubsSubmerge;
+    Collection<Territory> availableTerritories = initialAvailableTerritories;
     if (availableTerritories.isEmpty() && !(submerge || canDefendingSubsSubmergeOrRetreat)) {
       return;
     }
@@ -1406,15 +1407,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   /**
    * Retreat landed units from allied territory when their transport retreats.
    */
-  private Change retreatFromNonCombat(Collection<Unit> units, final Territory retreatTo) {
+  private Change retreatFromNonCombat(final Collection<Unit> units, final Territory retreatTo) {
     final CompositeChange change = new CompositeChange();
-    units = CollectionUtils.getMatches(units, Matches.unitIsTransport());
-    final Collection<Unit> retreated = getTransportDependents(units);
+    final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitIsTransport());
+    final Collection<Unit> retreated = getTransportDependents(transports);
     if (!retreated.isEmpty()) {
-      for (final Unit unit : units) {
+      for (final Unit unit : transports) {
         final Territory retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
         if (retreatedFrom != null) {
-          reLoadTransports(units, change);
+          reLoadTransports(transports, change);
           change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));
         }
       }
@@ -1470,8 +1471,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(submerging));
   }
 
-  private void retreatUnits(Collection<Unit> retreating, final Territory to, final boolean defender,
+  private void retreatUnits(final Collection<Unit> initialRetreating, final Territory to, final boolean defender,
       final IDelegateBridge bridge) {
+    Collection<Unit> retreating = initialRetreating;
     retreating.addAll(getDependentUnits(retreating));
     // our own air units don't retreat with land units
     final Predicate<Unit> notMyAir = Matches.unitIsNotAir().or(Matches.unitIsOwnedBy(m_attacker).negate());
