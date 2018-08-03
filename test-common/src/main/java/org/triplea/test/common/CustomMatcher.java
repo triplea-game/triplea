@@ -1,6 +1,7 @@
 package org.triplea.test.common;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -36,7 +37,7 @@ public class CustomMatcher<T> extends BaseMatcher<T> {
   @NonNull
   private final String description;
   @NonNull
-  private final Function<T, Boolean> checkCondition;
+  private final Predicate<T> checkCondition;
   @SuppressWarnings("FieldMayBeFinal")
   @Builder.Default
   private Function<T, String> debug = Object::toString;
@@ -44,7 +45,7 @@ public class CustomMatcher<T> extends BaseMatcher<T> {
   @SuppressWarnings("unchecked")
   @Override
   public boolean matches(final Object item) {
-    return checkCondition.apply((T) item);
+    return checkCondition.test((T) item);
   }
 
   @SuppressWarnings("unchecked")
