@@ -26,8 +26,7 @@ class CustomMatcherTest {
     MatcherAssert.assertThat(5, numberIsEqualToExampleMatcher(5));
   }
 
-
-  private Matcher<Integer> numberIsEqualToExampleMatcher(final int expected) {
+  private static Matcher<Integer> numberIsEqualToExampleMatcher(final int expected) {
     return CustomMatcher.<Integer>builder()
         .description("Test value should have been equal to: " + expected)
         .checkCondition(testValue -> testValue == expected)
@@ -71,7 +70,7 @@ class CustomMatcherTest {
             hashCodesMatch("abc")));
   }
 
-  private Matcher<String> hashCodesMatch(final String stringWithHashToMatch) {
+  private static Matcher<String> hashCodesMatch(final String stringWithHashToMatch) {
     return CustomMatcher.<String>builder()
         .description(
             "Expected hashcode: " + stringWithHashToMatch.hashCode() + " ( hashed from: " + stringWithHashToMatch + ")")

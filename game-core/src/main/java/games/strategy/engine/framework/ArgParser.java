@@ -28,7 +28,7 @@ public final class ArgParser {
     }
   }
 
-  private void handleMapDownloadArg(final String arg) {
+  private static void handleMapDownloadArg(final String arg) {
     final String encoding = StandardCharsets.UTF_8.displayName();
     try {
       setSystemPropertyOrClientSetting(CliProperties.TRIPLEA_MAP_DOWNLOAD,
@@ -38,10 +38,7 @@ public final class ArgParser {
     }
   }
 
-  private void setSystemPropertyOrClientSetting(
-      final String key,
-      final String value) {
-
+  private static void setSystemPropertyOrClientSetting(final String key, final String value) {
     if (CliProperties.MAP_FOLDER.equals(key)) {
       ClientSetting.MAP_FOLDER_OVERRIDE.saveAndFlush(value);
     } else {

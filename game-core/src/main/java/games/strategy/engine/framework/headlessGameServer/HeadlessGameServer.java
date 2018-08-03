@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -467,15 +466,6 @@ public class HeadlessGameServer {
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to restart lobby watcher", e);
     }
-  }
-
-  private static Set<String> getProperties() {
-    return new HashSet<>(Arrays.asList(TRIPLEA_GAME,
-        TRIPLEA_SERVER, TRIPLEA_PORT,
-        TRIPLEA_NAME, LOBBY_HOST, LOBBY_PORT,
-        LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, LOBBY_GAME_SUPPORT_EMAIL,
-        LOBBY_GAME_SUPPORT_PASSWORD, LOBBY_GAME_RECONNECTION,
-        MAP_FOLDER));
   }
 
   String getStatus() {
