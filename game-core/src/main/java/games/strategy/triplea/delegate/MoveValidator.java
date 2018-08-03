@@ -1415,29 +1415,24 @@ public class MoveValidator {
    */
   public static Route getBestRoute(final Territory start, final Territory end, final GameData data,
       final PlayerID player, final Collection<Unit> units, final boolean forceLandOrSeaRoute) {
+
     final boolean hasLand = units.stream().anyMatch(Matches.unitIsLand());
     final boolean hasAir = units.stream().anyMatch(Matches.unitIsAir());
     final boolean isNeutralsImpassable =
         isNeutralsImpassable(data) || (hasAir && !Properties.getNeutralFlyoverAllowed(data));
-    // Ignore the end territory in our tests. it must be in the route, so it shouldn't affect the route choice
-
-    // No neutral countries on route predicate
     final Predicate<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().negate();
-    // No aa guns on route predicate
-    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForAnything(player, data).negate();
-    // no enemy units on the route predicate
-    final Predicate<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).negate();
-    // no impassable or restricted territories
-    final Predicate<Territory> noImpassable =
+    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
+    final Predicate<Territory> noEnemyUnits = Matches.territoryHasEnemyUnits(player, data).negate();
+    final Predicate<Territory> noImpassableOrRestricted =
         PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player, data))
             .and(Matches.territoryEffectsAllowUnits(units))
             // if we have air or land, we don't want to move over territories owned by players who's
             // relationships will not let us move into them
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))
             .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data)).build();
-    // now find the default route
+
     Route defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
-        PredicateBuilder.of(noImpassable).andIf(isNeutralsImpassable, noNeutral).build());
+        PredicateBuilder.of(noImpassableOrRestricted).andIf(isNeutralsImpassable, noNeutral).build());
     // since all routes require at least noImpassable, then if we cannot find a route without impassables, just return
     // any route
     if (defaultRoute == null) {
@@ -1462,9 +1457,11 @@ public class MoveValidator {
       final Route landRoute;
       if (isNeutralsImpassable) {
         landRoute =
-            data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsLand().and(noNeutral).and(noImpassable));
+            data.getMap().getRoute_IgnoreEnd(start, end,
+                Matches.territoryIsLand().and(noNeutral).and(noImpassableOrRestricted));
       } else {
-        landRoute = data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsLand().and(noImpassable));
+        landRoute =
+            data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsLand().and(noImpassableOrRestricted));
       }
       if (landRoute != null
           && ((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
@@ -1479,7 +1476,7 @@ public class MoveValidator {
     boolean mustGoSea = false;
     if (start.isWater() && end.isWater()) {
       final Route waterRoute =
-          data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassable));
+          data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassableOrRestricted));
       if (waterRoute != null
           && ((waterRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
               .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
@@ -1494,26 +1491,26 @@ public class MoveValidator {
     if (isNeutralsImpassable) {
       tests = new ArrayList<>(Arrays.asList(
           // best if no enemy and no neutral
-          noEnemy.and(noNeutral),
+          noEnemyUnits.and(noNeutral),
           // we will be satisfied if no aa and no neutral
           noAa.and(noNeutral)));
     } else {
       tests = new ArrayList<>(Arrays.asList(
           // best if no enemy and no neutral
-          noEnemy.and(noNeutral),
+          noEnemyUnits.and(noNeutral),
           // we will be satisfied if no aa and no neutral
           noAa.and(noNeutral),
           // single matches
-          noEnemy, noAa, noNeutral));
+          noEnemyUnits, noAa, noNeutral));
     }
     for (final Predicate<Territory> t : tests) {
       final Predicate<Territory> testMatch;
       if (mustGoLand) {
-        testMatch = t.and(Matches.territoryIsLand()).and(noImpassable);
+        testMatch = t.and(Matches.territoryIsLand()).and(noImpassableOrRestricted);
       } else if (mustGoSea) {
-        testMatch = t.and(Matches.territoryIsWater()).and(noImpassable);
+        testMatch = t.and(Matches.territoryIsWater()).and(noImpassableOrRestricted);
       } else {
-        testMatch = t.and(noImpassable);
+        testMatch = t.and(noImpassableOrRestricted);
       }
       final Route testRoute = data.getMap().getRoute_IgnoreEnd(start, end, testMatch);
       if (testRoute != null

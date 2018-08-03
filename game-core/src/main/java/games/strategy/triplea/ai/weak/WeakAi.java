@@ -507,7 +507,7 @@ public class WeakAi extends AbstractAi {
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final Predicate<Territory> canLand = Matches.isTerritoryAllied(player, data)
         .and(o -> !delegate.getBattleTracker().wasConquered(o));
-    final Predicate<Territory> routeCondition = Matches.territoryHasEnemyAaForCombatOnly(player, data).negate()
+    final Predicate<Territory> routeCondition = Matches.territoryHasEnemyAaForFlyOver(player, data).negate()
         .and(Matches.territoryIsImpassable().negate());
     for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand()) {
       final Route noAaRoute = Utils.findNearest(t, canLand, routeCondition, data);
@@ -693,7 +693,7 @@ public class WeakAi extends AbstractAi {
       if (bombers.isEmpty()) {
         continue;
       }
-      final Predicate<Territory> routeCond = Matches.territoryHasEnemyAaForCombatOnly(player, data).negate();
+      final Predicate<Territory> routeCond = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
       final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, data);
       moveUnits.add(bombers);
       moveRoutes.add(bombRoute);
