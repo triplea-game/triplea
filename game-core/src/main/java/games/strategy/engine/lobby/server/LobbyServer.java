@@ -19,7 +19,7 @@ import games.strategy.util.Version;
  * A lobby server provides the following functionality:
  * </p>
  * <ul>
- * <li>A registry of servers available to host games.
+ * <li>A registry of servers available to host games.</li>
  * <li>A room where players can find opponents and generally chat.</li>
  * </ul>
  */
