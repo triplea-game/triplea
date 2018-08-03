@@ -13,7 +13,7 @@ import org.hamcrest.Matcher;
 
 import org.junit.jupiter.api.Test;
 
-import org.triplea.test.lib.CustomMatcher;
+import org.triplea.test.common.CustomMatcher;
 
 import com.google.common.collect.Maps;
 

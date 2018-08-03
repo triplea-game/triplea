@@ -1,4 +1,4 @@
-package org.triplea.test.lib;
+package org.triplea.test.common;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
