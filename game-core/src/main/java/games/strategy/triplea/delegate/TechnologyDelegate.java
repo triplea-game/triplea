@@ -341,8 +341,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     return count;
   }
 
-  private Collection<TechAdvance> getTechAdvances(int hits) {
+  private Collection<TechAdvance> getTechAdvances(final int initialHits) {
     final List<TechAdvance> available;
+    int hits = initialHits;
     if (hits > 0 && isWW2V3TechModel()) {
       available = getAvailableAdvancesForCategory(techCategory);
       hits = 1;

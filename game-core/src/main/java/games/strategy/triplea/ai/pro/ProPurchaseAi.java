@@ -67,9 +67,9 @@ class ProPurchaseAi {
     calc = ai.getCalc();
   }
 
-  int repair(int pusRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
+  int repair(final int initialPusRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
       final PlayerID player) {
-
+    int pusRemaining = initialPusRemaining;
     ProLogger.info("Repairing factories with PUsRemaining=" + pusRemaining);
 
     // Current data at the start of combat move

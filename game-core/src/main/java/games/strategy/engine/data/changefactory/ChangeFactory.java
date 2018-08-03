@@ -96,8 +96,7 @@ public class ChangeFactory {
     return new RemoveUnits(player.getUnits(), units);
   }
 
-  public static Change moveUnits(final Territory start, final Territory end, Collection<Unit> units) {
-    units = new ArrayList<>(units);
+  public static Change moveUnits(final Territory start, final Territory end, final Collection<Unit> units) {
     final List<Change> changes = new ArrayList<>(2);
     changes.add(removeUnits(start, units));
     changes.add(addUnits(end, units));

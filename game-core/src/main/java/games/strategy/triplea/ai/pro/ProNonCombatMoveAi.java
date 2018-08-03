@@ -70,7 +70,7 @@ class ProNonCombatMoveAi {
     return doNonCombatMove(null, null, moveDel);
   }
 
-  Map<Territory, ProTerritory> doNonCombatMove(Map<Territory, ProTerritory> factoryMoveMap,
+  Map<Territory, ProTerritory> doNonCombatMove(final Map<Territory, ProTerritory> initialFactoryMoveMap,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final IMoveDelegate moveDel) {
     ProLogger.info("Starting non-combat move phase");
 
@@ -102,6 +102,7 @@ class ProNonCombatMoveAi {
         ProTerritoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
 
     // Prioritize territories to defend
+    Map<Territory, ProTerritory> factoryMoveMap = initialFactoryMoveMap;
     final List<ProTerritory> prioritizedTerritories = prioritizeDefendOptions(factoryMoveMap, territoryValueMap);
 
     // Determine which territories to defend and how many units each one needs
@@ -1839,13 +1840,14 @@ class ProNonCombatMoveAi {
     }
   }
 
-  private Map<Territory, ProTerritory> moveInfraUnits(Map<Territory, ProTerritory> factoryMoveMap,
+  private Map<Territory, ProTerritory> moveInfraUnits(final Map<Territory, ProTerritory> initialFactoryMoveMap,
       final Map<Unit, Set<Territory>> infraUnitMoveMap) {
     ProLogger.info("Determine where to move infra units");
 
     final Map<Territory, ProTerritory> moveMap = territoryManager.getDefendOptions().getTerritoryMap();
 
     // Move factory units
+    Map<Territory, ProTerritory> factoryMoveMap = initialFactoryMoveMap;
     if (factoryMoveMap == null) {
       ProLogger.debug("Creating factory move map");
 

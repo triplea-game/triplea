@@ -955,12 +955,10 @@ public class MovePanel extends AbstractMovePanel {
       return loadedUnits;
     }
 
-    private void deselectUnits(List<Unit> units, final Territory t, final MouseDetails me) {
+    private void deselectUnits(final List<Unit> initialUnits, final Territory t, final MouseDetails me) {
       final Collection<Unit> unitsToRemove = new ArrayList<>(selectedUnits.size());
       // we have right clicked on a unit stack in a different territory
-      if (!getFirstSelectedTerritory().equals(t)) {
-        units = Collections.emptyList();
-      }
+      final List<Unit> units = getFirstSelectedTerritory().equals(t) ? initialUnits : Collections.emptyList();
       // remove the dependent units so we don't have to micromanage them
       final List<Unit> unitsWithoutDependents = new ArrayList<>(selectedUnits);
       for (final Unit unit : selectedUnits) {
@@ -1136,9 +1134,13 @@ public class MovePanel extends AbstractMovePanel {
    * have different movement
    * Units are sorted in preferred order, so units represents the default selections.
    */
-  private boolean allowSpecificUnitSelection(final Collection<Unit> units, final Route route, boolean mustQueryUser,
+  private boolean allowSpecificUnitSelection(
+      final Collection<Unit> units,
+      final Route route,
+      final boolean initialMustQueryUser,
       final Predicate<Collection<Unit>> matchCriteria) {
     final List<Unit> candidateUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(route, units));
+    boolean mustQueryUser = initialMustQueryUser;
     if (!mustQueryUser) {
       final Set<UnitCategory> categories =
           UnitSeperator.categorize(candidateUnits, mustMoveWithDetails.getMustMoveWith(), true, false);

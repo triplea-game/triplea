@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
@@ -148,10 +149,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * conditions to get the final list.
    */
   public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions,
-      HashSet<ICondition> allConditionsNeededSoFar) {
-    if (allConditionsNeededSoFar == null) {
-      allConditionsNeededSoFar = new HashSet<>();
-    }
+      final HashSet<ICondition> initialAllConditionsNeededSoFar) {
+    final HashSet<ICondition> allConditionsNeededSoFar = Optional.ofNullable(initialAllConditionsNeededSoFar)
+        .orElseGet(HashSet::new);
     allConditionsNeededSoFar.addAll(startingListOfConditions);
     for (final ICondition condition : startingListOfConditions) {
       for (final ICondition subCondition : condition.getConditions()) {
@@ -170,10 +170,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * value.
    */
   public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules,
-      HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
-    if (allConditionsTestedSoFar == null) {
-      allConditionsTestedSoFar = new HashMap<>();
-    }
+      final HashMap<ICondition, Boolean> initialAllConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
+    final HashMap<ICondition, Boolean> allConditionsTestedSoFar = Optional.ofNullable(initialAllConditionsTestedSoFar)
+        .orElseGet(HashMap::new);
     for (final ICondition c : rules) {
       if (!allConditionsTestedSoFar.containsKey(c)) {
         testAllConditionsRecursive(new HashSet<>(c.getConditions()), allConditionsTestedSoFar, delegateBridge);

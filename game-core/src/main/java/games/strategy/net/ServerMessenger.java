@@ -478,7 +478,8 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
         .anyMatch(nodeName::equalsIgnoreCase);
   }
 
-  public String getUniqueName(String currentName) {
+  public String getUniqueName(final String initialCurrentName) {
+    String currentName = initialCurrentName;
     if (currentName.length() > 50) {
       currentName = currentName.substring(0, 50);
     }
