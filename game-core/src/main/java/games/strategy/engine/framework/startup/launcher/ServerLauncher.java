@@ -275,8 +275,8 @@ public class ServerLauncher extends AbstractLauncher {
     new Thread(() -> {
       try {
         serverGame.getRandomSource().getRandom(gameData.getDiceSides(), 2, "Warming up crypto random source");
-      } catch (final RuntimeException re) {
-        re.printStackTrace(System.out);
+      } catch (final RuntimeException e) {
+        ClientLogger.logQuietly("Failed to warm up crypto random source", e);
       }
     }, "Warming up crypto random source").start();
   }

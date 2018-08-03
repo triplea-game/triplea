@@ -283,7 +283,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -317,7 +317,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ex.printStackTrace();
+      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 

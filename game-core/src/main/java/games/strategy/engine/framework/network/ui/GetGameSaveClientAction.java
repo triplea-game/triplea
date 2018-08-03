@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 
@@ -36,7 +37,7 @@ public class GetGameSaveClientAction extends AbstractAction {
       try (FileOutputStream fout = new FileOutputStream(f)) {
         fout.write(bytes);
       } catch (final IOException exception) {
-        exception.printStackTrace();
+        ClientLogger.logError("Failed to download save game from server", exception);
       }
       JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
     }
