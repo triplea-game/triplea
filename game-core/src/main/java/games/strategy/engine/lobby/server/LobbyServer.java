@@ -1,8 +1,6 @@
 package games.strategy.engine.lobby.server;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
@@ -17,18 +15,11 @@ public final class LobbyServer {
   public static final String ADMIN_USERNAME = "Admin";
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
   public static final Version LOBBY_VERSION = new Version(1, 0, 0);
-  private static final Logger logger = Logger.getLogger(LobbyServer.class.getName());
 
   private LobbyServer() {}
 
-  static void start(final LobbyPropertyReader lobbyPropertyReader) {
-    final IServerMessenger server;
-    try {
-      server = ServerMessenger.newInstanceForLobby(ADMIN_USERNAME, lobbyPropertyReader);
-    } catch (final IOException ex) {
-      logger.log(Level.SEVERE, ex.toString());
-      throw new IllegalStateException(ex.getMessage());
-    }
+  static void start(final LobbyPropertyReader lobbyPropertyReader) throws IOException {
+    final IServerMessenger server = ServerMessenger.newInstanceForLobby(ADMIN_USERNAME, lobbyPropertyReader);
     final Messengers messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator(lobbyPropertyReader));
     // setup common objects
