@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
@@ -32,6 +32,7 @@ import games.strategy.util.UrlStreams;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import lombok.extern.java.Log;
 
 /**
  * Utility for loading and playing sound clips.
@@ -109,6 +110,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
  * (if any sounds are found in step 4 above, then we ignore the generic folder completely) <br>
  * 6. Randomize the list's order, then pick one, and play the sound.
  */
+@Log
 public class ClipPlayer {
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
@@ -175,7 +177,7 @@ public class ClipPlayer {
       try {
         setPref = !Arrays.asList(prefs.keys()).contains(SOUND_PREFERENCE_GLOBAL_SWITCH);
       } catch (final BackingStoreException e) {
-        ClientLogger.logQuietly("Failed to get keys for preferences: " + prefs.absolutePath(), e);
+        log.log(Level.SEVERE, "Failed to get keys for preferences: " + prefs.absolutePath(), e);
       }
     }
     if (setPref) {
@@ -183,7 +185,7 @@ public class ClipPlayer {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
+        log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
       }
     }
   }
@@ -241,7 +243,7 @@ public class ClipPlayer {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -283,7 +285,7 @@ public class ClipPlayer {
             new AdvancedPlayer(inputStream.get(), audioDevice).play();
           }
         } catch (final Exception e) {
-          ClientLogger.logError("Failed to play: " + clip, e);
+          log.log(Level.SEVERE, "Failed to play: " + clip, e);
         }
       }).start();
     }
@@ -429,7 +431,7 @@ public class ClipPlayer {
                       }
                       availableSounds.add(zipSoundUrl);
                     } catch (final Exception e) {
-                      ClientLogger.logQuietly("Failed to load sound resource: " + zipElement.getName(), e);
+                      log.log(Level.SEVERE, "Failed to load sound resource: " + zipElement.getName(), e);
                     }
                   }
                 }
@@ -437,7 +439,7 @@ public class ClipPlayer {
               }
             }
           } catch (final Exception e) {
-            ClientLogger.logQuietly("Failed to read sound file: " + decoded, e);
+            log.log(Level.SEVERE, "Failed to read sound file: " + decoded, e);
           }
         }
       }
@@ -458,7 +460,7 @@ public class ClipPlayer {
             availableSounds.add(individualSoundUrl);
           } catch (final MalformedURLException e) {
             final String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
-            ClientLogger.logQuietly(msg, e);
+            log.log(Level.SEVERE, msg, e);
           }
         }
       }

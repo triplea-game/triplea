@@ -85,7 +85,7 @@ public class CryptoRandomSource implements IRandomSource {
    * neither player cheats.
    */
   @Override
-  public int getRandom(final int max, final String annotation) throws IllegalArgumentException, IllegalStateException {
+  public int getRandom(final int max, final String annotation) {
     return getRandom(max, 1, annotation)[0];
   }
 
@@ -93,8 +93,7 @@ public class CryptoRandomSource implements IRandomSource {
    * Delegates should not use random data that comes from any other source.
    */
   @Override
-  public int[] getRandom(final int max, final int count, final String annotation)
-      throws IllegalArgumentException, IllegalStateException {
+  public int[] getRandom(final int max, final int count, final String annotation) {
     if (count <= 0) {
       throw new IllegalArgumentException("Invalid count:" + count);
     }
@@ -106,13 +105,8 @@ public class CryptoRandomSource implements IRandomSource {
     // ask the remote to generate numbers
     final IRemoteRandom remote =
         (IRemoteRandom) (game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(remotePlayer)));
-    final Object clientRandom = remote.generate(max, count, annotation, localId);
-    if (!(clientRandom instanceof int[])) {
-      // Let the error be thrown
-      System.out.println("Client remote random generated: " + clientRandom + ".  Asked for: " + count + "x" + max
-          + " for " + annotation);
-    }
-    final int[] remoteNumbers = (int[]) clientRandom;
+    final int[] remoteNumbers = remote.generate(max, count, annotation, localId);
+
     // unlock ours, tell the client he can verify
     vault.unlock(localId);
     remote.verifyNumbers();

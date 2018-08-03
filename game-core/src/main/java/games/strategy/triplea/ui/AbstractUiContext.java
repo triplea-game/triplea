@@ -8,13 +8,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.LocalPlayers;
@@ -22,8 +22,9 @@ import games.strategy.io.FileUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.CountDownLatchHandler;
+import lombok.extern.java.Log;
 
-
+@Log
 public abstract class AbstractUiContext implements UiContext {
 
   protected static final String UNIT_SCALE_PREF = "UnitScale";
@@ -62,7 +63,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -116,7 +117,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 
@@ -266,7 +267,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       actor.deactivate();
     } catch (final RuntimeException e) {
-      ClientLogger.logQuietly("Failed to deactivate actor", e);
+      log.log(Level.SEVERE, "Failed to deactivate actor", e);
     }
   }
 
@@ -283,7 +284,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -300,7 +301,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -317,7 +318,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -334,7 +335,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 
@@ -351,7 +352,7 @@ public abstract class AbstractUiContext implements UiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), ex);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 

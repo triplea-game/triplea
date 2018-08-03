@@ -3,7 +3,11 @@ package games.strategy.engine.data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
+import lombok.extern.java.Log;
+
+@Log
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
 
@@ -37,7 +41,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     }
     if (!found) {
       m_currentIndex = 0;
-      System.err.println("Step Not Found (" + stepDisplayName + ":" + player.getName() + "), will instead use: "
+      log.log(Level.SEVERE, "Step Not Found (" + stepDisplayName + ":" + player.getName() + "), will instead use: "
           + m_steps.get(m_currentIndex));
     }
   }

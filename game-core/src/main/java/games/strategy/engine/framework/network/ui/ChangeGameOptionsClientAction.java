@@ -4,21 +4,23 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
+import lombok.extern.java.Log;
 
 /**
  * An action for changing game options across all network nodes from a client node.
  */
+@Log
 public class ChangeGameOptionsClientAction extends AbstractAction {
   private static final long serialVersionUID = -6419002646689952824L;
   private final Component parent;
@@ -55,11 +57,11 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
         try {
           serverRemote.changeToGameOptions(GameProperties.writeEditableProperties(properties));
         } catch (final IOException ex) {
-          ClientLogger.logQuietly("Failed to write game properties", ex);
+          log.log(Level.SEVERE, "Failed to write game properties", ex);
         }
       }
     } catch (final IOException | ClassCastException ex) {
-      ClientLogger.logQuietly("Failed to read game properties", ex);
+      log.log(Level.SEVERE, "Failed to read game properties", ex);
     }
   }
 }

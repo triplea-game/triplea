@@ -1,16 +1,19 @@
 package games.strategy.engine.history;
 
 import java.io.Serializable;
+import java.util.logging.Level;
 
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerID;
+import lombok.extern.java.Log;
 
 /**
  * Used to write to a history object. Delegates should use a
  * DelegateHistoryWriter
  */
+@Log
 public class HistoryWriter implements Serializable {
   private static final long serialVersionUID = 4230519614567508061L;
   private final History m_history;
@@ -135,8 +138,7 @@ public class HistoryWriter implements Serializable {
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current)
-          .printStackTrace(System.out);
+      log.log(Level.SEVERE, "Not in an event, but trying to add child:" + node + " current is:" + m_current);
       startEvent("???");
     }
     addToCurrent(node);
@@ -148,8 +150,7 @@ public class HistoryWriter implements Serializable {
   public void addChange(final Change change) {
     assertCorrectThread();
     if (!isCurrentEvent() && !isCurrentStep()) {
-      new IllegalStateException("Not in an event, but trying to add change:" + change + " current is:" + m_current)
-          .printStackTrace(System.out);
+      log.log(Level.SEVERE, "Not in an event, but trying to add change:" + change + " current is:" + m_current);
       startEvent("Bad Event for change: \n" + change.toString());
     }
     m_history.changeAdded(change);
@@ -158,8 +159,7 @@ public class HistoryWriter implements Serializable {
   public void setRenderingData(final Object details) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      new IllegalStateException("Not in an event, but trying to set details:" + details + " current is:" + m_current)
-          .printStackTrace(System.out);
+      log.log(Level.SEVERE, "Not in an event, but trying to set details:" + details + " current is:" + m_current);
       startEvent("???");
     }
     m_history.getGameData().acquireWriteLock();

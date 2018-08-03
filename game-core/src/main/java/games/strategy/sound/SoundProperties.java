@@ -6,18 +6,21 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
 /**
  * sounds.properties file helper class
  */
+@Log
 class SoundProperties {
   // Filename
   private static final String PROPERTY_FILE = "sounds.properties";
-  static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
-  static final String DEFAULT_ERA_FOLDER = "ww2";
+  private static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
+  private static final String DEFAULT_ERA_FOLDER = "ww2";
   static final String GENERIC_FOLDER = "generic";
   private static SoundProperties instance = null;
   private static Instant timestamp = Instant.EPOCH;
@@ -31,7 +34,7 @@ class SoundProperties {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+          log.log(Level.SEVERE, "Error reading: " + PROPERTY_FILE, e);
         }
       }
     }

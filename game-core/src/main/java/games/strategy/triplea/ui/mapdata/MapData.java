@@ -26,13 +26,13 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
@@ -43,10 +43,12 @@ import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Tuple;
 import games.strategy.util.function.ThrowingFunction;
 import games.strategy.util.function.ThrowingSupplier;
+import lombok.extern.java.Log;
 
 /**
  * contains data about the territories useful for drawing.
  */
+@Log
 public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
   public static final String PROPERTY_UNITS_WIDTH = "units.width";
@@ -171,12 +173,12 @@ public class MapData implements Closeable {
       try (InputStream inputStream = requiredResource(MAP_PROPERTIES).get()) {
         mapProperties.load(inputStream);
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Error reading map.properties", e);
+        log.log(Level.SEVERE, "Error reading map.properties", e);
       }
 
       initializeContains();
     } catch (final IOException ex) {
-      ClientLogger.logQuietly("Failed to initialize map data", ex);
+      log.log(Level.SEVERE, "Failed to initialize map data", ex);
     }
   }
 
@@ -253,7 +255,7 @@ public class MapData implements Closeable {
     } catch (final Exception e) {
       // TODO: this is checking for IllegalStateException - we should bubble up the Optional image load and just
       // check instead if the optional is empty.
-      ClientLogger.logQuietly("Image loading failed: " + imageName, e);
+      log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
       return Optional.empty();
     }
   }
@@ -299,7 +301,7 @@ public class MapData implements Closeable {
     try {
       return parser.apply(encodedValue);
     } catch (final NumberFormatException e) {
-      ClientLogger.logQuietly("Failed to parse map property: " + name, e);
+      log.log(Level.SEVERE, "Failed to parse map property: " + name, e);
       return defaultValueSupplier.get();
     }
   }

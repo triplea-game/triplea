@@ -81,7 +81,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     if (canGameStart()) {
       return;
     }
-    System.out.println("Restarting lobby watcher");
     shutDownLobbyWatcher();
     Interruptibles.sleep(1000);
     createLobbyWatcher();

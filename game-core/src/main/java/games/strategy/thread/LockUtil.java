@@ -9,8 +9,11 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
+import java.util.logging.Level;
 
 import com.google.common.annotations.VisibleForTesting;
+
+import lombok.extern.java.Log;
 
 /**
  * Utility class for ensuring that locks are acquired in a consistent order.
@@ -27,6 +30,7 @@ import com.google.common.annotations.VisibleForTesting;
  * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
  * </p>
  */
+@Log
 @SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
 public enum LockUtil {
   INSTANCE;
@@ -103,7 +107,9 @@ public enum LockUtil {
   private static final class DefaultErrorReporter implements ErrorReporter {
     @Override
     public void reportError(final Lock from, final Lock to) {
-      System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
+      log.log(
+          Level.SEVERE,
+          "Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
     }
 
     private static String getStackTrace() {

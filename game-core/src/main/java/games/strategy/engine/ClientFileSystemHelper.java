@@ -6,20 +6,22 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
+import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
+import lombok.extern.java.Log;
 
 /**
  * Provides methods to work with common file locations in a client installation.
  */
+@Log
 public final class ClientFileSystemHelper {
   private ClientFileSystemHelper() {}
 
@@ -111,7 +113,7 @@ public final class ClientFileSystemHelper {
       mapsFolder.mkdirs();
     }
     if (!mapsFolder.exists()) {
-      ClientLogger.logError("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
+      log.log(Level.SEVERE, "Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
     }
     return mapsFolder;
   }

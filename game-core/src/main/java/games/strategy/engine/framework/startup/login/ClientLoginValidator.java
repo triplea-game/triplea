@@ -5,10 +5,10 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.net.ILoginValidator;
@@ -16,6 +16,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
 /**
  * The server side of the peer-to-peer network game authentication protocol.
@@ -26,6 +27,7 @@ import games.strategy.util.Version;
  * if authentication is successful.
  * </p>
  */
+@Log
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
 
@@ -131,7 +133,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
       return ErrorMessages.NO_ERROR;
     } catch (final AuthenticationException e) {
-      ClientLogger.logQuietly("Authentication failed", e);
+      log.log(Level.SEVERE, "Authentication failed", e);
       return ErrorMessages.INVALID_PASSWORD;
     }
   }

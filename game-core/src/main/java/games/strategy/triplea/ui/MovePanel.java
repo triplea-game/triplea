@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -48,7 +48,9 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
+import lombok.extern.java.Log;
 
+@Log
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
@@ -122,7 +124,7 @@ public class MovePanel extends AbstractMovePanel {
       return;
     } else if (route == null) {
       final Exception nullRouteError = (new IllegalArgumentException("route is not supposed to be null"));
-      ClientLogger.logQuietly(
+      log.log(Level.SEVERE,
           "Programming error, route should not be null here. Aborting sort operation and returning.", nullRouteError);
       return;
     }

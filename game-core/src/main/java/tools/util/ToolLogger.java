@@ -2,11 +2,16 @@ package tools.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.logging.Level;
+
+import lombok.extern.java.Log;
+
 /**
  * Provides methods for support tools to write log messages.
  */
-public final class ToolLogger {
-  private ToolLogger() {}
+@Log
+public enum ToolLogger {
+  ;
 
   /**
    * Logs the specified error message.
@@ -14,7 +19,7 @@ public final class ToolLogger {
   public static void error(final String message) {
     checkNotNull(message);
 
-    System.err.println(message);
+    log.log(Level.SEVERE, message);
   }
 
   /**
@@ -23,9 +28,7 @@ public final class ToolLogger {
   public static void error(final String message, final Throwable t) {
     checkNotNull(message);
     checkNotNull(t);
-
-    error(message);
-    t.printStackTrace(System.err);
+    log.log(Level.SEVERE, message, t);
   }
 
   /**
@@ -33,7 +36,6 @@ public final class ToolLogger {
    */
   public static void info(final String message) {
     checkNotNull(message);
-
-    System.out.println(message);
+    log.info(message);
   }
 }

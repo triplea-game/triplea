@@ -7,19 +7,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.io.IoUtils;
+import lombok.extern.java.Log;
 
 /**
  * Downloads a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>.
  */
+@Log
 public class DownloadRunnable {
   private final String urlString;
 
   public DownloadRunnable(final String urlString) {
-    super();
     this.urlString = urlString;
   }
 
@@ -45,7 +46,7 @@ public class DownloadRunnable {
       final byte[] contents = Files.readAllBytes(tempFile.toPath());
       return IoUtils.readFromMemory(contents, DownloadFileParser::parse);
     } catch (final IOException e) {
-      ClientLogger.logError("Error - will show an empty list of downloads. Failed to get files from: " + urlString, e);
+      log.log(Level.SEVERE, "Error - will show an empty list of downloads. Failed to get files from: " + urlString, e);
       return new ArrayList<>();
     }
   }
@@ -58,7 +59,7 @@ public class DownloadRunnable {
       checkNotNull(downloads);
       return downloads;
     } catch (final IOException e) {
-      ClientLogger.logError("Failed to read file at: " + targetFile.getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to read file at: " + targetFile.getAbsolutePath(), e);
       return new ArrayList<>();
     }
   }

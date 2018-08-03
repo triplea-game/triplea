@@ -11,19 +11,21 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 import games.strategy.io.IoUtils;
+import lombok.extern.java.Log;
 
 /**
  * Properties of the current game. <br>
  * Maps string -> Object <br>
  * Set through changeFactory.setProperty.
  */
+@Log
 public class GameProperties extends GameDataComponent {
   private static final long serialVersionUID = -1448163357090677564L;
 
@@ -198,7 +200,7 @@ public class GameProperties extends GameDataComponent {
     try {
       editableProperties = readEditableProperties(byteArray);
     } catch (final ClassCastException | IOException e) {
-      ClientLogger.logError(
+      log.log(Level.SEVERE,
           "An Error occured whilst trying to apply a Byte Map to Property. Bytes: " + Arrays.toString(byteArray), e);
     }
     applyListToChangeProperties(editableProperties, gamePropertiesToBeChanged);

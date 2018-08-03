@@ -5,8 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -20,7 +20,9 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
+@Log
 public class ClientGame extends AbstractGame {
   public static RemoteName getRemoteStepAdvancerName(final INode node) {
     return new RemoteName(ClientGame.class.getName() + ".REMOTE_STEP_ADVANCER:" + node.getName(),
@@ -90,8 +92,6 @@ public class ClientGame extends AbstractGame {
             // started (like with a roundChanged listener).
             if ((currentRound - 1 > round && ourOriginalCurrentRound >= round)
                 || (currentRound > round && ourOriginalCurrentRound < round)) {
-              System.err.println("Cannot create more rounds that host currently has. Host Round:" + round
-                  + " and new Client Round:" + currentRound);
               throw new IllegalStateException("Cannot create more rounds that host currently has. Host Round:" + round
                   + " and new Client Round:" + currentRound);
             }
@@ -136,7 +136,7 @@ public class ClientGame extends AbstractGame {
           }
           i++;
           if (i > 300 && !shownErrorMessage) {
-            System.err.println("Waited more than 30 seconds for step to update. Something wrong.");
+            log.log(Level.SEVERE, "Waited more than 30 seconds for step to update. Something wrong.");
             shownErrorMessage = true;
             // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
             // request the server to
@@ -183,7 +183,7 @@ public class ClientGame extends AbstractGame {
         remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
     } catch (final RuntimeException e) {
-      ClientLogger.logQuietly("Failed to shut down client game", e);
+      log.log(Level.SEVERE, "Failed to shut down client game", e);
     }
     gameData.getGameLoader().shutDown();
   }

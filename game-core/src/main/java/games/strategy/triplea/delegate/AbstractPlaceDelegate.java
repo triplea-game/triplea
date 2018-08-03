@@ -391,7 +391,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           }
           final Collection<Unit> placedUnits = placement.getUnits();
           final int placementSize = placedUnits.size();
-          // System.out.println("UndoPlacement: " + placement.getMoveLabel());
           if (placementSize <= leftToPlace) {
             // potentialNewProducerTerritory can take over complete production
             placement.setProducerTerritory(potentialNewProducerTerritory);

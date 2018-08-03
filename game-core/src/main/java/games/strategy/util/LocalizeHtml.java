@@ -1,12 +1,15 @@
 package games.strategy.util;
 
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.AbstractUiContext;
+import lombok.extern.java.Log;
 
+@Log
 public class LocalizeHtml {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
   public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
@@ -68,11 +71,11 @@ public class LocalizeHtml {
           URL replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName);
 
           if (replacementUrl == null || replacementUrl.toString().length() == 0) {
-            System.out.println("Could not find: " + mapNameDir + "/" + ASSET_IMAGE_FOLDER + imageFileName);
+            log.log(Level.SEVERE, "Could not find: " + mapNameDir + "/" + ASSET_IMAGE_FOLDER + imageFileName);
             replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
           }
           if (replacementUrl == null || replacementUrl.toString().length() == 0) {
-            System.err.println("Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
+            log.log(Level.SEVERE, "Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
             continue;
           }
 

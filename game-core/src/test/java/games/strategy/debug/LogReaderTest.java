@@ -22,7 +22,7 @@ public class LogReaderTest {
   @Mock
   private JTextArea area;
   @Mock
-  private GenericConsole console;
+  private Console console;
 
   @Test
   public void testStreamSplittingArray() throws Exception {

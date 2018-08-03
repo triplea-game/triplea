@@ -12,12 +12,12 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observer;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.IGame;
@@ -44,6 +44,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.ExitStatus;
+import lombok.extern.java.Log;
 
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
@@ -52,6 +53,7 @@ import games.strategy.util.ExitStatus;
  * This class opens its own connection to the lobby, and its own messenger.
  * </p>
  */
+@Log
 public class InGameLobbyWatcher {
   public static final String LOBBY_WATCHER_NAME = "lobby_watcher";
   // this is the messenger used by the game
@@ -103,7 +105,6 @@ public class InGameLobbyWatcher {
       return properties;
     };
     try {
-      System.out.println("host:" + host + " port:" + port);
       final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),
           getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
@@ -113,7 +114,7 @@ public class InGameLobbyWatcher {
       rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
       return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Failed to create in-game lobby watcher", e);
+      log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return null;
     }
   }
@@ -228,7 +229,7 @@ public class InGameLobbyWatcher {
                 + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
                 + "The server tried to connect to your external ip: " + addressUsed;
             if (HeadlessGameServer.headless()) {
-              System.out.println(message);
+              log.log(Level.SEVERE, message);
               ExitStatus.FAILURE.exit();
             }
             final Frame parentComponent = JOptionPane.getFrameForComponent(parent);

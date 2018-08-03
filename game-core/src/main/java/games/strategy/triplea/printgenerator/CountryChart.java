@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -21,7 +21,9 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
+import lombok.extern.java.Log;
 
+@Log
 class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
 
@@ -81,7 +83,7 @@ class CountryChart {
         countryFileWriter.write("\r\n");
       }
     } catch (final IOException e) {
-      ClientLogger.logError("Failed Saving to File " + outFile.toString(), e);
+      log.log(Level.SEVERE, "Failed Saving to File " + outFile.toString(), e);
     }
   }
 }

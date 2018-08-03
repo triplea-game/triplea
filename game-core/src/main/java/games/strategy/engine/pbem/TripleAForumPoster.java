@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.logging.Level;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -22,12 +23,13 @@ import org.apache.http.util.EntityUtils;
 import com.github.openjson.JSONArray;
 import com.github.openjson.JSONObject;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
+import lombok.extern.java.Log;
 
+@Log
 public class TripleAForumPoster extends AbstractForumPoster {
 
   private static final long serialVersionUID = -3380344469767981030L;
@@ -47,7 +49,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
         deleteToken(client, userId, token);
       }
     } catch (final IOException | IllegalStateException e) {
-      ClientLogger.logQuietly("Failed to post game to forum", e);
+      log.log(Level.SEVERE, "Failed to post game to forum", e);
       turnSummaryRef = e.getMessage();
     }
     return false;
@@ -90,12 +92,8 @@ public class TripleAForumPoster extends AbstractForumPoster {
       throws IOException {
     final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v2/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
-    try (CloseableHttpResponse response = client.execute(httpDelete)) {
-      final int code = response.getStatusLine().getStatusCode();
-      if (code != HttpURLConnection.HTTP_OK) {
-        // Cleanup failed, this is not a severe issue
-        ClientLogger.logQuietly("Failed to delete API Token after posting, server responded with error code " + code);
-      }
+    try (CloseableHttpResponse ignored = client.execute(httpDelete)) {
+      // ignore errors, execute and then close
     }
   }
 

@@ -12,12 +12,13 @@ import java.util.stream.Collectors;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
-import games.strategy.debug.ClientLogger;
+import lombok.extern.java.Log;
 
 /**
  * This class runs a set of local system checks, like access network, and create a temp file.
  * Each check is always run, and this class records the results of those checks.
  */
+@Log
 public final class LocalSystemChecker {
 
   public static void launch() {
@@ -28,10 +29,9 @@ public final class LocalSystemChecker {
     final LocalSystemChecker localSystemChecker = new LocalSystemChecker();
     final Collection<Exception> exceptions = localSystemChecker.getExceptions();
     if (!exceptions.isEmpty()) {
-      final String msg = String.format(
-          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.\n%s",
-          exceptions.size(), localSystemChecker.getStatusMessage());
-      ClientLogger.logError(msg);
+      log.warning(String.format(
+          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.%n%s",
+          exceptions.size(), localSystemChecker.getStatusMessage()));
     }
   }
 

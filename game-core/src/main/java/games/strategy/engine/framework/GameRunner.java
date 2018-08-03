@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
@@ -30,6 +31,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -43,10 +47,9 @@ import org.triplea.client.ui.javafx.TripleA;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.debug.ErrorConsole;
+import games.strategy.debug.Console;
+import games.strategy.debug.ConsoleHandler;
 import games.strategy.debug.ErrorMessage;
-import games.strategy.debug.LoggingConfiguration;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.auto.health.check.LocalSystemChecker;
@@ -65,6 +68,7 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -72,11 +76,13 @@ import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 import javafx.application.Application;
+import lombok.extern.java.Log;
 
 /**
  * GameRunner - The entrance class with the main method.
  * In this class commonly used constants are getting defined and the Game is being launched
  */
+@Log
 public class GameRunner {
 
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
@@ -99,15 +105,24 @@ public class GameRunner {
    * Warning: game engine code invokes this method to spawn new game clients.
    */
   public static void main(final String[] args) {
-    LoggingConfiguration.initialize();
+    Preconditions.checkState(!GraphicsEnvironment.isHeadless(),
+        "UI client launcher invoked from headless environment. This is current prohibited by design to "
+            + "avoid UI rendering errors in the headless environment.");
+
+    ErrorHandler.registerExceptionHandler();
     ClientSetting.initialize();
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-        LookAndFeel.setupLookAndFeel();
-        ErrorConsole.createConsole();
-        ErrorMessage.INSTANCE.init();
-      }));
+      final Console console = new Console();
+      final SimpleFormatter formatter = new SimpleFormatter();
+      LogManager.getLogManager().getLogger("").addHandler(new ConsoleHandler(
+          logMsg -> {
+            ErrorMessage.show(logMsg.getMessage());
+            console.append(formatter.format(logMsg));
+          }
+      ));
+      ErrorMessage.enable();
+      Interruptibles.await(() -> SwingAction.invokeAndWait(LookAndFeel::setupLookAndFeel));
     }
 
     new ArgParser().handleCommandLineArgs(args);
@@ -128,9 +143,6 @@ public class GameRunner {
     if (HttpProxy.isUsingSystemProxy()) {
       HttpProxy.updateSystemProxy();
     }
-
-    final Version engineVersion = ClientContext.engineVersion();
-    System.out.println("TripleA engine version " + engineVersion.getExactVersion());
 
     if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
       Application.launch(TripleA.class, args);
@@ -301,7 +313,7 @@ public class GameRunner {
     try {
       img = frame.getToolkit().getImage(GameRunner.class.getResource("ta_icon.png"));
     } catch (final Exception ex) {
-      ClientLogger.logError("ta_icon.png not loaded", ex);
+      log.log(Level.SEVERE, "ta_icon.png not loaded", ex);
     }
     final MediaTracker tracker = new MediaTracker(frame);
     tracker.addImage(img, 0);

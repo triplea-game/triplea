@@ -4,13 +4,15 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.ui.SwingComponents;
+import lombok.extern.java.Log;
 
 /**
  * A wrapper class for opening Files & URLs using the Desktop API.
  */
+@Log
 public final class OpenFileUtility {
   private OpenFileUtility() {}
 
@@ -25,7 +27,7 @@ public final class OpenFileUtility {
       try {
         Desktop.getDesktop().open(file);
       } catch (final IOException e) {
-        ClientLogger.logError("Could not open File " + file.getAbsolutePath(), e);
+        log.log(Level.SEVERE, "Could not open File " + file.getAbsolutePath(), e);
       }
     } else {
       action.run();
@@ -43,7 +45,7 @@ public final class OpenFileUtility {
       try {
         Desktop.getDesktop().browse(URI.create(url));
       } catch (final IOException e) {
-        ClientLogger.logError("Could not open URL " + url, e);
+        log.log(Level.SEVERE, "Could not open URL " + url, e);
       }
     } else {
       action.run();

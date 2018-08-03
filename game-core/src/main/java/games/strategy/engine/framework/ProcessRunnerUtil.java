@@ -8,14 +8,16 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
+import lombok.extern.java.Log;
 
 /**
  * To hold various static utility methods for running a java program.
  */
+@Log
 public class ProcessRunnerUtil {
 
   static void populateBasicJavaArgs(final List<String> commands) {
@@ -56,7 +58,7 @@ public class ProcessRunnerUtil {
         }
       }, "Process output gobbler");
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to start new process", e);
+      log.log(Level.SEVERE, "Failed to start new process", e);
     }
   }
 

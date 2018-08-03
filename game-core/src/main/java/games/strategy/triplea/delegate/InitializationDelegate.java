@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -27,10 +28,12 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
+import lombok.extern.java.Log;
 
 /**
  * This delegate is only supposed to be run once, per game, at the start of the game.
  */
+@Log
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
@@ -137,10 +140,11 @@ public class InitializationDelegate extends BaseTripleADelegate {
             try {
               bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
             } catch (final IllegalStateException e) {
-              System.err.println(
+              log.log(
+                  Level.SEVERE,
                   "You can only edit add transports+units after the initialization delegate of the game is finished.  "
                       + "If this error came up and you have not used Edit Mode to add units + transports, then please "
-                      + "report this as a bug:  \r\n" + e.getMessage());
+                      + "report this as a bug:\n" + e.getMessage());
             }
             found = true;
             break;

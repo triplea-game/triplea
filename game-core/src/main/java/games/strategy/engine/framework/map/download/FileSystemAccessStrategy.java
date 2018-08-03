@@ -7,14 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 import javax.swing.DefaultListModel;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
+@Log
 class FileSystemAccessStrategy {
 
   FileSystemAccessStrategy() {}
@@ -46,7 +48,7 @@ class FileSystemAccessStrategy {
         try {
           Files.delete(map.getInstallLocation().toPath());
         } catch (final IOException e) {
-          ClientLogger.logQuietly("Failed to delete map: " + map.getInstallLocation().getAbsolutePath(), e);
+          log.log(Level.SEVERE, "Failed to delete map: " + map.getInstallLocation().getAbsolutePath(), e);
         }
         map.getInstallLocation().delete();
       }

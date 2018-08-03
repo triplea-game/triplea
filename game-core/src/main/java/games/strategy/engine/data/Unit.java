@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
@@ -12,11 +13,13 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.net.GUID;
 import games.strategy.triplea.attachments.UnitAttachment;
+import lombok.extern.java.Log;
 
 /**
  * Remember to always use a {@code ChangeFactory} change over an {@code IDelegateBridge} for any changes to game data,
  * or any change that should go over the network.
  */
+@Log
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
   private PlayerID m_owner;
@@ -132,7 +135,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     private static void printError(final String errorMessage) {
       if (!shownError) {
         shownError = true;
-        System.err.println(errorMessage);
+        log.log(Level.SEVERE, errorMessage);
       }
     }
   }

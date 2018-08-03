@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,9 @@ import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
+import lombok.extern.java.Log;
 
+@Log
 public class HistoryLog extends JFrame {
   private static final long serialVersionUID = 4880602702815333376L;
   private final JTextArea textArea;
@@ -116,7 +119,7 @@ public class HistoryLog extends JFrame {
       }
       printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
     } else {
-      System.err.println("No Step node found!");
+      log.log(Level.SEVERE, "No step node found in!");
     }
   }
 

@@ -9,6 +9,7 @@ import java.nio.channels.Channels;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -24,10 +25,11 @@ import org.apache.http.impl.client.HttpClients;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.HttpProxy;
+import lombok.extern.java.Log;
 
+@Log
 public final class DownloadUtils {
   @VisibleForTesting
   static final ConcurrentMap<String, Long> downloadLengthsByUri = new ConcurrentHashMap<>();
@@ -63,7 +65,7 @@ public final class DownloadUtils {
     try (CloseableHttpClient client = newHttpClient()) {
       return getDownloadLengthFromHost(uri, client);
     } catch (final IOException e) {
-      ClientLogger.logQuietly(String.format("failed to get download length for '%s'", uri), e);
+      log.log(Level.SEVERE, String.format("failed to get download length for '%s'", uri), e);
       return Optional.empty();
     }
   }
@@ -119,7 +121,7 @@ public final class DownloadUtils {
       downloadToFile(uri, file);
       return FileDownloadResult.success(file);
     } catch (final IOException e) {
-      ClientLogger.logError("Failed to download: " + uri + ", will attempt to use backup values where available. "
+      log.log(Level.SEVERE, "Failed to download: " + uri + ", will attempt to use backup values where available. "
           + "Please check your network connection.", e);
       return FileDownloadResult.FAILURE;
     }

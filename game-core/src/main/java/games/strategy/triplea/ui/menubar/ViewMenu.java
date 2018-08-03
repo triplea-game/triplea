@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
@@ -36,7 +37,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -51,7 +51,9 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.ui.SwingAction;
+import lombok.extern.java.Log;
 
+@Log
 final class ViewMenu extends JMenu {
   private static final long serialVersionUID = -4703734404422047487L;
 
@@ -228,7 +230,7 @@ final class ViewMenu extends JMenu {
       }
     }
     if (!matchFound) {
-      System.err.println("default unit size does not match any menu item");
+      log.log(Level.SEVERE, "default unit size does not match any menu item");
     }
     unitSizeMenu.add(radioItem125);
     unitSizeMenu.add(radioItem100);
@@ -263,7 +265,7 @@ final class ViewMenu extends JMenu {
           }
           showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
         } catch (final Exception exception) {
-          ClientLogger.logError("Error Changing Map Skin2", exception);
+          log.log(Level.SEVERE, "Error Changing Map Skin2", exception);
         }
       });
     }

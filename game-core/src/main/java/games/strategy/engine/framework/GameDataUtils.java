@@ -3,16 +3,18 @@ package games.strategy.engine.framework;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameObjectOutputStream;
 import games.strategy.engine.history.History;
 import games.strategy.io.IoUtils;
+import lombok.extern.java.Log;
 
 /**
  * A collection of useful methods for working with instances of {@link GameData}.
  */
+@Log
 public final class GameDataUtils {
   private GameDataUtils() {}
 
@@ -41,7 +43,7 @@ public final class GameDataUtils {
       final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data, copyDelegates));
       return IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to clone game data", e);
+      log.log(Level.SEVERE, "Failed to clone game data", e);
       return null;
     }
   }

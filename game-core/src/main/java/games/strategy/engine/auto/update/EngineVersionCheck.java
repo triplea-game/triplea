@@ -2,15 +2,17 @@ package games.strategy.engine.auto.update;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.EventThreadJOptionPane;
+import lombok.extern.java.Log;
 
+@Log
 class EngineVersionCheck {
   static void checkForLatestEngineVersionOut() {
     try {
@@ -41,7 +43,7 @@ class EngineVersionCheck {
                 "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));
       }
     } catch (final Exception e) {
-      ClientLogger.logError("Error while checking for engine updates", e);
+      log.log(Level.SEVERE, "Error while checking for engine updates", e);
     }
   }
 }

@@ -2,6 +2,7 @@ package games.strategy.triplea.attachments;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -14,6 +15,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
+import lombok.extern.java.Log;
 
 /**
  * The purpose of this class is to separate the Rules Attachment variables and methods that affect Players,
@@ -24,6 +26,7 @@ import games.strategy.util.IntegerMap;
  * or m_objectiveValue (the money given if the condition is true), would NOT go in This class. <br>
  * Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
  */
+@Log
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
@@ -87,7 +90,8 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     final PlayerID player = data.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
-      System.err.println("When trying to find condition: " + conditionName + ", player does not exist: " + playerName);
+      log.log(Level.SEVERE,
+          "When trying to find condition: " + conditionName + ", player does not exist: " + playerName);
       return null;
     }
     final Collection<PlayerID> allPlayers = data.getPlayerList().getPlayers();
@@ -101,18 +105,20 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       } else if (conditionName.contains(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
         attachment = PoliticalActionAttachment.get(player, conditionName, allPlayers);
       } else {
-        System.err.println(conditionName + " attachment must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
-            + " or " + Constants.RULES_CONDITION_PREFIX + " or " + Constants.TRIGGER_ATTACHMENT_PREFIX + " or "
-            + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
+        log.log(
+            Level.SEVERE,
+            conditionName + " attachment must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
+                + " or " + Constants.RULES_CONDITION_PREFIX + " or " + Constants.TRIGGER_ATTACHMENT_PREFIX + " or "
+                + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
         return null;
       }
     } catch (final Exception e) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
-      System.err.println(e.getMessage());
+      log.log(Level.SEVERE, "Failed to getCondition: " + conditionName + ", for playerName: " + playerName, e);
       return null;
     }
     if (attachment == null) {
-      System.err.println("Condition attachment does not exist: " + conditionName);
+      log.log(Level.SEVERE, "Condition attachment does not exist: " + conditionName);
       return null;
     }
     return (ICondition) attachment;

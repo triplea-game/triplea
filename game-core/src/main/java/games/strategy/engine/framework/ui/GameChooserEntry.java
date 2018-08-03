@@ -5,33 +5,22 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
+@Log
 public class GameChooserEntry implements Comparable<GameChooserEntry> {
   private final URI url;
   private GameData gameData;
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
-
-  /**
-   * Factory method, if there are any map parsing errors an exception is thrown.
-   */
-  public static GameChooserEntry newGameChooserEntry() {
-    final URI uri = URI.create(ClientSetting.SELECTED_GAME_LOCATION.value());
-    try {
-      return new GameChooserEntry(uri);
-    } catch (final IOException | GameParseException | EngineVersionException e) {
-      throw new IllegalStateException(e);
-    }
-  }
 
   public GameChooserEntry(final URI uri) throws IOException, GameParseException, EngineVersionException {
     url = uri;
@@ -63,13 +52,13 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
       gameData = GameParser.parse(url.toString(), input);
       gameDataFullyLoaded = true;
     } catch (final EngineVersionException e) {
-      ClientLogger.logQuietly("Game engine not compatible with: " + url, e);
+      log.log(Level.SEVERE, "Game engine not compatible with: " + url, e);
       throw new GameParseException(e);
     } catch (final GameParseException e) {
-      ClientLogger.logError("Could not parse:" + url, e);
+      log.log(Level.SEVERE, "Could not parse:" + url, e);
       throw e;
     } catch (final Exception e) {
-      ClientLogger.logError("Could not parse:" + url, e);
+      log.log(Level.SEVERE, "Could not parse:" + url, e);
       throw new GameParseException(e);
     }
     return gameData;

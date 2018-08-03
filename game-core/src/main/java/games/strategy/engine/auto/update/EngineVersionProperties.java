@@ -9,6 +9,7 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
@@ -17,12 +18,13 @@ import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
+@Log
 class EngineVersionProperties {
   private static final String TRIPLEA_VERSION_LINK =
       "https://raw.githubusercontent.com/triplea-game/triplea/master/latest_version.properties";
@@ -75,7 +77,7 @@ class EngineVersionProperties {
     try {
       props.load(new URL(TRIPLEA_VERSION_LINK).openStream());
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed while attempting to check for a new Version", e);
+      log.log(Level.SEVERE, "Failed while attempting to check for a new Version", e);
     }
     return props;
   }

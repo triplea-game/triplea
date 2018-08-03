@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 import com.google.common.collect.ImmutableMap;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -52,8 +52,10 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 @MapSupport
+@Log
 public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
   private static final String PREFIX_CLEAR = "-clear-";
@@ -2352,7 +2354,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
           ((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
         } catch (final Exception e) {
-          ClientLogger.logQuietly("Failed to signal game over", e);
+          log.log(Level.SEVERE, "Failed to signal game over", e);
         }
       }
     }

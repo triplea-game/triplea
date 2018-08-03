@@ -6,12 +6,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
+import lombok.extern.java.Log;
+
 
 /**
  * An ExecutorService backed thread pool.
  */
+@Log
 public class ThreadPool {
   private final ExecutorService executorService;
   private final Queue<Future<?>> futureQueue = new ArrayDeque<>();
@@ -53,7 +56,13 @@ public class ThreadPool {
       } catch (final InterruptedException e) {
         Thread.currentThread().interrupt();
       } catch (final ExecutionException e) {
-        ClientLogger.logError("Threading execution exception: " + e.getMessage(), e);
+        final Throwable exceptionToLog = e.getCause();
+        /*
+         * An {@code ExecutionException} contains no useful information; it's simply an adapter to tunnel exceptions
+         * thrown by tasks through the {@code Executor} API. We only log the cause to reduce the number of
+         * stack trace frames visible to the user.
+         */
+        log.log(Level.SEVERE, "Threading execution exception: " + exceptionToLog.getMessage(), exceptionToLog);
       }
     }
   }

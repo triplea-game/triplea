@@ -1,6 +1,7 @@
 package games.strategy.debug;
 
 import java.awt.Dialog;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,6 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import com.google.common.base.Preconditions;
+
+import games.strategy.triplea.settings.ClientSetting;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
@@ -33,7 +37,7 @@ public enum ErrorMessage {
   private final JFrame windowReference = new JFrame("TripleA Error");
   private final JLabel errorMessage = JLabelBuilder.builder().errorIcon().iconTextGap(10).build();
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
-
+  private volatile boolean enableErrorPopup = false;
   ErrorMessage() {
     windowReference.setAlwaysOnTop(true);
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
@@ -67,7 +71,7 @@ public enum ErrorMessage {
                 .toolTip("Shows the error console window with full error details.")
                 .actionListener(() -> {
                   hide();
-                  ErrorConsole.showConsole();
+                  ClientSetting.SHOW_CONSOLE.saveAndFlush("true");
                 })
                 .build())
             .addHorizontalGlue()
@@ -75,23 +79,20 @@ public enum ErrorMessage {
         .build());
   }
 
-  private void hide() {
-    windowReference.setVisible(false);
-    isVisible.set(false);
+  /**
+   * Set this to true on non-headless environments to actively notify user of errors via a pop-up message.
+   */
+  public static void enable() {
+    Preconditions.checkState(
+        !GraphicsEnvironment.isHeadless(),
+        "Error, must not enable error pop-up in a headless environment, there will be errors rendering "
+            + "swing components. Check the call flow to this point and make sure we do not enable error reporting "
+            + "unless we are in a non-headless environment");
+    INSTANCE.enableErrorPopup = true;
   }
 
-  /**
-   * Call this to make sure static swing components have been initialized. This will ensure that we initialized
-   * the frame before an error occurs. This way when an error event does happen, we only need to pack and make
-   * visible the frame.
-   */
-  public void init() {}
-
-  /**
-   * Displays the error dialog window with a given message. This is no-op if the window is already visible.
-   */
   public static void show(final String msg) {
-    if (INSTANCE.isVisible.compareAndSet(false, true)) {
+    if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
       SwingUtilities.invokeLater(() -> {
         INSTANCE.errorMessage.setText(msg);
         INSTANCE.windowReference.pack();
@@ -99,5 +100,10 @@ public enum ErrorMessage {
         INSTANCE.windowReference.setVisible(true);
       });
     }
+  }
+
+  private void hide() {
+    windowReference.setVisible(false);
+    isVisible.set(false);
   }
 }

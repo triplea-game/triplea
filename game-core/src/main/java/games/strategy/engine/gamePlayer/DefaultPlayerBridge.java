@@ -5,8 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.events.GameStepListener;
@@ -19,10 +21,12 @@ import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.RemoteNotFoundException;
 import lombok.Getter;
+import lombok.extern.java.Log;
 
 /**
  * Default implementation of PlayerBridge.
  */
+@Log
 public class DefaultPlayerBridge implements IPlayerBridge {
   private final IGame game;
   @Getter(onMethod_ = {@Override})
@@ -64,15 +68,12 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       game.getData().acquireReadLock();
       try {
         final IDelegate delegate = game.getData().getDelegateList().getDelegate(currentDelegate);
-        if (delegate == null) {
-          final String errorMessage = "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
-              + stepName + ", and CurrentDelegate: " + currentDelegate;
-          // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
-          // too
-          System.err.println(errorMessage);
-          // Veqryn: hope that this suffices...?
-          throw new IllegalStateException(errorMessage);
-        }
+        // TODO: before converting this Precondtions check to checkNotNull, make sure we do not depend on the
+        // illegal state exception type in a catch block.
+        Preconditions.checkState(
+            delegate != null,
+            "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
+                + stepName + ", and CurrentDelegate: " + currentDelegate);
         final RemoteName remoteName;
         try {
           remoteName = ServerGame.getRemoteName(delegate);
@@ -80,10 +81,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           final String errorMessage =
               "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
                   + stepName + ", and CurrentDelegate: " + currentDelegate;
-          // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
-          // too
-          System.err.println(errorMessage);
-          ClientLogger.logQuietly(errorMessage, e);
+          log.log(Level.SEVERE, errorMessage, e);
           throw new IllegalStateException(errorMessage, e);
         }
         return getRemoteThatChecksForGameOver(game.getRemoteMessenger().getRemote(remoteName));
@@ -91,6 +89,9 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         game.getData().releaseReadLock();
       }
     } catch (final MessengerException me) {
+      // TODO: this kind of conversion does not seem appropriate. Maybe MessengerException should extend
+      // GameOverException? the root cause of the MessenderException is being lost, that is something to fix
+      // as well as a potential control-flow-by-exception-handling code smell.
       throw new GameOverException("Game Over!");
     }
   }
@@ -107,9 +108,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         if (delegate == null) {
           final String errorMessage =
               "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. Looking for delegate named: " + name;
-          // for some reason, client isn't getting or seeing the errors, so make sure we print it to err
-          System.err.println(errorMessage);
-          // too
           throw new IllegalStateException(errorMessage);
         }
         if (!(delegate instanceof IPersistentDelegate)) {

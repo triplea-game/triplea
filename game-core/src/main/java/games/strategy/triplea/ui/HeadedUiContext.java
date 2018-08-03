@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
@@ -32,10 +31,12 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
+import lombok.extern.java.Log;
 
 /**
  * A place to find images and map data for a ui.
  */
+@Log
 public class HeadedUiContext extends AbstractUiContext {
   protected MapData mapData;
   protected final TileImageFactory tileImageFactory = new TileImageFactory();
@@ -109,7 +110,7 @@ public class HeadedUiContext extends AbstractUiContext {
           cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
         }
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Failed to create cursor from: " + cursorUrl, e);
+        log.log(Level.SEVERE, "Failed to create cursor from: " + cursorUrl, e);
       }
     }
     stopWatch.done();
@@ -234,7 +235,7 @@ public class HeadedUiContext extends AbstractUiContext {
     try {
       prefs.flush();
     } catch (final BackingStoreException e) {
-      ClientLogger.logQuietly("Failed to flush preferences: " + prefs.absolutePath(), e);
+      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
 

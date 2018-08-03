@@ -96,10 +96,6 @@ public class LobbyServerPropertiesFetcherTest {
       when(testLobbyPortSetting.isSet()).thenReturn(false);
     }
 
-    private void givenTestLobbyPortIsSet() {
-      when(testLobbyPortSetting.isSet()).thenReturn(true);
-    }
-
     private void givenTestLobbyPortIsSetTo(final int port) {
       when(testLobbyPortSetting.isSet()).thenReturn(true);
       when(testLobbyPortSetting.intValue()).thenReturn(port);
@@ -126,7 +122,6 @@ public class LobbyServerPropertiesFetcherTest {
     @Test
     public void shouldReturnEmptyWhenHostNotSetAndPortNotSet() {
       givenTestLobbyHostIsNotSet();
-      givenTestLobbyPortIsNotSet();
 
       whenGetTestOverrideProperties();
 
@@ -146,7 +141,6 @@ public class LobbyServerPropertiesFetcherTest {
     @Test
     public void shouldReturnEmptyWhenHostNotSetAndPortSet() {
       givenTestLobbyHostIsNotSet();
-      givenTestLobbyPortIsSet();
 
       whenGetTestOverrideProperties();
 

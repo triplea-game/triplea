@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -27,12 +28,12 @@ import javax.mail.util.ByteArrayDataSource;
 
 import com.google.common.base.Splitter;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import games.strategy.triplea.help.HelpSupport;
+import lombok.extern.java.Log;
 
 /**
  * A PBEM (play by email) sender that will email turn summary and save game.
@@ -47,6 +48,7 @@ import games.strategy.triplea.help.HelpSupport;
  * credentials. The persistent password is used when the object is stored in the local cache.
  * </p>
  */
+@Log
 public class GenericEmailSender implements IEmailSender {
   private static final long serialVersionUID = 4644748856027574157L;
 
@@ -96,7 +98,7 @@ public class GenericEmailSender implements IEmailSender {
         m_userName = credentialManager.protect(m_userName);
         m_password = credentialManager.protect(m_password);
       } catch (final CredentialManagerException e) {
-        ClientLogger.logQuietly("failed to protect PBEM credentials", e);
+        log.log(Level.SEVERE, "failed to protect PBEM credentials", e);
         m_userName = "";
         m_password = "";
       }
@@ -116,7 +118,7 @@ public class GenericEmailSender implements IEmailSender {
         m_userName = credentialManager.unprotectToString(m_userName);
         m_password = credentialManager.unprotectToString(m_password);
       } catch (final CredentialManagerException e) {
-        ClientLogger.logQuietly("failed to unprotect PBEM credentials", e);
+        log.log(Level.SEVERE, "failed to unprotect PBEM credentials", e);
         m_userName = "";
         m_password = "";
       }

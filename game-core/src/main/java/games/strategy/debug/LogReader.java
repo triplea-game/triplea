@@ -12,14 +12,14 @@ final class LogReader {
   private final JTextArea text;
   private final ByteArrayOutputStream stream = new ListeningByteArrayOutputStream();
   private final BooleanSupplier displayConsoleOnWriteSupplier;
-  private final GenericConsole parentConsole;
+  private final Console parentConsole;
   private final PrintStream out;
 
   LogReader(
       final PrintStream out,
       final JTextArea text,
       final BooleanSupplier displayConsoleOnWriteSupplier,
-      final GenericConsole parentConsole) {
+      final Console parentConsole) {
     this.out = out;
     this.text = text;
     this.displayConsoleOnWriteSupplier = displayConsoleOnWriteSupplier;

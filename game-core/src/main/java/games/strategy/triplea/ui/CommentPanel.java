@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +31,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.Event;
@@ -39,7 +39,9 @@ import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.ui.SwingAction;
+import lombok.extern.java.Log;
 
+@Log
 public class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;
   private JTextPane text;
@@ -143,7 +145,7 @@ public class CommentPanel extends JPanel {
             doc.insertString(doc.getLength(), prefix, bold);
             doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
           } catch (final BadLocationException e1) {
-            ClientLogger.logQuietly("Failed to add history node", e1);
+            log.log(Level.SEVERE, "Failed to add history node", e1);
           }
         }
       } finally {
@@ -190,7 +192,7 @@ public class CommentPanel extends JPanel {
                 doc.insertString(doc.getLength(), prefix, bold);
                 doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
               } catch (final BadLocationException e) {
-                ClientLogger.logQuietly("Failed to add history", e);
+                log.log(Level.SEVERE, "Failed to add history", e);
               }
             });
           }
@@ -216,7 +218,7 @@ public class CommentPanel extends JPanel {
           doc.insertString(doc.getLength(), error + "\n", italic);
         }
       } catch (final BadLocationException e) {
-        ClientLogger.logQuietly("Failed to add comment", e);
+        log.log(Level.SEVERE, "Failed to add comment", e);
       }
       final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
       scrollModel.setValue(scrollModel.getMaximum());
