@@ -8,7 +8,6 @@ import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_P
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
@@ -90,17 +89,6 @@ public class HeadlessGameServer {
     }));
     availableGames = new AvailableGames();
     gameSelectorModel = new GameSelectorModel();
-    final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (!fileName.isEmpty()) {
-      try {
-        final File file = new File(fileName);
-        if (file.exists()) {
-          gameSelectorModel.load(file);
-        }
-      } catch (final Exception e) {
-        gameSelectorModel.resetGameDataToNull();
-      }
-    }
     new Thread(() -> {
       log.info("Headless Start");
       setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
@@ -470,7 +458,7 @@ public class HeadlessGameServer {
   }
 
   private static Set<String> getProperties() {
-    return new HashSet<>(Arrays.asList(TRIPLEA_GAME,
+    return new HashSet<>(Arrays.asList(
         TRIPLEA_SERVER, TRIPLEA_PORT,
         TRIPLEA_NAME, LOBBY_HOST, LOBBY_PORT,
         LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, LOBBY_GAME_SUPPORT_EMAIL,
@@ -629,7 +617,6 @@ public class HeadlessGameServer {
   private static void usage() {
     // TODO replace this method with the generated usage of commons-cli
     log.info("\nUsage and Valid Arguments:\n"
-        + "   " + TRIPLEA_GAME + "=<FILE_NAME>\n"
         + "   " + TRIPLEA_SERVER + "=true\n"
         + "   " + TRIPLEA_PORT + "=<PORT>\n"
         + "   " + TRIPLEA_NAME + "=<PLAYER_NAME>\n"

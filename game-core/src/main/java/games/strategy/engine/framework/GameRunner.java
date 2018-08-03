@@ -7,7 +7,6 @@ import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_MAP_DOWNLOAD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
@@ -285,10 +284,6 @@ public class GameRunner {
   private static void loadGame() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
     gameSelectorModel.loadDefaultGameSameThread();
-    final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (!fileName.isEmpty() && new File(fileName).exists()) {
-      gameSelectorModel.load(new File(fileName));
-    }
 
     final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
     if (!downloadableMap.isEmpty()) {
@@ -328,10 +323,6 @@ public class GameRunner {
     commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
       commands.add("-D" + SERVER_PASSWORD + "=" + password);
-    }
-    final String fileName = System.getProperty(TRIPLEA_GAME, "");
-    if (fileName.length() > 0) {
-      commands.add("-D" + TRIPLEA_GAME + "=" + fileName);
     }
     final String javaClass = GameRunner.class.getName();
     commands.add(javaClass);
