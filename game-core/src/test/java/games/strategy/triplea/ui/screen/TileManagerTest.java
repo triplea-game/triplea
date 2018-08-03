@@ -52,8 +52,7 @@ public class TileManagerTest {
     assertEquals(expected, categories);
   }
 
-  private UnitCategory createUnitCategory(final String unitName, final PlayerID player, final GameData data) {
+  private static UnitCategory createUnitCategory(final String unitName, final PlayerID player, final GameData data) {
     return new UnitCategory(new UnitType(unitName, data), player);
   }
-
 }
