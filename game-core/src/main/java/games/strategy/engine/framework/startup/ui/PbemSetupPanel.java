@@ -367,6 +367,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    * This is used to store settings which are not game related, and should therefore not go into the options cache
    * This is often used by editors to remember previous values
    */
+  @SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
   private enum LocalBeanCache {
     INSTANCE;
     private final File file;

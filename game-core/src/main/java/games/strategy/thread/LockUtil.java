@@ -27,6 +27,7 @@ import com.google.common.annotations.VisibleForTesting;
  * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
  * </p>
  */
+@SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
 public enum LockUtil {
   INSTANCE;
 
