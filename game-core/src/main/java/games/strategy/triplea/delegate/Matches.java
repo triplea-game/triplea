@@ -1160,12 +1160,8 @@ public final class Matches {
         || data.getRelationshipTracker().isAllied(player, t.getOwner());
   }
 
-  private static Predicate<Unit> unitIsEnemyAaForAnything(final PlayerID player, final GameData data) {
-    return unitIsAaForAnything().and(enemyUnit(player, data));
-  }
-
-  private static Predicate<Unit> unitIsEnemyAaForCombat(final PlayerID player, final GameData data) {
-    return unitIsAaForCombatOnly().and(enemyUnit(player, data));
+  private static Predicate<Unit> unitIsEnemyAaForFlyOver(final PlayerID player, final GameData data) {
+    return unitIsAaForFlyOverOnly().and(enemyUnit(player, data));
   }
 
   static Predicate<Unit> unitIsInTerritory(final Territory territory) {
@@ -1290,12 +1286,8 @@ public final class Matches {
     return t -> t.getUnits().anyMatch(cond);
   }
 
-  public static Predicate<Territory> territoryHasEnemyAaForAnything(final PlayerID player, final GameData data) {
-    return t -> t.getUnits().anyMatch(unitIsEnemyAaForAnything(player, data));
-  }
-
-  public static Predicate<Territory> territoryHasEnemyAaForCombatOnly(final PlayerID player, final GameData data) {
-    return t -> t.getUnits().anyMatch(unitIsEnemyAaForCombat(player, data));
+  public static Predicate<Territory> territoryHasEnemyAaForFlyOver(final PlayerID player, final GameData data) {
+    return t -> t.getUnits().anyMatch(unitIsEnemyAaForFlyOver(player, data));
   }
 
   public static Predicate<Territory> territoryHasNoEnemyUnits(final PlayerID player, final GameData data) {
