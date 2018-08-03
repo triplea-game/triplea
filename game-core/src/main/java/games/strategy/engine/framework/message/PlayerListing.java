@@ -69,7 +69,7 @@ public class PlayerListing implements Serializable {
     m_localPlayerTypes = localPlayerTypes.entrySet()
         .stream()
         // convert Map<String,PlayerType> -> Map<String,String>
-        .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getLabel());
+        .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getLabel()));
     m_gameVersion = gameVersion;
     m_gameName = gameName;
     m_gameRound = gameRound;
