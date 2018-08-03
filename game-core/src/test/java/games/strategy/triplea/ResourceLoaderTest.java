@@ -68,7 +68,7 @@ public class ResourceLoaderTest extends AbstractClientSettingTestCase {
 
   private static Matcher<Iterable<File>> containsDirectoryEndingWith(final String name) {
     return CustomMatcher.<Iterable<File>>builder()
-        .description("iterable with directionending with: " + name)
+        .description("iterable with directory ending with: " + name)
         .checkCondition(files -> StreamSupport.stream(files.spliterator(), false)
             .map(File::getPath)
             .anyMatch(p -> p.endsWith(name)))
