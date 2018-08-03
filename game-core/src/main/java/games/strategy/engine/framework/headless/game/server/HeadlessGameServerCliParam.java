@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import games.strategy.engine.framework.ArgParsingHelper;
 import games.strategy.triplea.UrlConstants;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Enum that represents each CLI option that can be provided to a headless server, and for each one
@@ -35,6 +36,7 @@ public enum HeadlessGameServerCliParam {
 
   SERVER_PASSWORD("triplea.server.password", Required.NOT_REQUIRED);
 
+  @Getter
   private final String label;
   private final Required required;
 

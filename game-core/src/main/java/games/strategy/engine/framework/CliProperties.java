@@ -23,5 +23,5 @@ public class CliProperties {
   public static final String LOBBY_GAME_RECONNECTION = "triplea.lobby.game.reconnection";
   public static final String DO_NOT_CHECK_FOR_UPDATES = "triplea.doNotCheckForUpdates";
 
-  public static final String MAP_FOLDER = "mapFolder";
+  public static final String MAP_FOLDER = "triplea.map.folder";
 }

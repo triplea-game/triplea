@@ -10,6 +10,7 @@ import static org.hamcrest.core.Is.is;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import games.strategy.engine.framework.headless.game.server.HeadlessGameServerCliParam;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 
@@ -76,8 +77,8 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
     final String mapFolderPath = "/path/to/maps";
 
-    new ArgParser()
-        .handleCommandLineArgs(new String[] {"-PmapFolder=" + mapFolderPath});
+    new ArgParser().handleCommandLineArgs(new String[] {
+        "-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolderPath});
 
     assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(mapFolderPath));
   }
