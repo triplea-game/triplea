@@ -12,6 +12,17 @@ import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.util.Version;
 
+/**
+ * A lobby server.
+ *
+ * <p>
+ * A lobby server provides the following functionality:
+ * </p>
+ * <ul>
+ * <li>A registry of servers available to host games.
+ * <li>A room where players can find opponents and generally chat.</li>
+ * </ul>
+ */
 public final class LobbyServer {
   public static final String ADMIN_USERNAME = "Admin";
   public static final String LOBBY_CHAT = "_LOBBY_CHAT";
@@ -19,6 +30,14 @@ public final class LobbyServer {
 
   private LobbyServer() {}
 
+  /**
+   * Starts a new lobby server using the properties given by {@code lobbyPropertyReader}.
+   *
+   * <p>
+   * This method returns immediately after the lobby server is started; it does not block while the lobby server is
+   * running.
+   * </p>
+   */
   static void start(final LobbyPropertyReader lobbyPropertyReader) throws IOException {
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 
