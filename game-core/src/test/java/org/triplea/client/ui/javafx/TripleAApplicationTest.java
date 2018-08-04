@@ -5,17 +5,14 @@ import static org.testfx.matcher.base.NodeMatchers.hasChildren;
 import static org.testfx.matcher.base.NodeMatchers.isInvisible;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import games.strategy.triplea.settings.ClientSetting;
+import javafx.stage.Stage;
 
-@ExtendWith(ApplicationExtension.class)
-public class TripleAApplicationTest {
+final class TripleAApplicationTest extends ApplicationTest {
 
   static {
     System.setProperty("testfx.robot", "glass");
@@ -25,12 +22,14 @@ public class TripleAApplicationTest {
     System.setProperty("testfx.setup.timeout", String.valueOf(30_000));
   }
 
-
-  @BeforeAll
-  public static void setup() throws Exception {
+  @Override
+  public void init() {
     ClientSetting.setPreferences(new MemoryPreferences());
-    FxToolkit.registerPrimaryStage();
-    FxToolkit.setupApplication(TripleA.class);
+  }
+
+  @Override
+  public void start(final Stage stage) throws Exception {
+    new TripleA().start(stage);
   }
 
   @Test
