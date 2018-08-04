@@ -22,7 +22,7 @@ public class TripleAApplicationTest {
     System.setProperty("testfx.headless", String.valueOf(true));
     System.setProperty("prism.order", "sw");
     System.setProperty("prism.text", "t2k");
-    System.setProperty("testfx.setup.timeout", String.valueOf(10000));
+    System.setProperty("testfx.setup.timeout", String.valueOf(30_000));
   }
 
 
