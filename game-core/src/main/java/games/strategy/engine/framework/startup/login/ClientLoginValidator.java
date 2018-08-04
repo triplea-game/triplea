@@ -133,7 +133,6 @@ public final class ClientLoginValidator implements ILoginValidator {
 
       return ErrorMessages.NO_ERROR;
     } catch (final AuthenticationException e) {
-      log.log(Level.SEVERE, "Authentication failed", e);
       return ErrorMessages.INVALID_PASSWORD;
     }
   }
