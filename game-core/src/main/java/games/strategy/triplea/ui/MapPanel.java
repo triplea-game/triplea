@@ -9,7 +9,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
@@ -187,27 +189,19 @@ public class MapPanel extends ImageScrollerLargeView {
     addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
-        final MouseDetails md = convert(e);
-        final double scaledMouseX = e.getX() / scale;
-        final double scaledMouseY = e.getY() / scale;
-        final double x = normalizeX(scaledMouseX + getXOffset());
-        final double y = normalizeY(scaledMouseY + getYOffset());
-        final Territory terr = getTerritory(x, y);
-        if (!Objects.equals(terr, currentTerritory)) {
-          currentTerritory = terr;
-          notifyMouseEntered(terr);
-        }
-        notifyMouseMoved(terr, md);
-        final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
-        if (unitsChanged(tuple)) {
-          currentUnits = tuple;
-          if (tuple == null) {
-            notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
-          } else {
-            notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
-          }
-        }
+        updateMouseHoverState(convert(e), e.getX(), e.getY());
       }
+    });
+    // When map is scrolled, update information about what we're hovering over.
+    model.addObserver((object, arg) -> {
+      SwingUtilities.invokeLater(() -> {
+        final PointerInfo pointer = MouseInfo.getPointerInfo();
+        if (pointer != null) {
+          final Point loc = pointer.getLocation();
+          SwingUtilities.convertPointFromScreen(loc, MapPanel.this);
+          updateMouseHoverState(null, loc.x, loc.y);
+        }
+      });
     });
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     executor.submit(() -> recreateTiles(data, uiContext));
@@ -217,6 +211,30 @@ public class MapPanel extends ImageScrollerLargeView {
       clearPendingDrawOperations();
       executor.shutdown();
     });
+  }
+
+  private void updateMouseHoverState(final MouseDetails md, final int mouseX, final int mouseY) {
+    final double scaledMouseX = mouseX / scale;
+    final double scaledMouseY = mouseY / scale;
+    final double x = normalizeX(scaledMouseX + getXOffset());
+    final double y = normalizeY(scaledMouseY + getYOffset());
+    final Territory terr = getTerritory(x, y);
+    if (!Objects.equals(terr, currentTerritory)) {
+      currentTerritory = terr;
+      notifyMouseEntered(terr);
+    }
+    if (md != null) {
+      notifyMouseMoved(terr, md);
+    }
+    final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
+    if (unitsChanged(tuple)) {
+      currentUnits = tuple;
+      if (tuple == null) {
+        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
+      } else {
+        notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
+      }
+    }
   }
 
   private void recreateTiles(final GameData data, final UiContext uiContext) {
@@ -358,28 +376,28 @@ public class MapPanel extends ImageScrollerLargeView {
     return gameData.getMap().getTerritory(name);
   }
 
-  private double normalizeX(double x) {
+  private double normalizeX(final double x) {
     if (!uiContext.getMapData().scrollWrapX()) {
       return x;
     }
     final int imageWidth = (int) getImageDimensions().getWidth();
     if (x < 0) {
-      x += imageWidth;
+      return x + imageWidth;
     } else if (x > imageWidth) {
-      x -= imageWidth;
+      return x - imageWidth;
     }
     return x;
   }
 
-  private double normalizeY(double y) {
+  private double normalizeY(final double y) {
     if (!uiContext.getMapData().scrollWrapY()) {
       return y;
     }
     final int imageHeight = (int) getImageDimensions().getHeight();
     if (y < 0) {
-      y += imageHeight;
+      return y + imageHeight;
     } else if (y > imageHeight) {
-      y -= imageHeight;
+      return y - imageHeight;
     }
     return y;
   }

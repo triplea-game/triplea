@@ -182,14 +182,14 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        for (Tile tile : tiles) {
+        for (final Tile tile : tiles) {
           tile.clear();
           final int x = tile.getBounds().x / TILE_SIZE;
           final int y = tile.getBounds().y / TILE_SIZE;
           tile.addDrawable(new BaseMapDrawable(x, y, uiContext));
           tile.addDrawable(new ReliefMapDrawable(x, y, uiContext));
         }
-        for (Territory territory : data.getMap().getTerritories()) {
+        for (final Territory territory : data.getMap().getTerritories()) {
           clearTerritory(territory);
           drawTerritory(territory, data, mapData);
         }
@@ -221,7 +221,7 @@ public class TileManager {
         if (territories == null) {
           return;
         }
-        for (Territory territory : territories) {
+        for (final Territory territory : territories) {
           updateTerritory(territory, data, mapData);
         }
       } finally {
@@ -256,7 +256,7 @@ public class TileManager {
     if (drawables == null || drawables.isEmpty()) {
       return;
     }
-    for (Tile tile : territoryTiles.get(territory.getName())) {
+    for (final Tile tile : territoryTiles.get(territory.getName())) {
       tile.removeDrawables(drawables);
     }
     allUnitDrawables.removeAll(drawables);
@@ -312,7 +312,7 @@ public class TileManager {
       drawing.add(new VcDrawable(territory));
     }
     // add to the relevant tiles
-    for (Tile tile : getTiles(mapData.getBoundingRect(territory.getName()))) {
+    for (final Tile tile : getTiles(mapData.getBoundingRect(territory.getName()))) {
       drawnOn.add(tile);
       tile.addDrawables(drawing);
     }
@@ -357,7 +357,7 @@ public class TileManager {
           category.getDisabled(), overflow, territory.getName(), uiContext);
       drawing.add(drawable);
       allUnitDrawables.add(drawable);
-      for (Tile tile : getTiles(
+      for (final Tile tile : getTiles(
           new Rectangle(lastPlace.x, lastPlace.y, uiContext.getUnitImageFactory().getUnitImageWidth(),
               uiContext.getUnitImageFactory().getUnitImageHeight()))) {
         tile.addDrawable(drawable);
@@ -518,10 +518,8 @@ public class TileManager {
     }
     graphics.setStroke(new BasicStroke(10));
     graphics.setColor(Color.RED);
-    for (Polygon poly : mapData.getPolygons(selected)) {
-      poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
-      poly.translate(-bounds.x, -bounds.y);
-      graphics.drawPolygon(poly);
+    for (final Polygon polygon : mapData.getPolygons(selected)) {
+      graphics.drawPolygon(Util.translatePolygon(polygon, -bounds.x, -bounds.y));
     }
   }
 

@@ -300,6 +300,8 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   /**
+   * Sets the view scale.
+   *
    * @param value The new scale value. Constrained to the bounds of no less than 0.15 and no greater than 1.
    *        If out of bounds the nearest boundary value is used.
    */

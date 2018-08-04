@@ -192,7 +192,7 @@ public final class TileImageFactory {
   }
 
   /**
-   * @return compatibleImage This method produces a blank white tile for use in blending.
+   * This method produces a blank white tile for use in blending.
    */
   private static BufferedImage makeMissingBaseTile(final BufferedImage input) {
     final BufferedImage compatibleImage =

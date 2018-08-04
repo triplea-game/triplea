@@ -74,9 +74,8 @@ public class SmallMapImageManager {
       g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
       g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, mapData.getSmallMapTerritoryAlpha()));
       final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
-      drawable.draw(bounds, data, g, mapData, null, null);
+      drawable.draw(bounds, data, g, mapData, mapData.getSmallMapTerritorySaturation());
       g.dispose();
     }
     // scale it down

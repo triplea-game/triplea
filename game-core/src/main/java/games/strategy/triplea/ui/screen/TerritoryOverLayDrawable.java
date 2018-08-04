@@ -11,6 +11,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
+import games.strategy.ui.Util;
 
 class TerritoryOverLayDrawable implements IDrawable {
   enum Operation {
@@ -39,18 +40,16 @@ class TerritoryOverLayDrawable implements IDrawable {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(color);
-    for (Polygon polygon : polys) {
-      // if we dont have to draw, dont
+    for (final Polygon polygon : polys) {
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;
       }
-      // use a copy since we will move the polygon
-      polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-      polygon.translate(-bounds.x, -bounds.y);
+
+      final Polygon translatedPolygon = Util.translatePolygon(polygon, -bounds.x, -bounds.y);
       if (operation == Operation.FILL) {
-        graphics.fillPolygon(polygon);
+        graphics.fillPolygon(translatedPolygon);
       } else {
-        graphics.drawPolygon(polygon);
+        graphics.drawPolygon(translatedPolygon);
       }
     }
   }

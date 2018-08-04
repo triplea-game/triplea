@@ -10,6 +10,7 @@ import java.util.List;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.ui.Util;
 
 public class SeaZoneOutlineDrawable implements IDrawable {
   private final String territoryName;
@@ -23,16 +24,13 @@ public class SeaZoneOutlineDrawable implements IDrawable {
       final AffineTransform unscaled, final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
-    for (Polygon polygon : polys) {
-      // if we dont have to draw, dont
+    graphics.setColor(Color.BLACK);
+    for (final Polygon polygon : polys) {
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;
       }
-      // use a copy since we will move the polygon
-      polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-      polygon.translate(-bounds.x, -bounds.y);
-      graphics.setColor(Color.BLACK);
-      graphics.drawPolygon(polygon);
+
+      graphics.drawPolygon(Util.translatePolygon(polygon, -bounds.x, -bounds.y));
     }
   }
 

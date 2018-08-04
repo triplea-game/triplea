@@ -142,7 +142,7 @@ public class HeadedUiContext extends AbstractUiContext {
       final UnitDamage damaged, final UnitEnable disabled) {
     final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, damaged == UnitDamage.DAMAGED,
         disabled == UnitEnable.DISABLED);
-    JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
+    final JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
     MapUnitTooltipManager.setUnitTooltip(label, type, player, 1);
     return label;
   }

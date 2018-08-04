@@ -20,14 +20,26 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
+    draw(bounds, data, graphics, mapData, 1.0f);
+  }
+
+  /**
+   * Determine territory color and set saturation to then draw the territory.
+   */
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
+      final float saturation) {
     final Territory territory = data.getMap().getTerritory(territoryName);
-    final Color territoryColor;
+    Color territoryColor;
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     if (ta != null && ta.getIsImpassable()) {
       territoryColor = mapData.impassableColor();
     } else {
       territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
     }
+    final float[] values =
+        Color.RGBtoHSB(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), null);
+    values[1] = values[1] * saturation;
+    territoryColor = Color.getHSBColor(values[0], values[1], values[2]);
     draw(bounds, graphics, mapData, territory, territoryColor);
   }
 
