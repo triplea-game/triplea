@@ -25,19 +25,19 @@ class XmlGameElementMapperTest {
   private XmlGameElementMapper testObj;
 
   @BeforeEach
-   void setup() {
+  void setup() {
     testObj = new XmlGameElementMapper();
   }
 
   @Test
-   void getDelegateReturnsEmptyIfDelegateNameDoesNotExist() {
+  void getDelegateReturnsEmptyIfDelegateNameDoesNotExist() {
     final Optional<IDelegate> resultObject = testObj.getDelegate(NAME_THAT_DOES_NOT_EXIST);
     assertThat(resultObject.isPresent(), is(false));
   }
 
 
   @Test
-   void getDelegateHappyCase() {
+  void getDelegateHappyCase() {
     final Optional<IDelegate> resultObject = testObj.getDelegate("games.strategy.triplea.delegate.BattleDelegate");
     assertThat(resultObject.isPresent(), is(true));
     assertThat(resultObject.get(), instanceOf(BattleDelegate.class));
@@ -45,21 +45,21 @@ class XmlGameElementMapperTest {
 
 
   @Test
-   void getAttachmentReturnsEmptyIfAttachmentNameDoesNotExist() {
+  void getAttachmentReturnsEmptyIfAttachmentNameDoesNotExist() {
     final Optional<IAttachment> resultObject = testObj.getAttachment(NAME_THAT_DOES_NOT_EXIST, "", null, null);
     assertThat(resultObject.isPresent(), is(false));
   }
 
 
   @Test
-   void getAttachmentHappyCase() {
+  void getAttachmentHappyCase() {
     final Optional<IAttachment> resultObject = testObj.getAttachment("CanalAttachment", "", null, null);
     assertThat(resultObject.isPresent(), is(true));
     assertThat(resultObject.get(), instanceOf(CanalAttachment.class));
   }
 
   @Test
-   void testFullClassNames() {
+  void testFullClassNames() {
     final Optional<IAttachment> result1 =
         testObj.getAttachment("games.strategy.engine.xml.TestAttachment", "", null, null);
     assertThat(result1.isPresent(), is(true));
