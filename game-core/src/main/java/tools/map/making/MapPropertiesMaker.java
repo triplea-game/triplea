@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -51,9 +52,9 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
 /**
  * This is the MapPropertiesMaker, it will create a map.properties file for you. <br>
@@ -64,6 +65,7 @@ import tools.util.ToolLogger;
  * To use, just fill in the information in the fields below, and click on 'Show More' to
  * show other, optional, fields.
  */
+@Log
 public final class MapPropertiesMaker {
   private File mapFolderLocation = null;
   private final MapProperties mapProperties = new MapProperties();
@@ -89,7 +91,7 @@ public final class MapPropertiesMaker {
   private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
     if (mapFolderLocation == null) {
-      ToolLogger.info("Select the map folder");
+      log.info("Select the map folder");
       final String path = new FileSave("Where is your map's folder?", null, mapFolderLocation).getPathString();
       if (path != null) {
         final File mapFolder = new File(path);
@@ -105,7 +107,7 @@ public final class MapPropertiesMaker {
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
     } else {
-      ToolLogger.info("No Map Folder Selected. Shutting down.");
+      log.info("No Map Folder Selected. Shutting down.");
     }
   } // end main
 
@@ -259,7 +261,7 @@ public final class MapPropertiesMaker {
         label.addMouseListener(new MouseAdapter() {
           @Override
           public void mouseClicked(final MouseEvent e) {
-            ToolLogger.info(label.getBackground().toString());
+            log.info(label.getBackground().toString());
             final Color color = JColorChooser.showDialog(label, "Choose color", label.getBackground());
             mapProperties.getColorMap().put(label.getText(), color);
             createPlayerColorChooser();
@@ -315,10 +317,10 @@ public final class MapPropertiesMaker {
             Writer out = new OutputStreamWriter(sink, StandardCharsets.UTF_8)) {
           out.write(stringToWrite);
         }
-        ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
-        ToolLogger.info(stringToWrite);
+        log.info("Data written to :" + new File(fileName).getCanonicalPath());
+        log.info(stringToWrite);
       } catch (final Exception e) {
-        ToolLogger.error("Failed to save map properties", e);
+        log.log(Level.SEVERE, "Failed to save map properties", e);
       }
     }
 
@@ -332,7 +334,7 @@ public final class MapPropertiesMaker {
         try {
           outString.append(outMethod.invoke(mapProperties));
         } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-          ToolLogger.error("Failed to invoke method reflectively: " + outMethod.getName(), e);
+          log.log(Level.SEVERE, "Failed to invoke method reflectively: " + outMethod.getName(), e);
         }
       }
       return outString.toString();
@@ -360,17 +362,17 @@ public final class MapPropertiesMaker {
           if (arg.equals(propertie)) {
             final String value = getValue(arg2);
             System.setProperty(propertie, value);
-            ToolLogger.info(propertie + ":" + value);
+            log.info(propertie + ":" + value);
             found = true;
             break;
           }
         }
       }
       if (!found) {
-        ToolLogger.info("Unrecogized:" + arg2);
+        log.info("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          ToolLogger.info("Arguments\r\n" + "   "
+          log.info("Arguments\r\n" + "   "
               + ToolArguments.MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
               + ToolArguments.UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   "
               + ToolArguments.UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
@@ -385,16 +387,16 @@ public final class MapPropertiesMaker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolLogger.info("Could not find directory: " + folderString);
+        log.info("Could not find directory: " + folderString);
       }
     }
     final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
         mapProperties.setUnitsScale(Double.parseDouble(zoomString));
-        ToolLogger.info("Unit Zoom Percent to use: " + zoomString);
+        log.info("Unit Zoom Percent to use: " + zoomString);
       } catch (final Exception e) {
-        ToolLogger.error("Not a decimal percentage: " + zoomString);
+        log.severe("Not a decimal percentage: " + zoomString);
       }
     }
     final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
@@ -403,9 +405,9 @@ public final class MapPropertiesMaker {
         final int unitWidth = Integer.parseInt(widthString);
         mapProperties.setUnitsWidth(unitWidth);
         mapProperties.setUnitsCounterOffsetWidth(unitWidth / 4);
-        ToolLogger.info("Unit Width to use: " + unitWidth);
+        log.info("Unit Width to use: " + unitWidth);
       } catch (final Exception e) {
-        ToolLogger.error("Not an integer: " + widthString);
+        log.severe("Not an integer: " + widthString);
       }
     }
     final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
@@ -414,9 +416,9 @@ public final class MapPropertiesMaker {
         final int unitHeight = Integer.parseInt(heightString);
         mapProperties.setUnitsHeight(unitHeight);
         mapProperties.setUnitsCounterOffsetHeight(unitHeight);
-        ToolLogger.info("Unit Height to use: " + unitHeight);
+        log.info("Unit Height to use: " + unitHeight);
       } catch (final Exception e) {
-        ToolLogger.error("Not an integer: " + heightString);
+        log.severe("Not an integer: " + heightString);
       }
     }
   }

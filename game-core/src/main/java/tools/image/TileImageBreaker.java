@@ -13,6 +13,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -21,8 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.ui.screen.TileManager;
+import lombok.extern.java.Log;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
 /**
  * Utility for breaking an image into seperate smaller images.
@@ -32,6 +33,7 @@ import tools.util.ToolLogger;
  * territories, he must choose "N" at the prompt.
  * sea zone images directory must be renamed to "seazone
  */
+@Log
 public final class TileImageBreaker {
   private String location = null;
   private final JFrame observer = new JFrame();
@@ -52,7 +54,7 @@ public final class TileImageBreaker {
     try {
       new TileImageBreaker().runInternal(args);
     } catch (final IOException e) {
-      ToolLogger.error("failed to run tile image breaker", e);
+      log.log(Level.SEVERE, "failed to run tile image breaker", e);
     }
   }
 
@@ -71,8 +73,8 @@ public final class TileImageBreaker {
       mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
-      ToolLogger.info("You need to select a folder to save the tiles in for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("You need to select a folder to save the tiles in for this to work");
+      log.info("Shutting down");
       return;
     }
     createMaps();
@@ -86,8 +88,8 @@ public final class TileImageBreaker {
     // ask user to input image location
     final Image map = loadImage();
     if (map == null) {
-      ToolLogger.info("You need to select a map image for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("You need to select a map image for this to work");
+      log.info("Shutting down");
       return;
     }
 
@@ -122,7 +124,7 @@ public final class TileImageBreaker {
    * @return The loaded image.
    */
   private Image loadImage() {
-    ToolLogger.info("Select the map");
+    log.info("Select the map");
     final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
       final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -159,10 +161,10 @@ public final class TileImageBreaker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolLogger.info("Could not find directory: " + value);
+        log.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolLogger.info("Only argument allowed is the map directory.");
+      log.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -172,7 +174,7 @@ public final class TileImageBreaker {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolLogger.info("Could not find directory: " + value);
+          log.info("Could not find directory: " + value);
         }
       }
     }

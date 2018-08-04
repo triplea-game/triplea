@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -52,11 +53,12 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
+@Log
 public final class PlacementPicker {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
   private int placeHeight = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -84,7 +86,7 @@ public final class PlacementPicker {
     try {
       new PlacementPicker().runInternal(args);
     } catch (final IOException e) {
-      ToolLogger.error("failed to run placement picker", e);
+      log.log(Level.SEVERE, "failed to run placement picker", e);
     }
   }
 
@@ -116,7 +118,7 @@ public final class PlacementPicker {
             + "<br><br>To show all placements, or see the overflow direction, or see which territories you have not "
             + "yet completed enough, "
             + "<br>placements for, turn on the mode options in the 'edit' menu. " + "</html>"));
-    ToolLogger.info("Select the map");
+    log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
@@ -128,7 +130,7 @@ public final class PlacementPicker {
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
     } else {
-      ToolLogger.info("No Image Map Selected. Shutting down.");
+      log.info("No Image Map Selected. Shutting down.");
     }
   } // end main
 
@@ -227,7 +229,7 @@ public final class PlacementPicker {
             }
           }
         } catch (final Exception e) {
-          ToolLogger.error("Failed to initialize from map properties", e);
+          log.log(Level.SEVERE, "Failed to initialize from map properties", e);
         }
       }
       if (!placeDimensionsSet || JOptionPane.showConfirmDialog(new JPanel(),
@@ -262,7 +264,7 @@ public final class PlacementPicker {
           }
           placeDimensionsSet = true;
         } catch (final Exception e) {
-          ToolLogger.error("Failed to initialize from user input", e);
+          log.log(Level.SEVERE, "Failed to initialize from user input", e);
         }
       }
       File file = null;
@@ -276,25 +278,25 @@ public final class PlacementPicker {
           "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?",
           "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(file.getPath())) {
-          ToolLogger.info("Polygons : " + file.getPath());
+          log.info("Polygons : " + file.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          ToolLogger.error("Failed to load polygons: " + file.getAbsolutePath());
+          log.log(Level.SEVERE, "Failed to load polygons: " + file.getAbsolutePath());
           throw e;
         }
       } else {
-        ToolLogger.info("Select the Polygons file");
+        log.info("Select the Polygons file");
         final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
-          ToolLogger.info("Polygons : " + polyPath);
+          log.info("Polygons : " + polyPath);
           try (InputStream is = new FileInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
-            ToolLogger.error("Failed to load polygons: " + polyPath);
+            log.severe("Failed to load polygons: " + polyPath);
             throw e;
           }
         } else {
-          ToolLogger.info("Polygons file not given. Will run regardless");
+          log.info("Polygons file not given. Will run regardless");
         }
       }
       createImage(mapName);
@@ -505,9 +507,9 @@ public final class PlacementPicker {
       }
       try (OutputStream out = new FileOutputStream(fileName)) {
         PointFileReaderWriter.writeOneToManyPlacements(out, placements);
-        ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
+        log.info("Data written to :" + new File(fileName).getCanonicalPath());
       } catch (final IOException e) {
-        ToolLogger.error("Failed to write placements: " + fileName, e);
+        log.log(Level.SEVERE, "Failed to write placements: " + fileName, e);
       }
     }
 
@@ -515,7 +517,7 @@ public final class PlacementPicker {
      * Loads a pre-defined file with map placement points.
      */
     private void loadPlacements() {
-      ToolLogger.info("Load a placement file");
+      log.info("Load a placement file");
       final String placeName = new FileOpen("Load A Placement File", mapFolderLocation, ".txt").getPathString();
       if (placeName == null) {
         return;
@@ -523,7 +525,7 @@ public final class PlacementPicker {
       try (InputStream in = new FileInputStream(placeName)) {
         placements = PointFileReaderWriter.readOneToManyPlacements(in);
       } catch (final IOException e) {
-        ToolLogger.error("Failed to load placements: " + placeName, e);
+        log.log(Level.SEVERE, "Failed to load placements: " + placeName, e);
       }
       repaint();
     }
@@ -562,7 +564,7 @@ public final class PlacementPicker {
           }
           placements.put(currentCountry, Tuple.of(currentPlacements, currentOverflowToLeft));
           currentPlacements = new ArrayList<>();
-          ToolLogger.info("done:" + currentCountry);
+          log.info("done:" + currentCountry);
         }
       } else {
         if (currentPlacements != null && !currentPlacements.isEmpty()) {
@@ -639,17 +641,17 @@ public final class PlacementPicker {
           if (arg.equals(propertie)) {
             final String value = getValue(arg2);
             System.setProperty(propertie, value);
-            ToolLogger.info(propertie + ":" + value);
+            log.info(propertie + ":" + value);
             found = true;
             break;
           }
         }
       }
       if (!found) {
-        ToolLogger.info("Unrecogized:" + arg2);
+        log.info("Unrecogized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
-          ToolLogger.info("Arguments\r\n" + "   "
+          log.info("Arguments\r\n" + "   "
               + ToolArguments.MAP_FOLDER + "=<FILE_PATH>\r\n" + "   "
               + ToolArguments.UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n" + "   "
               + ToolArguments.UNIT_WIDTH + "=<UNIT_WIDTH>\r\n" + "   "
@@ -663,43 +665,43 @@ public final class PlacementPicker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolLogger.info("Could not find directory: " + folderString);
+        log.info("Could not find directory: " + folderString);
       }
     }
     final String zoomString = System.getProperty(ToolArguments.UNIT_ZOOM);
     if (zoomString != null && zoomString.length() > 0) {
       try {
         unitZoomPercent = Double.parseDouble(zoomString);
-        ToolLogger.info("Unit Zoom Percent to use: " + unitZoomPercent);
+        log.info("Unit Zoom Percent to use: " + unitZoomPercent);
         placeDimensionsSet = true;
       } catch (final Exception e) {
-        ToolLogger.error("Not a decimal percentage: " + zoomString);
+        log.severe("Not a decimal percentage: " + zoomString);
       }
     }
     final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
     if (widthString != null && widthString.length() > 0) {
       try {
         unitWidth = Integer.parseInt(widthString);
-        ToolLogger.info("Unit Width to use: " + unitWidth);
+        log.info("Unit Width to use: " + unitWidth);
         placeDimensionsSet = true;
       } catch (final Exception e) {
-        ToolLogger.error("Not an integer: " + widthString);
+        log.severe("Not an integer: " + widthString);
       }
     }
     final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
     if (heightString != null && heightString.length() > 0) {
       try {
         unitHeight = Integer.parseInt(heightString);
-        ToolLogger.info("Unit Height to use: " + unitHeight);
+        log.info("Unit Height to use: " + unitHeight);
         placeDimensionsSet = true;
       } catch (final Exception e) {
-        ToolLogger.error("Not an integer: " + heightString);
+        log.severe("Not an integer: " + heightString);
       }
     }
     if (placeDimensionsSet) {
       placeWidth = (int) (unitZoomPercent * unitWidth);
       placeHeight = (int) (unitZoomPercent * unitHeight);
-      ToolLogger.info("Place Dimensions to use: " + placeWidth + "x" + placeHeight);
+      log.info("Place Dimensions to use: " + placeWidth + "x" + placeHeight);
     }
   }
 }

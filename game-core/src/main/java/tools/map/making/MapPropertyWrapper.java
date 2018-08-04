@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 
@@ -28,7 +29,7 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.util.Tuple;
-import tools.util.ToolLogger;
+import lombok.extern.java.Log;
 
 /**
  * This will take ANY object, and then look at every method that begins with 'set[name]' and if there also exists a
@@ -38,6 +39,7 @@ import tools.util.ToolLogger;
  *
  * @param <T> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
+@Log
 public class MapPropertyWrapper<T> extends AEditableProperty {
   private static final long serialVersionUID = 6406798101396215624L;
   private final IEditableProperty property;
@@ -109,10 +111,10 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     final Object value = getValue();
     final Object[] args = {value};
     try {
-      ToolLogger.info(setter + "   to   " + value);
+      log.info(setter + "   to   " + value);
       setter.invoke(object, args);
     } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      ToolLogger.error("Failed to invoke setter reflectively: " + setter.getName(), e);
+      log.log(Level.SEVERE, "Failed to invoke setter reflectively: " + setter.getName(), e);
     }
   }
 
@@ -132,7 +134,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
       try {
         currentValue = field.get(object);
       } catch (final IllegalArgumentException | IllegalAccessException e) {
-        ToolLogger.error("Failed to get field value reflectively: " + field.getName(), e);
+        log.log(Level.SEVERE, "Failed to get field value reflectively: " + field.getName(), e);
         continue;
       }
       try {
@@ -140,7 +142,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
             new MapPropertyWrapper<>(propertyName, null, currentValue, setter);
         properties.add(wrapper);
       } catch (final Exception e) {
-        ToolLogger.error("Failed to create map property wrapper", e);
+        log.log(Level.SEVERE, "Failed to create map property wrapper", e);
       }
     }
     properties.sort(Comparator.comparing(MapPropertyWrapper::getName));
