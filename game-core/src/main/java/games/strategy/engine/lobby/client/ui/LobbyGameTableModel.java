@@ -1,8 +1,5 @@
 package games.strategy.engine.lobby.client.ui;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +15,13 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
-import games.strategy.util.TimeManager;
 import games.strategy.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
-    Host, Name, GV, Round, Players, P, B, EV, Started, Status, Comments, GUID
+    Host, Name, GV, Round, Players, P, Status, Comments, GUID
   }
 
   private final IMessenger messenger;
@@ -148,26 +144,16 @@ class LobbyGameTableModel extends AbstractTableModel {
         return description.getPlayerCount();
       case P:
         return (description.getPassworded() ? "*" : "");
-      case B:
-        return description.isBot() ? "-" : "";
       case GV:
         return description.getGameVersion();
-      case EV:
-        return description.getEngineVersion();
       case Status:
         return description.getStatus();
       case Comments:
         return description.getComment();
-      case Started:
-        return formatBotStartTime(description.getStartDateTime());
       case GUID:
         return gameList.get(rowIndex).getFirst();
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
-  }
-
-  private static String formatBotStartTime(final Instant instant) {
-    return TimeManager.getLocalizedTimeWithoutSeconds(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
   }
 }

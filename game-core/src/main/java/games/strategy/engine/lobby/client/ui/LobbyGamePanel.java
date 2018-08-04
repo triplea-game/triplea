@@ -71,20 +71,14 @@ class LobbyGamePanel extends JPanel {
         .setPreferredWidth(40);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
         .setPreferredWidth(12);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.B))
-        .setPreferredWidth(12);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
         .setPreferredWidth(32);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.EV))
-        .setPreferredWidth(42);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
-        .setPreferredWidth(55);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status))
         .setPreferredWidth(112);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name))
         .setPreferredWidth(156);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments))
-        .setPreferredWidth(130);
+        .setPreferredWidth(160);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
         .setPreferredWidth(67);
   }
