@@ -3,6 +3,7 @@ package swinglib;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -37,6 +38,7 @@ public final class JComboBoxBuilder {
 
   private ClientSetting clientSetting;
 
+  private String toolTip;
 
   private JComboBoxBuilder() {
 
@@ -96,6 +98,7 @@ public final class JComboBoxBuilder {
       });
     }
 
+    comboBox.setToolTipText(toolTip);
     return comboBox;
   }
 
@@ -106,8 +109,17 @@ public final class JComboBoxBuilder {
   /**
    * Adds a set of options to be displayed in the combo box.
    */
-  public JComboBoxBuilder menuOptions(final String... options) {
-    Preconditions.checkArgument(options.length > 0);
+  public JComboBoxBuilder menuOptions(final Collection<String> options) {
+    Preconditions.checkArgument(!options.isEmpty());
+    this.options.addAll(options);
+    return this;
+  }
+
+  /**
+   * Adds a single option to be displayed in the combo box (additive with any existing).
+   */
+  public JComboBoxBuilder menuOption(final String options) {
+    Preconditions.checkArgument(!options.isEmpty());
     this.options.addAll(Arrays.asList(options));
     return this;
   }
@@ -121,12 +133,6 @@ public final class JComboBoxBuilder {
     this.selectionAction = selectionAction;
     return this;
   }
-
-
-  public JComboBoxCompositeBuilder compositeBuilder() {
-    return new JComboBoxCompositeBuilder(this);
-  }
-
 
   /**
    * Toggles a behavior where the last selected value will be remembered as a default.
@@ -158,4 +164,9 @@ public final class JComboBoxBuilder {
     return this;
   }
 
+
+  public JComboBoxBuilder toolTip(final String toolTip) {
+    this.toolTip = toolTip;
+    return this;
+  }
 }

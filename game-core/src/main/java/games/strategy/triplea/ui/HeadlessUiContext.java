@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.Cursor;
-import java.util.logging.Level;
 
 import javax.swing.JLabel;
 
@@ -20,23 +19,17 @@ import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
-import games.strategy.triplea.util.Stopwatch;
 
 /**
  * Headless version, so that we don't get error in linux when the system has no graphics configuration.
  */
 public class HeadlessUiContext extends AbstractUiContext {
-  public HeadlessUiContext() {
-    super();
-  }
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    final Stopwatch stopWatch = new Stopwatch(logger, Level.FINE, "Loading UI Context");
     resourceLoader = ResourceLoader.getMapResourceLoader(dir);
     scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
     mapDir = dir;
-    stopWatch.done();
   }
 
   @Override

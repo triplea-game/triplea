@@ -117,14 +117,14 @@ public class GameRunner {
       final SimpleFormatter formatter = new SimpleFormatter();
       LogManager.getLogManager().getLogger("").addHandler(new ConsoleHandler(
           logMsg -> {
-            ErrorMessage.show(logMsg.getMessage());
+            if (logMsg.getLevel().intValue() > Level.INFO.intValue()) {
+              ErrorMessage.show(logMsg.getMessage());
+            }
             console.append(formatter.format(logMsg));
-          }
-      ));
+          }));
       ErrorMessage.enable();
       Interruptibles.await(() -> SwingAction.invokeAndWait(LookAndFeel::setupLookAndFeel));
     }
-
     new ArgParser().handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {

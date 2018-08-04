@@ -55,7 +55,6 @@ public class HeadedUiContext extends AbstractUiContext {
   protected Cursor cursor = Cursor.getDefaultCursor();
 
   HeadedUiContext() {
-    super();
     mapImage = new MapImage();
   }
 
@@ -66,7 +65,7 @@ public class HeadedUiContext extends AbstractUiContext {
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    final Stopwatch stopWatch = new Stopwatch(logger, Level.FINE, "Loading UI Context");
+    final Stopwatch stopWatch = new Stopwatch("Loading UI Context");
     resourceLoader = ResourceLoader.getMapResourceLoader(dir);
     if (mapData != null) {
       mapData.close();

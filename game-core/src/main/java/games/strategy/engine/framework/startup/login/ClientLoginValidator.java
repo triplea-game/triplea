@@ -5,7 +5,6 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 
 import com.google.common.annotations.VisibleForTesting;
 

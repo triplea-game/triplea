@@ -35,8 +35,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -545,7 +543,7 @@ public class MapPanel extends ImageScrollerLargeView {
     g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     super.paint(g2d);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
-    final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
+    final Stopwatch stopWatch = new Stopwatch("Paint");
     drawTiles(g2d, gameData, new Rectangle2D.Double(model.getX(), model.getY(), getScaledWidth(), getScaledHeight()));
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();

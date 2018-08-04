@@ -3,6 +3,8 @@ package games.strategy.debug;
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -18,6 +20,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import lombok.extern.java.Log;
+import swinglib.JComboBoxBuilder;
 
 /**
  * A 'console' window to display log messages to users.
@@ -29,6 +32,11 @@ public class Console {
   private final JFrame frame = new JFrame("TripleA Console");
 
   public Console() {
+    final Level logLevel = ClientSetting.LOGGING_VERBOSITY.value().equals(Level.ALL)
+        ? Level.INFO
+        : Level.WARNING;
+    LogManager.getLogManager().getLogger("").setLevel(logLevel);
+
     ClientSetting.SHOW_CONSOLE.addSaveListener(newValue -> {
       if (newValue.equals(String.valueOf(true))) {
         SwingUtilities.invokeLater(() -> setVisible(true));
@@ -56,11 +64,25 @@ public class Console {
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     }));
     actions.add(SwingAction.of("Clear", e -> textArea.setText("")));
-    SwingUtilities.invokeLater(() -> frame.pack());
+    actions.add(
+        JComboBoxBuilder.builder()
+            .menuOption(Level.WARNING.getName())
+            .menuOption(Level.ALL.getName())
+            .useLastSelectionAsFutureDefault(ClientSetting.LOGGING_VERBOSITY)
+            .itemListener(this::reportLogLevel)
+            .toolTip("Sets logging verbosity, whether to display all messages or just errors and warnings")
+            .build());
+    SwingUtilities.invokeLater(frame::pack);
 
     if (ClientSetting.SHOW_CONSOLE.booleanValue()) {
       SwingUtilities.invokeLater(() -> setVisible(true));
     }
+  }
+
+  private void reportLogLevel(final String level) {
+    LogManager.getLogManager().getLogger("")
+        .setLevel(level.equals(Level.ALL.getName()) ? Level.INFO : Level.WARNING);
+    appendLn("Log level updated to: " + level);
   }
 
   public void setVisible(final boolean visible) {
@@ -68,6 +90,11 @@ public class Console {
   }
 
   public void append(final String s) {
-    textArea.append(s);
+    SwingUtilities.invokeLater(() -> textArea.append(s));
   }
+
+  public void appendLn(final String s) {
+    append(s + "\n");
+  }
+
 }

@@ -36,7 +36,6 @@ public final class ConsoleHandler extends Handler {
   @Override
   public void flush() {
     // no-op
-
   }
 
   @Override

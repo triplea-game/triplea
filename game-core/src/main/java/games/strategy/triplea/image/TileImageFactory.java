@@ -195,8 +195,7 @@ public final class TileImageFactory {
 
     // Get buffered images
     try {
-      final Stopwatch loadingImages =
-          new Stopwatch(logger, Level.FINE, "Loading images:" + urlrelief + " and " + urlBase);
+      final Stopwatch loadingImages = new Stopwatch("Loading images:" + urlrelief + " and " + urlBase);
       if (urlrelief != null) {
         reliefFile = loadCompatibleImage(urlrelief);
       }
@@ -244,10 +243,10 @@ public final class TileImageFactory {
   private Image loadUnblendedImage(final URL imageLocation, final String fileName) {
     Image image;
     try {
-      final Stopwatch loadingImages = new Stopwatch(logger, Level.FINE, "Loading image:" + imageLocation);
+      final Stopwatch loadingImages = new Stopwatch("Loading image:" + imageLocation);
       final BufferedImage fromFile = ImageIO.read(imageLocation);
       loadingImages.done();
-      final Stopwatch copyingImage = new Stopwatch(logger, Level.FINE, "Copying image:" + imageLocation);
+      final Stopwatch copyingImage = new Stopwatch("Copying image:" + imageLocation);
       // if we dont copy, drawing the tile to the screen takes significantly longer
       // has something to do with the colour model and type of the images
       // some images can be copeid quickly to the screen

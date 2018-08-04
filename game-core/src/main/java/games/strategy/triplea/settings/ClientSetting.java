@@ -136,7 +136,9 @@ public enum ClientSetting implements GameSetting {
 
   FORUM_COMBO_BOX_SELECTION,
 
-  DICE_SERVER_FOR_PBEM_GAMES;
+  DICE_SERVER_FOR_PBEM_GAMES,
+
+  LOGGING_VERBOSITY(Level.WARNING.getName());
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 

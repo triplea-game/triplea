@@ -1,7 +1,10 @@
 package games.strategy.triplea.util;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 
 /**
  * Utility class for timing.
@@ -10,21 +13,16 @@ import java.util.logging.Logger;
  * ...do stuff
  * someTask.done();
  */
+@AllArgsConstructor
+@Log
 public class Stopwatch {
-  private final long startTime = System.currentTimeMillis();
+  private final long startTime = System.nanoTime();
   private final String taskDescription;
-  private final Logger logger;
-  private final Level level;
-
-  public Stopwatch(final Logger logger, final Level level, final String taskDescription) {
-    this.taskDescription = taskDescription;
-    this.logger = logger;
-    this.level = level;
-  }
 
   public void done() {
-    if (logger.isLoggable(level)) {
-      logger.log(level, taskDescription + " took " + (System.currentTimeMillis() - startTime) + " ms");
+    if (log.isLoggable(Level.INFO)) {
+      log.info(String.format("%s took %s ms",
+          taskDescription, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime)));
     }
   }
 }
