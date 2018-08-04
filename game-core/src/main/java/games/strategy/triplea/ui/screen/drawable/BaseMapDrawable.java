@@ -11,7 +11,9 @@ public class BaseMapDrawable extends MapTileDrawable {
 
   @Override
   public MapTileDrawable getUnscaledCopy() {
-    return new BaseMapDrawable(x, y, uiContext);
+    final BaseMapDrawable copy = new BaseMapDrawable(x, y, uiContext);
+    copy.unscaled = true;
+    return copy;
   }
 
   @Override
@@ -19,7 +21,12 @@ public class BaseMapDrawable extends MapTileDrawable {
     if (noImage) {
       return null;
     }
-    final Image image = uiContext.getTileImageFactory().getBaseTile(x, y);
+    final Image image;
+    if (unscaled) {
+      image = uiContext.getTileImageFactory().getUnscaledUncachedBaseTile(x, y);
+    } else {
+      image = uiContext.getTileImageFactory().getBaseTile(x, y);
+    }
     if (image == null) {
       noImage = true;
     }

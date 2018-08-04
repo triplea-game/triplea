@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,6 @@ import games.strategy.triplea.ui.mapdata.MapData;
 public class TerritoryNameDrawable implements IDrawable {
   private final String territoryName;
   private final UiContext uiContext;
-  private Rectangle territoryBounds;
 
   public TerritoryNameDrawable(final String territoryName, final UiContext uiContext) {
     this.territoryName = territoryName;
@@ -29,7 +29,8 @@ public class TerritoryNameDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
+      final AffineTransform unscaled, final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean drawFromTopLeft = mapData.drawNamesFromTopLeft();
@@ -81,10 +82,7 @@ public class TerritoryNameDrawable implements IDrawable {
       x = namePlace.get().x;
       y = namePlace.get().y;
     } else {
-      if (territoryBounds == null) {
-        // Cache the bounds since re-computing it is expensive.
-        territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
-      }
+      final Rectangle territoryBounds = getBestTerritoryNameRect(mapData, territory, fm);
       x = territoryBounds.x + (int) territoryBounds.getWidth() / 2 - fm.stringWidth(territory.getName()) / 2;
       y = territoryBounds.y + (int) territoryBounds.getHeight() / 2 + fm.getAscent() / 2;
     }

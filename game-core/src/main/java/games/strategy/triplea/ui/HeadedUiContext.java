@@ -64,6 +64,12 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
+  public void setScale(final double scale) {
+    super.setScale(scale);
+    tileImageFactory.setScale(scale);
+  }
+
+  @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
     final Stopwatch stopWatch = new Stopwatch(logger, Level.FINE, "Loading UI Context");
     resourceLoader = ResourceLoader.getMapResourceLoader(dir);
@@ -88,6 +94,7 @@ public class HeadedUiContext extends AbstractUiContext {
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setMapDir(resourceLoader);
+    tileImageFactory.setScale(scale);
     // load map data
     mapImage.loadMaps(resourceLoader);
     mapDir = dir;
@@ -135,7 +142,7 @@ public class HeadedUiContext extends AbstractUiContext {
       final UnitDamage damaged, final UnitEnable disabled) {
     final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, damaged == UnitDamage.DAMAGED,
         disabled == UnitEnable.DISABLED);
-    final JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
+    JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
     MapUnitTooltipManager.setUnitTooltip(label, type, player, 1);
     return label;
   }
@@ -199,6 +206,11 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level) {
     extraTerritoryBorderLevel = level;
+  }
+
+  @Override
+  public void resetDrawTerritoryBordersAgain() {
+    extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
   }
 
   @Override

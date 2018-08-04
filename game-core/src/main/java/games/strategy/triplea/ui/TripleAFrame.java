@@ -76,6 +76,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import com.google.common.base.Preconditions;
 
@@ -127,6 +128,7 @@ import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
@@ -159,7 +161,6 @@ import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.ExitStatus;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.LocalizeHtml;
@@ -551,16 +552,15 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   /**
-   * Sets the map scale.
-   *
-   * @param value a number between 10 and 200.
+   * @param value
+   *        a number between 15 and 100.
    */
   public void setScale(final double value) {
     getMapPanel().setScale(value / 100);
   }
 
   /**
-   * Returns a scale between 10 and 200.
+   * @return a scale between 15 and 100.
    */
   private double getScale() {
     return getMapPanel().getScale() * 100;
@@ -600,7 +600,7 @@ public class TripleAFrame extends MainGameFrame {
       return;
     }
     stopGame();
-    ExitStatus.SUCCESS.exit();
+    System.exit(0);
   }
 
   @Override
@@ -1424,9 +1424,9 @@ public class TripleAFrame extends MainGameFrame {
     } finally {
       data.releaseReadLock();
     }
-    final int round;
-    final String stepDisplayName;
-    final PlayerID player;
+    int round;
+    String stepDisplayName;
+    PlayerID player;
     data.acquireReadLock();
     try {
       round = data.getSequence().getRound();
@@ -1781,7 +1781,8 @@ public class TripleAFrame extends MainGameFrame {
                 // TODO: this could be solved easily if rounds/steps were changes,
                 // but that could greatly increase the file size :(
                 // TODO: this also does not undo the runcount of each delegate step
-                final Enumeration<?> enumeration =
+                @SuppressWarnings("unchecked")
+                final Enumeration<TreeNode> enumeration =
                     ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
                 enumeration.nextElement();
                 int round = 0;
@@ -2044,6 +2045,11 @@ public class TripleAFrame extends MainGameFrame {
   }
 
   public MapPanel getMapPanel() {
+    return mapPanel;
+  }
+
+  @Override
+  public JComponent getMainPanel() {
     return mapPanel;
   }
 

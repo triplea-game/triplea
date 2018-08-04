@@ -1,11 +1,14 @@
 package games.strategy.triplea.image;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Transparency;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -36,9 +39,11 @@ public final class TileImageFactory {
   private static String showMapBlendMode;
   private static final String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
   private static float showMapBlendAlpha;
+  private final Composite composite = AlphaComposite.Src;
   private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
+  private double scale = 1.0;
   // maps image name to ImageRef
   private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());
   private ResourceLoader resourceLoader;
@@ -65,6 +70,14 @@ public final class TileImageFactory {
 
   private static float getShowMapBlendAlpha() {
     return showMapBlendAlpha;
+  }
+
+  public void setScale(final double newScale) {
+    if (newScale > 1) {
+      throw new IllegalArgumentException("Wrong scale");
+    }
+    scale = newScale;
+    imageCache.clear();
   }
 
   public static void setShowReliefImages(final boolean showReliefImages) {
@@ -128,7 +141,16 @@ public final class TileImageFactory {
     if (resourceLoader.getResource(fileName) == null) {
       return null;
     }
-    return getImage(fileName);
+    return getImage(fileName, false);
+  }
+
+  public Image getUnscaledUncachedBaseTile(final int x, final int y) {
+    final String fileName = getBaseTileImageName(x, y);
+    final URL url = resourceLoader.getResource(fileName);
+    if (url == null) {
+      return null;
+    }
+    return loadImage(url, fileName, false, false, false);
   }
 
   private static String getBaseTileImageName(final int x, final int y) {
@@ -136,7 +158,7 @@ public final class TileImageFactory {
     return "baseTiles" + "/" + x + "_" + y + ".png";
   }
 
-  private Image getImage(final String fileName) {
+  private Image getImage(final String fileName, final boolean transparent) {
     final Image image = isImageLoaded(fileName);
     if (image != null) {
       return image;
@@ -144,15 +166,24 @@ public final class TileImageFactory {
     // This is null if there is no image
     final URL url = resourceLoader.getResource(fileName);
 
-    if ((!showMapBlends || !showReliefImages) && url == null) {
+    if ((!showMapBlends || !showReliefImages || !transparent) && url == null) {
       return null;
     }
-    return loadImage(url, fileName);
+    return loadImage(url, fileName, transparent, true, true);
   }
 
   public Image getReliefTile(final int a, final int b) {
     final String fileName = getReliefTileImageName(a, b);
-    return getImage(fileName);
+    return getImage(fileName, true);
+  }
+
+  public Image getUnscaledUncachedReliefTile(final int x, final int y) {
+    final String fileName = getReliefTileImageName(x, y);
+    final URL url = resourceLoader.getResource(fileName);
+    if (url == null) {
+      return null;
+    }
+    return loadImage(url, fileName, true, false, false);
   }
 
   private static String getReliefTileImageName(final int x, final int y) {
@@ -161,7 +192,7 @@ public final class TileImageFactory {
   }
 
   /**
-   * This method produces a blank white tile for use in blending.
+   * @return compatibleImage This method produces a blank white tile for use in blending.
    */
   private static BufferedImage makeMissingBaseTile(final BufferedImage input) {
     final BufferedImage compatibleImage =
@@ -173,13 +204,14 @@ public final class TileImageFactory {
     return compatibleImage;
   }
 
-  private Image loadImage(final URL imageLocation, final String fileName) {
-    return (showMapBlends && showReliefImages)
-        ? loadBlendedImage(fileName)
-        : loadUnblendedImage(imageLocation, fileName);
+  private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
+      final boolean cache, final boolean scale) {
+    return (showMapBlends && showReliefImages && transparent)
+        ? loadBlendedImage(fileName, cache, scale)
+        : loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
   }
 
-  private Image loadBlendedImage(final String fileName) {
+  private Image loadBlendedImage(final String fileName, final boolean cache, final boolean scaled) {
     BufferedImage reliefFile = null;
     BufferedImage baseFile = null;
     // The relief tile
@@ -225,22 +257,32 @@ public final class TileImageFactory {
       final BufferedImage blendedImage =
           new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g2 = blendedImage.createGraphics();
+      if (scaled && scale != 1.0) {
+        final AffineTransform transform = new AffineTransform();
+        transform.scale(scale, scale);
+        g2.setTransform(transform);
+      }
       g2.drawImage(reliefFile, 0, 0, null);
       final BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
       final BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
       g2.setComposite(blendComposite);
       g2.drawImage(baseFile, 0, 0, null);
       final SoftReference<Image> ref = new SoftReference<>(blendedImage);
-      imageCache.put(fileName, ref);
+      if (cache) {
+        imageCache.put(fileName, ref);
+      }
       return blendedImage;
     }
 
     final SoftReference<Image> ref = new SoftReference<>(baseFile);
-    imageCache.put(fileName, ref);
+    if (cache) {
+      imageCache.put(fileName, ref);
+    }
     return baseFile;
   }
 
-  private Image loadUnblendedImage(final URL imageLocation, final String fileName) {
+  private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent,
+      final boolean cache, final boolean scaled) {
     Image image;
     try {
       final Stopwatch loadingImages = new Stopwatch(logger, Level.FINE, "Loading image:" + imageLocation);
@@ -253,8 +295,13 @@ public final class TileImageFactory {
       // this step is a significant bottle neck in the image drawing process
       // we should try to find a way to avoid it, and load the
       // png directly as the right type
-      image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), true);
+      image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
+      if (scaled && scale != 1.0) {
+        final AffineTransform transform = new AffineTransform();
+        transform.scale(scale, scale);
+        g.setTransform(transform);
+      }
       g.drawImage(fromFile, 0, 0, null);
       g.dispose();
       fromFile.flush();
@@ -263,8 +310,14 @@ public final class TileImageFactory {
       ClientLogger.logError("Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
-    imageCache.put(fileName, new SoftReference<>(image));
+    if (cache) {
+      imageCache.put(fileName, new SoftReference<>(image));
+    }
     return image;
+  }
+
+  public Composite getComposite() {
+    return this.composite;
   }
 
   private static BufferedImage loadCompatibleImage(final URL resource) throws IOException {

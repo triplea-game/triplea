@@ -117,6 +117,9 @@ public class HeadlessUiContext extends AbstractUiContext {
   public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level) {}
 
   @Override
+  public void resetDrawTerritoryBordersAgain() {}
+
+  @Override
   public void setDrawTerritoryBordersAgainToMedium() {}
 
   @Override

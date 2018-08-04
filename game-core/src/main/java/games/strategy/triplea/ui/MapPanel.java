@@ -9,9 +9,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
@@ -29,7 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -54,11 +51,11 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.logic.MapScrollUtil;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
+import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -190,22 +187,30 @@ public class MapPanel extends ImageScrollerLargeView {
     addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseMoved(final MouseEvent e) {
-        updateMouseHoverState(convert(e), e.getX(), e.getY());
+        final MouseDetails md = convert(e);
+        final double scaledMouseX = e.getX() / scale;
+        final double scaledMouseY = e.getY() / scale;
+        final double x = normalizeX(scaledMouseX + getXOffset());
+        final double y = normalizeY(scaledMouseY + getYOffset());
+        final Territory terr = getTerritory(x, y);
+        if (!Objects.equals(terr, currentTerritory)) {
+          currentTerritory = terr;
+          notifyMouseEntered(terr);
+        }
+        notifyMouseMoved(terr, md);
+        final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
+        if (unitsChanged(tuple)) {
+          currentUnits = tuple;
+          if (tuple == null) {
+            notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
+          } else {
+            notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
+          }
+        }
       }
     });
-    // When map is scrolled, update information about what we're hovering over.
-    model.addObserver((object, arg) -> {
-      SwingUtilities.invokeLater(() -> {
-        final PointerInfo pointer = MouseInfo.getPointerInfo();
-        if (pointer != null) {
-          final Point loc = pointer.getLocation();
-          SwingUtilities.convertPointFromScreen(loc, MapPanel.this);
-          updateMouseHoverState(null, loc.x, loc.y);
-        }
-      });
-    });
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
-    executor.execute(() -> recreateTiles(data, uiContext));
+    executor.submit(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {
       // super.deactivate
       deactivate();
@@ -214,36 +219,9 @@ public class MapPanel extends ImageScrollerLargeView {
     });
   }
 
-  private void updateMouseHoverState(final MouseDetails md, final int mouseX, final int mouseY) {
-    final double scaledMouseX = mouseX / scale;
-    final double scaledMouseY = mouseY / scale;
-    final double x = normalizeX(scaledMouseX + getXOffset());
-    final double y = normalizeY(scaledMouseY + getYOffset());
-    final Territory terr = getTerritory(x, y);
-    if (!Objects.equals(terr, currentTerritory)) {
-      currentTerritory = terr;
-      notifyMouseEntered(terr);
-    }
-    if (md != null) {
-      notifyMouseMoved(terr, md);
-    }
-    final Tuple<Territory, List<Unit>> tuple = tileManager.getUnitsAtPoint(x, y, gameData);
-    if (unitsChanged(tuple)) {
-      currentUnits = tuple;
-      if (tuple == null) {
-        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
-      } else {
-        notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
-      }
-    }
-  }
-
   private void recreateTiles(final GameData data, final UiContext uiContext) {
-    tileManager.createTiles(new Rectangle(this.uiContext.getMapData().getMapDimensions()));
-    tileManager.resetTiles(data, uiContext.getMapData());
-    for (final Tile tile : tileManager.getTiles()) {
-      enqueueTile(tile, data);
-    }
+    this.tileManager.createTiles(new Rectangle(this.uiContext.getMapData().getMapDimensions()));
+    this.tileManager.resetTiles(data, uiContext.getMapData());
   }
 
   GameData getData() {
@@ -292,7 +270,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final Point p = uiContext.getMapData().getCenter(territory);
-    // when centering don't want the map to wrap around,
+    // when centering dont want the map to wrap around,
     // eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
@@ -380,28 +358,28 @@ public class MapPanel extends ImageScrollerLargeView {
     return gameData.getMap().getTerritory(name);
   }
 
-  private double normalizeX(final double x) {
+  private double normalizeX(double x) {
     if (!uiContext.getMapData().scrollWrapX()) {
       return x;
     }
     final int imageWidth = (int) getImageDimensions().getWidth();
     if (x < 0) {
-      return x + imageWidth;
+      x += imageWidth;
     } else if (x > imageWidth) {
-      return x - imageWidth;
+      x -= imageWidth;
     }
     return x;
   }
 
-  private double normalizeY(final double y) {
+  private double normalizeY(double y) {
     if (!uiContext.getMapData().scrollWrapY()) {
       return y;
     }
     final int imageHeight = (int) getImageDimensions().getHeight();
     if (y < 0) {
-      return y + imageHeight;
+      y += imageHeight;
     } else if (y > imageHeight) {
-      return y - imageHeight;
+      y -= imageHeight;
     }
     return y;
   }
@@ -447,27 +425,27 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(dataChangeListener);
     clearPendingDrawOperations();
-    executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+    executor.submit(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
   }
 
   private final TerritoryListener territoryListener = new TerritoryListener() {
     @Override
     public void unitsChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(MapPanel.this::repaint);
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override
     public void ownerChanged(final Territory territory) {
       smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(MapPanel.this::repaint);
+      SwingUtilities.invokeLater(() -> repaint());
     }
 
     @Override
     public void attachmentChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(MapPanel.this::repaint);
+      SwingUtilities.invokeLater(() -> repaint());
     }
   };
 
@@ -519,34 +497,73 @@ public class MapPanel extends ImageScrollerLargeView {
    * @param g The graphics context on which to draw the map; must not be {@code null}.
    */
   public void drawMapImage(final Graphics g) {
-    final Graphics2D graphics = (Graphics2D) checkNotNull(g);
-    graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-        RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-    graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-    final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
-    drawTiles(graphics, gameData, bounds);
+    final Graphics2D g2d = (Graphics2D) checkNotNull(g);
+    // make sure we use the same data for the entire print
+    final GameData gameData = this.gameData;
+    gameData.acquireReadLock();
     try {
-      // This makes use of the FIFO queue the executor uses
-      executor.submit(() -> drawTiles((Graphics2D) checkNotNull(g), gameData, bounds)).get();
-    } catch (final ExecutionException e) {
-      throw new IllegalStateException(e);
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
+      final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
+      final Collection<Tile> tileList = tileManager.getTiles(bounds);
+      for (final Tile tile : tileList) {
+        tile.acquireLock();
+        try {
+          final Image img = tile.getImage(gameData, uiContext.getMapData());
+          if (img != null) {
+            final AffineTransform t = new AffineTransform();
+            t.translate((tile.getBounds().x - bounds.getX()) * scale, (tile.getBounds().y - bounds.getY()) * scale);
+            g2d.drawImage(img, t, this);
+          }
+        } finally {
+          tile.releaseLock();
+        }
+      }
+    } finally {
+      gameData.releaseReadLock();
     }
   }
 
   @Override
   public void paint(final Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
-    g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
-        RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
-    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     super.paint(g2d);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
+    int x = model.getX();
+    int y = model.getY();
+    final List<Tile> images = new ArrayList<>();
+    final List<Tile> undrawnTiles = new ArrayList<>();
     final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
-    drawTiles(g2d, gameData, new Rectangle2D.Double(model.getX(), model.getY(), getScaledWidth(), getScaledHeight()));
+    // make sure we use the same data for the entire paint
+    final GameData data = gameData;
+    // if the map fits on screen, don't draw any overlap
+    final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
+    final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
+    if (fitAxisX || fitAxisY) {
+      if (fitAxisX && x + (int) getScaledWidth() > model.getMaxWidth()) {
+        x -= model.getMaxWidth();
+      }
+      if (fitAxisY && y + (int) getScaledHeight() > model.getMaxHeight()) {
+        y -= model.getMaxHeight();
+      }
+      // handle wrapping off the screen
+      if (fitAxisX && x < 0) {
+        if (fitAxisY && y < 0) {
+          final Rectangle2D.Double leftUpperBounds =
+              new Rectangle2D.Double(model.getMaxWidth() + x, model.getMaxHeight() + y, -x, -y);
+          drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
+        }
+        final Rectangle2D.Double leftBounds =
+            new Rectangle2D.Double(model.getMaxWidth() + x, y, -x, getScaledHeight());
+        drawTiles(g2d, images, data, leftBounds, undrawnTiles);
+      }
+      if (fitAxisY && y < 0) {
+        final Rectangle2D.Double upperBounds =
+            new Rectangle2D.Double(x, model.getMaxHeight() + y, getScaledWidth(), -y);
+        drawTiles(g2d, images, data, upperBounds, undrawnTiles);
+      }
+    }
+    // handle non overlap
+    final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
+    drawTiles(g2d, images, data, mainBounds, undrawnTiles);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
       t.translate(scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
@@ -581,6 +598,23 @@ public class MapPanel extends ImageScrollerLargeView {
         }
       }
     }
+    // draw the tiles nearest us first
+    // then draw farther away
+    updateUndrawnTiles(undrawnTiles, 30, true);
+    updateUndrawnTiles(undrawnTiles, 257, true);
+    // when we are this far away, don't force the tiles to stay in memory
+    updateUndrawnTiles(undrawnTiles, 513, false);
+    updateUndrawnTiles(undrawnTiles, 767, false);
+    clearPendingDrawOperations();
+    undrawnTiles.forEach(tile -> executor.execute(() -> {
+      data.acquireReadLock();
+      try {
+        tile.getImage(data, MapPanel.this.getUiContext().getMapData());
+      } finally {
+        data.releaseReadLock();
+      }
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
+    }));
     stopWatch.done();
   }
 
@@ -588,35 +622,57 @@ public class MapPanel extends ImageScrollerLargeView {
     ((ThreadPoolExecutor) executor).getQueue().clear();
   }
 
-  private void drawTiles(final Graphics2D graphics, final GameData data, final Rectangle2D bounds) {
-    for (final Tile tile : tileManager.getTiles(bounds)) {
-      if (tile.isDirty()) {
-        enqueueTile(tile, data);
-      }
-      final Image image = tile.getImage();
-      final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
-          model.getScrollX(), model.getScrollY(), model.getMaxWidth(), model.getMaxHeight());
-      for (final AffineTransform transform : transforms) {
-        final AffineTransform viewTransformation = new AffineTransform();
-        viewTransformation.scale(scale, scale);
-        viewTransformation.translate(-bounds.getX(), -bounds.getY());
-        viewTransformation.translate(tile.getBounds().x, tile.getBounds().y);
-        viewTransformation.concatenate(transform);
-        graphics.drawImage(image, viewTransformation, this);
+  private boolean mapWidthFitsOnScreen() {
+    return model.getMaxWidth() < getScaledWidth();
+  }
+
+  private boolean mapHeightFitsOnScreen() {
+    return model.getMaxHeight() < getScaledHeight();
+  }
+
+  /**
+   * If we have nothing left undrawn, draw the tiles within preDrawMargin of us, optionally
+   * forcing the tiles to remain in memory.
+   */
+  private void updateUndrawnTiles(final List<Tile> undrawnTiles, final int preDrawMargin, final boolean forceInMemory) {
+    // draw tiles near us if we have nothing left to draw
+    // that way when we scroll slowly we wont notice a glitch
+    if (undrawnTiles.isEmpty()) {
+      final Rectangle2D extendedBounds = new Rectangle2D.Double(Math.max(model.getX() - preDrawMargin, 0),
+          Math.max(model.getY() - preDrawMargin, 0), getScaledWidth() + (2 * preDrawMargin),
+          getScaledHeight() + (2 * preDrawMargin));
+      final List<Tile> tileList = tileManager.getTiles(extendedBounds);
+      for (final Tile tile : tileList) {
+        if (tile.isDirty()) {
+          undrawnTiles.add(tile);
+        }
       }
     }
   }
 
-  private void enqueueTile(final Tile tile, final GameData data) {
-    executor.execute(() -> {
+  private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data,
+      final Rectangle2D.Double bounds, final List<Tile> undrawn) {
+    for (final Tile tile : tileManager.getTiles(bounds)) {
+      tile.acquireLock();
       try {
-        data.acquireReadLock();
-        tile.drawImage(data, uiContext.getMapData());
+        final Image img;
+        if (tile.isDirty()) {
+          // take what we can get to avoid screen flicker
+          undrawn.add(tile);
+          img = tile.getRawImage();
+        } else {
+          img = tile.getImage(data, uiContext.getMapData());
+          images.add(tile);
+        }
+        if (img != null) {
+          final AffineTransform t = new AffineTransform();
+          t.translate(scale * (tile.getBounds().x - bounds.getX()), scale * (tile.getBounds().y - bounds.getY()));
+          g.drawImage(img, t, this);
+        }
       } finally {
-        data.releaseReadLock();
+        tile.releaseLock();
       }
-      SwingUtilities.invokeLater(this::repaint);
-    });
+    }
   }
 
   Image getTerritoryImage(final Territory territory) {
@@ -645,7 +701,21 @@ public class MapPanel extends ImageScrollerLargeView {
   public void setScale(final double newScale) {
     super.setScale(newScale);
     // setScale will check bounds, and normalize the scale correctly
-    uiContext.setScale(scale);
+    final double normalizedScale = scale;
+    final OptionalExtraBorderLevel drawBorderOption = uiContext.getDrawTerritoryBordersAgain();
+    // so what is happening here is that when we zoom out, the territory borders get blurred or even removed
+    // so we have a special setter to have them be drawn a second time, on top of the relief tiles
+    if (normalizedScale >= 1) {
+      if (drawBorderOption != OptionalExtraBorderLevel.LOW) {
+        uiContext.resetDrawTerritoryBordersAgain();
+      }
+    } else {
+      if (drawBorderOption == OptionalExtraBorderLevel.LOW) {
+        uiContext.setDrawTerritoryBordersAgainToMedium();
+      }
+    }
+    uiContext.setScale(normalizedScale);
+    recreateTiles(getData(), uiContext);
     repaint();
   }
 
@@ -699,7 +769,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
             category.getOwner().getName(), place, category.getDamaged(), category.getBombingDamage(),
             category.getDisabled(), false, "", uiContext);
-        drawer.draw(bounds, gameData, g, uiContext.getMapData());
+        drawer.draw(bounds, gameData, g, uiContext.getMapData(), null, null);
         i++;
       }
     } finally {
