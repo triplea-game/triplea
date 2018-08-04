@@ -16,21 +16,29 @@
   - https://forums.triplea-game.org/category/1/announcements
   - http://www.axisandallies.org/forums/index.php?board=53.0
 
+## Lobby/Bot Version Upgrades
+- This is described in the [infrastructure project](https://github.com/triplea-game/infrastructure)
 
-## [NodeBB Forums](https://forums.triplea-game.org)
+# [NodeBB Forums](https://forums.triplea-game.org)
 - Runs on the "NJ" linode server
 - NodeBB is deployed via git and dependencies are installed using npm. (TODO: add exact commands to deploy NodeBB)
 
-### Installation
-TODO
-
 ### Check status and Troubleshooting
-If we ever run into problems with the forum and it keeps refusing to start, we need to do a couple things:
-Before running any of those commands, we need to be in the correct working directory, `/opt/nodebb/` in our case.
-We can do that by executing `cd /opt/nodebb/` in the beginning.
-Run `./nodebb upgrade`, this should fix problems most of the time.
-If it doesn't, make sure enough memory is available and the database is up and running. (`sudo service mongod status`)
-If all of this doesn't help, open an issue at the [NodeBB repository](https://github.com/NodeBB/NodeBB) or create a topic in the [NodeBB community forum](https://community.nodebb.org).
+
+If forum is crashed and refuses to start:
+```bash
+cd /opt/nodebb/
+./nodebb upgrade
+```
+This should fix problems most of the time.
+If it doesn't, make sure enough memory is available and the database is up and running.
+ 
+ ```
+ sudo service mongod status
+ ```
+ 
+If all of this doesn't help, open an issue at the [NodeBB repository](https://github.com/NodeBB/NodeBB) or create a 
+topic in the [NodeBB community forum](https://community.nodebb.org).
 
 #### Log files
 Get last 50 nodebb log lines:
@@ -49,7 +57,8 @@ sudo service nodebb restart
 sudo service nginx restart
 ```
 
-_Note: Restarting fails sometimes if not enough resources e.g. memory are available. Always check for a successful restart and reasons for failures._
+_Note: Restarting fails sometimes if not enough resources e.g. memory are available. Always check for a successful 
+restart and reasons for failures._
 
 ### Updating
 Updating is not always the same, depending on the branch policy of NodeBB.
@@ -79,11 +88,11 @@ sudo service nodebb start
 ```
 
 
-# Bot Account
+# [Bot Account](https://github.com/tripleabuilderbot)
 
-Bot Account: [github.com/tripleabuilderbot](https://github.com/tripleabuilderbot)
-
-An admin owned account used for automated build tasks that require repository write access.
+This is a github account that the project uses to do automated pushes to our github repository. The travis build kicks
+in after code merges and we use SSH keys attached to this account to grant autoamted access. This account has
+write access to the repository. We use this account so it that these keys are not tied to any one individual. 
 
 ## Personal Access Keys
 
