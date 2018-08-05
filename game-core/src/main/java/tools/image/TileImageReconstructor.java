@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -31,12 +32,13 @@ import javax.swing.filechooser.FileFilter;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import lombok.extern.java.Log;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
 /**
  * For taking a folder of basetiles and putting them back together into an image.
  */
+@Log
 public final class TileImageReconstructor {
   private String baseTileLocation = null;
   private String imageSaveLocation = null;
@@ -75,8 +77,8 @@ public final class TileImageReconstructor {
       mapFolderLocation = baseTileLocationSelection.getFile().getParentFile();
     }
     if (baseTileLocation == null) {
-      ToolLogger.info("You need to select a folder where the basetiles are for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("You need to select a folder where the basetiles are for this to work");
+      log.info("Shutting down");
       return;
     }
     final FileSave imageSaveLocationSelection = new FileSave("Save Map Image As?", null, mapFolderLocation,
@@ -93,8 +95,8 @@ public final class TileImageReconstructor {
         });
     imageSaveLocation = imageSaveLocationSelection.getPathString();
     if (imageSaveLocation == null) {
-      ToolLogger.info("You need to choose a name and location for your image file for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("You need to choose a name and location for your image file for this to work");
+      log.info("Shutting down");
       return;
     }
     final String width = JOptionPane.showInputDialog(null, "Enter the map image's full width in pixels:");
@@ -114,26 +116,26 @@ public final class TileImageReconstructor {
       }
     }
     if (sizeX <= 0 || sizeY <= 0) {
-      ToolLogger.info("Map dimensions must be greater than zero for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("Map dimensions must be greater than zero for this to work");
+      log.info("Shutting down");
       return;
     }
     if (JOptionPane.showConfirmDialog(null,
         "Do not draw polgyons.txt file onto your image?\r\n(Default = 'yes' = do not draw)",
         "Do Not Also Draw Polygons?", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
       try {
-        ToolLogger.info("Load a polygon file");
+        log.info("Load a polygon file");
         final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyName != null) {
           try (InputStream in = new FileInputStream(polyName)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(in);
           } catch (final IOException e) {
-            ToolLogger.error("Failed to load polygons: " + polyName, e);
+            log.log(Level.SEVERE, "Failed to load polygons: " + polyName, e);
             return;
           }
         }
       } catch (final Exception e) {
-        ToolLogger.error("Failed to load polygons", e);
+        log.log(Level.SEVERE, "Failed to load polygons", e);
       }
     }
     createMap();
@@ -175,7 +177,7 @@ public final class TileImageReconstructor {
     try {
       ImageIO.write(mapImage, "png", new File(imageSaveLocation));
     } catch (final IOException e) {
-      ToolLogger.error("Failed to save image: " + imageSaveLocation, e);
+      log.log(Level.SEVERE, "Failed to save image: " + imageSaveLocation, e);
     }
     textOptionPane.appendNewLine("Wrote " + imageSaveLocation);
     textOptionPane.appendNewLine("\r\nAll Finished!");
@@ -205,10 +207,10 @@ public final class TileImageReconstructor {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolLogger.info("Could not find directory: " + value);
+        log.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolLogger.info("Only argument allowed is the map directory.");
+      log.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -218,7 +220,7 @@ public final class TileImageReconstructor {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolLogger.info("Could not find directory: " + value);
+          log.info("Could not find directory: " + value);
         }
       }
     }

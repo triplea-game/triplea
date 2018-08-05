@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -47,8 +48,8 @@ import javax.swing.SwingUtilities;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
+import lombok.extern.java.Log;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
 /**
  * Utility to break a map into polygons.
@@ -57,8 +58,9 @@ import tools.util.ToolLogger;
  * - territory name entered
  * Outputs - a list of polygons for each country
  */
+@Log
 public final class PolygonGrabber {
-  private File mapFolderLocation = null;
+  private File mapFolderLocation;
 
   private PolygonGrabber() {}
 
@@ -73,20 +75,20 @@ public final class PolygonGrabber {
     try {
       new PolygonGrabber().runInternal(args);
     } catch (final IOException e) {
-      ToolLogger.error("failed to run polygon grabber", e);
+      log.log(Level.SEVERE, "failed to run polygon grabber", e);
     }
   }
 
   private void runInternal(final String[] args) throws IOException {
     handleCommandLineArgs(args);
-    ToolLogger.info("Select the map");
+    log.info("Select the map");
     final FileOpen mapSelection = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png");
     final String mapName = mapSelection.getPathString();
     if (mapFolderLocation == null && mapSelection.getFile() != null) {
       mapFolderLocation = mapSelection.getFile().getParentFile();
     }
     if (mapName != null) {
-      ToolLogger.info("Map : " + mapName);
+      log.info("Map : " + mapName);
       final PolygonGrabberFrame frame = new PolygonGrabberFrame(mapName);
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
@@ -108,7 +110,7 @@ public final class PolygonGrabber {
               + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
               + "<br><br>When finished, save the polygons and exit." + "</html>"));
     } else {
-      ToolLogger.info("No Image Map Selected. Shutting down.");
+      log.info("No Image Map Selected. Shutting down.");
     }
   }
 
@@ -150,27 +152,27 @@ public final class PolygonGrabber {
               + "names?",
           "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
         try (InputStream is = new FileInputStream(file.getPath())) {
-          ToolLogger.info("Centers : " + file.getPath());
+          log.info("Centers : " + file.getPath());
           centers = PointFileReaderWriter.readOneToOne(is);
         } catch (final IOException e) {
-          ToolLogger.error("Something wrong with Centers file", e);
+          log.log(Level.SEVERE, "Something wrong with Centers file", e);
         }
       } else {
         try {
-          ToolLogger.info("Select the Centers file");
+          log.info("Select the Centers file");
           final String centerPath = new FileOpen("Select A Center File", mapFolderLocation, ".txt").getPathString();
           if (centerPath != null) {
-            ToolLogger.info("Centers : " + centerPath);
+            log.info("Centers : " + centerPath);
             try (InputStream is = new FileInputStream(centerPath)) {
               centers = PointFileReaderWriter.readOneToOne(is);
             }
           } else {
-            ToolLogger.info("You must specify a centers file.");
-            ToolLogger.info("Shutting down.");
+            log.info("You must specify a centers file.");
+            log.info("Shutting down.");
             throw new IOException("no centers file specified");
           }
         } catch (final IOException e) {
-          ToolLogger.error("Something wrong with Centers file");
+          log.severe("Something wrong with Centers file");
           throw e;
         }
       }
@@ -231,7 +233,7 @@ public final class PolygonGrabber {
         g.drawImage(bufferedImage, 0, 0, null);
         for (final String territoryName : centers.keySet()) {
           final Point center = centers.get(territoryName);
-          ToolLogger.info("Detecting Polygon for:" + territoryName);
+          log.info("Detecting Polygon for:" + territoryName);
           final Polygon p = findPolygon(center.x, center.y);
           // test if the poly contains the center point (this often fails when there is an island right above (because
           // findPolygon will grab
@@ -371,9 +373,9 @@ public final class PolygonGrabber {
       }
       try (OutputStream out = new FileOutputStream(polyName)) {
         PointFileReaderWriter.writeOneToManyPolygons(out, polygons);
-        ToolLogger.info("Data written to :" + new File(polyName).getCanonicalPath());
+        log.info("Data written to :" + new File(polyName).getCanonicalPath());
       } catch (final IOException e) {
-        ToolLogger.error("Failed to save polygons: " + polyName, e);
+        log.log(Level.SEVERE, "Failed to save polygons: " + polyName, e);
       }
     }
 
@@ -381,7 +383,7 @@ public final class PolygonGrabber {
      * Loads a pre-defined file with map polygon points.
      */
     private void loadPolygons() {
-      ToolLogger.info("Load a polygon file");
+      log.info("Load a polygon file");
       final String polyName = new FileOpen("Load A Polygon File", mapFolderLocation, ".txt").getPathString();
       if (polyName == null) {
         return;
@@ -389,7 +391,7 @@ public final class PolygonGrabber {
       try (InputStream in = new FileInputStream(polyName)) {
         polygons = PointFileReaderWriter.readOneToManyPolygons(in);
       } catch (final IOException e) {
-        ToolLogger.error("Failed to load polygons: " + polyName, e);
+        log.log(Level.SEVERE, "Failed to load polygons: " + polyName, e);
       }
       repaint();
     }
@@ -402,7 +404,7 @@ public final class PolygonGrabber {
       if (rightMouse && current != null) { // right click and list of polys is not empty
         doneCurrentGroup();
       } else if (pointInCurrentPolygon(point)) { // point clicked is already highlighted
-        ToolLogger.info("rejecting");
+        log.info("rejecting");
         return;
       } else if (ctrlDown) {
         if (current == null) {
@@ -454,7 +456,7 @@ public final class PolygonGrabber {
       } else if (option > 0) {
         current = null;
       } else {
-        ToolLogger.info("something very invalid");
+        log.info("something very invalid");
       }
     }
 
@@ -636,7 +638,7 @@ public final class PolygonGrabber {
         ypoints[i] = item.y;
         i++;
       }
-      ToolLogger.info("Done finding polygon. total points;" + xpoints.length);
+      log.info("Done finding polygon. total points;" + xpoints.length);
       return new Polygon(xpoints, ypoints, xpoints.length);
     }
   }
@@ -662,10 +664,10 @@ public final class PolygonGrabber {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolLogger.info("Could not find directory: " + value);
+        log.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolLogger.info("Only argument allowed is the map directory.");
+      log.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -675,7 +677,7 @@ public final class PolygonGrabber {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolLogger.info("Could not find directory: " + value);
+          log.info("Could not find directory: " + value);
         }
       }
     }

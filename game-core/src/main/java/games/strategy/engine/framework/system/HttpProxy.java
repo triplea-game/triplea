@@ -6,6 +6,7 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
@@ -13,9 +14,10 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 import com.google.common.base.Strings;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.settings.ClientSetting;
+import lombok.extern.java.Log;
 
+@Log
 public class HttpProxy {
 
   /**
@@ -71,7 +73,7 @@ public class HttpProxy {
         }
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Failed to get system HTTP proxy", e);
+      log.log(Level.SEVERE, "Failed to get system HTTP proxy", e);
     } finally {
       SystemProperties.setJavaNetUseSystemProxies("false");
     }

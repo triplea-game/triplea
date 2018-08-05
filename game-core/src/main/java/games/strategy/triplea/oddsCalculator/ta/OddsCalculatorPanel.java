@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -32,7 +33,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -55,7 +55,9 @@ import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
+import lombok.extern.java.Log;
 
+@Log
 class OddsCalculatorPanel extends JPanel {
   private static final long serialVersionUID = -3559687618320469183L;
   private static final String NO_EFFECTS = "*None*";
@@ -466,7 +468,7 @@ class OddsCalculatorPanel extends JPanel {
       // must be shutdown, as it has a thread pool per each instance.
       calculator.shutdown();
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Failed to shut down odds calculator", e);
+      log.log(Level.SEVERE, "Failed to shut down odds calculator", e);
     }
   }
 

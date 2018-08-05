@@ -28,7 +28,7 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
   @Test
   public void buildInvalidEmptyOptionSet() {
     assertThrows(IllegalArgumentException.class, () -> JComboBoxBuilder.builder()
-        .menuOptions()
+        .menuOption("")
         .build());
   }
 
@@ -40,7 +40,9 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
   @Test
   public void basicBuilderWithMenuOptions() {
     final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOptions("option 1", "option 2", "option 3")
+        .menuOption("option 1")
+        .menuOption("option 2")
+        .menuOption("option 3")
         .build();
 
     MatcherAssert.assertThat(box.getSelectedIndex(), Is.is(0));
@@ -58,7 +60,9 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
 
     final String secondOption = "option 2";
     final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOptions("option 1", secondOption, "option 3")
+        .menuOption("option 1")
+        .menuOption(secondOption)
+        .menuOption("option 3")
         .itemListener(value -> {
           if (value.equals(secondOption)) {
             triggerCount.incrementAndGet();
@@ -76,7 +80,8 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
         ClientSetting.load(settingKey), Is.is(""));
 
     final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOptions("option 1", "option 2")
+        .menuOption("option 1")
+        .menuOption("option 2")
         .useLastSelectionAsFutureDefault(settingKey)
         .build();
     Mockito.when(mockItemEvent.getStateChange()).thenReturn(ItemEvent.SELECTED);
@@ -97,7 +102,8 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
     ClientSetting.TEST_SETTING.saveAndFlush("");
 
     final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOptions("option 1", "option 2")
+        .menuOption("option 1")
+        .menuOption("option 2")
         .useLastSelectionAsFutureDefault(ClientSetting.TEST_SETTING)
         .build();
 

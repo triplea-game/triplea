@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,7 +19,6 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.base.Ascii;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
@@ -26,10 +26,12 @@ import games.strategy.engine.framework.startup.ui.editors.validators.IntegerRang
 import games.strategy.engine.pbem.GenericEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
+import lombok.extern.java.Log;
 
 /**
  * An editor for modifying email senders.
  */
+@Log
 public class EmailSenderEditor extends EditorPanel {
   private static final long serialVersionUID = -4647781117491269926L;
   private final GenericEmailSender genericEmailSender;
@@ -169,7 +171,7 @@ public class EmailSenderEditor extends EditorPanel {
       } catch (final IOException ioe) {
         message = "Unable to send email, check SMTP server credentials: "
             + Ascii.truncate(ioe.getMessage(), 200, "...");
-        ClientLogger.logError(message, ioe);
+        log.log(Level.SEVERE, message, ioe);
       } finally {
         // now that we have a result, marshall it back unto the swing thread
         final String finalMessage = message;

@@ -1,9 +1,9 @@
 package games.strategy.triplea.ui;
 
-import java.awt.GraphicsEnvironment;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
+import lombok.extern.java.Log;
 
 /**
  * When dealing with swing threads and new threads, exception handling can get tricky. Namely without
@@ -16,6 +16,7 @@ import games.strategy.engine.framework.system.SystemProperties;
  * http://stackoverflow.com/questions/75218/how-can-i-detect-when-an-exceptions-been-thrown-globally-in-java#75439
  * </p>
  */
+@Log
 public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandlerAwtEvents {
 
   @Override
@@ -29,12 +30,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandl
   @Override
   public void handle(final Throwable t) {
     final String msg = "Error: " + (t.getLocalizedMessage() != null ? t.getLocalizedMessage() : t);
-    if (GraphicsEnvironment.isHeadless()) {
-      System.err.println(msg);
-      t.printStackTrace();
-    } else {
-      ClientLogger.logError(msg, t);
-    }
+    log.log(Level.SEVERE, msg, t);
   }
 
   /**

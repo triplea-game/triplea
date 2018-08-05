@@ -3,12 +3,12 @@ package games.strategy.engine.pbem;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataFileUtils;
@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.MainGameFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.ProgressWindow;
+import lombok.extern.java.Log;
 
 /**
  * This class is responsible for posting turn summary and email at the end of each round in a PBEM game.
@@ -25,6 +26,7 @@ import games.strategy.ui.ProgressWindow;
  * serializable
  * although the PBEM games will always be local
  */
+@Log
 public class PBEMMessagePoster implements Serializable {
   public static final String FORUM_POSTER_PROP_NAME = "games.strategy.engine.pbem.IForumPoster";
   public static final String EMAIL_SENDER_PROP_NAME = "games.strategy.engine.pbem.IEmailSender";
@@ -113,7 +115,7 @@ public class PBEMMessagePoster implements Serializable {
           historyWriter.startEvent("Turn Summary: " + turnSummaryRef);
         }
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Failed to post game to forum", e);
+        log.log(Level.SEVERE, "Failed to post game to forum", e);
       }
     }
     boolean emailSuccess = true;
@@ -127,7 +129,7 @@ public class PBEMMessagePoster implements Serializable {
       } catch (final IOException e) {
         emailSuccess = false;
         emailSendStatus = "Failed! Error " + e.getMessage();
-        ClientLogger.logQuietly("Failed to send game via email", e);
+        log.log(Level.SEVERE, "Failed to send game via email", e);
       }
     }
     if (historyWriter != null) {
@@ -223,7 +225,7 @@ public class PBEMMessagePoster implements Serializable {
           posterPbem.setSaveGame(saveGameFile);
         } catch (final Exception e) {
           postOk = false;
-          ClientLogger.logQuietly("Failed to create save game", e);
+          log.log(Level.SEVERE, "Failed to create save game", e);
         }
         posterPbem.setTurnSummary(historyLog.toString());
         try {
@@ -239,7 +241,7 @@ public class PBEMMessagePoster implements Serializable {
           }
         } catch (final Exception e) {
           postOk = false;
-          ClientLogger.logQuietly("Failed to post save game to forum", e);
+          log.log(Level.SEVERE, "Failed to post save game to forum", e);
         }
         if (postingDelegate != null) {
           postingDelegate.setHasPostedTurnSummary(postOk);
@@ -262,15 +264,7 @@ public class PBEMMessagePoster implements Serializable {
         if (historyLog.isVisible()) {
           historyLog.setVisible(true);
         }
-        try {
-          if (saveGameFile != null && !saveGameFile.delete()) {
-            System.out.println(
-                (new StringBuilder()).append("INFO TripleA PBEM/PBF poster couldn't delete temporary savegame: ")
-                    .append(saveGameFile.getCanonicalPath()).toString());
-          }
-        } catch (final IOException e) {
-          ClientLogger.logQuietly("save game file = " + saveGameFile, e);
-        }
+        saveGameFile.delete();
         progressWindow.setVisible(false);
         progressWindow.removeAll();
         progressWindow.dispose();

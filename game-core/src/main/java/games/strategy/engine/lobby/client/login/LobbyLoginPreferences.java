@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
 import javax.annotation.concurrent.Immutable;
@@ -8,15 +9,16 @@ import javax.annotation.concurrent.Immutable;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import games.strategy.util.function.ThrowingSupplier;
+import lombok.extern.java.Log;
 
 /**
  * The login preferences for a lobby user.
  */
 @Immutable
+@Log
 public final class LobbyLoginPreferences {
   final String userName;
   final String password;
@@ -77,7 +79,7 @@ public final class LobbyLoginPreferences {
           credentials.password.isEmpty() ? "" : credentialManager.unprotectToString(credentials.password),
           false);
     } catch (final CredentialManagerException e) {
-      ClientLogger.logQuietly("failed to unprotect lobby login credentials", e);
+      log.log(Level.SEVERE, "failed to unprotect lobby login credentials", e);
       return new Credentials("", "", false);
     }
   }
@@ -127,7 +129,7 @@ public final class LobbyLoginPreferences {
           credentialManager.protect(credentials.password),
           true);
     } catch (final CredentialManagerException e) {
-      ClientLogger.logQuietly("failed to protect lobby login credentials", e);
+      log.log(Level.SEVERE, "failed to protect lobby login credentials", e);
       return new Credentials("", "", false);
     }
   }

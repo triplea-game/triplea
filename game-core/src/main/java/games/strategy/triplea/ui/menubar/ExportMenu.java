@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -27,7 +28,6 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -53,7 +53,9 @@ import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.FileNameUtils;
 import games.strategy.util.LocalizeHtml;
+import lombok.extern.java.Log;
 
+@Log
 final class ExportMenu extends JMenu {
   private static final long serialVersionUID = 8416990293444575737L;
 
@@ -110,7 +112,7 @@ final class ExportMenu extends JMenu {
     try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(xmlFile);
     } catch (final IOException e1) {
-      ClientLogger.logQuietly("Failed to write XML: " + chooser.getSelectedFile().getAbsolutePath(), e1);
+      log.log(Level.SEVERE, "Failed to write XML: " + chooser.getSelectedFile().getAbsolutePath(), e1);
     }
   }
 
@@ -369,7 +371,7 @@ final class ExportMenu extends JMenu {
     try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
       writer.write(text.toString());
     } catch (final IOException e1) {
-      ClientLogger.logQuietly("Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
+      log.log(Level.SEVERE, "Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
     }
   }
 
@@ -390,7 +392,7 @@ final class ExportMenu extends JMenu {
             HelpMenu.getUnitStatsTable(gameData, uiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
                 .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
-        ClientLogger.logQuietly("Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
+        log.log(Level.SEVERE, "Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
       }
     }));
     menuFileExport.setMnemonic(KeyEvent.VK_U);

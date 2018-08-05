@@ -8,8 +8,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -19,7 +19,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
+import lombok.extern.java.Log;
 
+@Log
 class UnitInformation {
   private GameData data;
 
@@ -71,7 +73,7 @@ class UnitInformation {
       }
       unitInformation.write("\r\n");
     } catch (final IOException e) {
-      ClientLogger.logError("There was an error while trying to save File " + outFile.toString(), e);
+      log.log(Level.SEVERE, "There was an error while trying to save File " + outFile.toString(), e);
     }
   }
 

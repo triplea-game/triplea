@@ -18,7 +18,7 @@ public final class MessengerTestUtils {
       try {
         messenger.shutDown();
       } catch (final Exception e) {
-        e.printStackTrace(System.out);
+        e.printStackTrace(System.err);
       }
     }
   }

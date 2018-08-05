@@ -13,8 +13,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
@@ -95,8 +93,7 @@ public class Tile {
     } else {
       scaled = unscaled;
     }
-    final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(Tile.class.getName()), Level.FINEST,
-        "Drawing Tile at" + bounds);
+    final Stopwatch stopWatch = new Stopwatch("Drawing Tile at " + bounds);
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));

@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.HubInvoke;
@@ -28,7 +28,9 @@ import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
+@Log
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode node;
   private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
@@ -301,10 +303,10 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     }
     // Create the byte array to hold the data
     final byte[] bytes = new byte[(int) length];
-    try (final InputStream is = new FileInputStream(file)) {
+    try (InputStream is = new FileInputStream(file)) {
       is.read(bytes);
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to read file: " + file, e);
+      log.log(Level.SEVERE, "Failed to read file: " + file, e);
     }
     return bytes;
   }

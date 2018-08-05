@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -18,9 +19,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
+import lombok.extern.java.Log;
 
 /**
  * List of settings that can be adjusted and stored with a Client's OS. On windows this would be the registry,
@@ -44,6 +45,7 @@ import games.strategy.engine.framework.system.SystemProperties;
  * ClientSetting.flush();
  * </pre></code>
  */
+@Log
 public enum ClientSetting implements GameSetting {
   AI_PAUSE_DURATION(400),
 
@@ -98,7 +100,7 @@ public enum ClientSetting implements GameSetting {
 
   SHOW_BETA_FEATURES(false),
 
-  SHOW_CONSOLE_ALWAYS(false),
+  SHOW_CONSOLE(false),
 
   TEST_LOBBY_HOST,
 
@@ -134,7 +136,9 @@ public enum ClientSetting implements GameSetting {
 
   FORUM_COMBO_BOX_SELECTION,
 
-  DICE_SERVER_FOR_PBEM_GAMES;
+  DICE_SERVER_FOR_PBEM_GAMES,
+
+  LOGGING_VERBOSITY(Level.WARNING.getName());
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
@@ -204,7 +208,7 @@ public enum ClientSetting implements GameSetting {
     try {
       getPreferences().flush();
     } catch (final BackingStoreException e) {
-      ClientLogger.logError("Failed to save settings", e);
+      log.log(Level.SEVERE, "Failed to save settings", e);
     }
   }
 
@@ -244,9 +248,15 @@ public enum ClientSetting implements GameSetting {
     return getPreferences().get(key, "");
   }
 
+  public void saveAndFlush(final boolean newValue) {
+    saveAndFlush(String.valueOf(newValue));
+  }
+
   public void saveAndFlush(final String newValue) {
     save(newValue);
-    ClientSetting.flush();
+    // do the flush on a new thread to guarantee we do not block EDT.
+    // Flush operations are pretty slow!
+    new Thread(ClientSetting::flush).start();
   }
 
   @Override

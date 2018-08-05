@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -24,10 +25,12 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.io.IoUtils;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
 /**
  * Responsible for loading saved games, new games from xml, and saving games.
  */
+@Log
 public final class GameDataManager {
   private static final String DELEGATE_START = "<DelegateStart>";
   private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
@@ -76,7 +79,7 @@ public final class GameDataManager {
           final String message = "Incompatible game save, we are: " + ClientContext.engineVersion()
               + "  Trying to load game created with: " + readVersion;
           HeadlessGameServer.sendChat(message);
-          System.out.println(message);
+          log.log(Level.SEVERE, message);
           return null;
         }
         final String error = "Incompatible engine versions. We are: "

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,10 +36,10 @@ import javax.swing.SwingUtilities;
 import games.strategy.ui.Util;
 import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
+import lombok.extern.java.Log;
 import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
 /**
  * Utility to find connections between polygons
@@ -46,7 +47,7 @@ import tools.util.ToolLogger;
  * Inputs - a polygons.txt file
  * Outputs - a list of connections between the Polygons
  */
-// TODO: get this moved to its own package tree
+@Log
 public final class ConnectionFinder {
   private static final String LINE_THICKNESS = "triplea.map.lineThickness";
   private static final String SCALE_PIXELS = "triplea.map.scalePixels";
@@ -85,7 +86,7 @@ public final class ConnectionFinder {
             + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
             + "by the engine. "
             + "</html>"));
-    ToolLogger.info("Select polygons.txt");
+    log.info("Select polygons.txt");
     File polyFile = null;
     if (mapFolderLocation != null && mapFolderLocation.exists()) {
       polyFile = new File(mapFolderLocation, "polygons.txt");
@@ -98,7 +99,7 @@ public final class ConnectionFinder {
       polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !polyFile.exists()) {
-      ToolLogger.info("No polygons.txt Selected. Shutting down.");
+      log.info("No polygons.txt Selected. Shutting down.");
       return;
     }
     if (mapFolderLocation == null) {
@@ -114,7 +115,7 @@ public final class ConnectionFinder {
             .collect(Collectors.toList()));
       }
     } catch (final IOException e) {
-      ToolLogger.error("Failed to load polygons: " + polyFile.getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to load polygons: " + polyFile.getAbsolutePath(), e);
       return;
     }
     if (!dimensionsSet) {
@@ -151,7 +152,7 @@ public final class ConnectionFinder {
         // ignore malformed input
       }
     }
-    ToolLogger.info("Now Scanning for Connections");
+    log.info("Now Scanning for Connections");
     // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
     final List<String> allTerritories =
         new ArrayList<>(mapOfPolygons.keySet());
@@ -199,9 +200,9 @@ public final class ConnectionFinder {
       final StringBuilder connectionsString = convertToXml(connections);
       if (fileName == null) {
         if (territoryDefinitions != null) {
-          ToolLogger.info(territoryDefinitions.toString());
+          log.info(territoryDefinitions.toString());
         }
-        ToolLogger.info(connectionsString.toString());
+        log.info(connectionsString.toString());
       } else {
         try (OutputStream out = new FileOutputStream(fileName)) {
           if (territoryDefinitions != null) {
@@ -209,10 +210,10 @@ public final class ConnectionFinder {
           }
           out.write(String.valueOf(connectionsString).getBytes(StandardCharsets.UTF_8));
         }
-        ToolLogger.info("Data written to :" + new File(fileName).getCanonicalPath());
+        log.info("Data written to :" + new File(fileName).getCanonicalPath());
       }
     } catch (final Exception e) {
-      ToolLogger.error("Failed to write connections", e);
+      log.log(Level.SEVERE, "Failed to write connections", e);
     }
   } // end main
 
@@ -396,7 +397,7 @@ public final class ConnectionFinder {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolLogger.info("Could not find directory: " + value);
+          log.info("Could not find directory: " + value);
         }
       }
       if (arg.startsWith(LINE_THICKNESS)) {
@@ -420,7 +421,7 @@ public final class ConnectionFinder {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolLogger.info("Could not find directory: " + value);
+          log.info("Could not find directory: " + value);
         }
       }
     }

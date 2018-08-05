@@ -31,10 +31,12 @@ import javax.swing.WindowConstants;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * GUI class used to display logging window and logging settings.
  */
+@Log
 class ProLogWindow extends JDialog {
   private static final long serialVersionUID = -5989598624017028122L;
 
@@ -384,8 +386,11 @@ class ProLogWindow extends JDialog {
         currentLogTextArea = aiOutputLogArea;
       }
       currentLogTextArea.append(message + "\r\n");
-    } catch (final NullPointerException ex) { // This is bad, but we don't want TripleA crashing because of this...
-      System.out.print("Error adding Pro log message! Level: " + level.getName() + " Message: " + message);
+    } catch (final Exception ex) { // This is bad, but we don't want TripleA crashing because of this...
+      log.log(
+          Level.SEVERE,
+          "Error adding Pro log message! Level: " + level.getName() + " Message: " + message,
+          ex);
     }
   }
 

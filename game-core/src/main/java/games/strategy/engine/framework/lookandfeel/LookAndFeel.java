@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -39,14 +40,15 @@ import org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
+import lombok.extern.java.Log;
 
 /**
  * Provides methods for working with the Swing Look-And-Feel.
  */
+@Log
 public final class LookAndFeel {
   static {
     ClientSetting.LOOK_AND_FEEL_PREF.addSaveListener(newValue -> {
@@ -113,7 +115,7 @@ public final class LookAndFeel {
         try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (final Exception e) {
-          ClientLogger.logQuietly("Failed to set system look and feel", e);
+          log.log(Level.SEVERE, "Failed to set system look and feel", e);
         }
       }
     }

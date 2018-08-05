@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -32,11 +33,11 @@ import org.apache.commons.math3.util.Pair;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.extern.java.Log;
 import swinglib.GridBagHelper.Anchor;
 import swinglib.GridBagHelper.ColumnSpan;
 import swinglib.GridBagHelper.Fill;
@@ -51,6 +52,7 @@ import swinglib.GridBagHelper.Fill;
  *       .build();
  * </pre></code>
  */
+@Log
 public class JPanelBuilder {
 
   private final Collection<Pair<Component, PanelProperties>> components = new ArrayList<>();
@@ -97,10 +99,9 @@ public class JPanelBuilder {
           }
         };
       } catch (final IOException e) {
-        ClientLogger.logError("Could not load image: " + backgroundImage, e);
+        log.log(Level.SEVERE, "Could not load image: " + backgroundImage, e);
       }
     }
-
 
     if (border != null) {
       panel.setBorder(border);

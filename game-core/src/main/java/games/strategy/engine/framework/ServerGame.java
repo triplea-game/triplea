@@ -10,9 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -27,7 +26,6 @@ import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -53,11 +51,13 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * Represents a running game.
  * Lookups to get a GamePlayer from PlayerId and the current Delegate.
  */
+@Log
 public class ServerGame extends AbstractGame {
   static final RemoteName SERVER_REMOTE =
       new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
@@ -202,9 +202,9 @@ public class ServerGame extends AbstractGame {
           blockingObserver.joinGame(bytes, playerManager.getPlayerMapping());
           waitOnObserver.countDown();
         } catch (final ConnectionLostException cle) {
-          System.out.println("Connection lost to observer while joining: " + newNode.getName());
+          log.log(Level.SEVERE,"Connection lost to observer while joining: " + newNode.getName(), cle);
         } catch (final Exception e) {
-          ClientLogger.logQuietly("Failed to join game", e);
+          log.log(Level.SEVERE,"Failed to join game", e);
         }
       }, "Waiting on observer to finish joining: " + newNode.getName()).start();
       try {
@@ -216,7 +216,7 @@ public class ServerGame extends AbstractGame {
         nonBlockingObserver.cannotJoinGame(e.getMessage());
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Failed to join game", e);
+      log.log(Level.SEVERE, "Failed to join game", e);
       nonBlockingObserver.cannotJoinGame(e.getMessage());
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
@@ -289,19 +289,17 @@ public class ServerGame extends AbstractGame {
       }
     } catch (final GameOverException e) {
       if (!isGameOver) {
-        ClientLogger.logQuietly("GameOverException raised, but game is not over", e);
+        log.log(Level.SEVERE, "GameOverException raised, but game is not over", e);
       }
     }
   }
 
   public void stopGame() {
-    // we have already shut down
     if (isGameOver) {
-      System.out.println("Game previously stopped, cannot stop again.");
+      log.log(Level.WARNING, "Game previously stopped, cannot stop again.");
       return;
-    } else if (HeadlessGameServer.headless()) {
-      System.out.println("Attempting to stop game.");
     }
+
     isGameOver = true;
     delegateExecutionStoppedLatch.countDown();
     // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
@@ -313,15 +311,10 @@ public class ServerGame extends AbstractGame {
     // block delegate execution to prevent outbound messages to the players while we shut down.
     try {
       if (!delegateExecutionManager.blockDelegateExecution(16000)) {
-        System.err.println("Could not stop delegate execution.");
-        if (HeadlessGameServer.getInstance() != null) {
-          HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
-        } else {
-          ErrorConsole.getConsole().dumpStacks();
-        }
+        log.warning("Could not stop delegate execution.");
         // Try one more time
         if (!delegateExecutionManager.blockDelegateExecution(16000)) {
-          System.err.println("Exiting...");
+          log.log(Level.SEVERE, "Exiting...");
           ExitStatus.FAILURE.exit();
         }
       }
@@ -348,14 +341,11 @@ public class ServerGame extends AbstractGame {
         remoteMessenger.unregisterRemote(getRemoteName(delegate));
       }
     } catch (final RuntimeException e) {
-      ClientLogger.logQuietly("Failed to shut down server game", e);
+      log.log(Level.SEVERE, "Failed to shut down server game", e);
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
     gameData.getGameLoader().shutDown();
-    if (HeadlessGameServer.headless()) {
-      System.out.println("StopGame successful.");
-    }
   }
 
   private void autoSave(final String fileName) {
@@ -377,29 +367,38 @@ public class ServerGame extends AbstractGame {
   }
 
   @Override
-  public void saveGame(final File f) {
-    try (FileOutputStream fout = new FileOutputStream(f)) {
+  public void saveGame(final File file) {
+    try (FileOutputStream fout = new FileOutputStream(file)) {
       saveGame(fout);
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to save game to file: " + f.getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to save game to file: " + file.getAbsolutePath(), e);
     }
   }
 
   private void saveGame(final OutputStream out) throws IOException {
+    final String errorMessage = "Error saving game.. ";
+
     try {
+      // TODO: is this necessary to save a game?
       if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-        throw new IOException("Could not lock delegate execution");
+        // try again
+        if (!delegateExecutionManager.blockDelegateExecution(6000)) {
+          log.log(Level.SEVERE, errorMessage + " could not lock delegate execution");
+          return;
+        }
       }
-    } catch (final InterruptedException ie) {
+    } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new IOException(ie.getMessage());
+      return;
     }
+
     try {
       GameDataManager.saveGame(out, gameData);
     } finally {
       delegateExecutionManager.resumeDelegateExecution();
     }
   }
+
 
   private void runStep(final boolean stepIsRestoredFromSavedGame) {
     if (getCurrentStep().hasReachedMaxRunCount()) {

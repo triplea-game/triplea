@@ -29,7 +29,6 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.IChatPanel;
@@ -73,10 +72,12 @@ import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 
 /**
  * Represents a network aware game client connecting to another game that is acting as a server.
  */
+@Log
 public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
@@ -225,9 +226,7 @@ public class ClientModel implements IMessengerErrorListener {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
     } catch (final Exception ioe) {
-      ioe.printStackTrace(System.out);
-      EventThreadJOptionPane.showMessageDialog(this.ui, "Unable to connect:" + ioe.getMessage(), "Error",
-          JOptionPane.ERROR_MESSAGE);
+      log.log(Level.SEVERE, "Unable to connect:" + ioe.getMessage(), ioe);
       return false;
     }
     messenger.addErrorListener(this);
@@ -315,7 +314,7 @@ public class ClientModel implements IMessengerErrorListener {
       // up to 60 seconds for a freaking huge game
       data = IoUtils.readFromMemory(gameData, GameDataManager::loadGame);
     } catch (final IOException ex) {
-      ClientLogger.logQuietly("Failed to load game", ex);
+      log.log(Level.SEVERE, "Failed to load game", ex);
       return;
     }
     objectStreamFactory.setData(data);
@@ -336,7 +335,7 @@ public class ClientModel implements IMessengerErrorListener {
             data.getGameLoader().startGame(game, playerSet, false, getChatPanel().getChat());
             data.testLocksOnRead();
           } catch (final Exception e) {
-            ClientLogger.logError("Failed to start Game", e);
+            log.log(Level.SEVERE, "Failed to start Game", e);
             game.shutDown();
             messenger.shutDown();
             gameLoadingWindow.doneWait();

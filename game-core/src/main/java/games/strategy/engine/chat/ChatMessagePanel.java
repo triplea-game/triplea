@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -28,7 +29,6 @@ import javax.swing.text.StyleConstants;
 
 import com.google.common.base.Ascii;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
@@ -36,6 +36,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.TimeManager;
+import lombok.extern.java.Log;
 
 /**
  * A Chat window.
@@ -48,6 +49,7 @@ import games.strategy.util.TimeManager;
  * We can change the chat we are connected to using the setChat(...) method.
  * </p>
  */
+@Log
 public class ChatMessagePanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = 118727200083595226L;
   private final ChatFloodControl floodControl = new ChatFloodControl();
@@ -276,7 +278,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       // don't let the chat get too big
       trimLines(doc, MAX_LINES);
     } catch (final BadLocationException e) {
-      ClientLogger.logError("There was an Error whilst trying to add the Chat Message \"" + message + "\" sent by "
+      log.log(Level.SEVERE, "There was an Error whilst trying to add the Chat Message \"" + message + "\" sent by "
           + from + " at " + time, e);
     }
   }
@@ -286,7 +288,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       final Document doc = text.getDocument();
       doc.insertString(doc.getLength(), message + "\n", normal);
     } catch (final BadLocationException e) {
-      ClientLogger.logError("There was an Error whilst trying to add the Server Message \"" + message + "\"", e);
+      log.log(Level.SEVERE, "There was an Error whilst trying to add the Server Message \"" + message + "\"", e);
     }
   }
 
@@ -299,7 +301,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         // don't let the chat get too big
         trimLines(doc, MAX_LINES);
       } catch (final BadLocationException e) {
-        ClientLogger.logError("There was an Error whilst trying to add the Status Message \"" + message + "\"", e);
+        log.log(Level.SEVERE, "There was an Error whilst trying to add the Status Message \"" + message + "\"", e);
       }
     });
   }
@@ -324,7 +326,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         }
       }
     } catch (final BadLocationException e) {
-      ClientLogger.logError("There was an Error whilst trying trimming Chat", e);
+      log.log(Level.SEVERE, "There was an Error whilst trying trimming Chat", e);
     }
   }
 

@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -16,7 +17,6 @@ import java.util.zip.ZipFile;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
@@ -24,10 +24,12 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * The model for a {@link GameChooser} dialog.
  */
+@Log
 public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
@@ -144,9 +146,9 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     try {
       return Optional.of(createEntry(uri));
     } catch (final EngineVersionException e) {
-      ClientLogger.logQuietly("Engine version problem:" + uri, e);
+      log.log(Level.SEVERE, "Engine version problem:" + uri, e);
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Could not parse: " + uri, e);
+      log.log(Level.SEVERE, "Could not parse: " + uri, e);
     }
     return Optional.empty();
   }

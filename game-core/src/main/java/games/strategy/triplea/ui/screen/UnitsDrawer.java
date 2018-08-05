@@ -11,9 +11,9 @@ import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -28,7 +28,9 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
+@Log
 public class UnitsDrawer implements IDrawable {
   private final int count;
   private final String unitType;
@@ -95,7 +97,7 @@ public class UnitsDrawer implements IDrawable {
         uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 
     if (!img.isPresent() && !uiContext.isShutDown()) {
-      ClientLogger.logError("MISSING IMAGE (this unit or image will be invisible): " + type);
+      log.log(Level.SEVERE, "MISSING IMAGE (this unit or image will be invisible): " + type);
     }
 
     if (img.isPresent() && enabledFlags) {

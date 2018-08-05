@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -160,10 +162,9 @@ public class UndoableMove extends AbstractUndoableMove {
    */
   public void initializeDependencies(final List<UndoableMove> undoableMoves) {
     for (final UndoableMove other : undoableMoves) {
-      if (other == null) {
-        System.err.println(undoableMoves);
-        throw new IllegalStateException("other should not be null");
-      }
+      // TODO: verify we do not depend on IllegalStateException here before converting this to a checkNotNull.
+      Preconditions.checkState(other != null, "other should not be null: " + undoableMoves);
+
       // if the other move has moves that depend on this
       if (!CollectionUtils.intersection(other.getUnits(), this.getUnits()).isEmpty()
           // if the other move has transports that we are loading

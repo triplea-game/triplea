@@ -34,8 +34,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -549,7 +547,7 @@ public class MapPanel extends ImageScrollerLargeView {
     int y = model.getY();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
-    final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(MapPanel.class.getName()), Level.FINER, "Paint");
+    final Stopwatch stopWatch = new Stopwatch("Paint");
     // make sure we use the same data for the entire paint
     final GameData data = gameData;
     // if the map fits on screen, don't draw any overlap

@@ -28,7 +28,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -200,9 +199,10 @@ public class BattlePanel extends ActionPanel {
       Interruptibles.sleep(count);
       // something is wrong, we shouldnt have to wait this long
       if (count > 200) {
-        ErrorConsole.getConsole().dumpStacks();
+
         new IllegalStateException(
-            "battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed).printStackTrace();
+            "battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed)
+            .printStackTrace();
         return false;
       }
       displayed = currentBattleDisplayed;
@@ -364,7 +364,6 @@ public class BattlePanel extends ActionPanel {
 
     // something is wong
     if (!ensureBattleIsDisplayed(battleId)) {
-      System.out.println("Battle Not Displayed?? " + message);
       return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
     }
     return battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties,

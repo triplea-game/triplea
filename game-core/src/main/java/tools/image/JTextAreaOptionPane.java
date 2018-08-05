@@ -13,11 +13,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import tools.util.ToolLogger;
+import lombok.extern.java.Log;
 
 /**
  * A text area that can show updates scrolling by.
  */
+@Log
 class JTextAreaOptionPane {
   private final JTextArea editor = new JTextArea();
   private final JFrame windowFrame = new JFrame();
@@ -51,7 +52,7 @@ class JTextAreaOptionPane {
     // editor.setContentType("text/html");
     editor.setText(initialEditorText);
     if (this.logToSystemOut) {
-      ToolLogger.info(initialEditorText);
+      log.info(initialEditorText);
     }
     editor.setCaretPosition(0);
     windowFrame.setPreferredSize(new Dimension(editorSizeX, editorSizeY));
@@ -90,7 +91,7 @@ class JTextAreaOptionPane {
 
   void append(final String text) {
     if (logToSystemOut) {
-      ToolLogger.info(text);
+      log.info(text);
     }
     editor.append(text);
     editor.setCaretPosition(editor.getText().length());

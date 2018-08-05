@@ -1,5 +1,7 @@
 package games.strategy.triplea.player;
 
+import java.util.logging.Level;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -7,11 +9,13 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.util.Interruptibles;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.java.Log;
 
 /**
  * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate
  * using a change).
  */
+@Log
 @ToString(exclude = "playerBridge")
 public abstract class AbstractBasePlayer implements IGamePlayer {
 
@@ -54,20 +58,17 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
       // it.
       String bridgeStep = getPlayerBridge().getStepName();
       int i = 0;
-      boolean shownErrorMessage = false;
       while (!stepName.equals(bridgeStep)) {
         Interruptibles.sleep(100);
         i++;
-        if (i > 30 && !shownErrorMessage) {
-          System.out.println("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
+        if (i == 30) {
+          log.log(Level.SEVERE, "Start step: " + stepName + " does not match player bridge step: " + bridgeStep
               + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerId().getName()
               + ", Game: " + getGameData().getGameName()
               + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
-          shownErrorMessage = true;
         }
-        // TODO: what is the right amount of time to wait before we give up?
         if (i > 310) {
-          System.err.println("Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
+          log.log(Level.SEVERE, "Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
               + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very "
               + "soon. Player Bridge GameOver=" + getPlayerBridge().isGameOver()
               + ", PlayerID: " + getPlayerId().getName() + ", Game: " + getGameData().getGameName());

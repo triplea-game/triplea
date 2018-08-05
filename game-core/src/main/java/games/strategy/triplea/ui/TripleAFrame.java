@@ -43,6 +43,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -79,7 +80,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
@@ -164,10 +164,12 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.LocalizeHtml;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 /**
  * Main frame for the triple a game.
  */
+@Log
 public class TripleAFrame extends MainGameFrame {
   private static final long serialVersionUID = 7640069668264418976L;
   private final GameData data;
@@ -1531,7 +1533,7 @@ public class TripleAFrame extends MainGameFrame {
           }
         });
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Failed to process game data change", e);
+        log.log(Level.SEVERE, "Failed to process game data change", e);
       }
     }
   };
@@ -1803,7 +1805,7 @@ public class TripleAFrame extends MainGameFrame {
                 JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved",
                     JOptionPane.INFORMATION_MESSAGE);
               } catch (final IOException e) {
-                ClientLogger.logQuietly("Failed to save game: " + f.getAbsolutePath(), e);
+                log.log(Level.SEVERE, "Failed to save game: " + f.getAbsolutePath(), e);
               }
             }
           } finally {

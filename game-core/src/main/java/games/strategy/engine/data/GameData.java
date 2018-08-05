@@ -144,26 +144,9 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Print an exception report if we are testing the lock is held, and
-   * do not currently hold the read or write lock.
-   */
-  private void ensureLockHeld() {
-    if (!testLockIsHeld) {
-      return;
-    }
-    if (readWriteLockMissing()) {
-      return;
-    }
-    if (!lockUtil.isLockHeld(readWriteLock.readLock()) && !lockUtil.isLockHeld(readWriteLock.writeLock())) {
-      new Exception("Lock not held").printStackTrace(System.out);
-    }
-  }
-
-  /**
    * Returns a collection of all units in the game.
    */
   public UnitsList getUnits() {
-    // ensureLockHeld();
     return unitsList;
   }
 
@@ -178,7 +161,6 @@ public class GameData implements Serializable {
    * Returns list of resources available in the game.
    */
   public ResourceList getResourceList() {
-    ensureLockHeld();
     return resourceList;
   }
 
@@ -186,7 +168,6 @@ public class GameData implements Serializable {
    * Returns list of production Frontiers for this game.
    */
   public ProductionFrontierList getProductionFrontierList() {
-    ensureLockHeld();
     return productionFrontierList;
   }
 
@@ -194,7 +175,6 @@ public class GameData implements Serializable {
    * Returns list of Production Rules for the game.
    */
   public ProductionRuleList getProductionRuleList() {
-    ensureLockHeld();
     return productionRuleList;
   }
 
@@ -209,7 +189,6 @@ public class GameData implements Serializable {
    * Returns the list of production Frontiers for this game.
    */
   public RepairFrontierList getRepairFrontierList() {
-    ensureLockHeld();
     return repairFrontierList;
   }
 
@@ -217,7 +196,6 @@ public class GameData implements Serializable {
    * Returns the list of Production Rules for the game.
    */
   public RepairRuleList getRepairRuleList() {
-    ensureLockHeld();
     return repairRuleList;
   }
 
@@ -225,7 +203,6 @@ public class GameData implements Serializable {
    * Returns the Alliance Tracker for the game.
    */
   public AllianceTracker getAllianceTracker() {
-    ensureLockHeld();
     return alliances;
   }
 
@@ -246,22 +223,18 @@ public class GameData implements Serializable {
   }
 
   public GameSequence getSequence() {
-    ensureLockHeld();
     return sequence;
   }
 
   public UnitTypeList getUnitTypeList() {
-    ensureLockHeld();
     return unitTypeList;
   }
 
   public DelegateList getDelegateList() {
-    ensureLockHeld();
     return delegateList;
   }
 
   public UnitHolder getUnitHolder(final String name, final String type) {
-    ensureLockHeld();
     if (type.equals(UnitHolder.PLAYER)) {
       return playerList.getPlayerId(name);
     } else if (type.equals(UnitHolder.TERRITORY)) {
@@ -443,7 +416,6 @@ public class GameData implements Serializable {
    * Null player / Neutral) and the SelfRelation (Relation with yourself) all other relations are map designer defined.
    */
   public RelationshipTypeList getRelationshipTypeList() {
-    ensureLockHeld();
     return relationshipTypeList;
   }
 
@@ -451,7 +423,6 @@ public class GameData implements Serializable {
    * Returns a tracker which tracks all current relationships that exist between all players.
    */
   public RelationshipTracker getRelationshipTracker() {
-    ensureLockHeld();
     return relationships;
   }
 

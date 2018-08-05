@@ -5,22 +5,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.util.FileNameUtils;
+import lombok.extern.java.Log;
 
 /**
  * Loads objective text from objectives.properties.
  */
-public class UnitIconProperties extends PropertyFile {
+@Log
+public final class UnitIconProperties extends PropertyFile {
 
   private static final String PROPERTY_FILE = "unit_icons.properties";
   private static Map<ICondition, Boolean> conditionsStatus = new HashMap<>();
 
-  protected UnitIconProperties(final GameData data) {
+  private UnitIconProperties(final GameData data) {
     super(PROPERTY_FILE);
     final String gameName =
         FileNameUtils.replaceIllegalCharacters(data.getGameName(), '_').replaceAll(" ", "_").concat(".");
@@ -30,7 +33,7 @@ public class UnitIconProperties extends PropertyFile {
       }
       try {
         final String[] unitInfoAndCondition = key.split(";");
-        final String[] unitInfo = unitInfoAndCondition[0].split("\\.");
+        final String[] unitInfo = unitInfoAndCondition[0].split("\\.", 3);
         if (unitInfoAndCondition.length != 2) {
           continue;
         }
@@ -39,9 +42,12 @@ public class UnitIconProperties extends PropertyFile {
         if (condition != null) {
           conditionsStatus.put(condition, false);
         }
-      } catch (final Exception e) {
-        System.err.println("unit_icons.properties keys must be: <game_name>.<player>.<unit_type>;attachmentName OR "
-            + "if always true: <game_name>.<player>.<unit_type>");
+      } catch (final RuntimeException e) {
+        log.log(
+            Level.SEVERE,
+            "unit_icons.properties keys must be: <game_name>.<player>.<unit_type>;attachmentName OR "
+                + "if always true: <game_name>.<player>.<unit_type>",
+            e);
       }
     }
     conditionsStatus = getTestedConditions(data);
@@ -74,9 +80,12 @@ public class UnitIconProperties extends PropertyFile {
             imagePaths.add(properties.get(key).toString());
           }
         }
-      } catch (final Exception e) {
-        System.err.println("unit_icons.properties keys must be: <game_name>.<player>.<unit_type>;attachmentName OR "
-            + "if always true: <game_name>.<player>.<unit_type>");
+      } catch (final RuntimeException e) {
+        log.log(
+            Level.SEVERE,
+            "unit_icons.properties keys must be: <game_name>.<player>.<unit_type>;attachmentName OR "
+            + "if always true: <game_name>.<player>.<unit_type>",
+            e);
       }
     }
     return imagePaths;

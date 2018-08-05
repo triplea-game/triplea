@@ -2,19 +2,21 @@ package games.strategy.engine.framework.map.download;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.swing.SwingUtilities;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
+import lombok.extern.java.Log;
 
 /**
  * Keeps track of the state for a file download from a URL.
  * This class notifies listeners as appropriate while download state changes.
  */
+@Log
 final class DownloadFile {
   @VisibleForTesting
   enum DownloadState {
@@ -59,7 +61,7 @@ final class DownloadFile {
       try {
         DownloadUtils.downloadToFile(download.getUrl(), tempFile);
       } catch (final IOException e) {
-        ClientLogger.logError("Failed to download: " + download.getUrl(), e);
+        log.log(Level.SEVERE, "Failed to download: " + download.getUrl(), e);
         return;
       } finally {
         watcher.stop();
@@ -74,7 +76,7 @@ final class DownloadFile {
       try {
         Files.move(tempFile, download.getInstallLocation());
       } catch (final IOException e) {
-        ClientLogger.logError(
+        log.log(Level.SEVERE, 
             String.format("Failed to move downloaded file (%s) to: %s", tempFile, download.getInstallLocation()),
             e);
         return;

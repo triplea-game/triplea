@@ -6,19 +6,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
 /** Controller for in-game map download actions. */
+@Log
 public class MapDownloadController {
 
   public MapDownloadController() {}
@@ -45,7 +47,7 @@ public class MapDownloadController {
         return true;
       }
     } catch (final Exception e) {
-      ClientLogger.logError("Error while checking for map updates", e);
+      log.log(Level.SEVERE, "Error while checking for map updates", e);
     }
     return false;
   }

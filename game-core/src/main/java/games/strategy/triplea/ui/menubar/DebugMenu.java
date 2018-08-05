@@ -5,11 +5,9 @@ import java.util.Set;
 
 import javax.swing.JMenu;
 
-import games.strategy.debug.DebugUtils;
-import games.strategy.debug.ErrorConsole;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.performance.EnablePerformanceLoggingCheckBox;
 import games.strategy.triplea.ai.pro.ProAi;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.ui.SwingAction;
 
@@ -28,10 +26,8 @@ final class DebugMenu extends JMenu {
       add(SwingAction.of("Show Hard AI Logs", e -> ProAi.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
     }
 
-    add(new EnablePerformanceLoggingCheckBox());
     add(SwingAction.of("Show Console", e -> {
-      ErrorConsole.showConsole();
-      ErrorConsole.getConsole().append(DebugUtils.getMemory());
+      ClientSetting.SHOW_CONSOLE.saveAndFlush("true");
     })).setMnemonic(KeyEvent.VK_C);
   }
 }

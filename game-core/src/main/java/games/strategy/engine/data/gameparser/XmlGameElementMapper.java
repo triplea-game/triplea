@@ -3,10 +3,10 @@ package games.strategy.engine.data.gameparser;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import com.google.common.collect.ImmutableMap;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
@@ -45,6 +45,7 @@ import games.strategy.triplea.delegate.TechActivationDelegate;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.UserActionDelegate;
 import games.strategy.twoIfBySea.delegate.InitDelegate;
+import lombok.extern.java.Log;
 
 /**
  * This class creates objects referred to by game XMLs via the 'javaClass' property. For example:
@@ -64,6 +65,7 @@ import games.strategy.twoIfBySea.delegate.InitDelegate;
  * parameters.
  * </p>
  */
+@Log
 public class XmlGameElementMapper {
   /* Maps a name (given as an XML attribute value) to a supplier function that creates the corresponding delegate */
   private final ImmutableMap<String, Supplier<IDelegate>> delegateMap =
@@ -165,16 +167,11 @@ public class XmlGameElementMapper {
       return Optional.empty();
     }
 
-    if (className.startsWith("games.strategy.twoIfBySea.delegate.")) {
-      ClientLogger.logQuietly("Use of twoIfBySea delegates is discouraged "
-          + "and will be removed in a future version of TripleA.");
-    }
-
     return Optional.of(delegateMap.get(bareName).get());
   }
 
   private static void handleMissingObjectError(final String typeLabel, final String value) {
-    ClientLogger.logError("Could not find " + typeLabel + " '" + value + "'. This is can be a map configuration"
+    log.log(Level.SEVERE, "Could not find " + typeLabel + " '" + value + "'. This is can be a map configuration"
         + " problem, and would need to be fixed in the map XML. Or, the map XML is using a feature from a newer game"
         + " engine version, and you will need to install the latest TripleA for it to be enabled. Meanwhile, the"
         + " functionality provided by this " + typeLabel + " will not available.");

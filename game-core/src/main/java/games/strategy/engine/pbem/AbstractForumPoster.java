@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Objects;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
+import lombok.extern.java.Log;
 
 /**
  * Abstract Forum poster that takes care of storing the username, password, and other common properties.
@@ -25,6 +26,7 @@ import games.strategy.security.CredentialManagerException;
  * credentials. The persistent password is used when the object is stored in the local cache.
  * </p>
  */
+@Log
 public abstract class AbstractForumPoster implements IForumPoster {
   /**
    * The value assigned to a persistent credential that indicates it was cleared and the associated transient credential
@@ -65,7 +67,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
         m_username = credentialManager.protect(m_username);
         m_password = credentialManager.protect(m_password);
       } catch (final CredentialManagerException e) {
-        ClientLogger.logQuietly("failed to protect PBF credentials", e);
+        log.log(Level.SEVERE, "failed to protect PBF credentials", e);
         m_username = "";
         m_password = "";
       }
@@ -85,7 +87,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
         m_username = credentialManager.unprotectToString(m_username);
         m_password = credentialManager.unprotectToString(m_password);
       } catch (final CredentialManagerException e) {
-        ClientLogger.logQuietly("failed to unprotect PBF credentials", e);
+        log.log(Level.SEVERE, "failed to unprotect PBF credentials", e);
         m_username = "";
         m_password = "";
       }
