@@ -91,7 +91,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
         // site responds with 200, and a refresh header
         final Header refreshHeader = response.getFirstHeader("Refresh");
         if (refreshHeader == null) {
-          throw new Exception("Missing refresh header after login");
+          throw new Exception("Login failed. Please check your username and password and try again.");
         }
         // refresh: 0; URL=http://...
         final String value = refreshHeader.getValue();

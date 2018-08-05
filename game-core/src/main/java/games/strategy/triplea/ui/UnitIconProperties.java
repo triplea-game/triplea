@@ -33,7 +33,7 @@ public final class UnitIconProperties extends PropertyFile {
       }
       try {
         final String[] unitInfoAndCondition = key.split(";");
-        final String[] unitInfo = unitInfoAndCondition[0].split("\\.");
+        final String[] unitInfo = unitInfoAndCondition[0].split("\\.", 3);
         if (unitInfoAndCondition.length != 2) {
           continue;
         }
