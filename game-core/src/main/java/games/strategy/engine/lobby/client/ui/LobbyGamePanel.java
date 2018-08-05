@@ -76,7 +76,7 @@ class LobbyGamePanel extends JPanel {
         .setPreferredWidth(12);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
         .setPreferredWidth(32);
-    if(isAdmin()) {
+    if (isAdmin()) {
       gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
           .setPreferredWidth(55);
     }

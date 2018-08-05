@@ -125,10 +125,10 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   @Override
   public int getColumnCount() {
-    int hiddenColumns = admin ? 0 : -1;
+    final int adminHiddenColumns = admin ? 0 : -1;
     // -1 so we don't display the guid
     // -1 again if we are not admin to hide the 'started' column
-    return Column.values().length - 1 + hiddenColumns;
+    return Column.values().length - 1 + adminHiddenColumns;
   }
 
   @Override
