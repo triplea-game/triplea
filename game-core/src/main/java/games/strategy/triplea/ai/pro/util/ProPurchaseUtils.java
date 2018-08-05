@@ -91,14 +91,15 @@ public class ProPurchaseUtils {
     }
     final IDelegateBridge bridge = new ProDummyDelegateBridge(ProData.getProAi(), player, data);
     placeDelegate.setDelegateBridgeAndPlayer(bridge);
-    final String s;
-    if (t.isWater() && Properties.getProduceFightersOnCarriers(data) && units.stream().anyMatch(Matches.unitIsAir())
-        && units.stream().anyMatch(Matches.unitIsCarrier())) {
-      s = placeDelegate.canUnitsBePlaced(t, CollectionUtils.getMatches(units, Matches.unitIsNotAir()), player);
-    } else {
-      s = placeDelegate.canUnitsBePlaced(t, units, player);
-    }
-    return s == null;
+    return isPlacingFightersOnNewCarriers(t, units)
+        ? placeDelegate.canUnitsBePlaced(t, CollectionUtils.getMatches(units, Matches.unitIsNotAir()), player) == null
+        : placeDelegate.canUnitsBePlaced(t, units, player) == null;
+  }
+
+  private static boolean isPlacingFightersOnNewCarriers(final Territory t, final List<Unit> units) {
+    return t.isWater() && Properties.getProduceFightersOnCarriers(t.getData())
+        && units.stream().anyMatch(Matches.unitIsAir())
+        && units.stream().anyMatch(Matches.unitIsCarrier());
   }
 
   public static List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerID player, final GameData data,
