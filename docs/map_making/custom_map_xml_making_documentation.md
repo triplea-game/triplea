@@ -1,14 +1,6 @@
 
-<h2>Developer Documentation :: Quick Nav</h2>
+<h2>Map XML and Custom Maps Documentation :: Quick Nav</h2>
 <ul>
-	<li>
-		<b>4.0</b> <a href="#sec_4">Network Configuration</a>
-		<ul>
-			<li><b>4.1</b> <a href="#sec_4.1">Acquiring the IP Address</a></li>
-			<li><b>4.2</b> <a href="#sec_4.2">Firewall Configuration</a></li>
-			<li><b>4.3</b> <a href="#sec_4.3">Routers and Port-Forwarding</a></li>
-		</ul>
-	</li>
 	<li>
 		<b>5.0</b> <a href="#sec_5">Creating Custom Games</a>
 		<ul>
@@ -60,155 +52,84 @@
 	</li>
 </ul>
 <hr>
-<h2><a id="sec_4">4.0</a> Network Configuration</h2>
+<br>
+<h2><a id="sec_3.1">3.1</a> How TripleA Locates its Root Directory</h2>
 <p>
-	TripleA is capable of working through a network and thus some users may need
-	to do some extra configuration. This is intended for users who have firewalls
-	, routers, and other similar items that filter or re-route network traffic.
+	It may be of some interest to some developers to know exactly how TripleA
+	locates where its own root directory is. This will help those who like to
+	put the start-up scripts in different directories.
 </p>
 <p>
-	Sometimes some users may experience difficulties getting TripleA to act as a
-	game server in order to host games. This is usually due to one of these three
-	circumstances:
-</p>
-<ul>
-	<li>Local firewall blocking incoming connections to TripleA</li>
-	<li>Remote firewall blocking incoming connections to the computer hosting TripleA</li>
-	<li>Port-Forwarding not properly configured on a local router</li>
-</ul>
-<p>
-	Most users have difficulties with the above and will usually not find
-	a problem getting TripleA to act as a client. Normally firewalls will allow
-	applications to make outbound connections, and disallow un-authorized inbound
-	connections to ports not specified in their rules list (or allow list.)
-</p>
-<h2><a id="sec_4.1">4.1</a> Acquiring the IP Address</h2>
-<p>
-	In the past TripleA had some problems trying to acquire the IP address on machines
-	that had aDSL and Cable modems as well as a regular dial-up modem. Sometimes it would
-	only get the loop-back address (127.0.0.1). However this has been fixed in later
-	versions of TripleA.
-</p>
-<p>
-	However, there still remains a slight problem with the detection of IP addresses.
-	TripleA is currently (as of version 0.6.0 and below) fitted to acquire its IP address
-	from a network interface located on the local machine it is running off from. It has
-	been known that when a machine is behind a router, TripleA would always select the
-	local LAN IP address of the machine instead of the actual internet address that has been
-	assigned to the router.
-</p>
-<p>
-	A router will have the &quot;real&quot; IP address that others will see on-line. The
-	router communicates with the local machines it is connected to, those machines have
-	locally assigned IP address such as 192.168.0.2 for example. TripleA will, more often
-	than not, acquire that IP address and display it when the user starts a server game.
-	Though, this does not mean that all is lost. If the router is properly configured to
-	forward packets to the local machine running TripleA then all is fine. TripleA uses
-	port 3300 when acting as a server. If the router is forwarding packets going to port
-	3300 to 192.168.0.2 then the user has a successful server. Leaving aside that TripleA
-	is displaying the wrong IP address, TripleA is attaching itself to the correct network
-	interface.
-</p>
-<p>
-	In essence, one can say that this is just a matter of TripleA finding out what IP address
-	the router is using, in order to display it in the game so the user can advertize it.
-</p>
-<p>
-	TripleA uses an IP Finding algorithm that collects all network interfaces on the computer
-	it is running from and itterates through them to find a suitable IP address. The source
-	code below will demonstrate this.
+	The search algorithm works from the inside out and is located in the
+	<b>GameRunner.java</b> source file. It will start from the package location
+	of GameRunner.class and move up one level until it has reached the root
+	package. Once there, that will be TripleA's root directory. It then checks
+	to make sure that the root directory it found actually exists, if not then
+	return the current user's home directory and display an error message.<br>
+	<br>
+	This way the root directory doesn't have to be hard coded.
 </p>
 <table class="thickTable">
 	<tr>
-		<td><span style="font-weight: bold; font-size: small;">File Name</span></td>
-		<td><span style="font-size: small;">IPFinder.java</span></td>
+		<td><span style="font-weight: bold; font-size: small;">File Name</span>
+		</td>
+		<td><span style="font-size: small;">GameRunner.java</span></td>
 	</tr>
-	<tr>
+		<tr>
 		<td><span style="font-weight: bold; font-size: small;">Package</span></td>
-		<td><span style="font-size: small;">games.strategy.net</span></td>
+		<td><span style="font-size: small;">games.strategy.engine.framework</span></td>
 	</tr>
 	<tr>
 		<td><span style="font-weight: bold; font-size: small;">Method Header</span></td>
-		<td><span style="font-size: small;">public static InetAddress findInetAddress()</span></td>
+		<td><span style="font-size: small;">public static File getRootFolder()</span></td>
 	</tr>
 </table>
-
 <table class="thickTable">
 	<tr>
-		<td><pre><code>/**
- *	We iterate through an enumeration of network interfaces on the machine
- *	and pick the first IP that is not a loopback and not a link local.
- *	In the case of IRIX computers connected on a LAN through a central
- *	gateway running java off a telnet session will result in a null
- *	network interface (patched below).
- *
- *	@exception java.net.SocketException       required by InetAddress
- *	@exception java.net.UnknownHostException  required for getLocalHost()
- *
- *	@return    java.net.InetAddress           the ip address to use
+		<td>
+			<pre><code>/**
+ * Get the root folder for the application
  */
-public static InetAddress findInetAddress() throws SocketException, UnknownHostException {
-	Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
-	if(enum1 == null){//irix patch
-		InetAddress ip1 = InetAddress.getLocalHost();
-		return ip1;
-	} else{
-		while (enum1.hasMoreElements()){
-			NetworkInterface netface = (NetworkInterface)enum1.nextElement();
-			Enumeration enum2 = netface.getInetAddresses();
-
-			while (enum2.hasMoreElements()){
-				InetAddress ip2 = (InetAddress) enum2.nextElement();
-				if(!ip2.isLoopbackAddress() &amp;&amp; !ip2.isLinkLocalAddress()){
-					return ip2;
-				}
-			}
-		}
-		//If all else fails we return the localhost
-		InetAddress ip3 = InetAddress.getLocalHost();
-		return ip3;
+public static File getRootFolder(){
+	//we know that the class file is in a directory one above the games root folder
+	//so navigate up from the class file, and we have root.
+	//find the url of our class
+	URL url = GameRunner.class.getResource("GameRunner.class");
+	//we want to move up 1 directory for each package
+	int moveUpCount = GameRunner.class.getName().split("\\.").length + 1;
+	String fileName = url.getFile();
+	try {
+		//deal with spaces in the file name which would be url encoded
+		fileName  = URLDecoder.decode(fileName, "UTF-8");
+	} catch (UnsupportedEncodingException e){
+		e.printStackTrace();
 	}
-}</code></pre></td>
+	//we are in a jar file
+	if(fileName.indexOf("triplea.jar!") != -1){
+		String subString = fileName.substring("file:/".length()  - ( isWindows() ? 0 : 1)  , fileName.indexOf("triplea.jar!") -1);
+		File f = new File(subString).getParentFile();
+		if(!f.exists()){
+			throw new IllegalStateException("File not found:" + f);
+		}
+		return f;
+	} else{
+		File f = new File(fileName);
+		for(int i = 0; i &lt; moveUpCount; i++){
+			f = f.getParentFile();
+		}
+		if(!f.exists()) {
+			System.err.println("Could not find root folder, does  not exist:" + f);
+			return new File(System.getProperties().getProperty("user.dir"));
+		}
+		return f;
+	}
+}</code></pre>
+		</td>
 	</tr>
 </table>
-<br>
-<p>
-	TripleA could detect the router's IP if it establishes a socket connection
-	to some computer on the Internet. It has been decided not to use this method
-	as it yields suspicious activity. A user wondering why TripleA is making a
-	connection to www.sourceforge.net (for example) every time they start a server.
-</p>
-<h2><a id="sec_4.2">4.2</a> Firewall Configuration</h2>
-<p>
-	A firewall could be the reason why TripleA is not being able to successfully
-	connect to another computer. Many systems now have firewalls acting as a security
-	barrier that filters network traffic to and from the computer. It is sometimes
-	needed that the user running TripleA needs to configure their firewall to allow
-	TripleA to communicate to the Internet.
-</p>
-<p>
-	TripleA can be set to use any port, but the default port it uses is 3300. The
-	user will need to configure their firewall to allow outbound and inbound
-	connections originating on port 3300 only. If asked to describe what protocol
-	to allow, choose TCP/IP &amp; UDP.
-</p>
-<p>
-	Some operating systems such as Microsoft Windows might be running two firewalls
-	at the same time. This is mainly due to Service Pack 2 enabling the internal Windows
-	firewall by default. Users must be aware of this and either disable the internal
-	firewall (only if they have another firewall also running) or configure it so that
-	it allows TripleA to connect to the Internet via port 3300.
-</p>
-<h2><a id="sec_4.3">4.3</a> Routers and Port-Forwarding</h2>
-<p>
-	A router needs its port-forwarding configured to forwards all TCP/IP &amp; UDP
-	packets coming on port 3300 to whatever computer the user is using to run
-	TripleA on. Please see <a href="#sec_4.1">Section 4.1</a> for more information and a diagram.
-</p>
-<p>
-	It may not be needed to make these configuration changes for TripleA to connect
-	as a Client, but is definitely needed when TripleA is acting as a server.
-</p>
+
+
+
 <h2><a id="sec_5">5.0</a> Creating Custom Games</h2>
 <p>
 	There are three different ways of creating custom games in TripleA.
@@ -2073,5 +1994,5 @@ Options and Values for <b>result</b> tag:<br>
 <h4><a id="sec_6.6">6.6</a> Delegates</h4>
 <p>
   Delegates are the class which are responsible for a certain game step. They are supposed to be the only
-  place where changes are added and therefore the game data is actually changed.
+  place where game data is actually changed.
 </p>
