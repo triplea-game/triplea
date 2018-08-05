@@ -21,9 +21,9 @@ class LobbyGameTable extends JTable {
   LobbyGameTable(final LobbyGameTableModel gameTableModel) {
     super(gameTableModel);
     final TableRowSorter<LobbyGameTableModel> tableSorter = new TableRowSorter<>(gameTableModel);
-    // by default, sort newest first
-    final int dateColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
-    tableSorter.setSortKeys(Collections.singletonList(new RowSorter.SortKey(dateColumn, SortOrder.DESCENDING)));
+    // by default, sort by host
+    final int hostColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host);
+    tableSorter.setSortKeys(Collections.singletonList(new RowSorter.SortKey(hostColumn, SortOrder.DESCENDING)));
     setRowSorter(tableSorter);
   }
 

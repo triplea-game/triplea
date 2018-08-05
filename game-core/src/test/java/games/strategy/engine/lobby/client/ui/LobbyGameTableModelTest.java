@@ -57,7 +57,7 @@ public class LobbyGameTableModelTest {
     Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE))
         .thenReturn(mockLobbyController);
     Mockito.when(mockLobbyController.listGames()).thenReturn(fakeGameMap);
-    testObj = new LobbyGameTableModel(mockMessenger, mockChannelMessenger, mockRemoteMessenger);
+    testObj = new LobbyGameTableModel(true, mockMessenger, mockChannelMessenger, mockRemoteMessenger);
     Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
 
     MessageContext.setSenderNodeForThread(serverNode);

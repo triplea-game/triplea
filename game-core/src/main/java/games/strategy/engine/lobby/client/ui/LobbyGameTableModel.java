@@ -1,8 +1,8 @@
 package games.strategy.engine.lobby.client.ui;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,17 +18,17 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
-import games.strategy.util.TimeManager;
 import games.strategy.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
-    Host, Name, GV, Round, Players, P, B, EV, Started, Status, Comments, GUID
+    Host, Name, GV, Round, Players, P, Status, Comments, Started, GUID
   }
 
   private final IMessenger messenger;
+  private final boolean admin;
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
@@ -46,9 +46,10 @@ class LobbyGameTableModel extends AbstractTableModel {
     }
   };
 
-  LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
+  LobbyGameTableModel(final boolean admin, final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
     this.messenger = messenger;
+    this.admin = admin;
     channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
 
     final Map<GUID, GameDescription> games =
@@ -124,8 +125,10 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   @Override
   public int getColumnCount() {
+    final int adminHiddenColumns = admin ? 0 : -1;
     // -1 so we don't display the guid
-    return Column.values().length - 1;
+    // -1 again if we are not admin to hide the 'started' column
+    return Column.values().length - 1 + adminHiddenColumns;
   }
 
   @Override
@@ -148,12 +151,8 @@ class LobbyGameTableModel extends AbstractTableModel {
         return description.getPlayerCount();
       case P:
         return (description.getPassworded() ? "*" : "");
-      case B:
-        return description.isBot() ? "-" : "";
       case GV:
         return description.getGameVersion();
-      case EV:
-        return description.getEngineVersion();
       case Status:
         return description.getStatus();
       case Comments:
@@ -168,6 +167,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private static String formatBotStartTime(final Instant instant) {
-    return TimeManager.getLocalizedTimeWithoutSeconds(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
+    return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
+        .format(instant);
   }
 }
