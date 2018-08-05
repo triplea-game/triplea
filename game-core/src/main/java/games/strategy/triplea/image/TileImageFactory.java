@@ -1,7 +1,5 @@
 package games.strategy.triplea.image;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -39,7 +37,6 @@ public final class TileImageFactory {
   private static String showMapBlendMode;
   private static final String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
   private static float showMapBlendAlpha;
-  private final Composite composite = AlphaComposite.Src;
   private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
   private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
@@ -314,10 +311,6 @@ public final class TileImageFactory {
       imageCache.put(fileName, new SoftReference<>(image));
     }
     return image;
-  }
-
-  public Composite getComposite() {
-    return this.composite;
   }
 
   private static BufferedImage loadCompatibleImage(final URL resource) throws IOException {
