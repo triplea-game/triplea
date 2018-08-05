@@ -1,5 +1,8 @@
 package games.strategy.engine.lobby.client.ui;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +24,11 @@ class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
-    Host, Name, GV, Round, Players, P, Status, Comments, GUID
+    Host, Name, GV, Round, Players, P, Status, Comments, Started, GUID
   }
 
   private final IMessenger messenger;
+  private final boolean admin;
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
@@ -42,9 +46,10 @@ class LobbyGameTableModel extends AbstractTableModel {
     }
   };
 
-  LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger,
+  LobbyGameTableModel(final boolean admin, final IMessenger messenger, final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
     this.messenger = messenger;
+    this.admin = admin;
     channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
 
     final Map<GUID, GameDescription> games =
@@ -120,8 +125,10 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   @Override
   public int getColumnCount() {
+    int hiddenColumns = admin ? 0 : -1;
     // -1 so we don't display the guid
-    return Column.values().length - 1;
+    // -1 again if we are not admin to hide the 'started' column
+    return Column.values().length - 1 + hiddenColumns;
   }
 
   @Override
@@ -150,10 +157,17 @@ class LobbyGameTableModel extends AbstractTableModel {
         return description.getStatus();
       case Comments:
         return description.getComment();
+      case Started:
+        return formatBotStartTime(description.getStartDateTime());
       case GUID:
         return gameList.get(rowIndex).getFirst();
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
+  }
+
+  private static String formatBotStartTime(final Instant instant) {
+    return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
+        .format(instant);
   }
 }

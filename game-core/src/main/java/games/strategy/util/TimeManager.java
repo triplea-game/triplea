@@ -30,18 +30,6 @@ public class TimeManager {
   }
 
   /**
-   * Returns a String representing this {@link LocalDateTime}.
-   * Based on where you live this might be either for example 13:45 or 1:45pm.
-   *
-   * @param dateTime The LocalDateTime representing the desired time
-   * @return The formatted String
-   */
-  public static String getLocalizedTimeWithoutSeconds(final LocalDateTime dateTime) {
-    return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
-        .format(dateTime);
-  }
-
-  /**
    * Replacement for {@code Date.toString}.
    *
    * @param dateTime The DateTime which should be formatted

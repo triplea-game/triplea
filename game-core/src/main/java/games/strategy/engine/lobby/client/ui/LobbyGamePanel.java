@@ -55,7 +55,10 @@ class LobbyGamePanel extends JPanel {
     hostGame = new JButton("Host Game");
     joinGame = new JButton("Join Game");
     bootGame = new JButton("Boot Game");
-    gameTableModel = new LobbyGameTableModel(messengers.getMessenger(), messengers.getChannelMessenger(),
+    gameTableModel = new LobbyGameTableModel(
+        isAdmin(),
+        messengers.getMessenger(),
+        messengers.getChannelMessenger(),
         messengers.getRemoteMessenger());
 
     gameTable = new LobbyGameTable(gameTableModel);
@@ -73,6 +76,10 @@ class LobbyGamePanel extends JPanel {
         .setPreferredWidth(12);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
         .setPreferredWidth(32);
+    if(isAdmin()) {
+      gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
+          .setPreferredWidth(55);
+    }
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status))
         .setPreferredWidth(112);
     gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name))
