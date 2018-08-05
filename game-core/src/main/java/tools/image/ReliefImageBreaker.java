@@ -17,6 +17,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -26,9 +27,9 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
+import lombok.extern.java.Log;
 import tools.map.making.ImageIoCompletionWatcher;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
 /**
  * Utility for breaking an image into seperate smaller images.
@@ -38,6 +39,7 @@ import tools.util.ToolLogger;
  * territories, he must choose "N" at the prompt.
  * sea zone images directory must be renamed to "seazone
  */
+@Log
 public final class ReliefImageBreaker {
   private String location = null;
   private final JFrame observer = new JFrame();
@@ -58,7 +60,7 @@ public final class ReliefImageBreaker {
     try {
       new ReliefImageBreaker().runInternal(args);
     } catch (final IOException e) {
-      ToolLogger.error("failed to run relief image breaker", e);
+      log.log(Level.SEVERE, "failed to run relief image breaker", e);
     }
   }
 
@@ -76,8 +78,8 @@ public final class ReliefImageBreaker {
       mapFolderLocation = locationSelection.getFile().getParentFile();
     }
     if (location == null) {
-      ToolLogger.info("You need to select a folder to save the tiles in for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("You need to select a folder to save the tiles in for this to work");
+      log.info("Shutting down");
       return;
     }
     createMaps();
@@ -91,8 +93,8 @@ public final class ReliefImageBreaker {
     // ask user to input image location
     final Image map = loadImage();
     if (map == null) {
-      ToolLogger.info("You need to select a map image for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("You need to select a map image for this to work");
+      log.info("Shutting down");
       return;
     }
     // ask user wether it is sea zone only or not
@@ -101,15 +103,15 @@ public final class ReliefImageBreaker {
     // ask user where the map is
     final String mapDir = getMapDirectory();
     if (mapDir == null || mapDir.isEmpty()) {
-      ToolLogger.info("You need to specify a map name for this to work");
-      ToolLogger.info("Shutting down");
+      log.info("You need to specify a map name for this to work");
+      log.info("Shutting down");
       return;
     }
     try {
       mapData = new MapData(mapDir);
       // files for the map.
     } catch (final NullPointerException e) {
-      ToolLogger.error("Bad data given or missing text files, shutting down", e);
+      log.log(Level.SEVERE, "Bad data given or missing text files, shutting down", e);
       return;
     }
     for (final String territoryName : mapData.getTerritories()) {
@@ -122,7 +124,7 @@ public final class ReliefImageBreaker {
       }
       processImage(territoryName, map);
     }
-    ToolLogger.info("All Finished!");
+    log.info("All Finished!");
   }
 
   /**
@@ -162,7 +164,7 @@ public final class ReliefImageBreaker {
    * @return The loaded image.
    */
   private Image loadImage() {
-    ToolLogger.info("Select the map");
+    log.info("Select the map");
     final String mapName = new FileOpen("Select The Map", mapFolderLocation, ".gif", ".png").getPathString();
     if (mapName != null) {
       final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -200,7 +202,7 @@ public final class ReliefImageBreaker {
       outFileName += ".png";
     }
     ImageIO.write(relief, "png", new File(outFileName));
-    ToolLogger.info("wrote " + outFileName);
+    log.info("wrote " + outFileName);
   }
 
   /**
@@ -245,10 +247,10 @@ public final class ReliefImageBreaker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolLogger.info("Could not find directory: " + value);
+        log.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolLogger.info("Only argument allowed is the map directory.");
+      log.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -258,7 +260,7 @@ public final class ReliefImageBreaker {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolLogger.info("Could not find directory: " + value);
+          log.info("Could not find directory: " + value);
         }
       }
     }

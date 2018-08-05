@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -48,10 +49,12 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 /**
  * Used to keep track of where battles have occurred.
  */
+@Log
 public class BattleTracker implements Serializable {
   private static final long serialVersionUID = 8806010984321554662L;
   // List of pending battles
@@ -546,7 +549,7 @@ public class BattleTracker implements Serializable {
         bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -puChargeReal + " "
             + MyFormatter.pluralize("PU", -puChargeReal) + " for violating " + territory.getName() + "s neutrality.");
       } else {
-        System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay "
+        log.log(Level.SEVERE, "Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay "
             + puChargeIdeal + ", but did not have enough PUs to pay! This is a bug.");
         bridge.getHistoryWriter()
             .addChildToEvent(id.getName() + " loses " + -puChargeReal + " " + MyFormatter.pluralize("PU", -puChargeReal)

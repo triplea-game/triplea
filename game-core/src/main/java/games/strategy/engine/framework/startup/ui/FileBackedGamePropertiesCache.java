@@ -12,15 +12,17 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.IEditableProperty;
+import lombok.extern.java.Log;
 
 /**
  * A game options cache that uses files to store the game options.
  */
+@Log
 public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   // chars illegal on windows (on linux/mac anything that is allowed on windows works fine)
   private static final char[] ILLEGAL_CHARS =
@@ -48,11 +50,11 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         cache.getParentFile().mkdirs();
       }
       try (OutputStream os = new FileOutputStream(cache);
-          ObjectOutputStream out = new ObjectOutputStream(os)) {
+          final ObjectOutputStream out = new ObjectOutputStream(os)) {
         out.writeObject(serializableMap);
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to write game properties to cache: " + cache.getAbsolutePath(), e);
     }
   }
 
@@ -64,7 +66,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
     try {
       if (cache.exists()) {
         try (InputStream is = new FileInputStream(cache);
-            ObjectInputStream in = new ObjectInputStream(is)) {
+            final ObjectInputStream in = new ObjectInputStream(is)) {
           final Map<String, Serializable> serializedMap = (Map<String, Serializable>) in.readObject();
           for (final IEditableProperty property : gameData.getProperties().getEditableProperties()) {
             final Serializable ser = serializedMap.get(property.getName());
@@ -75,7 +77,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         }
       }
     } catch (final IOException | ClassNotFoundException e) {
-      ClientLogger.logQuietly("Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to load game properties from cache: " + cache.getAbsolutePath(), e);
     }
   }
 

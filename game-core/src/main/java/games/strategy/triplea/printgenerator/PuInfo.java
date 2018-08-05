@@ -9,13 +9,15 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import lombok.extern.java.Log;
 
+@Log
 class PuInfo {
   private final Map<PlayerID, Map<Resource, Integer>> infoMap = new HashMap<>();
 
@@ -62,7 +64,7 @@ class PuInfo {
         resourceWriter.write("\r\n");
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to save print generation data general information", e);
+      log.log(Level.SEVERE, "Failed to save print generation data general information", e);
     }
   }
 }

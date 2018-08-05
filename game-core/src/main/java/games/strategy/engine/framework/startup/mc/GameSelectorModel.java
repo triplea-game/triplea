@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
+import java.util.logging.Level;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -19,11 +19,13 @@ import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.engine.framework.ui.GameChooserModel;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
+import lombok.extern.java.Log;
 
 /**
  * Model class that tracks the currently 'selected' game. This is the info that appears in the
  * game selector panel on the staging screens, eg: map, round, filename.
  */
+@Log
 public class GameSelectorModel extends Observable {
   private GameData gameData = null;
   private String gameName = "";
@@ -83,7 +85,7 @@ public class GameSelectorModel extends Observable {
         setGameData(newData);
       }
     } catch (final Exception e) {
-      ClientLogger.logError(
+      log.log(Level.SEVERE,
           String.format("Error loading game file: %s, %s",
               file.getAbsolutePath(), e.getMessage()),
           e);
@@ -97,7 +99,7 @@ public class GameSelectorModel extends Observable {
         return newData;
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to load game", e);
+      log.log(Level.SEVERE, "Failed to load game", e);
     }
     return null;
   }

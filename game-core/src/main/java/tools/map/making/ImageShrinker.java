@@ -8,6 +8,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -20,13 +21,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import lombok.extern.java.Log;
 import tools.image.FileOpen;
 import tools.util.ToolArguments;
-import tools.util.ToolLogger;
 
 /**
  * Takes an image and shrinks it. Used for making small images.
  */
+@Log
 public final class ImageShrinker {
   private File mapFolderLocation = null;
 
@@ -43,7 +45,7 @@ public final class ImageShrinker {
     try {
       new ImageShrinker().runInternal(args);
     } catch (final IOException e) {
-      ToolLogger.error("failed to run image shrinker", e);
+      log.log(Level.SEVERE, "failed to run image shrinker", e);
     }
   }
 
@@ -86,7 +88,7 @@ public final class ImageShrinker {
       encoder.setOutput(out);
       encoder.write(null, new IIOImage(thumbImage, null, null), param);
     }
-    ToolLogger.info("Image successfully written to " + file.getPath());
+    log.info("Image successfully written to " + file.getPath());
   }
 
   private static String getValue(final String arg) {
@@ -110,10 +112,10 @@ public final class ImageShrinker {
       if (mapFolder.exists()) {
         mapFolderLocation = mapFolder;
       } else {
-        ToolLogger.info("Could not find directory: " + value);
+        log.info("Could not find directory: " + value);
       }
     } else if (args.length > 1) {
-      ToolLogger.info("Only argument allowed is the map directory.");
+      log.info("Only argument allowed is the map directory.");
     }
     // might be set by -D
     if (mapFolderLocation == null || mapFolderLocation.length() < 1) {
@@ -123,7 +125,7 @@ public final class ImageShrinker {
         if (mapFolder.exists()) {
           mapFolderLocation = mapFolder;
         } else {
-          ToolLogger.info("Could not find directory: " + value);
+          log.info("Could not find directory: " + value);
         }
       }
     }

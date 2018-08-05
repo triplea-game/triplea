@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -22,10 +23,12 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 /**
  * For choosing territories and units for them, during RandomStartDelegate.
  */
+@Log
 public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private static final long serialVersionUID = -2672163347536778594L;
   private final TripleAFrame parent;
@@ -223,14 +226,14 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           setWidgetActivation();
         });
       } else {
-        System.err.println("Should not be able to select a territory outside of the selectTerritoryAction.");
+        log.log(Level.SEVERE, "Should not be able to select a territory outside of the selectTerritoryAction.");
       }
     }
 
     @Override
     public void mouseMoved(final Territory territory, final MouseDetails md) {
       if (!getActive()) {
-        System.err.println("Should not be able to select a territory when inactive.");
+        log.log(Level.SEVERE,"Should not be able to select a territory when inactive: " + territory);
         return;
       }
       if (territory != null) {

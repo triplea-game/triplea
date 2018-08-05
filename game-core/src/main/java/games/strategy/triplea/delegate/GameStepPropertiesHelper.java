@@ -2,17 +2,20 @@ package games.strategy.triplea.delegate;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Properties;
+import lombok.extern.java.Log;
 
 /**
  * A helper class for determining Game Step Properties.
  * These are things such as whether a move phase is combat move or noncombat move,
  * or whether we are going to post to a forum during this end turn phase.
  */
+@Log
 public class GameStepPropertiesHelper {
   /**
    * Indicates we skip posting the game summary and save to a forum or email.
@@ -47,7 +50,7 @@ public class GameStepPropertiesHelper {
       for (final String p : allowedPlayers.split(":")) {
         final PlayerID id = data.getPlayerList().getPlayerId(p);
         if (id == null) {
-          System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
+          log.log(Level.SEVERE, "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
               + GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS + " player: " + p + " DOES NOT EXIST");
         } else {
           allowedIDs.add(id);
@@ -216,8 +219,10 @@ public class GameStepPropertiesHelper {
         for (final String p : allowedPlayers.split(":")) {
           final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
-            System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PropertyKeys.COMBINED_TURNS + " player: " + p + " DOES NOT EXIST");
+            log.log(
+                Level.SEVERE,
+                "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
+                    + GameStep.PropertyKeys.COMBINED_TURNS + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }
@@ -291,8 +296,9 @@ public class GameStepPropertiesHelper {
         for (final String p : allowedPlayers.split(":")) {
           final PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
-            System.err.println("gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                + GameStep.PropertyKeys.REPAIR_PLAYERS + " player: " + p + " DOES NOT EXIST");
+            log.log(Level.SEVERE,
+                "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
+                    + GameStep.PropertyKeys.REPAIR_PLAYERS + " player: " + p + " DOES NOT EXIST");
           } else {
             allowedIDs.add(id);
           }

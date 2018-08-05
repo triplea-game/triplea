@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
@@ -15,10 +15,12 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
 /**
  * Fetches the lobby server properties from the remote Source of Truth.
  */
+@Log
 public final class LobbyServerPropertiesFetcher {
   private final LobbyLocationFileDownloader fileDownloader;
 
@@ -67,11 +69,6 @@ public final class LobbyServerPropertiesFetcher {
       return Optional.of(new LobbyServerProperties(testLobbyHostSetting.value(), testLobbyPortSetting.intValue()));
     }
 
-    if (testLobbyHostSetting.isSet() || testLobbyPortSetting.isSet()) {
-      ClientLogger.logQuietly("Ignoring lobby server override settings. "
-          + "You must override the lobby host and port settings simultaneously.");
-    }
-
     return Optional.empty();
   }
 
@@ -90,14 +87,14 @@ public final class LobbyServerPropertiesFetcher {
     } catch (final IOException e) {
 
       if (!ClientSetting.LOBBY_LAST_USED_HOST.isSet()) {
-        ClientLogger.logError(
+        log.log(Level.SEVERE,
             String.format("Failed to download lobby server property file from %s; "
                 + "Please verify your internet connection and try again.",
                 lobbyPropsUrl),
             e);
         throw new RuntimeException(e);
       }
-      ClientLogger.logQuietly("Encountered an error while downloading lobby property file: " + lobbyPropsUrl
+      log.log(Level.SEVERE, "Encountered an error while downloading lobby property file: " + lobbyPropsUrl
           + ", will attempt to connect to the lobby at its last known address. If this problem keeps happening, "
           + "you may be seeing network troubles, or the lobby may not be available.", e);
 

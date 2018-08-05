@@ -10,20 +10,22 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.util.LocalizeHtml;
+import lombok.extern.java.Log;
 
 /**
  * A prototype for units.
  */
+@Log
 public class UnitType extends NamedAttachable {
   private static final long serialVersionUID = 4885339076798905247L;
 
@@ -166,8 +168,7 @@ public class UnitType extends NamedAttachable {
               }
             }
           } catch (final Exception e) {
-            // TODO: does this cause excessive logging noise, or is the message useful?
-            ClientLogger.logQuietly("Quietly ignoring an exception while drawing unit type: " + ut + ", ", e);
+            log.log(Level.SEVERE, "Exception while drawing unit type: " + ut + ", ", e);
           }
         }
       }

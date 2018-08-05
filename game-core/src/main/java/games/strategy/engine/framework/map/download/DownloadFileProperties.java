@@ -8,13 +8,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.Properties;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
 /** Properties file used to know which map versions have been installed. */
+@Log
 class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
@@ -27,7 +29,7 @@ class DownloadFileProperties {
     try (InputStream fis = new FileInputStream(fromZip(zipFile))) {
       downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
-      ClientLogger.logError("Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
     }
     return downloadFileProperties;
   }
@@ -36,7 +38,7 @@ class DownloadFileProperties {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.props.store(fos, null);
     } catch (final IOException e) {
-      ClientLogger.logError("Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
     }
   }
 

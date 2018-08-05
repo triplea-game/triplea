@@ -117,12 +117,11 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "under development and potentially may not be working yet.\n"
           + "Restart to fully activate"),
 
-  SHOW_CONSOLE_ALWAYS(
-      "Show Console Always",
-      SettingType.TESTING,
-      ClientSetting.SHOW_CONSOLE_ALWAYS,
-      "Enable to show the console when any message is written to the console. "
-          + "Disable to show the console only when an error message is written to the console."),
+  SHOW_CONSOLE_BINDING(
+      "Show Console",
+      SettingType.GAME,
+      ClientSetting.SHOW_CONSOLE,
+      "Shows the TripleA console, closing the window will turn this setting off"),
 
   MAP_LIST_OVERRIDE_BINDING(
       "Map List Override",

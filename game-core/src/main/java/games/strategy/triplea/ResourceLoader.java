@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -22,17 +23,18 @@ import javax.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
 /**
  * Utility for managing where images and property files for maps and units should be loaded from.
  * Based on java Classloaders.
  */
+@Log
 public class ResourceLoader implements Closeable {
   private final URLClassLoader loader;
   public static final String RESOURCE_FOLDER = "assets";
@@ -68,7 +70,6 @@ public class ResourceLoader implements Closeable {
 
     dirs.add(resourceFolder.getAbsolutePath());
 
-    ClientLogger.logQuietly("Loading resources from the following paths: " + dirs);
     return new ResourceLoader(mapName, dirs.toArray(new String[0]));
   }
 
@@ -153,7 +154,6 @@ public class ResourceLoader implements Closeable {
       // if we get no results, we will eventually prompt the user to download the map
       return new ArrayList<>();
     }
-    ClientLogger.logQuietly("Loading map: " + mapName + ", from: " + match.get().getAbsolutePath());
 
     final List<String> paths = new ArrayList<>();
     paths.add(match.get().getAbsolutePath());
@@ -161,7 +161,6 @@ public class ResourceLoader implements Closeable {
     try (URLClassLoader url = new URLClassLoader(new URL[] {match.get().toURI().toURL()})) {
       final URL dependencesUrl = url.getResource("dependencies.txt");
       if (dependencesUrl != null) {
-
         final Optional<InputStream> inputStream = UrlStreams.openStream(dependencesUrl);
         if (inputStream.isPresent()) {
           try (InputStream stream = inputStream.get()) {
@@ -190,10 +189,10 @@ public class ResourceLoader implements Closeable {
     for (int i = 0; i < paths.length; i++) {
       final File f = new File(paths[i]);
       if (!f.exists()) {
-        ClientLogger.logQuietly(f + " does not exist");
+        log.log(Level.SEVERE, f + " does not exist");
       }
       if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
-        ClientLogger.logQuietly(f + " is not a directory or a zip file");
+        log.log(Level.SEVERE,f + " is not a directory or a zip file");
       }
       try {
         urls[i] = f.toURI().toURL();
@@ -213,7 +212,7 @@ public class ResourceLoader implements Closeable {
     try {
       loader.close();
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to close resource loader", e);
+      log.log(Level.SEVERE, "Failed to close resource loader", e);
     }
   }
 

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,7 +33,6 @@ import org.xml.sax.SAXParseException;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
@@ -56,10 +56,12 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
 /**
  * Parses a game XML file into a {@link GameData} domain object.
  */
+@Log
 public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
@@ -144,7 +146,7 @@ public final class GameParser {
     // SAX errors we need to show
     if (!errorsSax.isEmpty()) {
       for (final SAXParseException error : errorsSax) {
-        System.err.println(
+        log.log(Level.SEVERE,
             "SAXParseException: game: " + (data.getGameName() == null ? "?" : data.getGameName()) + ", line: " + error
                 .getLineNumber() + ", column: " + error.getColumnNumber() + ", error: " + error.getMessage());
       }
@@ -212,7 +214,7 @@ public final class GameParser {
     try {
       validate();
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error parsing: " + mapName, e);
+      log.log(Level.SEVERE, "Error parsing: " + mapName, e);
       throw newGameParseException("validation failed", e);
     }
   }

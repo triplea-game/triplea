@@ -6,13 +6,16 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
 /**
  * Same as PoliticsText but for user actions.
  */
+@Log
 public class UserActionText {
   // Filename
   private static final String PROPERTY_FILE = "actionstext.properties";
@@ -38,7 +41,7 @@ public class UserActionText {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+          log.log(Level.SEVERE, "Error reading " + PROPERTY_FILE, e);
         }
       }
     }

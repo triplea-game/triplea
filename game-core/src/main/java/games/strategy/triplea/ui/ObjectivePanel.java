@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -46,10 +47,12 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.FileNameUtils;
+import lombok.extern.java.Log;
 
 /**
  * A panel that will show all objectives for all players, including if the objective is filled or not.
  */
+@Log
 public class ObjectivePanel extends AbstractStatPanel {
   private static final long serialVersionUID = 3759819236905645520L;
   private Map<String, Map<ICondition, String>> statsObjective;
@@ -135,7 +138,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         final String[] key = fileKey.substring(gameName.length(), fileKey.length()).split(";");
         final String value = (String) entry.getValue();
         if (key.length != 2) {
-          System.err.println("objective.properties keys must be 2 parts: <game_name>."
+          log.log(Level.SEVERE, "objective.properties keys must be 2 parts: <game_name>."
               + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
@@ -144,7 +147,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         }
         final String[] sorter = key[0].split("\\.");
         if (sorter.length != 2) {
-          System.err.println(
+          log.log(Level.SEVERE,
               "objective.properties " + ObjectiveProperties.GROUP_PROPERTY + "must have .<sorter> after it: " + key[0]);
           continue;
         }
@@ -167,8 +170,9 @@ public class ObjectivePanel extends AbstractStatPanel {
         final String[] key = fileKey.substring(gameName.length(), fileKey.length()).split(";");
         final String value = (String) entry.getValue();
         if (key.length != 2) {
-          System.err.println("objective.properties keys must be 2 parts: <game_name>."
-              + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
+          log.log(Level.SEVERE,
+              "objective.properties keys must be 2 parts: <game_name>."
+                  + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
         if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {

@@ -9,14 +9,12 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
-import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 
@@ -39,7 +37,6 @@ public class SmallMapImageManager {
   }
 
   public void update(final MapData mapData) {
-    final Stopwatch stopwatch = new Stopwatch(logger, Level.FINEST, "Small map updating took");
     final Graphics onScreenGraphics = view.getOffScreenImage().getGraphics();
     onScreenGraphics.drawImage(offscreen, 0, 0, null);
     for (final UnitsDrawer drawer : new ArrayList<>(tileManager.getUnitDrawables())) {
@@ -49,7 +46,6 @@ public class SmallMapImageManager {
       onScreenGraphics.fillRect(x, y, mapData.getSmallMapUnitSize(), mapData.getSmallMapUnitSize());
     }
     onScreenGraphics.dispose();
-    stopwatch.done();
   }
 
   public void updateTerritoryOwner(final Territory t, final GameData data, final MapData mapData) {

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -30,7 +31,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -54,12 +54,14 @@ import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
 import games.strategy.ui.SwingAction;
+import lombok.extern.java.Log;
 
 /**
  * A panel for setting up Play by Email/Forum.
  * This panel listens to the GameSelectionModel so it can refresh when a new game is selected or save game loaded
  * The MainPanel also listens to this panel, and we notify it through the notifyObservers()
  */
+@Log
 public class PbemSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
   private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
@@ -386,7 +388,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     private Map<String, IBean> loadMap() {
       if (file.exists()) {
         try (FileInputStream fin = new FileInputStream(file);
-            ObjectInput oin = new ObjectInputStream(fin)) {
+            final ObjectInput oin = new ObjectInputStream(fin)) {
           final Object o = oin.readObject();
           if (o instanceof Map) {
             final Map<?, ?> m = (Map<?, ?>) o;
@@ -403,7 +405,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
         } catch (final Exception e) {
           // on error we delete the cache file, if we can
           file.delete();
-          ClientLogger.logQuietly("serialized local bean cache invalid", e);
+          log.log(Level.SEVERE, "serialized local bean cache invalid", e);
         }
       }
       return new HashMap<>();
@@ -427,10 +429,10 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     void writeToDisk() {
       synchronized (mutex) {
         try (FileOutputStream fout = new FileOutputStream(file, false);
-            ObjectOutputStream out = new ObjectOutputStream(fout)) {
+            final ObjectOutputStream out = new ObjectOutputStream(fout)) {
           out.writeObject(map);
         } catch (final IOException e) {
-          ClientLogger.logQuietly("failed to write local bean cache", e);
+          log.log(Level.SEVERE, "failed to write local bean cache", e);
         }
       }
     }

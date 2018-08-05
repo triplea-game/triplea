@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -35,7 +35,9 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.PredicateBuilder;
+import lombok.extern.java.Log;
 
+@Log
 public class AirBattle extends AbstractBattle {
   private static final long serialVersionUID = 4686241714027216395L;
   protected static final String AIR_BATTLE = "Air Battle";
@@ -437,9 +439,8 @@ public class AirBattle extends AbstractBattle {
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, false, m_battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      System.err.println("Invalid retreat selection :" + retreatTo + " not in "
+      log.log(Level.SEVERE, "Invalid retreat selection :" + retreatTo + " not in "
           + MyFormatter.defaultNamedToTextList(availableTerritories));
-      Thread.dumpStack();
       return;
     }
     if (retreatTo != null) {
@@ -724,7 +725,7 @@ public class AirBattle extends AbstractBattle {
       try {
         getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Error during casualty notification", e);
+        log.log(Level.SEVERE, "Error during casualty notification", e);
       }
     }, "Click to continue waiter");
     t.start();

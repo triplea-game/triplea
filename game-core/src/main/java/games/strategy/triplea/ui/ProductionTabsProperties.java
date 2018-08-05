@@ -8,13 +8,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
 import games.strategy.util.Tuple;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
+@Log
 public class ProductionTabsProperties {
   // Filename
   private static final String PROPERTY_FILE = "production_tabs";
@@ -43,11 +46,10 @@ public class ProductionTabsProperties {
   protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> rules) {
     this.rules = rules;
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
-    String propertyFile = PROPERTY_FILE + "." + playerId.getName() + ".properties";
-    URL url = loader.getResource(propertyFile);
+    URL url = loader.getResource(PROPERTY_FILE + "." + playerId.getName() + ".properties");
     if (url == null) {
       // no production_tabs.france.properties check for production_tabs.properties
-      propertyFile = PROPERTY_FILE + ".properties";
+      final String propertyFile = PROPERTY_FILE + ".properties";
       url = loader.getResource(propertyFile);
       if (url != null) {
         final Optional<InputStream> inputStream = UrlStreams.openStream(url);
@@ -55,7 +57,7 @@ public class ProductionTabsProperties {
           try {
             properties.load(inputStream.get());
           } catch (final IOException e) {
-            System.out.println("Error reading " + propertyFile + e);
+            log.log(Level.SEVERE, "Error reading " + propertyFile, e);
           }
         }
       }

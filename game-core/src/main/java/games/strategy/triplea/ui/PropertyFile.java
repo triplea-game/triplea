@@ -8,18 +8,20 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
 
 /**
  * Common property file class which should be extended.
  */
+@Log
 public abstract class PropertyFile {
 
   protected static final Cache<Class<? extends PropertyFile>, PropertyFile> cache = CacheBuilder.newBuilder()
@@ -36,7 +38,7 @@ public abstract class PropertyFile {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          ClientLogger.logError("Error reading " + fileName, e);
+          log.log(Level.SEVERE, "Error reading " + fileName, e);
         }
       }
     }

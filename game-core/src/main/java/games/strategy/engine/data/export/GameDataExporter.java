@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 
 import com.google.common.base.Joiner;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -47,7 +47,9 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
+@Log
 public class GameDataExporter {
   private final StringBuilder xmlfile;
 
@@ -157,7 +159,7 @@ public class GameDataExporter {
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
       printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
     } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-      ClientLogger.logError("An Error occured whilst trying trying to setup the Property List", e);
+      log.log(Level.SEVERE, "An Error occured whilst trying trying to setup the Property List", e);
     }
     xmlfile.append("    </propertyList>\n");
   }
@@ -191,7 +193,7 @@ public class GameDataExporter {
         listField.setAccessible(true);
         typeString = "            <list>" + Joiner.on(',').join((List<String>) listField.get(prop)) + "</list>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-        ClientLogger.logError("An Error occured whilst trying to print the Property \"" + value + "\"", e);
+        log.log(Level.SEVERE, "An Error occured whilst trying to print the Property \"" + value + "\"", e);
       }
     }
     if (prop.getClass().equals(NumberProperty.class)) {
@@ -205,7 +207,7 @@ public class GameDataExporter {
         final int min = minField.getInt(prop);
         typeString = "            <number min=\"" + min + "\" max=\"" + max + "\"/>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-        ClientLogger.logError("An Error occured whilst trying to print a Number-XML Tag", e);
+        log.log(Level.SEVERE, "An Error occured whilst trying to print a Number-XML Tag", e);
       }
     }
     xmlfile.append("        <property name=\"").append(prop.getName()).append("\" value=\"").append(value)
@@ -410,7 +412,7 @@ public class GameDataExporter {
         xmlfile.append("        </attachment>\n");
       }
     } catch (final Exception e) {
-      ClientLogger.logError("An Error occured whilst trying to print the Attachment \"" + attachment.getName() + "\"",
+      log.log(Level.SEVERE, "An Error occured whilst trying to print the Attachment \"" + attachment.getName() + "\"",
           e);
     }
   }
@@ -536,7 +538,7 @@ public class GameDataExporter {
             .append("\"");
       } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException
           | IllegalAccessException e) {
-        ClientLogger.logError("An Error occured whilst trying to sequence in game " + data.getGameName(), e);
+        log.log(Level.SEVERE, "An Error occured whilst trying to sequence in game " + data.getGameName(), e);
       }
       if (step.getPlayerId() != null) {
         xmlfile.append(" player=\"").append(step.getPlayerId().getName()).append("\"");

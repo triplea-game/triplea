@@ -12,18 +12,20 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.primitives.Bytes;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.util.Md5Crypt;
+import lombok.extern.java.Log;
 
 /**
  * Provides access to the MAC address of the local node.
  */
+@Log
 public final class MacFinder {
   private static final String HASHED_MAC_ADDRESS_SALT = "MH";
 
@@ -83,7 +85,7 @@ public final class MacFinder {
         }
       }
     } catch (final SocketException | UnknownHostException e) {
-      ClientLogger.logError("Error while trying to get a valid MAC adress", e);
+      log.log(Level.SEVERE, "Error while trying to get a valid MAC adress", e);
     }
     // Next, try to get the mac address of the first network interfaces that has an accessible
     // mac address
@@ -98,7 +100,7 @@ public final class MacFinder {
         }
       }
     } catch (final SocketException e) {
-      ClientLogger.logError("Error while trying to get a valid MAC adress", e);
+      log.log(Level.SEVERE, "Error while trying to get a valid MAC adress", e);
     }
     // Next, try to get the mac address by calling the 'getmac' app that exists in Windows,
     // Mac, and possibly others.
@@ -114,7 +116,7 @@ public final class MacFinder {
         return mac;
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error while trying to get mac address", e);
+      log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the 'ipconfig -all' app that exists in Windows
     // and possibly others.
@@ -130,7 +132,7 @@ public final class MacFinder {
         return mac;
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error while trying to get mac address", e);
+      log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
     try {
       // ipconfig -all does not work on my computer, while ipconfig /all does not work on
@@ -141,7 +143,7 @@ public final class MacFinder {
         return mac;
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error while trying to get mac address", e);
+      log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux
     // and possibly others. May
@@ -161,7 +163,7 @@ public final class MacFinder {
         return mac;
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error while trying to get mac address", e);
+      log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux
     // and possibly others.
@@ -181,7 +183,7 @@ public final class MacFinder {
         return mac;
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error while trying to get mac address", e);
+      log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
     // Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD
     // and possibly others.
@@ -198,7 +200,7 @@ public final class MacFinder {
         return mac;
       }
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Error while trying to get mac address", e);
+      log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
     return null;
   }
@@ -211,7 +213,7 @@ public final class MacFinder {
       try {
         p = Runtime.getRuntime().exec(command);
       } catch (final IOException e2) {
-        ClientLogger.logQuietly("Ignoring error while executing command: " + command, e);
+        log.log(Level.SEVERE, "Ignoring error while executing command: " + command, e);
       }
     }
     if (p == null) {
@@ -220,7 +222,7 @@ public final class MacFinder {
     try {
       return IOUtils.toString(p.getInputStream(), Charset.defaultCharset());
     } catch (final IOException e) {
-      ClientLogger.logQuietly("IOException while executing command: " + command, e);
+      log.log(Level.SEVERE, "IOException while executing command: " + command, e);
       return null;
     }
   }

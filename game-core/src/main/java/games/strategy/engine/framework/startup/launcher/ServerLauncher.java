@@ -11,12 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
-import games.strategy.debug.DebugUtils;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ServerGame;
@@ -39,9 +38,12 @@ import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
+@Log
 public class ServerLauncher extends AbstractLauncher {
   private final int clientCount;
   private final IRemoteMessenger remoteMessenger;
@@ -146,7 +148,7 @@ public class ServerLauncher extends AbstractLauncher {
       try {
         gameData.getGameLoader().startGame(serverGame, localPlayerSet, headless, serverModel.getChatPanel().getChat());
       } catch (final Exception e) {
-        ClientLogger.logError("Failed to launch", e);
+        log.log(Level.SEVERE, "Failed to launch", e);
         abortLaunch = true;
 
         if (gameLoadingWindow != null) {
@@ -160,7 +162,7 @@ public class ServerLauncher extends AbstractLauncher {
         serverReady.countDownAll();
       }
       if (!serverReady.await(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
-        System.out.println("Waiting for clients to be ready timed out!");
+        log.warning("Aborting launch - waiting for clients to be ready timed out!");
         abortLaunch = true;
       }
       remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
@@ -181,39 +183,25 @@ public class ServerLauncher extends AbstractLauncher {
             serverGame.startGame();
           } else {
             stopGame();
-            if (!headless) {
-              SwingUtilities.invokeLater(
-                  () -> JOptionPane.showMessageDialog(ui, "Problem during startup, game aborted."));
-            } else {
-              System.out.println("Problem during startup, game aborted.");
-            }
           }
+        } catch (final ConnectionLostException e) {
+          // no-op, this is a simple player disconnect, no need to scare the user with some giant stack trace
         } catch (final MessengerException me) {
-          // if just connection lost, no need to scare the user with some giant stack trace
-          if (me instanceof ConnectionLostException) {
-            System.out.println("Game Player disconnection: " + me.getMessage());
-          } else {
-            me.printStackTrace(System.out);
-          }
           // we lost a connection
           // wait for the connection handler to notice, and shut us down
-          try {
-            // we are already aborting the launch
-            if (!abortLaunch) {
-              if (!errorLatch.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
-                System.err.println("Waiting on error latch timed out!");
-              }
+          Interruptibles.await(() -> {
+            if (!abortLaunch
+                && !errorLatch.await(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME.intValue(), TimeUnit.SECONDS)) {
+              log.warning("Waiting on error latch timed out!");
             }
-          } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
+          });
           stopGame();
-        } catch (final Exception e) {
-          e.printStackTrace(System.err);
+        } catch (final RuntimeException e) {
+          final String errorMessage = "Unrecognized error occurred: " + e.getMessage() + ", if this is a repeatable "
+              + "error please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
+          log.log(Level.SEVERE, errorMessage, e);
           if (headless) {
-            System.out.println(DebugUtils.getThreadDumps());
-            HeadlessGameServer.sendChat("If this is a repeatable issue or error, please make a copy of this savegame "
-                + "and contact a Mod and/or file a bug report.");
+            HeadlessGameServer.sendChat(errorMessage);
           }
           stopGame();
         }
@@ -223,7 +211,7 @@ public class ServerLauncher extends AbstractLauncher {
         // either game ended, or aborted, or a player left or disconnected
         if (headless) {
           try {
-            System.out.println("Game ended, going back to waiting.");
+            log.info("Game ended, going back to waiting.");
             // if we do not do this, we can get into an infinite loop of launching a game,
             // then crashing out, then launching, etc.
             serverModel.setAllPlayersToNullNodes();
@@ -236,7 +224,7 @@ public class ServerLauncher extends AbstractLauncher {
               gameSelectorModel.resetGameDataToNull();
             }
           } catch (final Exception e1) {
-            ClientLogger.logQuietly("Failed to load game", e1);
+            log.log(Level.SEVERE, "Failed to load game", e1);
             gameSelectorModel.resetGameDataToNull();
           }
         } else {
@@ -276,7 +264,7 @@ public class ServerLauncher extends AbstractLauncher {
       try {
         serverGame.getRandomSource().getRandom(gameData.getDiceSides(), 2, "Warming up crypto random source");
       } catch (final RuntimeException e) {
-        ClientLogger.logQuietly("Failed to warm up crypto random source", e);
+        log.log(Level.SEVERE, "Failed to warm up crypto random source", e);
       }
     }, "Warming up crypto random source").start();
   }
@@ -292,7 +280,6 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   public void connectionLost(final INode node) {
-    // System.out.println("Connection lost to: " + node);
     if (isLaunching) {
       // this is expected, we told the observer
       // he couldnt join, so now we loose the connection
@@ -339,7 +326,7 @@ public class ServerLauncher extends AbstractLauncher {
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {
-      ClientLogger.logQuietly("Failed to save game: " + f.getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to save game: " + f.getAbsolutePath(), e);
       if (headless && HeadlessGameServer.getInstance() != null) {
         HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
         // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3,
@@ -348,14 +335,14 @@ public class ServerLauncher extends AbstractLauncher {
       }
     }
     stopGame();
-    if (!headless) {
+    if (headless) {
+      log.info("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());
+    } else {
       SwingUtilities.invokeLater(() -> {
         final String message =
             "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
         JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message);
       });
-    } else {
-      System.out.println("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());
     }
   }
 

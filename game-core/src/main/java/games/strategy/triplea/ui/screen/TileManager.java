@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -210,7 +209,6 @@ public class TileManager {
     try {
       acquireLock();
       try {
-        logger.log(Level.FINER, "Updating " + territory.getName());
         clearTerritory(territory);
         drawTerritory(territory, data, mapData);
       } finally {

@@ -6,12 +6,15 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
+@Log
 public class TooltipProperties {
   // Filename
   private static final String PROPERTY_FILE = "tooltips.properties";
@@ -31,7 +34,7 @@ public class TooltipProperties {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
+          log.log(Level.SEVERE,"Error reading: " + PROPERTY_FILE, e);
         }
       }
     }

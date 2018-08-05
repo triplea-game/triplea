@@ -68,7 +68,6 @@ public class ChatController implements IChatController {
     ((IServerMessenger) this.messenger).addConnectionChangeListener(connectionChangeListener);
     pingThread.scheduleAtFixedRate(() -> {
       try {
-        // System.out.println("Pinging");
         getChatBroadcaster().ping();
       } catch (final Exception e) {
         logger.log(Level.SEVERE, "Error pinging", e);

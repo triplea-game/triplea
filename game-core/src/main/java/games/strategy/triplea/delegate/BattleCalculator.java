@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -39,11 +40,13 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 /**
  * Utiltity class for determing casualties and selecting casualties. The code
  * was being dduplicated all over the place.
  */
+@Log
 public class BattleCalculator {
   private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
@@ -546,7 +549,9 @@ public class BattleCalculator {
         && !(numhits + damaged.size() == (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining))) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
       if (headLess) {
-        System.err.println("Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
+        log.log(
+            Level.SEVERE,
+            "Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
             + (numhits + damaged.size()) + " != number of hits to take "
             + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for "
             + casualtySelection.toString());
@@ -559,7 +564,9 @@ public class BattleCalculator {
     if (!sortedTargetsToPickFrom.containsAll(killed) || !sortedTargetsToPickFrom.containsAll(damaged)) {
       tripleaPlayer.reportError("Cannot remove enough units of those types");
       if (headLess) {
-        System.err.println("Possible Infinite Loop: Cannot remove enough units of those types: targets "
+        log.log(
+            Level.SEVERE,
+            "Possible Infinite Loop: Cannot remove enough units of those types: targets "
             + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for " + casualtySelection.toString());
       }
       return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
@@ -695,7 +702,6 @@ public class BattleCalculator {
     // Check OOL cache
     final List<UnitType> stored = oolCache.get(key);
     if (stored != null) {
-      // System.out.println("Hit with cacheSize=" + oolCache.size() + ", key=" + key);
       final List<Unit> result = new ArrayList<>();
       final List<Unit> selectFrom = new ArrayList<>(targetsToPickFrom);
       for (final UnitType ut : stored) {
@@ -709,7 +715,6 @@ public class BattleCalculator {
       }
       return result;
     }
-    // System.out.println("Miss with cacheSize=" + oolCache.size() + ", key=" + key);
     // Sort enough units to kill off
     final List<Unit> sortedUnitsList = new ArrayList<>(targetsToPickFrom);
     sortedUnitsList.sort(new UnitBattleComparator(defending, costs, territoryEffects, data, bonus, false));

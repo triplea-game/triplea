@@ -20,12 +20,13 @@ import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.BlendComposite.BlendingMode;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
+import lombok.extern.java.Log;
 
+@Log
 public final class TileImageFactory {
   // one instance in the application
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
@@ -74,7 +75,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("Failed to save value: " + showReliefImages, ex);
+      log.log(Level.SEVERE, "Failed to save value: " + showReliefImages, ex);
     }
   }
 
@@ -85,7 +86,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("faild to save value: " + showMapBlends, ex);
+      log.log(Level.SEVERE, "faild to save value: " + showMapBlends, ex);
     }
   }
 
@@ -96,7 +97,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("faild to save value: " + showMapBlendMode, ex);
+      log.log(Level.SEVERE, "faild to save value: " + showMapBlendMode, ex);
     }
   }
 
@@ -107,7 +108,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      ClientLogger.logQuietly("faild to save value: " + showMapBlendAlpha, ex);
+      log.log(Level.SEVERE, "faild to save value: " + showMapBlendAlpha, ex);
     }
   }
 
@@ -194,8 +195,7 @@ public final class TileImageFactory {
 
     // Get buffered images
     try {
-      final Stopwatch loadingImages =
-          new Stopwatch(logger, Level.FINE, "Loading images:" + urlrelief + " and " + urlBase);
+      final Stopwatch loadingImages = new Stopwatch("Loading images:" + urlrelief + " and " + urlBase);
       if (urlrelief != null) {
         reliefFile = loadCompatibleImage(urlrelief);
       }
@@ -204,7 +204,7 @@ public final class TileImageFactory {
       }
       loadingImages.done();
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Failed to load one or more images: " + urlrelief + ", " + urlBase, e);
+      log.log(Level.SEVERE, "Failed to load one or more images: " + urlrelief + ", " + urlBase, e);
     }
 
     // This does the blend
@@ -213,7 +213,7 @@ public final class TileImageFactory {
       try {
         reliefFile = loadCompatibleImage(urlBlankRelief);
       } catch (final IOException e) {
-        ClientLogger.logQuietly("Failed to load image: " + urlBlankRelief, e);
+        log.log(Level.SEVERE, "Failed to load image: " + urlBlankRelief, e);
       }
     }
     // This fixes the blank land territories
@@ -243,10 +243,10 @@ public final class TileImageFactory {
   private Image loadUnblendedImage(final URL imageLocation, final String fileName) {
     Image image;
     try {
-      final Stopwatch loadingImages = new Stopwatch(logger, Level.FINE, "Loading image:" + imageLocation);
+      final Stopwatch loadingImages = new Stopwatch("Loading image:" + imageLocation);
       final BufferedImage fromFile = ImageIO.read(imageLocation);
       loadingImages.done();
-      final Stopwatch copyingImage = new Stopwatch(logger, Level.FINE, "Copying image:" + imageLocation);
+      final Stopwatch copyingImage = new Stopwatch("Copying image:" + imageLocation);
       // if we dont copy, drawing the tile to the screen takes significantly longer
       // has something to do with the colour model and type of the images
       // some images can be copeid quickly to the screen
@@ -260,7 +260,7 @@ public final class TileImageFactory {
       fromFile.flush();
       copyingImage.done();
     } catch (final IOException e) {
-      ClientLogger.logError("Could not load image, url: " + imageLocation.toString(), e);
+      log.log(Level.SEVERE, "Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
     }
     imageCache.put(fileName, new SoftReference<>(image));

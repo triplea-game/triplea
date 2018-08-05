@@ -5,12 +5,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteMethodCallResults;
 import games.strategy.net.INode;
+import lombok.extern.java.Log;
 
 /**
  * This is where the methods finally get called.
@@ -18,6 +19,7 @@ import games.strategy.net.INode;
  * node.
  * You can invoke the method and get the results for all the implementors.
  */
+@Log
 class EndPoint {
   // the next number we are going to give
   private final AtomicLong nextGivenNumber = new AtomicLong();
@@ -151,7 +153,7 @@ class EndPoint {
     } catch (final InvocationTargetException e) {
       return new RemoteMethodCallResults(e.getTargetException());
     } catch (final IllegalAccessException | IllegalArgumentException e) {
-      ClientLogger.logQuietly("error in call:" + call, e);
+      log.log(Level.SEVERE, "error in call:" + call, e);
       return new RemoteMethodCallResults(e);
     } finally {
       MessageContext.setSenderNodeForThread(null);

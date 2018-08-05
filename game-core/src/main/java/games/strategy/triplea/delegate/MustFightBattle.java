@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
@@ -44,10 +45,12 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 /**
  * Handles logic for battles in which fighting actually occurs.
  */
+@Log
 public class MustFightBattle extends DependentBattle implements BattleStepStrings {
 
   /**
@@ -1312,9 +1315,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID,
         (submerge || canDefendingSubsSubmergeOrRetreat), m_battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs) {
-      System.err.println("Invalid retreat selection :" + retreatTo + " not in "
+      log.log(Level.SEVERE, "Invalid retreat selection :" + retreatTo + " not in "
           + MyFormatter.defaultNamedToTextList(availableTerritories));
-      Thread.dumpStack();
       return;
     }
     if (retreatTo != null) {

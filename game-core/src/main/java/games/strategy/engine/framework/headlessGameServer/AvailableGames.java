@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -21,16 +22,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.io.FileUtils;
 import games.strategy.util.UrlStreams;
+import lombok.extern.java.Log;
 
 /**
  * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
  */
+@Log
 @Immutable
 public final class AvailableGames {
   private static final String ZIP_EXTENSION = ".zip";
@@ -81,8 +83,8 @@ public final class AvailableGames {
   private static void populateFromZip(final File map, final Map<String, URI> availableGames,
       final Set<String> availableMapFolderOrZipNames) {
     try (InputStream fis = new FileInputStream(map);
-        ZipInputStream zis = new ZipInputStream(fis);
-        URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
+        final ZipInputStream zis = new ZipInputStream(fis);
+        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
       ZipEntry entry = zis.getNextEntry();
       while (entry != null) {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
@@ -102,7 +104,7 @@ public final class AvailableGames {
         entry = zis.getNextEntry();
       }
     } catch (final IOException e) {
-      ClientLogger.logQuietly("Map: " + map, e);
+      log.log(Level.SEVERE, "Map: " + map, e);
     }
   }
 
@@ -119,7 +121,7 @@ public final class AvailableGames {
           return true;
         }
       } catch (final Exception e) {
-        ClientLogger.logError("Exception while parsing: " + uri.toString(), e);
+        log.log(Level.SEVERE, "Exception while parsing: " + uri.toString(), e);
       }
     }
     return false;
@@ -161,7 +163,7 @@ public final class AvailableGames {
       try (InputStream input = inputStream.get()) {
         return Optional.of(GameParser.parse(uri.toString(), input));
       } catch (final Exception e) {
-        ClientLogger.logError("Exception while parsing: " + uri.toString(), e);
+        log.log(Level.SEVERE, "Exception while parsing: " + uri.toString(), e);
       }
     }
     return Optional.empty();

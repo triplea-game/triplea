@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -36,7 +37,6 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.common.base.Splitter;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
@@ -44,10 +44,12 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.io.FileUtils;
+import lombok.extern.java.Log;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file.
  */
+@Log
 public class PropertiesDiceRoller implements IRemoteDiceServer {
   private static final long serialVersionUID = 6481409417543119539L;
 
@@ -71,7 +73,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
             propFiles.add(props);
           }
         } catch (final IOException e) {
-          ClientLogger.logQuietly("Failed to read dice server properties: " + file.getAbsolutePath(), e);
+          log.log(Level.SEVERE, "Failed to read dice server properties: " + file.getAbsolutePath(), e);
         }
       }
     }
@@ -199,7 +201,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
           .map(i -> i - 1)
           .toArray();
     } catch (final NumberFormatException ex) {
-      ClientLogger.logQuietly("Number format parsing: " + string, ex);
+      log.log(Level.SEVERE, "Number format parsing: " + string, ex);
       throw new IOException(ex.getMessage());
     }
   }

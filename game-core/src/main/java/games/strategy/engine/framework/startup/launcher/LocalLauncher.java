@@ -4,11 +4,11 @@ import java.awt.Component;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -17,10 +17,12 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * Launcher for a local or a client game. A launcher will start the game UI and begin game play.
  */
+@Log
 public class LocalLauncher extends AbstractLauncher {
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
@@ -58,7 +60,7 @@ public class LocalLauncher extends AbstractLauncher {
       gameData.getGameLoader().startGame(game, gamePlayers, headless, null);
       return Optional.of(game);
     } catch (final Exception ex) {
-      ClientLogger.logError("Failed to start game", ex);
+      log.log(Level.SEVERE, "Failed to start game", ex);
       return Optional.empty();
     } finally {
       gameLoadingWindow.doneWait();

@@ -84,8 +84,7 @@ public class Tile {
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
-    final Stopwatch stopWatch = new Stopwatch(Logger.getLogger(Tile.class.getName()), Level.FINEST,
-        "Drawing Tile at " + bounds);
+    final Stopwatch stopWatch = new Stopwatch("Drawing Tile at " + bounds);
     final Queue<IDrawable> clone = new PriorityBlockingQueue<>(contents);
     while (!clone.isEmpty()) {
       clone.remove().draw(bounds, data, g, mapData);

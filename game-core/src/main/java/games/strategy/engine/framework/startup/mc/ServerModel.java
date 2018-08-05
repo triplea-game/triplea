@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
@@ -71,7 +70,9 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
+import lombok.extern.java.Log;
 
+@Log
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
@@ -215,7 +216,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           final int port = options.getPort();
           if (port >= 65536 || port == 0) {
             if (headless) {
-              System.out.println("Invalid Port: " + port);
+              throw new IllegalStateException("Invalid Port: " + port);
             } else {
               JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -281,13 +282,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       gameDataChanged();
       return true;
     } catch (final IOException ioe) {
-      ioe.printStackTrace(System.out);
-      if (headless) {
-        System.out.println("Unable to create server socket:" + ioe.getMessage());
-      } else {
-        JOptionPane.showMessageDialog(ui, "Unable to create server socket:" + ioe.getMessage(), "Error",
-            JOptionPane.ERROR_MESSAGE);
-      }
+      log.log(Level.SEVERE, "Unable to create server socket", ioe);
       return false;
     }
   }
@@ -369,7 +364,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       try {
         return GameProperties.writeEditableProperties(currentEditableProperties);
       } catch (final IOException e) {
-        ClientLogger.logQuietly("Failed to write game properties", e);
+        log.log(Level.SEVERE, "Failed to write game properties", e);
       }
       return null;
     }
@@ -389,7 +384,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (headless == null) {
         return;
       }
-      System.out.println("Changing to game map: " + gameName);
       headless.setGameMapTo(gameName);
     }
 
@@ -420,7 +414,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           }
         });
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Failed to load save game: " + fileName, e);
+        log.log(Level.SEVERE, "Failed to load save game: " + fileName, e);
       }
     }
 
@@ -432,11 +426,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (headless == null || bytes == null) {
         return;
       }
-      System.out.println("Changing to user game options.");
       try {
         headless.loadGameOptions(bytes);
       } catch (final Exception e) {
-        ClientLogger.logQuietly("Failed to load game options", e);
+        log.log(Level.SEVERE, "Failed to load game options", e);
       }
     }
   };
@@ -557,7 +550,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   @Override
   public void messengerInvalid(final IMessenger messenger, final Exception reason) {
     if (headless) {
-      System.out.println("Connection Lost");
       if (typePanelModel != null) {
         typePanelModel.showSelectType();
       }

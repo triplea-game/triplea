@@ -6,17 +6,19 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import games.strategy.debug.ClientLogger;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
+import lombok.extern.java.Log;
 
 /**
  * An action for downloading a save game from the server node to a client node.
  */
+@Log
 public class GetGameSaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1118264715230932068L;
   private final Component parent;
@@ -37,7 +39,7 @@ public class GetGameSaveClientAction extends AbstractAction {
       try (FileOutputStream fout = new FileOutputStream(f)) {
         fout.write(bytes);
       } catch (final IOException exception) {
-        ClientLogger.logError("Failed to download save game from server", exception);
+        log.log(Level.SEVERE, "Failed to download save game from server", exception);
       }
       JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
     }
