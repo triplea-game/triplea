@@ -1,7 +1,5 @@
 plugins {
-    id 'java'
     id 'application'
-    id 'checkstyle'
     id 'jacoco'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
@@ -41,13 +39,6 @@ compileTestJava {
 jar {
     manifest {
         attributes 'Main-Class': mainClassName, 'TripleA-Version': version
-    }
-}
-
-repositories {
-    jcenter()
-    maven {
-       url 'https://jitpack.io'
     }
 }
 
@@ -110,22 +101,6 @@ task release(group: 'release', dependsOn: lobbyServer) {
             into artifactsDir
         }
     }
-}
-
-checkstyle {
-    toolVersion = "8.8"
-    configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
-    configProperties = [samedir: configFile.parent]
-}
-
-checkstyleMain {
-    maxWarnings = 0
-    source sourceSets.main.output.resourcesDir
-}
-
-checkstyleTest {
-    maxWarnings = 0
-    source sourceSets.test.output.resourcesDir
 }
 
 jacocoTestReport {

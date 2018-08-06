@@ -22,3 +22,28 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
 check {
     dependsOn 'validateYamls'
 }
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+
+    repositories {
+        jcenter()
+    }
+
+    checkstyle {
+        toolVersion = "8.8"
+        configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
+        configProperties = [samedir: configFile.parent]
+    }
+
+    checkstyleMain {
+        maxWarnings = 0
+        source sourceSets.main.output.resourcesDir
+    }
+
+    checkstyleTest {
+        maxWarnings = 0
+        source sourceSets.test.output.resourcesDir
+    }
+}
