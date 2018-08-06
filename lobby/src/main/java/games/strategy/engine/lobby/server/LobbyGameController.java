@@ -18,7 +18,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-class LobbyGameController implements ILobbyGameController {
+final class LobbyGameController implements ILobbyGameController {
   private static final Logger logger = Logger.getLogger(LobbyGameController.class.getName());
   private final Object mutex = new Object();
   private final Map<GUID, GameDescription> allGames = new HashMap<>();
