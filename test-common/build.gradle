@@ -73,3 +73,7 @@ jacocoTestReport {
         html.enabled = true
     }
 }
+
+test {
+    useJUnitPlatform()
+}
