@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
-import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.net.ClientMessenger;
@@ -89,7 +89,7 @@ public class LobbyLogin {
               response.putAll(RsaAuthenticator.newResponse(challenge, password));
             }
           }
-          response.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+          response.put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
           return response;
         });
   }
@@ -172,7 +172,7 @@ public class LobbyLogin {
           if (RsaAuthenticator.canProcessChallenge(challenge)) {
             response.putAll(RsaAuthenticator.newResponse(challenge, password));
           }
-          response.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+          response.put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
           return response;
         });
   }

@@ -5,12 +5,12 @@ import java.io.IOException;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
-import games.strategy.util.Version;
 
 /**
  * A lobby server.
@@ -24,10 +24,6 @@ import games.strategy.util.Version;
  * </ul>
  */
 public final class LobbyServer {
-  public static final String ADMIN_USERNAME = "Admin";
-  public static final String LOBBY_CHAT = "_LOBBY_CHAT";
-  public static final Version LOBBY_VERSION = new Version(1, 0, 0);
-
   private LobbyServer() {}
 
   /**
@@ -41,14 +37,15 @@ public final class LobbyServer {
   static void start(final LobbyPropertyReader lobbyPropertyReader) throws IOException {
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 
-    final IServerMessenger server = ServerMessenger.newInstanceForLobby(ADMIN_USERNAME, lobbyPropertyReader);
+    final IServerMessenger server =
+        ServerMessenger.newInstanceForLobby(LobbyConstants.ADMIN_USERNAME, lobbyPropertyReader);
     final Messengers messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator(lobbyPropertyReader));
     // setup common objects
     new UserManager(lobbyPropertyReader).register(messengers.getRemoteMessenger());
     final ModeratorController moderatorController = new ModeratorController(server, messengers, lobbyPropertyReader);
     moderatorController.register(messengers.getRemoteMessenger());
-    new ChatController(LOBBY_CHAT, messengers, moderatorController);
+    new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController);
 
     // register the status controller
     new StatusManager(messengers).shutDown();

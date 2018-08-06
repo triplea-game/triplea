@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
-import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
@@ -65,7 +65,7 @@ public class LobbyLoginValidatorIntegrationTest {
     return responseGetter -> {
       final Map<String, String> response = responseGetter.apply(challenge);
       response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
-      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       return loginValidator.verifyConnection(challenge, response, name, mac, address);
     };
   }

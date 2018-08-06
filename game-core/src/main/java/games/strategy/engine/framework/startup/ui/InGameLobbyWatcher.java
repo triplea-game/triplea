@@ -23,10 +23,10 @@ import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.engine.lobby.server.ILobbyGameController;
-import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -100,7 +100,7 @@ public class InGameLobbyWatcher {
     final IConnectionLogin login = challengeProperties -> {
       final Map<String, String> properties = new HashMap<>();
       properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-      properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
+      properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       properties.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
       return properties;
     };
