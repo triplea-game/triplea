@@ -1,6 +1,4 @@
 plugins {
-    id 'java'
-    id 'checkstyle'
     id 'jacoco'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
@@ -29,13 +27,6 @@ compileTestJava {
     options.compilerArgs += [ '-Xep:ClassCanBeStatic:OFF' ]
 }
 
-repositories {
-    jcenter()
-    maven {
-       url 'https://jitpack.io'
-    }
-}
-
 dependencies {
     errorprone 'com.google.errorprone:error_prone_core:2.3.1'
     compileOnly 'org.projectlombok:lombok:1.18.0'
@@ -49,22 +40,6 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
     testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
-}
-
-checkstyle {
-    toolVersion = "8.8"
-    configFile = file("$rootProject.projectDir/config/checkstyle/checkstyle.xml")
-    configProperties = [samedir: configFile.parent]
-}
-
-checkstyleMain {
-    maxWarnings = 0
-    source sourceSets.main.output.resourcesDir
-}
-
-checkstyleTest {
-    maxWarnings = 0
-    source sourceSets.test.output.resourcesDir
 }
 
 jacocoTestReport {
