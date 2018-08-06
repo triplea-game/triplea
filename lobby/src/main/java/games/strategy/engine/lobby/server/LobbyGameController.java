@@ -13,7 +13,6 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import lombok.extern.java.Log;
@@ -24,9 +23,9 @@ final class LobbyGameController implements ILobbyGameController {
   private final Map<GUID, GameDescription> allGames = new HashMap<>();
   private final ILobbyGameBroadcaster broadcaster;
 
-  LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IMessenger messenger) {
+  LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IServerMessenger serverMessenger) {
     this.broadcaster = broadcaster;
-    ((IServerMessenger) messenger).addConnectionChangeListener(new IConnectionChangeListener() {
+    serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
         connectionLost(to);
