@@ -30,8 +30,8 @@ import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.IModeratorController;
-import games.strategy.engine.lobby.server.LobbyServer;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
@@ -56,13 +56,13 @@ public class LobbyFrame extends JFrame {
     setIconImage(GameRunner.getGameIcon(this));
     this.client = client;
     setJMenuBar(new LobbyMenu(this));
-    final Chat chat = new Chat(this.client.getMessenger(), LobbyServer.LOBBY_CHAT,
+    final Chat chat = new Chat(this.client.getMessenger(), LobbyConstants.LOBBY_CHAT,
         this.client.getChannelMessenger(), this.client.getRemoteMessenger(), Chat.ChatSoundProfile.LOBBY_CHATROOM);
     chatMessagePanel = new ChatMessagePanel(chat);
     showServerMessage(lobbyServerProperties);
     chatMessagePanel.setShowTime(true);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
-    chatPlayers.addHiddenPlayerName(LobbyServer.ADMIN_USERNAME);
+    chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
     chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::createAdminActions);

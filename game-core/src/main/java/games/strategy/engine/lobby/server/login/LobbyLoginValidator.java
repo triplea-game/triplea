@@ -17,7 +17,7 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
-import games.strategy.engine.lobby.server.LobbyServer;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.db.AccessLogController;
 import games.strategy.engine.lobby.server.db.BadWordController;
@@ -162,8 +162,8 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return "No Client Version";
     }
     final Version clientVersion = new Version(clientVersionString);
-    if (!clientVersion.equals(LobbyServer.LOBBY_VERSION)) {
-      return "Wrong version, we require " + LobbyServer.LOBBY_VERSION.toString() + " but trying to log in with "
+    if (!clientVersion.equals(LobbyConstants.LOBBY_VERSION)) {
+      return "Wrong version, we require " + LobbyConstants.LOBBY_VERSION.toString() + " but trying to log in with "
           + clientVersionString;
     }
     for (final String s : getBadWords()) {
