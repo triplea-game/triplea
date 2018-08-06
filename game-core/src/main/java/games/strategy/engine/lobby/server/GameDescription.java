@@ -21,7 +21,11 @@ import games.strategy.net.Node;
  */
 public class GameDescription implements Externalizable, Cloneable {
   private static final long serialVersionUID = 508593169141567546L;
-
+  
+  /**
+   * Represents the game states displayed to users looking at the list of available
+   * lobby games.
+   */
   public enum GameStatus {
     LAUNCHING {
       @Override
@@ -45,6 +49,12 @@ public class GameDescription implements Externalizable, Cloneable {
 
   private INode hostedBy;
   private int port;
+
+  /**
+   * Represents when the game started, used to be displayed on lobby table, now no longer.
+   * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
+   */
+  @Deprecated
   private Instant startDateTime;
   private String gameName;
   private int playerCount;
@@ -54,6 +64,13 @@ public class GameDescription implements Externalizable, Cloneable {
   private String hostName;
   private String comment;
   private boolean passworded;
+  /**
+   * Engine version, used to be useful when multiple engine versions were in same lobby,
+   * now that lobby has homogonous versions and should going forward, this column is no
+   * longer useful.
+   * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
+   */
+  @Deprecated
   private String engineVersion;
   private String gameVersion;
   private String botSupportEmail = (HeadlessGameServer.getInstance() != null)
