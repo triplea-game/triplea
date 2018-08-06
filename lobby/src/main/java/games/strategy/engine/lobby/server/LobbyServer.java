@@ -45,7 +45,7 @@ public final class LobbyServer {
     new UserManager(lobbyPropertyReader).register(messengers.getRemoteMessenger());
     final ModeratorController moderatorController = new ModeratorController(server, messengers, lobbyPropertyReader);
     moderatorController.register(messengers.getRemoteMessenger());
-    new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController);
+    new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
 
     // register the status controller
     new StatusManager(messengers).shutDown();
