@@ -1,6 +1,8 @@
 package games.strategy.engine.lobby.client.ui;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.ILobbyGameBroadcaster;
@@ -166,8 +170,9 @@ class LobbyGameTableModel extends AbstractTableModel {
     }
   }
 
-  private static String formatBotStartTime(final Instant instant) {
+  @VisibleForTesting
+  static String formatBotStartTime(final Instant instant) {
     return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
-        .format(instant);
+        .format(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
   }
 }
