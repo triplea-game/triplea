@@ -1,5 +1,4 @@
 plugins {
-    id 'jacoco'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'com.install4j.gradle' version '7.0.1'
@@ -40,13 +39,6 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
     testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
     testRuntime 'org.slf4j:slf4j-nop:1.7.25'
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
 }
 
 test {
