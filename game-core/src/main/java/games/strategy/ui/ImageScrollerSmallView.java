@@ -16,7 +16,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.border.EtchedBorder;
 
-import games.strategy.triplea.ui.logic.MapScrollUtil;
+import games.strategy.triplea.ui.logic.RouteCalculator;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
@@ -119,16 +119,16 @@ public class ImageScrollerSmallView extends JComponent {
     final double height = model.getBoxHeight() * ratioY;
     final Rectangle2D.Double mapBounds = new Rectangle2D.Double(0, 0,
         model.getMaxWidth() * ratioX, model.getMaxHeight() * ratioY);
+    final RouteCalculator calculator = new RouteCalculator(
+        model.getScrollY(),
+        model.getScrollX(),
+        (int) Math.round(mapBounds.width),
+        (int) Math.round(mapBounds.height));
     final Rectangle2D.Double rect = new Rectangle2D.Double(
         x % mapBounds.width, y % mapBounds.height,
         width, height);
     g.setClip(mapBounds);
-    MapScrollUtil.getPossibleTranslations(
-        model.getScrollX(),
-        model.getScrollY(),
-        (int) Math.round(mapBounds.width),
-        (int) Math.round(mapBounds.height))
-        .stream()
+    calculator.getPossibleTranslations().stream()
         .map(t -> t.createTransformedShape(rect))
         .map(Shape::getBounds2D)
         .forEach(r -> drawFilledRect(r, g));

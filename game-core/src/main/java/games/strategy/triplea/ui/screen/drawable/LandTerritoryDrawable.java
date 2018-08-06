@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.screen.drawable;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
@@ -17,7 +18,8 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
+      final AffineTransform unscaled, final AffineTransform scaled) {
     draw(bounds, data, graphics, mapData, 1.0f);
   }
 

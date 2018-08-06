@@ -12,7 +12,9 @@ public class ReliefMapDrawable extends MapTileDrawable {
 
   @Override
   public MapTileDrawable getUnscaledCopy() {
-    return new ReliefMapDrawable(x, y, uiContext);
+    final ReliefMapDrawable copy = new ReliefMapDrawable(x, y, uiContext);
+    copy.unscaled = true;
+    return copy;
   }
 
   @Override
@@ -23,7 +25,12 @@ public class ReliefMapDrawable extends MapTileDrawable {
     if (!TileImageFactory.getShowReliefImages()) {
       return null;
     }
-    final Image image = uiContext.getTileImageFactory().getReliefTile(x, y);
+    final Image image;
+    if (unscaled) {
+      image = uiContext.getTileImageFactory().getUnscaledUncachedReliefTile(x, y);
+    } else {
+      image = uiContext.getTileImageFactory().getReliefTile(x, y);
+    }
     if (image == null) {
       noImage = true;
     }

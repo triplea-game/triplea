@@ -156,8 +156,7 @@ public class RouteCalculatorTest {
     final double[] testData = new double[1000];
     Arrays.setAll(testData, Double::valueOf);
     final List<Path2D> paths = routeCalculator.getAllNormalizedLines(testData, testData);
-    final Iterator<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
-        true, true, 1000, 1000).iterator();
+    final Iterator<AffineTransform> transforms = routeCalculator.getPossibleTranslations().iterator();
     // This method looks more complicated than it actually is.
     // It checks whether all given points are contained in the returned paths
     // Unfortunately Path2D#contains does not work for whatever reason

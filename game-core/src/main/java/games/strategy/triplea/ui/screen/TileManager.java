@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,12 +32,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.ui.logic.MapScrollUtil;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.Operation;
 import games.strategy.triplea.ui.screen.drawable.BaseMapDrawable;
@@ -67,7 +64,7 @@ public class TileManager {
   private static final Logger logger = Logger.getLogger(TileManager.class.getName());
   public static final int TILE_SIZE = 256;
 
-  private final List<Tile> tiles = new ArrayList<>();
+  private List<Tile> tiles = new ArrayList<>();
   private final Lock lock = new ReentrantLock();
   private final Map<String, IDrawable> territoryOverlays = new HashMap<>();
   private final Map<String, Set<IDrawable>> territoryDrawables = new HashMap<>();
@@ -81,25 +78,63 @@ public class TileManager {
 
   /**
    * Selects tiles which fall into rectangle bounds.
-   * Normalizes the rectangle if it exceeds the maps bounds.
    *
-   * @param bounds rectangle for selection
+   * @param bounds
+   *        rectangle for selection
    * @return tiles which fall into the rectangle
    */
   public List<Tile> getTiles(final Rectangle2D bounds) {
+    // if the rectangle exceeds the map dimensions we to do shift the rectangle and check for each shifted rectangle as
+    // well as the original
+    // rectangle
     final MapData mapData = uiContext.getMapData();
     final Dimension mapDimensions = mapData.getMapDimensions();
+    final boolean testXshift =
+        (mapData.scrollWrapX() && (bounds.getMaxX() > mapDimensions.width || bounds.getMinX() < 0));
+    final boolean testYshift =
+        (mapData.scrollWrapY() && (bounds.getMaxY() > mapDimensions.height || bounds.getMinY() < 0));
+    Rectangle2D boundsXshift = null;
+    if (testXshift) {
+      if (bounds.getMinX() < 0) {
+        boundsXshift = new Rectangle((int) bounds.getMinX() + mapDimensions.width, (int) bounds.getMinY(),
+            (int) bounds.getWidth(), (int) bounds.getHeight());
+      } else {
+        boundsXshift = new Rectangle((int) bounds.getMinX() - mapDimensions.width, (int) bounds.getMinY(),
+            (int) bounds.getWidth(), (int) bounds.getHeight());
+      }
+    }
+    Rectangle2D boundsYshift = null;
+    if (testYshift) {
+      if (bounds.getMinY() < 0) {
+        boundsYshift = new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY() + mapDimensions.height,
+            (int) bounds.getWidth(), (int) bounds.getHeight());
+      } else {
+        boundsYshift = new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY() - mapDimensions.height,
+            (int) bounds.getWidth(), (int) bounds.getHeight());
+      }
+    }
     acquireLock();
     try {
-      final List<AffineTransform> translations = MapScrollUtil.getPossibleTranslations(
-          mapData.scrollWrapX(), mapData.scrollWrapY(), mapDimensions.width, mapDimensions.height);
       final List<Tile> tilesInBounds = new ArrayList<>();
       for (final Tile tile : tiles) {
         final Rectangle tileBounds = tile.getBounds();
-        for (final AffineTransform transform : translations) {
-          if (transform.createTransformedShape(tileBounds).intersects(bounds)) {
+        if (bounds.contains(tileBounds) || tileBounds.intersects(bounds)) {
+          tilesInBounds.add(tile);
+        }
+      }
+      if (boundsXshift != null) {
+        for (final Tile tile : tiles) {
+          final Rectangle tileBounds = tile.getBounds();
+          if (boundsXshift.contains(tileBounds) || tileBounds.intersects(boundsXshift)) {
             tilesInBounds.add(tile);
-            break;
+          }
+        }
+      }
+      if (boundsYshift != null) {
+        for (final Tile tile : tiles) {
+          final Rectangle tileBounds = tile.getBounds();
+          if (boundsYshift.contains(tileBounds) || tileBounds.intersects(boundsYshift)) {
+            tilesInBounds.add(tile);
           }
         }
       }
@@ -109,21 +144,12 @@ public class TileManager {
     }
   }
 
-  public List<Tile> getTiles() {
-    acquireLock();
-    try {
-      return new ArrayList<>(tiles);
-    } finally {
-      releaseLock();
-    }
-  }
-
   private void acquireLock() {
-    LockUtil.INSTANCE.acquireLock(lock);
+    Tile.LOCK_UTIL.acquireLock(lock);
   }
 
   private void releaseLock() {
-    LockUtil.INSTANCE.releaseLock(lock);
+    Tile.LOCK_UTIL.releaseLock(lock);
   }
 
   Collection<UnitsDrawer> getUnitDrawables() {
@@ -138,10 +164,11 @@ public class TileManager {
   public void createTiles(final Rectangle bounds) {
     acquireLock();
     try {
-      tiles.clear();
+      // create our tiles
+      tiles = new ArrayList<>();
       for (int x = 0; x * TILE_SIZE < bounds.width; x++) {
         for (int y = 0; y * TILE_SIZE < bounds.height; y++) {
-          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)));
+          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), uiContext.getScale()));
         }
       }
     } finally {
@@ -480,12 +507,12 @@ public class TileManager {
       if (drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL) {
         continue;
       }
-      drawer.draw(bounds, data, graphics, mapData);
+      drawer.draw(bounds, data, graphics, mapData, null, null);
     }
     if (!drawOutline) {
       final Color c = selected.isWater() ? Color.RED : Color.BLACK;
       final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, Operation.FILL);
-      told.draw(bounds, data, graphics, mapData);
+      told.draw(bounds, data, graphics, mapData, null, null);
     }
     graphics.setStroke(new BasicStroke(10));
     graphics.setColor(Color.RED);
