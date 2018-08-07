@@ -32,7 +32,7 @@ public class Console {
   private final JFrame frame = new JFrame("TripleA Console");
 
   public Console() {
-    final Level logLevel = ClientSetting.LOGGING_VERBOSITY.value().equals(Level.ALL)
+    final Level logLevel = ClientSetting.LOGGING_VERBOSITY.value().equals(Level.ALL.getName())
         ? Level.INFO
         : Level.WARNING;
     LogManager.getLogManager().getLogger("").setLevel(logLevel);
