@@ -6,7 +6,6 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 
 /**
  * A {@link Handler} that publishes log records to an injected log handler. This can be wired up to send log messages
@@ -22,7 +21,6 @@ import lombok.extern.java.Log;
  * <li>Encoding: default platform encoding</li>
  * </ul>
  */
-@Log
 @AllArgsConstructor
 public final class ConsoleHandler extends Handler {
 

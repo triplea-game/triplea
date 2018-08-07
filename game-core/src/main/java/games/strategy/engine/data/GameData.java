@@ -102,7 +102,6 @@ public class GameData implements Serializable {
   private transient ResourceLoader resourceLoader;
   private IGameLoader loader;
   private History gameHistory = new History(this);
-  private transient volatile boolean testLockIsHeld = false;
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
   // TODO: change to Map/HashMap upon next incompatible release
@@ -392,14 +391,6 @@ public class GameData implements Serializable {
       resourceLoader.close();
       resourceLoader = null;
     }
-  }
-
-  /**
-   * On reads of the game data components, make sure that the
-   * read or write lock is held.
-   */
-  public void testLocksOnRead() {
-    testLockIsHeld = true;
   }
 
   public void addToAttachmentOrderAndValues(

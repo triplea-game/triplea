@@ -15,7 +15,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
-import lombok.extern.java.Log;
 
 /**
  * The server side of the peer-to-peer network game authentication protocol.
@@ -26,7 +25,6 @@ import lombok.extern.java.Log;
  * if authentication is successful.
  * </p>
  */
-@Log
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
 

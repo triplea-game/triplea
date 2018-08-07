@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -40,7 +39,6 @@ public final class TileImageFactory {
   private static float showMapBlendAlpha;
   private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-  private static final Logger logger = Logger.getLogger(TileImageFactory.class.getName());
   private double scale = 1.0;
   // maps image name to ImageRef
   private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());

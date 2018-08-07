@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -61,7 +60,6 @@ import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
 public class TileManager {
-  private static final Logger logger = Logger.getLogger(TileManager.class.getName());
   public static final int TILE_SIZE = 256;
 
   private List<Tile> tiles = new ArrayList<>();

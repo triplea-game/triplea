@@ -1677,7 +1677,6 @@ public class TripleAFrame extends MainGameFrame {
         return;
       }
       data.removeDataChangeListener(dataChangeListener);
-      clonedGameData.testLocksOnRead();
       if (historySyncher != null) {
         throw new IllegalStateException("Two history synchers?");
       }
