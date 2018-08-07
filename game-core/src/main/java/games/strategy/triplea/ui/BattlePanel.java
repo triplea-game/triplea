@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -82,7 +82,7 @@ public class BattlePanel extends ActionPanel {
     };
     battleFrame.setIconImage(GameRunner.getGameIcon(battleFrame));
     getMap().getUiContext().addShutdownWindow(battleFrame);
-    battleFrame.addWindowListener(new WindowListener() {
+    battleFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowActivated(final WindowEvent e) {
         SwingUtilities.invokeLater(() -> {
@@ -91,24 +91,6 @@ public class BattlePanel extends ActionPanel {
           }
         });
       }
-
-      @Override
-      public void windowClosed(final WindowEvent e) {}
-
-      @Override
-      public void windowClosing(final WindowEvent e) {}
-
-      @Override
-      public void windowDeactivated(final WindowEvent e) {}
-
-      @Override
-      public void windowDeiconified(final WindowEvent e) {}
-
-      @Override
-      public void windowIconified(final WindowEvent e) {}
-
-      @Override
-      public void windowOpened(final WindowEvent e) {}
     });
   }
 
