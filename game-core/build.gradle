@@ -95,9 +95,6 @@ dependencies {
 
     testCompile project(':test-common')
     testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
-    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.19.1'
-    testCompile 'org.mockito:mockito-junit-jupiter:2.19.1'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
     testCompile 'org.testfx:testfx-junit5:4.0.13-alpha'
     testCompile 'org.testfx:testfx-core:4.0.13-alpha'
@@ -107,28 +104,10 @@ dependencies {
     } else if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
         testRuntimeOnly 'org.testfx:openjfx-monocle:8u76-b04'
     }
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
-    testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
-    testRuntime 'org.slf4j:slf4j-nop:1.7.25'
 }
 
 task cleanRemoteLibs(type: Delete, group: LifecycleBasePlugin.BUILD_GROUP, description: 'Deletes the remote libraries directory.') {
     delete remoteLibsDir
-}
-
-test {
-    useJUnitPlatform {
-        excludeTags 'integration'
-    }
-}
-
-task integTest(type: Test) {
-    useJUnitPlatform {
-        includeTags 'integration'
-    }
 }
 
 shadowJar {
@@ -224,10 +203,6 @@ gradle.taskGraph.whenReady { graph ->
             it.project.install4j.installDir = file(project.install4jHomeDir)
         }
     })
-}
-
-check {
-    dependsOn 'integTest'
 }
 
 checkstyleMain {

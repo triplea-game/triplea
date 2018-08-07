@@ -47,24 +47,6 @@ dependencies {
     compile project(':game-core')
 
     compileOnly 'org.projectlombok:lombok:1.18.0'
-
-    testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
-    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.19.1'
-    testCompile 'org.mockito:mockito-junit-jupiter:2.19.1'
-    testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
-    
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
-    
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
-    
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
-    testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
-    testRuntime 'org.slf4j:slf4j-nop:1.7.25'
-}
-
-test {
-    useJUnitPlatform()
 }
 
 shadowJar {
