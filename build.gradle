@@ -24,12 +24,36 @@ check {
 }
 
 subprojects {
+    ext {
+        hamcrestVersion = '2.0.0.0'
+        junitJupiterVersion = '5.1.0'
+        mockitoVersion = '2.19.1'
+    }
+
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'java'
 
     repositories {
         jcenter()
+    }
+
+    dependencies {
+        testCompile "org.hamcrest:java-hamcrest:$hamcrestVersion"
+        testCompile "org.mockito:mockito-core:$mockitoVersion"
+        testCompile "org.mockito:mockito-junit-jupiter:$mockitoVersion"
+
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+
+        testRuntime "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+        testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
+        testRuntime 'org.slf4j:slf4j-nop:1.7.25'
+
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    }
+
+    check {
+        dependsOn 'integTest'
     }
 
     checkstyle {
@@ -52,6 +76,18 @@ subprojects {
         reports {
             xml.enabled = true
             html.enabled = true
+        }
+    }
+
+    test {
+        useJUnitPlatform {
+            excludeTags 'integration'
+        }
+    }
+
+    task integTest(type: Test) {
+        useJUnitPlatform {
+            includeTags 'integration'
         }
     }
 }
