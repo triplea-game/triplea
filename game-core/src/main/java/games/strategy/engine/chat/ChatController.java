@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -26,7 +26,7 @@ public class ChatController implements IChatController {
   private static final String CHAT_CHANNEL = "_ChatCtrl";
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
-  private final IModeratorController moderatorController;
+  private final Predicate<INode> isModerator;
   private final IChannelMessenger channelMessenger;
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
@@ -57,11 +57,11 @@ public class ChatController implements IChatController {
   }
 
   public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger,
-      final IChannelMessenger channelMessenger, final IModeratorController moderatorController) {
+      final IChannelMessenger channelMessenger, final Predicate<INode> isModerator) {
     chatName = name;
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;
-    this.moderatorController = moderatorController;
+    this.isModerator = isModerator;
     this.channelMessenger = channelMessenger;
     chatChannel = getChatChannelName(name);
     this.remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
@@ -75,9 +75,8 @@ public class ChatController implements IChatController {
     }, 180, 60, TimeUnit.SECONDS);
   }
 
-  public ChatController(final String name, final Messengers messenger, final IModeratorController moderatorController) {
-    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(),
-        moderatorController);
+  public ChatController(final String name, final Messengers messenger, final Predicate<INode> isModerator) {
+    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), isModerator);
   }
 
   // clean up
@@ -103,12 +102,7 @@ public class ChatController implements IChatController {
   public Tuple<Map<INode, Tag>, Long> joinChat() {
     final INode node = MessageContext.getSender();
     logger.info("Chatter:" + node + " is joining chat:" + chatName);
-    final Tag tag;
-    if (moderatorController.isPlayerAdmin(node)) {
-      tag = Tag.MODERATOR;
-    } else {
-      tag = Tag.NONE;
-    }
+    final Tag tag = isModerator.test(node) ? Tag.MODERATOR : Tag.NONE;
     synchronized (mutex) {
       chatters.put(node, tag);
       version++;

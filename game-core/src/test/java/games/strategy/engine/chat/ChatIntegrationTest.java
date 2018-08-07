@@ -13,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -46,7 +45,6 @@ public final class ChatIntegrationTest {
   private final TestChatListener serverChatListener = new TestChatListener();
   private final TestChatListener client1ChatListener = new TestChatListener();
   private final TestChatListener client2ChatListener = new TestChatListener();
-  private NullModeratorController serverModeratorController;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -65,8 +63,6 @@ public final class ChatIntegrationTest {
     final UnifiedMessenger client2UnifiedMessenger = new UnifiedMessenger(client2Messenger);
     client2RemoteMessenger = new RemoteMessenger(client2UnifiedMessenger);
     client2ChannelMessenger = new ChannelMessenger(client2UnifiedMessenger);
-    serverModeratorController = new NullModeratorController(serverMessenger, null);
-    serverModeratorController.register(serverRemoteMessenger);
   }
 
   @AfterEach
@@ -114,7 +110,7 @@ public final class ChatIntegrationTest {
         serverMessenger,
         serverRemoteMessenger,
         serverChannelMessenger,
-        serverModeratorController);
+        node -> false);
   }
 
   private static Chat newChat(

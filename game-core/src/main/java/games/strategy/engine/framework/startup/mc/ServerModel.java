@@ -52,7 +52,6 @@ import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -265,10 +264,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       remoteMessenger = new RemoteMessenger(unifiedMessenger);
       remoteMessenger.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
       channelMessenger = new ChannelMessenger(unifiedMessenger);
-      final NullModeratorController moderatorController = new NullModeratorController(serverMessenger, null);
-      moderatorController.register(remoteMessenger);
-      chatController =
-          new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, moderatorController);
+      chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
 
       if (ui == null && headless) {
         chatPanel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
