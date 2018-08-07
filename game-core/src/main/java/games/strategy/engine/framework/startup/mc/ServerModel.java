@@ -216,9 +216,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           if (port >= 65536 || port == 0) {
             if (headless) {
               throw new IllegalStateException("Invalid Port: " + port);
-            } else {
-              JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
             }
+            JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
             return null;
           }
           return options;
