@@ -333,7 +333,6 @@ public class ClientModel implements IMessengerErrorListener {
         if (game != null) {
           try {
             data.getGameLoader().startGame(game, playerSet, false, getChatPanel().getChat());
-            data.testLocksOnRead();
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to start Game", e);
             game.shutDown();

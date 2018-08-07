@@ -9,7 +9,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
@@ -19,7 +18,6 @@ import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 
 public class SmallMapImageManager {
-  private static final Logger logger = Logger.getLogger(SmallMapImageManager.class.getName());
   private final ImageScrollerSmallView view;
   private Image offscreen;
   private final TileManager tileManager;
