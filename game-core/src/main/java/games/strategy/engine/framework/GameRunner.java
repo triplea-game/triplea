@@ -109,6 +109,7 @@ public class GameRunner {
         "UI client launcher invoked from headless environment. This is current prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
 
+    ErrorHandler.registerExceptionHandler();
     ClientSetting.initialize();
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
@@ -123,7 +124,6 @@ public class GameRunner {
               }
               console.append(formatter.format(logMsg));
             }));
-        ErrorHandler.registerExceptionHandler();
         ErrorMessage.enable();
       }));
     }
