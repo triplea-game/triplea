@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
+import org.triplea.test.common.Integration;
 
 import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
 import games.strategy.engine.lobby.server.db.Database;
@@ -27,7 +28,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
-import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
 @Integration

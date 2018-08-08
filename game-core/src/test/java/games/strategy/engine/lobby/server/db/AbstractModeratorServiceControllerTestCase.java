@@ -10,9 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.triplea.test.common.Integration;
+
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
-import games.strategy.test.Integration;
 import games.strategy.util.function.ThrowingConsumer;
 
 /**

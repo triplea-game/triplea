@@ -5,8 +5,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
 
-import games.strategy.test.Integration;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 @Integration
