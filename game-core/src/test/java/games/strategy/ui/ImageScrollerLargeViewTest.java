@@ -10,25 +10,30 @@ import org.junit.jupiter.api.Test;
 final class ImageScrollerLargeViewTest {
   @Nested
   final class NormalizeScaleTest {
-    static final double ERROR = 1.0E-9;
+    private static final double ERROR = 1.0E-9;
+    private static final int TILE_SIZE = 256;
+
+    private double normalizeScale(final double value) {
+      return ImageScrollerLargeView.normalizeScale(value, TILE_SIZE);
+    }
 
     @Test
-    void shouldDiscretizeEachUnitInto256Values() {
-      assertThat(ImageScrollerLargeView.normalizeScale(1.0), is(closeTo(1.0, ERROR)));
-      assertThat(ImageScrollerLargeView.normalizeScale(0.71), is(closeTo(0.70703125, ERROR)));
-      assertThat(ImageScrollerLargeView.normalizeScale(0.5), is(closeTo(0.5, ERROR)));
-      assertThat(ImageScrollerLargeView.normalizeScale(0.36), is(closeTo(0.359375, ERROR)));
-      assertThat(ImageScrollerLargeView.normalizeScale(0.15), is(closeTo(0.1484375, ERROR)));
+    void shouldDiscretizeEachUnitIntoTileSizeValues() {
+      assertThat(normalizeScale(1.0), is(closeTo(1.0, ERROR)));
+      assertThat(normalizeScale(0.71), is(closeTo(0.70703125, ERROR)));
+      assertThat(normalizeScale(0.5), is(closeTo(0.5, ERROR)));
+      assertThat(normalizeScale(0.36), is(closeTo(0.359375, ERROR)));
+      assertThat(normalizeScale(0.15), is(closeTo(0.1484375, ERROR)));
     }
 
     @Test
     void shouldConstrainValuesGreaterThanMaximumScale() {
-      assertThat(ImageScrollerLargeView.normalizeScale(2.0), is(closeTo(1.0, ERROR)));
+      assertThat(normalizeScale(2.0), is(closeTo(1.0, ERROR)));
     }
 
     @Test
     void shouldConstrainValuesLessThanMinimumScale() {
-      assertThat(ImageScrollerLargeView.normalizeScale(0.0), is(closeTo(0.1484375, ERROR)));
+      assertThat(normalizeScale(0.0), is(closeTo(0.1484375, ERROR)));
     }
   }
 }

@@ -1,5 +1,7 @@
 package games.strategy.ui;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +44,7 @@ public class ImageScrollerLargeView extends JComponent {
   static final int TOP = 4;
   static final int BOTTOM = 8;
 
+  private final int tileSize;
   protected final ImageScrollModel model;
   protected double scale = 1;
 
@@ -80,8 +83,10 @@ public class ImageScrollerLargeView extends JComponent {
   private int edge = NONE;
   private final List<ScrollListener> scrollListeners = new ArrayList<>();
 
-  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
-    super();
+  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model, final int tileSize) {
+    checkArgument(tileSize > 0, "tile size must be positive");
+
+    this.tileSize = tileSize;
     this.model = model;
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
@@ -309,15 +314,15 @@ public class ImageScrollerLargeView extends JComponent {
    *        If out of bounds the nearest boundary value is used.
    */
   public void setScale(final double value) {
-    scale = normalizeScale(value);
+    scale = normalizeScale(value, tileSize);
     refreshBoxSize();
   }
 
   @VisibleForTesting
-  static double normalizeScale(final double value) {
-    // we want the ratio to be a multiple of 1/256
+  static double normalizeScale(final double value, final int tileSize) {
+    // we want the ratio to be a multiple of 1/tileSize
     // so that the tiles have integer widths and heights
-    return ((int) (Doubles.constrainToRange(value, 0.15, 1.0) * 256.0)) / 256.0;
+    return (int) (Doubles.constrainToRange(value, 0.15, 1.0) * tileSize) / (double) tileSize;
   }
 
   /**
