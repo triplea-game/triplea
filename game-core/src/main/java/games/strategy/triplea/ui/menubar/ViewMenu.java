@@ -130,7 +130,7 @@ final class ViewMenu extends JMenu {
       model.setMaximum(100);
       model.setMinimum(15);
       model.setStepSize(1);
-      model.setValue((int) (frame.getMapPanel().getScale() * 100));
+      model.setValue((int) Math.round(frame.getMapPanel().getScale() * 100));
       final JSpinner spinner = new JSpinner(model);
       final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
