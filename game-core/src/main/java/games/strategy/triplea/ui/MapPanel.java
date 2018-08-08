@@ -448,20 +448,20 @@ public class MapPanel extends ImageScrollerLargeView {
     @Override
     public void unitsChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
     }
 
     @Override
     public void ownerChanged(final Territory territory) {
       smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
     }
 
     @Override
     public void attachmentChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
     }
   };
 
