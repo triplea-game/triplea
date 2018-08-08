@@ -6,6 +6,9 @@ import java.util.List;
 
 import games.strategy.triplea.delegate.TechAdvance;
 
+/**
+ * A collection of {@link TechnologyFrontier}s.
+ */
 public class TechnologyFrontierList extends GameDataComponent {
   private static final long serialVersionUID = 2958122401265284935L;
   private final List<TechnologyFrontier> m_technologyFrontiers = new ArrayList<>();

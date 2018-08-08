@@ -4,6 +4,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.util.IntegerMap;
 
+/**
+ * A repair rule.
+ */
 public class RepairRule extends DefaultNamed {
   private static final long serialVersionUID = -45646671022993959L;
   private final IntegerMap<Resource> m_cost;

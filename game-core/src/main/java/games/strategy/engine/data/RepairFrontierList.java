@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A keyed collection of {@link RepairFrontier}s.
+ */
 public class RepairFrontierList extends GameDataComponent {
   private static final long serialVersionUID = -5877933681560908405L;
   private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<>();

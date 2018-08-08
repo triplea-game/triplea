@@ -6,6 +6,9 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
+/**
+ * A game data change that captures the damage caused to a collection of units by a bombing attack.
+ */
 public class BombingUnitDamageChange extends Change {
   private static final long serialVersionUID = -6425858423179501847L;
   private final IntegerMap<Unit> hits;

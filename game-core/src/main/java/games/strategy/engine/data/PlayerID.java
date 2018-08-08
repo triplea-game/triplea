@@ -8,6 +8,9 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 
+/**
+ * A game player (nation, power, etc.).
+ */
 public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
 

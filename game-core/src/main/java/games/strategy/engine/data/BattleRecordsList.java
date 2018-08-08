@@ -73,6 +73,10 @@ public class BattleRecordsList extends GameDataComponent {
   }
 
   // Interpretation stuff below
+
+  /**
+   * Returns the TUV damage caused by {@code attacker} from the battle results in {@code brl}.
+   */
   public static int getTuvDamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl,
       final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
     final Collection<BattleRecords> brs = new ArrayList<>();

@@ -5,6 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A keyed collection of {@link Resource}s.
+ */
 public class ResourceList extends GameDataComponent {
   private static final long serialVersionUID = -8812702449627698253L;
   private final Map<String, Resource> m_resourceList = new LinkedHashMap<>();

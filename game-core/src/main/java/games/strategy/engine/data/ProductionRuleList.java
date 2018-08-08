@@ -6,6 +6,9 @@ import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
+/**
+ * A keyed collection of {@link ProductionRule}s.
+ */
 public class ProductionRuleList extends GameDataComponent {
   private static final long serialVersionUID = -5313215563006788188L;
   private final Map<String, ProductionRule> m_productionRules = new HashMap<>();

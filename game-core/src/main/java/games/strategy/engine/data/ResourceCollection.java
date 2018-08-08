@@ -3,6 +3,9 @@ package games.strategy.engine.data;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
+/**
+ * A collection of {@link Resource}s.
+ */
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
   private final IntegerMap<Resource> m_resources = new IntegerMap<>();

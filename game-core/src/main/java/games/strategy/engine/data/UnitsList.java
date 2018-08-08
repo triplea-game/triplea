@@ -9,6 +9,9 @@ import java.util.Map;
 
 import games.strategy.net.GUID;
 
+/**
+ * A keyed collection of {@link Unit}s.
+ */
 public class UnitsList implements Serializable, Iterable<Unit> {
   private static final long serialVersionUID = -3134052492257867416L;
   // maps GUID -> Unit

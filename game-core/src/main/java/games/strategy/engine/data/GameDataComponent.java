@@ -7,6 +7,9 @@ import java.io.Serializable;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
+/**
+ * Superclass for all game data components (i.e. any domain object contained in an instance of {@link GameData}).
+ */
 public class GameDataComponent implements Serializable {
   private static final long serialVersionUID = -2066504666509851740L;
   @InternalDoNotExport

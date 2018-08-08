@@ -1,5 +1,8 @@
 package games.strategy.engine.data;
 
+/**
+ * A game data change that captures a change to an attachment property value.
+ */
 public class ChangeAttachmentChange extends Change {
   private static final long serialVersionUID = -6447264150952218283L;
   private final Attachable attachedTo;

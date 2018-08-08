@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A collection of {@link ProductionRule}s.
+ */
 public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule> {
   private static final long serialVersionUID = -5967251608158552892L;
   private final List<ProductionRule> m_rules;

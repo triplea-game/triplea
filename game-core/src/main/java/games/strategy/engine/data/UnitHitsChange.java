@@ -5,6 +5,9 @@ import java.util.Set;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
+/**
+ * A game data change that captures the damage done to a collection of units.
+ */
 public class UnitHitsChange extends Change {
   private static final long serialVersionUID = 2862726651812142713L;
   private final IntegerMap<Unit> m_hits;

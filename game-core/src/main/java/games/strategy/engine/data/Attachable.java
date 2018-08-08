@@ -2,6 +2,9 @@ package games.strategy.engine.data;
 
 import java.util.Map;
 
+/**
+ * An entity that can host attachments.
+ */
 public interface Attachable {
   void addAttachment(String key, IAttachment value);
 

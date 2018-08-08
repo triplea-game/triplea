@@ -6,6 +6,9 @@ import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 
+/**
+ * A keyed collection of {@link ProductionFrontier}s.
+ */
 public class ProductionFrontierList extends GameDataComponent {
   private static final long serialVersionUID = -7565214499087021809L;
   private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<>();

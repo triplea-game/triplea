@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+/**
+ * A territory on a map.
+ */
 public class Territory extends NamedAttachable implements NamedUnitHolder, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
   private final boolean m_water;
