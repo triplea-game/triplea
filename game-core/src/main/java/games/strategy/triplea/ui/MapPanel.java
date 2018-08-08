@@ -202,7 +202,7 @@ public class MapPanel extends ImageScrollerLargeView {
       });
     });
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
-    executor.submit(() -> recreateTiles(data, uiContext));
+    executor.execute(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {
       // super.deactivate
       deactivate();
@@ -286,7 +286,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final Point p = uiContext.getMapData().getCenter(territory);
-    // when centering dont want the map to wrap around,
+    // when centering don't want the map to wrap around,
     // eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
@@ -441,27 +441,27 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(dataChangeListener);
     clearPendingDrawOperations();
-    executor.submit(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+    executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
   }
 
   private final TerritoryListener territoryListener = new TerritoryListener() {
     @Override
     public void unitsChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
     }
 
     @Override
     public void ownerChanged(final Territory territory) {
       smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
     }
 
     @Override
     public void attachmentChanged(final Territory territory) {
       updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(() -> repaint());
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
     }
   };
 
