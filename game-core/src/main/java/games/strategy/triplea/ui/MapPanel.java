@@ -98,7 +98,7 @@ public class MapPanel extends ImageScrollerLargeView {
   /** Creates new MapPanel. */
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final UiContext uiContext,
       final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
-    super(uiContext.getMapData().getMapDimensions(), model);
+    super(uiContext.getMapData().getMapDimensions(), model, TileManager.TILE_SIZE);
     this.uiContext = uiContext;
     this.smallView = smallView;
     tileManager = new TileManager(uiContext);

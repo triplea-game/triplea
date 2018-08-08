@@ -1,5 +1,7 @@
 package games.strategy.ui;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +22,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.primitives.Doubles;
+
 import games.strategy.triplea.settings.ClientSetting;
 
 /**
@@ -39,6 +44,7 @@ public class ImageScrollerLargeView extends JComponent {
   static final int TOP = 4;
   static final int BOTTOM = 8;
 
+  private final int tileSize;
   protected final ImageScrollModel model;
   protected double scale = 1;
 
@@ -77,8 +83,10 @@ public class ImageScrollerLargeView extends JComponent {
   private int edge = NONE;
   private final List<ScrollListener> scrollListeners = new ArrayList<>();
 
-  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
-    super();
+  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model, final int tileSize) {
+    checkArgument(tileSize > 0, "tile size must be positive");
+
+    this.tileSize = tileSize;
     this.model = model;
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
@@ -305,18 +313,22 @@ public class ImageScrollerLargeView extends JComponent {
    * @param value The new scale value. Constrained to the bounds of no less than 0.15 and no greater than 1.
    *        If out of bounds the nearest boundary value is used.
    */
-  public void setScale(double value) {
-    if (value < 0.15) {
-      value = 0.15;
-    }
-    if (value > 1) {
-      value = 1;
-    }
-    // we want the ratio to be a multiple of 1/256
-    // so that the tiles have integer widths and heights
-    value = ((int) (value * 256)) / ((double) 256);
-    scale = value;
+  public void setScale(final double value) {
+    scale = discretizeScale(constrainScale(value), tileSize);
     refreshBoxSize();
+  }
+
+  private static double constrainScale(final double value) {
+    return Doubles.constrainToRange(value, 0.15, 1.0);
+  }
+
+  /**
+   * Maps {@code value} to the nearest discrete value (rounding towards zero) that is a multiple of
+   * {@code 1 / tileSize}. This ensures that a scaled tile will always have an integer width and height.
+   */
+  @VisibleForTesting
+  static double discretizeScale(final double value, final int tileSize) {
+    return (int) (value * tileSize) / (double) tileSize;
   }
 
   /**
