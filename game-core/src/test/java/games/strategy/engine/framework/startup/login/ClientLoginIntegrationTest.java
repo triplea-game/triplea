@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
 
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
@@ -18,7 +19,6 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
-import games.strategy.test.Integration;
 
 @Integration
 public final class ClientLoginIntegrationTest {

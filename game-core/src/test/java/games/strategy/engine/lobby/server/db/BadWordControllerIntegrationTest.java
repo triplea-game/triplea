@@ -8,8 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
 
-import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
 @Integration

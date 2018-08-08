@@ -31,4 +31,5 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.0'
 
     compile "org.hamcrest:java-hamcrest:$hamcrestVersion"
+    compile "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
 }

@@ -8,11 +8,11 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.test.common.Integration;
 
 import com.google.common.base.Strings;
 
 import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
-import games.strategy.test.Integration;
 import games.strategy.util.Util;
 
 /**

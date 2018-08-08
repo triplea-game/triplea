@@ -10,11 +10,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
 
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.login.UserType;
-import games.strategy.test.Integration;
 
 @Integration
 public final class AccessLogControllerIntegrationTest extends AbstractControllerTestCase {

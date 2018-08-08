@@ -1,4 +1,4 @@
-package games.strategy.test;
+package org.triplea.test.common;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
