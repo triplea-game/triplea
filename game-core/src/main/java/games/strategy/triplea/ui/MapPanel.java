@@ -286,7 +286,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final Point p = uiContext.getMapData().getCenter(territory);
-    // when centering dont want the map to wrap around,
+    // when centering don't want the map to wrap around,
     // eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
