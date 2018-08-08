@@ -15,17 +15,15 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-@AllArgsConstructor(access =  AccessLevel.PUBLIC)
+/**
+ * Utility class to calculate a smooth route to draw on the map.
+ */
 @Builder
-public class RouteCalculator {
-
-  public final boolean isInfiniteY;
-  public final boolean isInfiniteX;
-
+public final class RouteCalculator {
+  private final boolean isInfiniteX;
+  private final boolean isInfiniteY;
   private final int mapWidth;
   private final int mapHeight;
 
