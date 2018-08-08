@@ -3,7 +3,6 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'com.install4j.gradle' version '7.0.1'
-    id 'net.ltgt.errorprone' version '0.0.15'
     id 'de.undercouch.download' version '3.4.3'
 }
 
@@ -51,20 +50,6 @@ version = getEngineVersion()
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs += [ '-Xlint:all', '-Xmaxwarns', '1000' ]
-    
-    // workaround for: https://github.com/google/error-prone/issues/780
-    options.compilerArgs += [ '-Xep:ParameterName:OFF' ]
-    
-    options.incremental = true
-    options.encoding = 'UTF-8'
-}
-
-compileTestJava {
-    options.compilerArgs += [ '-Xep:ClassCanBeStatic:OFF' ]
-}
-
 jar {
     manifest {
         attributes 'Main-Class': mainClassName, 'TripleA-Version': version
@@ -72,8 +57,6 @@ jar {
 }
 
 dependencies {
-    errorprone 'com.google.errorprone:error_prone_core:2.3.1'
-
     compile 'org.postgresql:postgresql:42.2.2'
     compile 'com.github.openjson:openjson:1.0.10'
     compile 'com.google.guava:guava:24.1-jre'

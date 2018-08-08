@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'net.ltgt.errorprone' version '0.0.15' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -33,12 +34,15 @@ subprojects {
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'java'
+    apply plugin: 'net.ltgt.errorprone'
 
     repositories {
         jcenter()
     }
 
     dependencies {
+        errorprone 'com.google.errorprone:error_prone_core:2.3.1'
+
         testCompile "org.hamcrest:java-hamcrest:$hamcrestVersion"
         testCompile "org.mockito:mockito-core:$mockitoVersion"
         testCompile "org.mockito:mockito-junit-jupiter:$mockitoVersion"
@@ -50,6 +54,16 @@ subprojects {
         testRuntime 'org.slf4j:slf4j-nop:1.7.25'
 
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += [
+            '-Xep:ParameterName:OFF', // workaround for https://github.com/google/error-prone/issues/780
+            '-Xlint:all',
+            '-Xmaxwarns', '1000'
+        ]
+        options.encoding = 'UTF-8'
+        options.incremental = true
     }
 
     check {
@@ -70,6 +84,10 @@ subprojects {
     checkstyleTest {
         maxWarnings = 0
         source sourceSets.test.output.resourcesDir
+    }
+
+    compileTestJava {
+        options.compilerArgs += ['-Xep:ClassCanBeStatic:OFF']
     }
 
     jacocoTestReport {
