@@ -202,7 +202,7 @@ public class MapPanel extends ImageScrollerLargeView {
       });
     });
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
-    executor.submit(() -> recreateTiles(data, uiContext));
+    executor.execute(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {
       // super.deactivate
       deactivate();
@@ -441,7 +441,7 @@ public class MapPanel extends ImageScrollerLargeView {
     gameData.addTerritoryListener(territoryListener);
     gameData.addDataChangeListener(dataChangeListener);
     clearPendingDrawOperations();
-    executor.submit(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
+    executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
   }
 
   private final TerritoryListener territoryListener = new TerritoryListener() {
