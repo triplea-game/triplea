@@ -119,11 +119,12 @@ public class ImageScrollerSmallView extends JComponent {
     final double height = model.getBoxHeight() * ratioY;
     final Rectangle2D.Double mapBounds = new Rectangle2D.Double(0, 0,
         model.getMaxWidth() * ratioX, model.getMaxHeight() * ratioY);
-    final RouteCalculator calculator = new RouteCalculator(
-        model.getScrollY(),
-        model.getScrollX(),
-        (int) Math.round(mapBounds.width),
-        (int) Math.round(mapBounds.height));
+    final RouteCalculator calculator = RouteCalculator.builder()
+        .isInfiniteY(model.getScrollY())
+        .isInfiniteX(model.getScrollX())
+        .mapWidth((int) Math.round(mapBounds.width))
+        .mapHeight((int) Math.round(mapBounds.height))
+        .build();
     final Rectangle2D.Double rect = new Rectangle2D.Double(
         x % mapBounds.width, y % mapBounds.height,
         width, height);
