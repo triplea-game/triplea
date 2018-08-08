@@ -6,6 +6,9 @@ import javax.swing.Action;
 
 import games.strategy.net.INode;
 
+/**
+ * Factory for creating actions in response to a player (node) event.
+ */
 @FunctionalInterface
 public interface IPlayerActionFactory {
 

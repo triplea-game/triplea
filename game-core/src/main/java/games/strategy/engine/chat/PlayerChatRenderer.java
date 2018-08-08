@@ -21,6 +21,9 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.UiContext;
 
+/**
+ * A list cell renderer for a chat participant.
+ */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
   private final IGame game;

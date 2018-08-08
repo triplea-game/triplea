@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.swing.Icon;
 
+/**
+ * An icon that is rendered as a composite of zero or more other icons.
+ */
 public class CompositeIcon implements Icon {
   private static final int GAP = 2;
   private final List<Icon> icons;
