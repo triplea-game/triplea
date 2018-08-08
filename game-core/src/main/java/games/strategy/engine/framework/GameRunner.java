@@ -113,17 +113,19 @@ public class GameRunner {
     ClientSetting.initialize();
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      final Console console = new Console();
-      final SimpleFormatter formatter = new SimpleFormatter();
-      LogManager.getLogManager().getLogger("").addHandler(new ConsoleHandler(
-          logMsg -> {
-            if (logMsg.getLevel().intValue() > Level.INFO.intValue()) {
-              ErrorMessage.show(logMsg.getMessage());
-            }
-            console.append(formatter.format(logMsg));
-          }));
-      ErrorMessage.enable();
-      Interruptibles.await(() -> SwingAction.invokeAndWait(LookAndFeel::setupLookAndFeel));
+      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
+        LookAndFeel.setupLookAndFeel();
+        final Console console = new Console();
+        final SimpleFormatter formatter = new SimpleFormatter();
+        LogManager.getLogManager().getLogger("").addHandler(new ConsoleHandler(
+            logMsg -> {
+              if (logMsg.getLevel().intValue() > Level.INFO.intValue()) {
+                ErrorMessage.show(logMsg.getMessage());
+              }
+              console.append(formatter.format(logMsg));
+            }));
+        ErrorMessage.enable();
+      }));
     }
     new ArgParser().handleCommandLineArgs(args);
 
