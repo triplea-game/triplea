@@ -22,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.primitives.Doubles;
 
 import games.strategy.triplea.settings.ClientSetting;
@@ -314,15 +313,20 @@ public class ImageScrollerLargeView extends JComponent {
    *        If out of bounds the nearest boundary value is used.
    */
   public void setScale(final double value) {
-    scale = normalizeScale(value, tileSize);
+    scale = discretizeScale(constrainScale(value));
     refreshBoxSize();
   }
 
-  @VisibleForTesting
-  static double normalizeScale(final double value, final int tileSize) {
-    // we want the ratio to be a multiple of 1/tileSize
-    // so that the tiles have integer widths and heights
-    return (int) (Doubles.constrainToRange(value, 0.15, 1.0) * tileSize) / (double) tileSize;
+  private static double constrainScale(final double value) {
+    return Doubles.constrainToRange(value, 0.15, 1.0);
+  }
+
+  /**
+   * Maps {@code value} to the nearest discrete value (rounding towards zero) that is a multiple of
+   * {@code 1 / tileSize}. This ensures that a scaled tile will always have an integer width and height.
+   */
+  private double discretizeScale(final double value) {
+    return (int) (value * tileSize) / (double) tileSize;
   }
 
   /**
