@@ -1,12 +1,8 @@
 plugins {
     id 'application'
-    id 'com.github.ben-manes.versions' version '0.20.0'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
-    id 'com.install4j.gradle' version '7.0.1'
-    id 'de.undercouch.download' version '3.4.3'
 }
 
-group = 'triplea'
 description = 'TripleA Lobby'
 mainClassName = 'games.strategy.engine.lobby.server.LobbyRunner'
 
@@ -15,9 +11,6 @@ ext {
 }
 
 version = project.hasProperty('lobbyVersion') ? project.lobbyVersion : 'dev'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 jar {
     manifest {
@@ -28,7 +21,7 @@ jar {
 dependencies {
     compile project(':game-core')
 
-    compileOnly 'org.projectlombok:lombok:1.18.0'
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
 }
 
 shadowJar {
