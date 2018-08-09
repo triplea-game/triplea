@@ -12,10 +12,12 @@ import games.strategy.triplea.settings.ClientSetting;
 public final class ArgParser {
   static final String TRIPLEA_PROTOCOL = "triplea:";
 
+  private ArgParser() {}
+
   /**
    * Move command line arguments to system properties or client settings.
    */
-  public void handleCommandLineArgs(final String[] args) {
+  public static void handleCommandLineArgs(final String[] args) {
     ClientSetting.MAP_FOLDER_OVERRIDE.save(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue);
 
     if ((args.length == 1) && args[0].startsWith(TRIPLEA_PROTOCOL)) {
