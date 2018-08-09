@@ -1,23 +1,23 @@
 buildscript {
-  dependencies {
-    classpath 'com.h2database:h2:1.4.197'
-    classpath 'org.postgresql:postgresql:42.2.2'
-  }
+    dependencies {
+        classpath 'com.h2database:h2:1.4.197'
+        classpath 'org.postgresql:postgresql:42.2.2'
+    }
 }
 
 plugins {
-  id "org.flywaydb.flyway" version "5.1.4"
+    id 'org.flywaydb.flyway' version '5.1.4'
 }
 
 flyway {
-  driver = 'org.postgresql.Driver'
-  url= 'jdbc:postgresql://localhost:5432/ta_users'
-  user = 'postgres'
-  password = 'postgres'
+    driver = 'org.postgresql.Driver'
+    url= 'jdbc:postgresql://localhost:5432/ta_users'
+    user = 'postgres'
+    password = 'postgres'
 }
 
 task lobbyDbRelease(type: Zip, group: 'release') {
-   from "${projectDir}/src/main/resources/db/migration/"
-   include '*.sql'
-   archiveName 'migrations.zip'
+    from "${projectDir}/src/main/resources/db/migration/"
+    include '*.sql'
+    archiveName 'migrations.zip'
 }
