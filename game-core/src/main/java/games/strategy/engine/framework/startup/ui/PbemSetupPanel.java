@@ -384,7 +384,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     private Map<String, IBean> loadMap() {
       if (file.exists()) {
         try (FileInputStream fin = new FileInputStream(file);
-            final ObjectInput oin = new ObjectInputStream(fin)) {
+            ObjectInput oin = new ObjectInputStream(fin)) {
           final Object o = oin.readObject();
           if (o instanceof Map) {
             final Map<?, ?> m = (Map<?, ?>) o;
@@ -425,7 +425,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     void writeToDisk() {
       synchronized (mutex) {
         try (FileOutputStream fout = new FileOutputStream(file, false);
-            final ObjectOutputStream out = new ObjectOutputStream(fout)) {
+            ObjectOutputStream out = new ObjectOutputStream(fout)) {
           out.writeObject(map);
         } catch (final IOException e) {
           log.log(Level.SEVERE, "failed to write local bean cache", e);
