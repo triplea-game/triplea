@@ -7,6 +7,9 @@ import javax.swing.JComponent;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.ui.IntTextField;
 
+/**
+ * Implementation of {@link IEditableProperty} for an integer value.
+ */
 public class NumberProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = 6826763550643504789L;
