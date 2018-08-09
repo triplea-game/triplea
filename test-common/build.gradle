@@ -1,6 +1,7 @@
 description = 'Test utility library, generic test utilities useful for TripleA projects'
 
 dependencies {
+    compile 'com.google.code.findbugs:jsr305:3.0.2'
     compile "org.hamcrest:java-hamcrest:$hamcrestVersion"
     compile "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
 
