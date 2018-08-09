@@ -1,12 +1,10 @@
 plugins {
     id 'application'
-    id 'com.github.ben-manes.versions' version '0.20.0'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'com.install4j.gradle' version '7.0.1'
     id 'de.undercouch.download' version '3.4.3'
 }
 
-group = 'triplea'
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = 'games.strategy.engine.framework.GameRunner'
 
@@ -47,9 +45,6 @@ def remoteFile(url) {
 
 version = getEngineVersion()
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 jar {
     manifest {
         attributes 'Main-Class': mainClassName, 'TripleA-Version': version
@@ -73,7 +68,8 @@ dependencies {
     compile 'commons-cli:commons-cli:1.4'
     compile remoteFile('https://github.com/kirill-grouchnikov/substance/raw/f894ef784a2ac20acf13e6ed2c7c26123399787b/drop/8.0.02/substance-8.0.02.jar')
 
-    compileOnly 'org.projectlombok:lombok:1.18.0'
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/f894ef784a2ac20acf13e6ed2c7c26123399787b/drop/8.0.02/trident-1.5.00.jar')
 
     testCompile project(':test-common')
@@ -121,7 +117,6 @@ task downloadAssets(group: 'release') {
         }
     }
 }
-
 
 import com.install4j.gradle.Install4jTask
 task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {

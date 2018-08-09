@@ -1,19 +1,8 @@
-plugins {
-    id 'com.github.ben-manes.versions' version '0.20.0'
-    id 'com.github.johnrengelman.shadow' version '2.0.4'
-    id 'com.install4j.gradle' version '7.0.1'
-    id 'de.undercouch.download' version '3.4.3'
-}
-
-group = 'triplea'
 description = 'Test utility library, generic test utilities useful for TripleA projects'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.0'
-
     compile "org.hamcrest:java-hamcrest:$hamcrestVersion"
     compile "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
 }

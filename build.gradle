@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.ben-manes.versions' version '0.20.0'
     id 'net.ltgt.errorprone' version '0.0.15' apply false
 }
 
@@ -7,6 +8,10 @@ apply from: 'gradle/scripts/yaml.gradle'
 
 ext {
     schemasDir = file('config/triplea/schemas')
+}
+
+check {
+    dependsOn 'validateYamls'
 }
 
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
@@ -20,14 +25,15 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
     }
 }
 
-check {
-    dependsOn 'validateYamls'
-}
-
 subprojects {
+    group = 'triplea'
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
     ext {
         hamcrestVersion = '2.0.0.0'
         junitJupiterVersion = '5.1.0'
+        lombokVersion = '1.18.0'
         mockitoVersion = '2.19.1'
     }
 
