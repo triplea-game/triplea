@@ -20,8 +20,6 @@ jar {
 
 dependencies {
     compile project(':game-core')
-
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
 }
 
 shadowJar {
