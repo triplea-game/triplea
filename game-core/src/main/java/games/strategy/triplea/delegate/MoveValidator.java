@@ -1464,8 +1464,9 @@ public class MoveValidator {
             data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsLand().and(noImpassableOrRestricted));
       }
       if ((landRoute != null)
-          && forceLandOrSeaRoute
-          && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsLand())) {
+          && ((landRoute.numberOfSteps() <= defaultRoute.numberOfSteps())
+              || (forceLandOrSeaRoute
+                  && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsLand())))) {
         defaultRoute = landRoute;
         mustGoLand = true;
       }
@@ -1476,8 +1477,9 @@ public class MoveValidator {
       final Route waterRoute =
           data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassableOrRestricted));
       if ((waterRoute != null)
-          && forceLandOrSeaRoute
-          && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsSea())) {
+          && ((waterRoute.numberOfSteps() <= defaultRoute.numberOfSteps())
+              || (forceLandOrSeaRoute
+                  && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsSea())))) {
         defaultRoute = waterRoute;
         mustGoSea = true;
       }
@@ -1509,7 +1511,7 @@ public class MoveValidator {
         testMatch = t.and(noImpassableOrRestricted);
       }
       final Route testRoute = data.getMap().getRoute_IgnoreEnd(start, end, testMatch);
-      if (testRoute != null) {
+      if ((testRoute != null) && (testRoute.numberOfSteps() <= defaultRoute.numberOfSteps())) {
         return testRoute;
       }
     }
