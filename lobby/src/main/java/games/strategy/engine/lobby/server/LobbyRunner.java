@@ -1,8 +1,11 @@
 package games.strategy.engine.lobby.server;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
@@ -19,12 +22,9 @@ public final class LobbyRunner {
    * Entry point for running a new lobby server. The lobby server runs until the process is killed or the lobby server
    * is shut down via administrative command.
    */
-  public static void main(final String[] args) throws IOException {
+  public static void main(final String[] args) throws Exception {
     File propertyFile = new File("config/lobby/lobby.properties");
-    if (!propertyFile.exists()) {
-      log.log(Level.SEVERE, "Could not find property file: " + propertyFile.getAbsolutePath());
-      return;
-    }
+    checkState(propertyFile.exists(), "Could not find property file: " + propertyFile.getAbsolutePath());
 
     final LobbyPropertyReader lobbyPropertyReader =
         new LobbyPropertyReader(new FilePropertyReader(propertyFile));
