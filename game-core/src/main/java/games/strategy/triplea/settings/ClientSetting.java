@@ -205,8 +205,12 @@ public enum ClientSetting implements GameSetting {
    * values saved values until after 'flush' has been called.
    */
   public static void flush() {
+    flush(getPreferences());
+  }
+
+  private static void flush(final Preferences preferences) {
     try {
-      getPreferences().flush();
+      preferences.flush();
     } catch (final BackingStoreException e) {
       log.log(Level.SEVERE, "Failed to save settings", e);
     }
@@ -254,9 +258,12 @@ public enum ClientSetting implements GameSetting {
 
   public void saveAndFlush(final String newValue) {
     save(newValue);
+
     // do the flush on a new thread to guarantee we do not block EDT.
     // Flush operations are pretty slow!
-    new Thread(ClientSetting::flush).start();
+    // Save preferences before spawning new thread; tests may call resetPreferences() before it can run.
+    final Preferences preferences = getPreferences();
+    new Thread(() -> flush(preferences)).start();
   }
 
   @Override

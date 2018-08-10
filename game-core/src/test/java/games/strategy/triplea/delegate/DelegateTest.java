@@ -83,13 +83,13 @@ public class DelegateTest {
   public void setUp() throws Exception {
     gameData = TestMapGameData.DELEGATE_TEST.getGameData();
     british = GameDataTestUtil.british(gameData);
-    british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
+    addTechAttachment(british);
     japanese = GameDataTestUtil.japanese(gameData);
-    japanese.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
+    addTechAttachment(japanese);
     russians = GameDataTestUtil.russians(gameData);
-    russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
+    addTechAttachment(russians);
     germans = GameDataTestUtil.germans(gameData);
-    germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
+    addTechAttachment(germans);
     northSea = gameData.getMap().getTerritory("North Sea Zone");
     blackSea = gameData.getMap().getTerritory("Black Sea Zone");
     uk = gameData.getMap().getTerritory("United Kingdom");
@@ -145,6 +145,12 @@ public class DelegateTest {
     bomber = GameDataTestUtil.bomber(gameData);
     carrier = GameDataTestUtil.carrier(gameData);
     pus = gameData.getResourceList().getResource("PUs");
+  }
+
+  private void addTechAttachment(final PlayerID player) {
+    player.addAttachment(
+        Constants.TECH_ATTACHMENT_NAME,
+        new TechAttachment(Constants.TECH_ATTACHMENT_NAME, player, gameData));
   }
 
   public void assertValid(final String string) {

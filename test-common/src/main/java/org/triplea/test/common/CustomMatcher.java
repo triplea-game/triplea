@@ -3,11 +3,12 @@ package org.triplea.test.common;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
+
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
 import lombok.Builder;
-import lombok.NonNull;
 
 /**
  * Convenience class for building a type safe hamcrest matcher.
@@ -34,9 +35,9 @@ import lombok.NonNull;
  */
 @Builder
 public class CustomMatcher<T> extends BaseMatcher<T> {
-  @NonNull
+  @Nonnull
   private final String description;
-  @NonNull
+  @Nonnull
   private final Predicate<T> checkCondition;
   @SuppressWarnings("FieldMayBeFinal")
   @Builder.Default
