@@ -23,7 +23,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public final class FilePropertyReader extends AbstractPropertyReader {
-  private final File file;
+  private final File propertiesFile;
 
   /**
    * Creates a property reader using the properties file at the specified path as the source.
@@ -39,27 +39,25 @@ public final class FilePropertyReader extends AbstractPropertyReader {
   /**
    * Creates a property reader using the specified properties file as the source.
    *
-   * @param file The properties file.
-   *
    * @throws IllegalArgumentException If {@code file} does not exist.
    */
-  public FilePropertyReader(final File file) {
-    checkNotNull(file);
-    checkArgument(file.exists(), "Property file not found: " + file.getAbsolutePath());
+  public FilePropertyReader(final File propertiesFile) {
+    checkNotNull(propertiesFile);
+    checkArgument(propertiesFile.exists(), "Property file not found: " + propertiesFile.getAbsolutePath());
 
-    this.file = file;
+    this.propertiesFile = propertiesFile;
   }
 
   @Override
   protected @Nullable String readPropertyInternal(final String key) {
-    try (InputStream inputStream = new FileInputStream(file)) {
+    try (InputStream inputStream = new FileInputStream(propertiesFile)) {
       final Properties props = new Properties();
       props.load(inputStream);
       return props.getProperty(key);
     } catch (final FileNotFoundException e) {
-      throw new IllegalStateException("Property file not found: " + file.getAbsolutePath(), e);
+      throw new IllegalStateException("Property file not found: " + propertiesFile.getAbsolutePath(), e);
     } catch (final IOException e) {
-      throw new IllegalStateException("Failed to read property file: " + file.getAbsolutePath(), e);
+      throw new IllegalStateException("Failed to read property file: " + propertiesFile.getAbsolutePath(), e);
     }
   }
 }

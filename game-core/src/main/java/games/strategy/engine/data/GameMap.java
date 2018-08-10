@@ -121,14 +121,12 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * Returns all adjacent neighbors of the starting territory.
    * Does NOT include the original/starting territory in the returned Set.
-   *
-   * @param t referring territory
    */
-  public Set<Territory> getNeighbors(final Territory t) {
+  public Set<Territory> getNeighbors(final Territory territory) {
     // ok since all entries in connections are already unmodifiable
-    final Set<Territory> neighbors = m_connections.get(t);
+    final Set<Territory> neighbors = m_connections.get(territory);
     if (neighbors == null) {
-      throw new IllegalArgumentException("No neighbors for:" + t);
+      throw new IllegalArgumentException("No neighbors for:" + territory);
     }
     return neighbors;
   }
@@ -137,15 +135,15 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Returns all adjacent neighbors of the starting territory that match the condition.
    * Does NOT include the original/starting territory in the returned Set.
    *
-   * @param t referring territory
-   * @param cond condition the neighboring territories have to match
+   * @param territory referring territory
+   * @param neighborFilter condition the neighboring territories have to match
    */
-  public Set<Territory> getNeighbors(final Territory t, @Nullable final Predicate<Territory> cond) {
-    if (cond == null) {
-      return getNeighbors(t);
+  public Set<Territory> getNeighbors(final Territory territory, final Predicate<Territory> neighborFilter) {
+    if (neighborFilter == null) {
+      return getNeighbors(territory);
     }
-    return m_connections.getOrDefault(t, Collections.emptySet()).stream()
-        .filter(cond)
+    return m_connections.getOrDefault(territory, Collections.emptySet()).stream()
+        .filter(neighborFilter)
         .collect(Collectors.toSet());
   }
 
@@ -265,25 +263,25 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * Returns the shortest land route between two territories or null if no route exists.
    *
-   * @param t1 start territory of the route
-   * @param t2 end territory of the route
+   * @param start start territory of the route
+   * @param end end territory of the route
    */
-  public Route getLandRoute(final Territory t1, final Territory t2) {
-    return getRoute(t1, t2, Matches.territoryIsLand());
+  public Route getLandRoute(final Territory start, final Territory end) {
+    return getRoute(start, end, Matches.territoryIsLand());
   }
 
   /**
    * Returns the shortest water route between two territories or null if no route exists.
    *
-   * @param t1 start territory of the route
-   * @param t2 end territory of the route
+   * @param start start territory of the route
+   * @param end end territory of the route
    */
-  public Route getWaterRoute(final Territory t1, final Territory t2) {
-    return getRoute(t1, t2, Matches.territoryIsWater());
+  public Route getWaterRoute(final Territory start, final Territory end) {
+    return getRoute(start, end, Matches.territoryIsWater());
   }
 
-  public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Predicate<Territory> match) {
-    return getRoute(t1, t2, Matches.territoryIs(t2).or(match));
+  public Route getRoute_IgnoreEnd(final Territory start, final Territory end, final Predicate<Territory> match) {
+    return getRoute(start, end, Matches.territoryIs(end).or(match));
   }
 
   /**
@@ -297,21 +295,21 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * (Recommended that you use 2,3,4 as scores, unless you will allow routes to be much longer under certain conditions)
    * Returns null if there is no route that exists that matches any of the matches.
    *
-   * @param t1 start territory of the route
-   * @param t2 end territory of the route
+   * @param start start territory of the route
+   * @param end end territory of the route
    * @param matches HashMap of territory matches for covered territories
    * @return a composite route between two territories
    */
-  public Route getCompositeRoute(final Territory t1, final Territory t2,
+  public Route getCompositeRoute(final Territory start, final Territory end,
       final Map<Predicate<Territory>, Integer> matches) {
-    if (t1 == t2) {
-      return new Route(t1);
+    if (start == end) {
+      return new Route(start);
     }
     final Predicate<Territory> allCond = t -> matches.keySet().stream().anyMatch(p -> p.test(t));
-    if (getNeighbors(t1, allCond).contains(t2)) {
-      return new Route(t1, t2);
+    if (getNeighbors(start, allCond).contains(end)) {
+      return new Route(start, end);
     }
-    return new CompositeRouteFinder(this, matches).findRoute(t1, t2);
+    return new CompositeRouteFinder(this, matches).findRoute(start, end);
   }
 
   public Route getCompositeRoute_IgnoreEnd(final Territory t1, final Territory t2,

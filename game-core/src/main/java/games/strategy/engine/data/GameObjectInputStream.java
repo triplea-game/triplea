@@ -12,12 +12,6 @@ import games.strategy.engine.framework.GameObjectStreamFactory;
 public class GameObjectInputStream extends ObjectInputStream {
   private final GameObjectStreamFactory dataSource;
 
-  /**
-   * Creates new GameObjectReader.
-   *
-   * @param dataSource data source
-   * @param input input stream
-   */
   public GameObjectInputStream(final GameObjectStreamFactory dataSource, final InputStream input) throws IOException {
     super(input);
     this.dataSource = dataSource;

@@ -22,11 +22,6 @@ public class GameObjectStreamData implements Externalizable {
 
   public GameObjectStreamData() {}
 
-  /**
-   * Creates a new instance of GameObjectStreamData.
-   *
-   * @param named named entity
-   */
   public GameObjectStreamData(final Named named) {
     name = named.getName();
     if (named instanceof PlayerID) {

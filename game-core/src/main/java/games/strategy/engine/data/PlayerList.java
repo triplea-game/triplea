@@ -20,11 +20,6 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   // maps String playerName -> PlayerID
   private final Map<String, PlayerID> m_players = new LinkedHashMap<>();
 
-  /**
-   * Creates new PlayerList.
-   *
-   * @param data game data
-   */
   public PlayerList(final GameData data) {
     super(data);
   }

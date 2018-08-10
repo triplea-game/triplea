@@ -1,6 +1,6 @@
 package games.strategy.engine.data;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Resource extends NamedAttachable {
@@ -8,24 +8,18 @@ public class Resource extends NamedAttachable {
 
   private final List<PlayerID> players;
 
-  /**
-   * Creates new Resource.
-   *
-   * @param name name of the resource
-   * @param data game data
-   */
-  public Resource(final String name, final GameData data) {
-    this(name, data, new ArrayList<>());
+  public Resource(final String resourceName, final GameData data) {
+    this(resourceName, data, Collections.emptyList());
   }
 
-  public Resource(final String name, final GameData data, final List<PlayerID> players) {
-    super(name, data);
+  public Resource(final String resourceName, final GameData data, final List<PlayerID> players) {
+    super(resourceName, data);
     this.players = players;
   }
 
   public boolean isDisplayedFor(final PlayerID player) {
     // TODO: remove null check on incompatible release
-    return players == null || players.contains(player);
+    return (players == null) || players.contains(player);
   }
 
 }
