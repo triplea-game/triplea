@@ -1,11 +1,8 @@
 package games.strategy.engine.lobby.server;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.io.File;
-import java.util.logging.Level;
-
-import com.google.common.base.Preconditions;
 
 import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
