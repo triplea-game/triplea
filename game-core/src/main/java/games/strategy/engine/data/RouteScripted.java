@@ -14,8 +14,6 @@ import java.util.List;
 public class RouteScripted extends Route {
   private static final long serialVersionUID = 604474811874966546L;
 
-  public RouteScripted() {}
-
   /**
    * Shameless cheating. Making a fake route, so as to handle battles properly without breaking battleTracker protected
    * status or
@@ -26,22 +24,10 @@ public class RouteScripted extends Route {
     super(terr);
   }
 
-  public RouteScripted(final Territory start, final Territory... route) {
-    super(start, route);
-  }
-
   @Override
   public void add(final Territory t) {
     // maybe we don't check for loops?
     super.add(t);
-  }
-
-  @Override
-  public int getMovementCost(final Unit u) {
-    if (super.getMovementCost(u) <= 0) {
-      return 1;
-    }
-    return super.getMovementCost(u);
   }
 
   @Override

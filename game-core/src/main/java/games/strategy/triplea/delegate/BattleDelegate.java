@@ -1468,7 +1468,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       while (possibleIter.hasNext()) {
         final Route route = data.getMap().getRoute(currentTerr, possibleIter.next(),
             Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir));
-        if (route == null || route.getMovementCost(strandedAir.iterator().next()) > maxDistance) {
+        if ((route == null) || (route.numberOfSteps() > maxDistance)) {
           possibleIter.remove();
         }
       }

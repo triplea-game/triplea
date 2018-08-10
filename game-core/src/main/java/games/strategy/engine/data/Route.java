@@ -171,16 +171,6 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * Returns the total cost of the route including modifications due to territoryEffects and territoryConnections.
-   *
-   * @param u unit that is moving on this route
-   */
-  public int getMovementCost(final Unit u) {
-    // TODO implement me
-    return m_steps.size();
-  }
-
-  /**
    * Returns the number of steps in this route. Does not include start.
    */
   public int numberOfSteps() {
@@ -383,16 +373,8 @@ public class Route implements Serializable, Iterable<Territory> {
         || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
   }
 
-  public int getLargestMovementCost(final Collection<Unit> units) {
-    int largestCost = 0;
-    for (final Unit unit : units) {
-      largestCost = Math.max(largestCost, getMovementCost(unit));
-    }
-    return largestCost;
-  }
-
   public int getMovementLeft(final Unit unit) {
-    return ((TripleAUnit) unit).getMovementLeft() - getMovementCost(unit);
+    return ((TripleAUnit) unit).getMovementLeft() - numberOfSteps();
   }
 
   public static Change getFuelChanges(final Collection<Unit> units, final Route route, final PlayerID player,
@@ -494,7 +476,7 @@ public class Route implements Serializable, Iterable<Territory> {
     }
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     resources.add(ua.getFuelCost());
-    resources.multiply(getMovementCost(unit));
+    resources.multiply(numberOfSteps());
     if (!ignoreFlat && Matches.unitHasNotBeenChargedFlatFuelCost().test(unit)) {
       resources.add(ua.getFuelFlatCost());
       chargedFlatFuelCost = true;
