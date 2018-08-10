@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class Resource extends NamedAttachable {
 
   public Resource(final String resourceName, final GameData data, final List<PlayerID> players) {
     super(resourceName, data);
-    this.players = players;
+    this.players = new ArrayList<>(players);
   }
 
   public boolean isDisplayedFor(final PlayerID player) {
