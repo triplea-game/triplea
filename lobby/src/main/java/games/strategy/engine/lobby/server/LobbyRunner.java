@@ -20,7 +20,7 @@ public final class LobbyRunner {
    * is shut down via administrative command.
    */
   public static void main(final String[] args) throws Exception {
-    File propertyFile = new File("config/lobby/lobby.properties");
+    final File propertyFile = new File("config/lobby/lobby.properties");
     checkState(propertyFile.exists(), "Could not find property file: " + propertyFile.getAbsolutePath());
 
     final LobbyPropertyReader lobbyPropertyReader =
