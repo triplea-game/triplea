@@ -600,7 +600,7 @@ public class HeadlessGameServer {
 
     ClientSetting.initialize();
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
-    new ArgParser().handleCommandLineArgs(args);
+    ArgParser.handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
     try {
