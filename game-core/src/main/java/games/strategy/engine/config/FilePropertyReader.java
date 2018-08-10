@@ -23,43 +23,26 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public final class FilePropertyReader extends AbstractPropertyReader {
-  private final File file;
+  private final File propertiesFile;
 
   /**
    * Creates a property reader using the properties file at the specified path as the source.
-   *
-   * @param path The path to the properties file.
-   *
-   * @throws IllegalArgumentException If the file at {@code path} does not exist.
    */
-  public FilePropertyReader(final String path) {
-    this(new File(checkNotNull(path)));
-  }
-
-  /**
-   * Creates a property reader using the specified properties file as the source.
-   *
-   * @param file The properties file.
-   *
-   * @throws IllegalArgumentException If {@code file} does not exist.
-   */
-  public FilePropertyReader(final File file) {
-    checkNotNull(file);
-    checkArgument(file.exists(), "Property file not found: " + file.getAbsolutePath());
-
-    this.file = file;
+  public FilePropertyReader(final String propertiesFilePath) {
+    this.propertiesFile = new File(checkNotNull(propertiesFilePath));
+    checkArgument(propertiesFile.exists(), "Property file not found: " + propertiesFile.getAbsolutePath());
   }
 
   @Override
   protected @Nullable String readPropertyInternal(final String key) {
-    try (InputStream inputStream = new FileInputStream(file)) {
+    try (InputStream inputStream = new FileInputStream(propertiesFile)) {
       final Properties props = new Properties();
       props.load(inputStream);
       return props.getProperty(key);
     } catch (final FileNotFoundException e) {
-      throw new IllegalStateException("Property file not found: " + file.getAbsolutePath(), e);
+      throw new IllegalStateException("Property file not found: " + propertiesFile.getAbsolutePath(), e);
     } catch (final IOException e) {
-      throw new IllegalStateException("Failed to read property file: " + file.getAbsolutePath(), e);
+      throw new IllegalStateException("Failed to read property file: " + propertiesFile.getAbsolutePath(), e);
     }
   }
 }

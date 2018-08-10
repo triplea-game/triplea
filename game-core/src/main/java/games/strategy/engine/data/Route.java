@@ -121,14 +121,12 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /**
    * Set the start of this route.
-   *
-   * @param t new start territory
    */
-  public void setStart(final Territory t) {
-    if (t == null) {
+  public void setStart(final Territory newStartTerritory) {
+    if (newStartTerritory == null) {
       throw new IllegalStateException("Null territory");
     }
-    m_start = t;
+    m_start = newStartTerritory;
   }
 
   /**
@@ -157,17 +155,16 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /**
    * Add the given territory to the end of the route.
-   *
-   * @param t referring territory
    */
-  public void add(final Territory t) {
-    if (t == null) {
+  public void add(final Territory territory) {
+    if (territory == null) {
       throw new IllegalStateException("Null territory");
     }
-    if (t.equals(m_start) || m_steps.contains(t)) {
-      throw new IllegalArgumentException("Loops not allowed in m_routes, route:" + this + " new territory:" + t);
+    if (territory.equals(m_start) || m_steps.contains(territory)) {
+      throw new IllegalArgumentException(String.format(
+          "Loops not allowed in m_routes, route: %s, new territory: %s", this, territory));
     }
-    m_steps.add(t);
+    m_steps.add(territory);
   }
 
   /**
