@@ -72,7 +72,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     final Set<GameChooserEntry> entries = new HashSet<>();
 
     try (ZipFile zipFile = new ZipFile(map);
-        final URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
+        URLClassLoader loader = new URLClassLoader(new URL[] {map.toURI().toURL()})) {
       final Enumeration<? extends ZipEntry> zipEntryEnumeration = zipFile.entries();
       while (zipEntryEnumeration.hasMoreElements()) {
         final ZipEntry entry = zipEntryEnumeration.nextElement();
