@@ -25,6 +25,6 @@ public final class FilePropertyReaderAsPropertyReaderTest extends AbstractProper
       props.store(writer, null);
     }
 
-    return new FilePropertyReader(file);
+    return new FilePropertyReader(file.getAbsolutePath());
   }
 }

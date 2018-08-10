@@ -27,25 +27,10 @@ public final class FilePropertyReader extends AbstractPropertyReader {
 
   /**
    * Creates a property reader using the properties file at the specified path as the source.
-   *
-   * @param path The path to the properties file.
-   *
-   * @throws IllegalArgumentException If the file at {@code path} does not exist.
    */
-  public FilePropertyReader(final String path) {
-    this(new File(checkNotNull(path)));
-  }
-
-  /**
-   * Creates a property reader using the specified properties file as the source.
-   *
-   * @throws IllegalArgumentException If {@code file} does not exist.
-   */
-  public FilePropertyReader(final File propertiesFile) {
-    checkNotNull(propertiesFile);
+  public FilePropertyReader(final String propertiesFilePath) {
+    this.propertiesFile = new File(checkNotNull(propertiesFilePath));
     checkArgument(propertiesFile.exists(), "Property file not found: " + propertiesFile.getAbsolutePath());
-
-    this.propertiesFile = propertiesFile;
   }
 
   @Override
