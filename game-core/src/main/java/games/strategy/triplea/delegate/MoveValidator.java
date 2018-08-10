@@ -1165,7 +1165,7 @@ public class MoveValidator {
 
   private static List<Unit> getParatroopsRequiringTransport(final Collection<Unit> units, final Route route) {
     return CollectionUtils.getMatches(units,
-        Matches.unitIsAirTransportable().and(u -> TripleAUnit.get(u).getMovementLeft() < route.getMovementCost(u)
+        Matches.unitIsAirTransportable().and(u -> (TripleAUnit.get(u).getMovementLeft() < route.numberOfSteps())
             || route.crossesWater() || route.getEnd().isWater()));
   }
 
@@ -1463,11 +1463,9 @@ public class MoveValidator {
         landRoute =
             data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsLand().and(noImpassableOrRestricted));
       }
-      if (landRoute != null
-          && ((landRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
-              .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
-              || (forceLandOrSeaRoute
-                  && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsLand())))) {
+      if ((landRoute != null)
+          && forceLandOrSeaRoute
+          && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsLand())) {
         defaultRoute = landRoute;
         mustGoLand = true;
       }
@@ -1477,11 +1475,9 @@ public class MoveValidator {
     if (start.isWater() && end.isWater()) {
       final Route waterRoute =
           data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassableOrRestricted));
-      if (waterRoute != null
-          && ((waterRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
-              .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
-              || (forceLandOrSeaRoute
-                  && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsSea())))) {
+      if ((waterRoute != null)
+          && forceLandOrSeaRoute
+          && unitsWhichAreNotBeingTransportedOrDependent.stream().anyMatch(Matches.unitIsSea())) {
         defaultRoute = waterRoute;
         mustGoSea = true;
       }
@@ -1513,9 +1509,7 @@ public class MoveValidator {
         testMatch = t.and(noImpassableOrRestricted);
       }
       final Route testRoute = data.getMap().getRoute_IgnoreEnd(start, end, testMatch);
-      if (testRoute != null
-          && testRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute
-              .getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent)) {
+      if (testRoute != null) {
         return testRoute;
       }
     }
