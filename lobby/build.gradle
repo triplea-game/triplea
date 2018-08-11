@@ -5,11 +5,6 @@ plugins {
 
 description = 'TripleA Lobby'
 mainClassName = 'games.strategy.engine.lobby.server.LobbyRunner'
-
-ext {
-    artifactsDir = file("$buildDir/artifacts")
-}
-
 version = project.hasProperty('lobbyVersion') ? project.lobbyVersion : 'dev'
 
 jar {

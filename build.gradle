@@ -34,6 +34,8 @@ subprojects {
         hamcrestVersion = '2.0.0.0'
         junitJupiterVersion = '5.1.0'
         mockitoVersion = '2.19.1'
+
+        artifactsDir = file("$buildDir/artifacts")
     }
 
     apply plugin: 'checkstyle'

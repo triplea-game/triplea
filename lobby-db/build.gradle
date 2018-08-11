@@ -23,4 +23,19 @@ task lobbyDbMigrationScripts(type: Zip, group: 'release') {
 }
 
 task release(group: 'release', dependsOn: lobbyDbMigrationScripts) {
+    doLast {
+        def artifacts = [
+            file("$distsDir/migrations.zip"),
+        ]
+        artifacts.each {
+            if (!it.exists()) {
+                throw new GradleException("artifact '$it' does not exist")
+            }
+        }
+
+        copy {
+            from artifacts
+            into artifactsDir
+        }
+    }
 }

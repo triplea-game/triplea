@@ -9,7 +9,6 @@ description = 'TripleA is a free online turn based strategy game and board game 
 mainClassName = 'games.strategy.engine.framework.GameRunner'
 
 ext {
-    artifactsDir = file("$buildDir/artifacts")
     releasesDir = file("$buildDir/releases")
     remoteLibsDir = file('.remote-libs')
     rootFilesDir = file("$buildDir/rootFiles")
