@@ -121,14 +121,12 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /**
    * Set the start of this route.
-   *
-   * @param t new start territory
    */
-  public void setStart(final Territory t) {
-    if (t == null) {
+  public void setStart(final Territory newStartTerritory) {
+    if (newStartTerritory == null) {
       throw new IllegalStateException("Null territory");
     }
-    m_start = t;
+    m_start = newStartTerritory;
   }
 
   /**
@@ -157,27 +155,16 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /**
    * Add the given territory to the end of the route.
-   *
-   * @param t referring territory
    */
-  public void add(final Territory t) {
-    if (t == null) {
+  public void add(final Territory territory) {
+    if (territory == null) {
       throw new IllegalStateException("Null territory");
     }
-    if (t.equals(m_start) || m_steps.contains(t)) {
-      throw new IllegalArgumentException("Loops not allowed in m_routes, route:" + this + " new territory:" + t);
+    if (territory.equals(m_start) || m_steps.contains(territory)) {
+      throw new IllegalArgumentException(String.format(
+          "Loops not allowed in m_routes, route: %s, new territory: %s", this, territory));
     }
-    m_steps.add(t);
-  }
-
-  /**
-   * Returns the total cost of the route including modifications due to territoryEffects and territoryConnections.
-   *
-   * @param u unit that is moving on this route
-   */
-  public int getMovementCost(final Unit u) {
-    // TODO implement me
-    return m_steps.size();
+    m_steps.add(territory);
   }
 
   /**
@@ -383,16 +370,8 @@ public class Route implements Serializable, Iterable<Territory> {
         || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
   }
 
-  public int getLargestMovementCost(final Collection<Unit> units) {
-    int largestCost = 0;
-    for (final Unit unit : units) {
-      largestCost = Math.max(largestCost, getMovementCost(unit));
-    }
-    return largestCost;
-  }
-
   public int getMovementLeft(final Unit unit) {
-    return ((TripleAUnit) unit).getMovementLeft() - getMovementCost(unit);
+    return ((TripleAUnit) unit).getMovementLeft() - numberOfSteps();
   }
 
   public static Change getFuelChanges(final Collection<Unit> units, final Route route, final PlayerID player,
@@ -494,7 +473,7 @@ public class Route implements Serializable, Iterable<Territory> {
     }
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     resources.add(ua.getFuelCost());
-    resources.multiply(getMovementCost(unit));
+    resources.multiply(numberOfSteps());
     if (!ignoreFlat && Matches.unitHasNotBeenChargedFlatFuelCost().test(unit)) {
       resources.add(ua.getFuelFlatCost());
       chargedFlatFuelCost = true;

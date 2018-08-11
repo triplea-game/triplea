@@ -10,11 +10,6 @@ public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
   private final IntegerMap<Resource> m_resources = new IntegerMap<>();
 
-  /**
-   * Creates new ResourceCollection.
-   *
-   * @param data game data
-   */
   public ResourceCollection(final GameData data) {
     super(data);
   }

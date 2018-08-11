@@ -33,7 +33,6 @@ subprojects {
     ext {
         hamcrestVersion = '2.0.0.0'
         junitJupiterVersion = '5.1.0'
-        lombokVersion = '1.18.0'
         mockitoVersion = '2.19.1'
     }
 
@@ -47,6 +46,10 @@ subprojects {
     }
 
     dependencies {
+        compile 'com.google.code.findbugs:jsr305:3.0.2'
+
+        compileOnly 'org.projectlombok:lombok:1.18.0'
+
         errorprone 'com.google.errorprone:error_prone_core:2.3.1'
 
         testCompile "org.hamcrest:java-hamcrest:$hamcrestVersion"

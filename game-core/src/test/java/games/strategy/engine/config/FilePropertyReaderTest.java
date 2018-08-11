@@ -30,7 +30,7 @@ public final class FilePropertyReaderTest {
       writer.write("whitespace =      \n");
     }
 
-    filePropertyReader = new FilePropertyReader(file);
+    filePropertyReader = new FilePropertyReader(file.getAbsolutePath());
   }
 
   @Test
@@ -40,7 +40,7 @@ public final class FilePropertyReaderTest {
 
   @Test
   public void constructorWithFile_ShouldThrowExceptionWhenFileDoesNotExist() {
-    assertThrows(IllegalArgumentException.class, () -> new FilePropertyReader(new File("path/to/nonexistent/file")));
+    assertThrows(IllegalArgumentException.class, () -> new FilePropertyReader("path/to/nonexistent/file"));
   }
 
   @Test

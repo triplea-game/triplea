@@ -11,11 +11,7 @@ public interface IAttachment extends Serializable, DynamicallyModifiable {
   Class<?>[] attachmentConstructorParameter = new Class<?>[] {String.class, Attachable.class, GameData.class};
 
   /**
-   * Called after ALL attachments are created. IF an error occurs should throw an exception to halt the parsing.
-   *
-   * @param data game data
-   * @throws GameParseException
-   *         an error has occurred while validation
+   * Called after ALL attachments are created.
    */
   void validate(GameData data) throws GameParseException;
 

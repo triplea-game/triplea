@@ -79,12 +79,11 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   /**
    * adds a new RelationshipType, this should only be called by the GameParser.
    *
-   * @param p RelationshipType
    * @return the RelationshipType just created (convenience method for the GameParser)
    */
-  protected RelationshipType addRelationshipType(final RelationshipType p) {
-    m_relationshipTypes.put(p.getName(), p);
-    return p;
+  protected RelationshipType addRelationshipType(final RelationshipType relationshipType) {
+    m_relationshipTypes.put(relationshipType.getName(), relationshipType);
+    return relationshipType;
   }
 
   /**

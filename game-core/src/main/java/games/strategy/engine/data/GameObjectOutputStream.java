@@ -16,11 +16,7 @@ import java.io.OutputStream;
  * This ensures the state of the territory remains consistent.
  */
 public class GameObjectOutputStream extends ObjectOutputStream {
-  /**
-   * Creates a new instance of GameObjectOutputStream.
-   *
-   * @param output output stream
-   */
+
   public GameObjectOutputStream(final OutputStream output) throws IOException {
     super(output);
     enableReplaceObject(true);

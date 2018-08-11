@@ -305,7 +305,7 @@ public class MovePerformer implements Serializable {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     for (final Unit baseUnit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(id))) {
       final TripleAUnit unit = (TripleAUnit) baseUnit;
-      int moved = route.getMovementCost(unit);
+      int moved = route.numberOfSteps();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {
         if (taRouteStart != null && taRouteStart.getAirBase()

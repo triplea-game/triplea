@@ -131,6 +131,7 @@ public class EmailSenderEditor extends EditorPanel {
       // new Insets(0, 0,
       // bottomSpace, 0), 0, 0));
     }
+    alsoPostAfterCombatMove.setSelected(genericEmailSender.getAlsoPostAfterCombatMove());
     setupListeners();
   }
 

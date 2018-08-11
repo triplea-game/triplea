@@ -68,8 +68,6 @@ dependencies {
     compile 'commons-cli:commons-cli:1.4'
     compile remoteFile('https://github.com/kirill-grouchnikov/substance/raw/f894ef784a2ac20acf13e6ed2c7c26123399787b/drop/8.0.02/substance-8.0.02.jar')
 
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
-
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/f894ef784a2ac20acf13e6ed2c7c26123399787b/drop/8.0.02/trident-1.5.00.jar')
 
     testCompile project(':test-common')

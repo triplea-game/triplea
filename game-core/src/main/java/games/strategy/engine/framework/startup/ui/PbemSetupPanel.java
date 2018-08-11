@@ -159,8 +159,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   /**
    * Load the dice rollers from cache, if the game was a save game, the dice roller store is selected.
-   *
-   * @param data the game data
    */
   private void loadDiceServer(final GameData data) {
     final List<IRemoteDiceServer> diceRollers = new ArrayList<>(PropertiesDiceRoller.loadFromFile());
@@ -187,8 +185,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   /**
    * Load the Forum poster that are stored in the GameData, and select it in the list.
    * Sensitive information such as passwords are not stored in save games, so the are loaded from the LocalBeanCache
-   *
-   * @param data the game data
    */
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
@@ -388,7 +384,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     private Map<String, IBean> loadMap() {
       if (file.exists()) {
         try (FileInputStream fin = new FileInputStream(file);
-            final ObjectInput oin = new ObjectInputStream(fin)) {
+            ObjectInput oin = new ObjectInputStream(fin)) {
           final Object o = oin.readObject();
           if (o instanceof Map) {
             final Map<?, ?> m = (Map<?, ?>) o;
@@ -429,7 +425,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     void writeToDisk() {
       synchronized (mutex) {
         try (FileOutputStream fout = new FileOutputStream(file, false);
-            final ObjectOutputStream out = new ObjectOutputStream(fout)) {
+            ObjectOutputStream out = new ObjectOutputStream(fout)) {
           out.writeObject(map);
         } catch (final IOException e) {
           log.log(Level.SEVERE, "failed to write local bean cache", e);

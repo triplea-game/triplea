@@ -127,7 +127,7 @@ public class GameRunner {
         ErrorMessage.enable();
       }));
     }
-    new ArgParser().handleCommandLineArgs(args);
+    ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
       com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {

@@ -1038,7 +1038,7 @@ public final class Matches {
   public static Predicate<Unit> unitHasEnoughMovementForRoute(final Route route) {
     return unit -> {
       int left = TripleAUnit.get(unit).getMovementLeft();
-      int movementcost = route.getMovementCost(unit);
+      int movementcost = route.numberOfSteps();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final PlayerID player = unit.getOwner();
       if (ua.getIsAir()) {
@@ -1050,7 +1050,7 @@ public final class Matches {
         if (route.getEnd() != null) {
           taEnd = TerritoryAttachment.get(route.getEnd());
         }
-        movementcost = route.getMovementCost(unit);
+        movementcost = route.numberOfSteps();
         if (taStart != null && taStart.getAirBase()) {
           left++;
         }
@@ -1060,7 +1060,7 @@ public final class Matches {
       }
       final GameStep stepName = unit.getData().getSequence().getStep();
       if (ua.getIsSea() && stepName.getDisplayName().equals("Non Combat Move")) {
-        movementcost = route.getMovementCost(unit);
+        movementcost = route.numberOfSteps();
         // If a zone adjacent to the starting and ending sea zones
         // are allied navalbases, increase the range.
         // TODO Still need to be able to handle stops on the way
@@ -2083,7 +2083,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitCanScrambleOnRouteDistance(final Route route) {
-    return unit -> UnitAttachment.get(unit.getType()).getMaxScrambleDistance() >= route.getMovementCost(unit);
+    return unit -> UnitAttachment.get(unit.getType()).getMaxScrambleDistance() >= route.numberOfSteps();
   }
 
   static Predicate<Unit> unitCanIntercept() {

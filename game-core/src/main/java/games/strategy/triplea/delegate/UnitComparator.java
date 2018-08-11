@@ -66,15 +66,14 @@ public class UnitComparator {
   public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units, final Route route) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(units);
     return (u1, u2) -> {
-
       // Ensure units have enough movement
       final int left1 = TripleAUnit.get(u1).getMovementLeft();
       final int left2 = TripleAUnit.get(u2).getMovementLeft();
       if (route != null) {
-        if (left1 >= route.getMovementCost(u1) && left2 < route.getMovementCost(u2)) {
+        if ((left1 >= route.numberOfSteps()) && (left2 < route.numberOfSteps())) {
           return -1;
         }
-        if (left1 < route.getMovementCost(u1) && left2 >= route.getMovementCost(u2)) {
+        if ((left1 < route.numberOfSteps()) && (left2 >= route.numberOfSteps())) {
           return 1;
         }
       }

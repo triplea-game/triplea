@@ -50,7 +50,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         cache.getParentFile().mkdirs();
       }
       try (OutputStream os = new FileOutputStream(cache);
-          final ObjectOutputStream out = new ObjectOutputStream(os)) {
+          ObjectOutputStream out = new ObjectOutputStream(os)) {
         out.writeObject(serializableMap);
       }
     } catch (final IOException e) {
@@ -66,7 +66,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
     try {
       if (cache.exists()) {
         try (InputStream is = new FileInputStream(cache);
-            final ObjectInputStream in = new ObjectInputStream(is)) {
+            ObjectInputStream in = new ObjectInputStream(is)) {
           final Map<String, Serializable> serializedMap = (Map<String, Serializable>) in.readObject();
           for (final IEditableProperty property : gameData.getProperties().getEditableProperties()) {
             final Serializable ser = serializedMap.get(property.getName());
