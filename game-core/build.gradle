@@ -146,23 +146,13 @@ task generateZipReleases(type: Zip, group: 'release', dependsOn: shadowJar) {
 
 task release(group: 'release', dependsOn: [generateZipReleases, generateInstallerReleases]) {
     doLast {
-        def artifacts = [
+        publishArtifacts([
             file("$distsDir/triplea-${version}-all_platforms.zip"),
             file("$releasesDir/TripleA_${version}_macos.dmg"),
             file("$releasesDir/TripleA_${version}_unix.sh"),
             file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
             file("$releasesDir/TripleA_${version}_windows-64bit.exe")
-        ]
-        artifacts.each {
-            if (!it.exists()) {
-                throw new GradleException("artifact '$it' does not exist")
-            }
-        }
-
-        copy {
-            from artifacts
-            into artifactsDir
-        }
+        ])
     }
 }
 
