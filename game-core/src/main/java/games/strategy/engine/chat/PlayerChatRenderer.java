@@ -22,7 +22,7 @@ import games.strategy.net.INode;
 import games.strategy.triplea.ui.UiContext;
 
 /**
- * A list cell renderer for a chat participant.
+ * Renders a chat participant in a {@link JList}.
  */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;

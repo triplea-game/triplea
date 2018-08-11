@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A keyed collection of {@link Resource}s.
+ * A collection of {@link Resource}s keyed on the resource name.
  */
 public class ResourceList extends GameDataComponent {
   private static final long serialVersionUID = -8812702449627698253L;

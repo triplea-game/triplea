@@ -7,7 +7,7 @@ import java.util.Map;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * A keyed collection of {@link ProductionRule}s.
+ * A collection of {@link ProductionRule}s keyed on the production rule name.
  */
 public class ProductionRuleList extends GameDataComponent {
   private static final long serialVersionUID = -5313215563006788188L;

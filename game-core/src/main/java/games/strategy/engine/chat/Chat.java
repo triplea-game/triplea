@@ -50,7 +50,7 @@ public class Chat {
   private final ChatSoundProfile chatSoundProfile;
 
   /**
-   * A profile that defines the sounds to use for various chat events.
+   * A profile defines the sounds to use for various chat events.
    */
   public enum ChatSoundProfile {
     LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND

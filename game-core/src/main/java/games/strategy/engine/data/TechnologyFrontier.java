@@ -10,7 +10,7 @@ import java.util.Objects;
 import games.strategy.triplea.delegate.TechAdvance;
 
 /**
- * A collection of {@link TechAdvance}s.
+ * A collection of {@link TechAdvance}s available to a single player.
  */
 public class TechnologyFrontier extends GameDataComponent implements Iterable<TechAdvance> {
   private static final long serialVersionUID = -5245743727479551766L;

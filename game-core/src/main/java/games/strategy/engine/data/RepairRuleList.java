@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A keyed collection of {@link RepairRule}s.
+ * A collection of {@link RepairRule}s keyed on the repair rule name.
  */
 public class RepairRuleList extends GameDataComponent {
   private static final long serialVersionUID = 8153102637443800391L;

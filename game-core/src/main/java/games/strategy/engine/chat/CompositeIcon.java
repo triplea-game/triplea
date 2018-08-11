@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.Icon;
 
 /**
- * An icon that is rendered as a composite of zero or more other icons.
+ * An icon that renders zero or more other icons horizontally from left to right with a small gap between each.
  */
 public class CompositeIcon implements Icon {
   private static final int GAP = 2;
