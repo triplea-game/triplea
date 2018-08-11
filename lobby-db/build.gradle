@@ -17,7 +17,7 @@ flyway {
 }
 
 task lobbyDbMigrationScripts(type: Zip, group: 'release') {
-    from "$projectDir/src/main/resources/db/migration/"
+    from 'src/main/resources/db/migration'
     include '*.sql'
     archiveName 'migrations.zip'
 }
