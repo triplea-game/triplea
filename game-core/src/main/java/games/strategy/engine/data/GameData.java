@@ -104,7 +104,7 @@ public class GameData implements Serializable {
   private History gameHistory = new History(this);
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
       new ArrayList<>();
-  // TODO: change to Map/HashMap upon next incompatible release
+  @SuppressWarnings("JdkObsolete") // change to Map/HashMap upon next incompatible release
   private final Hashtable<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
