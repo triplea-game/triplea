@@ -8,61 +8,71 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public final class SwingComponentsTest {
-  @Test
-  public void testAppendExtensionIfAbsent_ShouldAppendExtensionWhenExtensionAbsent() {
-    assertThat(appendExtensionIfAbsent(new File("path/file.aaa"), "bbb"), is(new File("path/file.aaa.bbb")));
-    assertThat(appendExtensionIfAbsent(new File("path/filebbb"), "bbb"), is(new File("path/filebbb.bbb")));
+final class SwingComponentsTest {
+  @Nested
+  final class AppendExtensionIfAbsentTest {
+    @Test
+    void shouldAppendExtensionWhenExtensionAbsent() {
+      assertThat(appendExtensionIfAbsent(new File("path/file.aaa"), "bbb"), is(new File("path/file.aaa.bbb")));
+      assertThat(appendExtensionIfAbsent(new File("path/filebbb"), "bbb"), is(new File("path/filebbb.bbb")));
+    }
+
+    @Test
+    void shouldNotAppendExtensionWhenExtensionPresent() {
+      assertThat(appendExtensionIfAbsent(new File("path/file.bbb"), "bbb"), is(new File("path/file.bbb")));
+    }
+
+    @Test
+    void shouldHandleExtensionThatStartsWithPeriod() {
+      assertThat(appendExtensionIfAbsent(new File("path/file.aaa"), ".bbb"), is(new File("path/file.aaa.bbb")));
+    }
+
+    @Test
+    void shouldUseCaseInsensitiveComparisonForExtension() {
+      assertThat(appendExtensionIfAbsent(new File("path/file.bBb"), "BbB"), is(new File("path/file.bBb")));
+    }
   }
 
-  @Test
-  public void testAppendExtensionIfAbsent_ShouldNotAppendExtensionWhenExtensionPresent() {
-    assertThat(appendExtensionIfAbsent(new File("path/file.bbb"), "bbb"), is(new File("path/file.bbb")));
+  @Nested
+  final class ExtensionWithLeadingPeriodTest {
+    @Test
+    void shouldReturnExtensionWithLeadingPeriod() {
+      assertThat(extensionWithLeadingPeriod(""), is(""));
+
+      assertThat(extensionWithLeadingPeriod("a"), is(".a"));
+      assertThat(extensionWithLeadingPeriod(".a"), is(".a"));
+
+      assertThat(extensionWithLeadingPeriod("aa"), is(".aa"));
+      assertThat(extensionWithLeadingPeriod(".aa"), is(".aa"));
+
+      assertThat(extensionWithLeadingPeriod("aaa"), is(".aaa"));
+      assertThat(extensionWithLeadingPeriod(".aaa"), is(".aaa"));
+
+      assertThat(extensionWithLeadingPeriod("aaa.aaa"), is(".aaa.aaa"));
+      assertThat(extensionWithLeadingPeriod(".aaa.aaa"), is(".aaa.aaa"));
+    }
   }
 
-  @Test
-  public void testAppendExtensionIfAbsent_ShouldHandleExtensionThatStartsWithPeriod() {
-    assertThat(appendExtensionIfAbsent(new File("path/file.aaa"), ".bbb"), is(new File("path/file.aaa.bbb")));
-  }
+  @Nested
+  final class ExtensionWithoutLeadingPeriodTest {
+    @Test
+    void shouldReturnExtensionWithoutLeadingPeriod() {
+      assertThat(extensionWithoutLeadingPeriod(""), is(""));
 
-  @Test
-  public void testAppendExtensionIfAbsent_ShouldUseCaseInsensitiveComparisonForExtension() {
-    assertThat(appendExtensionIfAbsent(new File("path/file.bBb"), "BbB"), is(new File("path/file.bBb")));
-  }
+      assertThat(extensionWithoutLeadingPeriod("a"), is("a"));
+      assertThat(extensionWithoutLeadingPeriod(".a"), is("a"));
 
-  @Test
-  public void testExtensionWithLeadingPeriod() {
-    assertThat(extensionWithLeadingPeriod(""), is(""));
+      assertThat(extensionWithoutLeadingPeriod("aa"), is("aa"));
+      assertThat(extensionWithoutLeadingPeriod(".aa"), is("aa"));
 
-    assertThat(extensionWithLeadingPeriod("a"), is(".a"));
-    assertThat(extensionWithLeadingPeriod(".a"), is(".a"));
+      assertThat(extensionWithoutLeadingPeriod("aaa"), is("aaa"));
+      assertThat(extensionWithoutLeadingPeriod(".aaa"), is("aaa"));
 
-    assertThat(extensionWithLeadingPeriod("aa"), is(".aa"));
-    assertThat(extensionWithLeadingPeriod(".aa"), is(".aa"));
-
-    assertThat(extensionWithLeadingPeriod("aaa"), is(".aaa"));
-    assertThat(extensionWithLeadingPeriod(".aaa"), is(".aaa"));
-
-    assertThat(extensionWithLeadingPeriod("aaa.aaa"), is(".aaa.aaa"));
-    assertThat(extensionWithLeadingPeriod(".aaa.aaa"), is(".aaa.aaa"));
-  }
-
-  @Test
-  public void testExtensionWithoutLeadingPeriod() {
-    assertThat(extensionWithoutLeadingPeriod(""), is(""));
-
-    assertThat(extensionWithoutLeadingPeriod("a"), is("a"));
-    assertThat(extensionWithoutLeadingPeriod(".a"), is("a"));
-
-    assertThat(extensionWithoutLeadingPeriod("aa"), is("aa"));
-    assertThat(extensionWithoutLeadingPeriod(".aa"), is("aa"));
-
-    assertThat(extensionWithoutLeadingPeriod("aaa"), is("aaa"));
-    assertThat(extensionWithoutLeadingPeriod(".aaa"), is("aaa"));
-
-    assertThat(extensionWithoutLeadingPeriod("aaa.aaa"), is("aaa.aaa"));
-    assertThat(extensionWithoutLeadingPeriod(".aaa.aaa"), is("aaa.aaa"));
+      assertThat(extensionWithoutLeadingPeriod("aaa.aaa"), is("aaa.aaa"));
+      assertThat(extensionWithoutLeadingPeriod(".aaa.aaa"), is("aaa.aaa"));
+    }
   }
 }

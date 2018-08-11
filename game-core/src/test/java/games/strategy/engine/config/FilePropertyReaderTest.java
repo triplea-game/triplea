@@ -34,12 +34,7 @@ public final class FilePropertyReaderTest {
   }
 
   @Test
-  public void constructorWithPath_ShouldThrowExceptionWhenFileDoesNotExist() {
-    assertThrows(IllegalArgumentException.class, () -> new FilePropertyReader("path/to/nonexistent/file"));
-  }
-
-  @Test
-  public void constructorWithFile_ShouldThrowExceptionWhenFileDoesNotExist() {
+  public void constructor_ShouldThrowExceptionWhenFileDoesNotExist() {
     assertThrows(IllegalArgumentException.class, () -> new FilePropertyReader("path/to/nonexistent/file"));
   }
 
