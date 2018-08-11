@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.util.logging.Level;
 
-import games.strategy.engine.framework.system.SystemProperties;
 import lombok.extern.java.Log;
 
 /**
@@ -17,20 +16,11 @@ import lombok.extern.java.Log;
  * </p>
  */
 @Log
-public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandlerAwtEvents {
-
+public class ErrorHandler implements Thread.UncaughtExceptionHandler {
   @Override
   public void uncaughtException(final Thread t, final Throwable e) {
-    handle(e);
-  }
-
-  /**
-   * Method used to handle errors. Called auto-magically by sun property
-   */
-  @Override
-  public void handle(final Throwable t) {
-    final String msg = "Error: " + (t.getLocalizedMessage() != null ? t.getLocalizedMessage() : t);
-    log.log(Level.SEVERE, msg, t);
+    final String msg = "Error: " + (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e);
+    log.log(Level.SEVERE, msg, e);
   }
 
   /**
@@ -38,6 +28,5 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler, ErrorHandl
    */
   public static void registerExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new ErrorHandler());
-    SystemProperties.setSunAwtExceptionHandler(ErrorHandler.class.getName());
   }
 }
