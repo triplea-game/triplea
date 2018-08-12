@@ -31,7 +31,6 @@ before_deploy:
 - sed -i "s/^\(engine_version\s*=\).*/\1 ${ENGINE_VERSION}/" game-core/game_engine.properties
 - ./.travis/install_install4j
 - ./gradlew -PengineVersion="$ENGINE_VERSION" -PlobbyVersion="$LOBBY_VERSION" release
-- ./gradlew lobbyDbRelease
 - ./.travis/collect_artifacts
 - ./.travis/generate_artifact_checksums
 ## push tag triggers 'deploy' to occur, files listed in 'deploy.files' are uploaded to github releases.

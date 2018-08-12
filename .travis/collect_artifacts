@@ -9,4 +9,3 @@ readonly ARTIFACTS_DIR=./build/artifacts
 mkdir -p ${ARTIFACTS_DIR}
 
 cp -v ./**/build/artifacts/* ${ARTIFACTS_DIR}
-cp -v ./lobby-db/build/distributions/migrations.zip ${ARTIFACTS_DIR}

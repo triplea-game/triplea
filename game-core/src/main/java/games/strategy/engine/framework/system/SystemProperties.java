@@ -54,8 +54,4 @@ public final class SystemProperties {
   public static @Nullable String setJavaNetUseSystemProxies(final String value) {
     return System.setProperty("java.net.useSystemProxies", checkNotNull(value));
   }
-
-  public static @Nullable String setSunAwtExceptionHandler(final String value) {
-    return System.setProperty("sun.awt.exception.handler", checkNotNull(value));
-  }
 }

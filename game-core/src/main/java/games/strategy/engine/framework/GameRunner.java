@@ -68,7 +68,6 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -109,7 +108,7 @@ public class GameRunner {
         "UI client launcher invoked from headless environment. This is current prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
 
-    ErrorHandler.registerExceptionHandler();
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
     ClientSetting.initialize();
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {

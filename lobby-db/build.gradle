@@ -16,8 +16,16 @@ flyway {
     password = 'postgres'
 }
 
-task lobbyDbRelease(type: Zip, group: 'release') {
-    from "${projectDir}/src/main/resources/db/migration/"
+task lobbyDbMigrationScripts(type: Zip, group: 'release') {
+    from 'src/main/resources/db/migration'
     include '*.sql'
     archiveName 'migrations.zip'
+}
+
+task release(group: 'release', dependsOn: lobbyDbMigrationScripts) {
+    doLast {
+        publishArtifacts([
+            file("$distsDir/migrations.zip")
+        ])
+    }
 }
