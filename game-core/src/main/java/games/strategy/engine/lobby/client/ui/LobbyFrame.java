@@ -32,7 +32,6 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.IModeratorController;
-import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
@@ -110,7 +109,7 @@ public class LobbyFrame extends JFrame {
       return Collections.emptyList();
     }
     final IModeratorController controller = (IModeratorController) client.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final List<Action> actions = new ArrayList<>();
     actions.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
       if (!confirm("Boot " + clickedOn.getName())) {

@@ -25,9 +25,9 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.IModeratorController;
-import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
@@ -106,7 +106,7 @@ class LobbyGamePanel extends JPanel {
 
   boolean isAdmin() {
     return ((IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName())).isAdmin();
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME)).isAdmin();
   }
 
   private void setupListeners() {
@@ -259,7 +259,7 @@ class LobbyGamePanel extends JPanel {
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     controller.boot(lobbyWatcherNode);
     JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
   }
@@ -271,7 +271,7 @@ class LobbyGamePanel extends JPanel {
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final String text = controller.getInformationOn(lobbyWatcherNode);
     final String connections = controller.getHostConnections(lobbyWatcherNode);
     final JTextPane textPane = new JTextPane();
@@ -294,7 +294,7 @@ class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
@@ -366,7 +366,7 @@ class LobbyGamePanel extends JPanel {
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
@@ -406,7 +406,7 @@ class LobbyGamePanel extends JPanel {
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
@@ -458,7 +458,7 @@ class LobbyGamePanel extends JPanel {
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
@@ -493,7 +493,7 @@ class LobbyGamePanel extends JPanel {
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
@@ -526,7 +526,7 @@ class LobbyGamePanel extends JPanel {
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
     final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(ModeratorController.getModeratorControllerName());
+        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
     final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();

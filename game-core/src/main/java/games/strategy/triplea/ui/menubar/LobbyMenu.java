@@ -28,9 +28,9 @@ import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.client.ui.TimespanDialog;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.IUserManager;
-import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.lobby.server.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
@@ -100,7 +100,7 @@ public final class LobbyMenu extends JMenuBar {
     revive.setEnabled(true);
     revive.addActionListener(event -> new Thread(() -> {
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+          .getRemoteMessenger().getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
       final StringBuilder builder = new StringBuilder();
       builder.append("Online Players:\r\n\r\n");
       for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
@@ -160,7 +160,7 @@ public final class LobbyMenu extends JMenuBar {
       TimespanDialog.prompt(lobbyFrame, "Select Timespan",
           "Please consult other admins before banning longer than 1 day.", date -> {
             final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+                .getRemoteMessenger().getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
             controller.banUsername(newDummyNode(name), date);
           });
     });
@@ -193,7 +193,7 @@ public final class LobbyMenu extends JMenuBar {
       TimespanDialog.prompt(lobbyFrame, "Select Timespan",
           "Please consult other admins before banning longer than 1 day.", date -> {
             final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-                .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+                .getRemoteMessenger().getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
             controller.banMac(newDummyNode("__unknown__"), mac, date);
           });
     });
@@ -215,7 +215,7 @@ public final class LobbyMenu extends JMenuBar {
         return;
       }
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+          .getRemoteMessenger().getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
       controller.banUsername(newDummyNode(name), Date.from(Instant.EPOCH));
     });
     item.setEnabled(true);
@@ -237,7 +237,7 @@ public final class LobbyMenu extends JMenuBar {
         return;
       }
       final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+          .getRemoteMessenger().getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
       controller.banMac(newDummyNode("__unknown__"), mac, Date.from(Instant.EPOCH));
     });
     item.setEnabled(true);
