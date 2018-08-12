@@ -65,14 +65,20 @@ public final class MatchesTest {
     };
   }
 
-  @Test
-  public void testAlways() {
-    assertTrue(Matches.always().test(VALUE));
+  @Nested
+  final class AlwaysTest {
+    @Test
+    void shouldReturnTrue() {
+      assertTrue(Matches.always().test(VALUE));
+    }
   }
 
-  @Test
-  public void testNever() {
-    assertFalse(Matches.never().test(VALUE));
+  @Nested
+  final class NeverTest {
+    @Test
+    void shouldReturnFalse() {
+      assertFalse(Matches.never().test(VALUE));
+    }
   }
 
   @Nested

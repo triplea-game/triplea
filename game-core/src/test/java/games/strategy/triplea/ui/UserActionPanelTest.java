@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -23,26 +24,11 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
-public final class UserActionPanelTest {
+final class UserActionPanelTest {
   @Mock
   private GameData data;
 
   private Resource pus;
-
-  @BeforeEach
-  public void setUp() {
-    pus = new Resource(Constants.PUS, data);
-  }
-
-  @Test
-  public void testCanPlayerAffordUserAction_ShouldReturnFalseWhenUserActionCostGreaterThanPlayerPUs() {
-    final PlayerID player = createPlayer();
-    final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) + 1);
-
-    final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
-
-    assertThat(canAffordUserAction, is(false));
-  }
 
   private PlayerID createPlayer() {
     final PlayerID player = new PlayerID("player", data);
@@ -60,62 +46,83 @@ public final class UserActionPanelTest {
     return userAction;
   }
 
-  @Test
-  public void testCanPlayerAffordUserAction_ShouldReturnTrueWhenUserActionCostEqualToPlayerPUs() {
-    final PlayerID player = createPlayer();
-    final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus));
-
-    final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
-
-    assertThat(canAffordUserAction, is(true));
+  @BeforeEach
+  void setUp() {
+    pus = new Resource(Constants.PUS, data);
   }
 
-  @Test
-  public void testCanPlayerAffordUserAction_ShouldReturnTrueWhenUserActionCostLessThanPlayerPUs() {
-    final PlayerID player = createPlayer();
-    final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) - 1);
+  @Nested
+  final class CanPlayerAffordUserActionTest {
+    @Test
+    void shouldReturnFalseWhenUserActionCostGreaterThanPlayerPUs() {
+      final PlayerID player = createPlayer();
+      final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) + 1);
 
-    final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
-    assertThat(canAffordUserAction, is(true));
+      assertThat(canAffordUserAction, is(false));
+    }
+
+    @Test
+    void shouldReturnTrueWhenUserActionCostEqualToPlayerPUs() {
+      final PlayerID player = createPlayer();
+      final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus));
+
+      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+
+      assertThat(canAffordUserAction, is(true));
+    }
+
+    @Test
+    void shouldReturnTrueWhenUserActionCostLessThanPlayerPUs() {
+      final PlayerID player = createPlayer();
+      final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) - 1);
+
+      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+
+      assertThat(canAffordUserAction, is(true));
+    }
+
+    @Test
+    void shouldReturnTrueWhenUserActionCostIsZeroAndPlayerPUsIsZero() {
+      final PlayerID player = createPlayer();
+      final UserActionAttachment userAction = createUserActionWithCost(0);
+
+      final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+
+      assertThat(canAffordUserAction, is(true));
+    }
   }
 
-  @Test
-  public void testCanPlayerAffordUserAction_ShouldReturnTrueWhenUserActionCostIsZeroAndPlayerPUsIsZero() {
-    final PlayerID player = createPlayer();
-    final UserActionAttachment userAction = createUserActionWithCost(0);
+  @Nested
+  final class CanSpendResourcesOnUserActionsTest {
+    @Test
+    void shouldReturnFalseWhenNoUserActionsPresent() {
+      final Collection<UserActionAttachment> userActions = Collections.emptyList();
 
-    final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
+      final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
-    assertThat(canAffordUserAction, is(true));
-  }
+      assertThat(canSpendResources, is(false));
+    }
 
-  @Test
-  public void testCanSpendResourcesOnUserActions_ShouldReturnFalseWhenNoUserActionsPresent() {
-    final Collection<UserActionAttachment> userActions = Collections.emptyList();
+    @Test
+    void shouldReturnFalseWhenNoUserActionHasCost() {
+      final Collection<UserActionAttachment> userActions =
+          Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(0));
 
-    final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
+      final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
-    assertThat(canSpendResources, is(false));
-  }
+      assertThat(canSpendResources, is(false));
+    }
 
-  @Test
-  public void testCanSpendResourcesOnUserActions_ShouldReturnFalseWhenNoUserActionHasCost() {
-    final Collection<UserActionAttachment> userActions =
-        Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(0));
+    @Test
+    void shouldReturnTrueWhenAtLeastOneUserActionHasCost() {
+      final Collection<UserActionAttachment> userActions =
+          Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(5));
 
-    final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
+      final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
-    assertThat(canSpendResources, is(false));
-  }
-
-  @Test
-  public void testCanSpendResourcesOnUserActions_ShouldReturnTrueWhenAtLeastOneUserActionHasCost() {
-    final Collection<UserActionAttachment> userActions =
-        Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(5));
-
-    final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
-
-    assertThat(canSpendResources, is(true));
+      assertThat(canSpendResources, is(true));
+    }
   }
 }

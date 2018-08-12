@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -21,26 +22,12 @@ import games.strategy.engine.framework.startup.login.Md5CryptAuthenticator.Chall
 import games.strategy.engine.framework.startup.login.Md5CryptAuthenticator.ResponsePropertyNames;
 import games.strategy.util.Md5Crypt;
 
-public final class Md5CryptAuthenticatorTest {
+final class Md5CryptAuthenticatorTest {
   private static final String PASSWORD = "←PASSWORD↑WITH→UNICODE↓CHARS";
-
-  @Test
-  public void canProcessChallenge_ShouldReturnTrueWhenAllPropertiesPresent() {
-    final Map<String, String> challenge = newChallengeWithAllProperties();
-
-    assertThat(Md5CryptAuthenticator.canProcessChallenge(challenge), is(true));
-  }
 
   private static Map<String, String> newChallengeWithAllProperties() {
     return Maps.newHashMap(ImmutableMap.of(
         ChallengePropertyNames.SALT, ""));
-  }
-
-  @Test
-  public void canProcessChallenge_ShouldReturnFalseWhenSaltAbsent() {
-    final Map<String, String> challenge = newChallengeWithAllPropertiesExcept(ChallengePropertyNames.SALT);
-
-    assertThat(Md5CryptAuthenticator.canProcessChallenge(challenge), is(false));
   }
 
   private static Map<String, String> newChallengeWithAllPropertiesExcept(final String name) {
@@ -49,30 +36,9 @@ public final class Md5CryptAuthenticatorTest {
     return challenge;
   }
 
-  @Test
-  public void newChallenge_ShouldIncludeSalt() {
-    final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
-
-    assertThat(challenge, hasEntry(is(ChallengePropertyNames.SALT), is(not(emptyString()))));
-  }
-
-  @Test
-  public void canProcessResponse_ShouldReturnTrueWhenAllPropertiesPresent() {
-    final Map<String, String> response = newResponseWithAllProperties();
-
-    assertThat(Md5CryptAuthenticator.canProcessResponse(response), is(true));
-  }
-
   private static Map<String, String> newResponseWithAllProperties() {
     return Maps.newHashMap(ImmutableMap.of(
         ResponsePropertyNames.DIGEST, ""));
-  }
-
-  @Test
-  public void canProcessResponse_ShouldReturnFalseWhenDigestAbsent() {
-    final Map<String, String> response = newResponseWithAllPropertiesExcept(ResponsePropertyNames.DIGEST);
-
-    assertThat(Md5CryptAuthenticator.canProcessResponse(response), is(false));
   }
 
   private static Map<String, String> newResponseWithAllPropertiesExcept(final String name) {
@@ -81,94 +47,147 @@ public final class Md5CryptAuthenticatorTest {
     return response;
   }
 
-  @Test
-  public void newResponse_ShouldIncludeResponseWhenChallengeContainsSalt() throws Exception {
-    final Map<String, String> challenge = ImmutableMap.of(
-        ChallengePropertyNames.SALT, Md5Crypt.newSalt());
+  @Nested
+  final class CanProcessChallengeTest {
+    @Test
+    void shouldReturnTrueWhenAllPropertiesPresent() {
+      final Map<String, String> challenge = newChallengeWithAllProperties();
 
-    final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
+      assertThat(Md5CryptAuthenticator.canProcessChallenge(challenge), is(true));
+    }
 
-    assertThat(response, hasEntry(is(ResponsePropertyNames.DIGEST), is(not(emptyString()))));
+    @Test
+    void shouldReturnFalseWhenSaltAbsent() {
+      final Map<String, String> challenge = newChallengeWithAllPropertiesExcept(ChallengePropertyNames.SALT);
+
+      assertThat(Md5CryptAuthenticator.canProcessChallenge(challenge), is(false));
+    }
   }
 
-  @Test
-  public void newResponse_ShouldThrowExceptionWhenChallengeDoesNotContainSalt() {
-    final Map<String, String> challenge = ImmutableMap.of();
+  @Nested
+  final class NewChallengeTest {
+    @Test
+    void shouldIncludeSalt() {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
 
-    final Exception e =
-        assertThrows(AuthenticationException.class, () -> Md5CryptAuthenticator.newResponse(PASSWORD, challenge));
-    assertThat(e.getMessage(), containsString("missing"));
+      assertThat(challenge, hasEntry(is(ChallengePropertyNames.SALT), is(not(emptyString()))));
+    }
   }
 
-  @Test
-  public void getRequiredProperty_ShouldReturnValueWhenNamePresent() throws Exception {
-    final String name = "name";
-    final String value = "value";
-    final Map<String, String> properties = ImmutableMap.of(name, value);
+  @Nested
+  final class CanProcessResponseTest {
+    @Test
+    void shouldReturnTrueWhenAllPropertiesPresent() {
+      final Map<String, String> response = newResponseWithAllProperties();
 
-    final String actualValue = Md5CryptAuthenticator.getRequiredProperty(properties, name);
+      assertThat(Md5CryptAuthenticator.canProcessResponse(response), is(true));
+    }
 
-    assertThat(actualValue, is(value));
+    @Test
+    void shouldReturnFalseWhenDigestAbsent() {
+      final Map<String, String> response = newResponseWithAllPropertiesExcept(ResponsePropertyNames.DIGEST);
+
+      assertThat(Md5CryptAuthenticator.canProcessResponse(response), is(false));
+    }
   }
 
-  @Test
-  public void getRequiredProperty_ShouldThrowExceptionWhenNameAbsent() {
-    final String name = "name";
-    final Map<String, String> properties = ImmutableMap.of("other name", "value");
+  @Nested
+  final class NewResponseTest {
+    @Test
+    void shouldIncludeResponseWhenChallengeContainsSalt() throws Exception {
+      final Map<String, String> challenge = ImmutableMap.of(
+          ChallengePropertyNames.SALT, Md5Crypt.newSalt());
 
-    final Exception e = assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.getRequiredProperty(properties, name));
+      final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
-    assertThat(e.getMessage(), allOf(
-        containsString("missing"),
-        containsString(name)));
+      assertThat(response, hasEntry(is(ResponsePropertyNames.DIGEST), is(not(emptyString()))));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenChallengeDoesNotContainSalt() {
+      final Map<String, String> challenge = ImmutableMap.of();
+
+      final Exception e =
+          assertThrows(AuthenticationException.class, () -> Md5CryptAuthenticator.newResponse(PASSWORD, challenge));
+      assertThat(e.getMessage(), containsString("missing"));
+    }
   }
 
-  @Test
-  public void authenticate_ShouldNotThrowExceptionWhenAuthenticationSucceeds() throws Exception {
-    final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
-    final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
+  @Nested
+  final class GetRequiredPropertyTest {
+    @Test
+    void shouldReturnValueWhenNamePresent() throws Exception {
+      final String name = "name";
+      final String value = "value";
+      final Map<String, String> properties = ImmutableMap.of(name, value);
 
-    assertNotThrows(() -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+      final String actualValue = Md5CryptAuthenticator.getRequiredProperty(properties, name);
+
+      assertThat(actualValue, is(value));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenNameAbsent() {
+      final String name = "name";
+      final Map<String, String> properties = ImmutableMap.of("other name", "value");
+
+      final Exception e = assertThrows(AuthenticationException.class,
+          () -> Md5CryptAuthenticator.getRequiredProperty(properties, name));
+
+      assertThat(e.getMessage(), allOf(
+          containsString("missing"),
+          containsString(name)));
+    }
   }
 
-  @Test
-  public void authenticate_ShouldThrowExceptionWhenAuthenticationFails() throws Exception {
-    final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
-    final Map<String, String> response = Md5CryptAuthenticator.newResponse("otherPassword", challenge);
+  @Nested
+  final class AuthenticateTest {
+    @Test
+    void shouldNotThrowExceptionWhenAuthenticationSucceeds() throws Exception {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
+      final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
-    final Exception e = assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+      assertNotThrows(() -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+    }
 
-    assertThat(e.getMessage(), containsString("authentication failed"));
-  }
+    @Test
+    void shouldThrowExceptionWhenAuthenticationFails() throws Exception {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
+      final Map<String, String> response = Md5CryptAuthenticator.newResponse("otherPassword", challenge);
 
-  @Test
-  public void authenticate_ShouldThrowExceptionWhenChallengeDoesNotContainSalt() throws Exception {
-    final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
-    final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
+      final Exception e = assertThrows(AuthenticationException.class,
+          () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
 
-    challenge.remove(ChallengePropertyNames.SALT);
+      assertThat(e.getMessage(), containsString("authentication failed"));
+    }
 
-    final Exception e = assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+    @Test
+    void shouldThrowExceptionWhenChallengeDoesNotContainSalt() throws Exception {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
+      final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
 
-    assertThat(e.getMessage(), allOf(
-        containsString("missing"),
-        containsString(ChallengePropertyNames.SALT)));
-  }
+      challenge.remove(ChallengePropertyNames.SALT);
 
-  @Test
-  public void authenticate_ShouldThrowExceptionWhenResponseDoesNotContainDigest() throws Exception {
-    final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
-    final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
+      final Exception e = assertThrows(AuthenticationException.class,
+          () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
 
-    response.remove(ResponsePropertyNames.DIGEST);
+      assertThat(e.getMessage(), allOf(
+          containsString("missing"),
+          containsString(ChallengePropertyNames.SALT)));
+    }
 
-    final Exception e = assertThrows(AuthenticationException.class,
-        () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
-    assertThat(e.getMessage(), allOf(
-        containsString("missing"),
-        containsString(ResponsePropertyNames.DIGEST)));
+    @Test
+    void shouldThrowExceptionWhenResponseDoesNotContainDigest() throws Exception {
+      final Map<String, String> challenge = Md5CryptAuthenticator.newChallenge();
+      final Map<String, String> response = Md5CryptAuthenticator.newResponse(PASSWORD, challenge);
+
+      response.remove(ResponsePropertyNames.DIGEST);
+
+      final Exception e = assertThrows(AuthenticationException.class,
+          () -> Md5CryptAuthenticator.authenticate(PASSWORD, challenge, response));
+      assertThat(e.getMessage(), allOf(
+          containsString("missing"),
+          containsString(ResponsePropertyNames.DIGEST)));
+    }
   }
 }
