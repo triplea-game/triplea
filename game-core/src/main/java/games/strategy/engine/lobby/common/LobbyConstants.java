@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.common;
 
-import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.util.Version;
 

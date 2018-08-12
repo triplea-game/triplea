@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server;
+package games.strategy.engine.lobby.common;
 
 import java.util.Date;
 
@@ -7,6 +7,9 @@ import javax.annotation.Nullable;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 
+/**
+ * A service that provides lobby management operations whose use is restricted to lobby moderators.
+ */
 public interface IModeratorController extends IRemote {
   // TODO: The methods accepting a Date parameter can be converted to Instant after the next incompatible release.
 
