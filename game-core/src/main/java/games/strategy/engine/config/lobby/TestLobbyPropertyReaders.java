@@ -7,6 +7,8 @@ import games.strategy.engine.config.MemoryPropertyReader;
 /**
  * Collection of {@link LobbyPropertyReader} instances suitable for various testing scenarios.
  */
+// TODO: This class is intended only for use by test code. It is temporarily located in a production package while lobby
+// server code is being gradually moved to the lobby project.
 public final class TestLobbyPropertyReaders {
   /**
    * A lobby configuration suitable for integration testing.

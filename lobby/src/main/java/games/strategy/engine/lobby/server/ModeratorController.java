@@ -26,11 +26,8 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import lombok.extern.java.Log;
 
-/**
- * Default implementation of {@link IModeratorController}.
- */
 @Log
-public final class ModeratorController implements IModeratorController {
+final class ModeratorController implements IModeratorController {
   /**
    * The hashed MAC address used when the MAC address of a node is unknown. It corresponds to the MAC address
    * {@code 00:00:00:00:00:00}.
