@@ -5,11 +5,6 @@ plugins {
 
 description = 'TripleA Lobby'
 mainClassName = 'games.strategy.engine.lobby.server.LobbyRunner'
-
-ext {
-    artifactsDir = file("$buildDir/artifacts")
-}
-
 version = project.hasProperty('lobbyVersion') ? project.lobbyVersion : 'dev'
 
 jar {
@@ -41,18 +36,8 @@ task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
 
 task release(group: 'release', dependsOn: lobbyServer) {
     doLast {
-        def artifacts = [
-            file("$distsDir/triplea-$version-server.zip"),
-        ]
-        artifacts.each {
-            if (!it.exists()) {
-                throw new GradleException("artifact '$it' does not exist")
-            }
-        }
-
-        copy {
-            from artifacts
-            into artifactsDir
-        }
+        publishArtifacts([
+            file("$distsDir/triplea-$version-server.zip")
+        ])
     }
 }
