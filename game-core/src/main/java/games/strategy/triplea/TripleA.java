@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.data.UnitFactory;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -149,8 +149,8 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public IUnitFactory getUnitFactory() {
-    return new IUnitFactory() {
+  public UnitFactory getUnitFactory() {
+    return new UnitFactory() {
       @Override
       public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data) {
         return new TripleAUnit(type, owner, data);

@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.data.UnitFactory;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
@@ -57,11 +57,7 @@ public interface IGameLoader extends Serializable {
 
   /**
    * A game may use a subclass of Unit to allow associating data with a particular unit. The
-   * game does this by specifying a IUnitFactory that should be used to create units.
-   *
-   * <p>
-   * Games that do not want to subclasses of units should simply return a DefaultUnitFactory.
-   * </p>
+   * game does this by specifying a UnitFactory that should be used to create units.
    */
-  IUnitFactory getUnitFactory();
+  UnitFactory getUnitFactory();
 }
