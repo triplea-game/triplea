@@ -252,22 +252,30 @@ final class DefaultCredentialManager implements CredentialManager {
   }
 
   private static void scrub(final byte[] bytes) {
-    Arrays.fill(bytes, (byte) 0);
+    scrub(bytes, 0, bytes.length);
+  }
+
+  private static void scrub(final byte[] bytes, final int fromIndexInclusive, final int toIndexExclusive) {
+    Arrays.fill(bytes, fromIndexInclusive, toIndexExclusive, (byte) 0);
   }
 
   private static void scrub(final char[] chars) {
-    Arrays.fill(chars, '\0');
+    scrub(chars, 0, chars.length);
+  }
+
+  private static void scrub(final char[] chars, final int fromIndexInclusive, final int toIndexExclusive) {
+    Arrays.fill(chars, fromIndexInclusive, toIndexExclusive, '\0');
   }
 
   private static void scrub(final ByteBuffer bb) {
     if (bb.hasArray()) {
-      scrub(bb.array());
+      scrub(bb.array(), bb.arrayOffset(), bb.arrayOffset() + bb.position() + bb.remaining());
     }
   }
 
   private static void scrub(final CharBuffer cb) {
     if (cb.hasArray()) {
-      scrub(cb.array());
+      scrub(cb.array(), cb.arrayOffset(), cb.arrayOffset() + cb.position() + cb.remaining());
     }
   }
 
