@@ -30,6 +30,10 @@ public interface IChatController extends IRemote {
    */
   void leaveChat();
 
+  /**
+   * A tag associated with a chat participant indicating the participant's role.
+   */
+  // TODO: rename to Role upon next incompatible release
   enum Tag {
     MODERATOR, NONE
   }

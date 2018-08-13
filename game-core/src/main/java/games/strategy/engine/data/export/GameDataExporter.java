@@ -49,6 +49,9 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
+/**
+ * Exports a {@link GameData} instance in XML format.
+ */
 @Log
 public class GameDataExporter {
   private final StringBuilder xmlfile;

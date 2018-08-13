@@ -8,6 +8,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 
+/**
+ * A game data change that captures a change to an object property value.
+ */
 public class ObjectPropertyChange extends Change {
   private static final long serialVersionUID = 4218093376094170940L;
   private final Unit m_object;

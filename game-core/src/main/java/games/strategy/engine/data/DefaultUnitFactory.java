@@ -1,5 +1,8 @@
 package games.strategy.engine.data;
 
+/**
+ * Default implementation of {@link IUnitFactory}.
+ */
 public class DefaultUnitFactory implements IUnitFactory {
   private static final long serialVersionUID = 201371033476236028L;
 

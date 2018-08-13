@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
+/**
+ * Superclass for all implementations of {@link IEditableProperty}.
+ */
 public abstract class AEditableProperty implements IEditableProperty, Serializable, Comparable<AEditableProperty> {
   private static final long serialVersionUID = -5005729898242568847L;
   private final String m_name;

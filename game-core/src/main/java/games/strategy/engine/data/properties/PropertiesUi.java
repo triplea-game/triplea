@@ -9,6 +9,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * A UI component that displays a collection of game properties and optionally allows them to be edited.
+ */
 public class PropertiesUi extends JPanel {
   private static final long serialVersionUID = 3870459799384582310L;
   private int nextRow;

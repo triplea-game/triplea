@@ -49,6 +49,9 @@ public class Chat {
   private static final String TAG_MODERATOR = "[Mod]";
   private final ChatSoundProfile chatSoundProfile;
 
+  /**
+   * A profile defines the sounds to use for various chat events.
+   */
   public enum ChatSoundProfile {
     LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
   }

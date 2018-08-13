@@ -33,6 +33,9 @@ import javax.swing.UIManager;
 import games.strategy.net.INode;
 import games.strategy.ui.SwingAction;
 
+/**
+ * A UI component that displays the players participating in a chat.
+ */
 public class ChatPlayerPanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = -3153022965393962945L;
   private static final Icon ignoreIcon;
@@ -74,6 +77,9 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     hiddenPlayers.add(name);
   }
 
+  /**
+   * Sets the chat whose players will be displayed in this panel.
+   */
   public void setChat(final Chat chat) {
     if (this.chat != null) {
       this.chat.removeChatListener(this);

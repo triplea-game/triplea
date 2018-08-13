@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 import games.strategy.triplea.delegate.Matches;
 
+/**
+ * Provides methods that determine whether various types of relationships (e.g. allied, at war, etc.) exist between two
+ * or more players.
+ */
 public class RelationshipInterpreter extends GameDataComponent {
   private static final long serialVersionUID = -643454441052535241L;
 

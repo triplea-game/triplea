@@ -21,6 +21,13 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.UiContext;
 
+/**
+ * Renders a chat participant in a {@link JList}.
+ *
+ * <p>
+ * This implementation optimizes rendering by caching the status icons and player-to-node mappings.
+ * </p>
+ */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
   private final IGame game;

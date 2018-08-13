@@ -5,6 +5,9 @@ import java.util.Map.Entry;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
+/**
+ * A production rule.
+ */
 public class ProductionRule extends DefaultNamed {
   private static final long serialVersionUID = -6598296283127741307L;
   private IntegerMap<Resource> m_cost = new IntegerMap<>();
@@ -50,6 +53,11 @@ public class ProductionRule extends DefaultNamed {
     return "ProductionRule:" + getName();
   }
 
+  /**
+   * Returns a string representing the total resource cost for this production rule.
+   *
+   * @return A string with the format {@code <resource1Cost> <resource1Name>[; <resource2Cost> <resource2Name>[; ...]]}.
+   */
   public String toStringCosts() {
     final StringBuilder sb = new StringBuilder();
     getData().acquireReadLock();

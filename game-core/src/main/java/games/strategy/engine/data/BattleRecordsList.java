@@ -73,16 +73,20 @@ public class BattleRecordsList extends GameDataComponent {
   }
 
   // Interpretation stuff below
-  public static int getTuvDamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList brl,
+
+  /**
+   * Returns the TUV damage caused by {@code attacker} from the battle results in {@code battleRecordsList}.
+   */
+  public static int getTuvDamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList battleRecordsList,
       final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
-      if (brl != null) {
-        brs.add(brl.getCurrentRoundCopy());
+      if (battleRecordsList != null) {
+        brs.add(battleRecordsList.getCurrentRoundCopy());
       }
     } else {
-      if (brl != null) {
-        final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
+      if (battleRecordsList != null) {
+        final Map<Integer, BattleRecords> currentList = battleRecordsList.getBattleRecordsMapCopy();
         if (currentList != null) {
           for (int i = beginningRound; i <= endRound; i++) {
             final BattleRecords currentRecords = currentList.get(i);

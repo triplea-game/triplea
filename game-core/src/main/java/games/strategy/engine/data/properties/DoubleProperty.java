@@ -10,6 +10,9 @@ import javax.swing.SpinnerNumberModel;
 
 import games.strategy.engine.ClientFileSystemHelper;
 
+/**
+ * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
+ */
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;
   private final double m_max;

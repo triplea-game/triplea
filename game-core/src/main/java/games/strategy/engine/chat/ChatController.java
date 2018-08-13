@@ -20,6 +20,9 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.Tuple;
 
+/**
+ * Default implementation of {@link IChatController}.
+ */
 public class ChatController implements IChatController {
   private static final Logger logger = Logger.getLogger(ChatController.class.getName());
   private static final String CHAT_REMOTE = "_ChatRmt";

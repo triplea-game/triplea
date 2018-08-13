@@ -7,6 +7,9 @@ import java.util.Objects;
 
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
+/**
+ * A collection of relationships between any two players.
+ */
 public class RelationshipTracker extends RelationshipInterpreter {
   private static final long serialVersionUID = -4740671761925519069L;
   // map of "playername:playername" to RelationshipType that exists between those 2 players
@@ -161,6 +164,9 @@ public class RelationshipTracker extends RelationshipInterpreter {
     }
   }
 
+  /**
+   * Represents the establishment of a particular type of relationship within the game.
+   */
   public class Relationship implements Serializable {
     private static final long serialVersionUID = -6718866176901627180L;
 

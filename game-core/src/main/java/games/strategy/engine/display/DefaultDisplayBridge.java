@@ -2,6 +2,9 @@ package games.strategy.engine.display;
 
 import games.strategy.engine.data.GameData;
 
+/**
+ * Default implementation of {@link IDisplayBridge}.
+ */
 public class DefaultDisplayBridge implements IDisplayBridge {
   private final GameData gameData;
 

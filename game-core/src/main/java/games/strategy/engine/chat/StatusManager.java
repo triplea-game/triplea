@@ -8,6 +8,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 
+/**
+ * Manages the status of all chat participants and keeps the status synchronized among all nodes.
+ */
 public class StatusManager {
   private final List<IStatusListener> listeners = new CopyOnWriteArrayList<>();
   private final Map<INode, String> status = new HashMap<>();

@@ -12,18 +12,21 @@ import java.util.function.Predicate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
+/**
+ * This class can find composite routes between two territories.
+ * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
+ * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2
+ * length neutral route.
+ * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
+ * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any
+ * way.
+ */
 public class CompositeRouteFinder {
   private final GameMap map;
   private final Map<Predicate<Territory>, Integer> matches;
 
   /**
-   * This class can find composite routes between two territories.
-   * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
-   * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2
-   * length neutral route.
-   * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
-   * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any
-   * way.
+   * Initializes a new instance of the CompositeRouteFinder class.
    *
    * @param map - Game map found through &lt;gamedata>.getMap()
    * @param matches - Set of matches and scores. The lower a match is scored, the more favorable it is.
