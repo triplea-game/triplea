@@ -20,6 +20,10 @@ import games.strategy.engine.message.IRemote;
 
 /**
  * Fake implementation of {@link IGameLoader} that does nothing.
+ *
+ * <p>
+ * Note that instances of this class are typically created via reflection. See the various game XML test resources.
+ * </p>
  */
 public final class TestGameLoader implements IGameLoader {
   private static final long serialVersionUID = -8019996788216172034L;
