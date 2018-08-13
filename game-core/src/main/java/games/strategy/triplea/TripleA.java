@@ -9,11 +9,7 @@ import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.IUnitFactory;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitFactory;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -149,14 +145,7 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public IUnitFactory getUnitFactory() {
-    return new IUnitFactory() {
-      private static final long serialVersionUID = 5684926837825766505L;
-
-      @Override
-      public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data) {
-        return new TripleAUnit(type, owner, data);
-      }
-    };
+  public UnitFactory getUnitFactory() {
+    return TripleAUnit::new;
   }
 }

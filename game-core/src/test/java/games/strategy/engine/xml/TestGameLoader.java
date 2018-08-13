@@ -6,8 +6,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.data.DefaultUnitFactory;
-import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitFactory;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.startup.ui.PlayerType;
@@ -17,6 +17,10 @@ import games.strategy.engine.message.IRemote;
 
 /**
  * Fake implementation of {@link IGameLoader} that does nothing.
+ *
+ * <p>
+ * Note that instances of this class are typically created via reflection. See the various game XML test resources.
+ * </p>
  */
 public final class TestGameLoader implements IGameLoader {
   private static final long serialVersionUID = -8019996788216172034L;
@@ -49,7 +53,7 @@ public final class TestGameLoader implements IGameLoader {
   public void shutDown() {}
 
   @Override
-  public IUnitFactory getUnitFactory() {
-    return new DefaultUnitFactory();
+  public UnitFactory getUnitFactory() {
+    return Unit::new;
   }
 }
