@@ -6,8 +6,11 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.data.DefaultUnitFactory;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.startup.ui.PlayerType;
@@ -50,6 +53,13 @@ public final class TestGameLoader implements IGameLoader {
 
   @Override
   public IUnitFactory getUnitFactory() {
-    return new DefaultUnitFactory();
+    return new IUnitFactory() {
+      private static final long serialVersionUID = 201371033476236028L;
+
+      @Override
+      public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data) {
+        return new Unit(type, owner, data);
+      }
+    };
   }
 }
