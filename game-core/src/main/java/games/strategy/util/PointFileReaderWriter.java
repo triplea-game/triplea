@@ -26,6 +26,8 @@ import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.io.output.CloseShieldOutputStream;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 
@@ -193,9 +195,10 @@ public final class PointFileReaderWriter {
     final Map<String, List<Point>> mapping = new HashMap<>();
     final Map<String, Tuple<List<Point>, Boolean>> result = new HashMap<>();
     readStream(stream, current -> {
-      final String[] s = current.split(" \\| ");
-      final Tuple<String, List<Point>> tuple = readMultiple(s[0], mapping);
-      final boolean overflowToLeft = s.length == 2 && Boolean.parseBoolean(s[1].split("=")[1]);
+      final List<String> s = Splitter.on(" | ").splitToList(current);
+      final Tuple<String, List<Point>> tuple = readMultiple(s.get(0), mapping);
+      final boolean overflowToLeft = (s.size() == 2)
+          && Boolean.parseBoolean(Iterables.get(Splitter.on('=').split(s.get(1)), 1));
       result.put(tuple.getFirst(), Tuple.of(tuple.getSecond(), overflowToLeft));
     });
     return result;
