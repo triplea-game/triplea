@@ -10,11 +10,11 @@ import java.util.logging.LogManager;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
@@ -132,7 +132,7 @@ public final class Console {
       }
     });
     LOG_LEVEL_ITEMS.forEach(item -> {
-      final JMenuItem menuItem = new JCheckBoxMenuItem(item.label, item.level == logLevel);
+      final JMenuItem menuItem = new JRadioButtonMenuItem(item.label, item.level == logLevel);
       menuItem.addActionListener(e -> {
         setLogLevel(item.level);
         setDefaultLogLevel(item.level);
