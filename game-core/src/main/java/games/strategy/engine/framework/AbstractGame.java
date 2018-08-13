@@ -11,7 +11,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.data.events.GameStepListener;
-import games.strategy.engine.display.DefaultDisplayBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.DefaultPlayerBridge;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -138,7 +137,6 @@ public abstract class AbstractGame implements IGame {
 
   @Override
   public void addDisplay(final IDisplay display) {
-    new DefaultDisplayBridge(gameData);
     channelMessenger.registerChannelSubscriber(display, getDisplayChannel(getData()));
   }
 
