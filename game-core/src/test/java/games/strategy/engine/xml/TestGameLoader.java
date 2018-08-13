@@ -58,8 +58,6 @@ public final class TestGameLoader implements IGameLoader {
   @Override
   public IUnitFactory getUnitFactory() {
     return new IUnitFactory() {
-      private static final long serialVersionUID = 201371033476236028L;
-
       @Override
       public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data) {
         return new Unit(type, owner, data);

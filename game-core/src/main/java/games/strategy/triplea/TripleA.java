@@ -151,8 +151,6 @@ public class TripleA implements IGameLoader {
   @Override
   public IUnitFactory getUnitFactory() {
     return new IUnitFactory() {
-      private static final long serialVersionUID = 5684926837825766505L;
-
       @Override
       public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data) {
         return new TripleAUnit(type, owner, data);
