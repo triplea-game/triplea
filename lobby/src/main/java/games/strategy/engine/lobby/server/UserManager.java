@@ -1,7 +1,5 @@
 package games.strategy.engine.lobby.server;
 
-import java.util.logging.Logger;
-
 import org.mindrot.jbcrypt.BCrypt;
 
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
@@ -12,10 +10,10 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
+import lombok.extern.java.Log;
 
+@Log
 final class UserManager implements IUserManager {
-  private static final Logger logger = Logger.getLogger(UserManager.class.getName());
-
   private final Database database;
 
   UserManager(final LobbyPropertyReader lobbyPropertyReader) {
@@ -30,7 +28,7 @@ final class UserManager implements IUserManager {
   public String updateUser(final String userName, final String emailAddress, final String hashedPassword) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
-      logger.severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
+      log.severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
       return "Sorry, but I can't let you do that";
     }
 
@@ -55,7 +53,7 @@ final class UserManager implements IUserManager {
   public DBUser getUserInfo(final String userName) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
-      logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
+      log.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
     return new UserController(database).getUserByName(userName);
