@@ -409,11 +409,6 @@ final class ModeratorController implements IModeratorController {
     return remoteHostUtils.getConnections();
   }
 
-  @Override
-  public String setPassword(final INode node, final String hashedPassword) {
-    return "";
-  }
-
   void register(final IRemoteMessenger messenger) {
     messenger.registerRemote(this, LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
   }
