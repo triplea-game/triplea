@@ -130,11 +130,16 @@ public interface IModeratorController extends IRemote {
    * You cannot change the password of an anonymous node, and you cannot change the password for an admin user.
    * </p>
    *
+   * @param node The node whose password is to be set.
+   * @param hashedPassword The new hashed password.
+   *
    * @deprecated Remove usages of this. Does not make sense for moderators to be able to reset passwords of logged
    *             in users.
    */
   @Deprecated
-  String setPassword(INode node, String hashedPassword);
+  default @Nullable String setPassword(final INode node, final String hashedPassword) {
+    return "";
+  }
 
   String getInformationOn(INode node);
 
