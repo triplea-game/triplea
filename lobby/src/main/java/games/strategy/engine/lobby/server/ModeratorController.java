@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
+import games.strategy.engine.lobby.common.IModeratorController;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.db.BannedMacController;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
 import games.strategy.engine.lobby.server.db.Database;
@@ -24,11 +26,8 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import lombok.extern.java.Log;
 
-/**
- * Default implementation of {@link IModeratorController}.
- */
 @Log
-public final class ModeratorController implements IModeratorController {
+final class ModeratorController implements IModeratorController {
   /**
    * The hashed MAC address used when the MAC address of a node is unknown. It corresponds to the MAC address
    * {@code 00:00:00:00:00:00}.
@@ -416,10 +415,6 @@ public final class ModeratorController implements IModeratorController {
   }
 
   void register(final IRemoteMessenger messenger) {
-    messenger.registerRemote(this, getModeratorControllerName());
-  }
-
-  public static RemoteName getModeratorControllerName() {
-    return new RemoteName(IModeratorController.class, "games.strategy.engine.lobby.server.ModeratorController:Global");
+    messenger.registerRemote(this, LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
   }
 }
