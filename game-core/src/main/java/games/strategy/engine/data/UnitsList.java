@@ -14,10 +14,10 @@ import games.strategy.net.GUID;
  */
 public class UnitsList implements Serializable, Iterable<Unit> {
   private static final long serialVersionUID = -3134052492257867416L;
-  // maps GUID -> Unit
   // TODO - fix this, all units are never gcd
-  // note, weak hash maps are not serializable
-  private Map<GUID, Unit> m_allUnits;
+  private final Map<GUID, Unit> m_allUnits = new HashMap<>();
+
+  UnitsList() {}
 
   public Unit get(final GUID id) {
     return m_allUnits.get(id);
@@ -32,14 +32,6 @@ public class UnitsList implements Serializable, Iterable<Unit> {
    */
   public Collection<Unit> getUnits() {
     return Collections.unmodifiableCollection(m_allUnits.values());
-  }
-
-  public void refresh() {
-    m_allUnits = new HashMap<>();
-  }
-
-  UnitsList() {
-    refresh();
   }
 
   @Override
