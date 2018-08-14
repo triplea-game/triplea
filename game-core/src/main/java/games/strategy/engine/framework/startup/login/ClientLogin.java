@@ -11,6 +11,8 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.net.IConnectionLogin;
+import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 
 /**
  * The client side of the peer-to-peer network game authentication protocol.
@@ -58,13 +60,17 @@ public class ClientLogin implements IConnectionLogin {
 
   @VisibleForTesting
   protected String promptForPassword() {
-    final JPasswordField passwordField = new JPasswordField();
-    passwordField.setColumns(15);
-    JOptionPane.showMessageDialog(
-        JOptionPane.getFrameForComponent(parentComponent),
-        passwordField,
-        "Enter a password to join the game",
-        JOptionPane.QUESTION_MESSAGE);
-    return new String(passwordField.getPassword());
+    return Interruptibles.awaitResult(() -> {
+      return SwingAction.invokeAndWaitResult(() -> {
+        final JPasswordField passwordField = new JPasswordField();
+        passwordField.setColumns(15);
+        JOptionPane.showMessageDialog(
+            JOptionPane.getFrameForComponent(parentComponent),
+            passwordField,
+            "Enter a password to join the game",
+            JOptionPane.QUESTION_MESSAGE);
+        return new String(passwordField.getPassword());
+      });
+    }).result.orElse("");
   }
 }
