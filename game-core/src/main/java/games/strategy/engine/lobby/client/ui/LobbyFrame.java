@@ -220,9 +220,11 @@ public class LobbyFrame extends JFrame {
   public void shutdown() {
     setVisible(false);
     dispose();
-    new Thread(GameRunner::showMainFrame).start();
-    client.getMessenger().shutDown();
-    GameRunner.exitGameIfFinished();
+    new Thread(() -> {
+      GameRunner.showMainFrame();
+      client.getMessenger().shutDown();
+      GameRunner.exitGameIfFinished();
+    }).start();
   }
 
   private void connectionToServerLost() {
