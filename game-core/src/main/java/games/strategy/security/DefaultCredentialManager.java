@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 
 /**
  * Default implementation of {@link CredentialManager}.
@@ -233,13 +235,13 @@ final class DefaultCredentialManager implements CredentialManager {
 
   private static CiphertextAndSalt parseProtectedCredential(final String protectedCredential)
       throws CredentialManagerException {
-    final String[] components = protectedCredential.split("\\.");
-    if (components.length != 2) {
+    final List<String> components = Splitter.on('.').splitToList(protectedCredential);
+    if (components.size() != 2) {
       throw new CredentialManagerException("malformed protected credential");
     }
 
-    final String encodedSalt = components[0];
-    final String encodedCiphertext = components[1];
+    final String encodedSalt = components.get(0);
+    final String encodedCiphertext = components.get(1);
     final byte[] ciphertext = Base64.getDecoder().decode(encodedCiphertext);
     final byte[] salt = Base64.getDecoder().decode(encodedSalt);
     return new CiphertextAndSalt(ciphertext, salt);
@@ -250,22 +252,30 @@ final class DefaultCredentialManager implements CredentialManager {
   }
 
   private static void scrub(final byte[] bytes) {
-    Arrays.fill(bytes, (byte) 0);
+    scrub(bytes, 0, bytes.length);
+  }
+
+  private static void scrub(final byte[] bytes, final int fromIndexInclusive, final int toIndexExclusive) {
+    Arrays.fill(bytes, fromIndexInclusive, toIndexExclusive, (byte) 0);
   }
 
   private static void scrub(final char[] chars) {
-    Arrays.fill(chars, '\0');
+    scrub(chars, 0, chars.length);
+  }
+
+  private static void scrub(final char[] chars, final int fromIndexInclusive, final int toIndexExclusive) {
+    Arrays.fill(chars, fromIndexInclusive, toIndexExclusive, '\0');
   }
 
   private static void scrub(final ByteBuffer bb) {
     if (bb.hasArray()) {
-      scrub(bb.array());
+      scrub(bb.array(), bb.arrayOffset(), bb.arrayOffset() + bb.position() + bb.remaining());
     }
   }
 
   private static void scrub(final CharBuffer cb) {
     if (cb.hasArray()) {
-      scrub(cb.array());
+      scrub(cb.array(), cb.arrayOffset(), cb.arrayOffset() + cb.position() + cb.remaining());
     }
   }
 

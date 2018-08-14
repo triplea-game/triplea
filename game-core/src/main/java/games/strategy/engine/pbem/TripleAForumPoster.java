@@ -92,9 +92,7 @@ public class TripleAForumPoster extends AbstractForumPoster {
       throws IOException {
     final HttpDelete httpDelete = new HttpDelete(tripleAForumURL + "/api/v2/users/" + userId + "/tokens/" + token);
     addTokenHeader(httpDelete, token);
-    try (CloseableHttpResponse ignored = client.execute(httpDelete)) {
-      // ignore errors, execute and then close
-    }
+    client.execute(httpDelete).close(); // ignore errors, execute and then close
   }
 
   private int getUserId(final CloseableHttpClient client) throws IOException {
