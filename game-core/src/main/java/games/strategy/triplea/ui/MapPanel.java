@@ -616,11 +616,10 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     // draw the tiles nearest us first
     // then draw farther away
-    updateUndrawnTiles(undrawnTiles, 30, true);
-    updateUndrawnTiles(undrawnTiles, 257, true);
-    // when we are this far away, don't force the tiles to stay in memory
-    updateUndrawnTiles(undrawnTiles, 513, false);
-    updateUndrawnTiles(undrawnTiles, 767, false);
+    updateUndrawnTiles(undrawnTiles, 30);
+    updateUndrawnTiles(undrawnTiles, 257);
+    updateUndrawnTiles(undrawnTiles, 513);
+    updateUndrawnTiles(undrawnTiles, 767);
     clearPendingDrawOperations();
     undrawnTiles.forEach(tile -> executor.execute(() -> {
       data.acquireReadLock();
@@ -647,10 +646,9 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   /**
-   * If we have nothing left undrawn, draw the tiles within preDrawMargin of us, optionally
-   * forcing the tiles to remain in memory.
+   * If we have nothing left undrawn, draw the tiles within preDrawMargin of us.
    */
-  private void updateUndrawnTiles(final List<Tile> undrawnTiles, final int preDrawMargin, final boolean forceInMemory) {
+  private void updateUndrawnTiles(final List<Tile> undrawnTiles, final int preDrawMargin) {
     // draw tiles near us if we have nothing left to draw
     // that way when we scroll slowly we wont notice a glitch
     if (undrawnTiles.isEmpty()) {
