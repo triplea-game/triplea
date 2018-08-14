@@ -1,7 +1,5 @@
 package games.strategy.engine.lobby.server;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.logging.Logger;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -15,18 +13,16 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
 
-public class UserManager implements IUserManager {
+final class UserManager implements IUserManager {
   private static final Logger logger = Logger.getLogger(UserManager.class.getName());
 
   private final Database database;
 
-  public UserManager(final LobbyPropertyReader lobbyPropertyReader) {
-    checkNotNull(lobbyPropertyReader);
-
+  UserManager(final LobbyPropertyReader lobbyPropertyReader) {
     database = new Database(lobbyPropertyReader);
   }
 
-  public void register(final IRemoteMessenger messenger) {
+  void register(final IRemoteMessenger messenger) {
     messenger.registerRemote(this, IUserManager.USER_MANAGER);
   }
 
