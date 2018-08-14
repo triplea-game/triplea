@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.IModeratorController;
@@ -99,7 +101,7 @@ final class ModeratorController implements IModeratorController {
   @VisibleForTesting
   static String getUsernameForNode(final INode node) {
     // usernames may contain a " (n)" suffix when the same user is logged in multiple times
-    return node.getName().split(" ")[0];
+    return Iterables.get(Splitter.on(' ').split(node.getName()), 0);
   }
 
   /**
