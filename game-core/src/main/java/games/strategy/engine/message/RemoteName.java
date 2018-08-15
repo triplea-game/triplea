@@ -1,33 +1,27 @@
 package games.strategy.engine.message;
 
+import javax.annotation.concurrent.Immutable;
+
+import lombok.Getter;
+
 /**
  * Description for a Channel or a Remote end point.
  */
-public class RemoteName {
+@Getter
+@Immutable
+public final class RemoteName {
   private final String name;
   private final Class<?> clazz;
 
-  public RemoteName(final Class<?> class1, final String name) {
-    this(name, class1);
-  }
-
-  public RemoteName(final String name, final Class<?> class1) {
-    if (class1 == null) {
+  public RemoteName(final String name, final Class<?> clazz) {
+    if (clazz == null) {
       throw new IllegalArgumentException("Class cannot be null. Remote Name: " + name);
     }
-    if (!class1.isInterface()) {
+    if (!clazz.isInterface()) {
       throw new IllegalArgumentException("Not an interface. Remote Name: " + name);
     }
     this.name = name;
-    clazz = class1;
-  }
-
-  public Class<?> getClazz() {
-    return clazz;
-  }
-
-  public String getName() {
-    return name;
+    this.clazz = clazz;
   }
 
   @Override
