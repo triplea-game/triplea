@@ -18,6 +18,8 @@ import com.google.common.base.Strings;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.common.LobbyConstants;
+import games.strategy.engine.lobby.common.LobbyLoginChallengeKeys;
+import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.db.AccessLogController;
 import games.strategy.engine.lobby.server.db.BadWordController;
@@ -47,14 +49,6 @@ import games.strategy.util.Version;
  * </p>
  */
 public final class LobbyLoginValidator implements ILoginValidator {
-  public static final String LOBBY_VERSION = "LOBBY_VERSION";
-  public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
-  public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
-  public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
-  public static final String HASHED_PASSWORD_KEY = "HASHEDPWD";
-  public static final String EMAIL_KEY = "EMAIL";
-  public static final String SALT_KEY = "SALT";
-
   @VisibleForTesting
   interface ErrorMessages {
     String ANONYMOUS_AUTHENTICATION_FAILED = "Can't login anonymously, username already exists";
@@ -122,11 +116,11 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
     if (lobbyPropertyReader.isMaintenanceMode()) {
-      challenge.put(SALT_KEY, Md5Crypt.newSalt());
+      challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.newSalt());
     } else {
       final HashedPassword password = userDao.getLegacyPassword(userName);
       if (password != null && Strings.emptyToNull(password.value) != null) {
-        challenge.put(SALT_KEY, Md5Crypt.getSalt(password.value));
+        challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.getSalt(password.value));
       }
     }
     return challenge;
@@ -157,7 +151,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (response == null) {
       return "No Client Properties";
     }
-    final String clientVersionString = response.get(LOBBY_VERSION);
+    final String clientVersionString = response.get(LobbyLoginResponseKeys.LOBBY_VERSION);
     if (clientVersionString == null) {
       return "No Client Version";
     }
@@ -185,7 +179,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (usernameBanned.getFirst()) {
       return ErrorMessages.USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
     }
-    if (response.containsKey(REGISTER_NEW_USER_KEY)) {
+    if (response.containsKey(LobbyLoginResponseKeys.REGISTER_NEW_USER)) {
       return createUser(response, user);
     }
 
@@ -201,7 +195,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
   }
 
   private static UserType getUserTypeFor(final Map<String, String> response) {
-    return response.containsKey(ANONYMOUS_LOGIN) ? UserType.ANONYMOUS : UserType.REGISTERED;
+    return response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN) ? UserType.ANONYMOUS : UserType.REGISTERED;
   }
 
   private void logAuthenticationResult(final User user, final UserType userType, final @Nullable String errorMessage) {
@@ -260,7 +254,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
     if (RsaAuthenticator.canProcessResponse(response)) {
       return rsaAuthenticator.decryptPasswordForAction(response, pass -> {
-        final String legacyHashedPassword = response.get(HASHED_PASSWORD_KEY);
+        final String legacyHashedPassword = response.get(LobbyLoginResponseKeys.HASHED_PASSWORD);
         if (hashedPassword.isBcrypted()) {
           if (userDao.login(username, new HashedPassword(pass))) {
             if (legacyHashedPassword != null && userDao.getLegacyPassword(username).value.isEmpty()) {
@@ -280,7 +274,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         }
       });
     }
-    if (!userDao.login(username, new HashedPassword(response.get(HASHED_PASSWORD_KEY)))) {
+    if (!userDao.login(username, new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD)))) {
       return errorMessage;
     }
     return null;
@@ -292,7 +286,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return ErrorMessages.ANONYMOUS_AUTHENTICATION_FAILED;
     }
     // If this is a lobby watcher, use a different set of validation
-    if (Boolean.TRUE.toString().equals(response.get(LOBBY_WATCHER_LOGIN))) {
+    if (Boolean.TRUE.toString().equals(response.get(LobbyLoginResponseKeys.LOBBY_WATCHER_LOGIN))) {
       if (!username.endsWith(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
         return "Lobby watcher usernames must end with 'lobby_watcher'";
       }
@@ -310,7 +304,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private @Nullable String createUser(final Map<String, String> response, final User user) {
     final DBUser dbUser = new DBUser(
         new DBUser.UserName(user.getUsername()),
-        new DBUser.UserEmail(response.get(EMAIL_KEY)));
+        new DBUser.UserEmail(response.get(LobbyLoginResponseKeys.EMAIL)));
 
     if (!dbUser.isValid()) {
       return dbUser.getValidationErrorMessage();
@@ -320,7 +314,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
 
-    final HashedPassword password = new HashedPassword(response.get(HASHED_PASSWORD_KEY));
+    final HashedPassword password = new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD));
     if (RsaAuthenticator.canProcessResponse(response)) {
       return rsaAuthenticator.decryptPasswordForAction(response, pass -> {
         final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt()));
