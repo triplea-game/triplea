@@ -7,6 +7,9 @@ import javax.swing.JOptionPane;
 
 import games.strategy.engine.framework.system.SystemProperties;
 
+/**
+ * A file chooser for use by map making tools to prompt the user to select a file to open.
+ */
 public class FileOpen {
   private File file;
 
