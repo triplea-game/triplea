@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ItemEvent;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -25,6 +24,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
@@ -39,7 +39,7 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class Console {
-  private static final Collection<LogLevelItem> LOG_LEVEL_ITEMS = ImmutableList.of(
+  private static final ImmutableCollection<LogLevelItem> LOG_LEVEL_ITEMS = ImmutableList.of(
       new LogLevelItem("Errors and Warnings", Level.WARNING),
       new LogLevelItem("All Messages", Level.ALL));
 
@@ -132,7 +132,7 @@ public final class Console {
       }
     });
     LOG_LEVEL_ITEMS.forEach(item -> {
-      final JMenuItem menuItem = new JRadioButtonMenuItem(item.label, item.level == logLevel);
+      final JMenuItem menuItem = new JRadioButtonMenuItem(item.label, item.level.equals(logLevel));
       menuItem.addActionListener(e -> {
         setLogLevel(item.level);
         setDefaultLogLevel(item.level);
