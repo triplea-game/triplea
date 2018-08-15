@@ -132,7 +132,7 @@ public final class Console {
       }
     });
     LOG_LEVEL_ITEMS.forEach(item -> {
-      final JMenuItem menuItem = new JRadioButtonMenuItem(item.label, item.level == logLevel);
+      final JMenuItem menuItem = new JRadioButtonMenuItem(item.label, item.level.equals(logLevel));
       menuItem.addActionListener(e -> {
         setLogLevel(item.level);
         setDefaultLogLevel(item.level);
