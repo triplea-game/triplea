@@ -13,8 +13,6 @@ import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.lobby.common.LobbyLoginChallengeKeys;
-import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
 import games.strategy.security.TestSecurityUtils;
 
 public final class RsaAuthenticatorTest {
@@ -31,8 +29,8 @@ public final class RsaAuthenticatorTest {
     assertTrue(RsaAuthenticator.canProcessResponse(singletonMap(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, "")));
 
     // Adding a completely unrelated key shouldn't change the outcome
-    assertFalse(RsaAuthenticator.canProcessResponse(singletonMap(LobbyLoginResponseKeys.HASHED_PASSWORD, "")));
-    assertFalse(RsaAuthenticator.canProcessChallenge(singletonMap(LobbyLoginChallengeKeys.SALT, "")));
+    assertFalse(RsaAuthenticator.canProcessResponse(singletonMap("someOtherResponseKey", "")));
+    assertFalse(RsaAuthenticator.canProcessChallenge(singletonMap("someOtherChallengeKey", "")));
   }
 
   @Test
