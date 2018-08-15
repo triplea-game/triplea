@@ -99,7 +99,9 @@ final class ModeratorController implements IModeratorController {
   @VisibleForTesting
   static String getUsernameForNode(final INode node) {
     // usernames may contain a " (n)" suffix when the same user is logged in multiple times
-    return node.getName().split(" ")[0];
+    final String username = node.getName();
+    final int spaceIndex = username.indexOf(' ');
+    return (spaceIndex != -1) ? username.substring(0, spaceIndex) : username;
   }
 
   /**
