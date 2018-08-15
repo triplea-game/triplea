@@ -7,15 +7,15 @@ public class RemoteName {
   private final String name;
   private final Class<?> clazz;
 
-  public RemoteName(final String name, final Class<?> class1) {
-    if (class1 == null) {
+  public RemoteName(final String name, final Class<?> clazz) {
+    if (clazz == null) {
       throw new IllegalArgumentException("Class cannot be null. Remote Name: " + name);
     }
-    if (!class1.isInterface()) {
+    if (!clazz.isInterface()) {
       throw new IllegalArgumentException("Not an interface. Remote Name: " + name);
     }
     this.name = name;
-    clazz = class1;
+    this.clazz = clazz;
   }
 
   public Class<?> getClazz() {
