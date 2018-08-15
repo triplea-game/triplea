@@ -1,12 +1,15 @@
 package games.strategy.engine.message;
 
+import javax.annotation.concurrent.Immutable;
+
 import lombok.Getter;
 
 /**
  * Description for a Channel or a Remote end point.
  */
 @Getter
-public class RemoteName {
+@Immutable
+public final class RemoteName {
   private final String name;
   private final Class<?> clazz;
 
