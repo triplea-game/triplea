@@ -17,8 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import games.strategy.engine.lobby.common.ILobbyGameController;
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.ILobbyGameController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import games.strategy.engine.lobby.common.ILobbyGameBroadcaster;
+import games.strategy.engine.lobby.common.ILobbyGameController;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
