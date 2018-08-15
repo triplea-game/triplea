@@ -1,8 +1,11 @@
 package games.strategy.engine.message;
 
+import lombok.Getter;
+
 /**
  * Description for a Channel or a Remote end point.
  */
+@Getter
 public class RemoteName {
   private final String name;
   private final Class<?> clazz;
@@ -16,14 +19,6 @@ public class RemoteName {
     }
     this.name = name;
     this.clazz = clazz;
-  }
-
-  public Class<?> getClazz() {
-    return clazz;
-  }
-
-  public String getName() {
-    return name;
   }
 
   @Override
