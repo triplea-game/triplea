@@ -58,6 +58,14 @@ import tools.image.FileOpen;
 import tools.image.FileSave;
 import tools.util.ToolArguments;
 
+/**
+ * The placement picker map making tool.
+ *
+ * <p>
+ * This tool will allow you to manually specify unit placement locations for each territory on a given map. It will
+ * generate a {@code places.txt} file containing the unit placement locations.
+ * </p>
+ */
 @Log
 public final class PlacementPicker {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;

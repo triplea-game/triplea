@@ -104,6 +104,14 @@ public class MapProperties {
     return unitsScale;
   }
 
+  /**
+   * Sets the value of the {@code units.scale} map property.
+   *
+   * <p>
+   * The implementation accounts for small rounding errors when {@code value} is one of the standard units scale
+   * values: 0.5, 0.5625, 0.6666, 0.75, 0.8333, 0.875, 1.0, 1.25.
+   * </p>
+   */
   public void setUnitsScale(final double value) {
     final double dvalue = Math.max(0.0, Math.min(2.0, value));
     if (Math.abs(1.25 - dvalue) < 0.01) {

@@ -12,6 +12,19 @@ import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;
 import javafx.scene.layout.Region;
 
+/**
+ * Binds a {@link ClientSetting} to a JavaFX UI component. This is done by adding an enum element. As part of that the
+ * corresponding UI component, a {@link SelectionComponent} is specified. This then automatically adds the setting to
+ * the settings window.
+ *
+ * <p>
+ * UI component construction is delegated to {@link JavaFxSelectionComponentFactory}.
+ * </p>
+ * <p>
+ * There is a 1:n relationship between {@link SelectionComponent} and {@link ClientSetting}, though typically it will be
+ * 1:1, and not all {@link ClientSetting}s will be available in the UI.
+ * </p>
+ */
 public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
   AI_PAUSE_DURATION_BINDING(
       SettingType.AI,

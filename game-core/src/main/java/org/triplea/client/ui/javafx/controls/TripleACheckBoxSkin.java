@@ -8,6 +8,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * A skin that renders a check box as a box with an image for the selected state.
+ *
+ * <p>
+ * The following CSS classes are used to control the rendering:
+ * </p>
+ * <ul>
+ * <li>{@code .box}: The base check box.</li>
+ * <li>{@code .mark}: The image displayed on top of the box when the check box is selected.</li>
+ * </ul>
+ */
 public class TripleACheckBoxSkin extends SkinBase<CheckBox> {
 
   private final StackPane pane = new StackPane();

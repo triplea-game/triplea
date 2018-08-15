@@ -36,6 +36,14 @@ import games.strategy.util.PointFileReaderWriter;
 import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 
+/**
+ * The auto-placement finder map making tool.
+ *
+ * <p>
+ * This tool will attempt to automatically calculate appropriate unit placement locations for each territory on a given
+ * map. It will generate a {@code places.txt} file containing the unit placement locations.
+ * </p>
+ */
 @Log
 public final class AutoPlacementFinder {
   private int placeWidth = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
