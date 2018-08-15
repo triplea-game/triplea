@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server;
+package games.strategy.engine.lobby.common;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import games.strategy.engine.lobby.server.GameDescription;
 
 public final class GameDescriptionTest {
   @Nested
