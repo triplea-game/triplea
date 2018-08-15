@@ -34,7 +34,6 @@ import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.MutedMacController;
 import games.strategy.engine.lobby.server.db.MutedUsernameController;
-import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -181,7 +180,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private boolean isLobby() {
-    return loginValidator instanceof LobbyLoginValidator;
+    return database != null;
   }
 
   private boolean isGame() {
