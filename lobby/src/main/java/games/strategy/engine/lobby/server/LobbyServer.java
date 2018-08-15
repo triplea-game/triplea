@@ -5,6 +5,7 @@ import java.io.IOException;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
+import games.strategy.engine.lobby.common.ILobbyGameBroadcaster;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.IServerMessenger;

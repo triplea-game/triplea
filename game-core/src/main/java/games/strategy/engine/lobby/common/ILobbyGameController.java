@@ -1,11 +1,15 @@
-package games.strategy.engine.lobby.server;
+package games.strategy.engine.lobby.common;
 
 import java.util.Map;
 
+import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.GUID;
 
+/**
+ * A service that provides management operations for lobby games.
+ */
 public interface ILobbyGameController extends IRemote {
   RemoteName GAME_CONTROLLER_REMOTE = new RemoteName(
       "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE", ILobbyGameController.class);

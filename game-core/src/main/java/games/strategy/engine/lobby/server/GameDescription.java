@@ -15,6 +15,8 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 
+// TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
+
 /**
  * NOTE - this class is not thread safe. Modifications should be done holding an
  * external lock.
@@ -181,7 +183,7 @@ public class GameDescription implements Externalizable, Cloneable {
   }
 
   @VisibleForTesting
-  void setBotSupportEmail(final String botSupportEmail) {
+  public void setBotSupportEmail(final String botSupportEmail) {
     this.botSupportEmail = botSupportEmail;
   }
 
