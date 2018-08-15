@@ -7,10 +7,6 @@ public class RemoteName {
   private final String name;
   private final Class<?> clazz;
 
-  public RemoteName(final Class<?> class1, final String name) {
-    this(name, class1);
-  }
-
   public RemoteName(final String name, final Class<?> class1) {
     if (class1 == null) {
       throw new IllegalArgumentException("Class cannot be null. Remote Name: " + name);

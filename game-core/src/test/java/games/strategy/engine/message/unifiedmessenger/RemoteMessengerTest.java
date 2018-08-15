@@ -69,7 +69,7 @@ public class RemoteMessengerTest {
   @Test
   public void testRegisterUnregister() {
     final TestRemote testRemote = new TestRemote();
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
     assertTrue(remoteMessenger.hasLocalImplementor(test));
     remoteMessenger.unregisterRemote(test);
@@ -79,7 +79,7 @@ public class RemoteMessengerTest {
   @Test
   public void testMethodCall() {
     final TestRemote testRemote = new TestRemote();
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     assertEquals(2, remote.increment(1));
@@ -89,7 +89,7 @@ public class RemoteMessengerTest {
   @Test
   public void testExceptionThrownWhenUnregisteredRemote() {
     final TestRemote testRemote = new TestRemote();
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     remoteMessenger.unregisterRemote("test");
@@ -99,7 +99,7 @@ public class RemoteMessengerTest {
 
   @Test
   public void testNoRemote() {
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.getRemote(test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     final Exception e = assertThrows(RuntimeException.class, remote::testVoid);
@@ -109,7 +109,7 @@ public class RemoteMessengerTest {
   @Test
   public void testVoidMethodCall() {
     final TestRemote testRemote = new TestRemote();
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     remote.testVoid();
@@ -118,7 +118,7 @@ public class RemoteMessengerTest {
   @Test
   public void testException() {
     final TestRemote testRemote = new TestRemote();
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     final Exception e = assertThrows(Exception.class, remote::throwException);
@@ -127,7 +127,7 @@ public class RemoteMessengerTest {
 
   @Test
   public void testRemoteCall() throws Exception {
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {
@@ -171,7 +171,7 @@ public class RemoteMessengerTest {
 
   @Test
   public void testRemoteCall2() throws Exception {
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {
@@ -199,7 +199,7 @@ public class RemoteMessengerTest {
   public void testShutDownClient() throws Exception {
     // when the client shutdown, remotes created
     // on the client should not be visible on server
-    final RemoteName test = new RemoteName(ITestRemote.class, "test");
+    final RemoteName test = new RemoteName("test", ITestRemote.class);
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {
@@ -225,7 +225,7 @@ public class RemoteMessengerTest {
   public void testMethodReturnsOnWait() throws Exception {
     // when the client shutdown, remotes created
     // on the client should not be visible on server
-    final RemoteName test = new RemoteName(IFoo.class, "test");
+    final RemoteName test = new RemoteName("test", IFoo.class);
     ServerMessenger server = null;
     ClientMessenger client = null;
     try {

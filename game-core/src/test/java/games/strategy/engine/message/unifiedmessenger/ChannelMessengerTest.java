@@ -50,7 +50,7 @@ public class ChannelMessengerTest {
 
   @Test
   public void testLocalCall() {
-    final RemoteName descriptor = new RemoteName(IChannelBase.class, "testLocalCall");
+    final RemoteName descriptor = new RemoteName("testLocalCall", IChannelBase.class);
     serverChannelMessenger.registerChannelSubscriber(new ChannelSubscribor(), descriptor);
     final IChannelBase subscribor = (IChannelBase) serverChannelMessenger.getChannelBroadcastor(descriptor);
     subscribor.testNoParams();
@@ -60,7 +60,7 @@ public class ChannelMessengerTest {
 
   @Test
   public void testRemoteCall() {
-    final RemoteName testRemote = new RemoteName(IChannelBase.class, "testRemote");
+    final RemoteName testRemote = new RemoteName("testRemote", IChannelBase.class);
     final ChannelSubscribor subscribor1 = new ChannelSubscribor();
     serverChannelMessenger.registerChannelSubscriber(subscribor1, testRemote);
     assertHasChannel(testRemote, unifiedMessengerHub);
@@ -79,7 +79,7 @@ public class ChannelMessengerTest {
   public void testMultipleClients() throws Exception {
     // set up the client and server
     // so that the client has 1 subscribor, and the server knows about it
-    final RemoteName test = new RemoteName(IChannelBase.class, "test");
+    final RemoteName test = new RemoteName("test", IChannelBase.class);
     final ChannelSubscribor client1Subscribor = new ChannelSubscribor();
     clientChannelMessenger.registerChannelSubscriber(client1Subscribor, test);
     assertHasChannel(test, unifiedMessengerHub);
@@ -94,8 +94,8 @@ public class ChannelMessengerTest {
 
   @Test
   public void testMultipleChannels() {
-    final RemoteName testRemote2 = new RemoteName(IChannelBase.class, "testRemote2");
-    final RemoteName testRemote3 = new RemoteName(IChannelBase.class, "testRemote3");
+    final RemoteName testRemote2 = new RemoteName("testRemote2", IChannelBase.class);
+    final RemoteName testRemote3 = new RemoteName("testRemote3", IChannelBase.class);
     final ChannelSubscribor subscribor2 = new ChannelSubscribor();
     clientChannelMessenger.registerChannelSubscriber(subscribor2, testRemote2);
     final ChannelSubscribor subscribor3 = new ChannelSubscribor();
