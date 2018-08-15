@@ -1,12 +1,16 @@
 package games.strategy.engine.data;
 
 import java.util.LinkedHashMap;
+import java.util.List;
+
+import com.google.common.base.Splitter;
 
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.Tuple;
 
 /**
  * A game player (nation, power, etc.).
@@ -28,7 +32,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private RepairFrontier m_repairFrontier;
   private final TechnologyFrontierList m_technologyFrontiers;
   private String m_whoAmI = "null:no_one";
-
 
   public PlayerID(final String name, final GameData data) {
     this(name, false, false, null, false, data);
@@ -121,27 +124,42 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
 
   /**
    * First string is "Human" or "AI" or "null" (case insensitive), while second string is the name of the player;
-   * separated with a colon.
+   * separated with a colon. For example, it could be {@code "AI:Hard (AI)"}.
    */
   public void setWhoAmI(final String encodedTypeAndName) {
-    // so for example, it should be "AI:Hard (AI)"
-    final String[] s = encodedTypeAndName.split(":");
-    if (s.length != 2) {
+    final List<String> tokens = tokenizeTypeAndName(encodedTypeAndName);
+    if (tokens.size() != 2) {
       throw new IllegalStateException(String.format("whoAmI '%s' must have two strings, separated by a colon",
           encodedTypeAndName));
     }
-    if (!(s[0].equalsIgnoreCase("AI") || s[0].equalsIgnoreCase("Human") || s[0].equalsIgnoreCase("null"))) {
-      throw new IllegalStateException("whoAmI first part must be, ai or human or client");
+    final String type = tokens.get(0);
+    if (!("AI".equalsIgnoreCase(type) || "Human".equalsIgnoreCase(type) || "null".equalsIgnoreCase(type))) {
+      throw new IllegalStateException("whoAmI first part must be, ai or human or null");
     }
     m_whoAmI = encodedTypeAndName;
+  }
+
+  private static List<String> tokenizeTypeAndName(final String encodedTypeAndName) {
+    return Splitter.on(':').splitToList(encodedTypeAndName);
   }
 
   public String getWhoAmI() {
     return m_whoAmI;
   }
 
+  /**
+   * Returns a tuple where the first element is the player type and the second element is the player name. The player
+   * type will be one of the strings {@code "AI"}, {@code "Human"}, or {@code "null"}, but there is no guarantee of
+   * case, so comparisons should be done in a case-insensitive manner.
+   */
+  public Tuple<String, String> getTypeAndName() {
+    final List<String> tokens = tokenizeTypeAndName(m_whoAmI);
+    assert tokens.size() == 2;
+    return Tuple.of(tokens.get(0), tokens.get(1));
+  }
+
   public boolean isAi() {
-    return m_whoAmI.split(":")[0].equalsIgnoreCase("AI");
+    return "AI".equalsIgnoreCase(getTypeAndName().getFirst());
   }
 
   public void setIsDisabled(final boolean isDisabled) {
@@ -179,7 +197,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
       return currentPlayers;
     }
     for (final PlayerID player : data.getPlayerList().getPlayers()) {
-      currentPlayers.put(player.getName(), player.getWhoAmI().split(":")[1]);
+      currentPlayers.put(player.getName(), player.getTypeAndName().getSecond());
     }
     return currentPlayers;
   }

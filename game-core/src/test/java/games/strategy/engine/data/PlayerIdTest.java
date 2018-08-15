@@ -11,8 +11,25 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
+import games.strategy.util.Tuple;
+
 final class PlayerIdTest {
   private final PlayerID playerId = new PlayerID("name", new GameData());
+
+  @Nested
+  final class GetTypeAndNameTest {
+    @Test
+    void shouldReturnTypeAndName() {
+      Arrays.asList(
+          Tuple.of("AI", "Hard (AI)"),
+          Tuple.of("Human", "Patton"),
+          Tuple.of("null", "Bot")).forEach(typeAndName -> {
+            playerId.setWhoAmI(typeAndName.getFirst() + ":" + typeAndName.getSecond());
+
+            assertThat(playerId.getTypeAndName(), is(typeAndName));
+          });
+    }
+  }
 
   @Nested
   final class IsAiTest {
@@ -70,7 +87,7 @@ final class PlayerIdTest {
     @Test
     void shouldThrowExceptionWhenTypeIsIllegal() {
       final Exception e = assertThrows(IllegalStateException.class, () -> playerId.setWhoAmI("otherType:Patton"));
-      assertThat(e.getMessage(), containsString("ai or human or client"));
+      assertThat(e.getMessage(), containsString("ai or human or null"));
     }
   }
 }
