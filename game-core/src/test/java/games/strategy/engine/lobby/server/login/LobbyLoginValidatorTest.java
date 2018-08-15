@@ -30,6 +30,8 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.config.MemoryPropertyReader;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.LobbyConstants;
+import games.strategy.engine.lobby.common.LobbyLoginChallengeKeys;
+import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
 import games.strategy.engine.lobby.server.db.BadWordDao;
@@ -263,8 +265,8 @@ public final class LobbyLoginValidatorTest {
 
       private ResponseGenerator givenAuthenticationResponse() {
         return challenge -> ImmutableMap.of(
-            LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
-            LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+            LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
+            LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       }
     }
 
@@ -286,10 +288,10 @@ public final class LobbyLoginValidatorTest {
 
         private ResponseGenerator givenAuthenticationResponse() {
           return challenge -> ImmutableMap.of(
-              LobbyLoginValidator.EMAIL_KEY, EMAIL,
-              LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
-              LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString(),
-              LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
+              LobbyLoginResponseKeys.EMAIL, EMAIL,
+              LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
+              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString(),
+              LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
         }
       }
 
@@ -309,10 +311,10 @@ public final class LobbyLoginValidatorTest {
 
         private ResponseGenerator givenAuthenticationResponse() {
           return challenge -> ImmutableMap.<String, String>builder()
-              .put(LobbyLoginValidator.EMAIL_KEY, EMAIL)
-              .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
-              .put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-              .put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString())
+              .put(LobbyLoginResponseKeys.EMAIL, EMAIL)
+              .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
+              .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+              .put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString())
               .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
               .build();
         }
@@ -362,8 +364,8 @@ public final class LobbyLoginValidatorTest {
 
         private ResponseGenerator givenAuthenticationResponse() {
           return challenge -> ImmutableMap.of(
-              LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
-              LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+              LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
+              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
         }
       }
 
@@ -415,8 +417,8 @@ public final class LobbyLoginValidatorTest {
 
         private ResponseGenerator givenAuthenticationResponse() {
           return challenge -> ImmutableMap.<String, String>builder()
-              .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
-              .put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+              .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
+              .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
               .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
               .build();
         }
@@ -442,13 +444,13 @@ public final class LobbyLoginValidatorTest {
         return challenge -> {
           thenChallengeShouldBeProcessableByMd5CryptAuthenticator(challenge);
           return ImmutableMap.of(
-              LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD),
-              LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+              LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
+              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
         };
       }
 
       private void thenChallengeShouldBeProcessableByMd5CryptAuthenticator(final Map<String, String> challenge) {
-        assertThat(challenge.containsKey(LobbyLoginValidator.SALT_KEY), is(true));
+        assertThat(challenge.containsKey(LobbyLoginChallengeKeys.SALT), is(true));
       }
     }
 
@@ -468,8 +470,8 @@ public final class LobbyLoginValidatorTest {
         return challenge -> {
           thenChallengeShouldBeProcessableByRsaAuthenticator(challenge);
           return ImmutableMap.<String, String>builder()
-              .put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt(PASSWORD))
-              .put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+              .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
+              .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
               .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
               .build();
         };
@@ -508,8 +510,8 @@ public final class LobbyLoginValidatorTest {
 
       private ResponseGenerator givenAuthenticationResponse() {
         return challenge -> ImmutableMap.of(
-            LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
-            LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+            LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
+            LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       }
     }
 
@@ -540,7 +542,7 @@ public final class LobbyLoginValidatorTest {
 
       private ResponseGenerator givenAuthenticationResponse() {
         return challenge -> ImmutableMap.<String, String>builder()
-            .put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+            .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
             .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
             .build();
       }

@@ -24,6 +24,7 @@ import org.triplea.test.common.Integration;
 
 import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
 import games.strategy.engine.lobby.common.LobbyConstants;
+import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
@@ -43,8 +44,8 @@ public class LobbyLoginValidatorIntegrationTest {
   public void testLegacyCreateNewUser() {
     final ChallengeResultFunction challengeFunction = generateChallenge(null);
     final Map<String, String> response = new HashMap<>();
-    response.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
-    response.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, md5Crypt("123"));
+    response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
+    response.put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt("123"));
     assertNull(challengeFunction.apply(challenge -> response));
     // try to create a duplicate user, should not work
     assertNotNull(challengeFunction.apply(challenge -> response));
@@ -64,8 +65,8 @@ public class LobbyLoginValidatorIntegrationTest {
     final Map<String, String> challenge = loginValidator.getChallengeProperties(name, address);
     return responseGetter -> {
       final Map<String, String> response = responseGetter.apply(challenge);
-      response.putIfAbsent(LobbyLoginValidator.EMAIL_KEY, email);
-      response.putIfAbsent(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+      response.putIfAbsent(LobbyLoginResponseKeys.EMAIL, email);
+      response.putIfAbsent(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       return loginValidator.verifyConnection(challenge, response, name, mac, address);
     };
   }
@@ -85,7 +86,7 @@ public class LobbyLoginValidatorIntegrationTest {
     final String name = Util.createUniqueTimeStamp();
     final String password = "password";
     final Map<String, String> response = new HashMap<>();
-    response.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
+    response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
     assertNull(generateChallenge(name, null).apply(challenge -> {
       response.putAll(RsaAuthenticator.newResponse(challenge, password));
       return response;
@@ -103,8 +104,8 @@ public class LobbyLoginValidatorIntegrationTest {
   public void testWrongVersion() {
     assertNotNull(generateChallenge(null).apply(challenge -> {
       final Map<String, String> response = new HashMap<>();
-      response.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-      response.put(LobbyLoginValidator.LOBBY_VERSION, "0.1");
+      response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+      response.put(LobbyLoginResponseKeys.LOBBY_VERSION, "0.1");
       return response;
     }));
   }
@@ -112,7 +113,7 @@ public class LobbyLoginValidatorIntegrationTest {
   @Test
   public void testAnonymousLogin() {
     final Map<String, String> response = new HashMap<>();
-    response.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+    response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     assertNull(generateChallenge(null).apply(challenge -> response));
 
     // create a user, verify we can't login with a username that already exists
@@ -131,7 +132,7 @@ public class LobbyLoginValidatorIntegrationTest {
     }
     assertEquals(LobbyLoginValidator.ErrorMessages.THATS_NOT_A_NICE_NAME,
         generateChallenge(name, new HashedPassword(md5Crypt("foo"))).apply(challenge -> new HashMap<>(
-            Collections.singletonMap(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
+            Collections.singletonMap(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
   }
 
   @Test

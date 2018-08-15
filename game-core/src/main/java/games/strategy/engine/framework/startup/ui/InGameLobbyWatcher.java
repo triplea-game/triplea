@@ -25,10 +25,10 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.common.ILobbyGameController;
 import games.strategy.engine.lobby.common.LobbyConstants;
+import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.engine.lobby.server.RemoteHostUtils;
-import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -97,12 +97,12 @@ public class InGameLobbyWatcher {
     System.clearProperty(LOBBY_HOST);
     System.clearProperty(LOBBY_PORT);
     System.clearProperty(LOBBY_GAME_HOSTED_BY);
-    final IConnectionLogin login = challengeProperties -> {
-      final Map<String, String> properties = new HashMap<>();
-      properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-      properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-      properties.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
-      return properties;
+    final IConnectionLogin login = challenge -> {
+      final Map<String, String> response = new HashMap<>();
+      response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+      response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+      response.put(LobbyLoginResponseKeys.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
+      return response;
     };
     try {
       final String mac = MacFinder.getHashedMacAddress();
