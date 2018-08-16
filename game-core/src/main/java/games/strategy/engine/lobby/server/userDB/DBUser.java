@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
+import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.util.Util;
 
 /*
@@ -23,7 +23,7 @@ public final class DBUser implements Serializable {
 
 
   @VisibleForTesting
-  static final Collection<String> forbiddenNameParts = Arrays.asList(InGameLobbyWatcher.LOBBY_WATCHER_NAME, "admin");
+  static final Collection<String> forbiddenNameParts = Arrays.asList(LobbyConstants.LOBBY_WATCHER_NAME, "admin");
 
   public enum Role {
     NOT_ADMIN, ADMIN
@@ -41,8 +41,8 @@ public final class DBUser implements Serializable {
       if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
         return "Names must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
       }
-      if (userName.toLowerCase().contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME.toLowerCase())) {
-        return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
+      if (userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())) {
+        return LobbyConstants.LOBBY_WATCHER_NAME + " cannot be part of a name";
       }
       if (userName.toLowerCase().contains("admin")) {
         return "Name can't contain the word admin";

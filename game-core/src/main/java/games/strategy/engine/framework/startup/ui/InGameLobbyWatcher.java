@@ -55,7 +55,6 @@ import lombok.extern.java.Log;
  */
 @Log
 public class InGameLobbyWatcher {
-  public static final String LOBBY_WATCHER_NAME = "lobby_watcher";
   // this is the messenger used by the game
   // it is different than the messenger we use to connect to
   // the game lobby
@@ -107,7 +106,7 @@ public class InGameLobbyWatcher {
     try {
       final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),
-          getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
+          getRealName(hostedBy) + "_" + LobbyConstants.LOBBY_WATCHER_NAME, mac, login);
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
       final RemoteMessenger rm = new RemoteMessenger(um);
       final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);

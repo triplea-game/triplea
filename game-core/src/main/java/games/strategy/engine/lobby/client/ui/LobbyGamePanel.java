@@ -23,7 +23,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.common.IModeratorController;
 import games.strategy.engine.lobby.common.LobbyConstants;
@@ -331,8 +330,8 @@ class LobbyGamePanel extends JPanel {
     final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     final String hostedByName = description.getHostedBy().getName();
     return new Node(
-        (hostedByName.endsWith("_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME) ? hostedByName
-            : hostedByName + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME),
+        (hostedByName.endsWith("_" + LobbyConstants.LOBBY_WATCHER_NAME) ? hostedByName
+            : hostedByName + "_" + LobbyConstants.LOBBY_WATCHER_NAME),
         description.getHostedBy().getAddress(), description.getHostedBy().getPort());
   }
 
