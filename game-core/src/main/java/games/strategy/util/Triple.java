@@ -5,6 +5,13 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
+/**
+ * A heterogeneous container of three values.
+ *
+ * @param <F> The type of the first value.
+ * @param <S> The type of the second value.
+ * @param <T> The type of the third value.
+ */
 public class Triple<F, S, T> implements Serializable {
   private static final long serialVersionUID = -8188046743232005918L;
   private final Tuple<F, S> tuple;
