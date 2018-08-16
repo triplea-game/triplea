@@ -8,7 +8,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.util.IntegerMap;
 
-
+/**
+ * Provides methods that assist with player bonus income.
+ */
 public class BonusIncomeUtils {
 
   /**

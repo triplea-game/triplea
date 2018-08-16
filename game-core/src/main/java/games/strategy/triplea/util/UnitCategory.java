@@ -14,6 +14,21 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.util.CollectionUtils;
 
+/**
+ * A category of units.
+ *
+ * <p>
+ * Primarily used to group units by type and owner, but units may also be categorized by the following attributes:
+ * </p>
+ * <ul>
+ * <li>Available movement</li>
+ * <li>Transport cost</li>
+ * <li>Damage</li>
+ * <li>Bombing damage</li>
+ * <li>Disabled state</li>
+ * <li>Dependents</li>
+ * </ul>
+ */
 public class UnitCategory implements Comparable<UnitCategory> {
   private final UnitType type;
   // Collection of UnitOwners, the type of our dependents, not the dependents

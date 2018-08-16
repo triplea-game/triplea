@@ -9,6 +9,9 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
 
+/**
+ * A comparator for {@link PlayerID} that sorts instances in game play order.
+ */
 public class PlayerOrderComparator implements Comparator<PlayerID>, Serializable {
   private static final long serialVersionUID = -6271054939349383653L;
   private final GameData gameData;

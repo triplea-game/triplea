@@ -150,6 +150,9 @@ public class TransportUtils {
     return result;
   }
 
+  /**
+   * Returns the subset of {@code units} that can be transported by any air transport in {@code transports}.
+   */
   public static List<Unit> findUnitsToLoadOnAirTransports(final Collection<Unit> units,
       final Collection<Unit> transports) {
 
