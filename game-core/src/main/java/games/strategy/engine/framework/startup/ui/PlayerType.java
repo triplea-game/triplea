@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.triplea.TripleAPlayer;
@@ -19,47 +18,79 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public enum PlayerType {
-  HUMAN_PLAYER("Human", nationName -> new TripleAPlayer(nationName) {
+  HUMAN_PLAYER("Human") {
     @Override
-    public PlayerType getPlayerType() {
-      return PlayerType.HUMAN_PLAYER;
+    public IGamePlayer createPlayerWithName(final String name) {
+      return new TripleAPlayer(name) {
+        @Override
+        public PlayerType getPlayerType() {
+          return HUMAN_PLAYER;
+        }
+      };
     }
-  }),
+  },
 
-  WEAK_AI("Easy (AI)", WeakAi::new),
+  WEAK_AI("Easy (AI)") {
+    @Override
+    public IGamePlayer createPlayerWithName(final String name) {
+      return new WeakAi(name);
+    }
+  },
 
-  FAST_AI("Fast (AI)", FastAi::new),
+  FAST_AI("Fast (AI)") {
+    @Override
+    public IGamePlayer createPlayerWithName(final String name) {
+      return new FastAi(name);
+    }
+  },
 
-  PRO_AI("Hard (AI)", ProAi::new),
+  PRO_AI("Hard (AI)") {
+    @Override
+    public IGamePlayer createPlayerWithName(final String name) {
+      return new ProAi(name);
+    }
+  },
 
-  DOES_NOTHING_AI("Does Nothing (AI)", DoesNothingAi::new),
+  DOES_NOTHING_AI("Does Nothing (AI)") {
+    @Override
+    public IGamePlayer createPlayerWithName(final String name) {
+      return new DoesNothingAi(name);
+    }
+  },
 
   /**
    * A hidden player type to represent network connected players.
    */
-  CLIENT_PLAYER("Client", false, nationName -> new TripleAPlayer(nationName) {
+  CLIENT_PLAYER("Client", false) {
     @Override
-    public PlayerType getPlayerType() {
-      return PlayerType.CLIENT_PLAYER;
+    public IGamePlayer createPlayerWithName(final String name) {
+      return new TripleAPlayer(name) {
+        @Override
+        public PlayerType getPlayerType() {
+          return CLIENT_PLAYER;
+        }
+      };
     }
-  }),
+  },
 
   /**
    * A 'dummy' player type used for battle calc.
    */
-  BATTLE_CALC_DUMMY("None (AI)", false, name -> {
-    throw new UnsupportedOperationException(
-        "Fail fast - bad configuration, should instantiate dummy player type only for battle calc");
-  });
+  BATTLE_CALC_DUMMY("None (AI)", false) {
+    @Override
+    public IGamePlayer createPlayerWithName(final String name) {
+      throw new UnsupportedOperationException(
+          "Fail fast - bad configuration, should instantiate dummy player type only for battle calc");
+    }
+  };
 
   @Getter
   private final String label;
   @Getter(AccessLevel.PRIVATE)
   private final boolean visible;
-  private final Function<String, IGamePlayer> playerFactory;
 
-  PlayerType(final String label, final Function<String, IGamePlayer> playerFactory) {
-    this(label, true, playerFactory);
+  PlayerType(final String label) {
+    this(label, true);
   }
 
   /**
@@ -78,9 +109,7 @@ public enum PlayerType {
    * Each PlayerType is backed by an {@code IGamePlayer} instance. Given a player name this method
    * will create the corresponding {@code IGamePlayer} instance.
    */
-  public IGamePlayer createPlayerWithName(final String name) {
-    return playerFactory.apply(name);
-  }
+  public abstract IGamePlayer createPlayerWithName(String name);
 
   /**
    * Converter function, each player type has a label, this method will convert from a given label
