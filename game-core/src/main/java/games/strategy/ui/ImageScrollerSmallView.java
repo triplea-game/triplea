@@ -78,6 +78,9 @@ public class ImageScrollerSmallView extends JComponent {
     model.addObserver((o, arg) -> repaint());
   }
 
+  /**
+   * Changes the image displayed in this view to {@code image}.
+   */
   public void changeImage(final Image image) {
     Util.ensureImageLoaded(image);
     setDoubleBuffered(false);
