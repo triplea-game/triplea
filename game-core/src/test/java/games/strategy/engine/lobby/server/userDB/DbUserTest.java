@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import games.strategy.engine.lobby.common.LobbyConstants;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class DbUserTest {
@@ -81,7 +82,6 @@ public class DbUserTest {
         new DBUser(
             new DBUser.UserName(""),
             new DBUser.UserEmail(TestData.email)));
-
   }
 
   @Test
@@ -104,8 +104,9 @@ public class DbUserTest {
               DBUser.getUserNameValidationErrorMessage(invalidName), not(emptyString()));
         });
 
-    DBUser.forbiddenNameParts.forEach(
-        invalidNamePart -> {
+    Arrays.asList(
+        LobbyConstants.LOBBY_WATCHER_NAME,
+        LobbyConstants.ADMIN_USERNAME).forEach(invalidNamePart -> {
           assertThat("user names cannot contain anything from the forbidden name list",
               DBUser.isValidUserName(invalidNamePart), is(false));
           assertThat("verify we are doing a contains match to make sure "

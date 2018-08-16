@@ -16,7 +16,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
-import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.LobbyLoginChallengeKeys;
 import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
@@ -287,10 +286,10 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
     // If this is a lobby watcher, use a different set of validation
     if (Boolean.TRUE.toString().equals(response.get(LobbyLoginResponseKeys.LOBBY_WATCHER_LOGIN))) {
-      if (!username.endsWith(InGameLobbyWatcher.LOBBY_WATCHER_NAME)) {
+      if (!username.endsWith(LobbyConstants.LOBBY_WATCHER_NAME)) {
         return "Lobby watcher usernames must end with 'lobby_watcher'";
       }
-      final String hostName = username.substring(0, username.indexOf(InGameLobbyWatcher.LOBBY_WATCHER_NAME));
+      final String hostName = username.substring(0, username.indexOf(LobbyConstants.LOBBY_WATCHER_NAME));
 
       if (!DBUser.isValidUserName(hostName)) {
         return DBUser.getUserNameValidationErrorMessage(hostName);
