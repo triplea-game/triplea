@@ -22,7 +22,7 @@ public class PlayersPanel {
     for (final String player : game.getPlayerManager().getPlayers()) {
       final PlayerID playerId = game.getData().getPlayerList().getPlayerId(player);
       if (playerId.isAi()) {
-        panel.add(new JLabel(playerId.getWhoAmI().split(":")[1] + " is " + playerId.getName(), JLabel.RIGHT));
+        panel.add(new JLabel(playerId.getPlayerType().name + " is " + playerId.getName(), JLabel.RIGHT));
       } else {
         panel.add(
             new JLabel(game.getPlayerManager().getNode(player).getName() + " is " + playerId.getName(), JLabel.RIGHT));
