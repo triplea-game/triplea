@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -125,19 +127,19 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   }
 
   /**
-   * First string is "Human" or "AI" or "null" (case insensitive), while second string is the name of the player;
+   * First string is "Human" or "AI" or "null" (case insensitive), while second string is the name of the player,
    * separated with a colon. For example, it could be {@code "AI:Hard (AI)"}.
+   *
+   * @throws IllegalArgumentException If {@code encodedType} does not contain two strings separated by a colon; or if
+   *         the first string is not one of {@code "AI"}, {@code "Human"}, or {@code "null"} (case insensitive).
    */
   public void setWhoAmI(final String encodedType) {
     final List<String> tokens = tokenizeEncodedType(encodedType);
-    if (tokens.size() != 2) {
-      throw new IllegalStateException(String.format("whoAmI '%s' must have two strings, separated by a colon",
-          encodedType));
-    }
+    checkArgument(tokens.size() == 2, "whoAmI '" + encodedType + "' must have two strings, separated by a colon");
     final String typeId = tokens.get(0);
-    if (!("AI".equalsIgnoreCase(typeId) || "Human".equalsIgnoreCase(typeId) || "null".equalsIgnoreCase(typeId))) {
-      throw new IllegalStateException("whoAmI first part must be, ai or human or null");
-    }
+    checkArgument(
+        "AI".equalsIgnoreCase(typeId) || "Human".equalsIgnoreCase(typeId) || "null".equalsIgnoreCase(typeId),
+        "whoAmI '" + encodedType + "' first part must be, ai or human or null");
     m_whoAmI = encodedType;
   }
 
@@ -151,7 +153,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
 
   public Type getPlayerType() {
     final List<String> tokens = tokenizeEncodedType(m_whoAmI);
-    assert tokens.size() == 2;
     return new Type(tokens.get(0), tokens.get(1));
   }
 

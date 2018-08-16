@@ -80,13 +80,13 @@ final class PlayerIdTest {
     }
 
     private void assertThrowsDoesNotHaveExactlyTwoTokensException(final Executable executable) {
-      final Exception e = assertThrows(IllegalStateException.class, executable);
+      final Exception e = assertThrows(IllegalArgumentException.class, executable);
       assertThat(e.getMessage(), containsString("two strings"));
     }
 
     @Test
     void shouldThrowExceptionWhenTypeIdIsIllegal() {
-      final Exception e = assertThrows(IllegalStateException.class, () -> playerId.setWhoAmI("otherTypeId:Patton"));
+      final Exception e = assertThrows(IllegalArgumentException.class, () -> playerId.setWhoAmI("otherTypeId:Patton"));
       assertThat(e.getMessage(), containsString("ai or human or null"));
     }
   }
