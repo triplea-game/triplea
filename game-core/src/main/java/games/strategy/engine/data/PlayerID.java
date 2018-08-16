@@ -128,10 +128,10 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
 
   /**
    * First string is "Human" or "AI" or "null" (case insensitive), while second string is the name of the player,
-   * separated with a colon. For example, it could be {@code "AI:Hard (AI)"}.
+   * separated with a colon. For example, it could be "AI:Hard (AI)".
    *
    * @throws IllegalArgumentException If {@code encodedType} does not contain two strings separated by a colon; or if
-   *         the first string is not one of {@code "AI"}, {@code "Human"}, or {@code "null"} (case insensitive).
+   *         the first string is not one of "AI", "Human", or "null" (case insensitive).
    */
   public void setWhoAmI(final String encodedType) {
     final List<String> tokens = tokenizeEncodedType(encodedType);
@@ -227,13 +227,13 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   @EqualsAndHashCode
   public static final class Type {
     /**
-     * The type identifier. One of {@code "AI"}, {@code "Human"}, or {@code "null"}. Case is not guaranteed, so
-     * comparisons should be case-insensitive.
+     * The type identifier. One of "AI", "Human", or "null". Case is not guaranteed, so comparisons should be
+     * case-insensitive.
      */
     public final String id;
 
     /**
-     * The display name of the type (e.g. {@code "Hard (AI)"}).
+     * The display name of the type (e.g. "Hard (AI)").
      */
     public final String name;
   }
