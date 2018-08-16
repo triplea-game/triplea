@@ -12,8 +12,7 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import games.strategy.security.TestSecurityUtils;
+import org.triplea.test.common.security.TestSecurityUtils;
 
 public final class RsaAuthenticatorTest {
   private RsaAuthenticator rsaAuthenticator;

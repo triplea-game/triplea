@@ -1,4 +1,4 @@
-package games.strategy.security;
+package org.triplea.test.common.security;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

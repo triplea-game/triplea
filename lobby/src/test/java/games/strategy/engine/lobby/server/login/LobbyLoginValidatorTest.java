@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.test.common.security.TestSecurityUtils;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -40,7 +41,6 @@ import games.strategy.engine.lobby.server.db.BannedUsernameDao;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserDao;
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.security.TestSecurityUtils;
 import games.strategy.util.Md5Crypt;
 import games.strategy.util.Tuple;
 
