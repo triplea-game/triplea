@@ -34,6 +34,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -135,28 +138,28 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (!fileKey.startsWith(gameName)) {
           continue;
         }
-        final String[] key = fileKey.substring(gameName.length(), fileKey.length()).split(";");
+        final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length(), fileKey.length()));
         final String value = (String) entry.getValue();
-        if (key.length != 2) {
+        if (key.size() != 2) {
           log.log(Level.SEVERE, "objective.properties keys must be 2 parts: <game_name>."
               + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
-        if (!key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
+        if (!key.get(0).startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
-        final String[] sorter = key[0].split("\\.");
-        if (sorter.length != 2) {
-          log.log(Level.SEVERE,
-              "objective.properties " + ObjectiveProperties.GROUP_PROPERTY + "must have .<sorter> after it: " + key[0]);
+        final List<String> sorter = Splitter.on('.').splitToList(key.get(0));
+        if (sorter.size() != 2) {
+          log.severe("objective.properties " + ObjectiveProperties.GROUP_PROPERTY + "must have .<sorter> after it: "
+              + key.get(0));
           continue;
         }
-        sectionsSorters.add(sorter[1] + ";" + key[1]);
-        sectionsUnsorted.put(key[1], Arrays.asList(value.split(";")));
+        sectionsSorters.add(sorter.get(1) + ";" + key.get(1));
+        sectionsUnsorted.put(key.get(1), Arrays.asList(value.split(";")));
       }
       final Map<String, Map<ICondition, String>> statsObjectiveUnsorted = new HashMap<>();
       for (final String section : sectionsSorters) {
-        final String key = section.split(";")[1];
+        final String key = Iterables.get(Splitter.on(';').split(section), 1);
         sections.put(key, sectionsUnsorted.get(key));
         statsObjective.put(key, new LinkedHashMap<>());
         statsObjectiveUnsorted.put(key, new HashMap<>());
@@ -167,27 +170,27 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (!fileKey.startsWith(gameName)) {
           continue;
         }
-        final String[] key = fileKey.substring(gameName.length(), fileKey.length()).split(";");
+        final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length(), fileKey.length()));
         final String value = (String) entry.getValue();
-        if (key.length != 2) {
+        if (key.size() != 2) {
           log.log(Level.SEVERE,
               "objective.properties keys must be 2 parts: <game_name>."
                   + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
-        if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
+        if (key.get(0).startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
           continue;
         }
-        final ICondition condition = AbstractPlayerRulesAttachment.getCondition(key[0], key[1], gameData);
+        final ICondition condition = AbstractPlayerRulesAttachment.getCondition(key.get(0), key.get(1), gameData);
         if (condition == null) {
           continue;
         }
-        final PlayerID player = gameData.getPlayerList().getPlayerId(key[0]);
+        final PlayerID player = gameData.getPlayerList().getPlayerId(key.get(0));
 
         // find which section
         boolean found = false;
         if (sections.containsKey(player.getName())) {
-          if (sections.get(player.getName()).contains(key[1])) {
+          if (sections.get(player.getName()).contains(key.get(1))) {
             final Map<ICondition, String> map = statsObjectiveUnsorted.get(player.getName());
             if (map == null) {
               throw new IllegalStateException("objective.properties group has nothing: " + player.getName());
@@ -199,7 +202,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         }
         if (!found) {
           for (final Entry<String, List<String>> sectionEntry : sections.entrySet()) {
-            if (sectionEntry.getValue().contains(key[1])) {
+            if (sectionEntry.getValue().contains(key.get(1))) {
               final Map<ICondition, String> map = statsObjectiveUnsorted.get(sectionEntry.getKey());
               if (map == null) {
                 throw new IllegalStateException("objective.properties group has nothing: " + sectionEntry.getKey());
