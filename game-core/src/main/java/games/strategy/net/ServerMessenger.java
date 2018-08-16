@@ -261,7 +261,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     synchronized (cachedListLock) {
       cachedMacAddresses.put(uniquePlayerName, mac);
       if (isLobby()) {
-        final String realName = uniquePlayerName.split(" ")[0];
+        final String realName = IServerMessenger.getRealName(uniquePlayerName);
         if (!liveMutedUsernames.contains(realName)) {
           final Optional<Instant> muteTill = new MutedUsernameController(database).getUsernameUnmuteTime(realName);
           muteTill.ifPresent(instant -> {
@@ -313,14 +313,14 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
       if (isLobby() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT")) {
-        final String realName = msg.getFrom().getName().split(" ")[0];
+        final String realName = IServerMessenger.getRealName(msg.getFrom().getName());
         if (isUsernameMuted(realName) || isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
           return;
         }
       } else if (isGame() && ((HubInvoke) msg.getMessage()).call.getRemoteName()
           .equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME")) {
-        final String realName = msg.getFrom().getName().split(" ")[0];
+        final String realName = IServerMessenger.getRealName(msg.getFrom().getName());
         if (isUsernameMuted(realName)) {
           bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
           return;
