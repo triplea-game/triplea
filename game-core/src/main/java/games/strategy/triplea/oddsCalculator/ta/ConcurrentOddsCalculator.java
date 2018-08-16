@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +44,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   // shortcut everything if we are shutting down
   private volatile boolean isShutDown = false;
   // shortcut setting of previous game data if we are trying to set it to a new one, or shutdown
-  private volatile int cancelCurrentOperation = 0;
+  private final AtomicInteger cancelCurrentOperation = new AtomicInteger(0);
   // do not let calcing happen while we are setting game data
   private final CountUpAndDownLatch latchSetData = new CountUpAndDownLatch();
   // do not let setting of game data happen multiple times while we offload creating workers and copying data to a
@@ -72,7 +73,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     // increment so that a new calc doesn't take place (since they all wait on this latch)
     latchSetData.increment();
     // cancel any current setting of data
-    --cancelCurrentOperation;
+    cancelCurrentOperation.decrementAndGet();
     // cancel any existing calcing (it won't stop immediately, just quicker)
     cancel();
     synchronized (mutexSetGameData) {
@@ -88,11 +89,11 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       isCalcSet = false;
       if (data == null || isShutDown) {
         workers.clear();
-        ++cancelCurrentOperation;
+        cancelCurrentOperation.incrementAndGet();
         // allow calcing and other stuff to go ahead
         latchSetData.countDown();
       } else {
-        ++cancelCurrentOperation;
+        cancelCurrentOperation.incrementAndGet();
         // increment our token, so that we can set the data in a different thread and return from this one
         latchWorkerThreadsCreation.increment();
         executor.execute(() -> createWorkers(data));
@@ -133,7 +134,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   private void createWorkers(final GameData data) {
     workers.clear();
-    if (data != null && cancelCurrentOperation >= 0) {
+    if (data != null && cancelCurrentOperation.get() >= 0) {
       // see how long 1 copy takes (some games can get REALLY big)
       final long startTime = System.currentTimeMillis();
       final long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -156,7 +157,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most
           // only 1 more copy to
           // make)
-          while (cancelCurrentOperation >= 0 && i < currentThreads) {
+          while (cancelCurrentOperation.get() >= 0 && i < currentThreads) {
             // the last one will use our already copied data from above, without copying it again
             workers.add(new OddsCalculator(newData, (currentThreads == ++i)));
           }
@@ -165,7 +166,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
           while (i < (currentThreads - 1)) {
             ++i;
             executor.execute(() -> {
-              if (cancelCurrentOperation >= 0) {
+              if (cancelCurrentOperation.get() >= 0) {
                 workers.add(new OddsCalculator(newData, false));
               }
               workerLatch.countDown();
@@ -179,7 +180,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         newData.releaseReadLock();
       }
     }
-    if (cancelCurrentOperation < 0 || data == null) {
+    if (cancelCurrentOperation.get() < 0 || data == null) {
       // we could have cancelled while setting data, so clear the workers again if so
       workers.clear();
       isDataSet = false;
@@ -197,7 +198,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   @Override
   public void shutdown() {
     isShutDown = true;
-    cancelCurrentOperation = Integer.MIN_VALUE / 2;
+    cancelCurrentOperation.set(Integer.MIN_VALUE / 2);
     cancel();
     executor.shutdown();
   }
