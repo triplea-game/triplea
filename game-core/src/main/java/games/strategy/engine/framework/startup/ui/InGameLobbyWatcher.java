@@ -27,7 +27,6 @@ import games.strategy.engine.lobby.common.ILobbyGameController;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
@@ -164,9 +163,9 @@ public class InGameLobbyWatcher {
     final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
         ? (HeadlessGameServer.headless() ? 0 : 1)
         : oldWatcher.gameDescription.getPlayerCount();
-    final GameStatus gameStatus =
+    final GameDescription.GameStatus gameStatus =
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
-            ? GameStatus.WAITING_FOR_PLAYERS
+            ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
             : oldWatcher.gameDescription.getStatus();
     final String gameRound =
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
