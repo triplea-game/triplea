@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import games.strategy.util.Tuple;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class PlayerIdTest {
   private final PlayerID playerId = new PlayerID("name", new GameData());
@@ -88,6 +89,14 @@ final class PlayerIdTest {
     void shouldThrowExceptionWhenTypeIdIsIllegal() {
       final Exception e = assertThrows(IllegalArgumentException.class, () -> playerId.setWhoAmI("otherTypeId:Patton"));
       assertThat(e.getMessage(), containsString("ai or human or null"));
+    }
+  }
+
+  @Nested
+  final class TypeTest {
+    @Test
+    void shouldBeEquatableAndHashable() {
+      EqualsVerifier.forClass(PlayerID.Type.class).verify();
     }
   }
 }
