@@ -233,7 +233,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (m_resources == null) {
       m_resources = new ResourceCollection(getData());
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     final int amount = getInt(s[0]);
     if (s[1].equals(Constants.PUS)) {
       throw new GameParseException("Please set PUs using production, not resource" + thisErrorMsg());
@@ -406,7 +406,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setChangeUnitOwners(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -432,7 +432,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -456,7 +456,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setWhenCapturedByGoesTo(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException(
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
@@ -483,7 +483,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setTerritoryEffect(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     for (final String name : s) {
       final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
       if (effect != null) {
@@ -510,7 +510,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (value.length() <= 0) {
       return;
     }
-    for (final String subString : value.split(":")) {
+    for (final String subString : splitOnColon(value)) {
       final Territory territory = getData().getMap().getTerritory(subString);
       if (territory == null) {
         throw new GameParseException("No territory called:" + subString + thisErrorMsg());
@@ -689,7 +689,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("Captured By -> Ownership Goes To");
       sb.append(br);
       for (final String value : m_whenCapturedByGoesTo) {
-        final String[] s = value.split(":");
+        final String[] s = splitOnColon(value);
         sb.append(s[0]).append(" -> ").append(s[1]);
         sb.append(br);
       }

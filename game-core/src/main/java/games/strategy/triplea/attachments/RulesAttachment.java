@@ -155,7 +155,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_destroyedTUV = null;
       return;
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount "
           + "of TUV that this player must destroy" + thisErrorMsg());
@@ -180,7 +180,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setBattle(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 5) {
       throw new GameParseException(
           "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
@@ -235,7 +235,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @param value should be a string containing: "player:player:relationship"
    */
   private void setRelationship(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 3 || s.length > 4) {
       throw new GameParseException(
           "relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\""
@@ -280,7 +280,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_alliedOwnershipTerritories = null;
       return;
     }
-    m_alliedOwnershipTerritories = value.split(":");
+    m_alliedOwnershipTerritories = splitOnColon(value);
     validateNames(m_alliedOwnershipTerritories);
   }
 
@@ -302,7 +302,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_alliedExclusionTerritories = null;
       return;
     }
-    m_alliedExclusionTerritories = value.split(":");
+    m_alliedExclusionTerritories = splitOnColon(value);
     validateNames(m_alliedExclusionTerritories);
   }
 
@@ -323,7 +323,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_directExclusionTerritories = null;
       return;
     }
-    m_directExclusionTerritories = value.split(":");
+    m_directExclusionTerritories = splitOnColon(value);
     validateNames(m_directExclusionTerritories);
   }
 
@@ -345,7 +345,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_enemyExclusionTerritories = null;
       return;
     }
-    m_enemyExclusionTerritories = value.split(":");
+    m_enemyExclusionTerritories = splitOnColon(value);
     validateNames(m_enemyExclusionTerritories);
   }
 
@@ -366,7 +366,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_directPresenceTerritories = null;
       return;
     }
-    m_directPresenceTerritories = value.split(":");
+    m_directPresenceTerritories = splitOnColon(value);
     validateNames(m_directPresenceTerritories);
   }
 
@@ -387,7 +387,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_alliedPresenceTerritories = null;
       return;
     }
-    m_alliedPresenceTerritories = value.split(":");
+    m_alliedPresenceTerritories = splitOnColon(value);
     validateNames(m_alliedPresenceTerritories);
   }
 
@@ -408,7 +408,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_enemyPresenceTerritories = null;
       return;
     }
-    m_enemyPresenceTerritories = value.split(":");
+    m_enemyPresenceTerritories = splitOnColon(value);
     validateNames(m_enemyPresenceTerritories);
   }
 
@@ -430,7 +430,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_enemySurfaceExclusionTerritories = null;
       return;
     }
-    m_enemySurfaceExclusionTerritories = value.split(":");
+    m_enemySurfaceExclusionTerritories = splitOnColon(value);
     validateNames(m_enemySurfaceExclusionTerritories);
   }
 
@@ -451,7 +451,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_directOwnershipTerritories = null;
       return;
     }
-    m_directOwnershipTerritories = value.split(":");
+    m_directOwnershipTerritories = splitOnColon(value);
     validateNames(m_directOwnershipTerritories);
   }
 
@@ -468,7 +468,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   private void setUnitPresence(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length <= 1) {
       throw new GameParseException("unitPresence must have at least 2 fields. Format value=unit1 count=number, or "
           + "value=unit1:unit2:unit3 count=number" + thisErrorMsg());
@@ -513,7 +513,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_atWarPlayers = null;
       return;
     }
-    final String[] s = players.split(":");
+    final String[] s = splitOnColon(players);
     if (s.length < 1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
@@ -554,7 +554,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       m_techs = null;
       return;
     }
-    final String[] s = newTechs.split(":");
+    final String[] s = splitOnColon(newTechs);
     if (s.length < 1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
@@ -763,7 +763,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     // check for battle stats
     if (objectiveMet && m_destroyedTUV != null) {
-      final String[] s = m_destroyedTUV.split(":");
+      final String[] s = splitOnColon(m_destroyedTUV);
       final int requiredDestroyedTuv = getInt(s[0]);
       if (requiredDestroyedTuv >= 0) {
         final boolean justCurrentRound = s[1].equals("currentRound");
@@ -782,7 +782,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final BattleRecordsList brl = data.getBattleRecordsList();
       final int round = data.getSequence().getRound();
       for (final Tuple<String, List<Territory>> entry : m_battle) {
-        final String[] type = entry.getFirst().split(":");
+        final String[] type = splitOnColon(entry.getFirst());
         // they could be "any", and if they are "any" then this would be null, which is good!
         final PlayerID attacker = data.getPlayerList().getPlayerId(type[0]);
         final PlayerID defender = data.getPlayerList().getPlayerId(type[1]);
@@ -845,7 +845,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    */
   private boolean checkRelationships() {
     for (final String encodedRelationCheck : m_relationship) {
-      final String[] relationCheck = encodedRelationCheck.split(":");
+      final String[] relationCheck = splitOnColon(encodedRelationCheck);
       final PlayerID p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
       final PlayerID p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
       final int relationshipsExistance = Integer.parseInt(relationCheck[3]);
@@ -915,7 +915,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             if (uc == null || uc.equals("ANY") || uc.equals("any")) {
               hasEnough = allUnits.size() >= unitsNeeded;
             } else {
-              final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
+              final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
               hasEnough =
                   CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() >= unitsNeeded;
             }
@@ -990,7 +990,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           if (uc == null || uc.equals("ANY") || uc.equals("any")) {
             hasLess = allUnits.size() <= unitsMax;
           } else {
-            final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
+            final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
             hasLess = CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() <= unitsMax;
           }
           if (!hasLess) {

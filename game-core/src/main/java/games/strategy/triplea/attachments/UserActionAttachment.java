@@ -53,7 +53,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
 
   private void setActivateTrigger(final String value) throws GameParseException {
     // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 6) {
       throw new GameParseException(
           "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
@@ -119,7 +119,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       }
       final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
       toFireSet.add(toFire);
-      final String[] options = tuple.getSecond().split(":");
+      final String[] options = splitOnColon(tuple.getSecond());
       final int numberOfTimesToFire = getInt(options[0]);
       final boolean useUsesToFire = getBool(options[1]);
       final boolean testUsesToFire = getBool(options[2]);

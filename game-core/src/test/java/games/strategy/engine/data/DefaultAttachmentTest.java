@@ -8,41 +8,61 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-public final class DefaultAttachmentTest {
-  @Mock
-  private NamedAttachable namedAttachable;
+final class DefaultAttachmentTest {
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  final class GetAttachmentTest {
+    @Mock
+    private NamedAttachable namedAttachable;
 
-  @Test
-  public void getAttachment_ShouldReturnAttachmentWhenAttachmentIsPresent() {
-    final String attachmentName = "attachmentName";
-    final FakeAttachment expected = new FakeAttachment(attachmentName);
-    when(namedAttachable.getAttachment(attachmentName)).thenReturn(expected);
+    @Test
+    void shouldReturnAttachmentWhenAttachmentIsPresent() {
+      final String attachmentName = "attachmentName";
+      final FakeAttachment expected = new FakeAttachment(attachmentName);
+      when(namedAttachable.getAttachment(attachmentName)).thenReturn(expected);
 
-    final FakeAttachment actual =
-        DefaultAttachment.getAttachment(namedAttachable, attachmentName, FakeAttachment.class);
+      final FakeAttachment actual =
+          DefaultAttachment.getAttachment(namedAttachable, attachmentName, FakeAttachment.class);
 
-    assertThat(actual, is(sameInstance(expected)));
+      assertThat(actual, is(sameInstance(expected)));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAttachmentIsAbsent() {
+      when(namedAttachable.getAttachment(any())).thenReturn(null);
+
+      assertThrows(IllegalStateException.class,
+          () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAttachmentHasWrongType() {
+      when(namedAttachable.getAttachment(any())).thenReturn(mock(IAttachment.class));
+
+      assertThrows(ClassCastException.class,
+          () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
+    }
   }
 
-  @Test
-  public void getAttachment_ShouldThrowExceptionWhenAttachmentIsAbsent() {
-    when(namedAttachable.getAttachment(any())).thenReturn(null);
-
-    assertThrows(IllegalStateException.class,
-        () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
-  }
-
-  @Test
-  public void getAttachment_ShouldThrowExceptionWhenAttachmentHasWrongType() {
-    when(namedAttachable.getAttachment(any())).thenReturn(mock(IAttachment.class));
-
-    assertThrows(ClassCastException.class,
-        () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
+  @Nested
+  final class SplitOnColonTest {
+    @Test
+    void shouldSplitValueOnColon() {
+      assertThat(DefaultAttachment.splitOnColon(""), is(new String[] {""}));
+      assertThat(DefaultAttachment.splitOnColon("a"), is(new String[] {"a"}));
+      assertThat(DefaultAttachment.splitOnColon(":"), is(new String[] {"", ""}));
+      assertThat(DefaultAttachment.splitOnColon("a:b"), is(new String[] {"a", "b"}));
+      assertThat(DefaultAttachment.splitOnColon("a::b"), is(new String[] {"a", "", "b"}));
+      assertThat(DefaultAttachment.splitOnColon("::"), is(new String[] {"", "", ""}));
+      assertThat(DefaultAttachment.splitOnColon("a:b::c"), is(new String[] {"a", "b", "", "c"}));
+      assertThat(DefaultAttachment.splitOnColon(":a:b:c"), is(new String[] {"", "a", "b", "c"}));
+      assertThat(DefaultAttachment.splitOnColon("a:b:c:"), is(new String[] {"a", "b", "c", ""}));
+    }
   }
 }

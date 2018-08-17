@@ -99,7 +99,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   private void setCostResources(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
           "costResources cannot be empty or have more than two fields: " + value + thisErrorMsg());
@@ -134,7 +134,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   private void setActionAccept(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {

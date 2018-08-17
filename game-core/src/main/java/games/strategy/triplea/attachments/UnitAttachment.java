@@ -357,7 +357,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCanBeGivenByTerritoryTo(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -383,7 +383,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCanBeCapturedOnEnteringBy(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -407,7 +407,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setWhenHitPointsDamagedChangesInto(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 3) {
       throw new GameParseException(
           "setWhenHitPointsDamagedChangesInto must have damage:translateAttributes:unitType " + thisErrorMsg());
@@ -438,7 +438,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setWhenHitPointsRepairedChangesInto(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 3) {
       throw new GameParseException(
           "setWhenHitPointsRepairedChangesInto must have damage:translateAttributes:unitType " + thisErrorMsg());
@@ -470,7 +470,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   @VisibleForTesting
   void setWhenCapturedChangesInto(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 5 || s.length % 2 == 0) {
       throw new GameParseException("whenCapturedChangesInto must have 5 or more values, "
           + "playerFrom:playerTo:keepAttributes:unitType:howMany "
@@ -528,7 +528,7 @@ public class UnitAttachment extends DefaultAttachment {
       byOrFrom = "FROM";
       value = value.replaceFirst("FROM:", "");
     }
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -773,7 +773,7 @@ public class UnitAttachment extends DefaultAttachment {
       m_unitPlacementRestrictions = null;
       return;
     }
-    m_unitPlacementRestrictions = value.split(":");
+    m_unitPlacementRestrictions = splitOnColon(value);
   }
 
   private void setUnitPlacementRestrictions(final String[] value) {
@@ -791,7 +791,7 @@ public class UnitAttachment extends DefaultAttachment {
   // no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions
   // we might as well just use m_unitPlacementRestrictions
   private void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
-    final Collection<Territory> allowedTerritories = getListedTerritories(value.split(":"));
+    final Collection<Territory> allowedTerritories = getListedTerritories(splitOnColon(value));
     final Collection<Territory> restrictedTerritories = new HashSet<>(getData().getMap().getTerritories());
     restrictedTerritories.removeAll(allowedTerritories);
     m_unitPlacementRestrictions = restrictedTerritories.stream()
@@ -800,7 +800,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setRepairsUnits(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length <= 0) {
       throw new GameParseException("repairsUnits cannot be empty" + thisErrorMsg());
     }
@@ -834,7 +834,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setSpecial(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     for (final String option : s) {
       if (!(option.equals("none") || option.equals("canOnlyPlaceInOriginalTerritories"))) {
         throw new GameParseException("special does not allow: " + option + thisErrorMsg());
@@ -860,7 +860,7 @@ public class UnitAttachment extends DefaultAttachment {
       m_canInvadeOnlyFrom = null;
       return;
     }
-    final String[] canOnlyInvadeFrom = value.split(":");
+    final String[] canOnlyInvadeFrom = splitOnColon(value);
     if (canOnlyInvadeFrom[0].toLowerCase().equals("none")) {
       m_canInvadeOnlyFrom = new String[] {"none"};
       return;
@@ -893,7 +893,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setRequiresUnits(final String value) {
-    m_requiresUnits.add(value.split(":"));
+    m_requiresUnits.add(splitOnColon(value));
   }
 
   private void setRequiresUnits(final List<String[]> value) {
@@ -909,7 +909,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setRequiresUnitsToMove(final String value) throws GameParseException {
-    final String[] array = value.split(":");
+    final String[] array = splitOnColon(value);
     if (array.length == 0) {
       throw new GameParseException("requiresUnitsToMove must have at least 1 unit type" + thisErrorMsg());
     }
@@ -935,7 +935,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setWhenCombatDamaged(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (!(s.length == 3 || s.length == 4)) {
       throw new GameParseException(
           "whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer"
@@ -993,7 +993,7 @@ public class UnitAttachment extends DefaultAttachment {
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
-        final String[] s = receive.split(":");
+        final String[] s = splitOnColon(receive);
         if (filterForAbility != null && !filterForAbility.equals(s[0])) {
           continue;
         }
@@ -1650,7 +1650,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setGivesMovement(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("givesMovement cannot be empty or have more than two fields" + thisErrorMsg());
     }
@@ -1678,7 +1678,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setConsumesUnits(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("consumesUnits must have two fields" + thisErrorMsg());
     }
@@ -1708,7 +1708,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCreatesUnitsList(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException("createsUnitsList cannot be empty or have more than two fields" + thisErrorMsg());
     }
@@ -1738,7 +1738,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setCreatesResourcesList(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
           "createsResourcesList cannot be empty or have more than two fields" + thisErrorMsg());
@@ -1766,7 +1766,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setFuelCost(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("fuelCost must have two fields" + thisErrorMsg());
     }
@@ -1796,7 +1796,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setFuelFlatCost(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("fuelFlatCost must have two fields" + thisErrorMsg());
     }
@@ -1869,7 +1869,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_bombingTargets == null) {
       m_bombingTargets = new HashSet<>();
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
@@ -2179,7 +2179,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (m_targetsAA == null) {
       m_targetsAA = new HashSet<>();
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
@@ -2211,7 +2211,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setWillNotFireIfPresent(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
@@ -2275,7 +2275,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (ut == null) {
       throw new GameParseException("getAttachedTo returned null" + thisErrorMsg());
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("movementLimit must have 2 fields, value and count" + thisErrorMsg());
     }
@@ -2310,7 +2310,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (ut == null) {
       throw new GameParseException("getAttachedTo returned null" + thisErrorMsg());
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("attackingLimit must have 2 fields, value and count" + thisErrorMsg());
     }
@@ -2345,7 +2345,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (ut == null) {
       throw new GameParseException("getAttachedTo returned null" + thisErrorMsg());
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("placementLimit must have 2 fields, value and count" + thisErrorMsg());
     }
@@ -2522,7 +2522,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (!m_receivesAbilityWhenWith.isEmpty()) {
       for (final String value : m_receivesAbilityWhenWith) {
         // first is ability, second is unit that we get it from
-        final String[] s = value.split(":");
+        final String[] s = splitOnColon(value);
         if (s.length != 2) {
           throw new GameParseException("receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
         }
@@ -2860,8 +2860,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (!getReceivesAbilityWhenWith().isEmpty()) {
       if (getReceivesAbilityWhenWith().size() <= 2) {
         for (final String ability : getReceivesAbilityWhenWith()) {
-          tuples
-              .add(Tuple.of("Receives Ability", ability.split(":")[0] + " when Paired with " + ability.split(":")[1]));
+          final String[] s = splitOnColon(ability);
+          tuples.add(Tuple.of("Receives Ability", s[0] + " when Paired with " + s[1]));
         }
       } else {
         tuples.add(Tuple.of("Receives Abilities when Paired with Other Units", ""));

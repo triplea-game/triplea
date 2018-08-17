@@ -129,7 +129,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       m_movementRestrictionTerritories = null;
       return;
     }
-    m_movementRestrictionTerritories = value.split(":");
+    m_movementRestrictionTerritories = splitOnColon(value);
     validateNames(m_movementRestrictionTerritories);
   }
 
@@ -165,7 +165,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   }
 
   private void setProductionPerXTerritories(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
           "productionPerXTerritories cannot be empty or have more than two fields" + thisErrorMsg());
