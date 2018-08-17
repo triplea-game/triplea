@@ -53,7 +53,6 @@ jar {
 dependencies {
     compile 'org.postgresql:postgresql:42.2.2'
     compile 'com.github.openjson:openjson:1.0.10'
-    compile 'com.google.guava:guava:24.1-jre'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1.4'
     compile 'com.sun.mail:javax.mail:1.6.1'
     compile 'commons-codec:commons-codec:1.11'
