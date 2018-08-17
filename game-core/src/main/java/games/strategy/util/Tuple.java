@@ -5,6 +5,12 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
+/**
+ * A heterogeneous container of two values.
+ *
+ * @param <T> The type of the first value.
+ * @param <S> The type of the second value.
+ */
 public class Tuple<T, S> implements Serializable {
   private static final long serialVersionUID = -5091545494950868125L;
   private final T first;

@@ -11,6 +11,9 @@ import javax.swing.JWindow;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+/**
+ * A window used to display indeterminate progress during an operation.
+ */
 public class ProgressWindow extends JWindow {
   private static final long serialVersionUID = 4102671321734509406L;
 

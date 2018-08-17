@@ -167,6 +167,14 @@ public class SwingComponents {
     return scroll;
   }
 
+  /**
+   * Displays a dialog that prompts the user for a yes/no response. If the user answers yes, {@code confirmedAction} is
+   * run; otherwise no action is performed.
+   *
+   * @param title The title of the dialog.
+   * @param message The message displayed in the dialog; should be phrased as a question.
+   * @param confirmedAction The action that is run if the user answers yes.
+   */
   public static void promptUser(final String title, final String message, final Runnable confirmedAction) {
     boolean showMessage = false;
     synchronized (visiblePrompts) {

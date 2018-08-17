@@ -60,6 +60,9 @@ public final class Util {
     return new BufferedImage(width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
   }
 
+  /**
+   * Centers the specified window on the screen.
+   */
   public static void center(final Window w) {
     final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
     final int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -76,9 +79,13 @@ public final class Util {
     w.setLocation(x, y);
   }
 
-  // code stolen from swingx
-  // swingx is lgpl, so no problems with copyright
+  /**
+   * Creates an image that consists of {@code text} on a background containing a curved shape. The returned image is
+   * appropriate for display in the header of a dialog to give it a "wizard-like" look.
+   */
   public static Image getBanner(final String text) {
+    // code stolen from swingx
+    // swingx is lgpl, so no problems with copyright
     final int w = 400;
     final int h = 60;
     final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);

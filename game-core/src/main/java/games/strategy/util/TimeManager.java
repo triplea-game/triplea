@@ -7,6 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 
+/**
+ * Provides methods for formatting time in various formats.
+ */
 public class TimeManager {
   /**
    * Prints an {@link Instant} localized, with all details.

@@ -16,6 +16,10 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.framework.system.SystemProperties;
 
+/**
+ * A UI component that displays a scrollable text field for inputting integers. Four buttons are provided to change the
+ * text field value: set maximum value, increment value, decrement value, and set minimum value.
+ */
 public class ScrollableTextField extends JPanel {
   private static final long serialVersionUID = 6940592988573672224L;
 
