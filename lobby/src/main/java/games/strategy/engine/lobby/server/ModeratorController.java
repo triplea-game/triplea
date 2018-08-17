@@ -5,8 +5,6 @@ import java.util.Date;
 
 import javax.annotation.Nullable;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.IModeratorController;
 import games.strategy.engine.lobby.common.LobbyConstants;
@@ -90,18 +88,10 @@ final class ModeratorController implements IModeratorController {
 
   private User getUserForNode(final INode node) {
     return User.builder()
-        .username(getUsernameForNode(node))
+        .username(IServerMessenger.getRealName(node.getName()))
         .inetAddress(node.getAddress())
         .hashedMacAddress(getNodeMacAddress(node))
         .build();
-  }
-
-  @VisibleForTesting
-  static String getUsernameForNode(final INode node) {
-    // usernames may contain a " (n)" suffix when the same user is logged in multiple times
-    final String username = node.getName();
-    final int spaceIndex = username.indexOf(' ');
-    return (spaceIndex != -1) ? username.substring(0, spaceIndex) : username;
   }
 
   /**

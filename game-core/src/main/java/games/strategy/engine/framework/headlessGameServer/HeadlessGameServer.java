@@ -328,7 +328,7 @@ public class HeadlessGameServer {
         }
         try {
           for (final INode node : nodes) {
-            final String realName = node.getName().split(" ")[0];
+            final String realName = IServerMessenger.getRealName(node.getName());
             final String ip = node.getAddress().getHostAddress();
             final String mac = messenger.getPlayerMac(node.getName());
             if (realName.equals(playerName)) {
@@ -369,7 +369,7 @@ public class HeadlessGameServer {
         }
         try {
           for (final INode node : nodes) {
-            final String realName = node.getName().split(" ")[0];
+            final String realName = IServerMessenger.getRealName(node.getName());
             if (realName.equals(playerName)) {
               log.info("Remote Boot of Player: " + playerName);
               messenger.removeConnection(node);
@@ -408,7 +408,7 @@ public class HeadlessGameServer {
         }
         try {
           for (final INode node : nodes) {
-            final String realName = node.getName().split(" ")[0];
+            final String realName = IServerMessenger.getRealName(node.getName());
             final String ip = node.getAddress().getHostAddress();
             final String mac = messenger.getPlayerMac(node.getName());
             if (realName.equals(playerName)) {

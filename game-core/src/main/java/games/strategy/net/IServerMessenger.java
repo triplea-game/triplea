@@ -1,5 +1,7 @@
 package games.strategy.net;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.time.Instant;
 import java.util.Set;
 
@@ -60,4 +62,19 @@ public interface IServerMessenger extends IMessenger {
   boolean isIpMiniBanned(String ip);
 
   boolean isMacMiniBanned(String mac);
+
+  /**
+   * Returns the real username for the specified (possibly unique) username.
+   *
+   * <p>
+   * Node usernames may contain a " (n)" suffix when the same user is logged in multiple times. This method removes such
+   * a suffix yielding the original (real) username.
+   * </p>
+   */
+  static String getRealName(final String name) {
+    checkNotNull(name);
+
+    final int spaceIndex = name.indexOf(' ');
+    return (spaceIndex != -1) ? name.substring(0, spaceIndex) : name;
+  }
 }

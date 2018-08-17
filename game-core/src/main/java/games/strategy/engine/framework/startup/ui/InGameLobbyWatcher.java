@@ -105,7 +105,7 @@ public class InGameLobbyWatcher {
     try {
       final String mac = MacFinder.getHashedMacAddress();
       final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),
-          getRealName(hostedBy) + "_" + LobbyConstants.LOBBY_WATCHER_NAME, mac, login);
+          IServerMessenger.getRealName(hostedBy) + "_" + LobbyConstants.LOBBY_WATCHER_NAME, mac, login);
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
       final RemoteMessenger rm = new RemoteMessenger(um);
       final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
@@ -115,11 +115,6 @@ public class InGameLobbyWatcher {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return null;
     }
-  }
-
-  private static String getRealName(final String uniqueName) {
-    // Remove any (n) that is added to distinguish duplicate names
-    return uniqueName.split(" ")[0];
   }
 
   void setGame(final IGame game) {

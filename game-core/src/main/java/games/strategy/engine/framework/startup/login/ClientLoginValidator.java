@@ -88,7 +88,7 @@ public final class ClientLoginValidator implements ILoginValidator {
           clientVersion, ClientContext.engineVersion());
     }
 
-    final String realName = clientName.split(" ")[0];
+    final String realName = IServerMessenger.getRealName(clientName);
     if (serverMessenger.isUsernameMiniBanned(realName)) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED;
     }
