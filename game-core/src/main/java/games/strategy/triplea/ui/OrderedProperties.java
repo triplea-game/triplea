@@ -22,11 +22,6 @@ public class OrderedProperties extends Properties {
   }
 
   @Override
-  public synchronized Enumeration<Object> elements() {
-    return Collections.enumeration(keys);
-  }
-
-  @Override
   public synchronized Enumeration<Object> keys() {
     return Collections.enumeration(keys);
   }
