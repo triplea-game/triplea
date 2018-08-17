@@ -9,6 +9,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * Draws a territory effect image at a given point on the map.
+ */
 public class TerritoryEffectDrawable implements IDrawable {
   private final TerritoryEffect effect;
   private final Point point;

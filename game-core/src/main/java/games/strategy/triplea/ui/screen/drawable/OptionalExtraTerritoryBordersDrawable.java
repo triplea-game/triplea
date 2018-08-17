@@ -12,6 +12,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 
+/**
+ * Draws a black outline around the associated territory.
+ */
 public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
   private final String territoryName;
   private final OptionalExtraBorderLevel level;

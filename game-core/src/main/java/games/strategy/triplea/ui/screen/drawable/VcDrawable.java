@@ -9,6 +9,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * Draws the victory city image for the associated territory.
+ */
 public class VcDrawable implements IDrawable {
   private final Territory location;
 

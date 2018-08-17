@@ -16,6 +16,10 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * Draws a black outline around the associated territory and draws diagonal stripes over the territory interior if a
+ * battle is pending within the territory.
+ */
 public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   private final String territoryName;
 
