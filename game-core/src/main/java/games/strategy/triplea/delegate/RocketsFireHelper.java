@@ -103,13 +103,11 @@ public class RocketsFireHelper {
       // Ask the user where each rocket launcher should target.
       final Territory target = getTarget(targets, bridge, territory);
       if (target != null) {
-        attackedTerritories.add(target);
-        attackingFromTerritories.put(target, territory);
+      	if (oneAttackPerTerritory) {
+          attackedTerritories.add(target);
+        }
+        fireRocket(player, target, bridge, territory);
       }
-    }
-    for (final Territory target : attackedTerritories) {
-      // Roll dice for the rocket attack damage and apply it
-      fireRocket(player, target, bridge, attackingFromTerritories.get(target));
     }
   }
 
