@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 import javax.swing.JComboBox;
@@ -21,6 +20,7 @@ import javax.swing.SpinnerNumberModel;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.ui.SwingComponents;
+import lombok.AllArgsConstructor;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
@@ -112,40 +112,73 @@ public final class TimespanDialog extends JDialog {
   /**
    * The possible time units and corresponding mappings.
    */
+  @AllArgsConstructor
   @VisibleForTesting
   enum TimeUnit {
-    MINUTES("Minutes", i -> Instant.now().plus(i, ChronoUnit.MINUTES)),
+    MINUTES("Minutes") {
+      @Override
+      @Nullable
+      Instant getInstant(final Integer value) {
+        return Instant.now().plus(value, ChronoUnit.MINUTES);
+      }
+    },
 
-    HOURS("Hours", i -> Instant.now().plus(i, ChronoUnit.HOURS)),
+    HOURS("Hours") {
+      @Override
+      @Nullable
+      Instant getInstant(final Integer value) {
+        return Instant.now().plus(value, ChronoUnit.HOURS);
+      }
+    },
 
-    DAYS("Days", i -> Instant.now().plus(i, ChronoUnit.DAYS)),
+    DAYS("Days") {
+      @Override
+      @Nullable
+      Instant getInstant(final Integer value) {
+        return Instant.now().plus(value, ChronoUnit.DAYS);
+      }
+    },
 
-    WEEKS("Weeks", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.WEEKS).toInstant(ZoneOffset.UTC)),
+    WEEKS("Weeks") {
+      @Override
+      @Nullable
+      Instant getInstant(final Integer value) {
+        return LocalDateTime.now(ZoneOffset.UTC).plus(value, ChronoUnit.WEEKS).toInstant(ZoneOffset.UTC);
+      }
+    },
 
-    MONTHS("Months", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.MONTHS).toInstant(ZoneOffset.UTC)),
+    MONTHS("Months") {
+      @Override
+      @Nullable
+      Instant getInstant(final Integer value) {
+        return LocalDateTime.now(ZoneOffset.UTC).plus(value, ChronoUnit.MONTHS).toInstant(ZoneOffset.UTC);
+      }
+    },
 
-    YEARS("Years", i -> LocalDateTime.now(ZoneOffset.UTC).plus(i, ChronoUnit.YEARS).toInstant(ZoneOffset.UTC)),
+    YEARS("Years") {
+      @Override
+      @Nullable
+      Instant getInstant(final Integer value) {
+        return LocalDateTime.now(ZoneOffset.UTC).plus(value, ChronoUnit.YEARS).toInstant(ZoneOffset.UTC);
+      }
+    },
 
-    FOREVER("Forever", i -> null);
+    FOREVER("Forever") {
+      @Override
+      @Nullable
+      Instant getInstant(final Integer value) {
+        return null;
+      }
+    };
 
     private final String displayName;
-    private final Function<Integer, Instant> function;
-
-    TimeUnit(final String displayName, final Function<Integer, Instant> function) {
-      this.displayName = displayName;
-      this.function = function;
-    }
 
     @Override
     public String toString() {
       return displayName;
     }
 
-    @VisibleForTesting
-    @Nullable
-    Instant getInstant(final Integer integer) {
-      return function.apply(integer);
-    }
+    abstract @Nullable Instant getInstant(Integer value);
   }
 
   @VisibleForTesting
