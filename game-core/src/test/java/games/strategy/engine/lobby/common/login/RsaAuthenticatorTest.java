@@ -24,8 +24,8 @@ public final class RsaAuthenticatorTest {
 
   @Test
   public void testCanProcess() {
-    assertTrue(RsaAuthenticator.canProcessChallenge(singletonMap(RsaAuthenticator.RSA_PUBLIC_KEY, "")));
-    assertTrue(RsaAuthenticator.canProcessResponse(singletonMap(RsaAuthenticator.ENCRYPTED_PASSWORD_KEY, "")));
+    assertTrue(RsaAuthenticator.canProcessChallenge(singletonMap(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY, "")));
+    assertTrue(RsaAuthenticator.canProcessResponse(singletonMap(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD, "")));
 
     // Adding a completely unrelated key shouldn't change the outcome
     assertFalse(RsaAuthenticator.canProcessResponse(singletonMap("someOtherResponseKey", "")));

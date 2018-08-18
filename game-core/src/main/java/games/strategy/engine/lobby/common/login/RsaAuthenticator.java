@@ -31,12 +31,6 @@ public final class RsaAuthenticator {
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   private static final String PSEUDO_SALT = "TripleA";
 
-  @VisibleForTesting
-  static final String ENCRYPTED_PASSWORD_KEY = "RSAPWD";
-
-  @VisibleForTesting
-  static final String RSA_PUBLIC_KEY = "RSAPUBLICKEY";
-
   private final KeyPair keyPair;
 
   public RsaAuthenticator() {
@@ -52,14 +46,14 @@ public final class RsaAuthenticator {
    * Returns true if the specified map contains the required values.
    */
   public static boolean canProcessResponse(final Map<String, String> response) {
-    return response.containsKey(ENCRYPTED_PASSWORD_KEY);
+    return response.containsKey(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD);
   }
 
   /**
    * Returns true if the specified map contains the required values.
    */
   public static boolean canProcessChallenge(final Map<String, String> challenge) {
-    return challenge.containsKey(RSA_PUBLIC_KEY);
+    return challenge.containsKey(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY);
   }
 
   /**
@@ -69,7 +63,8 @@ public final class RsaAuthenticator {
    *         client.
    */
   public Map<String, String> newChallenge() {
-    return Collections.singletonMap(RSA_PUBLIC_KEY,
+    return Collections.singletonMap(
+        LobbyLoginChallengeKeys.RSA_PUBLIC_KEY,
         Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
   }
 
@@ -96,7 +91,7 @@ public final class RsaAuthenticator {
    * @throws IllegalStateException If the encryption cipher is not available.
    */
   public String decryptPasswordForAction(final Map<String, String> response, final Function<String, String> action) {
-    final String encryptedPassword = response.get(ENCRYPTED_PASSWORD_KEY);
+    final String encryptedPassword = response.get(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD);
     try {
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
       cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
@@ -150,6 +145,8 @@ public final class RsaAuthenticator {
    *         lobby server.
    */
   public static Map<String, String> newResponse(final Map<String, String> challenge, final String password) {
-    return Collections.singletonMap(ENCRYPTED_PASSWORD_KEY, encryptPassword(challenge.get(RSA_PUBLIC_KEY), password));
+    return Collections.singletonMap(
+        LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+        encryptPassword(challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), password));
   }
 }
