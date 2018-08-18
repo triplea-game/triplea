@@ -67,25 +67,25 @@ public final class GameParser {
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
-  private final boolean noValidation;
+  private final boolean validate;
 
-  private GameParser(final String mapName, final boolean noValidation) {
+  private GameParser(final String mapName, final boolean validate) {
     this.mapName = mapName;
-    this.noValidation = noValidation;
+    this.validate = validate;
   }
 
   /**
    * Performs a deep parse of the game definition contained in the specified stream.
-   * Used by test code only
    *
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  public static GameData parse(final String mapName, final InputStream stream, final boolean noValidation)
+  @VisibleForTesting
+  public static GameData parse(final String mapName, final InputStream stream, final boolean validate)
       throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
 
-    return new GameParser(mapName, noValidation).parse(stream);
+    return new GameParser(mapName, validate).parse(stream);
   }
 
   /**
@@ -126,8 +126,8 @@ public final class GameParser {
       throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
-
-    return new GameParser(mapName, false).parseShallow(stream);
+    // validation doesn't really has an effect here.
+    return new GameParser(mapName, true).parseShallow(stream);
   }
 
   private GameData parseShallow(final InputStream stream) throws GameParseException, EngineVersionException {
@@ -218,7 +218,7 @@ public final class GameParser {
     data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
     // options/properties)
-    if (!noValidation) {
+    if (validate) {
       checkThatAllUnitsHaveAttachments(data);
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     }
