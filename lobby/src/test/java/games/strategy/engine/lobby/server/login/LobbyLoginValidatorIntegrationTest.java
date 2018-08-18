@@ -24,7 +24,7 @@ import org.triplea.test.common.Integration;
 
 import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
 import games.strategy.engine.lobby.common.LobbyConstants;
-import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
+import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
