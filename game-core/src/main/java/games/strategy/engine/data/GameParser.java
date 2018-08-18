@@ -45,9 +45,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleA;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -69,9 +67,25 @@ public final class GameParser {
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
+  private final boolean noValidation;
 
-  private GameParser(final String mapName) {
+  private GameParser(final String mapName, final boolean noValidation) {
     this.mapName = mapName;
+    this.noValidation = noValidation;
+  }
+
+  /**
+   * Performs a deep parse of the game definition contained in the specified stream.
+   * Used by test code only
+   *
+   * @return A complete {@link GameData} instance that can be used to play the game.
+   */
+  public static GameData parse(final String mapName, final InputStream stream, boolean noValidation)
+      throws GameParseException, EngineVersionException {
+    checkNotNull(mapName);
+    checkNotNull(stream);
+
+    return new GameParser(mapName, noValidation).parse(stream);
   }
 
   /**
@@ -81,10 +95,7 @@ public final class GameParser {
    */
   public static GameData parse(final String mapName, final InputStream stream)
       throws GameParseException, EngineVersionException {
-    checkNotNull(mapName);
-    checkNotNull(stream);
-
-    return new GameParser(mapName).parse(stream);
+    return parse(mapName, stream, false);
   }
 
   private GameData parse(final InputStream stream) throws GameParseException, EngineVersionException {
@@ -116,7 +127,7 @@ public final class GameParser {
     checkNotNull(mapName);
     checkNotNull(stream);
 
-    return new GameParser(mapName).parseShallow(stream);
+    return new GameParser(mapName, false).parseShallow(stream);
   }
 
   private GameData parseShallow(final InputStream stream) throws GameParseException, EngineVersionException {
@@ -207,7 +218,7 @@ public final class GameParser {
     data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
     // options/properties)
-    if (data.getGameLoader() instanceof TripleA) {
+    if (!noValidation) {
       checkThatAllUnitsHaveAttachments(data);
       TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     }
@@ -446,19 +457,6 @@ public final class GameParser {
   }
 
   /**
-   * Loads an instance of the given class.
-   * Assumes a zero argument constructor.
-   */
-  private Object getInstance(final String className) throws GameParseException {
-    try {
-      final Class<?> instanceClass = Class.forName(className);
-      return instanceClass.getDeclaredConstructor().newInstance();
-    } catch (final ReflectiveOperationException e) {
-      throw newGameParseException(String.format("Unable to create instance of class <%s>", className), e);
-    }
-  }
-
-  /**
    * Get the given child.
    * If there is not exactly one child throw a SAXExcpetion
    */
@@ -515,13 +513,8 @@ public final class GameParser {
     data.setGameVersion(new Version(version));
   }
 
-  private void parseGameLoader(final Node loader) throws GameParseException {
-    final String className = ((Element) loader).getAttribute("javaClass");
-    final Object instance = getInstance(className);
-    if (!(instance instanceof IGameLoader)) {
-      throw newGameParseException("Loader must implement IGameLoader.  Class Name:" + className);
-    }
-    data.setGameLoader((IGameLoader) instance);
+  private void parseGameLoader(final Node loader) {
+    log.log(Level.INFO, "Loader tag is being ignored");
   }
 
   private void parseMap(final Node map) throws GameParseException {
