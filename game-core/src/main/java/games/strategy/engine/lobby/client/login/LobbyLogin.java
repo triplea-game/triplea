@@ -13,7 +13,7 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.login.LobbyLoginChallengeKeys;
 import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
-import games.strategy.engine.lobby.server.login.RsaAuthenticator;
+import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IMessenger;

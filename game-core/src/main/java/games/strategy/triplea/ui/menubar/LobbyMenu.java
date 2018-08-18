@@ -31,7 +31,7 @@ import games.strategy.engine.lobby.client.ui.TimespanDialog;
 import games.strategy.engine.lobby.common.IModeratorController;
 import games.strategy.engine.lobby.common.IUserManager;
 import games.strategy.engine.lobby.common.LobbyConstants;
-import games.strategy.engine.lobby.server.login.RsaAuthenticator;
+import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;

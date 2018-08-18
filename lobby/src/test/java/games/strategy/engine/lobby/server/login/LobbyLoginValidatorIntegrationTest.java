@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server.login;
 
-import static games.strategy.engine.lobby.server.login.RsaAuthenticator.hashPasswordWithSalt;
+import static games.strategy.engine.lobby.common.login.RsaAuthenticator.hashPasswordWithSalt;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +25,7 @@ import org.triplea.test.common.Integration;
 import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
+import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;

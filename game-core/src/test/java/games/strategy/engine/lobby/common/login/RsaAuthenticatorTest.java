@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.login;
+package games.strategy.engine.lobby.common.login;
 
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertFalse;

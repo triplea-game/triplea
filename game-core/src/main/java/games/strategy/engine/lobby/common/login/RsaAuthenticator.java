@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.login;
+package games.strategy.engine.lobby.common.login;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -39,19 +39,19 @@ public final class RsaAuthenticator {
 
   private final KeyPair keyPair;
 
-  RsaAuthenticator() {
+  public RsaAuthenticator() {
     this(generateKeyPair());
   }
 
   @VisibleForTesting
-  RsaAuthenticator(final KeyPair keyPair) {
+  public RsaAuthenticator(final KeyPair keyPair) {
     this.keyPair = keyPair;
   }
 
   /**
    * Returns true if the specified map contains the required values.
    */
-  static boolean canProcessResponse(final Map<String, String> response) {
+  public static boolean canProcessResponse(final Map<String, String> response) {
     return response.containsKey(ENCRYPTED_PASSWORD_KEY);
   }
 
@@ -68,7 +68,7 @@ public final class RsaAuthenticator {
    * @return The challenge as a collection of properties to be added to the message the lobby server sends the lobby
    *         client.
    */
-  Map<String, String> newChallenge() {
+  public Map<String, String> newChallenge() {
     return Collections.singletonMap(RSA_PUBLIC_KEY,
         Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
   }
@@ -95,7 +95,7 @@ public final class RsaAuthenticator {
    *
    * @throws IllegalStateException If the encryption cipher is not available.
    */
-  String decryptPasswordForAction(final Map<String, String> response, final Function<String, String> action) {
+  public String decryptPasswordForAction(final Map<String, String> response, final Function<String, String> action) {
     final String encryptedPassword = response.get(ENCRYPTED_PASSWORD_KEY);
     try {
       final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
