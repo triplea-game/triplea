@@ -25,7 +25,7 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.common.ILobbyGameController;
 import games.strategy.engine.lobby.common.LobbyConstants;
-import games.strategy.engine.lobby.common.LobbyLoginResponseKeys;
+import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.message.IRemoteMessenger;
