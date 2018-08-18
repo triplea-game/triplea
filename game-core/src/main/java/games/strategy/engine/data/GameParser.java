@@ -67,25 +67,9 @@ public final class GameParser {
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
-  private final boolean validate;
 
-  private GameParser(final String mapName, final boolean validate) {
+  private GameParser(final String mapName) {
     this.mapName = mapName;
-    this.validate = validate;
-  }
-
-  /**
-   * Performs a deep parse of the game definition contained in the specified stream.
-   *
-   * @return A complete {@link GameData} instance that can be used to play the game.
-   */
-  @VisibleForTesting
-  public static GameData parse(final String mapName, final InputStream stream, final boolean validate)
-      throws GameParseException, EngineVersionException {
-    checkNotNull(mapName);
-    checkNotNull(stream);
-
-    return new GameParser(mapName, validate).parse(stream);
   }
 
   /**
@@ -95,7 +79,10 @@ public final class GameParser {
    */
   public static GameData parse(final String mapName, final InputStream stream)
       throws GameParseException, EngineVersionException {
-    return parse(mapName, stream, false);
+    checkNotNull(mapName);
+    checkNotNull(stream);
+
+    return new GameParser(mapName).parse(stream);
   }
 
   private GameData parse(final InputStream stream) throws GameParseException, EngineVersionException {
@@ -126,8 +113,8 @@ public final class GameParser {
       throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
-    // validation doesn't really has an effect here.
-    return new GameParser(mapName, true).parseShallow(stream);
+
+    return new GameParser(mapName).parseShallow(stream);
   }
 
   private GameData parseShallow(final InputStream stream) throws GameParseException, EngineVersionException {
@@ -218,10 +205,8 @@ public final class GameParser {
     data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
     // options/properties)
-    if (validate) {
-      checkThatAllUnitsHaveAttachments(data);
-      TechAbilityAttachment.setDefaultTechnologyAttachments(data);
-    }
+    checkThatAllUnitsHaveAttachments(data);
+    TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     try {
       validate();
     } catch (final Exception e) {
@@ -513,7 +498,7 @@ public final class GameParser {
     data.setGameVersion(new Version(version));
   }
 
-  private void parseGameLoader(final Node loader) {
+  private static void parseGameLoader(final Node loader) {
     if (loader != null) {
       log.info("Loader tag is being ignored");
     }

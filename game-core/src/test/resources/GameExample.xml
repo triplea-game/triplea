@@ -65,8 +65,8 @@
     </production>
 
     <attachmentList>
-        <attachment name="infAttachment" attachTo="inf" javaClass="games.strategy.engine.xml.TestAttachment" type="unitType">
-            <option name="value" value="inf"/>
+        <attachment name="unitAttachment" attachTo="inf" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+            <option name="transportCost" value="1"/>
         </attachment>
         <attachment name="resourceAttachment" attachTo="gold" javaClass="games.strategy.engine.xml.TestAttachment" type="resource">
             <option name="value" value="gold"/>

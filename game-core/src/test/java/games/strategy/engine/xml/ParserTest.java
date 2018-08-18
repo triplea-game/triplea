@@ -22,6 +22,7 @@ import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class ParserTest {
@@ -118,9 +119,9 @@ public class ParserTest {
     TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
         .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
     assertEquals("gold", att.getValue());
-    att = (TestAttachment) gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF)
-        .getAttachment(Constants.INF_ATTACHMENT_NAME);
-    assertEquals("inf", att.getValue());
+    final UnitAttachment ua = (UnitAttachment) gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF)
+        .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
+    assertEquals(1, ua.getTransportCost());
     att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
     assertEquals("us of a", att.getValue());
     att = (TestAttachment) gameData.getPlayerList().getPlayerId("chretian")

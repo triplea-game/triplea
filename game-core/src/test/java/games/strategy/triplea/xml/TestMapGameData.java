@@ -31,24 +31,18 @@ public enum TestMapGameData {
 
   GLOBAL1940("ww2_g40_balanced.xml"),
 
-  TEST("Test.xml", false),
+  TEST("Test.xml"),
 
   DELEGATE_TEST("DelegateTest.xml"),
 
-  GAME_EXAMPLE("GameExample.xml", false),
+  GAME_EXAMPLE("GameExample.xml"),
 
   TWW("Total_World_War_Dec1941.xml");
 
   private final String fileName;
-  private final boolean validate;
-
-  TestMapGameData(final String value, final boolean validate) {
-    this.fileName = value;
-    this.validate = validate;
-  }
 
   TestMapGameData(final String value) {
-    this(value, true);
+    this.fileName = value;
   }
 
   @Override
@@ -65,7 +59,7 @@ public enum TestMapGameData {
    */
   public GameData getGameData() throws Exception {
     try (InputStream is = new FileInputStream(Paths.get("src", "test", "resources", fileName).toFile())) {
-      return GameParser.parse("game name", is, validate);
+      return GameParser.parse("game name", is);
     }
   }
 }
