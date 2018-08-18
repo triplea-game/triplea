@@ -80,7 +80,7 @@ public final class GameParser {
    *
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
-  public static GameData parse(final String mapName, final InputStream stream, boolean noValidation)
+  public static GameData parse(final String mapName, final InputStream stream, final boolean noValidation)
       throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
