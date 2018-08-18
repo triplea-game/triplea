@@ -81,7 +81,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   @InternalDoNotExport
   private void setCombatEffect(final String combatEffect, final boolean defending) throws GameParseException {
-    final String[] s = combatEffect.split(":");
+    final String[] s = splitOnColon(combatEffect);
     if (s.length < 2) {
       throw new GameParseException(
           "combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType" + thisErrorMsg());
@@ -107,7 +107,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   private void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
-    final String[] s = noBlitzUnitTypes.split(":");
+    final String[] s = splitOnColon(noBlitzUnitTypes);
     if (s.length < 1) {
       throw new GameParseException("noBlitz must have at least one unitType" + thisErrorMsg());
     }
@@ -133,7 +133,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   private void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {
-    final String[] s = unitsNotAllowedUnitTypes.split(":");
+    final String[] s = splitOnColon(unitsNotAllowedUnitTypes);
     if (s.length < 1) {
       throw new GameParseException("unitsNotAllowed must have at least one unitType" + thisErrorMsg());
     }

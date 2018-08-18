@@ -63,7 +63,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   private void setPlayers(final String names) throws GameParseException {
     final PlayerList pl = getData().getPlayerList();
-    for (final String p : names.split(":")) {
+    for (final String p : splitOnColon(names)) {
       final PlayerID player = pl.getPlayerId(p);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + p + thisErrorMsg());
@@ -203,7 +203,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       return;
     }
     m_turns = new HashMap<>();
-    final String[] s = rounds.split(":");
+    final String[] s = splitOnColon(rounds);
     if (s.length < 1) {
       throw new GameParseException("Empty turn list" + thisErrorMsg());
     }

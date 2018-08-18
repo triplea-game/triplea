@@ -117,7 +117,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   private void setWhen(final String when) throws GameParseException {
-    final String[] s = when.split(":");
+    final String[] s = splitOnColon(when);
     if (s.length != 2) {
       throw new GameParseException("when must exist in 2 parts: \"before/after:stepName\"." + thisErrorMsg());
     }

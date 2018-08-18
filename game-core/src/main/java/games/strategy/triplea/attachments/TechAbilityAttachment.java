@@ -115,7 +115,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   @VisibleForTesting
   String[] splitAndValidate(final String name, final String value) throws GameParseException {
-    final String[] stringArray = value.split(":");
+    final String[] stringArray = splitOnColon(value);
     if (value.isEmpty() || stringArray.length > 2) {
       throw new GameParseException(
           String.format("%s cannot be empty or have more than two fields %s", name, thisErrorMsg()));
@@ -408,7 +408,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setRocketDiceNumber(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("rocketDiceNumber must have two fields" + thisErrorMsg());
     }
@@ -480,7 +480,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setUnitAbilitiesGained(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 2) {
       throw new GameParseException(
           "unitAbilitiesGained must list the unit type, then all abilities gained" + thisErrorMsg());
@@ -579,7 +579,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAirborneTypes(final String value) throws GameParseException {
-    for (final String unit : value.split(":")) {
+    for (final String unit : splitOnColon(value)) {
       m_airborneTypes.add(getUnitType(unit));
     }
   }
@@ -630,7 +630,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAirborneBases(final String value) throws GameParseException {
-    for (final String u : value.split(":")) {
+    for (final String u : splitOnColon(value)) {
       m_airborneBases.add(getUnitType(u));
     }
   }
@@ -657,7 +657,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setAirborneTargettedByAa(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 2) {
       throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
     }

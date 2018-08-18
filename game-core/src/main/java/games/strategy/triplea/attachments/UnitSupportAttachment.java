@@ -85,7 +85,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       return;
     }
     m_unitType = new HashSet<>();
-    for (final String element : names.split(":")) {
+    for (final String element : splitOnColon(names)) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
       if (type == null) {
         throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
@@ -110,7 +110,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
     m_allied = false;
     m_enemy = false;
-    for (final String element : faction.split(":")) {
+    for (final String element : splitOnColon(faction)) {
       if (element.equalsIgnoreCase("allied")) {
         m_allied = true;
       } else if (element.equalsIgnoreCase("enemy")) {
@@ -137,7 +137,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
     m_defence = false;
     m_offence = false;
-    for (final String element : side.split(":")) {
+    for (final String element : splitOnColon(side)) {
       if (element.equalsIgnoreCase("defence")) {
         m_defence = true;
       } else if (element.equalsIgnoreCase("offence")) {
@@ -166,7 +166,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
     m_roll = false;
     m_strength = false;
-    for (final String element : dice.split(":")) {
+    for (final String element : splitOnColon(dice)) {
       if (element.equalsIgnoreCase("roll")) {
         m_roll = true;
       } else if (element.equalsIgnoreCase("strength")) {
@@ -221,7 +221,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void setPlayers(final String names) throws GameParseException {
-    final String[] s = names.split(":");
+    final String[] s = splitOnColon(names);
     for (final String element : s) {
       final PlayerID player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {

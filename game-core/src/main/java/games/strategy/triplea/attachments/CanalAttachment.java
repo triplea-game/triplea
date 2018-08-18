@@ -84,7 +84,7 @@ public class CanalAttachment extends DefaultAttachment {
       return;
     }
     final HashSet<Territory> terrs = new HashSet<>();
-    for (final String name : landTerritories.split(":")) {
+    for (final String name : splitOnColon(landTerritories)) {
       final Territory territory = getData().getMap().getTerritory(name);
       if (territory == null) {
         throw new IllegalStateException("Canals: No territory called: " + name + thisErrorMsg());
@@ -121,7 +121,7 @@ public class CanalAttachment extends DefaultAttachment {
       m_excludedUnits.addAll(getData().getUnitTypeList().getAllUnitTypes());
       return;
     }
-    for (final String name : value.split(":")) {
+    for (final String name : splitOnColon(value)) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(name);
       if (ut == null) {
         throw new IllegalStateException("Canals: No UnitType called: " + name + thisErrorMsg());

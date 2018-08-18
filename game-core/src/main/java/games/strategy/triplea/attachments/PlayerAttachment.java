@@ -82,7 +82,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setPlacementLimit(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 3) {
       throw new GameParseException("placementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
     }
@@ -121,7 +121,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setMovementLimit(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 3) {
       throw new GameParseException("movementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
     }
@@ -160,7 +160,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setAttackingLimit(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 3) {
       throw new GameParseException("attackingLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
     }
@@ -256,7 +256,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (m_suicideAttackTargets == null) {
       m_suicideAttackTargets = new HashSet<>();
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
@@ -279,7 +279,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setSuicideAttackResources(final String value) throws GameParseException {
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException("suicideAttackResources must have exactly 2 fields" + thisErrorMsg());
     }
@@ -363,7 +363,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setGiveUnitControl(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -387,7 +387,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -411,7 +411,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setShareTechnology(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
@@ -435,7 +435,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setHelpPayTechCost(final String value) throws GameParseException {
-    final String[] temp = value.split(":");
+    final String[] temp = splitOnColon(value);
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {

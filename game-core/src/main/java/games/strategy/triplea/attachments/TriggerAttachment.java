@@ -283,7 +283,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   private void setActivateTrigger(final String value) throws GameParseException {
     // triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length != 6) {
       throw new GameParseException(
           "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
@@ -362,7 +362,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_productionRule = null;
       return;
     }
-    final String[] s = prop.split(":");
+    final String[] s = splitOnColon(prop);
     if (s.length != 2) {
       throw new GameParseException("Invalid productionRule declaration: " + prop + thisErrorMsg());
     }
@@ -427,7 +427,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setTech(final String techs) throws GameParseException {
-    for (final String subString : techs.split(":")) {
+    for (final String subString : splitOnColon(techs)) {
       TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(subString);
       if (ta == null) {
         ta = getData().getTechnologyFrontier().getAdvanceByName(subString);
@@ -456,7 +456,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_availableTech = null;
       return;
     }
-    final String[] s = techs.split(":");
+    final String[] s = splitOnColon(techs);
     if (s.length < 2) {
       throw new GameParseException(
           "Invalid tech availability: " + techs + " should be category:techs" + thisErrorMsg());
@@ -504,7 +504,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_support = null;
       return;
     }
-    final String[] s = sup.split(":");
+    final String[] s = splitOnColon(sup);
     for (int i = 0; i < s.length; i++) {
       boolean add = true;
       if (s[i].startsWith("-")) {
@@ -561,7 +561,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setRelationshipChange(final String relChange) throws GameParseException {
-    final String[] s = relChange.split(":");
+    final String[] s = splitOnColon(relChange);
     if (s.length != 4) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
           + " \n Use: player1:player2:oldRelation:newRelation\n" + thisErrorMsg());
@@ -601,7 +601,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setUnitType(final String names) throws GameParseException {
-    final String[] s = names.split(":");
+    final String[] s = splitOnColon(names);
     for (final String element : s) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
       if (type == null) {
@@ -628,7 +628,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_unitAttachmentName = null;
       return;
     }
-    final String[] s = name.split(":");
+    final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
           "unitAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
@@ -672,7 +672,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_unitProperty = null;
       return;
     }
-    final String[] s = prop.split(":");
+    final String[] s = splitOnColon(prop);
     if (m_unitProperty == null) {
       m_unitProperty = new ArrayList<>();
     }
@@ -694,7 +694,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setTerritories(final String names) throws GameParseException {
-    final String[] s = names.split(":");
+    final String[] s = splitOnColon(names);
     for (final String element : s) {
       final Territory terr = getData().getMap().getTerritory(element);
       if (terr == null) {
@@ -721,7 +721,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_territoryAttachmentName = null;
       return;
     }
-    final String[] s = name.split(":");
+    final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
           "territoryAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
@@ -765,7 +765,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_territoryProperty = null;
       return;
     }
-    final String[] s = prop.split(":");
+    final String[] s = splitOnColon(prop);
     if (m_territoryProperty == null) {
       m_territoryProperty = new ArrayList<>();
     }
@@ -787,7 +787,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setPlayers(final String names) throws GameParseException {
-    final String[] s = names.split(":");
+    final String[] s = splitOnColon(names);
     for (final String element : s) {
       final PlayerID player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {
@@ -814,7 +814,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_playerAttachmentName = null;
       return;
     }
-    final String[] s = name.split(":");
+    final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
           "playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
@@ -874,7 +874,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_playerProperty = null;
       return;
     }
-    final String[] s = prop.split(":");
+    final String[] s = splitOnColon(prop);
     if (m_playerProperty == null) {
       m_playerProperty = new ArrayList<>();
     }
@@ -896,7 +896,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setRelationshipTypes(final String names) throws GameParseException {
-    final String[] s = names.split(":");
+    final String[] s = splitOnColon(names);
     for (final String element : s) {
       final RelationshipType relation = getData().getRelationshipTypeList().getRelationshipType(element);
       if (relation == null) {
@@ -923,7 +923,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_relationshipTypeAttachmentName = null;
       return;
     }
-    final String[] s = name.split(":");
+    final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
           "relationshipTypeAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
@@ -965,7 +965,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_relationshipTypeProperty = null;
       return;
     }
-    final String[] s = prop.split(":");
+    final String[] s = splitOnColon(prop);
     if (m_relationshipTypeProperty == null) {
       m_relationshipTypeProperty = new ArrayList<>();
     }
@@ -988,7 +988,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setTerritoryEffects(final String names) throws GameParseException {
-    final String[] s = names.split(":");
+    final String[] s = splitOnColon(names);
     for (final String element : s) {
       final TerritoryEffect effect = getData().getTerritoryEffectList().get(element);
       if (effect == null) {
@@ -1015,7 +1015,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_territoryEffectAttachmentName = null;
       return;
     }
-    final String[] s = name.split(":");
+    final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
           "territoryEffectAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
@@ -1057,7 +1057,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_territoryEffectProperty = null;
       return;
     }
-    final String[] s = prop.split(":");
+    final String[] s = splitOnColon(prop);
     if (m_territoryEffectProperty == null) {
       m_territoryEffectProperty = new ArrayList<>();
     }
@@ -1087,7 +1087,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_placement = null;
       return;
     }
-    final String[] s = place.split(":");
+    final String[] s = splitOnColon(place);
     if (s.length < 1) {
       throw new GameParseException("Empty placement list" + thisErrorMsg());
     }
@@ -1145,7 +1145,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (m_removeUnits == null) {
       m_removeUnits = new HashMap<>();
     }
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 1) {
       throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
     }
@@ -1214,7 +1214,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       m_purchase = null;
       return;
     }
-    final String[] s = place.split(":");
+    final String[] s = splitOnColon(place);
     if (s.length < 1) {
       throw new GameParseException("Empty purchase list" + thisErrorMsg());
     }
@@ -1257,7 +1257,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private void setChangeOwnership(final String value) throws GameParseException {
     // territory:oldOwner:newOwner:booleanConquered
     // can have "all" for territory and "any" for oldOwner
-    final String[] s = value.split(":");
+    final String[] s = splitOnColon(value);
     if (s.length < 4) {
       throw new GameParseException(
           "changeOwnership must have 4 fields: territory:oldOwner:newOwner:booleanConquered" + thisErrorMsg());
@@ -1799,7 +1799,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final String relationshipChange : t.getRelationshipChange()) {
-        final String[] s = relationshipChange.split(":");
+        final String[] s = splitOnColon(relationshipChange);
         final PlayerID player1 = data.getPlayerList().getPlayerId(s[0]);
         final PlayerID player2 = data.getPlayerList().getPlayerId(s[1]);
         final RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
@@ -1954,7 +1954,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         triggerAttachment.use(bridge);
       }
       triggerAttachment.getProductionRule().stream()
-          .map(s -> s.split(":"))
+          .map(s -> splitOnColon(s))
           .forEach(array -> {
             final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(array[0]);
             final String rule = array[1];
@@ -2058,7 +2058,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final String value : t.getChangeOwnership()) {
-        final String[] s = value.split(":");
+        final String[] s = splitOnColon(value);
         final Collection<Territory> territories = new ArrayList<>();
         if (s[0].equalsIgnoreCase("all")) {
           territories.addAll(data.getMap().getTerritories());
@@ -2284,7 +2284,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         }
         final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
         toFireSet.add(toFire);
-        final String[] options = tuple.getSecond().split(":");
+        final String[] options = splitOnColon(tuple.getSecond());
         final int numberOfTimesToFire = getInt(options[0]);
         final boolean useUsesToFire = getBool(options[1]);
         final boolean testUsesToFire = getBool(options[2]);

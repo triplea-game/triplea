@@ -74,7 +74,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   private void setRelationshipChange(final String relChange) throws GameParseException {
-    final String[] s = relChange.split(":");
+    final String[] s = splitOnColon(relChange);
     if (s.length != 3) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
           + " \n Use: player1:player2:newRelation\n" + thisErrorMsg());
@@ -112,7 +112,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   public Set<PlayerID> getOtherPlayers() {
     final Set<PlayerID> otherPlayers = new LinkedHashSet<>();
     for (final String relationshipChange : m_relationshipChange) {
-      final String[] s = relationshipChange.split(":");
+      final String[] s = splitOnColon(relationshipChange);
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[0]));
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[1]));
     }

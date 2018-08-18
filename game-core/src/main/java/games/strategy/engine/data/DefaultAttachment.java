@@ -5,6 +5,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 
@@ -23,6 +26,8 @@ import games.strategy.triplea.Constants;
  */
 public abstract class DefaultAttachment extends GameDataComponent implements IAttachment {
   private static final long serialVersionUID = -1985116207387301730L;
+  private static final Splitter COLON_SPLITTER = Splitter.on(':');
+
   @InternalDoNotExport
   private Attachable m_attachedTo;
   @InternalDoNotExport
@@ -80,6 +85,12 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return false;
     }
     throw new IllegalArgumentException("Attachments: " + value + " is not a valid boolean");
+  }
+
+  protected static String[] splitOnColon(final String value) {
+    checkNotNull(value);
+
+    return Iterables.toArray(COLON_SPLITTER.split(value), String.class);
   }
 
   protected String thisErrorMsg() {

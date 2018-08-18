@@ -61,7 +61,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       m_conditions = new ArrayList<>();
     }
     final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
-    for (final String subString : conditions.split(":")) {
+    for (final String subString : splitOnColon(conditions)) {
       m_conditions.add(playerIDs.stream()
           .map(p -> p.getAttachment(subString))
           .map(RulesAttachment.class::cast)
@@ -234,7 +234,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   protected void setChance(final String chance) throws GameParseException {
-    final String[] s = chance.split(":");
+    final String[] s = splitOnColon(chance);
     try {
       final int i = getInt(s[0]);
       final int j = getInt(s[1]);
@@ -262,11 +262,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   public int getChanceToHit() {
-    return getInt(getChance().split(":")[0]);
+    return getInt(splitOnColon(getChance())[0]);
   }
 
   public int getChanceDiceSides() {
-    return getInt(getChance().split(":")[1]);
+    return getInt(splitOnColon(getChance())[1]);
   }
 
   private void setChanceIncrementOnFailure(final int value) {
