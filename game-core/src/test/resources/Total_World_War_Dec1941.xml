@@ -2,7 +2,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
   <info name="Total World War: December 1941" version="2.7.7.2"/>
-    <triplea minimumVersion="1.8"/>
+  <triplea minimumVersion="1.8"/>
   <diceSides value="12"/>
   <map>
     <!-- Territory Definitions -->
