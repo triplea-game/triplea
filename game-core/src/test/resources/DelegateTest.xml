@@ -5,7 +5,6 @@
 
     <info name="delegateTest" version="1" />
 
-    <loader javaClass="games.strategy.triplea.TripleA"/>
 
 
     <map>

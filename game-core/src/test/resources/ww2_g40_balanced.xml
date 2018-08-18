@@ -2,8 +2,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
   <info name="World War II G40 Balanced" version="2.0"/>
-  <loader javaClass="games.strategy.triplea.TripleA"/>
-  <triplea minimumVersion="1.8"/>
+    <triplea minimumVersion="1.8"/>
   <diceSides value="6"/>
   <map>
     <!-- Full europe list:
