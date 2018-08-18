@@ -103,7 +103,7 @@ public class RocketsFireHelper {
       // Ask the user where each rocket launcher should target.
       final Territory target = getTarget(targets, bridge, territory);
       if (target != null) {
-      	if (oneAttackPerTerritory) {
+        if (oneAttackPerTerritory) {
           attackedTerritories.add(target);
         }
         fireRocket(player, target, bridge, territory);
