@@ -12,6 +12,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * Draws the capitol marker (large flag) image for the associated territory.
+ */
 public class CapitolMarkerDrawable implements IDrawable {
   private final String player;
   private final String location;

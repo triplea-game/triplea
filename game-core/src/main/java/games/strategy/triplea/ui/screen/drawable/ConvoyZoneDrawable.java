@@ -12,7 +12,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-// Rewritten class to use country markers rather than shading for Convoy Centers/Routes.
+/**
+ * Draws the convoy flag image for the associated territory.
+ */
 public class ConvoyZoneDrawable implements IDrawable {
   private final String player;
   private final String location;

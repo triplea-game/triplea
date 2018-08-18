@@ -11,6 +11,10 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 
+/**
+ * Superclass for {@link IDrawable} implementations that draws a black outline around a territory and uses an instance
+ * of {@link Paint} provided by the subclass to fill the territory interior.
+ */
 public abstract class TerritoryDrawable {
   protected static void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
       final Territory territory, final Paint territoryPaint) {

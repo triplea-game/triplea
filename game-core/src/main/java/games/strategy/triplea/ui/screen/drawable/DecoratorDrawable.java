@@ -9,6 +9,9 @@ import java.awt.geom.AffineTransform;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * Draws a custom image at a given point on the map.
+ */
 public class DecoratorDrawable implements IDrawable {
   private final Point point;
   private final Image image;

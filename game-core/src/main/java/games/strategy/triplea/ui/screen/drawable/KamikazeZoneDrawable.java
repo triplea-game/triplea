@@ -14,7 +14,10 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-// Class to use 'Faded' country markers for Kamikaze Zones.
+/**
+ * Draws the faded flag image of the original owner for the associated territory. Intended only for use with kamikaze
+ * zones.
+ */
 public class KamikazeZoneDrawable implements IDrawable {
   private final String location;
   private final UiContext uiContext;

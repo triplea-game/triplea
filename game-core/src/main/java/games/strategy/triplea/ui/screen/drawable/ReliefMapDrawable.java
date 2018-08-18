@@ -5,6 +5,9 @@ import java.awt.Image;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.UiContext;
 
+/**
+ * Draws a relief map tile.
+ */
 public class ReliefMapDrawable extends MapTileDrawable {
   public ReliefMapDrawable(final int x, final int y, final UiContext uiContext) {
     super(x, y, uiContext);

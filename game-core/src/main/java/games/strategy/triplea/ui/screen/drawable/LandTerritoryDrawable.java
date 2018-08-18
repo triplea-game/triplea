@@ -10,6 +10,11 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * Draws a black outline around the associated territory and draws a solid color over the territory interior. The
+ * color is based on the territory owner and whether or not the territory is impassable. Intended only for use with land
+ * territories.
+ */
 public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
   private final String territoryName;
 

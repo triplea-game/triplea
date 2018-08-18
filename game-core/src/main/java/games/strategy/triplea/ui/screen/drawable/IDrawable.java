@@ -10,6 +10,10 @@ import java.util.Optional;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * A service responsible for drawing a single layer of the map. The map is rendered as a sequence of layers (or
+ * levels). The lowest layer is drawn first with each successive layer drawn on top of it.
+ */
 public interface IDrawable {
   int BASE_MAP_LEVEL = 1;
   int POLYGONS_LEVEL = 2;
@@ -50,5 +54,3 @@ public interface IDrawable {
     image.ifPresent(image1 -> graphics.drawImage(image1, location.x - bounds.x, location.y - bounds.y, null));
   }
 }
-
-

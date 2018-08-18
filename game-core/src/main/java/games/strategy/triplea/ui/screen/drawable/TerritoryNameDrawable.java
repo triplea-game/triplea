@@ -19,6 +19,9 @@ import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
+/**
+ * Draws the name, comments, and production value for the associated territory.
+ */
 public class TerritoryNameDrawable implements IDrawable {
   private final String territoryName;
   private final UiContext uiContext;

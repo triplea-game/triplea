@@ -12,6 +12,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 
+/**
+ * Draws a black outline around the associated territory. Intended only for use with water territories (sea zones).
+ */
 public class SeaZoneOutlineDrawable implements IDrawable {
   private final String territoryName;
 
