@@ -34,9 +34,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.triplea.ResourceLoader;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.extern.java.Log;
 import swinglib.GridBagHelper.Anchor;
 import swinglib.GridBagHelper.ColumnSpan;
@@ -479,8 +477,6 @@ public class JPanelBuilder {
   /**
    * Struct-like class for the various properties and styles that can be applied to a panel.
    */
-  @Builder
-  @AllArgsConstructor(access = AccessLevel.PRIVATE)
   private static final class PanelProperties {
     BorderLayoutPosition borderLayoutPosition = BorderLayoutPosition.DEFAULT;
     GridBagHelper.ColumnSpan columnSpan = GridBagHelper.ColumnSpan.of(1);
