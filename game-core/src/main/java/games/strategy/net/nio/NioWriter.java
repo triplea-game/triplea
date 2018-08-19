@@ -76,9 +76,7 @@ class NioWriter {
   private void loop() {
     while (running) {
       try {
-        if (log.isLoggable(Level.FINEST)) {
-          log.finest("selecting...");
-        }
+        log.finest("selecting...");
         selector.select();
         if (!running) {
           continue;
@@ -86,9 +84,7 @@ class NioWriter {
         // select any new sockets that can be written to
         addNewSocketsToSelector();
         final Set<SelectionKey> selected = selector.selectedKeys();
-        if (log.isLoggable(Level.FINEST)) {
-          log.finest("selected:" + selected.size());
-        }
+        log.finest(() -> "selected:" + selected.size());
         final Iterator<SelectionKey> iter = selected.iterator();
         while (iter.hasNext()) {
           final SelectionKey key = iter.next();
@@ -98,9 +94,7 @@ class NioWriter {
             final SocketWriteData packet = getData(channel);
             if (packet != null) {
               try {
-                if (log.isLoggable(Level.FINEST)) {
-                  log.finest("writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
-                }
+                log.finest(() -> "writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
                 final boolean done = packet.write(channel);
                 if (done) {
                   totalBytes += packet.size();

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 import lombok.extern.java.Log;
 
@@ -55,9 +54,7 @@ class SocketReadData {
         sizeBuffer = ByteBuffer.allocate(4);
       }
       final int size = channel.read(sizeBuffer);
-      if (log.isLoggable(Level.FINEST)) {
-        log.finest("read size_buffer bytes:" + size);
-      }
+      log.finest(() -> "read size_buffer bytes:" + size);
       if (size == -1) {
         throw new IOException("Socket closed");
       }
@@ -82,9 +79,7 @@ class SocketReadData {
     }
     // http://javaalmanac.com/egs/java.nio/DetectClosed.html
     final int size = channel.read(contentBuffer);
-    if (log.isLoggable(Level.FINEST)) {
-      log.finest("read content bytes:" + size);
-    }
+    log.finest(() -> "read content bytes:" + size);
     if (size == -1) {
       throw new IOException("Socket closed");
     }

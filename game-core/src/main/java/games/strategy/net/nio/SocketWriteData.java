@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 import lombok.extern.java.Log;
 
@@ -60,9 +59,7 @@ class SocketWriteData {
       if (count == -1) {
         throw new IOException("triplea: end of stream detected");
       }
-      if (log.isLoggable(Level.FINEST)) {
-        log.finest("wrote size_buffer bytes:" + count);
-      }
+      log.finest(() -> "wrote size_buffer bytes:" + count);
       // we could not write everything
       if (size.hasRemaining()) {
         return false;
@@ -72,9 +69,7 @@ class SocketWriteData {
     if (count == -1) {
       throw new IOException("triplea: end of stream detected");
     }
-    if (log.isLoggable(Level.FINEST)) {
-      log.finest("wrote content bytes:" + count);
-    }
+    log.finest(() -> "wrote content bytes:" + count);
     return !content.hasRemaining();
   }
 
