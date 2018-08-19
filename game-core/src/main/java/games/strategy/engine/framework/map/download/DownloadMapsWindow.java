@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.swing.Box;
@@ -40,17 +39,18 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.OptionalUtils;
+import lombok.extern.java.Log;
 import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
 
 /** Window that allows for map downloads and removal. */
+@Log
 public class DownloadMapsWindow extends JFrame {
   private enum MapAction {
     INSTALL, UPDATE, REMOVE
   }
 
   private static final long serialVersionUID = -1542210716764178580L;
-  private static final Logger logger = Logger.getLogger(DownloadMapsWindow.class.getName());
   private static final int WINDOW_WIDTH = 1200;
   private static final int WINDOW_HEIGHT = 700;
   private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
@@ -188,7 +188,7 @@ public class DownloadMapsWindow extends JFrame {
 
   private static void logMapDownloadRequestIgnored(final Collection<String> mapNames) {
     if (!mapNames.isEmpty()) {
-      logger.info("ignoring request to download maps because window initialization has already started");
+      log.info("ignoring request to download maps because window initialization has already started");
     }
   }
 

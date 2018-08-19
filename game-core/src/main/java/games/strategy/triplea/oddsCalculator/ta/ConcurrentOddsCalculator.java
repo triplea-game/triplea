@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -25,13 +24,14 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.util.CountUpAndDownLatch;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * Concurrent wrapper class for the OddsCalculator. It spawns multiple worker threads and splits up the run count
  * across these workers. This is mainly to be used by AIs since they call the OddsCalculator a lot.
  */
+@Log
 public class ConcurrentOddsCalculator implements IOddsCalculator {
-  private static final Logger logger = Logger.getLogger(ConcurrentOddsCalculator.class.getName());
   private static final int MAX_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors());
 
   private int currentThreads = MAX_THREADS;
@@ -291,7 +291,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
       }
       // we don't want to scare the user with 8+ errors all for the same thing
       if (!interruptExceptions.isEmpty()) {
-        logger.log(Level.SEVERE, interruptExceptions.size() + " Battle results workers interrupted",
+        log.log(Level.SEVERE, interruptExceptions.size() + " Battle results workers interrupted",
             interruptExceptions.iterator().next());
       }
       if (!executionExceptions.isEmpty()) {
@@ -299,7 +299,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         for (final Set<ExecutionException> entry : executionExceptions.values()) {
           if (!entry.isEmpty()) {
             e = entry.iterator().next();
-            logger.log(Level.SEVERE, entry.size() + " Battle results workers aborted by exception", e.getCause());
+            log.log(Level.SEVERE, entry.size() + " Battle results workers aborted by exception", e.getCause());
           }
         }
         if (e != null) {

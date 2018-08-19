@@ -8,7 +8,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -26,14 +25,14 @@ import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * A messenger general enough that both Channel and Remote messenger can be
  * based on it.
  */
+@Log
 public class UnifiedMessenger {
-  private static final Logger logger = Logger.getLogger(UnifiedMessenger.class.getName());
-
   private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
   // the messenger we are based on
   private final IMessenger messenger;
@@ -147,7 +146,7 @@ public class UnifiedMessenger {
       for (final RemoteMethodCallResults r : results) {
         if (r.getException() != null) {
           // don't swallow errors
-          logger.log(Level.WARNING, r.getException().getMessage(), r.getException());
+          log.log(Level.WARNING, r.getException().getMessage(), r.getException());
         }
       }
     }

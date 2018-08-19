@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -47,6 +46,7 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 /**
  * Base class for AIs.
@@ -70,10 +70,8 @@ import games.strategy.util.Tuple;
  * through an IDelegate using a change).
  * </p>
  */
+@Log
 public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAPlayer {
-
-  private static final Logger logger = Logger.getLogger(AbstractAi.class.getName());
-
   public AbstractAi(final String name) {
     super(name);
   }
@@ -555,7 +553,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
         for (final Territory current : entry.getValue()) {
           final String error = battleDelegate.fightBattle(current, entry.getKey().isBombingRun(), entry.getKey());
           if (error != null) {
-            logger.warning(error);
+            log.warning(error);
           }
         }
       }

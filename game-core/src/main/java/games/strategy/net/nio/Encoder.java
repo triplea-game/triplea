@@ -5,18 +5,18 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.io.IoUtils;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
+import lombok.extern.java.Log;
 
 /**
  * Encodes data to be written by a writer.
  */
+@Log
 class Encoder {
-  private static final Logger logger = Logger.getLogger(Encoder.class.getName());
   private final NioWriter writer;
   private final IObjectStreamFactory objectStreamFactory;
   private final NioSocket nioSocket;
@@ -41,7 +41,7 @@ class Encoder {
     } catch (final IOException e) {
       // we arent doing any io, just writing in memory
       // so something is very wrong
-      logger.log(Level.SEVERE, "Error writing object:" + header, e);
+      log.log(Level.SEVERE, "Error writing object:" + header, e);
     }
   }
 

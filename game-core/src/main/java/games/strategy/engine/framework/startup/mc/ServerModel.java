@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,7 +90,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         IObserverWaitingToJoin.class);
   }
 
-  private static final Logger logger = Logger.getLogger(ServerModel.class.getName());
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final SetupPanelModel typePanelModel;
   private final boolean headless;
@@ -209,7 +207,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
             return null;
           }
           final String name = options.getName();
-          logger.log(Level.FINE, "Server playing as:" + name);
+          log.fine("Server playing as:" + name);
           ClientSetting.PLAYER_NAME.save(name);
           ClientSetting.flush();
           final int port = options.getPort();

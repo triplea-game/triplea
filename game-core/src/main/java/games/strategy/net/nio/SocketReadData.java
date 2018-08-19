@@ -5,7 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import lombok.extern.java.Log;
 
 /**
  * A packet of data being read over the network.
@@ -14,9 +15,9 @@ import java.util.logging.Logger;
  * A Packet does not correspond to a network packet, rather it is the bytes for 1 serialized java object.
  * </p>
  */
+@Log
 class SocketReadData {
   public static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
-  private static final Logger logger = Logger.getLogger(SocketReadData.class.getName());
   private static final AtomicInteger counter = new AtomicInteger();
   // as a sanity check to make sure
   // we are talking to another tripea instance
@@ -54,8 +55,8 @@ class SocketReadData {
         sizeBuffer = ByteBuffer.allocate(4);
       }
       final int size = channel.read(sizeBuffer);
-      if (logger.isLoggable(Level.FINEST)) {
-        logger.finest("read size_buffer bytes:" + size);
+      if (log.isLoggable(Level.FINEST)) {
+        log.finest("read size_buffer bytes:" + size);
       }
       if (size == -1) {
         throw new IOException("Socket closed");
@@ -81,8 +82,8 @@ class SocketReadData {
     }
     // http://javaalmanac.com/egs/java.nio/DetectClosed.html
     final int size = channel.read(contentBuffer);
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.finest("read content bytes:" + size);
+    if (log.isLoggable(Level.FINEST)) {
+      log.finest("read content bytes:" + size);
     }
     if (size == -1) {
       throw new IOException("Socket closed");
