@@ -688,8 +688,6 @@ public class GameDataExporter {
     xmlfile.append("<game>\n");
     xmlfile.append("    <info name=\"").append(data.getGameName()).append("\" version=\"")
         .append(data.getGameVersion().toString()).append("\"/>\n");
-    xmlfile.append("    <loader javaClass=\"").append(data.getGameLoader().getClass().getCanonicalName())
-        .append("\"/>\n");
   }
 
   private void finish() {

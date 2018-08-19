@@ -5,7 +5,6 @@
 <game>
         <info name="World War II Revised Test" version="1.4"/>
         
-        <loader javaClass="games.strategy.triplea.TripleA"/>
 
         <map>
                 <!-- Territory Definitions -->

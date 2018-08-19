@@ -45,9 +45,7 @@ import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.TripleA;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -140,7 +138,7 @@ public final class GameParser {
 
     // test minimum engine version FIRST
     parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
-    parseGameLoader(getSingleChild("loader", root));
+    parseGameLoader(getSingleChild("loader", root, true));
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
     // see if we have any
     // SAX errors we need to show
@@ -207,10 +205,8 @@ public final class GameParser {
     data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game
     // options/properties)
-    if (data.getGameLoader() instanceof TripleA) {
-      checkThatAllUnitsHaveAttachments(data);
-      TechAbilityAttachment.setDefaultTechnologyAttachments(data);
-    }
+    checkThatAllUnitsHaveAttachments(data);
+    TechAbilityAttachment.setDefaultTechnologyAttachments(data);
     try {
       validate();
     } catch (final Exception e) {
@@ -446,19 +442,6 @@ public final class GameParser {
   }
 
   /**
-   * Loads an instance of the given class.
-   * Assumes a zero argument constructor.
-   */
-  private Object getInstance(final String className) throws GameParseException {
-    try {
-      final Class<?> instanceClass = Class.forName(className);
-      return instanceClass.getDeclaredConstructor().newInstance();
-    } catch (final ReflectiveOperationException e) {
-      throw newGameParseException(String.format("Unable to create instance of class <%s>", className), e);
-    }
-  }
-
-  /**
    * Get the given child.
    * If there is not exactly one child throw a SAXExcpetion
    */
@@ -515,13 +498,10 @@ public final class GameParser {
     data.setGameVersion(new Version(version));
   }
 
-  private void parseGameLoader(final Node loader) throws GameParseException {
-    final String className = ((Element) loader).getAttribute("javaClass");
-    final Object instance = getInstance(className);
-    if (!(instance instanceof IGameLoader)) {
-      throw newGameParseException("Loader must implement IGameLoader.  Class Name:" + className);
+  private static void parseGameLoader(final Node loader) {
+    if (loader != null) {
+      log.info("Loader tag is being ignored");
     }
-    data.setGameLoader((IGameLoader) instance);
   }
 
   private void parseMap(final Node map) throws GameParseException {

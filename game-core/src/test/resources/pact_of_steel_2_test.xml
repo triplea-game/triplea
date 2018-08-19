@@ -12,9 +12,6 @@
                         please go to the forum and make a post: http://triplea.sourceforge.net/mywiki/Forum
                 -->
 
-        <!-- loader is required by all xmls.  some xmls may use a different loader, like a puzzle game -->
-        <loader javaClass="games.strategy.triplea.TripleA"/>
-
         <!-- triplea minimumVersion is the minimum version number of TripleA that can play this game.  Many new xmls require features not present in older versions of TripleA. Should be "xx.xx.xx.xx", "xx.xx.xx", "xx.xx", or "xx".
                 An example would be a map using 'isInfrastructure' unit property would need at least TripleA version "1.2.6", while a map using 'whenCapturedChangesInto' would need at least TripleA version "1.4" -->
         <triplea minimumVersion="1.7"/>

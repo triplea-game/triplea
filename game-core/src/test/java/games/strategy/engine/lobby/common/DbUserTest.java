@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server.userDB;
+package games.strategy.engine.lobby.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.lobby.common.LobbyConstants;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class DbUserTest {
