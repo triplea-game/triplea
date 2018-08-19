@@ -8,9 +8,8 @@ import games.strategy.util.Util;
 
 // TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
 
-/*
- * Note, the DBUser data type is passed between lobby and client.
- * TODO: annotate this class and others to identify them. Longer term drop the reflection.
+/**
+ * A lobby user.
  */
 public final class DBUser implements Serializable {
   private static final long serialVersionUID = -5289923058375302916L;
@@ -19,11 +18,14 @@ public final class DBUser implements Serializable {
   private final String m_email;
   private final Role userRole;
 
+  /**
+   * The user's role within the lobby.
+   */
   public enum Role {
     NOT_ADMIN, ADMIN
   }
 
-  /** Value object with validation methods. */
+  /** User name value object with validation methods. */
   public static class UserName {
     public final String userName;
 
@@ -45,8 +47,9 @@ public final class DBUser implements Serializable {
     }
   }
 
-
-
+  /**
+   * User email value object with validation methods.
+   */
   public static class UserEmail {
     public final String userEmail;
 
