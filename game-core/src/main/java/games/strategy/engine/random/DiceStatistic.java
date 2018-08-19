@@ -2,6 +2,10 @@ package games.strategy.engine.random;
 
 import java.io.Serializable;
 
+/**
+ * Captures statistics for rolling a series of dice, including sum (total), average, median, variance, and standard
+ * deviation.
+ */
 public class DiceStatistic implements Serializable {
   private static final long serialVersionUID = -1422839840110240480L;
   private final double m_average;

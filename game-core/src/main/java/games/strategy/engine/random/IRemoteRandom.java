@@ -3,6 +3,10 @@ package games.strategy.engine.random;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.vault.VaultID;
 
+/**
+ * A service that generates random numbers. All generated numbers are stored in a cryptographic vault to prevent
+ * tampering.
+ */
 public interface IRemoteRandom extends IRemote {
   /**
    * Generate a random number, and lock it in the vault.
