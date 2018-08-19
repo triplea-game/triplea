@@ -6,6 +6,8 @@ import java.util.Objects;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.util.Util;
 
+// TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
+
 /*
  * Note, the DBUser data type is passed between lobby and client.
  * TODO: annotate this class and others to identify them. Longer term drop the reflection.
