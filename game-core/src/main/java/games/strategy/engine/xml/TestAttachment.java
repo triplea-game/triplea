@@ -10,6 +10,14 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
+/**
+ * Fake attachment used for testing.
+ *
+ * <p>
+ * Although this attachment is only ever used by test code, it is located in production code because it must be
+ * available to the game parser.
+ * </p>
+ */
 public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
 
