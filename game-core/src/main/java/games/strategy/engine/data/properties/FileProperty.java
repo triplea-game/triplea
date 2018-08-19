@@ -175,7 +175,7 @@ public class FileProperty extends AEditableProperty {
       return true;
     }
     if (value instanceof File) {
-      return Arrays.stream(m_acceptableSuffixes).anyMatch(suffix -> ((File)value).getName().endsWith(suffix));
+      return Arrays.stream(m_acceptableSuffixes).anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
     }
     return false;
   }

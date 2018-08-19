@@ -23,7 +23,7 @@ import games.strategy.net.Node;
  */
 public class GameDescription implements Externalizable, Cloneable {
   private static final long serialVersionUID = 508593169141567546L;
-  
+
   /**
    * Represents the game states displayed to users looking at the list of available
    * lobby games.
@@ -54,6 +54,7 @@ public class GameDescription implements Externalizable, Cloneable {
 
   /**
    * Represents when the game started, used to be displayed on lobby table, now no longer.
+   *
    * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
    */
   @Deprecated
@@ -70,14 +71,15 @@ public class GameDescription implements Externalizable, Cloneable {
    * Engine version, used to be useful when multiple engine versions were in same lobby,
    * now that lobby has homogonous versions and should going forward, this column is no
    * longer useful.
+   *
    * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
    */
   @Deprecated
   private String engineVersion;
   private String gameVersion;
   private String botSupportEmail = (HeadlessGameServer.getInstance() != null)
-          ? System.getProperty(CliProperties.LOBBY_GAME_SUPPORT_EMAIL, "")
-          : "";
+      ? System.getProperty(CliProperties.LOBBY_GAME_SUPPORT_EMAIL, "")
+      : "";
 
   // if you add a field, add it to write/read object as well for Externalizable
   public GameDescription() {}

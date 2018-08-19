@@ -95,7 +95,7 @@ public enum PlayerType {
 
   /**
    * Returns the set of player types that users can select.
-   * 
+   *
    * @return Human readable player type labels.
    */
   public static String[] playerTypes() {

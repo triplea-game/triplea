@@ -76,7 +76,7 @@ final class DownloadFile {
       try {
         Files.move(tempFile, download.getInstallLocation());
       } catch (final IOException e) {
-        log.log(Level.SEVERE, 
+        log.log(Level.SEVERE,
             String.format("Failed to move downloaded file (%s) to: %s", tempFile, download.getInstallLocation()),
             e);
         return;

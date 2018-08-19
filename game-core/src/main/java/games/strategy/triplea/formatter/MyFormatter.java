@@ -167,7 +167,7 @@ public class MyFormatter {
     }
     return listOfArrays.stream()
         .map(Arrays::toString)
-        .collect(Collectors.joining(",","[","]"));
+        .collect(Collectors.joining(",", "[", "]"));
   }
 
   public static String asDice(final DiceRoll roll) {

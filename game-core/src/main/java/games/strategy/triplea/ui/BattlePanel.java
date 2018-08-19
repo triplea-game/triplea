@@ -184,7 +184,7 @@ public class BattlePanel extends ActionPanel {
 
         new IllegalStateException(
             "battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed)
-            .printStackTrace();
+                .printStackTrace();
         return false;
       }
       displayed = currentBattleDisplayed;

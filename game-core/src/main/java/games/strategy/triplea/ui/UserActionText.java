@@ -100,8 +100,8 @@ public class UserActionText {
 
   public String getNotificationFailureTarget(final String actionKey) {
     return hasMessage(actionKey, TARGET_NOTIFICATION_FAILURE)
-      ? getMessage(actionKey, TARGET_NOTIFICATION_FAILURE)
-      : getNotificationFailureOthers(actionKey);
+        ? getMessage(actionKey, TARGET_NOTIFICATION_FAILURE)
+        : getNotificationFailureOthers(actionKey);
   }
 
   public String getAcceptanceQuestion(final String actionKey) {

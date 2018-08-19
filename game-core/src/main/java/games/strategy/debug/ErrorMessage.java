@@ -38,6 +38,7 @@ public enum ErrorMessage {
   private final JLabel errorMessage = JLabelBuilder.builder().errorIcon().iconTextGap(10).build();
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
   private volatile boolean enableErrorPopup = false;
+
   ErrorMessage() {
     windowReference.setAlwaysOnTop(true);
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);

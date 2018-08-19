@@ -5,9 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Arrays;
 
 import org.hamcrest.Matcher;
-
 import org.junit.jupiter.api.Test;
-
 import org.triplea.test.common.CustomMatcher;
 
 

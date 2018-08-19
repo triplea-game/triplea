@@ -134,7 +134,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
         final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
         unitsBox.add(label);
         MapUnitTooltipManager.setUnitTooltip(label, category.getType(), category.getOwner(),
-                category.getUnits().size());
+            category.getUnits().size());
       }
     }
     unitsBox.add(Box.createHorizontalGlue());

@@ -242,7 +242,7 @@ public final class HelpMenu extends JMenu {
     final String trimmedNotes = gameData.getProperties().get("notes", "").trim();
     if (!trimmedNotes.isEmpty()) {
       CompletableFuture.supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
-        .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
+          .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setForeground(Color.BLACK);
