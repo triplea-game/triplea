@@ -1,15 +1,19 @@
 package games.strategy.engine.lobby.server.userDB;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.util.Util;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-/*
- * Note, the DBUser data type is passed between lobby and client.
- * TODO: annotate this class and others to identify them. Longer term drop the reflection.
+// TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
+
+/**
+ * A lobby user.
  */
+@EqualsAndHashCode
+@ToString
 public final class DBUser implements Serializable {
   private static final long serialVersionUID = -5289923058375302916L;
 
@@ -17,11 +21,14 @@ public final class DBUser implements Serializable {
   private final String m_email;
   private final Role userRole;
 
+  /**
+   * The user's role within the lobby.
+   */
   public enum Role {
     NOT_ADMIN, ADMIN
   }
 
-  /** Value object with validation methods. */
+  /** User name value object with validation methods. */
   public static class UserName {
     public final String userName;
 
@@ -43,8 +50,9 @@ public final class DBUser implements Serializable {
     }
   }
 
-
-
+  /**
+   * User email value object with validation methods.
+   */
   public static class UserEmail {
     public final String userEmail;
 
@@ -125,31 +133,5 @@ public final class DBUser implements Serializable {
    */
   public static String getUserNameValidationErrorMessage(final String userName) {
     return new UserName(userName).validate();
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if (obj == this) {
-      return true;
-    } else if (!(obj instanceof DBUser)) {
-      return false;
-    }
-
-    final DBUser other = (DBUser) obj;
-    return Objects.equals(m_email, other.m_email)
-        && Objects.equals(m_name, other.m_name)
-        && (userRole == other.userRole);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(m_email, m_name, userRole);
-  }
-
-  @Override
-  public String toString() {
-    return "name: " + m_name
-        + ", email: " + m_email
-        + ", role: " + userRole;
   }
 }
