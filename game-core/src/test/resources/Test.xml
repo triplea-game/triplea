@@ -5,8 +5,6 @@
 
     <info name="test" version="1.0.0" />
 
-    <loader javaClass="games.strategy.engine.xml.TestGameLoader"/>
-
     <map>
         <territory name="canada"/>
         <territory name="greenland"/>
@@ -66,8 +64,8 @@
     </production>
 
     <attachmentList>
-        <attachment name="infAttachment" attachTo="inf" javaClass="games.strategy.engine.xml.TestAttachment" type="unitType">
-            <option name="value" value="inf"/>
+        <attachment name="unitAttachment" attachTo="inf" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+            <option name="movement" value="1"/>
         </attachment>
         <attachment name="resourceAttachment" attachTo="gold" javaClass="games.strategy.engine.xml.TestAttachment" type="resource">
             <option name="value" value="gold"/>

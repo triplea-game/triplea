@@ -4,7 +4,6 @@
 
 <game>
         <info name="victory test" version="3.3"/>
-        <loader javaClass="games.strategy.triplea.TripleA"/>
 
 
         <diceSides value="6"/>

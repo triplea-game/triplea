@@ -5,7 +5,6 @@
 <game>
         <info name="World War II v3 1942 Test" version="1.7"/>
 
-        <loader javaClass="games.strategy.triplea.TripleA"/>
 
         <triplea minimumVersion="1.7"/>
 
