@@ -331,8 +331,8 @@ public class GameData implements Serializable {
    * Not to be called by mere mortals.
    */
   public void postDeSerialize() {
-    territoryListeners = new ArrayList<>();
-    dataChangeListeners = new ArrayList<>();
+    territoryListeners = new CopyOnWriteArrayList<>();
+    dataChangeListeners = new CopyOnWriteArrayList<>();
   }
 
   /**
