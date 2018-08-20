@@ -25,7 +25,7 @@ import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
-public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel {
+public class HistoryDetailsPanel extends JPanel {
   private static final long serialVersionUID = 5092004144144006960L;
   private final GameData data;
   private final JTextArea title = new JTextArea();
@@ -44,9 +44,8 @@ public class HistoryDetailsPanel extends JPanel implements IHistoryDetailsPanel 
     this.mapPanel = mapPanel;
   }
 
-  @Override
   @SuppressWarnings("unchecked")
-  public void render(final HistoryNode node) {
+  void render(final HistoryNode node) {
     removeAll();
     mapPanel.setRoute(null);
     final Insets insets = new Insets(5, 0, 0, 0);
