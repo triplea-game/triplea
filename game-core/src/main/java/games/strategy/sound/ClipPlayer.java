@@ -24,6 +24,8 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.google.common.base.Splitter;
+
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
@@ -346,7 +348,7 @@ public class ClipPlayer {
       sounds.put(pathName, availableSounds);
       return availableSounds;
     }
-    for (final String path : resourcePath.split(";")) {
+    for (final String path : Splitter.on(';').split(resourcePath)) {
       availableSounds.addAll(findClipFiles(ASSETS_SOUNDS_FOLDER + "/" + path));
     }
     if (availableSounds.isEmpty()) {
