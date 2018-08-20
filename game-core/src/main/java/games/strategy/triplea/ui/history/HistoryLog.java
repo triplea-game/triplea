@@ -44,6 +44,10 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;
 
+/**
+ * A window used to display a textual summary of a particular history node, including all of its descendants, if
+ * applicable.
+ */
 @Log
 public class HistoryLog extends JFrame {
   private static final long serialVersionUID = 4880602702815333376L;
@@ -82,6 +86,10 @@ public class HistoryLog extends JFrame {
     textArea.setText("");
   }
 
+  /**
+   * Adds details about the current turn for each player in {@code playersAllowed} to the log. Information about
+   * each step and event that occurred during the turn are included.
+   */
   public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
     final Collection<PlayerID> players = new HashSet<>();
@@ -155,6 +163,10 @@ public class HistoryLog extends JFrame {
     return curPlayer;
   }
 
+  /**
+   * Adds details about {@code printNode} and all its sibling and child nodes that are part of the current turn for each
+   * player in {@code playersAllowed} to the log.
+   */
   public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides,
       final Collection<PlayerID> playersAllowed) {
     final PrintWriter logWriter = printWriter;
@@ -390,6 +402,10 @@ public class HistoryLog extends JFrame {
     textArea.setText(stringWriter.toString());
   }
 
+  /**
+   * Adds a territory summary for the player associated with {@code printNode} to the log. The summary includes each
+   * unit present in the territory.
+   */
   public void printTerritorySummary(final HistoryNode printNode, final GameData data) {
     final Collection<Territory> territories;
     final PlayerID player = getPlayerId(printNode);
@@ -419,6 +435,10 @@ public class HistoryLog extends JFrame {
     printTerritorySummary(players, territories);
   }
 
+  /**
+   * Adds a territory summary for each player in {@code allowedPlayers} to the log. The summary includes each unit
+   * present in the territory.
+   */
   public void printTerritorySummary(final GameData data, final Collection<PlayerID> allowedPlayers) {
     if (allowedPlayers == null || allowedPlayers.isEmpty()) {
       printTerritorySummary(data);
@@ -479,6 +499,9 @@ public class HistoryLog extends JFrame {
     textArea.setText(stringWriter.toString());
   }
 
+  /**
+   * Adds a production summary for each player in the game to the log.
+   */
   public void printProductionSummary(final GameData data) {
     final PrintWriter logWriter = printWriter;
     final Collection<PlayerID> players;
