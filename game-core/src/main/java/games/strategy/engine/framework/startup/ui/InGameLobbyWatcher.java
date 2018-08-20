@@ -28,7 +28,6 @@ import games.strategy.engine.lobby.common.IRemoteHostUtils;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;

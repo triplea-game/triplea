@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server;
+package games.strategy.engine.framework.startup.ui;
 
 import java.util.Set;
 
@@ -8,11 +8,11 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-public class RemoteHostUtils implements IRemoteHostUtils {
+final class RemoteHostUtils implements IRemoteHostUtils {
   private final INode serverNode;
   private final IServerMessenger serverMessenger;
 
-  public RemoteHostUtils(final INode serverNode, final IServerMessenger gameServerMessenger) {
+  RemoteHostUtils(final INode serverNode, final IServerMessenger gameServerMessenger) {
     this.serverNode = serverNode;
     serverMessenger = gameServerMessenger;
   }
