@@ -4,19 +4,12 @@ import java.util.Set;
 
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.message.MessageContext;
-import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
 public class RemoteHostUtils implements IRemoteHostUtils {
   private final INode serverNode;
   private final IServerMessenger serverMessenger;
-
-  public static RemoteName getRemoteHostUtilsName(final INode node) {
-    return new RemoteName(
-        "games.strategy.engine.lobby.server.RemoteHostUtils:" + node.toString(),
-        IRemoteHostUtils.class);
-  }
 
   public RemoteHostUtils(final INode serverNode, final IServerMessenger gameServerMessenger) {
     this.serverNode = serverNode;
