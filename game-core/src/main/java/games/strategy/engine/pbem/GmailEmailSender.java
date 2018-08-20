@@ -4,6 +4,9 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.triplea.help.HelpSupport;
 
+/**
+ * A pre configured Email sender that uses Gmail's SMTP server.
+ */
 public class GmailEmailSender extends GenericEmailSender {
   private static final long serialVersionUID = 3511375113962472063L;
 

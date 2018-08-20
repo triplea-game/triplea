@@ -7,6 +7,14 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.util.IntegerMap;
 
+/**
+ * Default implementation of {@link IRandomStats}.
+ *
+ * <p>
+ * This implementation only isolates the {@link IRandomStats.DiceType#COMBAT} dice type for each player. All other dice
+ * types are grouped under the {@code null} player in the resulting {@link RandomStatsDetails}.
+ * </p>
+ */
 public class RandomStats implements IRandomStats {
   private final IRemoteMessenger remoteMessenger;
   private final Map<PlayerID, IntegerMap<Integer>> randomStats = new HashMap<>();

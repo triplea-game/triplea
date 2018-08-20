@@ -9,6 +9,9 @@ import games.strategy.engine.vault.NotUnlockedException;
 import games.strategy.engine.vault.Vault;
 import games.strategy.engine.vault.VaultID;
 
+/**
+ * Default implementation of {@link IRemoteRandom}.
+ */
 public class RemoteRandom implements IRemoteRandom {
   private static final List<VerifiedRandomNumbers> verifiedRandomNumbers = new ArrayList<>();
 

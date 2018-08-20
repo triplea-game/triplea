@@ -29,6 +29,13 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
 import lombok.extern.java.Log;
 
+/**
+ * Posts turn summaries to forums.triplea-game.org.
+ *
+ * <p>
+ * URL format is {@code https://forums.triplea-game.org/api/v2/topics/<topicID>}.
+ * </p>
+ */
 @Log
 public class TripleAForumPoster extends AbstractForumPoster {
 
