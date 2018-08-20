@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
@@ -42,12 +41,13 @@ import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
+import lombok.extern.java.Log;
 
 /**
  * A Messenger that can have many clients connected to it.
  */
+@Log
 public class ServerMessenger implements IServerMessenger, NioSocketListener {
-  private static final Logger logger = Logger.getLogger(ServerMessenger.class.getName());
   private final Selector acceptorSelector;
   private final ServerSocketChannel socketChannel;
   private final Node node;
@@ -461,8 +461,8 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     final SocketChannel fromChannel = nodeToChannel.get(msg.getFrom());
     final List<SocketChannel> nodes = new ArrayList<>(nodeToChannel.values());
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.log(Level.FINEST, "broadcasting to" + nodes);
+    if (log.isLoggable(Level.FINEST)) {
+      log.finest("broadcasting to" + nodes);
     }
     for (final SocketChannel channel : nodes) {
       if (channel != fromChannel) {
@@ -554,14 +554,14 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       try {
         socketChannel.register(acceptorSelector, SelectionKey.OP_ACCEPT);
       } catch (final ClosedChannelException e) {
-        logger.log(Level.SEVERE, "socket closed", e);
+        log.log(Level.SEVERE, "socket closed", e);
         shutDown();
       }
       while (!shutdown) {
         try {
           acceptorSelector.select();
         } catch (final IOException e) {
-          logger.log(Level.SEVERE, "Could not accept on server", e);
+          log.log(Level.SEVERE, "Could not accept on server", e);
           shutDown();
         }
         if (shutdown) {
@@ -584,13 +584,13 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               socketChannel.configureBlocking(false);
               socketChannel.socket().setKeepAlive(true);
             } catch (final IOException e) {
-              logger.log(Level.FINE, "Could not accept channel", e);
+              log.log(Level.FINE, "Could not accept channel", e);
               try {
                 if (socketChannel != null) {
                   socketChannel.close();
                 }
               } catch (final IOException e2) {
-                logger.log(Level.FINE, "Could not close channel", e2);
+                log.log(Level.FINE, "Could not close channel", e2);
               }
               continue;
             }
@@ -599,7 +599,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               try {
                 socketChannel.close();
               } catch (final IOException e) {
-                logger.log(Level.FINE, "Could not close channel", e);
+                log.log(Level.FINE, "Could not close channel", e);
               }
               continue;
             }
@@ -652,13 +652,13 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     notifyPlayerRemoval(nodeToRemove);
     final SocketChannel channel = nodeToChannel.remove(nodeToRemove);
     if (channel == null) {
-      logger.warning("Could not remove connection to node:" + nodeToRemove);
+      log.warning("Could not remove connection to node:" + nodeToRemove);
       return;
     }
     channelToNode.remove(channel);
     nioSocket.close(channel);
     notifyConnectionsChanged(false, nodeToRemove);
-    logger.info("Connection removed:" + nodeToRemove);
+    log.info("Connection removed:" + nodeToRemove);
   }
 
   @Override
@@ -685,7 +685,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     nodeToChannel.put(remote, channel);
     channelToNode.put(channel, remote);
     notifyConnectionsChanged(true, remote);
-    logger.info("Connection added to:" + remote);
+    log.info("Connection added to:" + remote);
   }
 
   @Override

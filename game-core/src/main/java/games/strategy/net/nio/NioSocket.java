@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.net.INode;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
+import lombok.extern.java.Log;
 
 /**
  * The threads needed for a group of sockets using NIO.
@@ -18,8 +18,8 @@ import games.strategy.net.MessageHeader;
  * serializing (encoding) objects to be written across the network is done
  * by threads calling this object.
  */
+@Log
 public class NioSocket implements ErrorReporter {
-  private static final Logger logger = Logger.getLogger(NioSocket.class.getName());
   private final Encoder encoder;
   private final Decoder decoder;
   private final NioWriter writer;
@@ -108,7 +108,7 @@ public class NioSocket implements ErrorReporter {
       }
       channel.close();
     } catch (final IOException e1) {
-      logger.log(Level.FINE, "error closing channel", e1);
+      log.log(Level.FINE, "error closing channel", e1);
     }
     decoder.closed(channel);
     writer.closed(channel);

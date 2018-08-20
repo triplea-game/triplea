@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -82,7 +81,6 @@ public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
       new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
-  private static final Logger logger = Logger.getLogger(ClientModel.class.getName());
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
   private final SetupPanelModel typePanelModel;
@@ -210,7 +208,7 @@ public class ClientModel implements IMessengerErrorListener {
       return false;
     }
     final String name = props.getName();
-    logger.log(Level.FINE, "Client playing as:" + name);
+    log.fine("Client playing as:" + name);
     ClientSetting.PLAYER_NAME.save(name);
     ClientSetting.flush();
     final int port = props.getPort();

@@ -1,8 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -10,10 +7,12 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
+import lombok.extern.java.Log;
 
 /**
  * A technology advance that lowers all unit costs by one.
  */
+@Log
 public final class IndustrialTechnologyAdvance extends TechAdvance {
   private static final long serialVersionUID = -21252592806022090L;
 
@@ -38,8 +37,7 @@ public final class IndustrialTechnologyAdvance extends TechAdvance {
         bridge.getData().getProductionFrontierList().getProductionFrontier(industrialTechName);
     // it doesnt exist, dont crash
     if (advancedTech == null) {
-      Logger.getLogger(TechAdvance.class.getName()).log(Level.WARNING,
-          "No tech named:" + industrialTechName + " not adding tech");
+      log.warning("No tech named:" + industrialTechName + " not adding tech");
       return;
     }
     final Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);

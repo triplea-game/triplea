@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -30,7 +29,6 @@ public abstract class AbstractUiContext implements UiContext {
   protected static final String UNIT_SCALE_PREF = "UnitScale";
   protected static final String MAP_SKIN_PREF = "MapSkin";
   protected static final String MAP_SCALE_PREF = "MapScale";
-  protected static final Logger logger = Logger.getLogger(AbstractUiContext.class.getName());
   protected static String mapDir;
   protected static final String LOCK_MAP = "LockMap";
   protected static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";

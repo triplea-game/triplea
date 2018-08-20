@@ -14,15 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import lombok.extern.java.Log;
 
 /**
  * A thread that writes socket data using NIO .
  * Data is written in packets that are enqueued on our buffer.
  * Packets are sent to the sockets in the order that they are received.
  */
+@Log
 class NioWriter {
-  private static final Logger logger = Logger.getLogger(NioWriter.class.getName());
   private final Selector selector;
   private final ErrorReporter errorReporter;
   // this is the data we are writing
@@ -39,7 +40,7 @@ class NioWriter {
     try {
       selector = Selector.open();
     } catch (final IOException e) {
-      logger.log(Level.SEVERE, "Could not create Selector", e);
+      log.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
     new Thread(this::loop, "NIO Writer - " + threadSuffix).start();
@@ -50,7 +51,7 @@ class NioWriter {
     try {
       selector.close();
     } catch (final IOException e) {
-      logger.log(Level.WARNING, "error closing selector", e);
+      log.log(Level.WARNING, "error closing selector", e);
     }
   }
 
@@ -67,7 +68,7 @@ class NioWriter {
       try {
         channel.register(selector, SelectionKey.OP_WRITE);
       } catch (final ClosedChannelException e) {
-        logger.log(Level.FINEST, "socket already closed", e);
+        log.log(Level.FINEST, "socket already closed", e);
       }
     }
   }
@@ -75,9 +76,7 @@ class NioWriter {
   private void loop() {
     while (running) {
       try {
-        if (logger.isLoggable(Level.FINEST)) {
-          logger.finest("selecting...");
-        }
+        log.finest("selecting...");
         selector.select();
         if (!running) {
           continue;
@@ -85,9 +84,7 @@ class NioWriter {
         // select any new sockets that can be written to
         addNewSocketsToSelector();
         final Set<SelectionKey> selected = selector.selectedKeys();
-        if (logger.isLoggable(Level.FINEST)) {
-          logger.finest("selected:" + selected.size());
-        }
+        log.finest(() -> "selected:" + selected.size());
         final Iterator<SelectionKey> iter = selected.iterator();
         while (iter.hasNext()) {
           final SelectionKey key = iter.next();
@@ -97,13 +94,11 @@ class NioWriter {
             final SocketWriteData packet = getData(channel);
             if (packet != null) {
               try {
-                if (logger.isLoggable(Level.FINEST)) {
-                  logger.finest("writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
-                }
+                log.finest(() -> "writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
                 final boolean done = packet.write(channel);
                 if (done) {
                   totalBytes += packet.size();
-                  if (logger.isLoggable(Level.FINE)) {
+                  if (log.isLoggable(Level.FINE)) {
                     final Socket s = channel.socket();
                     SocketAddress sa = null;
                     if (s != null) {
@@ -113,13 +108,13 @@ class NioWriter {
                     if (sa != null) {
                       remote = sa.toString();
                     }
-                    logger.log(Level.FINE, " done writing to:" + remote + " size:" + packet.size() + " writeCalls;"
+                    log.fine(" done writing to:" + remote + " size:" + packet.size() + " writeCalls;"
                         + packet.getWriteCalls() + " total:" + totalBytes);
                   }
                   removeLast(channel);
                 }
               } catch (final Exception e) {
-                logger.log(Level.FINER, "exception writing", e);
+                log.log(Level.FINER, "exception writing", e);
                 errorReporter.error(channel, e);
                 key.cancel();
               }
@@ -134,7 +129,7 @@ class NioWriter {
       } catch (final Exception e) {
         // catch unhandles exceptions to that the writer
         // thread doesnt die
-        logger.log(Level.WARNING, "error in writer", e);
+        log.log(Level.WARNING, "error in writer", e);
       }
     }
   }
@@ -156,7 +151,7 @@ class NioWriter {
     synchronized (mutex) {
       final List<SocketWriteData> values = writing.get(to);
       if (values == null) {
-        logger.log(Level.SEVERE, "NO socket data to:" + to + " all:" + values);
+        log.severe("NO socket data to:" + to + " all:" + values);
         return;
       }
       values.remove(0);

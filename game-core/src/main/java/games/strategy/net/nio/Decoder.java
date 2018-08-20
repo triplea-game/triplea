@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.message.HubInvocationResults;
 import games.strategy.engine.message.HubInvoke;
@@ -21,12 +20,13 @@ import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.net.nio.QuarantineConversation.Action;
+import lombok.extern.java.Log;
 
 /**
  * A thread to Decode messages from a reader.
  */
+@Log
 class Decoder {
-  private static final Logger logger = Logger.getLogger(Decoder.class.getName());
   private final NioReader reader;
   private volatile boolean running = true;
   private final ErrorReporter errorReporter;
@@ -91,7 +91,7 @@ class Decoder {
         } catch (final IOException | RuntimeException e) {
           // we are reading from memory here
           // there should be no network errors, something is odd
-          logger.log(Level.SEVERE, "error reading object", e);
+          log.log(Level.SEVERE, "error reading object", e);
           errorReporter.error(data.getChannel(), e);
         }
       } catch (final InterruptedException e) {

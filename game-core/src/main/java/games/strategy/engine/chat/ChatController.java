@@ -7,7 +7,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -19,12 +18,13 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.Tuple;
+import lombok.extern.java.Log;
 
 /**
  * Default implementation of {@link IChatController}.
  */
+@Log
 public class ChatController implements IChatController {
-  private static final Logger logger = Logger.getLogger(ChatController.class.getName());
   private static final String CHAT_REMOTE = "_ChatRmt";
   private static final String CHAT_CHANNEL = "_ChatCtrl";
   private final IMessenger messenger;
@@ -73,7 +73,7 @@ public class ChatController implements IChatController {
       try {
         getChatBroadcaster().ping();
       } catch (final Exception e) {
-        logger.log(Level.SEVERE, "Error pinging", e);
+        log.log(Level.SEVERE, "Error pinging", e);
       }
     }, 180, 60, TimeUnit.SECONDS);
   }
@@ -104,7 +104,7 @@ public class ChatController implements IChatController {
   @Override
   public Tuple<Map<INode, Tag>, Long> joinChat() {
     final INode node = MessageContext.getSender();
-    logger.info("Chatter:" + node + " is joining chat:" + chatName);
+    log.info("Chatter:" + node + " is joining chat:" + chatName);
     final Tag tag = isModerator.test(node) ? Tag.MODERATOR : Tag.NONE;
     synchronized (mutex) {
       chatters.put(node, tag);
@@ -129,6 +129,6 @@ public class ChatController implements IChatController {
       version = this.version;
     }
     getChatBroadcaster().speakerRemoved(node, version);
-    logger.info("Chatter:" + node + " has left chat:" + chatName);
+    log.info("Chatter:" + node + " has left chat:" + chatName);
   }
 }

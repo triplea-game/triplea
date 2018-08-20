@@ -6,19 +6,18 @@ import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * Client-side implementation of {@link QuarantineConversation}.
  */
+@Log
 public class ClientQuarantineConversation extends QuarantineConversation {
-  private static final Logger logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
-
   private enum Step {
     READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
   }
@@ -142,7 +141,7 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       isClosed = true;
       showLatch.countDown();
       doneShowLatch.countDown();
-      logger.log(Level.SEVERE, "error with connection", t);
+      log.log(Level.SEVERE, "error with connection", t);
       return Action.TERMINATE;
     }
   }

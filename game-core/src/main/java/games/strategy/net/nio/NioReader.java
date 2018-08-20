@@ -16,15 +16,16 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import lombok.extern.java.Log;
 
 /**
  * A thread that reads socket data using NIO from a collection of sockets.
  * Data is read in packets, and placed in the output queue.
  * Packets are placed in the output queue in order they are read from the socket.
  */
+@Log
 class NioReader {
-  private static final Logger logger = Logger.getLogger(NioReader.class.getName());
   private final LinkedBlockingQueue<SocketReadData> outputQueue = new LinkedBlockingQueue<>();
   private volatile boolean running = true;
   private final Map<SocketChannel, SocketReadData> reading = new ConcurrentHashMap<>();
@@ -39,7 +40,7 @@ class NioReader {
     try {
       selector = Selector.open();
     } catch (final IOException e) {
-      logger.log(Level.SEVERE, "Could not create Selector", e);
+      log.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
     new Thread(this::loop, "NIO Reader - " + threadSuffix).start();
@@ -50,7 +51,7 @@ class NioReader {
     try {
       selector.close();
     } catch (final Exception e) {
-      logger.log(Level.WARNING, "error closing selector", e);
+      log.log(Level.WARNING, "error closing selector", e);
     }
   }
 
@@ -100,7 +101,7 @@ class NioReader {
               final boolean done = packet.read(channel);
               if (done) {
                 totalBytes += packet.size();
-                if (logger.isLoggable(Level.FINE)) {
+                if (log.isLoggable(Level.FINE)) {
                   final Socket s = channel.socket();
                   SocketAddress sa = null;
                   if (s != null) {
@@ -110,13 +111,13 @@ class NioReader {
                   if (sa != null) {
                     remote = sa.toString();
                   }
-                  logger.log(Level.FINE, " done reading from:" + remote + " size:" + packet.size() + " readCalls;"
+                  log.fine(" done reading from:" + remote + " size:" + packet.size() + " readCalls;"
                       + packet.getReadCalls() + " total:" + totalBytes);
                 }
                 enque(packet);
               }
             } catch (final Exception e) {
-              logger.log(Level.FINER, "exception reading", e);
+              log.log(Level.FINER, "exception reading", e);
               key.cancel();
               errorReporter.error(channel, e);
             }
@@ -129,7 +130,7 @@ class NioReader {
       } catch (final Exception e) {
         // catch unhandles exceptions to that the reader
         // thread doesnt die
-        logger.log(Level.SEVERE, "error in reader", e);
+        log.log(Level.SEVERE, "error in reader", e);
       }
     }
   }

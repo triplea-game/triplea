@@ -5,16 +5,17 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.net.ServerMessenger;
+import lombok.extern.java.Log;
 
 /**
  * Server-side implementation of {@link QuarantineConversation}.
  */
+@Log
 public class ServerQuarantineConversation extends QuarantineConversation {
   /*
    * Communication sequence
@@ -26,7 +27,6 @@ public class ServerQuarantineConversation extends QuarantineConversation {
    * the message before
    * closing the socket).
    */
-  private static final Logger logger = Logger.getLogger(ServerQuarantineConversation.class.getName());
 
   private enum Step {
     READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR
@@ -102,7 +102,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           throw new IllegalStateException("Invalid state");
       }
     } catch (final Throwable t) {
-      logger.log(Level.SEVERE, "Error with connection", t);
+      log.log(Level.SEVERE, "Error with connection", t);
       return Action.TERMINATE;
     }
   }

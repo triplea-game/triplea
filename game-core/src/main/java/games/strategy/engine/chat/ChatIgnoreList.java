@@ -4,12 +4,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import lombok.extern.java.Log;
+
+@Log
 class ChatIgnoreList {
-  private static final Logger logger = Logger.getLogger(ChatIgnoreList.class.getName());
   private final Object lock = new Object();
   private final Set<String> ignore = new HashSet<>();
 
@@ -18,7 +19,7 @@ class ChatIgnoreList {
     try {
       Collections.addAll(ignore, prefs.keys());
     } catch (final BackingStoreException e) {
-      logger.log(Level.FINE, e.getMessage(), e);
+      log.log(Level.FINE, e.getMessage(), e);
     }
   }
 
@@ -30,7 +31,7 @@ class ChatIgnoreList {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        logger.log(Level.FINE, e.getMessage(), e);
+        log.log(Level.FINE, e.getMessage(), e);
       }
     }
   }
@@ -47,7 +48,7 @@ class ChatIgnoreList {
       try {
         prefs.flush();
       } catch (final BackingStoreException e) {
-        logger.log(Level.FINE, e.getMessage(), e);
+        log.log(Level.FINE, e.getMessage(), e);
       }
     }
   }

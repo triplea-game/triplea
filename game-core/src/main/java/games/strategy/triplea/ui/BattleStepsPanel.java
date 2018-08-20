@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -13,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * A panel for showing the battle steps in a display.
@@ -20,9 +20,9 @@ import games.strategy.util.Interruptibles;
  * there is a delay while we walk so that the user can see the steps progression.
  * Users of this class should deactive it after they are done.
  */
+@Log
 class BattleStepsPanel extends JPanel implements Active {
   private static final long serialVersionUID = 911638924664810435L;
-  private static final Logger logger = Logger.getLogger(BattleStepsPanel.class.getName());
   // if this is the target step, we want to walk to the last step
   private static final String LAST_STEP = "NULL MARKER FOR LAST STEP";
   private final DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -166,7 +166,7 @@ class BattleStepsPanel extends JPanel implements Active {
       if (listModel.indexOf(step) != -1) {
         targetStep = step;
       } else {
-        logger.warning("Could not find step name:" + step);
+        log.warning("Could not find step name:" + step);
       }
     }
     goToTarget();
