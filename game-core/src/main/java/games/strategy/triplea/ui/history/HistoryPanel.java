@@ -42,12 +42,11 @@ public class HistoryPanel extends JPanel {
   private static final long serialVersionUID = -8353246449552215276L;
   private final GameData data;
   private final JTree tree;
-  private final IHistoryDetailsPanel details;
+  private final HistoryDetailsPanel details;
   private HistoryNode currentPopupNode;
   private final JPopupMenu popup;
 
-  // private boolean m_lockBefore;
-  public HistoryPanel(final GameData data, final IHistoryDetailsPanel details, final JPopupMenu popup,
+  public HistoryPanel(final GameData data, final HistoryDetailsPanel details, final JPopupMenu popup,
       final UiContext uiContext) {
     mouseOverPanel = false;
     mouseWasOverPanel = false;
