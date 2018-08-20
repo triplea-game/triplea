@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
@@ -315,7 +314,7 @@ public class JPanelBuilder {
   }
 
   public JPanelBuilder flowLayout(final FlowLayoutJustification flowLayoutDirection) {
-    layout = flowLayoutDirection.layoutSupplier.get();
+    layout = flowLayoutDirection.newFlowLayout();
     return this;
   }
 
@@ -462,15 +461,19 @@ public class JPanelBuilder {
    */
   @AllArgsConstructor
   public enum FlowLayoutJustification {
-    DEFAULT(FlowLayout::new),
+    DEFAULT(FlowLayout.CENTER),
 
-    CENTER(() -> new FlowLayout(FlowLayout.CENTER)),
+    CENTER(FlowLayout.CENTER),
 
-    LEFT(() -> new FlowLayout(FlowLayout.LEFT)),
+    LEFT(FlowLayout.LEFT),
 
-    RIGHT(() -> new FlowLayout(FlowLayout.RIGHT));
+    RIGHT(FlowLayout.RIGHT);
 
-    Supplier<FlowLayout> layoutSupplier;
+    private final int align;
+
+    FlowLayout newFlowLayout() {
+      return new FlowLayout(align);
+    }
   }
 
 
