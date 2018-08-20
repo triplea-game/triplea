@@ -78,8 +78,7 @@ public class RemoteRandom implements IRemoteRandom {
     try {
       remoteNumbers = CryptoRandomSource.bytesToInts(vault.get(remoteVaultId));
     } catch (final NotUnlockedException e1) {
-      e1.printStackTrace();
-      throw new IllegalStateException("Could not unlock numbers, cheating suspected");
+      throw new IllegalStateException("Could not unlock numbers, cheating suspected", e1);
     }
     final int[] verifiedNumbers = CryptoRandomSource.mix(remoteNumbers, localNumbers, max);
     addVerifiedRandomNumber(new VerifiedRandomNumbers(annotation, verifiedNumbers));

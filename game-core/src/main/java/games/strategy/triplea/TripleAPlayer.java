@@ -181,7 +181,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> im
       final IEditDelegate editDelegate = (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
       editDelegate.setEditMode(editMode);
     } catch (final Exception exception) {
-      exception.printStackTrace();
+      log.log(Level.SEVERE, "Failed to set edit mode to " + editMode, exception);
       // toggle back to previous state since setEditMode failed
       ui.getEditModeButtonModel().setSelected(!ui.getEditModeButtonModel().isSelected());
     }

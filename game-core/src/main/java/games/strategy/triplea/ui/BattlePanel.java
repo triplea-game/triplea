@@ -48,11 +48,13 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 import swinglib.JPanelBuilder;
 
 /**
  * UI for fighting battles.
  */
+@Log
 public class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
   private final JLabel actionLabel = new JLabel();
@@ -181,10 +183,7 @@ public class BattlePanel extends ActionPanel {
       Interruptibles.sleep(count);
       // something is wrong, we shouldnt have to wait this long
       if (count > 200) {
-
-        new IllegalStateException(
-            "battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed)
-                .printStackTrace();
+        log.severe("battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed);
         return false;
       }
       displayed = currentBattleDisplayed;
