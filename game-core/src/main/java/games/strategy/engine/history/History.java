@@ -103,6 +103,9 @@ public class History extends DefaultTreeModel {
     return (lastChange >= firstChange) ? compositeChange : compositeChange.invert();
   }
 
+  /**
+   * Changes the game state to reflect the historical state at {@code node}.
+   */
   public synchronized void gotoNode(final HistoryNode node) {
     assertCorrectThread();
     getGameData().acquireWriteLock();
@@ -120,6 +123,10 @@ public class History extends DefaultTreeModel {
     }
   }
 
+  /**
+   * Changes the game state to reflect the historical state at {@code removeAfterNode}, and then removes all changes
+   * that occurred after this node.
+   */
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
     gotoNode(removeAfterNode);
     assertCorrectThread();

@@ -2,6 +2,9 @@ package games.strategy.engine.history;
 
 import games.strategy.engine.data.PlayerID;
 
+/**
+ * A history node that represents one step of game play (e.g. "Britain Combat Move").
+ */
 public class Step extends IndexedHistoryNode {
   private static final long serialVersionUID = 1015799886178275645L;
   private final PlayerID player;

@@ -53,6 +53,10 @@ public class HistoryWriter implements Serializable {
     addToAndSetCurrent(currentStep);
   }
 
+  /**
+   * Prepares to write a new round. Any current event, step, or round will be automatically closed before beginning the
+   * new round.
+   */
   public void startNextRound(final int round) {
     assertCorrectThread();
     if (isCurrentEvent()) {
@@ -156,6 +160,9 @@ public class HistoryWriter implements Serializable {
     m_history.changeAdded(change);
   }
 
+  /**
+   * Sets the rendering data for the current event.
+   */
   public void setRenderingData(final Object details) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
