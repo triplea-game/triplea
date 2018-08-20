@@ -24,10 +24,10 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.common.ILobbyGameController;
+import games.strategy.engine.lobby.common.IRemoteHostUtils;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.lobby.server.RemoteHostUtils;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -109,7 +109,7 @@ public class InGameLobbyWatcher {
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
       final RemoteMessenger rm = new RemoteMessenger(um);
       final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
-      rm.registerRemote(rhu, RemoteHostUtils.getRemoteHostUtilsName(um.getLocalNode()));
+      rm.registerRemote(rhu, IRemoteHostUtils.newRemoteNameForNode(um.getLocalNode()));
       return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
