@@ -461,9 +461,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
     final SocketChannel fromChannel = nodeToChannel.get(msg.getFrom());
     final List<SocketChannel> nodes = new ArrayList<>(nodeToChannel.values());
-    if (log.isLoggable(Level.FINEST)) {
-      log.finest("broadcasting to" + nodes);
-    }
+    log.finest(() -> "broadcasting to" + nodes);
     for (final SocketChannel channel : nodes) {
       if (channel != fromChannel) {
         nioSocket.send(channel, msg);
