@@ -257,8 +257,7 @@ public class Vault {
       try {
         decrypted = cipher.doFinal(encrypted);
       } catch (final Exception e1) {
-        e1.printStackTrace();
-        throw new IllegalStateException(e1.getMessage());
+        throw new IllegalStateException("Failed to decrypt vault values", e1);
       }
       if (decrypted.length < KNOWN_VAL.length) {
         throw new IllegalStateException("decrypted is not long enough to have known value, cheating is suspected");
