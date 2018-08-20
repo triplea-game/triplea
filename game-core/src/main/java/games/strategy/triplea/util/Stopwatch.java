@@ -1,7 +1,6 @@
 package games.strategy.triplea.util;
 
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -20,9 +19,7 @@ public class Stopwatch {
   private final String taskDescription;
 
   public void done() {
-    if (log.isLoggable(Level.INFO)) {
-      log.info(String.format("%s took %s ms",
-          taskDescription, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime)));
-    }
+    log.info(() -> String.format("%s took %s ms",
+        taskDescription, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime)));
   }
 }
