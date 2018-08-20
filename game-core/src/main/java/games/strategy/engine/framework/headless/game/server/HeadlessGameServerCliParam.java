@@ -58,10 +58,10 @@ public enum HeadlessGameServerCliParam {
     final Properties properties = ArgParsingHelper.getTripleaProperties(args);
 
     return new ArgValidationResult(Arrays.stream(values())
-                .filter(param -> param.required == Required.REQUIRED)
-                .filter(param -> properties.getProperty(param.label) == null)
-                .map(param -> "Did not find param: -" + ArgParsingHelper.TRIPLEA_PROPERTY_PREFIX + param.label)
-                .collect(Collectors.toList()));
+        .filter(param -> param.required == Required.REQUIRED)
+        .filter(param -> properties.getProperty(param.label) == null)
+        .map(param -> "Did not find param: -" + ArgParsingHelper.TRIPLEA_PROPERTY_PREFIX + param.label)
+        .collect(Collectors.toList()));
   }
 
   public static String exampleUsage() {

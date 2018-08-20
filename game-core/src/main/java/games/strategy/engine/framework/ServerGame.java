@@ -149,7 +149,7 @@ public class ServerGame extends AbstractGame {
     setupDelegateMessaging(data);
     randomStats = new RandomStats(remoteMessenger);
     // Import dice stats from history if there is any (e.g. loading a saved game).
-    importDiceStats((HistoryNode)gameData.getHistory().getRoot());
+    importDiceStats((HistoryNode) gameData.getHistory().getRoot());
 
     final IServerRemote serverRemote = () -> {
       try {
@@ -161,7 +161,7 @@ public class ServerGame extends AbstractGame {
     remoteMessenger.registerRemote(serverRemote, SERVER_REMOTE);
   }
 
-  private void importDiceStats(final HistoryNode node)  {
+  private void importDiceStats(final HistoryNode node) {
     if (node instanceof EventChild) {
       final EventChild childNode = (EventChild) node;
       if (childNode.getRenderingData() instanceof DiceRoll) {
@@ -177,8 +177,8 @@ public class ServerGame extends AbstractGame {
       }
     }
 
-    for (int i = 0 ; i < node.getChildCount() ; i++) {
-      importDiceStats((HistoryNode)node.getChildAt(i));
+    for (int i = 0; i < node.getChildCount(); i++) {
+      importDiceStats((HistoryNode) node.getChildAt(i));
     }
   }
 
@@ -202,9 +202,9 @@ public class ServerGame extends AbstractGame {
           blockingObserver.joinGame(bytes, playerManager.getPlayerMapping());
           waitOnObserver.countDown();
         } catch (final ConnectionLostException cle) {
-          log.log(Level.SEVERE,"Connection lost to observer while joining: " + newNode.getName(), cle);
+          log.log(Level.SEVERE, "Connection lost to observer while joining: " + newNode.getName(), cle);
         } catch (final Exception e) {
-          log.log(Level.SEVERE,"Failed to join game", e);
+          log.log(Level.SEVERE, "Failed to join game", e);
         }
       }, "Waiting on observer to finish joining: " + newNode.getName()).start();
       try {

@@ -118,7 +118,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     for (final PlayerID player : players) {
       final PlayerSelectorRow selector =
           new PlayerSelectorRow(playerRows, player, reloadSelections, disableable, playersEnablementListing,
-              data.getAllianceTracker().getAlliancesPlayerIsIn(player),  this, data.getProperties());
+              data.getAllianceTracker().getAlliancesPlayerIsIn(player), this, data.getProperties());
       playerRows.add(selector);
       if (!player.isHidden()) {
         selector.layout(++gridy, panel);

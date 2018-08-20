@@ -46,8 +46,8 @@ public class ChatPanel extends JPanel implements IChatPanel {
       final String chatName,
       final ChatSoundProfile chatSoundProfile) {
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat)))
-        .result.orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat))).result
+        .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
 
   public ChatPanel(final Chat chat) {

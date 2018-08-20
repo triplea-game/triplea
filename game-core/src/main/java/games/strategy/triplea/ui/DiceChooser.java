@@ -23,14 +23,14 @@ class DiceChooser extends JPanel {
   private JPanel dicePanel;
   private final int[] random;
   private int diceCount = 0;
-  private int numRolls;
-  private int hitAt;
-  private boolean hitOnlyIfEquals;
+  private final int numRolls;
+  private final int hitAt;
+  private final boolean hitOnlyIfEquals;
   private final Collection<JButton> buttons;
   private JButton undoButton;
   private JLabel diceCountLabel;
   // private final GameData m_data;
-  private int diceSides;
+  private final int diceSides;
 
   DiceChooser(final UiContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
       final int diceSides) {

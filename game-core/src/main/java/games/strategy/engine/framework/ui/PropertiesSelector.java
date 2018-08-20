@@ -19,7 +19,7 @@ import games.strategy.util.Interruptibles;
 public class PropertiesSelector {
   /**
    * Displays a property selection window.
-   * 
+   *
    * @param parent parent component
    * @param properties properties that will get displayed
    * @param buttonOptions button options. They will be displayed in a row on the bottom

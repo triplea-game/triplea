@@ -200,7 +200,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   private void sendNotificationToPlayers(final Collection<PlayerID> toPlayers, final Collection<PlayerID> dontSendTo,
-                                         final String text) {
+      final String text) {
     if (!"NONE".equals(text)) {
       this.getDisplay().reportMessageToPlayers(toPlayers, dontSendTo, text, text);
     }
@@ -210,7 +210,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * Send notifications to the other players (all players except the player starting the action).
    */
   private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification,
-                                  final String targetNotification) {
+      final String targetNotification) {
     final Collection<PlayerID> dontSendTo = new ArrayList<>();
     dontSendTo.add(player);
 

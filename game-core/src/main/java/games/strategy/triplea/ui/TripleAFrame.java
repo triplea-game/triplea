@@ -231,7 +231,7 @@ public class TripleAFrame extends MainGameFrame {
 
     final TripleAFrame frame = Interruptibles.awaitResult(() -> SwingAction
         .invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext, chat))).result
-        .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
+            .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
     frame.updateStep();
     return frame;
   }
@@ -1270,7 +1270,7 @@ public class TripleAFrame extends MainGameFrame {
           dialog.removeAll();
           dialog.dispose();
           continueLatch.countDown();
-        } else if (option ==  scrambleButton) {
+        } else if (option == scrambleButton) {
           for (final Tuple<Territory, UnitChooser> terrChooser : choosers) {
             selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
           }

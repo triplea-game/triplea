@@ -97,7 +97,7 @@ public class CommentPanel extends JPanel {
     save.setFocusable(false);
     for (final PlayerID playerId : data.getPlayerList().getPlayers()) {
       CompletableFuture.supplyAsync(() -> frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId))
-        .thenAccept(image -> SwingUtilities.invokeLater(() -> iconMap.put(playerId, new ImageIcon(image))));
+          .thenAccept(image -> SwingUtilities.invokeLater(() -> iconMap.put(playerId, new ImageIcon(image))));
     }
   }
 

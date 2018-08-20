@@ -467,7 +467,7 @@ final class UnitChooser extends JPanel {
         this.forceDamaged = forceDamaged;
         this.uiContext = uiContext;
         MapUnitTooltipManager.setUnitTooltip(this, category.getType(), category.getOwner(),
-                category.getUnits().size());
+            category.getUnits().size());
       }
 
       @Override

@@ -33,8 +33,7 @@ public class PropertyFileTest {
   @Test
   public void testConstructor() throws Exception {
     Files.write(file.toPath(), Arrays.asList("abc=def", "123: 456"));
-    final PropertyFile instance = new PropertyFile(file.getAbsolutePath(), mock) {
-    };
+    final PropertyFile instance = new PropertyFile(file.getAbsolutePath(), mock) {};
     assertEquals("def", instance.properties.getProperty("abc"));
     assertEquals("456", instance.properties.getProperty("123"));
     assertEquals(2, instance.properties.size());

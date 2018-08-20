@@ -192,7 +192,7 @@ public class ResourceLoader implements Closeable {
         log.log(Level.SEVERE, f + " does not exist");
       }
       if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
-        log.log(Level.SEVERE,f + " is not a directory or a zip file");
+        log.log(Level.SEVERE, f + " is not a directory or a zip file");
       }
       try {
         urls[i] = f.toURI().toURL();

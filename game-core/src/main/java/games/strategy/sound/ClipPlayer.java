@@ -253,7 +253,7 @@ public class ClipPlayer {
 
   /**
    * Plays the specified player-specific clip.
-   * 
+   *
    * @param clipPath - the folder containing sound clips to be played. One of the sound clip files will be chosen at
    *        random.
    * @param playerId - the name of the player, or null

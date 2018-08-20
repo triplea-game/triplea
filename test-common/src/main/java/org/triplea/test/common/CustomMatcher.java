@@ -14,7 +14,7 @@ import lombok.Builder;
  * Convenience class for building a type safe hamcrest matcher.
  * See Test cases for more example usages.
  * Example usage:
- * 
+ *
  * <pre>
  * {@code
  *  assertThat(testValue, customMatcher("valueToMatch"));

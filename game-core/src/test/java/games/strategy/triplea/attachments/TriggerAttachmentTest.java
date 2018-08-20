@@ -32,7 +32,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 @ExtendWith(MockitoExtension.class)
 public class TriggerAttachmentTest {
 
-  private Set<TriggerAttachment> satisfiedTriggers = new HashSet<>();
+  private final Set<TriggerAttachment> satisfiedTriggers = new HashSet<>();
   @Mock
   private IDelegateBridge bridge;
   @Mock

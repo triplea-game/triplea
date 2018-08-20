@@ -31,7 +31,7 @@ public class ServerOptions extends JDialog {
   private boolean okPressed;
   private JCheckBox requirePasswordCheckBox;
   private JTextField comment;
-  private boolean showComment;
+  private final boolean showComment;
 
   /**
    * Creates a new instance of ServerOptions.

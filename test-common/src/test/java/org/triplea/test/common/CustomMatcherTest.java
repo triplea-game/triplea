@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
-
 import org.junit.jupiter.api.Test;
 
 class CustomMatcherTest {
@@ -12,7 +11,7 @@ class CustomMatcherTest {
 
   /**
    * Example output using a matcher with a failure injected.:
-   * 
+   *
    * <pre>
    *       MatcherAssert.assertThat(500, numberIsEqualToExampleMatcher(3));
    java.lang.AssertionError:
@@ -42,7 +41,7 @@ class CustomMatcherTest {
 
   /**
    * Example output using a matcher with a failure injected.:
-   * 
+   *
    * <pre>
    *       MatcherAssert.assertThat(
    *         "Hashcode values are expected to match between 'abc' and 'abc'",

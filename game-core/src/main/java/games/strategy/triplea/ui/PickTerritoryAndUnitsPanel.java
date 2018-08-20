@@ -233,7 +233,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
     @Override
     public void mouseMoved(final Territory territory, final MouseDetails md) {
       if (!getActive()) {
-        log.log(Level.SEVERE,"Should not be able to select a territory when inactive: " + territory);
+        log.log(Level.SEVERE, "Should not be able to select a territory when inactive: " + territory);
         return;
       }
       if (territory != null) {

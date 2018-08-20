@@ -102,8 +102,8 @@ class EngineVersionProperties {
 
   private String getOutOfDateReleaseUpdates() {
     return "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + changelogLink + "\">"
-            + changelogLink + "</a><br />"
-            + "</body></html>";
+        + changelogLink + "</a><br />"
+        + "</body></html>";
   }
 
   Component getOutOfDateComponent() {

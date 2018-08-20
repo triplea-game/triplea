@@ -10,9 +10,7 @@ import java.util.Map.Entry;
 import java.util.stream.StreamSupport;
 
 import org.hamcrest.Matcher;
-
 import org.junit.jupiter.api.Test;
-
 import org.triplea.test.common.CustomMatcher;
 
 import com.google.common.collect.Maps;

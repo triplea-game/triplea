@@ -552,9 +552,9 @@ public class BattleCalculator {
         log.log(
             Level.SEVERE,
             "Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
-            + (numhits + damaged.size()) + " != number of hits to take "
-            + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for "
-            + casualtySelection.toString());
+                + (numhits + damaged.size()) + " != number of hits to take "
+                + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for "
+                + casualtySelection.toString());
       }
       return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,
@@ -567,7 +567,7 @@ public class BattleCalculator {
         log.log(
             Level.SEVERE,
             "Possible Infinite Loop: Cannot remove enough units of those types: targets "
-            + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for " + casualtySelection.toString());
+                + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for " + casualtySelection.toString());
       }
       return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,

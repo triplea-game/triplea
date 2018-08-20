@@ -590,8 +590,8 @@ public class HeadlessGameServer {
     if (!validation.isValid()) {
       log.log(Level.SEVERE,
           String.format("Failed to start, improper args: %s\n"
-                  + "Errors:\n- %s\n"
-                  + "Example usage: %s",
+              + "Errors:\n- %s\n"
+              + "Example usage: %s",
               Arrays.toString(args),
               String.join("\n- ", validation.getErrorMessages()),
               HeadlessGameServerCliParam.exampleUsage()));

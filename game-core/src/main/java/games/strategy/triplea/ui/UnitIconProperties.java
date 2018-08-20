@@ -84,7 +84,7 @@ public final class UnitIconProperties extends PropertyFile {
         log.log(
             Level.SEVERE,
             "unit_icons.properties keys must be: <game_name>.<player>.<unit_type>;attachmentName OR "
-            + "if always true: <game_name>.<player>.<unit_type>",
+                + "if always true: <game_name>.<player>.<unit_type>",
             e);
       }
     }

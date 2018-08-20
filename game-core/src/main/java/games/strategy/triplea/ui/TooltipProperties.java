@@ -34,7 +34,7 @@ public class TooltipProperties {
         try {
           properties.load(inputStream.get());
         } catch (final IOException e) {
-          log.log(Level.SEVERE,"Error reading: " + PROPERTY_FILE, e);
+          log.log(Level.SEVERE, "Error reading: " + PROPERTY_FILE, e);
         }
       }
     }
