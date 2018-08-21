@@ -225,7 +225,7 @@ public class AirMovementValidator {
       potentialCarrierOrigins.remove(landingSpot);
       final List<Unit> airCanReach = new ArrayList<>();
       for (final Unit air : airThatMustLandOnCarriers) {
-        if (canAirReachThisSpot(data, player, air, routeEnd, movementLeftForAirToValidate.get(air), landingSpot,
+        if (canAirReachThisSpot(data, player, routeEnd, movementLeftForAirToValidate.get(air), landingSpot,
             areNeutralsPassableByAir)) {
           // get all air that can reach this spot
           airCanReach.add(air);
@@ -546,7 +546,7 @@ public class AirMovementValidator {
     return Comparator.comparingInt(u -> getMovementLeftForAirUnitNotMovedYet(u, route));
   }
 
-  private static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit,
+  private static boolean canAirReachThisSpot(final GameData data, final PlayerID player,
       final Territory currentSpot, final int movementLeft, final Territory landingSpot,
       final boolean areNeutralsPassableByAir) {
     if (areNeutralsPassableByAir) {
@@ -594,7 +594,7 @@ public class AirMovementValidator {
     // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movement cost is very high and air units
     // have a lot of movement capacity.
     for (final Territory landingSpot : possibleSpots) {
-      if (canAirReachThisSpot(data, player, unit, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {
+      if (canAirReachThisSpot(data, player, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {
         return true;
       }
     }
