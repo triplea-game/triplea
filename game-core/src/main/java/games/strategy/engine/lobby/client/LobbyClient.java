@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.client;
 
 import games.strategy.engine.lobby.common.IModeratorController;
-import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
@@ -20,7 +19,7 @@ public class LobbyClient {
   public boolean isAdmin() {
     if (isAdmin == null) {
       final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-          .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
+          .getRemote(IModeratorController.REMOTE_NAME);
       isAdmin = controller.isAdmin();
     }
     return isAdmin;

@@ -101,7 +101,7 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   void register(final IRemoteMessenger remote) {
-    remote.registerRemote(this, GAME_CONTROLLER_REMOTE);
+    remote.registerRemote(this, REMOTE_NAME);
   }
 
   @Override

@@ -52,7 +52,7 @@ public final class LobbyServer {
     new StatusManager(messengers).shutDown();
 
     final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) messengers
-        .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
+        .getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.REMOTE_NAME), server);
     controller.register(messengers.getRemoteMessenger());
 
     // now we are open for business

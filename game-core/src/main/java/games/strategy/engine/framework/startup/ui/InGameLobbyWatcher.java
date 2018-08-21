@@ -179,7 +179,7 @@ public class InGameLobbyWatcher {
         passworded,
         ClientContext.engineVersion().toString(), "0");
     final ILobbyGameController controller =
-        (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
+        (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
     synchronized (mutex) {
       controller.postGame(gameId, (GameDescription) gameDescription.clone());
     }
@@ -266,7 +266,7 @@ public class InGameLobbyWatcher {
     }
     synchronized (mutex) {
       final ILobbyGameController controller =
-          (ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
+          (ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
       controller.updateGame(gameId, (GameDescription) gameDescription.clone());
     }
   }

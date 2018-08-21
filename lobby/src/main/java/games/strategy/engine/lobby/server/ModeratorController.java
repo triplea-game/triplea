@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.IModeratorController;
 import games.strategy.engine.lobby.common.IRemoteHostUtils;
-import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.db.BannedMacController;
 import games.strategy.engine.lobby.server.db.BannedUsernameController;
 import games.strategy.engine.lobby.server.db.Database;
@@ -403,6 +402,6 @@ final class ModeratorController implements IModeratorController {
   }
 
   void register(final IRemoteMessenger messenger) {
-    messenger.registerRemote(this, LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
+    messenger.registerRemote(this, REMOTE_NAME);
   }
 }

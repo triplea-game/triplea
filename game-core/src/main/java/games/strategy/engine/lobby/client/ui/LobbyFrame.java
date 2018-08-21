@@ -109,7 +109,7 @@ public class LobbyFrame extends JFrame {
       return Collections.emptyList();
     }
     final IModeratorController controller = (IModeratorController) client.getRemoteMessenger()
-        .getRemote(LobbyConstants.MODERATOR_CONTROLLER_REMOTE_NAME);
+        .getRemote(IModeratorController.REMOTE_NAME);
     final List<Action> actions = new ArrayList<>();
     actions.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
       if (!confirm("Boot " + clickedOn.getName())) {
