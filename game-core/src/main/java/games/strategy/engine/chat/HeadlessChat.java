@@ -12,7 +12,6 @@ import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.util.TimeManager;
@@ -77,11 +76,11 @@ public class HeadlessChat implements IChatListener, IChatPanel {
         allText = new StringBuilder();
         for (final ChatMessage message : this.chat.getChatHistory()) {
           if (message.getFrom().equals(this.chat.getServerNode().getName())) {
-            if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
+            if (message.getMessage().equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_LOBBY)) {
               addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
                   "ADMIN_CHAT_CONTROL", false);
               continue;
-            } else if (message.getMessage().equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
+            } else if (message.getMessage().equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_GAME)) {
               addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
               continue;
             }
@@ -107,11 +106,11 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     // TODO: I don't really think we need a new thread for this...
     new Thread(() -> {
       if (from.equals(chat.getServerNode().getName())) {
-        if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_LOBBY)) {
+        if (message.equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_LOBBY)) {
           addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
               "ADMIN_CHAT_CONTROL", false);
           return;
-        } else if (message.equals(ServerMessenger.YOU_HAVE_BEEN_MUTED_GAME)) {
+        } else if (message.equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_GAME)) {
           addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
           return;
         }

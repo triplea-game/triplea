@@ -18,7 +18,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
-import games.strategy.net.ServerMessenger;
+import games.strategy.net.TestServerMessenger;
 import games.strategy.util.Interruptibles;
 
 public class ChannelMessengerTest {
@@ -31,7 +31,7 @@ public class ChannelMessengerTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    serverMessenger = ServerMessenger.newInstanceForGameHost("Server", 0);
+    serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
