@@ -38,6 +38,7 @@ import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
+import games.strategy.util.ObjectUtils;
 import games.strategy.util.Tuple;
 
 /**
@@ -516,7 +517,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(
       final Collection<Territory> blockadeZones, final GameMap map) {
     return (t1, t2) -> {
-      if (t1 == t2 || (t1 == null && t2 == null)) {
+      if (ObjectUtils.referenceEquals(t1, t2)) {
         return 0;
       }
       if (t1 == null) {
@@ -550,7 +551,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private static Comparator<Territory> getSingleBlockadeThenHighestToLowestBlockadeDamage(
       final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone) {
     return (t1, t2) -> {
-      if (t1 == t2 || (t1 == null && t2 == null)) {
+      if (ObjectUtils.referenceEquals(t1, t2)) {
         return 0;
       }
       if (t1 == null) {

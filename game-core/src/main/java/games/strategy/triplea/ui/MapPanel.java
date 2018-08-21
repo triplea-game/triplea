@@ -64,6 +64,7 @@ import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Interruptibles;
+import games.strategy.util.ObjectUtils;
 import games.strategy.util.Tuple;
 
 /**
@@ -415,7 +416,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private boolean unitsChanged(final Tuple<Territory, List<Unit>> newUnits) {
-    return newUnits != currentUnits
+    return !ObjectUtils.referenceEquals(newUnits, currentUnits)
         && (newUnits == null
             || currentUnits == null
             || !newUnits.getFirst().equals(currentUnits.getFirst())
