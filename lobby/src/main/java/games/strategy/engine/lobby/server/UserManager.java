@@ -22,7 +22,7 @@ final class UserManager implements IUserManager {
   }
 
   void register(final IRemoteMessenger messenger) {
-    messenger.registerRemote(this, IUserManager.USER_MANAGER);
+    messenger.registerRemote(this, REMOTE_NAME);
   }
 
   @Override

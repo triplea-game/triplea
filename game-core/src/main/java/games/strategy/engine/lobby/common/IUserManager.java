@@ -9,8 +9,7 @@ import games.strategy.engine.message.RemoteName;
  * {@code userName} must match the name of the calling user).
  */
 public interface IUserManager extends IRemote {
-  RemoteName USER_MANAGER =
-      new RemoteName("games.strategy.engine.lobby.server.USER_MANAGER", IUserManager.class);
+  RemoteName REMOTE_NAME = new RemoteName("games.strategy.engine.lobby.server.USER_MANAGER", IUserManager.class);
 
   /**
    * Update the user info, returning an error string if an error occurs.
