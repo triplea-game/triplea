@@ -5,12 +5,16 @@ import java.util.Date;
 import javax.annotation.Nullable;
 
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 
 /**
  * A service that provides lobby management operations whose use is restricted to lobby moderators.
  */
 public interface IModeratorController extends IRemote {
+  RemoteName REMOTE_NAME =
+      new RemoteName("games.strategy.engine.lobby.server.ModeratorController:Global", IModeratorController.class);
+
   // TODO: The methods accepting a Date parameter can be converted to Instant after the next incompatible release.
 
   /**
