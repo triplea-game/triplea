@@ -57,7 +57,7 @@ class LobbyGameTableModel extends AbstractTableModel {
     channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
 
     final Map<GUID, GameDescription> games =
-        ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
+        ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME)).listGames();
     for (final GUID id : games.keySet()) {
       updateGame(id, games.get(id));
     }

@@ -11,8 +11,9 @@ import games.strategy.net.GUID;
  * A service that provides management operations for lobby games.
  */
 public interface ILobbyGameController extends IRemote {
-  RemoteName GAME_CONTROLLER_REMOTE = new RemoteName(
-      "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE", ILobbyGameController.class);
+  RemoteName REMOTE_NAME = new RemoteName(
+      "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE",
+      ILobbyGameController.class);
 
   void postGame(GUID gameId, GameDescription description);
 
