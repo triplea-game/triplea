@@ -1,5 +1,9 @@
 package games.strategy.engine.history;
 
+/**
+ * A history node that represents an event that occurred during the execution of a game step
+ * (e.g. "Russia buys 8 Infantry").
+ */
 public class Event extends IndexedHistoryNode implements Renderable {
   private static final long serialVersionUID = -8382102990360177484L;
   private final String m_description;

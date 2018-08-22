@@ -350,6 +350,9 @@ public class HistoryPanel extends JPanel {
     }
   }
 
+  /**
+   * Selects the most recent history node, expanding the tree if necessary.
+   */
   public void goToEnd() {
     final HistoryNode last;
     try {

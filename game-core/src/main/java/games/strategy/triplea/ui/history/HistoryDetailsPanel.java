@@ -25,6 +25,18 @@ import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
+/**
+ * A UI component that displays details about the currently-selected history node.
+ *
+ * <p>
+ * The history node details include:
+ * </p>
+ * <ul>
+ * <li>The textual description of the node.</li>
+ * <li>A custom UI component provided by the node that provides graphical details. For example, a purchase event may
+ * display the icons (and counts) for each unit purchased.</li>
+ * </ul>
+ */
 public class HistoryDetailsPanel extends JPanel {
   private static final long serialVersionUID = 5092004144144006960L;
   private final GameData data;

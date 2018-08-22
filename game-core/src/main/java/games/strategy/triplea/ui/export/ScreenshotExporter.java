@@ -25,6 +25,9 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
+/**
+ * Provides methods to export a screenshot for a game at a particular point in time.
+ */
 public final class ScreenshotExporter {
   private final TripleAFrame frame;
 
