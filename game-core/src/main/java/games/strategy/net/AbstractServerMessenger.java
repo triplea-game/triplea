@@ -57,7 +57,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
-  // A hack, till I think of something better
   protected AbstractServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
       throws IOException {
     socketChannel = ServerSocketChannel.open();
