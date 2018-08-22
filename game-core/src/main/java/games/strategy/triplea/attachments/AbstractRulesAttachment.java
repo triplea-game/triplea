@@ -214,7 +214,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         start = getInt(subString);
         end = start;
       } catch (final Exception e) {
-        final String[] s2 = subString.split("-");
+        final String[] s2 = splitOnHyphen(subString);
         if (s2.length != 2) {
           throw new GameParseException("Invalid syntax for turn range, must be 'int-int'" + thisErrorMsg());
         }

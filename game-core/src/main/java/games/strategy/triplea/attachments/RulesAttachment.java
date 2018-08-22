@@ -198,8 +198,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     if (!s[3].equalsIgnoreCase("currentRound")) {
       try {
-        getInt(s[3].split("-")[0]);
-        getInt(s[3].split("-")[1]);
+        getInt(splitOnHyphen(s[3])[0]);
+        getInt(splitOnHyphen(s[3])[1]);
       } catch (final Exception e) {
         throw new GameParseException("round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
       }
@@ -792,7 +792,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         int end = round;
         final boolean currentRound = roundType.equalsIgnoreCase("currentRound");
         if (!currentRound) {
-          final String[] rounds = roundType.split("-");
+          final String[] rounds = splitOnHyphen(roundType);
           start = getInt(rounds[0]);
           end = getInt(rounds[1]);
         }

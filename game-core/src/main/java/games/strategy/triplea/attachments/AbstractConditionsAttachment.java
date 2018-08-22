@@ -1,5 +1,7 @@
 package games.strategy.triplea.attachments;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +13,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
@@ -30,6 +34,7 @@ import games.strategy.triplea.formatter.MyFormatter;
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
   private static final long serialVersionUID = -9008441256118867078L;
+  private static final Splitter HYPHEN_SPLITTER = Splitter.on('-');
   protected static final String AND = "AND";
   protected static final String OR = "OR";
   protected static final String DEFAULT_CHANCE = "1:1";
@@ -96,7 +101,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   void setConditionType(final String value) throws GameParseException {
     final String uppercaseValue = value.toUpperCase();
     if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
-      final String[] split = uppercaseValue.split("-");
+      final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
         m_conditionType = uppercaseValue;
         return;
@@ -104,6 +109,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     }
     throw new GameParseException("conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y "
         + "and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
+  }
+
+  protected static String[] splitOnHyphen(final String value) {
+    checkNotNull(value);
+
+    return Iterables.toArray(HYPHEN_SPLITTER.split(value), String.class);
   }
 
   private String getConditionType() {
@@ -206,7 +217,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
         }
       }
     } else {
-      final String[] nums = conditionType.split("-");
+      final String[] nums = splitOnHyphen(conditionType);
       if (nums.length == 1) {
         final int start = Integer.parseInt(nums[0]);
         int count = 0;
