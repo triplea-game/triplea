@@ -1,6 +1,8 @@
 package games.strategy.util;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +50,7 @@ public class LocalizeHtml {
     final Pattern patternLink = Pattern.compile(PATTERN_HTML_IMG_SRC_TAG);
     final Matcher matcherTag = patternTag.matcher(htmlText);
     Matcher matcherLink;
+    final List<String> alreadyReplaced = new ArrayList<>();
     while (matcherTag.find()) {
       // img tag
       final String href = matcherTag.group(1);
@@ -64,6 +67,9 @@ public class LocalizeHtml {
           }
           // remove quotes
           final String link = fullLink.substring(1, fullLink.length() - 1);
+          if (alreadyReplaced.contains(link)) {
+            break;
+          }
 
           // remove full parent path
           final String imageFileName = link.substring(Math.max((link.lastIndexOf("/") + 1), 0));
@@ -80,6 +86,7 @@ public class LocalizeHtml {
           }
 
           localizedHtmlText = localizedHtmlText.replaceAll(link, replacementUrl.toString());
+          alreadyReplaced.add(link);
         }
       }
     }
