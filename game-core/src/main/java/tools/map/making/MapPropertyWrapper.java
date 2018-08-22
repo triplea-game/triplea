@@ -88,17 +88,8 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     return property.getValue();
   }
 
-  @SuppressWarnings("unchecked")
-  public T getValueT() {
-    return (T) property.getValue();
-  }
-
   @Override
   public void setValue(final Object value) throws ClassCastException {
-    property.setValue(value);
-  }
-
-  public void setValueT(final T value) {
     property.setValue(value);
   }
 
@@ -153,11 +144,6 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     for (final MapPropertyWrapper<?> p : properties) {
       p.setToObject(object);
     }
-  }
-
-  public static PropertiesUi createPropertiesUi(final List<? extends IEditableProperty> properties,
-      final boolean editable) {
-    return new PropertiesUi(properties, editable);
   }
 
   static Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> createPropertiesUi(final Object object,
