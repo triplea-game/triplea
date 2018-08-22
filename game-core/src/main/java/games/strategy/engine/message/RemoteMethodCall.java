@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * All the info neccassary to describe a method call in one handy
+ * All the info necessary to describe a method call in one handy
  * serializable package.
  */
 public class RemoteMethodCall implements Externalizable {
