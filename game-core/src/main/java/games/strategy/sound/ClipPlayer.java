@@ -454,24 +454,28 @@ public class ClipPlayer {
         availableSounds.add(thisSoundUrl);
       }
     }
-    if (thisSoundFile.isDirectory()) {
-      for (final File soundFile : FileUtils.listFiles(thisSoundFile)) {
-        if (isSoundFileNamed(soundFile)) {
-          try {
-            final URL individualSoundUrl = soundFile.toURI().toURL();
-            availableSounds.add(individualSoundUrl);
-          } catch (final MalformedURLException e) {
-            final String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
-            log.log(Level.SEVERE, msg, e);
+
+    if (thisSoundFile != null) {
+      if (thisSoundFile.isDirectory()) {
+        for (final File soundFile : FileUtils.listFiles(thisSoundFile)) {
+          if (isSoundFileNamed(soundFile)) {
+            try {
+              final URL individualSoundUrl = soundFile.toURI().toURL();
+              availableSounds.add(individualSoundUrl);
+            } catch (final MalformedURLException e) {
+              final String msg = "Error " + e.getMessage() + " with sound file: " + soundFile.getPath();
+              log.log(Level.SEVERE, msg, e);
+            }
           }
         }
+      } else {
+        if (!isSoundFileNamed(thisSoundFile)) {
+          return availableSounds;
+        }
+        availableSounds.add(thisSoundUrl);
       }
-    } else {
-      if (!isSoundFileNamed(thisSoundFile)) {
-        return availableSounds;
-      }
-      availableSounds.add(thisSoundUrl);
     }
+
     return availableSounds;
   }
 
