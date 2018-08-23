@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
@@ -38,7 +39,6 @@ import games.strategy.triplea.util.BonusIncomeUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
-import games.strategy.util.ObjectUtils;
 import games.strategy.util.Tuple;
 
 /**
@@ -517,7 +517,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(
       final Collection<Territory> blockadeZones, final GameMap map) {
     return (t1, t2) -> {
-      if (ObjectUtils.referenceEquals(t1, t2)) {
+      if (Objects.equals(t1, t2)) {
         return 0;
       }
       if (t1 == null) {
@@ -525,9 +525,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       if (t2 == null) {
         return -1;
-      }
-      if (t1.equals(t2)) {
-        return 0;
       }
       // if a territory is only touching 1 blockadeZone, we must take it first
       final Collection<Territory> neighborBlockades1 = new ArrayList<>(map.getNeighbors(t1));
@@ -551,7 +548,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   private static Comparator<Territory> getSingleBlockadeThenHighestToLowestBlockadeDamage(
       final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone) {
     return (t1, t2) -> {
-      if (ObjectUtils.referenceEquals(t1, t2)) {
+      if (Objects.equals(t1, t2)) {
         return 0;
       }
       if (t1 == null) {
@@ -559,9 +556,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       }
       if (t2 == null) {
         return -1;
-      }
-      if (t1.equals(t2)) {
-        return 0;
       }
       final Tuple<Integer, List<Territory>> tuple1 = damagePerBlockadeZone.get(t1);
       final Tuple<Integer, List<Territory>> tuple2 = damagePerBlockadeZone.get(t2);
