@@ -7,7 +7,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -513,21 +517,14 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return IAbstractForumPosterDelegate.class;
   }
 
-  private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(
+  @VisibleForTesting
+  static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(
       final Collection<Territory> blockadeZones, final GameMap map) {
-    return (t1, t2) -> {
-      if (t1 == t2 || (t1 == null && t2 == null)) {
+    return Comparator.nullsLast((t1, t2) -> {
+      if (Objects.equals(t1, t2)) {
         return 0;
       }
-      if (t1 == null) {
-        return 1;
-      }
-      if (t2 == null) {
-        return -1;
-      }
-      if (t1.equals(t2)) {
-        return 0;
-      }
+
       // if a territory is only touching 1 blockadeZone, we must take it first
       final Collection<Territory> neighborBlockades1 = new ArrayList<>(map.getNeighbors(t1));
       neighborBlockades1.retainAll(blockadeZones);
@@ -544,24 +541,17 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return Comparator.comparing(TerritoryAttachment::get,
           Comparator.nullsFirst(Comparator.comparingInt(TerritoryAttachment::getProduction)))
           .compare(t1, t2);
-    };
+    });
   }
 
-  private static Comparator<Territory> getSingleBlockadeThenHighestToLowestBlockadeDamage(
-      final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone) {
-    return (t1, t2) -> {
-      if (t1 == t2 || (t1 == null && t2 == null)) {
+  @VisibleForTesting
+  static Comparator<Territory> getSingleBlockadeThenHighestToLowestBlockadeDamage(
+      final Map<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone) {
+    return Comparator.nullsLast((t1, t2) -> {
+      if (Objects.equals(t1, t2)) {
         return 0;
       }
-      if (t1 == null) {
-        return 1;
-      }
-      if (t2 == null) {
-        return -1;
-      }
-      if (t1.equals(t2)) {
-        return 0;
-      }
+
       final Tuple<Integer, List<Territory>> tuple1 = damagePerBlockadeZone.get(t1);
       final Tuple<Integer, List<Territory>> tuple2 = damagePerBlockadeZone.get(t2);
       final int num1 = tuple1.getSecond().size();
@@ -575,6 +565,6 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final int d1 = tuple1.getFirst();
       final int d2 = tuple2.getFirst();
       return Integer.compare(d2, d1);
-    };
+    });
   }
 }
