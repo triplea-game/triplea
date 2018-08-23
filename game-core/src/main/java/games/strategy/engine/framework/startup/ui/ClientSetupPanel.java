@@ -222,7 +222,7 @@ public class ClientSetupPanel extends SetupPanel {
     private final Action takeAction =
         SwingAction.of("Play", e -> clientModel.takePlayer(playerNameLabel.getText()));
     private final Action dontTakeAction =
-        SwingAction.of("Dont Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
+        SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
     private final ActionListener disablePlayerActionListener = e -> {
       if (enabledCheckBox.isSelected()) {
         clientModel.enablePlayer(playerNameLabel.getText());
