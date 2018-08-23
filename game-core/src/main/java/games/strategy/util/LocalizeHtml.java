@@ -1,6 +1,8 @@
 package games.strategy.util;
 
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +50,7 @@ public class LocalizeHtml {
     final Pattern patternLink = Pattern.compile(PATTERN_HTML_IMG_SRC_TAG);
     final Matcher matcherTag = patternTag.matcher(htmlText);
     Matcher matcherLink;
+    final Set<String> alreadyReplaced = new HashSet<>();
     while (matcherTag.find()) {
       // img tag
       final String href = matcherTag.group(1);
@@ -64,9 +67,13 @@ public class LocalizeHtml {
           }
           // remove quotes
           final String link = fullLink.substring(1, fullLink.length() - 1);
+          if (!alreadyReplaced.add(link)) {
+            break;
+          }
 
           // remove full parent path
           final String imageFileName = link.substring(Math.max((link.lastIndexOf("/") + 1), 0));
+
           // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
           URL replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName);
 
@@ -78,7 +85,6 @@ public class LocalizeHtml {
             log.log(Level.SEVERE, "Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
             continue;
           }
-
           localizedHtmlText = localizedHtmlText.replaceAll(link, replacementUrl.toString());
         }
       }
