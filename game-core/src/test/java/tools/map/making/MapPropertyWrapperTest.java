@@ -19,10 +19,10 @@ public final class MapPropertyWrapperTest {
   public final class GetPropertyFieldTest {
     @Test
     public void shouldReturnFieldWhenFieldWithEmUnderscorePrefixExistsInTargetClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("value", TestAttachment.class);
+      final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleEmUnderscoreAttachment.class);
 
-      assertThat(field.getName(), is("m_value"));
-      assertThat(field.getDeclaringClass(), is(TestAttachment.class));
+      assertThat(field.getName(), is("m_intValue"));
+      assertThat(field.getDeclaringClass(), is(ExampleEmUnderscoreAttachment.class));
     }
 
     @Test
@@ -52,6 +52,17 @@ public final class MapPropertyWrapperTest {
     @Test
     public void shouldThrowExceptionWhenFieldDoesNotExist() {
       assertThrows(IllegalStateException.class, () -> MapPropertyWrapper.getPropertyField("xxx", TestAttachment.class));
+    }
+  }
+
+  static class ExampleEmUnderscoreAttachment extends TestAttachment {
+    private static final long serialVersionUID = 4140595034027616571L;
+
+    @SuppressWarnings("checkstyle:MemberName") // "m_" prefix required for test
+    int m_intValue;
+
+    ExampleEmUnderscoreAttachment(final String name, final Attachable attachable, final GameData gameData) {
+      super(name, attachable, gameData);
     }
   }
 

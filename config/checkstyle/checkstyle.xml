@@ -26,6 +26,8 @@
         <property name="file" value="${samedir}/suppressions.xml"/>
     </module>
 
+    <module name="SuppressWarningsFilter"/>
+
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
         <module name="FileTabCharacter">
@@ -33,6 +35,7 @@
         </module>
 
     <module name="TreeWalker">
+        <module name="SuppressWarningsHolder"/>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
             <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
