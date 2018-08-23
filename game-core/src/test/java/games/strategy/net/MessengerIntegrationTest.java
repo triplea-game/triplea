@@ -32,7 +32,7 @@ public class MessengerIntegrationTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    serverMessenger = ServerMessenger.newInstanceForGameHost("Server", 0);
+    serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();

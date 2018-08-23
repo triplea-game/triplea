@@ -63,7 +63,6 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.ServerMessenger;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
@@ -251,7 +250,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
 
     try {
-      serverMessenger = ServerMessenger.newInstanceForGameHost(props.getName(), props.getPort(), objectStreamFactory);
+      serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
       clientLoginValidator.setGamePassword(props.getPassword());
       serverMessenger.setLoginValidator(clientLoginValidator);

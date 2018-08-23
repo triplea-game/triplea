@@ -21,7 +21,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.Node;
-import games.strategy.net.ServerMessenger;
+import games.strategy.net.TestServerMessenger;
 
 /**
  * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
@@ -37,7 +37,7 @@ public class VaultTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    serverMessenger = ServerMessenger.newInstanceForGameHost("Server", 0);
+    serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();

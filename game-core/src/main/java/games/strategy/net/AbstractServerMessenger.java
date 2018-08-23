@@ -22,17 +22,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
-import games.strategy.engine.config.lobby.LobbyPropertyReader;
-import games.strategy.engine.lobby.server.db.Database;
-import games.strategy.engine.lobby.server.db.MutedMacController;
-import games.strategy.engine.lobby.server.db.MutedUsernameController;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -47,7 +43,7 @@ import lombok.extern.java.Log;
  * A Messenger that can have many clients connected to it.
  */
 @Log
-public class ServerMessenger implements IServerMessenger, NioSocketListener {
+public abstract class AbstractServerMessenger implements IServerMessenger, NioSocketListener {
   private final Selector acceptorSelector;
   private final ServerSocketChannel socketChannel;
   private final Node node;
@@ -61,54 +57,17 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
-  /**
-   * The lobby database if this instance is for use by a lobby; otherwise {@code null}.
-   */
-  private final @Nullable Database database;
-
-  // A hack, till I think of something better
-  private ServerMessenger(
-      final String name,
-      final int requestedPortNumber,
-      final IObjectStreamFactory streamFactory,
-      final @Nullable Database database)
+  protected AbstractServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
       throws IOException {
-    this.database = database;
     socketChannel = ServerSocketChannel.open();
     socketChannel.configureBlocking(false);
     socketChannel.socket().setReuseAddress(true);
-    socketChannel.socket().bind(new InetSocketAddress(requestedPortNumber), 10);
-    final int boundPortNumber = socketChannel.socket().getLocalPort();
-    nioSocket = new NioSocket(streamFactory, this, "Server");
+    socketChannel.socket().bind(new InetSocketAddress(port), 10);
+    final int boundPort = socketChannel.socket().getLocalPort();
+    nioSocket = new NioSocket(objectStreamFactory, this, "Server");
     acceptorSelector = Selector.open();
-    node = new Node(name, IpFinder.findInetAddress(), boundPortNumber);
+    node = new Node(name, IpFinder.findInetAddress(), boundPort);
     new Thread(new ConnectionHandler(), "Server Messenger Connection Handler").start();
-  }
-
-  public static ServerMessenger newInstanceForGameHost(
-      final String name,
-      final int requestedPortNumber)
-      throws IOException {
-    return newInstanceForGameHost(name, requestedPortNumber, new DefaultObjectStreamFactory());
-  }
-
-  public static ServerMessenger newInstanceForGameHost(
-      final String name,
-      final int requestedPortNumber,
-      final IObjectStreamFactory streamFactory)
-      throws IOException {
-    return new ServerMessenger(name, requestedPortNumber, streamFactory, null);
-  }
-
-  public static ServerMessenger newInstanceForLobby(
-      final String name,
-      final LobbyPropertyReader lobbyPropertyReader)
-      throws IOException {
-    return new ServerMessenger(
-        name,
-        lobbyPropertyReader.getPort(),
-        new DefaultObjectStreamFactory(),
-        new Database(lobbyPropertyReader));
   }
 
   @Override
@@ -179,14 +138,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     forwardBroadcast(header);
   }
 
-  private boolean isLobby() {
-    return database != null;
-  }
-
-  private boolean isGame() {
-    return !isLobby();
-  }
-
   private final Object cachedListLock = new Object();
   private final Map<String, String> cachedMacAddresses = new HashMap<>();
 
@@ -203,7 +154,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   // which can be very slow
   private final List<String> liveMutedUsernames = new ArrayList<>();
 
-  private boolean isUsernameMuted(final String username) {
+  private boolean isUsernameMutedInCache(final String username) {
     synchronized (cachedListLock) {
       return liveMutedUsernames.contains(username);
     }
@@ -228,7 +179,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private final List<String> liveMutedMacAddresses = new ArrayList<>();
 
-  private boolean isMacMuted(final String mac) {
+  private boolean isMacMutedInCache(final String mac) {
     synchronized (cachedListLock) {
       return liveMutedMacAddresses.contains(mac);
     }
@@ -260,30 +211,58 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     synchronized (cachedListLock) {
       cachedMacAddresses.put(uniquePlayerName, mac);
-      if (isLobby()) {
-        final String realName = IServerMessenger.getRealName(uniquePlayerName);
-        if (!liveMutedUsernames.contains(realName)) {
-          final Optional<Instant> muteTill = new MutedUsernameController(database).getUsernameUnmuteTime(realName);
-          muteTill.ifPresent(instant -> {
-            if (instant.isAfter(Instant.now())) {
-              // Signal the player as muted
-              liveMutedUsernames.add(realName);
-              scheduleUsernameUnmuteAt(realName, instant);
-            }
-          });
-        }
-        if (!liveMutedMacAddresses.contains(mac)) {
-          final Optional<Instant> muteTill = new MutedMacController(database).getMacUnmuteTime(mac);
-          muteTill.ifPresent(instant -> {
-            if (instant.isAfter(Instant.now())) {
-              // Signal the player as muted
-              liveMutedMacAddresses.add(mac);
-              scheduleMacUnmuteAt(mac, instant);
-            }
-          });
-        }
+      final String realName = IServerMessenger.getRealName(uniquePlayerName);
+      if (!liveMutedUsernames.contains(realName)) {
+        final Optional<Instant> muteTill = getUsernameUnmuteTime(realName);
+        muteTill.ifPresent(instant -> {
+          if (instant.isAfter(Instant.now())) {
+            // Signal the player as muted
+            liveMutedUsernames.add(realName);
+            scheduleUsernameUnmuteAt(realName, instant);
+          }
+        });
+      }
+      if (!liveMutedMacAddresses.contains(mac)) {
+        final Optional<Instant> muteTill = getMacUnmuteTime(mac);
+        muteTill.ifPresent(instant -> {
+          if (instant.isAfter(Instant.now())) {
+            // Signal the player as muted
+            liveMutedMacAddresses.add(mac);
+            scheduleMacUnmuteAt(mac, instant);
+          }
+        });
       }
     }
+  }
+
+  /**
+   * Returns the instant at which the user associated with the specified username is to be unmuted or empty if the user
+   * is not currently muted.
+   *
+   * <p>
+   * Subclasses may override and are not required to call the superclass implementation. This implementation returns an
+   * empty instant indicating the user is not currently muted.
+   * </p>
+   *
+   * @param username The username of the user.
+   */
+  protected Optional<Instant> getUsernameUnmuteTime(final String username) {
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the instant at which the user associated with the specified MAC is to be unmuted or empty if the user is
+   * not currently muted.
+   *
+   * <p>
+   * Subclasses may override and are not required to call the superclass implementation. This implementation returns an
+   * empty instant indicating the user is not currently muted.
+   * </p>
+   *
+   * @param mac The MAC of the user.
+   */
+  protected Optional<Instant> getMacUnmuteTime(final String mac) {
+    return Optional.empty();
   }
 
   private final HashMap<String, String> playersThatLeftMacsLast10 = new HashMap<>();
@@ -298,13 +277,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
   }
 
-  // Special character to stop spoofing by server
-  public static final String YOU_HAVE_BEEN_MUTED_LOBBY =
-      "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER";
-
-  // Special character to stop spoofing by host
-  public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST";
-
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
     final INode expectedReceive = channelToNode.get(channel);
@@ -312,21 +284,10 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
       throw new IllegalStateException("Expected: " + expectedReceive + " not: " + msg.getFrom());
     }
     if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
-      if (isLobby() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT")) {
+      if (((HubInvoke) msg.getMessage()).call.getRemoteName().equals(getChatControlChannelName())) {
         final String realName = IServerMessenger.getRealName(msg.getFrom().getName());
-        if (isUsernameMuted(realName) || isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
-          bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
-          return;
-        }
-      } else if (isGame() && ((HubInvoke) msg.getMessage()).call.getRemoteName()
-          .equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME")) {
-        final String realName = IServerMessenger.getRealName(msg.getFrom().getName());
-        if (isUsernameMuted(realName)) {
-          bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
-          return;
-        }
-        if (isMacMuted(getPlayerMac(msg.getFrom().getName()))) {
-          bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
+        if (isUsernameMutedInCache(realName) || isMacMutedInCache(getPlayerMac(msg.getFrom().getName()))) {
+          bareBonesSendChatMessage(getAdministrativeMuteChatMessage(), msg.getFrom());
           return;
         }
       }
@@ -341,11 +302,24 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     }
   }
 
+  private String getChatControlChannelName() {
+    return ChatController.getChatChannelName(getChatChannelName());
+  }
+
+  /**
+   * Returns the name of the chat channel.
+   */
+  protected abstract String getChatChannelName();
+
+  /**
+   * Returns the administrative chat message to send a user who has been muted.
+   *
+   * @see games.strategy.engine.chat.AdministrativeChatMessages
+   */
+  protected abstract String getAdministrativeMuteChatMessage();
+
   private void bareBonesSendChatMessage(final String message, final INode to) {
-    final RemoteName rn = new RemoteName(isLobby()
-        ? ChatController.getChatChannelName("_LOBBY_CHAT")
-        : ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"),
-        IChatChannel.class);
+    final RemoteName rn = new RemoteName(getChatControlChannelName(), IChatChannel.class);
     final RemoteMethodCall call = new RemoteMethodCall(
         rn.getName(),
         "chatOccured",
@@ -601,8 +575,11 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               }
               continue;
             }
-            final ServerQuarantineConversation conversation =
-                new ServerQuarantineConversation(loginValidator, socketChannel, nioSocket, ServerMessenger.this);
+            final ServerQuarantineConversation conversation = new ServerQuarantineConversation(
+                loginValidator,
+                socketChannel,
+                nioSocket,
+                AbstractServerMessenger.this);
             nioSocket.add(socketChannel, conversation);
           } else if (!key.isValid()) {
             key.cancel();
@@ -614,17 +591,32 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private TimerTask getUsernameUnmuteTask(final String username) {
     return createUnmuteTimerTask(
-        () -> (isLobby() && !new MutedUsernameController(database).isUsernameMuted(username)) || isGame(),
+        () -> isUsernameMutedInBackingStore(username),
         () -> liveMutedUsernames.remove(username));
   }
 
-  private TimerTask createUnmuteTimerTask(final Supplier<Boolean> runCondition, final Runnable action) {
+  /**
+   * Returns {@code true} if the user associated with the specified username is muted according to the backing store
+   * (e.g. a database); otherwise {@code false}.
+   *
+   * <p>
+   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
+   * {@code false} indicating the user is not currently muted.
+   * </p>
+   *
+   * @param username The username of the user.
+   */
+  protected boolean isUsernameMutedInBackingStore(final String username) {
+    return false;
+  }
+
+  private TimerTask createUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
     return new TimerTask() {
       @Override
       public void run() {
-        if (runCondition.get()) {
+        if (!isUserMuted.getAsBoolean()) {
           synchronized (cachedListLock) {
-            action.run();
+            unmuteUser.run();
           }
         }
       }
@@ -633,8 +625,23 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   private TimerTask getMacUnmuteTask(final String mac) {
     return createUnmuteTimerTask(
-        () -> (isLobby() && !new MutedMacController(database).isMacMuted(mac)) || isGame(),
+        () -> isMacMutedInBackingStore(mac),
         () -> liveMutedMacAddresses.remove(mac));
+  }
+
+  /**
+   * Returns {@code true} if the user associated with the specified MAC is muted according to the backing store (e.g. a
+   * database); otherwise {@code false}.
+   *
+   * <p>
+   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
+   * {@code false} indicating the user is not currently muted.
+   * </p>
+   *
+   * @param mac The MAC of the user.
+   */
+  protected boolean isMacMutedInBackingStore(final String mac) {
+    return false;
   }
 
   @Override
@@ -698,6 +705,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   @Override
   public String toString() {
-    return "ServerMessenger LocalNode:" + node + " ClientNodes:" + nodeToChannel.keySet();
+    return getClass().getSimpleName() + " LocalNode:" + node + " ClientNodes:" + nodeToChannel.keySet();
   }
 }

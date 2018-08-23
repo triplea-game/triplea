@@ -33,7 +33,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
-import games.strategy.net.ServerMessenger;
+import games.strategy.net.TestServerMessenger;
 import games.strategy.util.Interruptibles;
 
 public class RemoteMessengerTest {
@@ -128,10 +128,10 @@ public class RemoteMessengerTest {
   @Test
   public void testRemoteCall() throws Exception {
     final RemoteName test = new RemoteName("test", ITestRemote.class);
-    ServerMessenger server = null;
+    IServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = ServerMessenger.newInstanceForGameHost("server", 0);
+      server = new TestServerMessenger("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();
@@ -160,7 +160,7 @@ public class RemoteMessengerTest {
     }
   }
 
-  private static void shutdownServerAndClient(final ServerMessenger server, final ClientMessenger client) {
+  private static void shutdownServerAndClient(final IServerMessenger server, final ClientMessenger client) {
     if (server != null) {
       server.shutDown();
     }
@@ -172,10 +172,10 @@ public class RemoteMessengerTest {
   @Test
   public void testRemoteCall2() throws Exception {
     final RemoteName test = new RemoteName("test", ITestRemote.class);
-    ServerMessenger server = null;
+    IServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = ServerMessenger.newInstanceForGameHost("server", 0);
+      server = new TestServerMessenger("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();
@@ -200,10 +200,10 @@ public class RemoteMessengerTest {
     // when the client shutdown, remotes created
     // on the client should not be visible on server
     final RemoteName test = new RemoteName("test", ITestRemote.class);
-    ServerMessenger server = null;
+    IServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = ServerMessenger.newInstanceForGameHost("server", 0);
+      server = new TestServerMessenger("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();
@@ -226,10 +226,10 @@ public class RemoteMessengerTest {
     // when the client shutdown, remotes created
     // on the client should not be visible on server
     final RemoteName test = new RemoteName("test", IFoo.class);
-    ServerMessenger server = null;
+    IServerMessenger server = null;
     ClientMessenger client = null;
     try {
-      server = ServerMessenger.newInstanceForGameHost("server", 0);
+      server = new TestServerMessenger("server", 0);
       server.setAcceptNewConnections(true);
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();

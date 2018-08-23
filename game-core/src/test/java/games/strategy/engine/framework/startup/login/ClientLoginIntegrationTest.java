@@ -18,7 +18,7 @@ import games.strategy.net.IConnectionLogin;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
-import games.strategy.net.ServerMessenger;
+import games.strategy.net.TestServerMessenger;
 
 @Integration
 public final class ClientLoginIntegrationTest {
@@ -35,7 +35,7 @@ public final class ClientLoginIntegrationTest {
   }
 
   private static IServerMessenger newServerMessenger() throws Exception {
-    final ServerMessenger serverMessenger = ServerMessenger.newInstanceForGameHost("server", 0);
+    final IServerMessenger serverMessenger = new TestServerMessenger("server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.setLoginValidator(newLoginValidator(serverMessenger));
     return serverMessenger;

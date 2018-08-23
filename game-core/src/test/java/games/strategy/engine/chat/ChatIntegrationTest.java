@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.AfterEach;
@@ -24,12 +25,12 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
-import games.strategy.net.ServerMessenger;
+import games.strategy.net.TestServerMessenger;
 import games.strategy.sound.SoundPath;
 
 @Integration
 public final class ChatIntegrationTest {
-  private static final String CHAT_NAME = "c";
+  private static final String CHAT_NAME = TestServerMessenger.CHAT_CHANNEL_NAME;
   private static final int MESSAGE_COUNT = 50;
   private static final int NODE_COUNT = 3;
 
@@ -48,7 +49,7 @@ public final class ChatIntegrationTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    serverMessenger = ServerMessenger.newInstanceForGameHost("Server", 0);
+    serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
@@ -80,6 +81,15 @@ public final class ChatIntegrationTest {
 
   @Test
   public void shouldBeAbleToChatAcrossMultipleNodes() {
+    runChatTest((server, client1, client2) -> {
+      sendMessagesFrom(client2);
+      sendMessagesFrom(server);
+      sendMessagesFrom(client1);
+      waitFor(this::allMessagesToArrive);
+    });
+  }
+
+  private void runChatTest(final ChatTest chatTest) {
     assertTimeoutPreemptively(Duration.ofSeconds(15), () -> {
       final ChatController controller = newChatController();
       final Chat server = newChat(serverMessenger, serverChannelMessenger, serverRemoteMessenger);
@@ -90,10 +100,7 @@ public final class ChatIntegrationTest {
       client2.addChatListener(client2ChatListener);
       waitFor(this::allNodesToConnect);
 
-      sendMessagesFrom(client2);
-      sendMessagesFrom(server);
-      sendMessagesFrom(client1);
-      waitFor(this::allMessagesToArrive);
+      chatTest.run(server, client1, client2);
 
       client1.shutdown();
       client2.shutdown();
@@ -161,9 +168,37 @@ public final class ChatIntegrationTest {
     }).start();
   }
 
+  @Test
+  public void shouldBeAbleToMuteNodeByUsername() {
+    runChatTest((server, client1, client2) -> {
+      serverMessenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
+      client1.sendMessage("Test", false);
+      waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
+    });
+  }
+
+  private static void nodeToReceiveMessage(final TestChatListener chatListener, final String message) {
+    assertThat(chatListener.lastMessageReceived.get(), is(message));
+  }
+
+  @Test
+  public void shouldBeAbleToMuteNodeByMac() {
+    runChatTest((server, client1, client2) -> {
+      serverMessenger.notifyMacMutingOfPlayer(serverMessenger.getPlayerMac(client1.getLocalNode().getName()), null);
+      client1.sendMessage("Test", false);
+      waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
+    });
+  }
+
+  @FunctionalInterface
+  private interface ChatTest {
+    void run(Chat server, Chat client1, Chat client2) throws Exception;
+  }
+
   private static final class TestChatListener implements IChatListener {
     final AtomicInteger playerCount = new AtomicInteger();
     final AtomicInteger messageCount = new AtomicInteger();
+    final AtomicReference<String> lastMessageReceived = new AtomicReference<>();
 
     @Override
     public void updatePlayerList(final Collection<INode> players) {
@@ -173,6 +208,7 @@ public final class ChatIntegrationTest {
     @Override
     public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
         final String sound) {
+      lastMessageReceived.set(message);
       messageCount.incrementAndGet();
     }
 

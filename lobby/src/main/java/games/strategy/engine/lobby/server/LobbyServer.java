@@ -10,7 +10,6 @@ import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.login.LobbyLoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 
 /**
@@ -38,8 +37,7 @@ public final class LobbyServer {
   static void start(final LobbyPropertyReader lobbyPropertyReader) throws IOException {
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 
-    final IServerMessenger server =
-        ServerMessenger.newInstanceForLobby(LobbyConstants.ADMIN_USERNAME, lobbyPropertyReader);
+    final IServerMessenger server = new LobbyServerMessenger(LobbyConstants.ADMIN_USERNAME, lobbyPropertyReader);
     final Messengers messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator(lobbyPropertyReader));
     // setup common objects

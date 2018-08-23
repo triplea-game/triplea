@@ -6,10 +6,10 @@ import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.logging.Level;
 
+import games.strategy.net.AbstractServerMessenger;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
-import games.strategy.net.ServerMessenger;
 import lombok.extern.java.Log;
 
 /**
@@ -39,10 +39,10 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private String remoteName;
   private String remoteMac;
   private Map<String, String> challenge;
-  private final ServerMessenger serverMessenger;
+  private final AbstractServerMessenger serverMessenger;
 
   public ServerQuarantineConversation(final ILoginValidator validator, final SocketChannel channel,
-      final NioSocket socket, final ServerMessenger serverMessenger) {
+      final NioSocket socket, final AbstractServerMessenger serverMessenger) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
