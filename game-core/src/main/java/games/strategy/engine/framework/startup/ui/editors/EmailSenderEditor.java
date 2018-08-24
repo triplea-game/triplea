@@ -45,6 +45,8 @@ public class EmailSenderEditor extends EditorPanel {
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel hostLabel = new JLabel("Host:");
   private final JLabel portLabel = new JLabel("Port:");
+  private final JLabel loginLabel = new JLabel("Login:");
+  private final JLabel passwordLabel = new JLabel("Password:");
   private final JButton testEmail = new JButton("Test Email");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
@@ -80,13 +82,11 @@ public class EmailSenderEditor extends EditorPanel {
     add(toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
-    final JLabel loginLabel = new JLabel("Login:");
     add(loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
-    final JLabel passwordLabel = new JLabel("Password:");
     add(passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
@@ -190,10 +190,11 @@ public class EmailSenderEditor extends EditorPanel {
   public boolean isBeanValid() {
     final boolean hostValid = validateTextFieldNotEmpty(host, hostLabel);
     final boolean portValid = validateTextField(port, portLabel, new IntegerRangeValidator(0, 65635));
-    // boolean loginValid = validateTextFieldNotEmpty(login, loginLabel);
-    // boolean passwordValid = validateTextFieldNotEmpty(password, passwordLabel);
+    final boolean authenticationRequired = genericEmailSender.isAuthenticationRequired();
+    final boolean loginValid = !authenticationRequired || validateTextFieldNotEmpty(login, loginLabel);
+    final boolean passwordValid = !authenticationRequired || validateTextFieldNotEmpty(password, passwordLabel);
     final boolean addressValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
-    final boolean allValid = hostValid && portValid && /* loginValid && passwordValid && */addressValid;
+    final boolean allValid = hostValid && portValid && loginValid && passwordValid && addressValid;
     testEmail.setEnabled(allValid);
     return allValid;
   }

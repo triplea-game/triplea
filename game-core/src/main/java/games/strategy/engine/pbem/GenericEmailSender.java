@@ -197,6 +197,18 @@ public class GenericEmailSender implements IEmailSender {
     }
   }
 
+  /**
+   * Returns {@code true} if the email provider requires authentication; otherwise returns {@code false}.
+   *
+   * <p>
+   * Subclasses may override and are not required to call the superclass implementation. This implementation always
+   * returns {@code false}.
+   * </p>
+   */
+  public boolean isAuthenticationRequired() {
+    return false;
+  }
+
   @Override
   public String getUserName() {
     return USE_TRANSIENT_CREDENTIAL.equals(m_userName) ? transientUserName : m_userName;

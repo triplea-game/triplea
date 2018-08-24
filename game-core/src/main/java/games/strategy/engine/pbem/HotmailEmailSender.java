@@ -42,6 +42,11 @@ public class HotmailEmailSender extends GenericEmailSender {
   }
 
   @Override
+  public boolean isAuthenticationRequired() {
+    return true;
+  }
+
+  @Override
   public String getHelpText() {
     return HelpSupport.loadHelp("hotmailEmailSender.html");
   }
