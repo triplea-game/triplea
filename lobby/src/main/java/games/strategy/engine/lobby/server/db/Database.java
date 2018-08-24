@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import games.strategy.engine.config.lobby.LobbyPropertyReader;
+import games.strategy.engine.lobby.server.config.LobbyPropertyReader;
 
 /**
  * Utility to get connections to the Postgres lobby database.

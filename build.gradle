@@ -35,6 +35,7 @@ subprojects {
         junitJupiterVersion = '5.1.0'
         lombokVersion = '1.18.0'
         mockitoVersion = '2.19.1'
+        postgresqlVersion = '42.2.2'
     }
 
     apply plugin: 'checkstyle'
@@ -55,6 +56,7 @@ subprojects {
 
         errorprone 'com.google.errorprone:error_prone_core:2.3.1'
 
+        testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
         testCompile "org.hamcrest:java-hamcrest:$hamcrestVersion"
         testCompile "org.mockito:mockito-core:$mockitoVersion"
         testCompile "org.mockito:mockito-junit-jupiter:$mockitoVersion"

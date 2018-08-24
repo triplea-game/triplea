@@ -17,7 +17,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 import org.triplea.test.common.Integration;
 
-import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
+import games.strategy.engine.lobby.server.config.TestLobbyPropertyReaders;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;

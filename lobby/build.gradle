@@ -15,6 +15,9 @@ jar {
 
 dependencies {
     compile project(':game-core')
+    compile 'org.mindrot:jbcrypt:0.4'
+
+    runtime "org.postgresql:postgresql:$postgresqlVersion"
 
     testCompile project(':test-common')
 }

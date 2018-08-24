@@ -2,8 +2,8 @@ package games.strategy.engine.lobby.server;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.IUserManager;
+import games.strategy.engine.lobby.server.config.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.HashedPassword;
 import games.strategy.engine.lobby.server.db.UserController;

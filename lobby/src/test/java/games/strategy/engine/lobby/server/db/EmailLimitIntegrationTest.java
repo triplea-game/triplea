@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server.db;
 
-import static games.strategy.test.Assertions.assertNotThrows;
+import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import org.triplea.test.common.Integration;
 
 import com.google.common.base.Strings;
 
-import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
+import games.strategy.engine.lobby.server.config.TestLobbyPropertyReaders;
 import games.strategy.util.Util;
 
 /**
