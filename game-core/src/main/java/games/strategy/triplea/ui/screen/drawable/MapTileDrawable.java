@@ -16,7 +16,9 @@ import games.strategy.triplea.ui.screen.TileManager;
  */
 public abstract class MapTileDrawable implements IDrawable {
   protected boolean noImage = false;
+  @SuppressWarnings("checkstyle:MemberName")
   protected final int x;
+  @SuppressWarnings("checkstyle:MemberName")
   protected final int y;
   protected final UiContext uiContext;
   protected boolean unscaled;
