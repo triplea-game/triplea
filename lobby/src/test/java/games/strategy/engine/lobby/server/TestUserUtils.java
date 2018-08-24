@@ -10,8 +10,6 @@ import games.strategy.util.Util;
 /**
  * A collection of methods for creating instances of {@link User} for testing purposes.
  */
-// TODO: This class is intended only for use by test code. It is temporarily located in a production package while lobby
-// server code is being gradually moved to the lobby project.
 public final class TestUserUtils {
   private TestUserUtils() {}
 
