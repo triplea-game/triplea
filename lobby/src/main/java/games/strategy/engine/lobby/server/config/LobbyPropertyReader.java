@@ -1,4 +1,4 @@
-package games.strategy.engine.config.lobby;
+package games.strategy.engine.lobby.server.config;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

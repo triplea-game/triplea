@@ -29,13 +29,13 @@ import org.triplea.test.common.security.TestSecurityUtils;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.config.MemoryPropertyReader;
-import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.login.LobbyLoginChallengeKeys;
 import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.TestUserUtils;
 import games.strategy.engine.lobby.server.User;
+import games.strategy.engine.lobby.server.config.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.db.BadWordDao;
 import games.strategy.engine.lobby.server.db.BannedMacDao;
 import games.strategy.engine.lobby.server.db.BannedUsernameDao;

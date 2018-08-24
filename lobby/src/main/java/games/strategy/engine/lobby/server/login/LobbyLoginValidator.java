@@ -15,12 +15,12 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
-import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.common.login.LobbyLoginChallengeKeys;
 import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
 import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.User;
+import games.strategy.engine.lobby.server.config.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.db.AccessLogController;
 import games.strategy.engine.lobby.server.db.BadWordController;
 import games.strategy.engine.lobby.server.db.BadWordDao;

@@ -1,4 +1,4 @@
-package games.strategy.engine.config.lobby;
+package games.strategy.engine.lobby.server.config;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.config.MemoryPropertyReader;
-import games.strategy.engine.config.lobby.LobbyPropertyReader.DefaultValues;
-import games.strategy.engine.config.lobby.LobbyPropertyReader.PropertyKeys;
+import games.strategy.engine.lobby.server.config.LobbyPropertyReader.DefaultValues;
+import games.strategy.engine.lobby.server.config.LobbyPropertyReader.PropertyKeys;
 
 public final class LobbyPropertyReaderTest {
   private final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();

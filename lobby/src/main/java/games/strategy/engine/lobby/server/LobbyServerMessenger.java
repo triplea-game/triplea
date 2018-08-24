@@ -5,8 +5,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 import games.strategy.engine.chat.AdministrativeChatMessages;
-import games.strategy.engine.config.lobby.LobbyPropertyReader;
 import games.strategy.engine.lobby.common.LobbyConstants;
+import games.strategy.engine.lobby.server.config.LobbyPropertyReader;
 import games.strategy.engine.lobby.server.db.Database;
 import games.strategy.engine.lobby.server.db.MutedMacController;
 import games.strategy.engine.lobby.server.db.MutedUsernameController;

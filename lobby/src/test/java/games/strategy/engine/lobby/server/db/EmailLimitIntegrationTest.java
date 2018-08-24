@@ -12,7 +12,7 @@ import org.triplea.test.common.Integration;
 
 import com.google.common.base.Strings;
 
-import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
+import games.strategy.engine.lobby.server.config.TestLobbyPropertyReaders;
 import games.strategy.util.Util;
 
 /**

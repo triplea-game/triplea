@@ -2,7 +2,7 @@ package games.strategy.engine.lobby.server.db;
 
 import org.triplea.test.common.Integration;
 
-import games.strategy.engine.config.lobby.TestLobbyPropertyReaders;
+import games.strategy.engine.lobby.server.config.TestLobbyPropertyReaders;
 
 /**
  * Superclass for fixtures that test a DAO implementation.
