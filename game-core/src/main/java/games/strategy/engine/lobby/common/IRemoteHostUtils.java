@@ -27,11 +27,23 @@ public interface IRemoteHostUtils extends IRemote {
 
   String getSalt();
 
-  static RemoteName newRemoteNameForNode(final INode node) {
-    checkNotNull(node);
+  /**
+   * Companion object for {@link IRemoteHostUtils} that provides various utility methods.
+   *
+   * <p>
+   * <strong>NOTE:</strong> These methods cannot be members of {@link IRemoteHostUtils} directly (even if they are
+   * static) because their presence may affect the RMI method ordinal calculation.
+   * </p>
+   */
+  final class Companion {
+    private Companion() {}
 
-    return new RemoteName(
-        "games.strategy.engine.lobby.server.RemoteHostUtils:" + node.toString(),
-        IRemoteHostUtils.class);
+    public static RemoteName newRemoteNameForNode(final INode node) {
+      checkNotNull(node);
+
+      return new RemoteName(
+          "games.strategy.engine.lobby.server.RemoteHostUtils:" + node.toString(),
+          IRemoteHostUtils.class);
+    }
   }
 }
