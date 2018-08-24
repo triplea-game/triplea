@@ -35,6 +35,7 @@ subprojects {
         junitJupiterVersion = '5.1.0'
         lombokVersion = '1.18.0'
         mockitoVersion = '2.19.1'
+        postgresqlVersion = '42.2.2'
     }
 
     apply plugin: 'checkstyle'
