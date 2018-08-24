@@ -6,30 +6,30 @@ package games.strategy.engine.history;
  */
 public class Event extends IndexedHistoryNode implements Renderable {
   private static final long serialVersionUID = -8382102990360177484L;
-  private final String m_description;
+  private final String description;
   // additional data used for rendering this event
-  private Object m_renderingData;
+  private Object renderingData;
 
   public String getDescription() {
-    return m_description;
+    return description;
   }
 
   Event(final String description, final int changeStartIndex) {
     super(description, changeStartIndex);
-    m_description = description;
+    this.description = description;
   }
 
   @Override
   public Object getRenderingData() {
-    return m_renderingData;
+    return renderingData;
   }
 
-  public void setRenderingData(final Object data) {
-    m_renderingData = data;
+  public void setRenderingData(final Object renderingData) {
+    this.renderingData = renderingData;
   }
 
   @Override
   public SerializationWriter getWriter() {
-    return new EventHistorySerializer(m_description, m_renderingData);
+    return new EventHistorySerializer(description, renderingData);
   }
 }
