@@ -208,7 +208,7 @@ final class ModeratorController implements IModeratorController {
         "Getting salt for Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     return remoteHostUtils.getSalt();
@@ -222,7 +222,7 @@ final class ModeratorController implements IModeratorController {
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.getChatLogHeadlessHostBot(hashedPassword, salt);
@@ -244,7 +244,7 @@ final class ModeratorController implements IModeratorController {
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response =
@@ -267,7 +267,7 @@ final class ModeratorController implements IModeratorController {
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.bootPlayerHeadlessHostBot(playerNameToBeBooted, hashedPassword, salt);
@@ -288,7 +288,7 @@ final class ModeratorController implements IModeratorController {
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.banPlayerHeadlessHostBot(playerNameToBeBanned, hours, hashedPassword, salt);
@@ -309,7 +309,7 @@ final class ModeratorController implements IModeratorController {
     }
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.stopGameHeadlessHostBot(hashedPassword, salt);
@@ -333,7 +333,7 @@ final class ModeratorController implements IModeratorController {
         "Started Remote Shutdown of Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     final String response = remoteHostUtils.shutDownHeadlessHostBot(hashedPassword, salt);
@@ -395,7 +395,7 @@ final class ModeratorController implements IModeratorController {
     if (serverMessenger.getServerNode().equals(node)) {
       throw new IllegalStateException("Cannot do this for server node");
     }
-    final RemoteName remoteName = IRemoteHostUtils.newRemoteNameForNode(node);
+    final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
     final IRemoteHostUtils remoteHostUtils =
         (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
     return remoteHostUtils.getConnections();

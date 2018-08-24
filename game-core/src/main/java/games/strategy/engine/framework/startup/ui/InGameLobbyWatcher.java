@@ -109,7 +109,7 @@ public class InGameLobbyWatcher {
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
       final RemoteMessenger rm = new RemoteMessenger(um);
       final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
-      rm.registerRemote(rhu, IRemoteHostUtils.newRemoteNameForNode(um.getLocalNode()));
+      rm.registerRemote(rhu, IRemoteHostUtils.Companion.newRemoteNameForNode(um.getLocalNode()));
       return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
