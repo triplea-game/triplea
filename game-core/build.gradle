@@ -69,7 +69,6 @@ dependencies {
     runtime remoteFile('https://github.com/kirill-grouchnikov/substance/raw/f894ef784a2ac20acf13e6ed2c7c26123399787b/drop/8.0.02/trident-1.5.00.jar')
 
     testCompile project(':test-common')
-    testCompile 'nl.jqno.equalsverifier:equalsverifier:2.4.5'
     testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
     testCompile 'org.testfx:testfx-junit5:4.0.13-alpha'
     testCompile 'org.testfx:testfx-core:4.0.13-alpha'

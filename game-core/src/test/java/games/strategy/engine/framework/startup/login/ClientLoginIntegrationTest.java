@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.login;
 
-import static games.strategy.test.Assertions.assertNotThrows;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.util.Map;
 

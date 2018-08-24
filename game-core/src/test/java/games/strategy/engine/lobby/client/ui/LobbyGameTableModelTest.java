@@ -1,9 +1,9 @@
 package games.strategy.engine.lobby.client.ui;
 
-import static games.strategy.test.Assertions.assertNotThrows;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
+import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.time.Instant;
 import java.util.HashMap;

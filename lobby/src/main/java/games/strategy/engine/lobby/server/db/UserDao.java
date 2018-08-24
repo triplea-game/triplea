@@ -2,6 +2,9 @@ package games.strategy.engine.lobby.server.db;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
+/**
+ * Data access object for the users table.
+ */
 public interface UserDao {
 
   /**

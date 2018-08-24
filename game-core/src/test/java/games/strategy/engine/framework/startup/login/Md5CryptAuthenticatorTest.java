@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.login;
 
-import static games.strategy.test.Assertions.assertNotThrows;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
@@ -9,6 +8,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.util.Map;
 

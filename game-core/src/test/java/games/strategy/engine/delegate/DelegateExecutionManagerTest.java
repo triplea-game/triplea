@@ -1,7 +1,7 @@
 package games.strategy.engine.delegate;
 
-import static games.strategy.test.Assertions.assertNotThrows;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.util.concurrent.CountDownLatch;
 

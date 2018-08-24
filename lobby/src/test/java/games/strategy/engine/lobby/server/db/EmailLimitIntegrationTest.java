@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.server.db;
 
-import static games.strategy.test.Assertions.assertNotThrows;
+import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
