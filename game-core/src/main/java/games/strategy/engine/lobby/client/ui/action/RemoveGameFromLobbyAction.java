@@ -6,6 +6,9 @@ import javax.swing.AbstractAction;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
+/**
+ * A UI action that removes the selected game host from the lobby. There is no prompt to confirm the action.
+ */
 public class RemoveGameFromLobbyAction extends AbstractAction {
   private static final long serialVersionUID = 8802420945692279375L;
   private final InGameLobbyWatcherWrapper lobbyWatcher;

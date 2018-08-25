@@ -6,6 +6,9 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 
+/**
+ * Provides information about a client connection to a lobby server.
+ */
 public class LobbyClient {
   private final Messengers messengers;
   private final boolean isAnonymousLogin;

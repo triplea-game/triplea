@@ -21,6 +21,15 @@ import games.strategy.net.MacFinder;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Md5Crypt;
 
+/**
+ * The client side of the lobby authentication protocol.
+ *
+ * <p>
+ * The client is responsible for sending the initial authentication request to the server containing the user's name.
+ * The server will send back an authentication challenge. The client then sends a response to the challenge to prove the
+ * user knows the correct password.
+ * </p>
+ */
 public class LobbyLogin {
   private final Window parentWindow;
   private final LobbyServerProperties lobbyServerProperties;

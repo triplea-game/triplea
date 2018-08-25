@@ -37,6 +37,9 @@ import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 
+/**
+ * The top-level frame window for the lobby client UI.
+ */
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
 
