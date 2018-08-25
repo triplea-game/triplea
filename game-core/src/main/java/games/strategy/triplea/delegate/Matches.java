@@ -2011,7 +2011,7 @@ public final class Matches {
       final GameData data) {
     return paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final String[] relationshipChange = relationshipChangeString.split(":");
+        final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
         final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
         final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
         if (player != null && !(p1.equals(player) || p2.equals(player))) {
@@ -2031,7 +2031,7 @@ public final class Matches {
       final PlayerID currentPlayer, final GameData data) {
     return paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final String[] relationshipChange = relationshipChangeString.split(":");
+        final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
         final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
         final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
         if (!currentPlayer.equals(p1)) {

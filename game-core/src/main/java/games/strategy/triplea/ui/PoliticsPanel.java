@@ -248,8 +248,10 @@ public class PoliticsPanel extends ActionPanel {
       if (paa1.equals(paa2)) {
         return 0;
       }
-      final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
-      final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
+      final String[] paa1RelationChange =
+          PoliticalActionAttachment.parseRelationshipChange(paa1.getRelationshipChange().iterator().next());
+      final String[] paa2RelationChange =
+          PoliticalActionAttachment.parseRelationshipChange(paa2.getRelationshipChange().iterator().next());
       final RelationshipTypeList relationshipTypeList;
       gameData.acquireReadLock();
       try {

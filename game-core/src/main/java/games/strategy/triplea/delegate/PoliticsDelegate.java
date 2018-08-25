@@ -333,7 +333,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     getNeutralOutOfWarWithAllies(paa, player, bridge);
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChange : paa.getRelationshipChange()) {
-      final String[] s = relationshipChange.split(":");
+      final String[] s = PoliticalActionAttachment.parseRelationshipChange(relationshipChange);
       final PlayerID player1 = getData().getPlayerList().getPlayerId(s[0]);
       final PlayerID player2 = getData().getPlayerList().getPlayerId(s[1]);
       final RelationshipType oldRelation = getData().getRelationshipTracker().getRelationshipType(player1, player2);
@@ -405,7 +405,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     p1AlliedWith.remove(player);
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
-      final String[] relationshipChange = relationshipChangeString.split(":");
+      final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
       final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
       final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
       if (!(p1.equals(player) || p2.equals(player))) {
@@ -447,7 +447,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
-      final String[] relationshipChange = relationshipChangeString.split(":");
+      final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
       final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
       final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
       if (!(p1.equals(player) || p2.equals(player))) {

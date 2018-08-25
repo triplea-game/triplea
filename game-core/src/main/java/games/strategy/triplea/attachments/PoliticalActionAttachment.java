@@ -1,5 +1,8 @@
 package games.strategy.triplea.attachments;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -104,6 +107,26 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
 
   private void resetRelationshipChange() {
     m_relationshipChange = new ArrayList<>();
+  }
+
+  /**
+   * Parses the specified encoded political action attachment relationship change.
+   *
+   * @param encodedRelationshipChange The encoded relationship change of the form
+   *        {@code <player1Name>:<player2Name>:<relationshipTypeName>}.
+   *
+   * @return An array whose first element is the first player's name, whose second element is the second player's name,
+   *         and whose third element is the relationship type name.
+   *
+   * @throws IllegalArgumentException If {@code encodedRelationshipChange} does not contain exactly three tokens
+   *         separated by colons.
+   */
+  public static String[] parseRelationshipChange(final String encodedRelationshipChange) {
+    checkNotNull(encodedRelationshipChange);
+
+    final String[] tokens = splitOnColon(encodedRelationshipChange);
+    checkArgument(tokens.length == 3, String.format("Expected three tokens but was '%s'", encodedRelationshipChange));
+    return tokens;
   }
 
   /**
