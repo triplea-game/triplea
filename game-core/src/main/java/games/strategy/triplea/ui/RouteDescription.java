@@ -30,10 +30,10 @@ public class RouteDescription {
   public boolean equals(final Object o) {
     if (o == this) {
       return true;
-    }
-    if (o == null) {
+    } else if (!(o instanceof RouteDescription)) {
       return false;
     }
+
     final RouteDescription other = (RouteDescription) o;
     if ((start == null && other.start != null) || (other.start == null && start != null)
         || (start != other.start && !start.equals(other.start))) {
