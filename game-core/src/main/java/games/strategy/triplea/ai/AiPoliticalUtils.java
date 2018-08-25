@@ -84,13 +84,15 @@ public class AiPoliticalUtils {
   private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID p0,
       final GameData data) {
     for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
-      final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
-      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
+      final PoliticalActionAttachment.RelationshipChange relationshipChange =
+          PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
+      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
+      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-        final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
+        final RelationshipType newType =
+            data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
         if (currentType.getRelationshipTypeAttachment().isNeutral()
             && newType.getRelationshipTypeAttachment().isWar()) {
           return true;
@@ -103,13 +105,15 @@ public class AiPoliticalUtils {
   private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0,
       final GameData data) {
     for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
-      final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
-      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
+      final PoliticalActionAttachment.RelationshipChange relationshipChange =
+          PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
+      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
+      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-        final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
+        final RelationshipType newType =
+            data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
         if (currentType.getRelationshipTypeAttachment().isAllied()
             && (newType.getRelationshipTypeAttachment().isNeutral()
                 || newType.getRelationshipTypeAttachment().isWar())) {

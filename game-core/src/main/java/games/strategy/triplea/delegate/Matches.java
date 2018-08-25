@@ -2011,14 +2011,16 @@ public final class Matches {
       final GameData data) {
     return paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
-        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
+        final PoliticalActionAttachment.RelationshipChange relationshipChange =
+            PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
+        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
+        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
         if (player != null && !(p1.equals(player) || p2.equals(player))) {
           continue;
         }
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-        final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
+        final RelationshipType newType =
+            data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
         if (currentRelation.test(currentType) && newRelation.test(newType)) {
           return true;
         }
@@ -2031,9 +2033,10 @@ public final class Matches {
       final PlayerID currentPlayer, final GameData data) {
     return paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final String[] relationshipChange = PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
-        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
+        final PoliticalActionAttachment.RelationshipChange relationshipChange =
+            PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
+        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
+        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
         if (!currentPlayer.equals(p1)) {
           if (p1.amNotDeadYet(data)) {
             return true;

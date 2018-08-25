@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.concurrent.Immutable;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -24,6 +26,9 @@ import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 /**
  * An attachment, attached to a player that will describe which political
@@ -115,18 +120,15 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    * @param encodedRelationshipChange The encoded relationship change of the form
    *        {@code <player1Name>:<player2Name>:<relationshipTypeName>}.
    *
-   * @return An array whose first element is the first player's name, whose second element is the second player's name,
-   *         and whose third element is the relationship type name.
-   *
    * @throws IllegalArgumentException If {@code encodedRelationshipChange} does not contain exactly three tokens
    *         separated by colons.
    */
-  public static String[] parseRelationshipChange(final String encodedRelationshipChange) {
+  public static RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
     checkNotNull(encodedRelationshipChange);
 
     final String[] tokens = splitOnColon(encodedRelationshipChange);
     checkArgument(tokens.length == 3, String.format("Expected three tokens but was '%s'", encodedRelationshipChange));
-    return tokens;
+    return new RelationshipChange(tokens[0], tokens[1], tokens[2]);
   }
 
   /**
@@ -175,5 +177,18 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
                 this::getRelationshipChange,
                 this::resetRelationshipChange))
         .build();
+  }
+
+  /**
+   * A relationship change specified in a political action attachment. Specifies the relationship type that will exist
+   * between two players after the action is successful.
+   */
+  @AllArgsConstructor(access = AccessLevel.PACKAGE)
+  @EqualsAndHashCode
+  @Immutable
+  public static final class RelationshipChange {
+    public final String player1Name;
+    public final String player2Name;
+    public final String relationshipTypeName;
   }
 }
