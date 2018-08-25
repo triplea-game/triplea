@@ -11,7 +11,9 @@ import java.util.Observable;
  * </p>
  */
 public class ImageScrollModel extends Observable {
+  @SuppressWarnings("checkstyle:MemberName")
   private int x;
+  @SuppressWarnings("checkstyle:MemberName")
   private int y;
   private int boxWidth = 5;
   private int boxHeight = 5;
