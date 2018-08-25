@@ -11,6 +11,10 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.AbstractUiContext;
 import lombok.extern.java.Log;
 
+/**
+ * Provides methods that convert relative links within a game description into absolute links that will work on the
+ * local system.
+ */
 @Log
 public class LocalizeHtml {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
@@ -39,6 +43,10 @@ public class LocalizeHtml {
     return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader(), null);
   }
 
+  /**
+   * Replaces relative image links within the HTML document {@code htmlText} with absolute links that point to the
+   * correct location on the local file system.
+   */
   public static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader resourceLoader,
       final String mapNameDir) {
     if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
