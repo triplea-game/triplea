@@ -29,6 +29,9 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.HttpProxy;
 import lombok.extern.java.Log;
 
+/**
+ * Provides methods to download files via HTTP.
+ */
 @Log
 public final class DownloadUtils {
   @VisibleForTesting
@@ -127,7 +130,9 @@ public final class DownloadUtils {
     }
   }
 
-
+  /**
+   * The result of a file download request.
+   */
   public static class FileDownloadResult {
     public final boolean wasSuccess;
     public final File downloadedFile;
