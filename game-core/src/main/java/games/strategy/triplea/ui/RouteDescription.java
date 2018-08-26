@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.Route;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +13,12 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 class RouteDescription {
-  private final Route route;
+  private final @Nullable Route route;
   // this point is in map co-ordinates, un scaled
-  private final Point start;
+  private final @Nullable Point start;
   // this point is in map co-ordinates, un scaled
-  private final Point end;
-  private final Image cursorImage;
+  private final @Nullable Point end;
+  private final @Nullable Image cursorImage;
 
   @Override
   public int hashCode() {
