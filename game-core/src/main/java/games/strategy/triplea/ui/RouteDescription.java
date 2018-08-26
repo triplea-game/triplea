@@ -32,12 +32,10 @@ class RouteDescription {
     }
 
     final RouteDescription other = (RouteDescription) o;
-    if ((start == null && other.start != null) || (other.start == null && start != null)
-        || (start != other.start && !start.equals(other.start))) {
+    if (!Objects.equals(start, other.start)) {
       return false;
     }
-    if ((route == null && other.route != null) || (other.route == null && route != null)
-        || (route != other.route && !route.equals(other.route))) {
+    if (!Objects.equals(route, other.route)) {
       return false;
     }
     if ((end == null && other.end != null) || (other.end == null && end != null)) {
