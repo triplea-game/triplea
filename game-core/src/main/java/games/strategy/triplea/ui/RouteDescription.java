@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import games.strategy.engine.data.Route;
 
-public class RouteDescription {
+class RouteDescription {
   private final Route route;
   // this point is in map co-ordinates, un scaled
   private final Point start;
