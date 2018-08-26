@@ -186,6 +186,11 @@ public class PBEMMessagePoster implements Serializable {
     return m_emailSender != null && m_emailSender.getAlsoPostAfterCombatMove();
   }
 
+  /**
+   * Posts a game turn summary (and optionally the associated save game) to the specified email service (if provided)
+   * and forum (if provided). The user is first prompted to confirm they wish to perform the action before the turn is
+   * posted.
+   */
   public static void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame,
       final PBEMMessagePoster posterPbem, final IAbstractForumPosterDelegate postingDelegate,
       final MainGameFrame mainGameFrame, final JComponent postButton) {

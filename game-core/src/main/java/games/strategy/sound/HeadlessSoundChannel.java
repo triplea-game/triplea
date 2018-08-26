@@ -4,6 +4,9 @@ import java.util.Collection;
 
 import games.strategy.engine.data.PlayerID;
 
+/**
+ * Implementation of {@link ISound} that does nothing (i.e. no sounds will be played).
+ */
 public class HeadlessSoundChannel implements ISound {
 
   @Override

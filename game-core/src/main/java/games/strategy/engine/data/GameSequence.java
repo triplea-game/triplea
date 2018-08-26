@@ -7,6 +7,9 @@ import java.util.logging.Level;
 
 import lombok.extern.java.Log;
 
+/**
+ * A contiguous sequence of {@link GameStep}s within a single game round.
+ */
 @Log
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;

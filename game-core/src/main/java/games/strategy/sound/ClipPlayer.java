@@ -171,6 +171,12 @@ public class ClipPlayer {
     setBeSilentInPreferencesWithoutAffectingCurrent(beSilent);
   }
 
+  /**
+   * Sets the {@code SOUND_PREFERENCE_GLOBAL_SWITCH} preference in the backing store without changing the current value
+   * in memory.
+   *
+   * @see #setBeSilent(boolean)
+   */
   public static void setBeSilentInPreferencesWithoutAffectingCurrent(final boolean silentBool) {
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
     final boolean current = prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);

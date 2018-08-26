@@ -46,6 +46,15 @@ import games.strategy.util.PointFileReaderWriter;
 import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 
+/**
+ * The center picker map-making tool.
+ *
+ * <p>
+ * This tool will allow you to manually specify center locations for each territory on a given map. Center locations
+ * tell the game where to put things like flags, text, unit placements, etc. It will generate a {@code centers.txt} file
+ * containing the territory center locations.
+ * </p>
+ */
 @Log
 public final class CenterPicker {
   private File mapFolderLocation;

@@ -46,6 +46,15 @@ public enum LockUtil {
 
   private final AtomicReference<ErrorReporter> errorReporterRef = new AtomicReference<>(new DefaultErrorReporter());
 
+  /**
+   * Acquires {@code lock}.
+   *
+   * <p>
+   * If {@code lock} is not currently held by the current thread, verifies that all other locks acquired prior to
+   * {@code lock} by the thread that most-recently held {@code lock} are held by the current thread. If not, a message
+   * will be written to the associated error reporter.
+   * </p>
+   */
   public void acquireLock(final Lock lock) {
     // we already have the lock, increase the count
     if (isLockHeld(lock)) {

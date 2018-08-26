@@ -8,6 +8,9 @@ import javax.swing.JOptionPane;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
+/**
+ * A UI action that prompts the user to change the comment displayed in the lobby game list for the selected game host.
+ */
 public class EditGameCommentAction extends AbstractAction {
   private static final long serialVersionUID = 1723950003185387843L;
   private final InGameLobbyWatcherWrapper lobbyWatcher;

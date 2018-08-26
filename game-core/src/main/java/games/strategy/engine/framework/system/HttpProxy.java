@@ -17,6 +17,9 @@ import com.google.common.base.Strings;
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.java.Log;
 
+/**
+ * Provides methods to configure the proxy to use for HTTP requests.
+ */
 @Log
 public class HttpProxy {
 
