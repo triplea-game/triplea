@@ -5,7 +5,11 @@ import java.awt.Point;
 import java.util.Objects;
 
 import games.strategy.engine.data.Route;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
+@Getter
 class RouteDescription {
   private final Route route;
   // this point is in map co-ordinates, un scaled
@@ -13,13 +17,6 @@ class RouteDescription {
   // this point is in map co-ordinates, un scaled
   private final Point end;
   private final Image cursorImage;
-
-  RouteDescription(final Route route, final Point start, final Point end, final Image cursorImage) {
-    this.route = route;
-    this.start = start;
-    this.end = end;
-    this.cursorImage = cursorImage;
-  }
 
   @Override
   public int hashCode() {
@@ -60,21 +57,5 @@ class RouteDescription {
     diffY *= diffY;
     final int endDiff = (int) Math.sqrt(diffX + diffY);
     return endDiff < 6;
-  }
-
-  public Route getRoute() {
-    return route;
-  }
-
-  public Point getStart() {
-    return start;
-  }
-
-  public Point getEnd() {
-    return end;
-  }
-
-  public Image getCursorImage() {
-    return cursorImage;
   }
 }
