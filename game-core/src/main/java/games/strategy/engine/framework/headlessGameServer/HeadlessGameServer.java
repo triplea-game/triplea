@@ -329,12 +329,10 @@ public class HeadlessGameServer {
         try {
           for (final INode node : nodes) {
             final String realName = IServerMessenger.getRealName(node.getName());
-            final String ip = node.getAddress().getHostAddress();
             final String mac = messenger.getPlayerMac(node.getName());
             if (realName.equals(playerName)) {
               log.info("Remote Mute of Player: " + playerName);
               messenger.notifyUsernameMutingOfPlayer(realName, expire);
-              messenger.notifyIpMutingOfPlayer(ip, expire);
               messenger.notifyMacMutingOfPlayer(mac, expire);
               return;
             }

@@ -172,11 +172,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     }
   }
 
-  @Override
-  public void notifyIpMutingOfPlayer(final String ip, final Instant muteExpires) {
-    // TODO: remove if no backwards compat issues
-  }
-
   private final List<String> liveMutedMacAddresses = new ArrayList<>();
 
   private boolean isMacMutedInCache(final String mac) {
