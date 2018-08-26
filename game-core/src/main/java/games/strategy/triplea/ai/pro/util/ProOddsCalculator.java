@@ -13,8 +13,8 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
-import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
+import games.strategy.triplea.odds.calculator.AggregateResults;
+import games.strategy.triplea.odds.calculator.IOddsCalculator;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;
 

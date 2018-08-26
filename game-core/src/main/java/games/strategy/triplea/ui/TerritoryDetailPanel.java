@@ -21,7 +21,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
+import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.OverlayIcon;

@@ -3,7 +3,7 @@ package games.strategy.triplea.ai.fast;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
-import games.strategy.triplea.oddsCalculator.ta.IOddsCalculator;
+import games.strategy.triplea.odds.calculator.IOddsCalculator;
 
 /**
  * Fast AI.
