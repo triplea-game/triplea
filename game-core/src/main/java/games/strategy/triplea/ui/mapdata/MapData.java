@@ -466,6 +466,12 @@ public class MapData implements Closeable {
     return getColorProperty(propertiesKey, null);
   }
 
+  /**
+   * Returns the value of the property named {@code propertiesKey} of type {@link Color}. Returns {@code defaultColor}
+   * if the property doesn't exist.
+   *
+   * @throws IllegalStateException If the property value does not represent a valid color.
+   */
   public Color getColorProperty(final String propertiesKey, final Color defaultColor) throws IllegalStateException {
     if (mapProperties.getProperty(propertiesKey) != null) {
       final String colorString = mapProperties.getProperty(propertiesKey);
@@ -481,6 +487,9 @@ public class MapData implements Closeable {
     return defaultColor;
   }
 
+  /**
+   * Returns the color associated with the player named {@code playerName}.
+   */
   public Color getPlayerColor(final String playerName) {
     // already loaded, just return
     if (playerColors.containsKey(playerName)) {
@@ -679,6 +688,11 @@ public class MapData implements Closeable {
     return getBoundingRect(name);
   }
 
+  /**
+   * Returns the bounding rectangle for the territory named {@code name}.
+   *
+   * @throws IllegalStateException If a bounding rectangle cannot be calculated for the specified territory.
+   */
   public Rectangle getBoundingRect(final String name) {
     final List<Polygon> polys = this.polys.get(name);
     if (polys == null) {
