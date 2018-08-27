@@ -332,9 +332,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     getMyselfOutOfAlliance(paa, player, bridge);
     getNeutralOutOfWarWithAllies(paa, player, bridge);
     final CompositeChange change = new CompositeChange();
-    for (final String relationshipChangeString : paa.getRelationshipChange()) {
-      final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          paa.parseRelationshipChange(relationshipChangeString);
+    for (final PoliticalActionAttachment.RelationshipChange relationshipChange : paa.getRelationshipChanges()) {
       final PlayerID player1 = relationshipChange.player1;
       final PlayerID player2 = relationshipChange.player2;
       final RelationshipType oldRelation = getData().getRelationshipTracker().getRelationshipType(player1, player2);
@@ -405,9 +403,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
     p1AlliedWith.remove(player);
     final CompositeChange change = new CompositeChange();
-    for (final String relationshipChangeString : paa.getRelationshipChange()) {
-      final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          paa.parseRelationshipChange(relationshipChangeString);
+    for (final PoliticalActionAttachment.RelationshipChange relationshipChange : paa.getRelationshipChanges()) {
       final PlayerID p1 = relationshipChange.player1;
       final PlayerID p2 = relationshipChange.player2;
       if (!(p1.equals(player) || p2.equals(player))) {
@@ -448,9 +444,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final Collection<PlayerID> p1AlliedWith =
         CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
     final CompositeChange change = new CompositeChange();
-    for (final String relationshipChangeString : paa.getRelationshipChange()) {
-      final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          paa.parseRelationshipChange(relationshipChangeString);
+    for (final PoliticalActionAttachment.RelationshipChange relationshipChange : paa.getRelationshipChanges()) {
       final PlayerID p1 = relationshipChange.player1;
       final PlayerID p2 = relationshipChange.player2;
       if (!(p1.equals(player) || p2.equals(player))) {

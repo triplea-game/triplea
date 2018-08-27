@@ -248,9 +248,9 @@ public class PoliticsPanel extends ActionPanel {
         return 0;
       }
       final PoliticalActionAttachment.RelationshipChange paa1RelationshipChange =
-          paa1.parseRelationshipChange(paa1.getRelationshipChange().iterator().next());
+          paa1.getRelationshipChanges().iterator().next();
       final PoliticalActionAttachment.RelationshipChange paa2RelationshipChange =
-          paa2.parseRelationshipChange(paa2.getRelationshipChange().iterator().next());
+          paa2.getRelationshipChanges().iterator().next();
       final RelationshipType paa1NewType = paa1RelationshipChange.relationshipType;
       final RelationshipType paa2NewType = paa2RelationshipChange.relationshipType;
       // sort by player

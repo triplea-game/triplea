@@ -83,9 +83,7 @@ public class AiPoliticalUtils {
   // TODO have another look at this part.
   private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID p0,
       final GameData data) {
-    for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
-      final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          nextAction.parseRelationshipChange(relationshipChangeString);
+    for (final PoliticalActionAttachment.RelationshipChange relationshipChange : nextAction.getRelationshipChanges()) {
       final PlayerID p1 = relationshipChange.player1;
       final PlayerID p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI
@@ -103,9 +101,7 @@ public class AiPoliticalUtils {
 
   private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0,
       final GameData data) {
-    for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
-      final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          nextAction.parseRelationshipChange(relationshipChangeString);
+    for (final PoliticalActionAttachment.RelationshipChange relationshipChange : nextAction.getRelationshipChanges()) {
       final PlayerID p1 = relationshipChange.player1;
       final PlayerID p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI

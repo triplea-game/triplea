@@ -1,8 +1,5 @@
 package games.strategy.triplea.attachments;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -27,6 +25,8 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * An attachment, attached to a player that will describe which political
@@ -79,7 +79,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     return paa;
   }
 
-  private void setRelationshipChange(final String relChange) throws GameParseException {
+  @VisibleForTesting
+  void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = splitOnColon(relChange);
     if (s.length != 3) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
@@ -104,7 +105,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     m_relationshipChange = value;
   }
 
-  public List<String> getRelationshipChange() {
+  private List<String> getRelationshipChange() {
     return m_relationshipChange;
   }
 
@@ -112,20 +113,15 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     m_relationshipChange = new ArrayList<>();
   }
 
-  /**
-   * Parses the specified encoded political action attachment relationship change.
-   *
-   * @param encodedRelationshipChange The encoded relationship change of the form
-   *        {@code <player1Name>:<player2Name>:<relationshipTypeName>}.
-   *
-   * @throws IllegalArgumentException If {@code encodedRelationshipChange} does not contain exactly three tokens
-   *         separated by colons.
-   */
-  public RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
-    checkNotNull(encodedRelationshipChange);
+  public List<RelationshipChange> getRelationshipChanges() {
+    return m_relationshipChange.stream()
+        .map(this::parseRelationshipChange)
+        .collect(Collectors.toList());
+  }
 
+  private RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
     final String[] tokens = splitOnColon(encodedRelationshipChange);
-    checkArgument(tokens.length == 3, String.format("Expected three tokens but was '%s'", encodedRelationshipChange));
+    assert tokens.length == 3;
     final GameData gameData = getData();
     return new RelationshipChange(
         gameData.getPlayerList().getPlayerId(tokens[0]),
@@ -185,7 +181,9 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    * A relationship change specified in a political action attachment. Specifies the relationship type that will exist
    * between two players after the action is successful.
    */
-  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @AllArgsConstructor(access = AccessLevel.PACKAGE)
+  @EqualsAndHashCode
+  @ToString
   public static final class RelationshipChange {
     public final PlayerID player1;
     public final PlayerID player2;

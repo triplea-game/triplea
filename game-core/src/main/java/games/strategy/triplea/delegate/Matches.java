@@ -2010,9 +2010,7 @@ public final class Matches {
       final Predicate<RelationshipType> currentRelation, final Predicate<RelationshipType> newRelation,
       final GameData data) {
     return paa -> {
-      for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final PoliticalActionAttachment.RelationshipChange relationshipChange =
-            paa.parseRelationshipChange(relationshipChangeString);
+      for (final PoliticalActionAttachment.RelationshipChange relationshipChange : paa.getRelationshipChanges()) {
         final PlayerID p1 = relationshipChange.player1;
         final PlayerID p2 = relationshipChange.player2;
         if (player != null && !(p1.equals(player) || p2.equals(player))) {
@@ -2031,9 +2029,7 @@ public final class Matches {
   public static Predicate<PoliticalActionAttachment> politicalActionAffectsAtLeastOneAlivePlayer(
       final PlayerID currentPlayer, final GameData data) {
     return paa -> {
-      for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final PoliticalActionAttachment.RelationshipChange relationshipChange =
-            paa.parseRelationshipChange(relationshipChangeString);
+      for (final PoliticalActionAttachment.RelationshipChange relationshipChange : paa.getRelationshipChanges()) {
         final PlayerID p1 = relationshipChange.player1;
         final PlayerID p2 = relationshipChange.player2;
         if (!currentPlayer.equals(p1)) {

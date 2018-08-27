@@ -1,8 +1,8 @@
 package games.strategy.triplea.attachments;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -13,16 +13,19 @@ import com.google.common.base.Joiner;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class PoliticalActionAttachmentTest {
   @Nested
-  final class ParseRelationshipChangeTest {
+  final class GetRelationshipChangesTest {
     private final GameData gameData = new GameData();
-    private final PlayerID player1 = new PlayerID("player1Name", gameData);
-    private final PlayerID player2 = new PlayerID("player2Name", gameData);
-    private final RelationshipType relationshipType = new RelationshipType("relationshipTypeName", gameData);
+    private final PlayerID player1 = new PlayerID("player1", gameData);
+    private final PlayerID player2 = new PlayerID("player2", gameData);
+    private final PlayerID player3 = new PlayerID("player3", gameData);
+    private final RelationshipType relationshipType1 = new RelationshipType("relationshipType1", gameData);
+    private final RelationshipType relationshipType2 = new RelationshipType("relationshipType2", gameData);
     private final PoliticalActionAttachment politicalActionAttachment =
-        new PoliticalActionAttachment("politicalActionAttachmentName", null, gameData);
+        new PoliticalActionAttachment("politicalActionAttachment", null, gameData);
 
     private String join(final String... values) {
       return Joiner.on(':').join(values);
@@ -32,25 +35,56 @@ final class PoliticalActionAttachmentTest {
     void setUpGameData() {
       gameData.getPlayerList().addPlayerId(player1);
       gameData.getPlayerList().addPlayerId(player2);
-      gameData.getRelationshipTypeList().addRelationshipType(relationshipType);
+      gameData.getPlayerList().addPlayerId(player3);
+      gameData.getRelationshipTypeList().addRelationshipType(relationshipType1);
+      gameData.getRelationshipTypeList().addRelationshipType(relationshipType2);
     }
 
     @Test
-    void shouldParseRelationshipChangeWhenTokenCountEqualsThree() {
-      final PoliticalActionAttachment.RelationshipChange relationshipChange = politicalActionAttachment
-          .parseRelationshipChange(join(player1.getName(), player2.getName(), relationshipType.getName()));
-
-      assertThat(relationshipChange.player1, is(player1));
-      assertThat(relationshipChange.player2, is(player2));
-      assertThat(relationshipChange.relationshipType, is(relationshipType));
+    void shouldReturnEmptyListWhenZeroRelationshipChangesExist() {
+      assertThat(politicalActionAttachment.getRelationshipChanges(), hasSize(0));
     }
 
     @Test
-    void shouldThrowExceptionWhenTokenCountNotEqualsThree() {
-      assertThrows(IllegalArgumentException.class, () -> politicalActionAttachment.parseRelationshipChange(
-          join(player1.getName(), player2.getName())));
-      assertThrows(IllegalArgumentException.class, () -> politicalActionAttachment.parseRelationshipChange(
-          join(player1.getName(), player2.getName(), relationshipType.getName(), "other")));
+    void shouldReturnListOfSizeOneWhenOneRelationshipChangeExists() throws Exception {
+      politicalActionAttachment
+          .setRelationshipChange(join(player1.getName(), player2.getName(), relationshipType1.getName()));
+
+      assertThat(
+          politicalActionAttachment.getRelationshipChanges(),
+          contains(new PoliticalActionAttachment.RelationshipChange(player1, player2, relationshipType1)));
+    }
+
+    @Test
+    void shouldReturnListOfSizeTwoWhenTwoRelationshipChangesExists() throws Exception {
+      politicalActionAttachment
+          .setRelationshipChange(join(player1.getName(), player2.getName(), relationshipType1.getName()));
+      politicalActionAttachment
+          .setRelationshipChange(join(player1.getName(), player3.getName(), relationshipType2.getName()));
+
+      assertThat(
+          politicalActionAttachment.getRelationshipChanges(),
+          contains(
+              new PoliticalActionAttachment.RelationshipChange(player1, player2, relationshipType1),
+              new PoliticalActionAttachment.RelationshipChange(player1, player3, relationshipType2)));
+    }
+  }
+
+  @Nested
+  final class RelationshipChangeTest {
+    @Test
+    void shouldBeEquatableAndHashable() {
+      final GameData gameData = new GameData();
+      EqualsVerifier.forClass(PoliticalActionAttachment.RelationshipChange.class)
+          .withPrefabValues(
+              PlayerID.class,
+              new PlayerID("redPlayerId", gameData),
+              new PlayerID("blackPlayerId", gameData))
+          .withPrefabValues(
+              RelationshipType.class,
+              new RelationshipType("redRelationshipType", gameData),
+              new RelationshipType("blackRelationshipType", gameData))
+          .verify();
     }
   }
 }
