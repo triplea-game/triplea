@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddsCalculator.ta;
+package games.strategy.triplea.odds.calculator;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -46,8 +46,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
-import games.strategy.triplea.odds.calculator.OrderOfLossesInputPanel;
-import games.strategy.triplea.odds.calculator.PlayerUnitsPanel;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;

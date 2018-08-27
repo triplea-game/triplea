@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddsCalculator.ta;
+package games.strategy.triplea.odds.calculator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +16,7 @@ import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.MustFightBattle;
-import games.strategy.triplea.odds.calculator.DummyDelegateBridge;
-import games.strategy.triplea.odds.calculator.OrderOfLossesInputPanel;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private GameData gameData = null;
