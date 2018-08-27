@@ -85,14 +85,13 @@ public class AiPoliticalUtils {
       final GameData data) {
     for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
       final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
-      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
+          nextAction.parseRelationshipChange(relationshipChangeString);
+      final PlayerID p1 = relationshipChange.player1;
+      final PlayerID p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-        final RelationshipType newType =
-            data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
+        final RelationshipType newType = relationshipChange.relationshipType;
         if (currentType.getRelationshipTypeAttachment().isNeutral()
             && newType.getRelationshipTypeAttachment().isWar()) {
           return true;
@@ -106,14 +105,13 @@ public class AiPoliticalUtils {
       final GameData data) {
     for (final String relationshipChangeString : nextAction.getRelationshipChange()) {
       final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
-      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
+          nextAction.parseRelationshipChange(relationshipChangeString);
+      final PlayerID p1 = relationshipChange.player1;
+      final PlayerID p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-        final RelationshipType newType =
-            data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
+        final RelationshipType newType = relationshipChange.relationshipType;
         if (currentType.getRelationshipTypeAttachment().isAllied()
             && (newType.getRelationshipTypeAttachment().isNeutral()
                 || newType.getRelationshipTypeAttachment().isWar())) {

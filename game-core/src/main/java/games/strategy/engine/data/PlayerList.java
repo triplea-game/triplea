@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import lombok.ToString;
 
 /**
@@ -24,7 +26,8 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
     super(data);
   }
 
-  void addPlayerId(final PlayerID player) {
+  @VisibleForTesting
+  public void addPlayerId(final PlayerID player) {
     m_players.put(player.getName(), player);
   }
 

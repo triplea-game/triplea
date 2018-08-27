@@ -2012,15 +2012,14 @@ public final class Matches {
     return paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
         final PoliticalActionAttachment.RelationshipChange relationshipChange =
-            PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
-        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
+            paa.parseRelationshipChange(relationshipChangeString);
+        final PlayerID p1 = relationshipChange.player1;
+        final PlayerID p2 = relationshipChange.player2;
         if (player != null && !(p1.equals(player) || p2.equals(player))) {
           continue;
         }
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-        final RelationshipType newType =
-            data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
+        final RelationshipType newType = relationshipChange.relationshipType;
         if (currentRelation.test(currentType) && newRelation.test(newType)) {
           return true;
         }
@@ -2034,9 +2033,9 @@ public final class Matches {
     return paa -> {
       for (final String relationshipChangeString : paa.getRelationshipChange()) {
         final PoliticalActionAttachment.RelationshipChange relationshipChange =
-            PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
-        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
+            paa.parseRelationshipChange(relationshipChangeString);
+        final PlayerID p1 = relationshipChange.player1;
+        final PlayerID p2 = relationshipChange.player2;
         if (!currentPlayer.equals(p1)) {
           if (p1.amNotDeadYet(data)) {
             return true;

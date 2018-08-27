@@ -334,12 +334,11 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
       final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-      final PlayerID player1 = getData().getPlayerList().getPlayerId(relationshipChange.player1Name);
-      final PlayerID player2 = getData().getPlayerList().getPlayerId(relationshipChange.player2Name);
+          paa.parseRelationshipChange(relationshipChangeString);
+      final PlayerID player1 = relationshipChange.player1;
+      final PlayerID player2 = relationshipChange.player2;
       final RelationshipType oldRelation = getData().getRelationshipTracker().getRelationshipType(player1, player2);
-      final RelationshipType newRelation =
-          getData().getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
+      final RelationshipType newRelation = relationshipChange.relationshipType;
       if (oldRelation.equals(newRelation)) {
         continue;
       }
@@ -408,9 +407,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
       final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
-      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
+          paa.parseRelationshipChange(relationshipChangeString);
+      final PlayerID p1 = relationshipChange.player1;
+      final PlayerID p2 = relationshipChange.player2;
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
@@ -419,8 +418,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         continue;
       }
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-      final RelationshipType newType =
-          data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
+      final RelationshipType newType = relationshipChange.relationshipType;
       if (Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().test(currentType)
           && Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().negate().test(newType)) {
         for (final PlayerID p3 : p1AlliedWith) {
@@ -452,16 +450,15 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     final CompositeChange change = new CompositeChange();
     for (final String relationshipChangeString : paa.getRelationshipChange()) {
       final PoliticalActionAttachment.RelationshipChange relationshipChange =
-          PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-      final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
-      final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
+          paa.parseRelationshipChange(relationshipChangeString);
+      final PlayerID p1 = relationshipChange.player1;
+      final PlayerID p2 = relationshipChange.player2;
       if (!(p1.equals(player) || p2.equals(player))) {
         continue;
       }
       final PlayerID otherPlayer = (p1.equals(player) ? p2 : p1);
       final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-      final RelationshipType newType =
-          data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
+      final RelationshipType newType = relationshipChange.relationshipType;
       if (Matches.relationshipTypeIsAtWar().test(currentType)
           && Matches.relationshipTypeIsAtWar().negate().test(newType)) {
         final Collection<PlayerID> otherPlayersAlliedWith =

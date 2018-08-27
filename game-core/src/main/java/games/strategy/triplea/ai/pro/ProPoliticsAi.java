@@ -59,12 +59,11 @@ class ProPoliticsAi {
       final List<PlayerID> warPlayers = new ArrayList<>();
       for (final String relationshipChangeString : action.getRelationshipChange()) {
         final PoliticalActionAttachment.RelationshipChange relationshipChange =
-            PoliticalActionAttachment.parseRelationshipChange(relationshipChangeString);
-        final PlayerID player1 = data.getPlayerList().getPlayerId(relationshipChange.player1Name);
-        final PlayerID player2 = data.getPlayerList().getPlayerId(relationshipChange.player2Name);
+            action.parseRelationshipChange(relationshipChangeString);
+        final PlayerID player1 = relationshipChange.player1;
+        final PlayerID player2 = relationshipChange.player2;
         final RelationshipType oldRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
-        final RelationshipType newRelation =
-            data.getRelationshipTypeList().getRelationshipType(relationshipChange.relationshipTypeName);
+        final RelationshipType newRelation = relationshipChange.relationshipType;
         if (!oldRelation.equals(newRelation) && Matches.relationshipTypeIsAtWar().test(newRelation)
             && (player1.equals(player) || player2.equals(player))) {
           PlayerID warPlayer = player2;

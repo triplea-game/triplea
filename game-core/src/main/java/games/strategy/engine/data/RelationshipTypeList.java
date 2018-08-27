@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
@@ -81,7 +83,8 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    *
    * @return the RelationshipType just created (convenience method for the GameParser)
    */
-  protected RelationshipType addRelationshipType(final RelationshipType relationshipType) {
+  @VisibleForTesting
+  public RelationshipType addRelationshipType(final RelationshipType relationshipType) {
     m_relationshipTypes.put(relationshipType.getName(), relationshipType);
     return relationshipType;
   }

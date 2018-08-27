@@ -1,51 +1,56 @@
 package games.strategy.triplea.attachments;
 
-import static games.strategy.triplea.attachments.PoliticalActionAttachment.parseRelationshipChange;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Joiner;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipType;
 
 final class PoliticalActionAttachmentTest {
   @Nested
   final class ParseRelationshipChangeTest {
-    private static final String PLAYER_1_NAME = "player1Name";
-    private static final String PLAYER_2_NAME = "player2Name";
-    private static final String RELATIONSHIP_TYPE_NAME = "relationshipTypeName";
+    private final GameData gameData = new GameData();
+    private final PlayerID player1 = new PlayerID("player1Name", gameData);
+    private final PlayerID player2 = new PlayerID("player2Name", gameData);
+    private final RelationshipType relationshipType = new RelationshipType("relationshipTypeName", gameData);
+    private final PoliticalActionAttachment politicalActionAttachment =
+        new PoliticalActionAttachment("politicalActionAttachmentName", null, gameData);
 
     private String join(final String... values) {
       return Joiner.on(':').join(values);
     }
 
+    @BeforeEach
+    void setUpGameData() {
+      gameData.getPlayerList().addPlayerId(player1);
+      gameData.getPlayerList().addPlayerId(player2);
+      gameData.getRelationshipTypeList().addRelationshipType(relationshipType);
+    }
+
     @Test
     void shouldParseRelationshipChangeWhenTokenCountEqualsThree() {
-      assertThat(
-          parseRelationshipChange(join(PLAYER_1_NAME, PLAYER_2_NAME, RELATIONSHIP_TYPE_NAME)),
-          is(new PoliticalActionAttachment.RelationshipChange(PLAYER_1_NAME, PLAYER_2_NAME, RELATIONSHIP_TYPE_NAME)));
+      final PoliticalActionAttachment.RelationshipChange relationshipChange = politicalActionAttachment
+          .parseRelationshipChange(join(player1.getName(), player2.getName(), relationshipType.getName()));
+
+      assertThat(relationshipChange.player1, is(player1));
+      assertThat(relationshipChange.player2, is(player2));
+      assertThat(relationshipChange.relationshipType, is(relationshipType));
     }
 
     @Test
     void shouldThrowExceptionWhenTokenCountNotEqualsThree() {
-      assertThrows(
-          IllegalArgumentException.class,
-          () -> parseRelationshipChange(join(PLAYER_1_NAME, PLAYER_2_NAME)));
-      assertThrows(
-          IllegalArgumentException.class,
-          () -> parseRelationshipChange(join(PLAYER_1_NAME, PLAYER_2_NAME, RELATIONSHIP_TYPE_NAME, "other")));
-    }
-  }
-
-  @Nested
-  final class RelationshipChangeTest {
-    @Test
-    void shouldBeEquatableAndHashable() {
-      EqualsVerifier.forClass(PoliticalActionAttachment.RelationshipChange.class).verify();
+      assertThrows(IllegalArgumentException.class, () -> politicalActionAttachment.parseRelationshipChange(
+          join(player1.getName(), player2.getName())));
+      assertThrows(IllegalArgumentException.class, () -> politicalActionAttachment.parseRelationshipChange(
+          join(player1.getName(), player2.getName(), relationshipType.getName(), "other")));
     }
   }
 }
