@@ -4,22 +4,21 @@ import java.awt.Image;
 import java.awt.Point;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.Route;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public class RouteDescription {
-  private final Route route;
+@AllArgsConstructor
+@Getter
+class RouteDescription {
+  private final @Nullable Route route;
   // this point is in map co-ordinates, un scaled
-  private final Point start;
+  private final @Nullable Point start;
   // this point is in map co-ordinates, un scaled
-  private final Point end;
-  private final Image cursorImage;
-
-  RouteDescription(final Route route, final Point start, final Point end, final Image cursorImage) {
-    this.route = route;
-    this.start = start;
-    this.end = end;
-    this.cursorImage = cursorImage;
-  }
+  private final @Nullable Point end;
+  private final @Nullable Image cursorImage;
 
   @Override
   public int hashCode() {
@@ -30,17 +29,15 @@ public class RouteDescription {
   public boolean equals(final Object o) {
     if (o == this) {
       return true;
-    }
-    if (o == null) {
+    } else if (!(o instanceof RouteDescription)) {
       return false;
     }
+
     final RouteDescription other = (RouteDescription) o;
-    if ((start == null && other.start != null) || (other.start == null && start != null)
-        || (start != other.start && !start.equals(other.start))) {
+    if (!Objects.equals(start, other.start)) {
       return false;
     }
-    if ((route == null && other.route != null) || (other.route == null && route != null)
-        || (route != other.route && !route.equals(other.route))) {
+    if (!Objects.equals(route, other.route)) {
       return false;
     }
     if ((end == null && other.end != null) || (other.end == null && end != null)) {
@@ -60,21 +57,5 @@ public class RouteDescription {
     diffY *= diffY;
     final int endDiff = (int) Math.sqrt(diffX + diffY);
     return endDiff < 6;
-  }
-
-  public Route getRoute() {
-    return route;
-  }
-
-  public Point getStart() {
-    return start;
-  }
-
-  public Point getEnd() {
-    return end;
-  }
-
-  public Image getCursorImage() {
-    return cursorImage;
   }
 }
