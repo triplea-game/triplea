@@ -536,7 +536,7 @@ public class HistoryLog extends JFrame {
       if (!place.isWater()
           || (place.isWater()
               && ta != null
-              && OriginalOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID
+              && !PlayerID.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && OriginalOwnerTracker.getOriginalOwner(place) == player
               && place.getOwner().equals(player))) {
         isConvoyOrLand = true;
