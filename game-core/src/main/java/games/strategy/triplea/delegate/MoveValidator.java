@@ -96,7 +96,7 @@ public class MoveValidator {
     if (validateParatroops(isNonCombat, data, units, route, player, result).getError() != null) {
       return result;
     }
-    if (validateCanal(data, units, route, player, result).getError() != null) {
+    if (validateCanal(data, units, route, player, newDependents, result).getError() != null) {
       return result;
     }
     if (validateFuel(data, units, route, player, result).getError() != null) {
@@ -207,12 +207,13 @@ public class MoveValidator {
   }
 
   private static MoveValidationResult validateCanal(final GameData data, final Collection<Unit> units,
-      final Route route, final PlayerID player, final MoveValidationResult result) {
+      final Route route, final PlayerID player, final Map<Unit, Collection<Unit>> newDependents,
+      final MoveValidationResult result) {
     if (getEditMode(data)) {
       return result;
     }
     // TODO: merge validateCanal here and provide granular unit warnings
-    return result.setErrorReturnResult(validateCanal(route, units, player, data));
+    return result.setErrorReturnResult(validateCanal(route, units, newDependents, player, data));
   }
 
   /**
@@ -220,41 +221,51 @@ public class MoveValidator {
    *
    * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
    */
-  public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player,
-      final GameData data) {
-    for (final Territory routeTerritory : route.getAllTerritories()) {
-      final Optional<String> result = validateCanal(routeTerritory, route, units, player, data);
-      if (result.isPresent()) {
-        return result.get();
-      }
-    }
-    return null;
+  public static String validateCanal(final Route route, final Collection<Unit> units,
+      final PlayerID player, final GameData data) {
+    return validateCanal(route, units, new HashMap<>(), player, data);
   }
 
-  /**
-   * Used for testing a single territory, either as part of a route, or just by itself. Returns Optional.empty if it can
-   * be passed through otherwise returns a failure message indicating why the canal can't be passed through.
-   *
-   * @param route (Can be null. If not null, we will check to see if the route includes both sea zones, and if it
-   *        doesn't we will not test the canal)
-   * @param units (Can be null. If null we will assume all units would be stopped by the canal.)
-   */
-  public static Optional<String> validateCanal(final Territory territory, final Route route,
-      final Collection<Unit> units, final PlayerID player, final GameData data) {
-    Optional<String> failureMessage = Optional.empty();
-    final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
-    for (final CanalAttachment canalAttachment : canalAttachments) {
-      if (!isCanalOnRoute(canalAttachment, route, data)) {
-        continue; // Only check canals that are on the route
-      }
-      failureMessage = canPassThroughCanal(canalAttachment, units, player, data);
-      final boolean canPass = !failureMessage.isPresent();
-      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
-          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
-        break; // If need to control any canal and can pass OR need to control all canals and can't pass
+  private static String validateCanal(final Route route, final Collection<Unit> units,
+      final Map<Unit, Collection<Unit>> newDependents, final PlayerID player, final GameData data) {
+
+    // Check each unit 1 by 1 to see if they can move through necessary canals on route
+    String result = null;
+    final Set<Unit> unitsThatFailCanal = new HashSet<>();
+    final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, newDependents);
+    for (final Unit unit : unitsWithoutDependents) {
+      for (final Territory t : route.getAllTerritories()) {
+        Optional<String> failureMessage = Optional.empty();
+        for (final CanalAttachment canalAttachment : CanalAttachment.get(t)) {
+          if (!isCanalOnRoute(canalAttachment, route, data)) {
+            continue; // Only check canals that are on the route
+          }
+          failureMessage = canPassThroughCanal(canalAttachment, unit, player, data);
+          final boolean canPass = !failureMessage.isPresent();
+          if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
+              || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+            break; // If need to control any canal and can pass OR need to control all canals and can't pass
+          }
+        }
+        if (failureMessage.isPresent()) {
+          result = failureMessage.get();
+          unitsThatFailCanal.add(unit);
+        }
       }
     }
-    return failureMessage;
+    if (result == null) {
+      return null;
+    }
+
+    // If any units failed canal check then try to land transport them
+    final Set<Unit> potentialLandTransports = unitsWithoutDependents.stream()
+        .filter(unit -> !unitsThatFailCanal.contains(unit) && Matches.unitHasEnoughMovementForRoute(route).test(unit))
+        .collect(Collectors.toSet());
+    final Set<Unit> unitsToLandTransport = unitsWithoutDependents.stream()
+        .filter(unit -> unitsThatFailCanal.contains(unit) || !Matches.unitHasEnoughMovementForRoute(route).test(unit))
+        .collect(Collectors.toSet());
+    return checkLandTransports(data, route, player, potentialLandTransports, unitsToLandTransport).isEmpty() ? null
+        : result;
   }
 
   private static MoveValidationResult validateCombat(final GameData data, final Collection<Unit> units,
@@ -555,66 +566,22 @@ public class MoveValidator {
         }
       }
 
-      // Ignore transported units
-      Collection<Unit> moveTest = new ArrayList<>(units);
-      if (route.getStart().isWater()) {
-        moveTest = MoveValidator.getNonLand(units);
-      }
-      final Map<Unit, Collection<Unit>> dependentsMap =
-          getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
-      final Set<Unit> dependents =
-          dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
-      dependents.addAll(newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
-      moveTest.removeAll(dependents);
+      // Check that units have enough movement considering land transports
+      final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, newDependents);
+      final Set<Unit> unitsWithEnoughMovement = unitsWithoutDependents.stream()
+          .filter(unit -> Matches.unitHasEnoughMovementForRoute(route).test(unit)).collect(Collectors.toSet());
+      final Set<Unit> unitsWithoutEnoughMovement = unitsWithoutDependents.stream()
+          .filter(unit -> !Matches.unitHasEnoughMovementForRoute(route).test(unit)).collect(Collectors.toSet());
+      checkLandTransports(data, route, player, unitsWithEnoughMovement, unitsWithoutEnoughMovement)
+          .forEach(unit -> result.addDisallowedUnit("Not all units have enough movement", unit));
 
       // Can only move owned units except transported units or allied air on carriers
-      for (final Unit unit : CollectionUtils.getMatches(moveTest, Matches.unitIsOwnedBy(player).negate())) {
+      for (final Unit unit : CollectionUtils.getMatches(unitsWithoutDependents,
+          Matches.unitIsOwnedBy(player).negate())) {
         if (!(UnitAttachment.get(unit.getType()).getCarrierCost() > 0
             && data.getRelationshipTracker().isAllied(player, unit.getOwner()))) {
           result.addDisallowedUnit("Can only move own troops", unit);
         }
-      }
-
-      // Check if units have enough movement accounting for land transports
-      // Land transports can either:
-      // 1. Transport units on a 1-to-1 basis (have no capacity set)
-      // 2. Transport like sea transports using capacity and cost
-      data.acquireReadLock();
-      try {
-        int numLandTransportsWithoutCapacity = getNumLandTransportsWithoutCapacity(units, player);
-        final IntegerMap<Unit> landTransportsWithCapacity = getLandTransportsWithCapacity(units, player);
-        moveTest = TransportUtils.sortByTransportCostDescending(moveTest);
-        for (final Unit unit : moveTest) {
-          if (!Matches.unitHasEnoughMovementForRoute(route).test(unit)) {
-            boolean unitOk = false;
-            if (Matches.unitIsOwnedBy(player).negate().test(unit) && Matches.alliedUnit(player, data).test(unit)
-                && Matches.unitTypeCanLandOnCarrier().test(unit.getType())
-                && moveTest.stream().anyMatch(Matches.unitIsAlliedCarrier(unit.getOwner(), data))) {
-              // this is so that if the unit is owned by any ally and it is cargo, then it will not count.
-              // (shouldn't it be a dependent in this case??)
-              unitOk = true;
-            } else if (Matches.unitHasNotMoved().test(unit) && Matches.unitIsLandTransportable().test(unit)) {
-              if (numLandTransportsWithoutCapacity > 0) {
-                numLandTransportsWithoutCapacity--;
-                unitOk = true;
-              } else {
-                for (final Unit transport : landTransportsWithCapacity.keySet()) {
-                  final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
-                  if (cost <= landTransportsWithCapacity.getInt(transport)) {
-                    landTransportsWithCapacity.add(transport, -cost);
-                    unitOk = true;
-                    break;
-                  }
-                }
-              }
-            }
-            if (!unitOk) {
-              result.addDisallowedUnit("Not all units have enough movement", unit);
-            }
-          }
-        }
-      } finally {
-        data.releaseReadLock();
       }
 
       // if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
@@ -630,7 +597,7 @@ public class MoveValidator {
             + (route.numberOfSteps() > 1 ? "these territories" : "this territory"));
       }
       // Check requiresUnitsToMove conditions
-      Collection<Unit> requiresUnitsToMoveList = moveTest;
+      Collection<Unit> requiresUnitsToMoveList = unitsWithoutDependents;
       if (route.isUnload()) {
         requiresUnitsToMoveList = units;
       }
@@ -711,6 +678,60 @@ public class MoveValidator {
       return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
     }
     return result;
+  }
+
+  private static Collection<Unit> findNonDependentUnits(final Collection<Unit> units, final Route route,
+      final Map<Unit, Collection<Unit>> newDependents) {
+    Collection<Unit> unitsWithoutDependents = new ArrayList<>(units);
+    if (route.getStart().isWater()) {
+      unitsWithoutDependents = MoveValidator.getNonLand(units);
+    }
+    final Map<Unit, Collection<Unit>> dependentsMap =
+        getDependents(CollectionUtils.getMatches(units, Matches.unitCanTransport()));
+    final Set<Unit> dependents =
+        dependentsMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
+    dependents.addAll(newDependents.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
+    unitsWithoutDependents.removeAll(dependents);
+    return unitsWithoutDependents;
+  }
+
+  /**
+   * Returns any units that couldn't be land transported and handles both styles of land transports:
+   * 1. Transport units on a 1-to-1 basis (have no capacity set)
+   * 2. Transport like sea transports using capacity and cost
+   */
+  private static Set<Unit> checkLandTransports(final GameData data, final Route route,
+      final PlayerID player, final Collection<Unit> possibleLandTransports, final Set<Unit> unitsToLandTransport) {
+    final Set<Unit> disallowedUnits = new HashSet<>();
+    data.acquireReadLock();
+    try {
+      int numLandTransportsWithoutCapacity = getNumLandTransportsWithoutCapacity(possibleLandTransports, player);
+      final IntegerMap<Unit> landTransportsWithCapacity = getLandTransportsWithCapacity(possibleLandTransports, player);
+      for (final Unit unit : TransportUtils.sortByTransportCostDescending(unitsToLandTransport)) {
+        boolean unitOk = false;
+        if (Matches.unitHasNotMoved().test(unit) && Matches.unitIsLandTransportable().test(unit)) {
+          if (numLandTransportsWithoutCapacity > 0) {
+            numLandTransportsWithoutCapacity--;
+            unitOk = true;
+          } else {
+            for (final Unit transport : landTransportsWithCapacity.keySet()) {
+              final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+              if (cost <= landTransportsWithCapacity.getInt(transport)) {
+                landTransportsWithCapacity.add(transport, -cost);
+                unitOk = true;
+                break;
+              }
+            }
+          }
+        }
+        if (!unitOk) {
+          disallowedUnits.add(unit);
+        }
+      }
+    } finally {
+      data.releaseReadLock();
+    }
+    return disallowedUnits;
   }
 
   private static int getNumLandTransportsWithoutCapacity(final Collection<Unit> units, final PlayerID player) {
@@ -1251,13 +1272,12 @@ public class MoveValidator {
     return false;
   }
 
-  /*
+  /**
    * Checks if units can pass through canal and returns Optional.empty() if true or a failure message if false.
    */
   private static Optional<String> canPassThroughCanal(final CanalAttachment canalAttachment,
-      final Collection<Unit> units, final PlayerID player, final GameData data) {
-    if (units != null && !units.isEmpty()
-        && units.stream().allMatch(Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()))) {
+      final Unit unit, final PlayerID player, final GameData data) {
+    if (Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()).test(unit)) {
       return Optional.empty();
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {

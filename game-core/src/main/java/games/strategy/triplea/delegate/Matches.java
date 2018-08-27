@@ -1434,10 +1434,10 @@ public final class Matches {
     return u -> TechTracker.hasImprovedArtillerySupport(u.getOwner());
   }
 
+  // TODO: Eventually remove as only used by AI and doesn't handle canals very well
   public static Predicate<Territory> territoryHasNonAllowedCanal(final PlayerID player,
-      final Collection<Unit> unitsMoving,
-      final GameData data) {
-    return t -> MoveValidator.validateCanal(t, null, unitsMoving, player, data).isPresent();
+      final Collection<Unit> unitsMoving, final GameData data) {
+    return t -> MoveValidator.validateCanal(new Route(t), unitsMoving, player, data) != null;
   }
 
   public static Predicate<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data) {
