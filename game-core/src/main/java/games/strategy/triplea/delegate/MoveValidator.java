@@ -569,9 +569,11 @@ public class MoveValidator {
       // Check that units have enough movement considering land transports
       final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, newDependents);
       final Set<Unit> unitsWithEnoughMovement = unitsWithoutDependents.stream()
-          .filter(unit -> Matches.unitHasEnoughMovementForRoute(route).test(unit)).collect(Collectors.toSet());
+          .filter(unit -> Matches.unitHasEnoughMovementForRoute(route).test(unit))
+          .collect(Collectors.toSet());
       final Set<Unit> unitsWithoutEnoughMovement = unitsWithoutDependents.stream()
-          .filter(unit -> !Matches.unitHasEnoughMovementForRoute(route).test(unit)).collect(Collectors.toSet());
+          .filter(unit -> !Matches.unitHasEnoughMovementForRoute(route).test(unit))
+          .collect(Collectors.toSet());
       checkLandTransports(data, route, player, unitsWithEnoughMovement, unitsWithoutEnoughMovement)
           .forEach(unit -> result.addDisallowedUnit("Not all units have enough movement", unit));
 
