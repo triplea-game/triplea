@@ -16,6 +16,9 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 
+/**
+ * Implementation of {@link ITripleADisplay} appropriate for a headed environment.
+ */
 public class TripleADisplay implements ITripleADisplay {
   private final TripleAFrame ui;
 

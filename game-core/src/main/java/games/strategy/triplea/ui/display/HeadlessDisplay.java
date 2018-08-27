@@ -12,6 +12,10 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
+/**
+ * Implementation of {@link ITripleADisplay} appropriate for a headless environment. All methods are stubs that do
+ * nothing.
+ */
 public class HeadlessDisplay implements ITripleADisplay {
 
   public HeadlessDisplay() {}
