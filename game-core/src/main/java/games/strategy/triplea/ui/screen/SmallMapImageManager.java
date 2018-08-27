@@ -17,6 +17,10 @@ import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
 import games.strategy.ui.ImageScrollerSmallView;
 import games.strategy.ui.Util;
 
+/**
+ * Manages rendering the small map image. The small map image provides a high-level overview of the entire map,
+ * including those areas that may not be currently displayed within the large map view.
+ */
 public class SmallMapImageManager {
   private final ImageScrollerSmallView view;
   private Image offscreen;
@@ -46,6 +50,9 @@ public class SmallMapImageManager {
     onScreenGraphics.dispose();
   }
 
+  /**
+   * Redraws the specified territory to reflect any change in ownership.
+   */
   public void updateTerritoryOwner(final Territory t, final GameData data, final MapData mapData) {
     if (t.isWater()) {
       return;
