@@ -805,7 +805,7 @@ public final class Matches {
       if (t.isWater()) {
         // if it's water, it is a Convoy Center
         // Can't get PUs for capturing a CC, only original owner can get them. (Except capturing null player CCs)
-        if (!(origOwner == null || origOwner == PlayerID.NULL_PLAYERID || origOwner == player)) {
+        if (!(origOwner == null || origOwner.equals(PlayerID.NULL_PLAYERID) || origOwner == player)) {
           return false;
         }
       }
