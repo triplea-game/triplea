@@ -2010,15 +2010,14 @@ public final class Matches {
       final Predicate<RelationshipType> currentRelation, final Predicate<RelationshipType> newRelation,
       final GameData data) {
     return paa -> {
-      for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final String[] relationshipChange = relationshipChangeString.split(":");
-        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
-        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
+      for (final PoliticalActionAttachment.RelationshipChange relationshipChange : paa.getRelationshipChanges()) {
+        final PlayerID p1 = relationshipChange.player1;
+        final PlayerID p2 = relationshipChange.player2;
         if (player != null && !(p1.equals(player) || p2.equals(player))) {
           continue;
         }
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
-        final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
+        final RelationshipType newType = relationshipChange.relationshipType;
         if (currentRelation.test(currentType) && newRelation.test(newType)) {
           return true;
         }
@@ -2030,10 +2029,9 @@ public final class Matches {
   public static Predicate<PoliticalActionAttachment> politicalActionAffectsAtLeastOneAlivePlayer(
       final PlayerID currentPlayer, final GameData data) {
     return paa -> {
-      for (final String relationshipChangeString : paa.getRelationshipChange()) {
-        final String[] relationshipChange = relationshipChangeString.split(":");
-        final PlayerID p1 = data.getPlayerList().getPlayerId(relationshipChange[0]);
-        final PlayerID p2 = data.getPlayerList().getPlayerId(relationshipChange[1]);
+      for (final PoliticalActionAttachment.RelationshipChange relationshipChange : paa.getRelationshipChanges()) {
+        final PlayerID p1 = relationshipChange.player1;
+        final PlayerID p2 = relationshipChange.player2;
         if (!currentPlayer.equals(p1)) {
           if (p1.amNotDeadYet(data)) {
             return true;

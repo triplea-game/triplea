@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.RelationshipTypeList;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -248,22 +247,17 @@ public class PoliticsPanel extends ActionPanel {
       if (paa1.equals(paa2)) {
         return 0;
       }
-      final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
-      final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
-      final RelationshipTypeList relationshipTypeList;
-      gameData.acquireReadLock();
-      try {
-        relationshipTypeList = gameData.getRelationshipTypeList();
-      } finally {
-        gameData.releaseReadLock();
-      }
-      final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
-      final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
+      final PoliticalActionAttachment.RelationshipChange paa1RelationshipChange =
+          paa1.getRelationshipChanges().iterator().next();
+      final PoliticalActionAttachment.RelationshipChange paa2RelationshipChange =
+          paa2.getRelationshipChanges().iterator().next();
+      final RelationshipType paa1NewType = paa1RelationshipChange.relationshipType;
+      final RelationshipType paa2NewType = paa2RelationshipChange.relationshipType;
       // sort by player
-      final PlayerID paa1p1 = gameData.getPlayerList().getPlayerId(paa1RelationChange[0]);
-      final PlayerID paa1p2 = gameData.getPlayerList().getPlayerId(paa1RelationChange[1]);
-      final PlayerID paa2p1 = gameData.getPlayerList().getPlayerId(paa2RelationChange[0]);
-      final PlayerID paa2p2 = gameData.getPlayerList().getPlayerId(paa2RelationChange[1]);
+      final PlayerID paa1p1 = paa1RelationshipChange.player1;
+      final PlayerID paa1p2 = paa1RelationshipChange.player2;
+      final PlayerID paa2p1 = paa2RelationshipChange.player1;
+      final PlayerID paa2p2 = paa2RelationshipChange.player2;
       final PlayerID paa1OtherPlayer = (player.equals(paa1p1) ? paa1p2 : paa1p1);
       final PlayerID paa2OtherPlayer = (player.equals(paa2p1) ? paa2p2 : paa2p1);
       if (!paa1OtherPlayer.equals(paa2OtherPlayer)) {

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -16,11 +17,16 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * An attachment, attached to a player that will describe which political
@@ -73,7 +79,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     return paa;
   }
 
-  private void setRelationshipChange(final String relChange) throws GameParseException {
+  @VisibleForTesting
+  void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = splitOnColon(relChange);
     if (s.length != 3) {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange
@@ -98,12 +105,28 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     m_relationshipChange = value;
   }
 
-  public List<String> getRelationshipChange() {
+  private List<String> getRelationshipChange() {
     return m_relationshipChange;
   }
 
   private void resetRelationshipChange() {
     m_relationshipChange = new ArrayList<>();
+  }
+
+  public List<RelationshipChange> getRelationshipChanges() {
+    return m_relationshipChange.stream()
+        .map(this::parseRelationshipChange)
+        .collect(Collectors.toList());
+  }
+
+  private RelationshipChange parseRelationshipChange(final String encodedRelationshipChange) {
+    final String[] tokens = splitOnColon(encodedRelationshipChange);
+    assert tokens.length == 3;
+    final GameData gameData = getData();
+    return new RelationshipChange(
+        gameData.getPlayerList().getPlayerId(tokens[0]),
+        gameData.getPlayerList().getPlayerId(tokens[1]),
+        gameData.getRelationshipTypeList().getRelationshipType(tokens[2]));
   }
 
   /**
@@ -152,5 +175,18 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
                 this::getRelationshipChange,
                 this::resetRelationshipChange))
         .build();
+  }
+
+  /**
+   * A relationship change specified in a political action attachment. Specifies the relationship type that will exist
+   * between two players after the action is successful.
+   */
+  @AllArgsConstructor(access = AccessLevel.PACKAGE)
+  @EqualsAndHashCode
+  @ToString
+  public static final class RelationshipChange {
+    public final PlayerID player1;
+    public final PlayerID player2;
+    public final RelationshipType relationshipType;
   }
 }
