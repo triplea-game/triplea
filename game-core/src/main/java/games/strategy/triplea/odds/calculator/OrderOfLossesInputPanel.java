@@ -21,6 +21,10 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -36,12 +40,9 @@ import games.strategy.util.Tuple;
  */
 public class OrderOfLossesInputPanel extends JPanel {
   private static final long serialVersionUID = 8815617685388156219L;
-  private static final String OOL_SEPARATOR = ";";
-  private static final String OOL_SEPARATOR_REGEX = ";";
-  private static final String OOL_AMOUNT_DESCRIPTOR = "^";
-  private static final String OOL_AMOUNT_DESCRIPTOR_REGEX = "\\^";
+  private static final char OOL_SEPARATOR = ';';
+  private static final char OOL_AMOUNT_DESCRIPTOR = '^';
   private static final String OOL_ALL = "*";
-
 
   private final GameData data;
   private final UiContext uiContext;
@@ -136,13 +137,6 @@ public class OrderOfLossesInputPanel extends JPanel {
       return true;
     }
     try {
-      final String[] sections;
-      if (orderOfLoss.contains(OOL_SEPARATOR)) {
-        sections = orderOfLoss.trim().split(OOL_SEPARATOR_REGEX);
-      } else {
-        sections = new String[1];
-        sections[0] = orderOfLoss.trim();
-      }
       final UnitTypeList unitTypes;
       try {
         data.acquireReadLock();
@@ -150,11 +144,11 @@ public class OrderOfLossesInputPanel extends JPanel {
       } finally {
         data.releaseReadLock();
       }
-      for (final String section : sections) {
+      for (final String section : splitOrderOfLoss(orderOfLoss)) {
         if (section.length() == 0) {
           continue;
         }
-        final String[] amountThenType = section.split(OOL_AMOUNT_DESCRIPTOR_REGEX);
+        final String[] amountThenType = splitOrderOfLossSection(section);
         if (amountThenType.length != 2) {
           return false;
         }
@@ -175,6 +169,16 @@ public class OrderOfLossesInputPanel extends JPanel {
     return true;
   }
 
+  @VisibleForTesting
+  static Iterable<String> splitOrderOfLoss(final String orderOfLoss) {
+    return Splitter.on(OOL_SEPARATOR).split(orderOfLoss.trim());
+  }
+
+  @VisibleForTesting
+  static String[] splitOrderOfLossSection(final String orderOfLossSection) {
+    return Iterables.toArray(Splitter.on(OOL_AMOUNT_DESCRIPTOR).split(orderOfLossSection), String.class);
+  }
+
   /**
    * Returns units in the same ordering as the 'order of loss' string passed in.
    */
@@ -183,19 +187,12 @@ public class OrderOfLossesInputPanel extends JPanel {
     if (ool == null || ool.trim().length() == 0) {
       return null;
     }
-    final String[] sections;
-    if (ool.contains(OOL_SEPARATOR)) {
-      sections = ool.trim().split(OOL_SEPARATOR_REGEX);
-    } else {
-      sections = new String[1];
-      sections[0] = ool.trim();
-    }
     final List<Tuple<Integer, UnitType>> map = new ArrayList<>();
-    for (final String section : sections) {
+    for (final String section : splitOrderOfLoss(ool)) {
       if (section.length() == 0) {
         continue;
       }
-      final String[] amountThenType = section.split(OOL_AMOUNT_DESCRIPTOR_REGEX);
+      final String[] amountThenType = splitOrderOfLossSection(section);
       final int amount = amountThenType[0].equals(OOL_ALL) ? Integer.MAX_VALUE : Integer.parseInt(amountThenType[0]);
       final UnitType type = data.getUnitTypeList().getUnitType(amountThenType[1]);
       map.add(Tuple.of(amount, type));
