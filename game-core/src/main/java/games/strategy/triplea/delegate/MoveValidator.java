@@ -232,7 +232,8 @@ public class MoveValidator {
     // Check each unit 1 by 1 to see if they can move through necessary canals on route
     String result = null;
     final Set<Unit> unitsThatFailCanal = new HashSet<>();
-    final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, newDependents);
+    final Collection<Unit> unitsWithoutDependents =
+        (units == null) ? Collections.singleton(null) : findNonDependentUnits(units, route, newDependents);
     for (final Unit unit : unitsWithoutDependents) {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();
@@ -253,8 +254,8 @@ public class MoveValidator {
         }
       }
     }
-    if (result == null) {
-      return null;
+    if (result == null || units == null) {
+      return result;
     }
 
     // If any units failed canal check then try to land transport them
@@ -1279,7 +1280,7 @@ public class MoveValidator {
    */
   private static Optional<String> canPassThroughCanal(final CanalAttachment canalAttachment,
       final Unit unit, final PlayerID player, final GameData data) {
-    if (Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()).test(unit)) {
+    if (unit != null && Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()).test(unit)) {
       return Optional.empty();
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
