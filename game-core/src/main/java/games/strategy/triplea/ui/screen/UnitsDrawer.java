@@ -30,6 +30,15 @@ import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
+/**
+ * Draws units for the associated territory.
+ *
+ * <p>
+ * If all units cannot be drawn within the territory bounds, they will be drawn in a single horizontal row, overflowing
+ * to the right of the territory. A solid black line, rooted at the territory's default placement point, will be drawn
+ * under all units in this case.
+ * </p>
+ */
 @Log
 public class UnitsDrawer implements IDrawable {
   private final int count;
@@ -44,12 +53,18 @@ public class UnitsDrawer implements IDrawable {
   private final UiContext uiContext;
   private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
 
+  /**
+   * The keys for {@link UnitsDrawer} preferences.
+   */
   public enum PreferenceKeys {
     DRAW_MODE, DRAWING_ENABLED
   }
 
   public static boolean enabledFlags = false;
 
+  /**
+   * Identifies the location where a nation flag is drawn relative to a unit.
+   */
   public enum UnitFlagDrawMode {
     BELOW, NEXT_TO
   }

@@ -22,6 +22,9 @@ import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
+/**
+ * Responsible for rendering a single map tile.
+ */
 public class Tile {
   public static final LockUtil LOCK_UTIL = LockUtil.INSTANCE;
 
@@ -56,6 +59,9 @@ public class Tile {
     LOCK_UTIL.releaseLock(lock);
   }
 
+  /**
+   * Returns the image representing this tile, re-rendering it first if the tile is dirty.
+   */
   public Image getImage(final GameData data, final MapData mapData) {
     acquireLock();
     try {

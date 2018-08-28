@@ -59,6 +59,9 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
+/**
+ * Orchestrates the rendering of all map tiles.
+ */
 public class TileManager {
   public static final int TILE_SIZE = 256;
 
@@ -159,6 +162,9 @@ public class TileManager {
     }
   }
 
+  /**
+   * Clears all existing tiles and creates those tiles that intersect {@code bounds}.
+   */
   public void createTiles(final Rectangle bounds) {
     acquireLock();
     try {
@@ -174,6 +180,9 @@ public class TileManager {
     }
   }
 
+  /**
+   * Re-renders all tiles.
+   */
   public void resetTiles(final GameData data, final MapData mapData) {
     data.acquireReadLock();
     try {
@@ -210,6 +219,9 @@ public class TileManager {
     }
   }
 
+  /**
+   * Re-renders all tiles that intersect any of the specified territories.
+   */
   public void updateTerritories(final Collection<Territory> territories, final GameData data, final MapData mapData) {
     data.acquireReadLock();
     try {
@@ -519,6 +531,11 @@ public class TileManager {
     }
   }
 
+  /**
+   * Returns the rectangle within which all of the specified units will be drawn stacked or {@code null} if no such
+   * rectangle exists. Because the units are assumed to be drawn stacked, the returned rectangle will always have a size
+   * equal to the standard unit image size.
+   */
   public Rectangle getUnitRect(final List<Unit> units, final GameData data) {
     if (units == null) {
       return null;
@@ -545,6 +562,10 @@ public class TileManager {
     }
   }
 
+  /**
+   * Returns the territory and units at the specified point or {@code null} if the point does not lie within the bounds
+   * of any {@link UnitsDrawer}.
+   */
   public Tuple<Territory, List<Unit>> getUnitsAtPoint(final double x, final double y, final GameData gameData) {
     gameData.acquireReadLock();
     try {

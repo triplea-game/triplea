@@ -13,6 +13,9 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
+/**
+ * Extension of {@link IDisplay} that expands the set of game events that may be displayed to a game player.
+ */
 public interface ITripleADisplay extends IDisplay {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
