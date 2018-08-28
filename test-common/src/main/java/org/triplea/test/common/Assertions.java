@@ -2,7 +2,7 @@ package org.triplea.test.common;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 import org.junit.jupiter.api.function.Executable;
 import org.opentest4j.AssertionFailedError;
@@ -36,11 +36,6 @@ public final class Assertions {
   }
 
   private static String getCanonicalName(final Class<?> type) {
-    try {
-      final @Nullable String canonicalName = type.getCanonicalName();
-      return canonicalName != null ? canonicalName : type.getName();
-    } catch (final Throwable t) {
-      return type.getName();
-    }
+    return Optional.ofNullable(type.getCanonicalName()).orElseGet(type::getName);
   }
 }
