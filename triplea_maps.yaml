@@ -1469,6 +1469,7 @@
   img: https://cloud.githubusercontent.com/assets/15109713/22105137/fbb2629a-de42-11e6-901e-4d286c89bae9.png
   description: |
     <br>Version 1.2, last update 2017.01.13. for engine 1.9
+    <br>Map deprecated. If you have a recent pre-release of TripleA, try the massively improved continuation, Middle Earth: Battle for Arda instead.
     <br>Game done by alkexr
     <br>Contributions by Frostion
     <br>If you have any suggestions, find alkexr on the triplea dev forum.
@@ -1482,6 +1483,23 @@
     <br>- Free For All game option
     <br>
     <br>Read game notes before playing, unless you want to have your strongest units killed by some unexpected enemy ability.
+- mapName: Middle Earth: Battle for Arda
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/battle_for_arda/archive/master.zip
+  version: 1
+  img: https://user-images.githubusercontent.com/15109713/44813046-1f871700-abd9-11e8-9b33-cf70308a1302.png
+  description: |
+    <br>Important!!! Requires TripleA pre-release above 1.9.0.0.11000 to function properly!
+    <br>Watch trailer: https://youtu.be/iucvX0wSO30
+    <br>
+    <br>Black clouds are gathering over Mordor. The mightiest realms of the Third Age stand prepared for yet another war, to forever seal the fate of Arda... Will the Shadow once again cover Middle Earth - or will the forces of Good heal it of what Evil had wrought? Lead the forces of Good or Evil to victory in this epic conflict, the Battle for Arda!
+    <br>
+    <br>The game takes place in a slightly altered timeline (includes realms that never coexisted).
+    <br>Middle Earth: Battle for Arda features a vast map with hundreds of territories and sixteen factions, each of which coming with unique unit sets. The great variety in unit abilities and the interconnectedness of the theaters leaves a lot of room for exploration in strategy.
+    <br>
+    <br>Game design by alkexr. Visual style by Hepps. Contributions by Frostion and redrum. Thanks for the members of the TripleA community for their feedback and ideas, who enabled turning this into a truly great map.
+    <br>This map is the continuation of the (deprecated) Large Middle Earth map. Currently in balance testing period.
+    <br>Version 2.0.6, last update 2018.08.29. for engine 1.9.0.0.11000+
 - mapName: Alagaesia
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/alagaesia/archive/master.zip
