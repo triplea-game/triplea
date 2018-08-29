@@ -1483,7 +1483,7 @@
     <br>- Free For All game option
     <br>
     <br>Read game notes before playing, unless you want to have your strongest units killed by some unexpected enemy ability.
-- mapName: Middle Earth: Battle for Arda
+- mapName: "Middle Earth: Battle for Arda"
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/battle_for_arda/archive/master.zip
   version: 1
