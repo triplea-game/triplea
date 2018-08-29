@@ -608,16 +608,16 @@
 - mapName: Red Sun Over China
   mapCategory: GOOD
   url: https://github.com/triplea-maps/red_sun_over_china/archive/master.zip
-  version: 3
+  version: 4
   img: https://raw.githubusercontent.com/triplea-maps/red_sun_over_china/master/description/TripleA_red_sun_over_china_mini.png
   description: |
-    <br>This is a mod based on the Second Sino-Japanese War, starting in January 1938.
-    <br>Will the Japanese and their allies push into the interior of China or will the Nationalist and Communist Chinese and their allies resist the onslaught?
     <br>Red Sun Over China
     <br> by Pulicat
+    <br> updated by redrum
     <br>
-    <br>Alson contains a second  Warlords FFA
-    <br>A free for all, with 6 players.
+    <br>This is a mod based on the Second Sino-Japanese War, starting in January 1938.
+    <br>Will the Japanese and their allies push into the interior of China or will the Nationalist and Communist Chinese and their allies resist the onslaught?
+    <br>
 - mapName: Feudal Japan
   mapCategory: GOOD
   url: https://github.com/triplea-maps/feudal_japan/archive/master.zip
