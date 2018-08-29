@@ -1,23 +1,57 @@
 package games.strategy.triplea.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
  * Seperates a group of units into distinct categories.
  */
 public class UnitSeperator {
   private UnitSeperator() {}
+
+  /**
+   * Finds unit categories, removes not displayed, and then sorts them into logical order to display based on:
+   * 1. Unit owner: territory owner, not at war with territory owner, player order in XML
+   * 2. Unit type: 0 movement, can't combat move, sea, air if sea territory, land, air if land territory
+   * 3. Within each of those groups sort the units by XML order in UnitList
+   */
+  public static List<UnitCategory> getSortedUnitCategories(final Territory t, final MapData mapData) {
+    final GameData data = t.getData();
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeperator.categorize(t.getUnits().getUnits()));
+    categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
+    final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
+    categories.sort(Comparator
+        .comparing(UnitCategory::getOwner, Comparator
+            .comparing((final PlayerID p) -> !p.equals(t.getOwner()))
+            .thenComparing(p -> Matches.isAtWar(p, data).test(t.getOwner()))
+            .thenComparing(data.getPlayerList().getPlayers()::indexOf))
+        .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))
+        .thenComparing(UnitCategory::getType, Comparator
+            .comparing((final UnitType ut) -> !Matches.unitTypeCanNotMoveDuringCombatMove().test(ut))
+            .thenComparing(ut -> !Matches.unitTypeIsSea().test(ut))
+            .thenComparing(ut -> !(t.isWater() && Matches.unitTypeIsAir().test(ut)))
+            .thenComparing(ut -> !Matches.unitTypeIsLand().test(ut))
+            .thenComparing(xmlUnitTypes::indexOf)));
+    return categories;
+  }
 
   public static Set<UnitCategory> categorize(final Collection<Unit> units) {
     return categorize(units, null, false, false);
