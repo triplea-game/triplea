@@ -2898,7 +2898,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
 
     if (getCanBombard(player) && getBombard() > 0) {
-      tuples.add(Tuple.of("Bombard", attackRolls > 1 ? (attackRolls + "x") : "" + getBombard()));
+      tuples.add(Tuple.of("Bombard", (attackRolls > 1 ? (attackRolls + "x") : "") + getBombard()));
     }
 
     if (getBlockade() > 0) {
