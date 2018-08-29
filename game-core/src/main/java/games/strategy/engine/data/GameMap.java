@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -251,7 +253,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param cond condition that covered territories of the route must match
    */
   public Route getRoute(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
-    if (t1 == t2) {
+    checkNotNull(t1);
+    checkNotNull(t2);
+
+    if (t1.equals(t2)) {
       return new Route(t1);
     }
     if (getNeighbors(t1, cond).contains(t2)) {
@@ -297,12 +302,15 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *
    * @param start start territory of the route
    * @param end end territory of the route
-   * @param matches HashMap of territory matches for covered territories
+   * @param matches Map of territory matches for covered territories
    * @return a composite route between two territories
    */
   public Route getCompositeRoute(final Territory start, final Territory end,
       final Map<Predicate<Territory>, Integer> matches) {
-    if (start == end) {
+    checkNotNull(start);
+    checkNotNull(end);
+
+    if (start.equals(end)) {
       return new Route(start);
     }
     final Predicate<Territory> allCond = t -> matches.keySet().stream().anyMatch(p -> p.test(t));
