@@ -1,7 +1,6 @@
 package games.strategy.engine.auto.update;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -60,7 +59,7 @@ final class EngineVersionCheck {
     final String encodedUpdateCheckDate = updateCheckDateSetting.value();
     if (!firstRun && !encodedUpdateCheckDate.trim().isEmpty()) {
       final LocalDate updateCheckDate = parseUpdateCheckDate(encodedUpdateCheckDate);
-      if (updateCheckDate.until(now, ChronoUnit.DAYS) < 2) {
+      if (updateCheckDate.isAfter(now.minusDays(2))) {
         return false;
       }
     }

@@ -1,7 +1,6 @@
 package games.strategy.engine.auto.update;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -29,7 +28,7 @@ final class UpdatedMapsCheck {
     final String encodedUpdateCheckDate = updateCheckDateSetting.value();
     if (!encodedUpdateCheckDate.trim().isEmpty()) {
       final LocalDate updateCheckDate = parseUpdateCheckDate(encodedUpdateCheckDate);
-      if (updateCheckDate.until(now, ChronoUnit.MONTHS) < 1) {
+      if (updateCheckDate.isAfter(now.minusMonths(1))) {
         return false;
       }
     }
