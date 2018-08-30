@@ -95,7 +95,7 @@ public enum ErrorMessage {
   public static void show(final String msg) {
     if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
       SwingUtilities.invokeLater(() -> {
-        INSTANCE.errorMessage.setText(msg);
+        INSTANCE.errorMessage.setText(TextUtils.textToHtml(msg));
         INSTANCE.windowReference.pack();
         INSTANCE.windowReference.setLocationRelativeTo(null);
         INSTANCE.windowReference.setVisible(true);
