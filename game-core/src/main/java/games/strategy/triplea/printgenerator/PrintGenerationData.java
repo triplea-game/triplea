@@ -4,7 +4,7 @@ import java.io.File;
 
 import games.strategy.engine.data.GameData;
 
-public class PrintGenerationData {
+class PrintGenerationData {
   private File outDir;
   private GameData gameData;
 

@@ -55,7 +55,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     return get(player, nameOfAttachment, null);
   }
 
-  public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment,
+  static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch) {
     PoliticalActionAttachment paa = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
     if (paa == null) {

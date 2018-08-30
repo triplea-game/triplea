@@ -98,7 +98,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return get(player, nameOfAttachment, null, false);
   }
 
-  public static RulesAttachment get(final PlayerID player, final String nameOfAttachment,
+  static RulesAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch, final boolean allowNull) {
     RulesAttachment ra = (RulesAttachment) player.getAttachment(nameOfAttachment);
     if (ra == null) {

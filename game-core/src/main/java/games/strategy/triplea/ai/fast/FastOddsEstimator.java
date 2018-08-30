@@ -14,7 +14,7 @@ import games.strategy.triplea.ai.pro.util.ProPurchaseUtils;
 import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.odds.calculator.IOddsCalculator;
 
-public class FastOddsEstimator implements IOddsCalculator {
+class FastOddsEstimator implements IOddsCalculator {
 
   private Territory location = null;
   private Collection<Unit> attackingUnits = new ArrayList<>();

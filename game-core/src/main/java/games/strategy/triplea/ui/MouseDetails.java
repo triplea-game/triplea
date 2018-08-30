@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
-public class MouseDetails {
+class MouseDetails {
   private final MouseEvent mouseEvent;
   // the x position of the event on the map
   // this is in absolute pixels of the unscaled map

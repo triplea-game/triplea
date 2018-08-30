@@ -60,7 +60,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     ALL, SUBS, NONE
   }
 
-  public enum RetreatType {
+  private enum RetreatType {
     DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
   }
 

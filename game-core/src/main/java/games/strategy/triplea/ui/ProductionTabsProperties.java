@@ -18,7 +18,7 @@ import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 @Log
-public class ProductionTabsProperties {
+class ProductionTabsProperties {
   // Filename
   private static final String PROPERTY_FILE = "production_tabs";
   // Properties
@@ -64,7 +64,7 @@ public class ProductionTabsProperties {
     }
   }
 
-  public static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> rules) {
+  static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> rules) {
     return new ProductionTabsProperties(playerId, rules);
   }
 
@@ -92,15 +92,15 @@ public class ProductionTabsProperties {
     return Integer.valueOf(properties.getProperty(NUMBER_OF_TABS, "0"));
   }
 
-  public boolean useDefaultTabs() {
+  boolean useDefaultTabs() {
     return Boolean.valueOf(properties.getProperty(USE_DEFAULT_TABS, "true"));
   }
 
-  public int getRows() {
+  int getRows() {
     return Integer.valueOf(properties.getProperty(NUMBER_OF_ROWS, "0"));
   }
 
-  public int getColumns() {
+  int getColumns() {
     return Integer.valueOf(properties.getProperty(NUMBER_OF_COLUMNS, "0"));
   }
 }

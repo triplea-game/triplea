@@ -5,7 +5,7 @@ import java.util.List;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
-public interface MouseOverUnitListener {
+interface MouseOverUnitListener {
   /**
    * units will be empty if the mouse is not over any unit.
    */

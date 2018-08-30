@@ -41,7 +41,7 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-public class ProductionRepairPanel extends JPanel {
+class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;
   private final JFrame owner = null;
   private JDialog dialog;
@@ -54,7 +54,7 @@ public class ProductionRepairPanel extends JPanel {
   private Collection<PlayerID> allowedPlayersToRepair;
   private GameData data;
 
-  public static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
+  static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final UiContext uiContext) {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
@@ -77,7 +77,7 @@ public class ProductionRepairPanel extends JPanel {
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
-  public HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
+  HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
       final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
     if (!(parent == owner)) {
@@ -100,7 +100,7 @@ public class ProductionRepairPanel extends JPanel {
     return getProduction();
   }
 
-  public List<Rule> getRules() {
+  List<Rule> getRules() {
     return this.rules;
   }
 
@@ -110,9 +110,7 @@ public class ProductionRepairPanel extends JPanel {
     SwingComponents.addEscapeKeyListener(dialog, () -> dialog.setVisible(false));
   }
 
-  /** Creates new ProductionRepairPanel. */
-  // the constructor can be accessed by subclasses
-  public ProductionRepairPanel(final UiContext uiContext) {
+  ProductionRepairPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
   }
 
@@ -222,7 +220,7 @@ public class ProductionRepairPanel extends JPanel {
     return id.getResources();
   }
 
-  public class Rule extends JPanel {
+  private class Rule extends JPanel {
     private static final long serialVersionUID = -6781214135310064908L;
     private final ScrollableTextField text = new ScrollableTextField(0, Integer.MAX_VALUE);
     private final IntegerMap<Resource> cost;
@@ -272,7 +270,7 @@ public class ProductionRepairPanel extends JPanel {
       return cost;
     }
 
-    public int getQuantity() {
+    int getQuantity() {
       return text.getValue();
     }
 
@@ -288,7 +286,7 @@ public class ProductionRepairPanel extends JPanel {
       text.setMax((int) (Math.ceil(((double) Math.min(max, maxRepairAmount) / (double) repairResults))));
     }
 
-    public Unit getUnit() {
+    Unit getUnit() {
       return unit;
     }
   }

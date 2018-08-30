@@ -27,7 +27,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 import swinglib.JPanelBuilder;
 
-public class TabbedProductionPanel extends ProductionPanel {
+class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;
   private int rows;
   private int columns;
@@ -36,7 +36,7 @@ public class TabbedProductionPanel extends ProductionPanel {
     super(uiContext);
   }
 
-  public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
+  static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
     return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }

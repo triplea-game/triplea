@@ -25,13 +25,13 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.util.IntegerMap;
 
-public class EconomyPanel extends AbstractStatPanel {
+class EconomyPanel extends AbstractStatPanel {
   private static final long serialVersionUID = -7713792841831042952L;
   private final List<ResourceStat> resourceStats = new ArrayList<>();
   private ResourceTableModel resourceModel;
   private final UiContext uiContext;
 
-  public EconomyPanel(final GameData data, final UiContext uiContext) {
+  EconomyPanel(final GameData data, final UiContext uiContext) {
     super(data);
     this.uiContext = uiContext;
     initLayout();

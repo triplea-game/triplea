@@ -42,7 +42,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 
-public class StatPanel extends AbstractStatPanel {
+class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
   private final StatTableModel dataModel;
   private final TechTableModel techModel;
@@ -50,8 +50,7 @@ public class StatPanel extends AbstractStatPanel {
   protected final Map<PlayerID, ImageIcon> mapPlayerImage = new HashMap<>();
   protected final UiContext uiContext;
 
-  /** Creates a new instance of StatPanel. */
-  public StatPanel(final GameData data, final UiContext uiContext) {
+  StatPanel(final GameData data, final UiContext uiContext) {
     super(data);
     this.uiContext = uiContext;
     dataModel = new StatTableModel();
@@ -150,12 +149,12 @@ public class StatPanel extends AbstractStatPanel {
     /* Underlying data for the table */
     private String[][] collectedData;
 
-    public StatTableModel() {
+    StatTableModel() {
       setStatCollums();
       gameData.addDataChangeListener(this);
     }
 
-    public void setStatCollums() {
+    void setStatCollums() {
       stats = new IStat[] {new PuStat(), new ProductionStat(), new UnitsStat(), new TuvStat()};
       if (gameData.getMap().getTerritories().stream().anyMatch(Matches.territoryIsVictoryCity())) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
@@ -248,7 +247,7 @@ public class StatPanel extends AbstractStatPanel {
       }
     }
 
-    public synchronized void setGameData(final GameData data) {
+    synchronized void setGameData(final GameData data) {
       synchronized (this) {
         gameData.removeDataChangeListener(this);
         gameData = data;
@@ -273,7 +272,7 @@ public class StatPanel extends AbstractStatPanel {
     /* Convenience mapping of technology names -> row */
     private final Map<String, Integer> rowMap = new HashMap<>();
 
-    public TechTableModel() {
+    TechTableModel() {
       gameData.addDataChangeListener(this);
       initColList();
       /* Load the country -> col mapping */
@@ -330,7 +329,7 @@ public class StatPanel extends AbstractStatPanel {
       Arrays.sort(colList, 0, players.size());
     }
 
-    public void update() {
+    void update() {
       clearAdvances();
       // copy so aquire/release read lock are on the same object!
       final GameData gameData = StatPanel.this.gameData;
@@ -402,7 +401,7 @@ public class StatPanel extends AbstractStatPanel {
       SwingUtilities.invokeLater(StatPanel.this::repaint);
     }
 
-    public void setGameData(final GameData data) {
+    void setGameData(final GameData data) {
       gameData.removeDataChangeListener(this);
       gameData = data;
       gameData.addDataChangeListener(this);
@@ -431,7 +430,7 @@ public class StatPanel extends AbstractStatPanel {
   }
 
   class PuStat extends ResourceStat {
-    public PuStat() {
+    PuStat() {
       super(getResourcePUs(gameData));
     }
   }

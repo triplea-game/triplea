@@ -13,7 +13,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import lombok.extern.java.Log;
 
 @Log
-public class InitialSetup {
+class InitialSetup {
   private final Map<UnitType, UnitAttachment> unitInfoMap = new HashMap<>();
 
   InitialSetup() {}

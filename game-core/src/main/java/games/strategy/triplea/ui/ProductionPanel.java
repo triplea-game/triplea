@@ -43,7 +43,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 import swinglib.JDialogBuilder;
 
-public class ProductionPanel extends JPanel {
+class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
 
   protected final UiContext uiContext;
@@ -57,8 +57,7 @@ public class ProductionPanel extends JPanel {
   private JDialog dialog;
   private boolean bid;
 
-
-  public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
+  static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
     return new ProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }
@@ -78,11 +77,10 @@ public class ProductionPanel extends JPanel {
     this.uiContext = uiContext;
   }
 
-
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
-  public IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
+  IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     final JDialogBuilder dialogBuilder = JDialogBuilder.builder()
         .contents(this)

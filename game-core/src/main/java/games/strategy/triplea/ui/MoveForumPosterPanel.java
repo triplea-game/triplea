@@ -8,7 +8,7 @@ import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.ui.SwingAction;
 
-public class MoveForumPosterPanel extends AbstractForumPosterPanel {
+class MoveForumPosterPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -533962696697230277L;
 
   MoveForumPosterPanel(final GameData data, final MapPanel map) {

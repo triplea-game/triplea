@@ -12,7 +12,7 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
-public class AggregateEstimate extends AggregateResults {
+class AggregateEstimate extends AggregateResults {
   private final int battleRoundsFought;
   private final double winPercentage;
   private final List<Unit> remainingAttackingUnits;

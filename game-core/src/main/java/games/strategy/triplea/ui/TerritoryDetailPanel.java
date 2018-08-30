@@ -25,7 +25,7 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.OverlayIcon;
 import games.strategy.ui.SwingComponents;
 
-public class TerritoryDetailPanel extends AbstractStatPanel {
+class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
   private final UiContext uiContext;
   private final JButton showOdds = new JButton("Battle Calculator (Ctrl-B)");

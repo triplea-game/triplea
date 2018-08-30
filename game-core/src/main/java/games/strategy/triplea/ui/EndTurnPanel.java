@@ -9,7 +9,7 @@ import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.ui.SwingAction;
 
-public class EndTurnPanel extends AbstractForumPosterPanel {
+class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
   protected final Action doneAction = SwingAction.of("Done", e -> {
     if (forumPosterComponent.getHasPostedTurnSummary()

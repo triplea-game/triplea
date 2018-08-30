@@ -110,7 +110,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return get(player, nameOfAttachment, null);
   }
 
-  public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment,
+  static TriggerAttachment get(final PlayerID player, final String nameOfAttachment,
       final Collection<PlayerID> playersToSearch) {
     TriggerAttachment ta = (TriggerAttachment) player.getAttachment(nameOfAttachment);
     if (ta == null) {
