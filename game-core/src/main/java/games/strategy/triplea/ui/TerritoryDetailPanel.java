@@ -1,8 +1,7 @@
 package games.strategy.triplea.ui;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,7 +18,6 @@ import javax.swing.border.EmptyBorder;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
@@ -80,26 +78,20 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
     add(new JLabel(labelText));
-    gameData.acquireReadLock();
-    final Collection<Unit> unitsInTerritory;
-    try {
-      unitsInTerritory = territory.getUnits().getUnits();
-    } finally {
-      gameData.releaseReadLock();
-    }
-    add(new JLabel("Units: " + unitsInTerritory.size()));
-    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, uiContext));
+    add(new JLabel("Units: " + territory.getUnits().getUnits().stream()
+        .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName())).count()));
+    final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(territory, uiContext));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     scroll.getVerticalScrollBar().setUnitIncrement(20);
     add(scroll);
     refresh();
   }
 
-  private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final UiContext uiContext) {
+  private static JPanel unitsInTerritoryPanel(final Territory territory, final UiContext uiContext) {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    final Set<UnitCategory> units = UnitSeperator.categorize(unitsInTerritory);
+    final List<UnitCategory> units = UnitSeperator.getSortedUnitCategories(territory, uiContext.getMapData());
     PlayerID currentPlayer = null;
     for (final UnitCategory item : units) {
       // seperate players with a seperator

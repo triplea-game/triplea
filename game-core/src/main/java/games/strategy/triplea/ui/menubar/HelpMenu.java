@@ -152,11 +152,14 @@ public final class HelpMenu extends JMenu {
         hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
             .append("><td>Unit</td><td>Name</td><td>Cost</td><td>Tool Tip</td></tr>");
         for (final UnitType ut : entry.getValue()) {
-          i++;
-          hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
-              .append(">").append("<td>").append(getUnitImageUrl(ut, player, uiContext)).append("</td>").append("<td>")
-              .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHtml())
-              .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
+          if (uiContext.getMapData().shouldDrawUnit(ut.getName())) {
+            i++;
+            hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")
+                .append(">").append("<td>").append(getUnitImageUrl(ut, player, uiContext)).append("</td>")
+                .append("<td>")
+                .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHtml())
+                .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
+          }
         }
         i++;
         hints.append("<tr").append(((i & 1) == 0) ? " bgcolor=\"" + color1 + "\"" : " bgcolor=\"" + color2 + "\"")

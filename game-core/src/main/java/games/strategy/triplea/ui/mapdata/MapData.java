@@ -77,6 +77,7 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
   public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
   public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
+  public static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
   public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
   public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
@@ -118,6 +119,7 @@ public class MapData implements Closeable {
   private final Map<String, List<String>> contains = new HashMap<>();
   private final Properties mapProperties = new Properties();
   private final Map<String, List<Point>> territoryEffects = new HashMap<>();
+  private Set<String> undrawnUnits;
   private Set<String> undrawnTerritoriesNames;
   private final Map<Image, List<Point>> decorations = new HashMap<>();
   private final Map<String, Image> territoryNameImages = new HashMap<>();
@@ -352,6 +354,14 @@ public class MapData implements Closeable {
     // zero = normal behavior
     final String stack = mapProperties.getProperty(PROPERTY_UNITS_STACK_SIZE, "0");
     return Math.max(0, Integer.parseInt(stack));
+  }
+
+  public boolean shouldDrawUnit(final String unitName) {
+    if (undrawnUnits == null) {
+      final String property = mapProperties.getProperty(PROPERTY_DONT_DRAW_UNITS, "");
+      undrawnUnits = new HashSet<>(Arrays.asList(property.split(",")));
+    }
+    return !undrawnUnits.contains(unitName);
   }
 
   public boolean shouldDrawTerritoryName(final String territoryName) {
