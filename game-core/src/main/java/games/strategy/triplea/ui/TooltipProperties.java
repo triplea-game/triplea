@@ -11,11 +11,16 @@ import java.util.logging.Level;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.util.LocalizeHtml;
 import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
+/**
+ * Generates unit tooltips based on the content of the map's {@code tooltips.properties} file.
+ */
 @Log
-public class TooltipProperties {
+public final class TooltipProperties {
   // Filename
   private static final String PROPERTY_FILE = "tooltips.properties";
   // Properties
@@ -25,7 +30,7 @@ public class TooltipProperties {
   private static Instant timestamp = Instant.EPOCH;
   private final Properties properties = new Properties();
 
-  protected TooltipProperties() {
+  private TooltipProperties() {
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
@@ -49,12 +54,21 @@ public class TooltipProperties {
     return ttp;
   }
 
-  public String getAppendedToolTip(final UnitType ut, final PlayerID playerId) {
-    return getToolTip(ut, playerId, true);
-  }
-
-  public String getToolTip(final UnitType ut, final PlayerID playerId) {
-    return getToolTip(ut, playerId, false);
+  /**
+   * Get unit type tooltip checking for custom tooltip content.
+   */
+  public String getTooltip(final UnitType unitType, final PlayerID playerId) {
+    final String customTip = getToolTip(unitType, playerId, false);
+    if (!customTip.isEmpty()) {
+      return LocalizeHtml.localizeImgLinksInHtml(customTip);
+    }
+    final String generated = UnitAttachment.get(unitType)
+        .toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId));
+    final String appendedTip = getToolTip(unitType, playerId, true);
+    if (!appendedTip.isEmpty()) {
+      return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
+    }
+    return generated;
   }
 
   private String getToolTip(final UnitType ut, final PlayerID playerId, final boolean isAppending) {
@@ -65,5 +79,4 @@ public class TooltipProperties {
         ? properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + append, "")
         : tooltip;
   }
-
 }

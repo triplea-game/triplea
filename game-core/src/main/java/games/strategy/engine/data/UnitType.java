@@ -15,11 +15,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.util.LocalizeHtml;
 import lombok.extern.java.Log;
 
 /**
@@ -72,23 +69,6 @@ public class UnitType extends NamedAttachable {
   @Override
   public int hashCode() {
     return Objects.hashCode(getName());
-  }
-
-  /**
-   * Get unit type tooltip checking for custom tooltip content.
-   */
-  public String getTooltip(final PlayerID playerId) {
-    final String customTip = TooltipProperties.getInstance().getToolTip(this, playerId);
-    if (!customTip.isEmpty()) {
-      return LocalizeHtml.localizeImgLinksInHtml(customTip);
-    }
-    final String generated = UnitAttachment.get(this)
-        .toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId));
-    final String appendedTip = TooltipProperties.getInstance().getAppendedToolTip(this, playerId);
-    if (!appendedTip.isEmpty()) {
-      return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
-    }
-    return generated;
   }
 
   /**

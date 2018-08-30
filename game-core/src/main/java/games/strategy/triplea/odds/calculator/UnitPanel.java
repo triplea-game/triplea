@@ -17,6 +17,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.ui.ScrollableTextField;
@@ -38,7 +39,8 @@ public class UnitPanel extends JPanel {
     textField.addChangeListener(field -> notifyListeners());
 
     final String toolTipText = "<html>" + category.getType().getName() + ":  " + costs.getInt(category.getType())
-        + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; " + category.getType().getTooltip(category.getOwner())
+        + " cost, <br /> &nbsp;&nbsp;&nbsp;&nbsp; "
+        + TooltipProperties.getInstance().getTooltip(category.getType(), category.getOwner())
         + "</html>";
     setCount(category.getUnits().size());
     setLayout(new GridBagLayout());

@@ -30,6 +30,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.util.CollectionUtils;
@@ -273,7 +274,7 @@ public class OrderOfLossesInputPanel extends JPanel {
         final String unitName =
             OOL_ALL + OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
         final String toolTipText = "<html>" + category.getType().getName() + ":  "
-            + category.getType().getTooltip(category.getOwner()) + "</html>";
+            + TooltipProperties.getInstance().getTooltip(category.getType(), category.getOwner()) + "</html>";
         final Optional<Image> img =
             uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
                 category.hasDamageOrBombingUnitDamage(), category.getDisabled());

@@ -109,8 +109,8 @@ public class TerritoryDetailPanel extends AbstractStatPanel {
         final Icon flaggedUnitIcon =
             new OverlayIcon(unitIcon.get(), flagIcon, unitIcon.get().getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
         final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
-        final String toolTipText =
-            "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer) + "</html>";
+        final String toolTipText = "<html>" + item.getType().getName() + ": "
+            + TooltipProperties.getInstance().getTooltip(item.getType(), currentPlayer) + "</html>";
         label.setToolTipText(toolTipText);
         panel.add(label);
       }
