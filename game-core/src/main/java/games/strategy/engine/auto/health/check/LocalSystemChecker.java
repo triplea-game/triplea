@@ -30,11 +30,10 @@ public final class LocalSystemChecker {
     final Collection<Exception> exceptions = localSystemChecker.getExceptions();
     if (!exceptions.isEmpty()) {
       log.warning(String.format(
-          "Warning!! %d system checks failed. Some game features may not be available or may not work correctly.%n%s",
+          "%d system check(s) failed. Some game features may not be available or may not work correctly.%n%s",
           exceptions.size(), localSystemChecker.getStatusMessage()));
     }
   }
-
 
   private final Set<SystemCheck> systemChecks;
 
@@ -84,6 +83,6 @@ public final class LocalSystemChecker {
   private String getStatusMessage() {
     return systemChecks.stream()
         .map(SystemCheck::getResultMessage)
-        .collect(Collectors.joining("\n"));
+        .collect(Collectors.joining(System.lineSeparator()));
   }
 }
