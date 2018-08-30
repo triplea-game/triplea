@@ -276,7 +276,7 @@ public class TileManager {
       drawTerritoryEffects(territory, mapData, drawing);
     }
     if (uiContext.getShowUnits()) {
-      drawUnits(territory, mapData, drawnOn, drawing, data);
+      drawUnits(territory, mapData, drawnOn, drawing);
     }
     drawing.add(new BattleDrawable(territory.getName()));
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
@@ -335,7 +335,7 @@ public class TileManager {
   }
 
   private void drawUnits(final Territory territory, final MapData mapData, final Set<Tile> drawnOn,
-      final Set<IDrawable> drawing, final GameData data) {
+      final Set<IDrawable> drawing) {
     final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();
     if (!placementPoints.hasNext()) {
       throw new IllegalStateException("No where to place units:" + territory.getName());
