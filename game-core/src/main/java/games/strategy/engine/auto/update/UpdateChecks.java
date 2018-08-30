@@ -25,7 +25,7 @@ public class UpdateChecks {
     TutorialMapCheck.checkForTutorialMap();
     EngineVersionCheck.checkForLatestEngineVersionOut();
 
-    if (UpdatedMapsCheck.shouldRunMapUpdateCheck()) {
+    if (UpdatedMapsCheck.isMapUpdateCheckRequired()) {
       MapDownloadController.checkDownloadedMapsAreLatest();
     }
   }
