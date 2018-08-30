@@ -35,7 +35,7 @@ import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
-public abstract class AbstractUndoableMovesPanel extends JPanel {
+abstract class AbstractUndoableMovesPanel extends JPanel {
   private static final long serialVersionUID = 1910945925958952416L;
   protected List<AbstractUndoableMove> moves;
 
@@ -50,7 +50,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     moves = Collections.emptyList();
   }
 
-  public void setMoves(final List<AbstractUndoableMove> undoableMoves) {
+  void setMoves(final List<AbstractUndoableMove> undoableMoves) {
     moves = undoableMoves;
     SwingUtilities.invokeLater(this::initLayout);
   }
@@ -158,7 +158,7 @@ public abstract class AbstractUndoableMovesPanel extends JPanel {
     return containerBox;
   }
 
-  public int getCountOfMovesMade() {
+  int getCountOfMovesMade() {
     return moves.size();
   }
 

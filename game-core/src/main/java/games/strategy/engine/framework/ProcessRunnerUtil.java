@@ -18,7 +18,7 @@ import lombok.extern.java.Log;
  * To hold various static utility methods for running a java program.
  */
 @Log
-public class ProcessRunnerUtil {
+class ProcessRunnerUtil {
 
   static void populateBasicJavaArgs(final List<String> commands) {
     final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
@@ -41,7 +41,7 @@ public class ProcessRunnerUtil {
     }
   }
 
-  public static void exec(final List<String> commands) {
+  static void exec(final List<String> commands) {
     final ProcessBuilder builder = new ProcessBuilder(commands);
     // merge the streams, so we only have to start one reader thread
     builder.redirectErrorStream(true);

@@ -18,7 +18,7 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
-public class PlayerChooser extends JOptionPane {
+class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
   private JList<PlayerID> list;
   private final PlayerList players;
@@ -26,14 +26,11 @@ public class PlayerChooser extends JOptionPane {
   private final UiContext uiContext;
   private final boolean allowNeutral;
 
-  // private JOptionPane m_pane;
-  /** Creates new PlayerChooser. */
-  public PlayerChooser(final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
+  PlayerChooser(final PlayerList players, final UiContext uiContext, final boolean allowNeutral) {
     this(players, null, uiContext, allowNeutral);
   }
 
-  /** Creates new PlayerChooser. */
-  public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final UiContext uiContext,
+  PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final UiContext uiContext,
       final boolean allowNeutral) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
@@ -78,7 +75,7 @@ public class PlayerChooser extends JOptionPane {
    *
    * @return the player or null
    */
-  public PlayerID getSelected() {
+  PlayerID getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
     }

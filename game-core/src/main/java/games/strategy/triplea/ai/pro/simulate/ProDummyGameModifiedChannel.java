@@ -4,7 +4,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGameModifiedChannel;
 
-public class ProDummyGameModifiedChannel implements IGameModifiedChannel {
+class ProDummyGameModifiedChannel implements IGameModifiedChannel {
   @Override
   public void addChildToEvent(final String text, final Object renderingData) {}
 

@@ -42,7 +42,7 @@ import games.strategy.ui.SwingAction;
 import lombok.extern.java.Log;
 
 @Log
-public class CommentPanel extends JPanel {
+class CommentPanel extends JPanel {
   private static final long serialVersionUID = -9122162393288045888L;
   private JTextPane text;
   private JScrollPane scrollPane;
@@ -202,7 +202,7 @@ public class CommentPanel extends JPanel {
   }
 
   /** thread safe. */
-  public void addMessage(final String message) {
+  void addMessage(final String message) {
     SwingAction.invokeNowOrLater(() -> {
       try {
         final Document doc = text.getDocument();

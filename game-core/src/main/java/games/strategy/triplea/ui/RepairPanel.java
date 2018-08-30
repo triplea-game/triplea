@@ -22,7 +22,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 
-public class RepairPanel extends ActionPanel {
+class RepairPanel extends ActionPanel {
   private static final long serialVersionUID = 3045997038627313714L;
   private static final String CHANGE = "Change...";
   private static final String BUY = "Repair...";
@@ -34,8 +34,7 @@ public class RepairPanel extends ActionPanel {
   private final JLabel repairdSoFar = new JLabel();
   private final JButton buyButton;
 
-  /** Creates new RepairPanel. */
-  public RepairPanel(final GameData data, final MapPanel map) {
+  RepairPanel(final GameData data, final MapPanel map) {
     super(data, map);
     unitsPanel = new SimpleUnitPanel(map.getUiContext());
     buyButton = new JButton(BUY);

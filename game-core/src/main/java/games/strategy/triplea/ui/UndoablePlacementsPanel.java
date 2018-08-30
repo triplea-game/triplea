@@ -2,10 +2,10 @@ package games.strategy.triplea.ui;
 
 import games.strategy.triplea.delegate.AbstractUndoableMove;
 
-public class UndoablePlacementsPanel extends AbstractUndoableMovesPanel {
+class UndoablePlacementsPanel extends AbstractUndoableMovesPanel {
   private static final long serialVersionUID = -8905646288832196354L;
 
-  public UndoablePlacementsPanel(final AbstractMovePanel movePanel) {
+  UndoablePlacementsPanel(final AbstractMovePanel movePanel) {
     super(movePanel);
   }
 

@@ -25,7 +25,7 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
 
-public abstract class AbstractMovePanel extends ActionPanel {
+abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
   private static final int entryPadding = 15;
   private final TripleAFrame frame;

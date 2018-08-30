@@ -37,7 +37,7 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-public class TechPanel extends ActionPanel {
+class TechPanel extends ActionPanel {
   private static final long serialVersionUID = -6477919141575138007L;
   private final JLabel actionLabel = new JLabel();
   private TechRoll techRoll;
@@ -45,8 +45,7 @@ public class TechPanel extends ActionPanel {
   private int quantity;
   private IntegerMap<PlayerID> whoPaysHowMuch = null;
 
-  /** Creates new TechPanel. */
-  public TechPanel(final GameData data, final MapPanel map) {
+  TechPanel(final GameData data, final MapPanel map) {
     super(data, map);
   }
 

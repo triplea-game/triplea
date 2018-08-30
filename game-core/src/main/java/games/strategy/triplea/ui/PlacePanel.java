@@ -28,15 +28,14 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
 
-public class PlacePanel extends AbstractMovePanel {
+class PlacePanel extends AbstractMovePanel {
   private static final long serialVersionUID = -4411301492537704785L;
   private final JLabel actionLabel = new JLabel();
   private final JLabel leftToPlaceLabel = new JLabel();
   private PlaceData placeData;
   private final SimpleUnitPanel unitsToPlace;
 
-  /** Creates new PlacePanel. */
-  public PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
+  PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     undoableMovesPanel = new UndoablePlacementsPanel(this);
     unitsToPlace = new SimpleUnitPanel(map.getUiContext());

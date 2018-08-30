@@ -7,7 +7,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class NotesPanel extends JPanel {
+class NotesPanel extends JPanel {
   private static final long serialVersionUID = 2746643868463714526L;
   protected final JEditorPane gameNotesPane;
 
@@ -17,7 +17,7 @@ public class NotesPanel extends JPanel {
   // so instead we keep the main copy in the TripleAMenuBar, and then give it to the notes tab. this prevents out of
   // memory errors for
   // maps with large images in their games notes.
-  public NotesPanel(final JEditorPane gameNotesPane) {
+  NotesPanel(final JEditorPane gameNotesPane) {
     this.gameNotesPane = gameNotesPane;
     initLayout();
   }

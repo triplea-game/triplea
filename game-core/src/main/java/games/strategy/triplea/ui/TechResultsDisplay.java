@@ -17,7 +17,7 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.ui.SwingComponents;
 
-public class TechResultsDisplay extends JPanel {
+class TechResultsDisplay extends JPanel {
   private static final long serialVersionUID = -8303376983862918107L;
 
   TechResultsDisplay(final TechResults msg, final UiContext uiContext, final GameData data) {
