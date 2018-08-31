@@ -265,8 +265,7 @@ public class MoveValidator {
     final Set<Unit> unitsToLandTransport = unitsWithoutDependents.stream()
         .filter(unit -> unitsThatFailCanal.contains(unit) || !Matches.unitHasEnoughMovementForRoute(route).test(unit))
         .collect(Collectors.toSet());
-    return checkLandTransports(data, route, player, potentialLandTransports, unitsToLandTransport).isEmpty() ? null
-        : result;
+    return checkLandTransports(data, player, potentialLandTransports, unitsToLandTransport).isEmpty() ? null : result;
   }
 
   private static MoveValidationResult validateCombat(final GameData data, final Collection<Unit> units,
@@ -575,7 +574,7 @@ public class MoveValidator {
       final Set<Unit> unitsWithoutEnoughMovement = unitsWithoutDependents.stream()
           .filter(unit -> !Matches.unitHasEnoughMovementForRoute(route).test(unit))
           .collect(Collectors.toSet());
-      checkLandTransports(data, route, player, unitsWithEnoughMovement, unitsWithoutEnoughMovement)
+      checkLandTransports(data, player, unitsWithEnoughMovement, unitsWithoutEnoughMovement)
           .forEach(unit -> result.addDisallowedUnit("Not all units have enough movement", unit));
 
       // Can only move owned units except transported units or allied air on carriers
@@ -703,7 +702,7 @@ public class MoveValidator {
    * 1. Transport units on a 1-to-1 basis (have no capacity set)
    * 2. Transport like sea transports using capacity and cost
    */
-  private static Set<Unit> checkLandTransports(final GameData data, final Route route,
+  private static Set<Unit> checkLandTransports(final GameData data,
       final PlayerID player, final Collection<Unit> possibleLandTransports, final Set<Unit> unitsToLandTransport) {
     final Set<Unit> disallowedUnits = new HashSet<>();
     data.acquireReadLock();
