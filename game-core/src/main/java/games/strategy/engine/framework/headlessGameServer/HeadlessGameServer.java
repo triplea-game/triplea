@@ -84,8 +84,7 @@ public class HeadlessGameServer {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       log.info("Running ShutdownHook.");
       shutDown = true;
-      shutdownListeners
-          .forEach(Runnable::run);
+      shutdownListeners.forEach(Runnable::run);
     }));
     availableGames = new AvailableGames();
     gameSelectorModel = new GameSelectorModel();
@@ -139,53 +138,6 @@ public class HeadlessGameServer {
 
   public Set<String> getAvailableGames() {
     return availableGames.getGameNames();
-  }
-
-  public synchronized void setGameMapTo(final String gameName) {
-    // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (!availableGames.getGameNames().contains(gameName)) {
-        return;
-      }
-      gameSelectorModel.load(availableGames.getGameData(gameName), availableGames.getGameFilePath(gameName));
-      log.info("Changed to game map: " + gameName);
-    }
-  }
-
-  public synchronized void loadGameSave(final File file) {
-    // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (file == null || !file.exists()) {
-        return;
-      }
-      gameSelectorModel.load(file);
-      log.info("Changed to save: " + file.getName());
-    }
-  }
-
-  public synchronized void loadGameSave(final InputStream input, final String fileName) {
-    // don't change mid-game
-    if (setupPanelModel.getPanel() != null && game == null) {
-      if (input == null || fileName == null) {
-        return;
-      }
-      final GameData data = gameSelectorModel.getGameData(input);
-      if (data == null) {
-        log.info("Loading GameData failed for: " + fileName);
-        return;
-      }
-
-
-      final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-
-
-      if (!availableGames.containsMapName(mapNameProperty)) {
-        log.info("Game mapName not in available games listing: " + mapNameProperty);
-        return;
-      }
-      gameSelectorModel.load(data, fileName);
-      log.info("Changed to user savegame: " + fileName);
-    }
   }
 
   public synchronized void loadGameOptions(final byte[] bytes) {
