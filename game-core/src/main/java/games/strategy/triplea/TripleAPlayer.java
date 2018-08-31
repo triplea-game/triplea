@@ -53,7 +53,6 @@ import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.PlaceData;
-import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -65,7 +64,7 @@ import lombok.extern.java.Log;
  * getPlayerBridge().getRemote()
  */
 @Log
-public abstract class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements ITripleAPlayer {
+public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITripleAPlayer {
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
   private boolean soundPlayedAlreadyPurchase = false;

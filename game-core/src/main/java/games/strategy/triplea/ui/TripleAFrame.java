@@ -56,6 +56,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -170,8 +171,9 @@ import lombok.extern.java.Log;
  * Main frame for the triple a game.
  */
 @Log
-public class TripleAFrame extends MainGameFrame {
+public final class TripleAFrame extends JFrame {
   private static final long serialVersionUID = 7640069668264418976L;
+  private final LocalPlayers localPlayers;
   private final GameData data;
   private final IGame game;
   private final MapPanel mapPanel;
@@ -238,7 +240,13 @@ public class TripleAFrame extends MainGameFrame {
 
   private TripleAFrame(final IGame game, final LocalPlayers players,
       final UiContext uiContext, @Nullable final Chat chat) {
-    super("TripleA - " + game.getData().getGameName(), players);
+    super("TripleA - " + game.getData().getGameName());
+
+    localPlayers = players;
+    setIconImage(GameRunner.getGameIcon(this));
+    // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
+    setMinimumSize(new Dimension(200, 200));
+
     this.game = game;
     data = game.getData();
     addZoomKeyboardShortcuts();
@@ -465,7 +473,6 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
-
   private void showCommentLog() {
     if (chatPanel != null) {
       commentSplit.setBottomComponent(chatPanel);
@@ -479,7 +486,6 @@ public class TripleAFrame extends MainGameFrame {
       mapAndChatPanel.validate();
     }
   }
-
 
   private static KeyListener getFlagToggleKeyListener(final TripleAFrame frame) {
     return new KeyListener() {
@@ -529,7 +535,6 @@ public class TripleAFrame extends MainGameFrame {
         }
       }
     };
-
   }
 
   private void addZoomKeyboardShortcuts() {
@@ -552,6 +557,10 @@ public class TripleAFrame extends MainGameFrame {
         () -> tabsPanel.setSelectedIndex((Arrays.asList(tabsPanel.getComponents())).indexOf(component)));
   }
 
+  public LocalPlayers getLocalPlayers() {
+    return localPlayers;
+  }
+
   /**
    * Sets the map scale.
    *
@@ -568,7 +577,9 @@ public class TripleAFrame extends MainGameFrame {
     return getMapPanel().getScale() * 100;
   }
 
-  @Override
+  /**
+   * Stops the game and closes this frame window.
+   */
   public void stopGame() {
     // we have already shut down
     if (uiContext == null) {
@@ -593,7 +604,10 @@ public class TripleAFrame extends MainGameFrame {
     ProAi.gameOverClearCache();
   }
 
-  @Override
+  /**
+   * Prompts the user if they wish to exit the application. If they answer yes, the game will be stopped, and the
+   * process will be terminated.
+   */
   public void shutdown() {
     final int selectedOption = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
@@ -605,7 +619,10 @@ public class TripleAFrame extends MainGameFrame {
     ExitStatus.SUCCESS.exit();
   }
 
-  @Override
+  /**
+   * Prompts the user if they wish to leave the game. If they answer yes, the game will be stopped, and the application
+   * will return to the main menu.
+   */
   public void leaveGame() {
     final int selectedOption = EventThreadJOptionPane.showConfirmDialog(this,
         "Are you sure you want to leave the current game?\nUnsaved game data will be lost.", "Leave Game",
@@ -788,7 +805,6 @@ public class TripleAFrame extends MainGameFrame {
   /**
    * We do NOT want to block the next player from beginning their turn.
    */
-  @Override
   public void notifyError(final String message) {
     final String displayMessage = LocalizeHtml.localizeImgLinksInHtml(message);
     messageAndDialogThreadPool.submit(() -> EventThreadJOptionPane.showMessageDialogWithScrollPane(TripleAFrame.this,
@@ -2197,12 +2213,10 @@ public class TripleAFrame extends MainGameFrame {
     mapPanel.resetMap();
   }
 
-  @Override
   public IGame getGame() {
     return game;
   }
 
-  @Override
   public void setShowChatTime(final boolean showTime) {
     chatPanel.setShowChatTime(showTime);
   }
