@@ -26,11 +26,8 @@ public final class ClientLoginValidatorTest {
     public abstract class AbstractTestCase {
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
-      @Mock
-      private SocketAddress socketAddress;
-
       Map<String, String> getChallengeProperties() {
-        return clientLoginValidator.getChallengeProperties("userName", socketAddress);
+        return clientLoginValidator.getChallengeProperties("userName");
       }
     }
 
