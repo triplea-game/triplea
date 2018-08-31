@@ -4,8 +4,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
