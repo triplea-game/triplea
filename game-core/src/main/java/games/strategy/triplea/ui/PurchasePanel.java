@@ -29,6 +29,9 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
+/**
+ * The action panel displayed during the purchase action.
+ */
 public class PurchasePanel extends ActionPanel {
   private static final long serialVersionUID = -6121756876868623355L;
   private final JLabel actionLabel = new JLabel();

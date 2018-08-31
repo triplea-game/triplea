@@ -23,6 +23,10 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.util.CountDownLatchHandler;
 
+/**
+ * Provides a context for UI-dependent operations to execute without requiring specific knowledge of the underlying UI
+ * implementation (e.g. headed vs. headless).
+ */
 public interface UiContext {
   Cursor getCursor();
 
@@ -40,10 +44,20 @@ public interface UiContext {
 
   UnitImageFactory getUnitImageFactory();
 
+  /**
+   * Indicates the damaged or undamaged version of a unit image should be used.
+   *
+   * @see UiContext#createUnitImageJLabel(UnitType, PlayerID, UnitDamage, UnitEnable)
+   */
   enum UnitDamage {
     DAMAGED, NOT_DAMAGED
   }
 
+  /**
+   * Indicates the enabled or disabled version of a unit image should be used.
+   *
+   * @see UiContext#createUnitImageJLabel(UnitType, PlayerID, UnitDamage, UnitEnable)
+   */
   enum UnitEnable {
     DISABLED, ENABLED
   }

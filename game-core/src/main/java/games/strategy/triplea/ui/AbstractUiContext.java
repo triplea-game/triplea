@@ -23,6 +23,9 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.CountDownLatchHandler;
 import lombok.extern.java.Log;
 
+/**
+ * Superclass for {@link UiContext} that provides operations common to both headed and headless implementations.
+ */
 @Log
 public abstract class AbstractUiContext implements UiContext {
 

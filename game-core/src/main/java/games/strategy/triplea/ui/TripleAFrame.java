@@ -825,6 +825,21 @@ public class TripleAFrame extends MainGameFrame {
         displayMessage, title, JOptionPane.INFORMATION_MESSAGE, getUiContext().getCountDownLatchHandler()));
   }
 
+  /**
+   * Prompts the user with a list of territories that have air units that either cannot land (movement action) or be
+   * placed (placement action) in the territory. The user is asked whether they wish to end the current
+   * movement/placement action, which will destroy the air units in the specified territories, or if they wish to
+   * continue the current movement/placement action in order to possibly move/place those units in a different
+   * territory.
+   *
+   * @param id The player performing the movement/placement action.
+   * @param airCantLand The collection of territories that have air units that either cannot land or be placed in them.
+   * @param movePhase {@code true} if a movement action is active; otherwise {@code false} if a placement action is
+   *        active.
+   *
+   * @return {@code true} if the user wishes to end the current movement/placement action, and thus destroy the affected
+   *         air units; otherwise {@code false} if the user wishes to continue the current movement/placement action.
+   */
   public boolean getOkToLetAirDie(final PlayerID id, final Collection<Territory> airCantLand,
       final boolean movePhase) {
     if (airCantLand == null || airCantLand.isEmpty()) {
@@ -858,6 +873,20 @@ public class TripleAFrame extends MainGameFrame {
     return choice == JOptionPane.NO_OPTION;
   }
 
+  /**
+   * Prompts the user with a list of territories that have units that either cannot fight (movement action) or be
+   * placed (placement action) in the territory. The user is asked whether they wish to end the current
+   * movement/placement action, which will destroy the units in the specified territories, or if they wish to
+   * continue the current movement/placement action in order to possibly move/place those units in a different
+   * territory.
+   *
+   * @param unitsCantFight The collection of territories that have units that cannot fight.
+   * @param movePhase {@code true} if a movement action is active; otherwise {@code false} if a placement action is
+   *        active.
+   *
+   * @return {@code true} if the user wishes to end the current movement/placement action, and thus destroy the affected
+   *         units; otherwise {@code false} if the user wishes to continue the current movement/placement action.
+   */
   public boolean getOkToLetUnitsDie(final Collection<Territory> unitsCantFight, final boolean movePhase) {
     if (unitsCantFight == null || unitsCantFight.isEmpty()) {
       return true;
@@ -893,6 +922,9 @@ public class TripleAFrame extends MainGameFrame {
     return choice == JOptionPane.OK_OPTION;
   }
 
+  /**
+   * Displays a message to the user informing them of the results of rolling for technologies.
+   */
   public void notifyTechResults(final TechResults msg) {
     final Supplier<TechResultsDisplay> action = () -> new TechResultsDisplay(msg, uiContext, data);
     messageAndDialogThreadPool
@@ -909,6 +941,15 @@ public class TripleAFrame extends MainGameFrame {
                 getUiContext().getCountDownLatchHandler())));
   }
 
+  /**
+   * Prompts the user if the applicable air units in the specified territory are to perform a strategic bombing raid or
+   * are to participate in the attack.
+   *
+   * @param location The territory under attack.
+   *
+   * @return {@code true} if the applicable air units will perform a strategic bombing raid in the specified territory;
+   *         otherwise {@code false}.
+   */
   public boolean getStrategicBombingRaid(final Territory location) {
     messageAndDialogThreadPool.waitForAll();
     final String message =
@@ -926,6 +967,15 @@ public class TripleAFrame extends MainGameFrame {
     return choice == JOptionPane.OK_OPTION;
   }
 
+  /**
+   * Prompts the user to select a strategic bombing raid target in the specified territory.
+   *
+   * @param territory The territory under attack.
+   * @param potentialTargets The potential bombing targets.
+   * @param bombers The units participating in the strategic bombing raid.
+   *
+   * @return The selected target or {@code null} if no target was selected.
+   */
   public @Nullable Unit getStrategicBombingRaidTarget(
       final Territory territory,
       final Collection<Unit> potentialTargets,
@@ -999,6 +1049,20 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
+  /**
+   * Prompts the user to select a collection of dice rolls. The user is presented with a dialog that allows them to
+   * choose from all possible rolls for a die with the specified number of sides. Each roll is rendered depending on
+   * whether it will result in a hit or a miss.
+   *
+   * @param numDice The number of dice the user is required to select.
+   * @param hitAt The value at which the roll is considered a hit.
+   * @param hitOnlyIfEquals {@code true} if a roll is only considered a hit if it is exactly equal to {@code hitAt};
+   *        {@code false} if any roll equal to or greater than {@code hitAt} should be considered a hit.
+   * @param title The dialog title.
+   * @param diceSides The number of sides on a die.
+   *
+   * @return The selected dice rolls.
+   */
   public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
       final int diceSides) {
     messageAndDialogThreadPool.waitForAll();
@@ -1015,6 +1079,15 @@ public class TripleAFrame extends MainGameFrame {
         .orElseGet(() -> new int[numDice]);
   }
 
+  /**
+   * Prompts the user to select a territory in which to land an air unit.
+   *
+   * @param candidates The collection of territories from which the user may select.
+   * @param currentTerritory The territory in which the air unit is currently located.
+   * @param unitMessage An additional message to display to the user.
+   *
+   * @return The selected territory or {@code null} if no territory was selected.
+   */
   public @Nullable Territory selectTerritoryForAirToLand(
       final Collection<Territory> candidates,
       final Territory currentTerritory,
@@ -1056,6 +1129,17 @@ public class TripleAFrame extends MainGameFrame {
         .orElse(null);
   }
 
+  /**
+   * Prompts the user to pick a territory and a collection of associated units.
+   *
+   * @param player The player making the selection.
+   * @param territoryChoices The collection of territories from which the user may select.
+   * @param unitChoices The collection of units from which the user may select.
+   * @param unitsPerPick The number of units the user must select.
+   *
+   * @return A tuple whose first element is the selected territory and whose second element is the collection of
+   *         selected units.
+   */
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player,
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     // total hacks
@@ -1094,6 +1178,17 @@ public class TripleAFrame extends MainGameFrame {
     return territoryAndUnits;
   }
 
+  /**
+   * Prompts the user to select the units that may participate in a suicide attack.
+   *
+   * @param possibleUnitsToAttack The possible units that may participate in the suicide attack from which the user may
+   *        select.
+   * @param attackResourceToken The resource that is expended to conduct the suicide attack.
+   * @param maxNumberOfAttacksAllowed The maximum number of units that can be selected.
+   *
+   * @return A map of units that will participate in the suicide attack grouped by the territory from which they are
+   *         attacking.
+   */
   public Map<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(
       final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack, final Resource attackResourceToken,
       final int maxNumberOfAttacksAllowed) {
@@ -1170,6 +1265,15 @@ public class TripleAFrame extends MainGameFrame {
     return selection;
   }
 
+  /**
+   * Prompts the user to select units which will participate in a scramble to the specified territory.
+   *
+   * @param scrambleTo The territory to which units are to be scrambled.
+   * @param possibleScramblers The possible units that may participate in the scramble from which the user may select.
+   *
+   * @return A map of units that will participate in the scramble grouped by the territory from which they are
+   *         scrambling.
+   */
   public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     messageAndDialogThreadPool.waitForAll();
@@ -1293,6 +1397,15 @@ public class TripleAFrame extends MainGameFrame {
         : (JOptionPane) parent;
   }
 
+  /**
+   * Prompts the user to select from a predefined collection of units in a specific territory.
+   *
+   * @param current The territory containing the units.
+   * @param possible The collection of possible units from which the user may select.
+   * @param message An additional message to display to the user.
+   *
+   * @return The collection of units selected by the user.
+   */
   public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible,
       final String message) {
     messageAndDialogThreadPool.waitForAll();
@@ -1385,6 +1498,14 @@ public class TripleAFrame extends MainGameFrame {
     return actionButtons.waitForTech();
   }
 
+  /**
+   * Prompts the user to select the territory on which they wish to conduct a rocket attack.
+   *
+   * @param candidates The collection of territories on which the user may conduct a rocket attack.
+   * @param from The territory from which the rocket attack is conducted.
+   *
+   * @return The selected territory or {@code null} if no territory was selected.
+   */
   public Territory getRocketAttack(final Collection<Territory> candidates, final Territory from) {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(from);
@@ -1471,6 +1592,10 @@ public class TripleAFrame extends MainGameFrame {
     }
   }
 
+  /**
+   * Invoked at the start of a player's turn to play a sound alerting the player it is their turn and to center the map
+   * on the player's capital.
+   */
   public void requiredTurnSeries(final PlayerID player) {
     if (player == null || !Interruptibles.sleep(300)) {
       return;
@@ -1995,6 +2120,15 @@ public class TripleAFrame extends MainGameFrame {
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
   });
 
+  /**
+   * Prompts the user to select from the specified collection of fighters those they wish to move to an adjacent
+   * newly-constructed carrier.
+   *
+   * @param fighters The collection of fighters from which to choose.
+   * @param where The territory on which to center the map.
+   *
+   * @return The collection of fighters to move to the newly-constructed carrier.
+   */
   public Collection<Unit> moveFightersToCarrier(final Collection<Unit> fighters, final Territory where) {
     messageAndDialogThreadPool.waitForAll();
     mapPanel.centerOn(where);
@@ -2048,7 +2182,9 @@ public class TripleAFrame extends MainGameFrame {
     return mapPanel;
   }
 
-  // Beagle Code Called to Change Mapskin
+  /**
+   * Displays the map located in the directory/archive {@code mapdir}.
+   */
   public void updateMap(final String mapdir) {
     uiContext.setMapDir(data, mapdir);
     // when changing skins, always show relief images
