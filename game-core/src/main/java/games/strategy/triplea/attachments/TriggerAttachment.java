@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
@@ -1954,7 +1955,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         triggerAttachment.use(bridge);
       }
       triggerAttachment.getProductionRule().stream()
-          .map(s -> splitOnColon(s))
+          .map(DefaultAttachment::splitOnColon)
           .forEach(array -> {
             final ProductionFrontier front = data.getProductionFrontierList().getProductionFrontier(array[0]);
             final String rule = array[1];

@@ -192,16 +192,14 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     });
     // When map is scrolled, update information about what we're hovering over.
-    model.addObserver((object, arg) -> {
-      SwingUtilities.invokeLater(() -> {
-        final PointerInfo pointer = MouseInfo.getPointerInfo();
-        if (pointer != null) {
-          final Point loc = pointer.getLocation();
-          SwingUtilities.convertPointFromScreen(loc, MapPanel.this);
-          updateMouseHoverState(null, loc.x, loc.y);
-        }
-      });
-    });
+    model.addObserver((object, arg) -> SwingUtilities.invokeLater(() -> {
+      final PointerInfo pointer = MouseInfo.getPointerInfo();
+      if (pointer != null) {
+        final Point loc = pointer.getLocation();
+        SwingUtilities.convertPointFromScreen(loc, MapPanel.this);
+        updateMouseHoverState(null, loc.x, loc.y);
+      }
+    }));
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     executor.execute(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {

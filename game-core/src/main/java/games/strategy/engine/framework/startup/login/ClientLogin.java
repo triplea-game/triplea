@@ -60,17 +60,15 @@ public class ClientLogin implements IConnectionLogin {
 
   @VisibleForTesting
   protected String promptForPassword() {
-    return Interruptibles.awaitResult(() -> {
-      return SwingAction.invokeAndWaitResult(() -> {
-        final JPasswordField passwordField = new JPasswordField();
-        passwordField.setColumns(15);
-        JOptionPane.showMessageDialog(
-            JOptionPane.getFrameForComponent(parentComponent),
-            passwordField,
-            "Enter a password to join the game",
-            JOptionPane.QUESTION_MESSAGE);
-        return new String(passwordField.getPassword());
-      });
-    }).result.orElse("");
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
+      final JPasswordField passwordField = new JPasswordField();
+      passwordField.setColumns(15);
+      JOptionPane.showMessageDialog(
+          JOptionPane.getFrameForComponent(parentComponent),
+          passwordField,
+          "Enter a password to join the game",
+          JOptionPane.QUESTION_MESSAGE);
+      return new String(passwordField.getPassword());
+    })).result.orElse("");
   }
 }

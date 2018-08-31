@@ -3099,13 +3099,12 @@ public class UnitAttachment extends DefaultAttachment {
   private void addAaDescription(final String startOfKey, final int aa, final int aaMaxDieSides,
       final List<Tuple<String, String>> tuples) {
     if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly()) && (aa > 0)) {
-      final StringBuilder sb = new StringBuilder();
-      sb.append(aa).append("/")
-          .append(aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
-          .append(" ").append(getTypeAa())
-          .append(" with ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
-          .append(" Attacks for ").append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds");
-      tuples.add(Tuple.of(startOfKey + getAaKey(), sb.toString()));
+      final String string = String.valueOf(aa) + "/"
+          + (aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
+          + " " + getTypeAa()
+          + " with " + (getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
+          + " Attacks for " + (getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited") + " Rounds";
+      tuples.add(Tuple.of(startOfKey + getAaKey(), string));
     }
   }
 

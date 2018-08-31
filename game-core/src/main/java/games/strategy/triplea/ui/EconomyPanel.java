@@ -130,7 +130,7 @@ class EconomyPanel extends AbstractStatPanel {
       if (income >= 0) {
         resourceAmountAndIncome.append("+");
       }
-      resourceAmountAndIncome.append(income + ")</html>");
+      resourceAmountAndIncome.append(income).append(")</html>");
       return resourceAmountAndIncome.toString();
     }
 

@@ -118,9 +118,9 @@ public final class JComboBoxBuilder {
   /**
    * Adds a single option to be displayed in the combo box (additive with any existing).
    */
-  public JComboBoxBuilder menuOption(final String options) {
-    Preconditions.checkArgument(!options.isEmpty());
-    this.options.addAll(Arrays.asList(options));
+  public JComboBoxBuilder menuOption(final String option) {
+    Preconditions.checkArgument(!option.isEmpty());
+    this.options.add(option);
     return this;
   }
 

@@ -26,8 +26,6 @@ final class DebugMenu extends JMenu {
       add(SwingAction.of("Show Hard AI Logs", e -> ProAi.showSettingsWindow())).setMnemonic(KeyEvent.VK_X);
     }
 
-    add(SwingAction.of("Show Console", e -> {
-      ClientSetting.SHOW_CONSOLE.saveAndFlush("true");
-    })).setMnemonic(KeyEvent.VK_C);
+    add(SwingAction.of("Show Console", e -> ClientSetting.SHOW_CONSOLE.saveAndFlush("true"))).setMnemonic(KeyEvent.VK_C);
   }
 }
