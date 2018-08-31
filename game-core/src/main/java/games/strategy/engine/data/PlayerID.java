@@ -61,10 +61,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     return m_canBeDisabled;
   }
 
-  public String getDefaultType() {
-    return defaultType;
-  }
-
   public boolean isHidden() {
     return isHidden;
   }

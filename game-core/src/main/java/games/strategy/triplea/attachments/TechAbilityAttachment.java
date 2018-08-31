@@ -61,13 +61,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
   }
 
-  /**
-   * Convenience method.
-   */
-  public static TechAbilityAttachment get(final TechAdvance type, final String nameOfAttachment) {
-    return getAttachment(type, nameOfAttachment, TechAbilityAttachment.class);
-  }
-
   // unitAbilitiesGained Static Strings
   public static final String ABILITY_CAN_BLITZ = "canBlitz";
   public static final String ABILITY_CAN_BOMBARD = "canBombard";

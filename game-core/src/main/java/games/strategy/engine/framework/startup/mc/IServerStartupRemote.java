@@ -32,10 +32,22 @@ public interface IServerStartupRemote extends IRemote {
 
   Set<String> getAvailableGames();
 
+  /**
+   * @deprecated Unused. Kept for backwards compatibility
+   */
+  @Deprecated
   void changeServerGameTo(final String gameName);
 
+  /**
+   * @deprecated Unused. Kept for backwards compatibility
+   */
+  @Deprecated
   void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave);
 
+  /**
+   * @deprecated Unused. Kept for backwards compatibility
+   */
+  @Deprecated
   void changeToGameSave(final byte[] bytes, final String fileName);
 
   byte[] getSaveGame();

@@ -36,10 +36,6 @@ public class MessageHeader {
     return from;
   }
 
-  public boolean isBroadcast() {
-    return to == null;
-  }
-
   public Serializable getMessage() {
     return message;
   }

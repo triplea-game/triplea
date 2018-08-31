@@ -21,12 +21,4 @@ package games.strategy.util;
 public class UnhandledSwitchCaseException extends RuntimeException {
   private static final long serialVersionUID = 3537849919628576439L;
 
-  /**
-   * Initializes a new instance of the UnhandledSwitchCaseException class.
-   *
-   * @param unhandledValue The switch value that fell thru to a 'default' clause of a switch statement.
-   */
-  public UnhandledSwitchCaseException(final Object unhandledValue) {
-    super(unhandledValue.toString());
-  }
 }

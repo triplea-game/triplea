@@ -45,8 +45,4 @@ public class TechnologyFrontierList extends GameDataComponent {
   public List<TechnologyFrontier> getFrontiers() {
     return Collections.unmodifiableList(m_technologyFrontiers);
   }
-
-  public boolean isEmpty() {
-    return size() == 0;
-  }
 }

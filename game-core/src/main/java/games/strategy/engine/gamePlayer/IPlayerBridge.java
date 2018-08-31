@@ -33,11 +33,6 @@ public interface IPlayerBridge {
   String getStepName();
 
   /**
-   * Get the properties for the current step.
-   */
-  Properties getStepProperties();
-
-  /**
    * Indicates the game is over.
    */
   boolean isGameOver();

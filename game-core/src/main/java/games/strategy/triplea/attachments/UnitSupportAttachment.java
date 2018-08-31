@@ -239,10 +239,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return m_players;
   }
 
-  public void clearPlayers() {
-    m_players.clear();
-  }
-
   private void resetPlayers() {
     m_players = new ArrayList<>();
   }

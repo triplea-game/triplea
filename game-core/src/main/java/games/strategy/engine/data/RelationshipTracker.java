@@ -139,25 +139,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
       return super.equals(object);
     }
 
-    /**
-     * convenience method to get relationshipType from a new RelatedPlayers(p1,p2).getRelationshipType();
-     *
-     * @return RelationshipType between these RelatedPlayers
-     */
-    public RelationshipType getRelationshipType() {
-      return getData().getRelationshipTracker().getRelationshipType(m_p1, m_p2);
-    }
-
-    /**
-     * convenience method to get relationshipTypeAttachment from a new
-     * RelatedPlayers(p1,p2).getRelationshipTypeAttachment();
-     *
-     * @return RelationshipTypeAttachment between these RelatedPlayers
-     */
-    public RelationshipTypeAttachment getRelationshipTypeAttachment() {
-      return getData().getRelationshipTracker().getRelationshipTypeAttachment(m_p1, m_p2);
-    }
-
     @Override
     public String toString() {
       return m_p1.getName() + "-" + m_p2.getName();

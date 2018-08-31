@@ -25,9 +25,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 public class OriginalOwnerTracker implements Serializable {
   private static final long serialVersionUID = 8462432412106180906L;
 
-  /** Creates new OriginalOwnerTracker. */
-  public OriginalOwnerTracker() {}
-
   public static Change addOriginalOwnerChange(final Territory t, final PlayerID player) {
     return ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t), player, Constants.ORIGINAL_OWNER);
   }

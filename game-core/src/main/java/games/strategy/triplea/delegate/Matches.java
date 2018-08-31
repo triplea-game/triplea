@@ -180,13 +180,6 @@ public final class Matches {
     return unitIsStrategicBomber().negate();
   }
 
-  static Predicate<UnitType> unitTypeCanLandOnCarrier() {
-    return obj -> {
-      final UnitAttachment ua = UnitAttachment.get(obj);
-      return ua != null && ua.getCarrierCost() != -1;
-    };
-  }
-
   static Predicate<Unit> unitHasMoved() {
     return unit -> TripleAUnit.get(unit).getAlreadyMoved() > 0;
   }

@@ -6,5 +6,5 @@ public interface IMessengerErrorListener {
    * This signals that an error has occured, will not be sent if the
    * node was shutdown.
    */
-  void messengerInvalid(IMessenger messenger, Exception reason);
+  void messengerInvalid();
 }

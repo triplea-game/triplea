@@ -126,10 +126,6 @@ public class PlayerListing implements Serializable {
     return "PlayerListingMessage:" + m_playerToNodeListing;
   }
 
-  public Set<String> getPlayers() {
-    return m_playerToNodeListing.keySet();
-  }
-
   public String getGameRound() {
     return m_gameRound;
   }

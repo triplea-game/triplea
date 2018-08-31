@@ -59,10 +59,6 @@ public class TechResults implements Serializable {
     return m_remainder;
   }
 
-  public PlayerID getPlayer() {
-    return m_playerID;
-  }
-
   public int[] getRolls() {
     return m_rolls;
   }

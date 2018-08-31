@@ -135,10 +135,6 @@ public class ScrollableTextField extends JPanel {
     setWidgetActivation();
   }
 
-  public void setTerr(final String terr) {
-    text.setTerr(terr);
-  }
-
   public void setShowMaxAndMin(final boolean showMaxAndMin) {
     maxButton.setVisible(showMaxAndMin);
     minButton.setVisible(showMaxAndMin);
@@ -146,10 +142,6 @@ public class ScrollableTextField extends JPanel {
 
   public int getMax() {
     return text.getMax();
-  }
-
-  public String getTerr() {
-    return text.getTerr();
   }
 
   public void setMin(final int min) {

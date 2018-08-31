@@ -22,6 +22,8 @@ public interface IChatChannel extends IChannelSubscribor {
 
   void speakerRemoved(final INode node, final long version);
 
+  void speakerTagUpdated(final INode node, final Tag tag);
+
   // purely here to keep connections open and stop NATs and crap from thinking that our connection is closed when it is
   // not.
   void ping();

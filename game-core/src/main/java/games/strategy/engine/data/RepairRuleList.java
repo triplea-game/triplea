@@ -20,10 +20,6 @@ public class RepairRuleList extends GameDataComponent {
     m_repairRules.put(pf.getName(), pf);
   }
 
-  public int size() {
-    return m_repairRules.size();
-  }
-
   public RepairRule getRepairRule(final String name) {
     return m_repairRules.get(name);
   }

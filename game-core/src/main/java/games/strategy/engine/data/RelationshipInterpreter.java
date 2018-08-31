@@ -68,16 +68,6 @@ public class RelationshipInterpreter extends GameDataComponent {
     return enemies;
   }
 
-  /**
-   * Indicates whether player1 is neutral to player2.
-   *
-   * @param p1 player1
-   * @param p2 player2
-   */
-  public boolean isNeutral(final PlayerID p1, final PlayerID p2) {
-    return Matches.relationshipTypeIsNeutral().test((getRelationshipType(p1, p2)));
-  }
-
   public boolean canMoveLandUnitsOverOwnedLand(final PlayerID p1, final PlayerID p2) {
     return Matches.relationshipTypeCanMoveLandUnitsOverOwnedLand().test(getRelationshipType(p1, p2));
   }
@@ -88,18 +78,6 @@ public class RelationshipInterpreter extends GameDataComponent {
 
   public boolean canLandAirUnitsOnOwnedLand(final PlayerID p1, final PlayerID p2) {
     return Matches.relationshipTypeCanLandAirUnitsOnOwnedLand().test(getRelationshipType(p1, p2));
-  }
-
-  public String getUpkeepCost(final PlayerID p1, final PlayerID p2) {
-    return getRelationshipType(p1, p2).getRelationshipTypeAttachment().getUpkeepCost();
-  }
-
-  public boolean alliancesCanChainTogether(final PlayerID p1, final PlayerID p2) {
-    return Matches.relationshipTypeIsAlliedAndAlliancesCanChainTogether().test(getRelationshipType(p1, p2));
-  }
-
-  public boolean isDefaultWarPosition(final PlayerID p1, final PlayerID p2) {
-    return Matches.relationshipTypeIsDefaultWarPosition().test(getRelationshipType(p1, p2));
   }
 
   public boolean canTakeOverOwnedTerritory(final PlayerID p1, final PlayerID p2) {

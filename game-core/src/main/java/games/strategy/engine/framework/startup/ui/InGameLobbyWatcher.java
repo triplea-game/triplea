@@ -183,7 +183,7 @@ public class InGameLobbyWatcher {
     synchronized (mutex) {
       controller.postGame(gameId, (GameDescription) gameDescription.clone());
     }
-    messengerErrorListener = (messenger1, reason) -> shutDown();
+    messengerErrorListener = this::shutDown;
     this.messenger.addErrorListener(messengerErrorListener);
     connectionChangeListener = new IConnectionChangeListener() {
       @Override
@@ -301,10 +301,6 @@ public class InGameLobbyWatcher {
 
   public String getComments() {
     return gameDescription.getComment();
-  }
-
-  public GameDescription getGameDescription() {
-    return gameDescription;
   }
 
   void setGameComments(final String comments) {
