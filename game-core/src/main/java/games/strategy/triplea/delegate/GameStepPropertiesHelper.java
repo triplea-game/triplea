@@ -1,8 +1,12 @@
 package games.strategy.triplea.delegate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
+import javax.annotation.Nullable;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -16,7 +20,9 @@ import lombok.extern.java.Log;
  * or whether we are going to post to a forum during this end turn phase.
  */
 @Log
-public class GameStepPropertiesHelper {
+public final class GameStepPropertiesHelper {
+  private GameStepPropertiesHelper() {}
+
   /**
    * Indicates we skip posting the game summary and save to a forum or email.
    */
@@ -32,15 +38,16 @@ public class GameStepPropertiesHelper {
 
   /**
    * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we
-   * will summarize for all
-   * those phases.
+   * will summarize for all those phases.
    *
-   * @return colon separated list of player names. could be empty. can be null if not set.
+   * @return The set of players or {@code null} if not set.
    */
-  public static Set<PlayerID> getTurnSummaryPlayers(final GameData data) {
+  public static @Nullable Set<PlayerID> getTurnSummaryPlayers(final GameData data) {
+    checkNotNull(data);
+
     data.acquireReadLock();
     try {
-      final String allowedPlayers =
+      final @Nullable String allowedPlayers =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS);
       if (allowedPlayers == null) {
         return null;
@@ -48,7 +55,7 @@ public class GameStepPropertiesHelper {
 
       final Set<PlayerID> allowedIDs = new HashSet<>();
       for (final String p : allowedPlayers.split(":")) {
-        final PlayerID id = data.getPlayerList().getPlayerId(p);
+        final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
         if (id == null) {
           log.log(Level.SEVERE, "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
               + GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS + " player: " + p + " DOES NOT EXIST");
@@ -203,21 +210,22 @@ public class GameStepPropertiesHelper {
    * Lets air live if the other players could put a carrier under it.
    *
    * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
-   *         not the set could be
-   *         empty. never null.
+   *         not the set could be empty. never null.
    */
-  public static Set<PlayerID> getCombinedTurns(final GameData data, final PlayerID player) {
+  public static Set<PlayerID> getCombinedTurns(final GameData data, final @Nullable PlayerID player) {
+    checkNotNull(data);
+
     data.acquireReadLock();
     final Set<PlayerID> allowedIDs = new HashSet<>();
     try {
-      final String allowedPlayers =
+      final @Nullable String allowedPlayers =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.COMBINED_TURNS);
       if (player != null) {
         allowedIDs.add(player);
       }
       if (allowedPlayers != null) {
         for (final String p : allowedPlayers.split(":")) {
-          final PlayerID id = data.getPlayerList().getPlayerId(p);
+          final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             log.log(
                 Level.SEVERE,
@@ -280,21 +288,22 @@ public class GameStepPropertiesHelper {
    * Returns the collection of players whose units can be repaired by the specified player.
    *
    * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
-   *         not the set could be
-   *         empty. never null.
+   *         not the set could be empty. never null.
    */
-  public static Set<PlayerID> getRepairPlayers(final GameData data, final PlayerID player) {
+  public static Set<PlayerID> getRepairPlayers(final GameData data, final @Nullable PlayerID player) {
+    checkNotNull(data);
+
     data.acquireReadLock();
     final Set<PlayerID> allowedIDs = new HashSet<>();
     try {
-      final String allowedPlayers =
+      final @Nullable String allowedPlayers =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REPAIR_PLAYERS);
       if (player != null) {
         allowedIDs.add(player);
       }
       if (allowedPlayers != null) {
         for (final String p : allowedPlayers.split(":")) {
-          final PlayerID id = data.getPlayerList().getPlayerId(p);
+          final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
           if (id == null) {
             log.log(Level.SEVERE,
                 "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
