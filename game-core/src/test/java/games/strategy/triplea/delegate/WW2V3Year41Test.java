@@ -556,12 +556,12 @@ public class WW2V3Year41Test {
     // With JET_POWER attacking fighter hits on 4 (0 base)
     final List<Unit> germanFighter = (List<Unit>) poland.getUnits().getUnits(fighterType, 1);
     delegateBridge.setRandomSource(new ScriptedRandomSource(3));
-    final DiceRoll roll1 = DiceRoll.rollDice(germanFighter, false, germans, delegateBridge, new MockBattle(eastPoland),
+    final DiceRoll roll1 = DiceRoll.rollDice(germanFighter, false, germans, delegateBridge, mock(IBattle.class),
         "", territoryEffects, null);
     assertEquals(1, roll1.getHits());
     // With JET_POWER defending fighter misses on 5 (0 base)
     delegateBridge.setRandomSource(new ScriptedRandomSource(4));
-    final DiceRoll roll2 = DiceRoll.rollDice(germanFighter, true, germans, delegateBridge, new MockBattle(eastPoland),
+    final DiceRoll roll2 = DiceRoll.rollDice(germanFighter, true, germans, delegateBridge, mock(IBattle.class),
         "", territoryEffects, null);
     assertEquals(0, roll2.getHits());
   }

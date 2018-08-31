@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -499,7 +500,7 @@ public class MoveDelegateTest extends DelegateTest {
     final List<Unit> attackList = bomber.create(2, russians);
     attackList.addAll(attackTrns);
     bridge.setRandomSource(new ScriptedRandomSource(1));
-    final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, bridge, new MockBattle(balticSeaZone), "",
+    final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(2, roll.getHits());
     bridge.setStepName("russianNonCombatMove");
@@ -984,7 +985,7 @@ public class MoveDelegateTest extends DelegateTest {
     // fire the defending transport then the submarine (both miss)
     bridge.setRandomSource(new ScriptedRandomSource(1, 2));
     // Execute the battle and verify no hits
-    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, new MockBattle(balticSeaZone), "",
+    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
@@ -1046,7 +1047,7 @@ public class MoveDelegateTest extends DelegateTest {
     // fire the defending transport then the submarine (One hit)
     bridge.setRandomSource(new ScriptedRandomSource(0, 2));
     // Execute the battle and verify no hits
-    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, new MockBattle(balticSeaZone), "",
+    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
@@ -1102,7 +1103,7 @@ public class MoveDelegateTest extends DelegateTest {
     // fire the defending transport then the submarine (both miss)
     bridge.setRandomSource(new ScriptedRandomSource(1, 2));
     // Execute the battle and verify no hits
-    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, new MockBattle(balticSeaZone), "",
+    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(0, roll.getHits());
     // Get total number of units in Finland before the retreat
@@ -1158,7 +1159,7 @@ public class MoveDelegateTest extends DelegateTest {
     // fire the defending transport then the submarine (One hit)
     bridge.setRandomSource(new ScriptedRandomSource(0, 2));
     // Execute the battle and verify no hits
-    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, new MockBattle(balticSeaZone), "",
+    final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(1, roll.getHits());
     // Get total number of units in Finland before the retreat
