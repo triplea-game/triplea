@@ -30,9 +30,6 @@ public class HeadlessServerMessenger implements IServerMessenger {
   public void addMessageListener(final IMessageListener listener) {}
 
   @Override
-  public void removeMessageListener(final IMessageListener listener) {}
-
-  @Override
   public void addErrorListener(final IMessengerErrorListener listener) {}
 
   @Override

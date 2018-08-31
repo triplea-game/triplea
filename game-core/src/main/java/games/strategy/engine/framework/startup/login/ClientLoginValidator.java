@@ -53,7 +53,7 @@ public final class ClientLoginValidator implements ILoginValidator {
   }
 
   @Override
-  public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
+  public Map<String, String> getChallengeProperties(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
 
     challenge.put("Sever Version", ClientContext.engineVersion().toString());

@@ -17,7 +17,6 @@ public class PlaceDelegate extends AbstractPlaceDelegate {
   /**
    * Returns the production of the territory, ignores whether the territory was an original factory.
    */
-  @Override
   protected int getProduction(final Territory territory) {
     final Collection<Unit> allUnits = territory.getUnits().getUnits();
     final int factoryCount = CollectionUtils.countMatches(allUnits, Matches.unitCanProduceUnits());

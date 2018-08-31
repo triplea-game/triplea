@@ -809,7 +809,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     // should never happen
   }

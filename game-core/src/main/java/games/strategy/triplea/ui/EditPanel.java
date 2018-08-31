@@ -714,7 +714,7 @@ class EditPanel extends ActionPanel {
     }
   };
 
-  private final MouseOverUnitListener mouseOverUnitListener = (units, territory, md) -> {
+  private final MouseOverUnitListener mouseOverUnitListener = (units, territory) -> {
     if (!getActive()) {
       return;
     }

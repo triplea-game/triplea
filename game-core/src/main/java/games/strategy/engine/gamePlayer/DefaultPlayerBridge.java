@@ -123,11 +123,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     }
   }
 
-  @Override
-  public Properties getStepProperties() {
-    return game.getData().getSequence().getStep().getProperties();
-  }
-
   private IRemote getRemoteThatChecksForGameOver(final IRemote implementor) {
     final Class<?>[] classes = implementor.getClass().getInterfaces();
     final GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, game);

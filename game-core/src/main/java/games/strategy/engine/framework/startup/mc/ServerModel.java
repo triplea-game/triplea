@@ -360,46 +360,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
 
     @Override
-    public void changeServerGameTo(final String gameName) {
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null) {
-        return;
-      }
-      headless.setGameMapTo(gameName);
-    }
-
-    @Override
-    public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
-      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2) {
-        return;
-      }
-      final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
-      if (!save.exists()) {
-        return;
-      }
-      HeadlessGameServer.getInstance().loadGameSave(save);
-    }
-
-    @Override
-    public void changeToGameSave(final byte[] bytes, final String fileName) {
-      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
-      // if not.
-      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
-      if (headless == null || bytes == null) {
-        return;
-      }
-      try {
-        IoUtils.consumeFromMemory(bytes, is -> {
-          try (InputStream oinput = new BufferedInputStream(is)) {
-            headless.loadGameSave(oinput, fileName);
-          }
-        });
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to load save game: " + fileName, e);
-      }
-    }
-
-    @Override
     public void changeToGameOptions(final byte[] bytes) {
       // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
       // if not.
@@ -529,7 +489,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   @Override
-  public void messengerInvalid(final IMessenger messenger, final Exception reason) {
+  public void messengerInvalid(Throwable reason) {
     if (headless) {
       if (typePanelModel != null) {
         typePanelModel.showSelectType();

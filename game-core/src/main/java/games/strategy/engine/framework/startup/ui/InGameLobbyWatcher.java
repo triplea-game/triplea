@@ -183,7 +183,7 @@ public class InGameLobbyWatcher {
     synchronized (mutex) {
       controller.postGame(gameId, (GameDescription) gameDescription.clone());
     }
-    messengerErrorListener = this::shutDown;
+    messengerErrorListener = e -> shutDown();
     this.messenger.addErrorListener(messengerErrorListener);
     connectionChangeListener = new IConnectionChangeListener() {
       @Override

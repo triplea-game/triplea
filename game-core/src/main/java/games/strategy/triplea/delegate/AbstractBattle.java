@@ -206,8 +206,7 @@ abstract class AbstractBattle implements IBattle {
   public abstract void removeAttack(Route route, Collection<Unit> units);
 
   @Override
-  public abstract void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
-      boolean withdrawn);
+  public abstract void unitsLostInPrecedingBattle(Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 
   @Override
   public int hashCode() {

@@ -361,7 +361,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   private void notifyMouseEnterUnit(final List<Unit> units, final Territory t, final MouseDetails me) {
     for (final MouseOverUnitListener listener : mouseOverUnitsListeners) {
-      listener.mouseEnter(units, t, me);
+      listener.mouseEnter(units, t);
     }
   }
 

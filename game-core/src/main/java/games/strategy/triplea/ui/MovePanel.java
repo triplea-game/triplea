@@ -1217,7 +1217,7 @@ public class MovePanel extends AbstractMovePanel {
 
   private final MouseOverUnitListener mouseOverUnitListener = new MouseOverUnitListener() {
     @Override
-    public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me) {
+    public void mouseEnter(final List<Unit> units, final Territory territory) {
       if (!getListening()) {
         return;
       }

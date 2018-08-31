@@ -154,11 +154,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public void removeMessageListener(final IMessageListener listener) {
-    listeners.remove(listener);
-  }
-
-  @Override
   public void addErrorListener(final IMessengerErrorListener listener) {
     errorListeners.add(listener);
   }
@@ -236,7 +231,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     // otherwise this is harmless
     connectionRefusedError = error;
     for (final IMessengerErrorListener errorListener : errorListeners) {
-      errorListener.messengerInvalid(ClientMessenger.this, error);
+      errorListener.messengerInvalid(error);
     }
     shutDown();
     initLatch.countDown();

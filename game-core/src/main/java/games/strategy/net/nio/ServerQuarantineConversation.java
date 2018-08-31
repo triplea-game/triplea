@@ -66,7 +66,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           // read name, send challent
           remoteMac = (String) o;
           if (validator != null) {
-            challenge = validator.getChallengeProperties(remoteName, channel.socket().getRemoteSocketAddress());
+            challenge = validator.getChallengeProperties(remoteName);
           }
           send((Serializable) challenge);
           step = Step.CHALLENGE;

@@ -176,7 +176,6 @@ class EconomyPanel extends AbstractStatPanel {
     }
   }
 
-  @Override
   public void setGameData(final GameData data) {
     gameData = data;
     resourceModel.setGameData(data);

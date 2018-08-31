@@ -60,7 +60,7 @@ public class UnifiedMessenger {
   public UnifiedMessenger(final IMessenger messenger) {
     this.messenger = messenger;
     this.messenger.addMessageListener(this::messageReceived);
-    this.messenger.addErrorListener((messenger1, reason) -> messengerInvalid(reason));
+    this.messenger.addErrorListener((reason) -> messengerInvalid(reason));
     if (this.messenger.isServer()) {
       hub = new UnifiedMessengerHub(this.messenger, this);
     }

@@ -47,7 +47,6 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     initLayout();
   }
 
-  @Override
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
@@ -57,7 +56,6 @@ class TerritoryDetailPanel extends AbstractStatPanel {
         frame, 'B', () -> OddsCalculatorDialog.show(frame, currentTerritory));
   }
 
-  @Override
   public void setGameData(final GameData data) {
     gameData = data;
     territoryChanged(null);

@@ -413,7 +413,7 @@ public class ClientModel implements IMessengerErrorListener {
 
 
   @Override
-  public void messengerInvalid(final IMessenger messenger, final Exception reason) {
+  public void messengerInvalid(final Throwable reason) {
     // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
     // In case for example there are many game windows open, it may not be clear which game disconnected.
     if (chatPanel != null) {

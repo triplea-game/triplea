@@ -85,7 +85,7 @@ public class LobbyFrame extends JFrame {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    this.client.getMessenger().addErrorListener((messenger, reason) -> connectionToServerLost());
+    this.client.getMessenger().addErrorListener((reason) -> connectionToServerLost());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
