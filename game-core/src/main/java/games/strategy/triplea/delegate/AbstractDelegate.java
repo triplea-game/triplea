@@ -92,8 +92,6 @@ public abstract class AbstractDelegate implements IDelegate {
     return bridge.getData();
   }
 
-  protected abstract IDisplay getDisplay();
-
   protected static IDisplay getDisplay(final IDelegateBridge bridge) {
     return bridge.getDisplayChannelBroadcaster();
   }
@@ -113,43 +111,4 @@ public abstract class AbstractDelegate implements IDelegate {
   protected static IRemotePlayer getRemotePlayer(final IDelegateBridge bridge) {
     return bridge.getRemotePlayer();
   }
-
-  /**
-   * You should override this class with some variation of the following code (changing the AI to be something
-   * meaningful if needed)
-   * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote.
-   * <p>
-   * if (player.isNull()) {
-   * return new WeakAi(player.getName(), TripleA.WEAK_AI);
-   * }
-   * return bridge.getRemotePlayer(player);
-   * </p>
-   */
-  protected abstract IRemotePlayer getRemotePlayer(final PlayerID player);
 }
-/*
- * All overriding classes should use the following format for saveState and loadState, in order to save and load the
- * superstate
- * class ExtendedDelegateState implements Serializable
- * {
- * Serializable superState;
- * // add other variables here:
- * }
- *
- * @Override
- * public Serializable saveState()
- * {
- * ExtendedDelegateState state = new ExtendedDelegateState();
- * state.superState = super.saveState();
- * // add other variables to state here:
- * return state;
- * }
- *
- * @Override
- * public void loadState(Serializable state)
- * {
- * ExtendedDelegateState s = (ExtendedDelegateState) state;
- * super.loadState(s.superState);
- * // load other variables from state here:
- * }
- */

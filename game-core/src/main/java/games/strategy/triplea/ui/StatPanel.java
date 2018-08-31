@@ -59,7 +59,6 @@ class StatPanel extends AbstractStatPanel {
     initLayout();
   }
 
-  @Override
   protected void initLayout() {
     final boolean hasTech = !TechAdvance.getTechAdvances(gameData, null).isEmpty();
     // do no include a grid box for tech if there is no tech
@@ -89,7 +88,6 @@ class StatPanel extends AbstractStatPanel {
     add(new JScrollPane(techTable));
   }
 
-  @Override
   public void setGameData(final GameData data) {
     gameData = data;
     dataModel.setGameData(data);

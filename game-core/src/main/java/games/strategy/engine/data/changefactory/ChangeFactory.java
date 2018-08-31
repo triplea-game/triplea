@@ -177,16 +177,6 @@ public class ChangeFactory {
    * actually adding things to a
    * list rather than overwriting.
    */
-  public static Change attachmentPropertyChange(final Attachable attachment, final String attachmentName,
-      final Object newValue, final Object oldValue, final String property, final boolean clearFirst) {
-    return new ChangeAttachmentChange(attachment, attachmentName, newValue, oldValue, property, clearFirst);
-  }
-
-  /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is
-   * actually adding things to a
-   * list rather than overwriting.
-   */
   public static Change attachmentPropertyReset(final IAttachment attachment, final String property) {
     return new AttachmentPropertyReset(attachment, property);
   }

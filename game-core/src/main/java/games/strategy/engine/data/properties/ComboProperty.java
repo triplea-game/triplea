@@ -50,10 +50,6 @@ public class ComboProperty<T> extends AEditableProperty {
     this.value = (T) value;
   }
 
-  public void setValueT(final T value) {
-    this.value = value;
-  }
-
   @Override
   public JComponent getEditorComponent() {
     final JComboBox<T> box = new JComboBox<>(SwingComponents.newComboBoxModel(possibleValues));

@@ -120,17 +120,6 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     return null;
   }
 
-  /**
-   * Returns the production of the territory, ignores whether the territory was an original factory.
-   */
-  protected int getProduction(final Territory territory) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta != null) {
-      return ta.getProduction();
-    }
-    return 0;
-  }
-
   @Override
   public String changeTerritoryOwner(final Territory territory, final PlayerID player) {
     String result = checkEditMode();

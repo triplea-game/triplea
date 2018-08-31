@@ -243,10 +243,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return battleTracker;
   }
 
-  public IDelegateBridge getBattleBridge() {
-    return getBridge();
-  }
-
   /**
    * Add bombardment units to battles. Made public for test purposes only.
    */

@@ -57,10 +57,6 @@ public abstract class AbstractUndoableMove implements Serializable {
 
   protected abstract void undoSpecific(IDelegateBridge bridge);
 
-  public final CompositeChange getChange() {
-    return m_change;
-  }
-
   public final void addChange(final Change change) {
     m_change.add(change);
   }

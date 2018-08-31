@@ -30,11 +30,6 @@ public interface IMessenger {
   void addMessageListener(IMessageListener listener);
 
   /**
-   * Stop listening to messages.
-   */
-  void removeMessageListener(IMessageListener listener);
-
-  /**
    * Listen for errors.
    */
   void addErrorListener(IMessengerErrorListener listener);

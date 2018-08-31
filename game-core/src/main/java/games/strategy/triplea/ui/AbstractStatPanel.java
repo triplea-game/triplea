@@ -22,20 +22,9 @@ public abstract class AbstractStatPanel extends JPanel {
   private static final long serialVersionUID = 1906611524937548809L;
   protected GameData gameData;
 
-  /**
-   * Does not call initLayout() because initLayout may depend on some private tables being created with GameData first.
-   * So make sure you call initLayout() yourself.
-   */
   AbstractStatPanel(final GameData data) {
     gameData = data;
   }
-
-  /**
-   * You will need to call this yourself.
-   */
-  protected abstract void initLayout();
-
-  public abstract void setGameData(final GameData data);
 
   /**
    * Returns all the alliances with more than one player.

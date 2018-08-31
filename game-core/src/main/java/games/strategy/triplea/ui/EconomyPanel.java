@@ -37,7 +37,6 @@ class EconomyPanel extends AbstractStatPanel {
     initLayout();
   }
 
-  @Override
   protected void initLayout() {
     setLayout(new GridLayout(1, 1));
     resourceModel = new ResourceTableModel();

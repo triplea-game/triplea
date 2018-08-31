@@ -36,21 +36,6 @@ public final class GUID implements Externalizable {
     }
   }
 
-  public GUID(final VMID prefix, final int id) {
-    checkNotNull(prefix);
-
-    this.id = id;
-    this.prefix = prefix;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public VMID getPrefix() {
-    return prefix;
-  }
-
   @Override
   public boolean equals(final Object o) {
     if (o == this) {
