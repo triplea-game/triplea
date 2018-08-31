@@ -63,7 +63,7 @@ public class LobbyLoginValidatorIntegrationTest {
     if (password != null) {
       createUser(name, email, password);
     }
-    final Map<String, String> challenge = loginValidator.getChallengeProperties(name, address);
+    final Map<String, String> challenge = loginValidator.getChallengeProperties(name);
     return responseGetter -> {
       final Map<String, String> response = responseGetter.apply(challenge);
       response.putIfAbsent(LobbyLoginResponseKeys.EMAIL, email);
