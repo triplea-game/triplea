@@ -244,7 +244,7 @@ class ProductionPanel extends JPanel {
           final int movement = attach.getMovement(id);
           final int defense = attach.getDefense(id);
           info.setText(attack + " | " + defense + " | " + movement);
-          tooltip.append(type.getName()).append(": ").append(type.getTooltip(id));
+          tooltip.append(type.getName()).append(": ").append(TooltipProperties.getInstance().getTooltip(type, id));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);

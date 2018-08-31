@@ -38,6 +38,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.SwingAction;
@@ -158,7 +159,8 @@ public final class HelpMenu extends JMenu {
                 .append(">").append("<td>").append(getUnitImageUrl(ut, player, uiContext)).append("</td>")
                 .append("<td>")
                 .append(ut.getName()).append("</td>").append("<td>").append(costs.get(player).get(ut).toStringForHtml())
-                .append("</td>").append("<td>").append(ut.getTooltip(player)).append("</td></tr>");
+                .append("</td>").append("<td>").append(TooltipProperties.getInstance().getTooltip(ut, player))
+                .append("</td></tr>");
           }
         }
         i++;
