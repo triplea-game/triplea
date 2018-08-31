@@ -40,33 +40,32 @@ public final class GameStepPropertiesHelper {
    * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we
    * will summarize for all those phases.
    *
-   * @return The set of players or {@code null} if not set.
+   * @return The set of players; may be empty if not set.
    */
-  public static @Nullable Set<PlayerID> getTurnSummaryPlayers(final GameData data) {
+  public static Set<PlayerID> getTurnSummaryPlayers(final GameData data) {
     checkNotNull(data);
 
+    final Set<PlayerID> allowedIDs = new HashSet<>();
     data.acquireReadLock();
     try {
       final @Nullable String allowedPlayers =
           data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS);
-      if (allowedPlayers == null) {
-        return null;
-      }
-
-      final Set<PlayerID> allowedIDs = new HashSet<>();
-      for (final String p : allowedPlayers.split(":")) {
-        final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
-        if (id == null) {
-          log.log(Level.SEVERE, "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-              + GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS + " player: " + p + " DOES NOT EXIST");
-        } else {
-          allowedIDs.add(id);
+      if (allowedPlayers != null) {
+        for (final String p : allowedPlayers.split(":")) {
+          final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
+          if (id == null) {
+            log.log(Level.SEVERE,
+                "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
+                    + GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS + " player: " + p + " DOES NOT EXIST");
+          } else {
+            allowedIDs.add(id);
+          }
         }
       }
-      return allowedIDs;
     } finally {
       data.releaseReadLock();
     }
+    return allowedIDs;
   }
 
   /**

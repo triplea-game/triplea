@@ -5,8 +5,8 @@ import static games.strategy.triplea.delegate.GameStepPropertiesHelper.getRepair
 import static games.strategy.triplea.delegate.GameStepPropertiesHelper.getTurnSummaryPlayers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -129,10 +129,10 @@ final class GameStepPropertiesHelperTest {
   @Nested
   final class GetTurnSummaryPlayersTest {
     @Test
-    void shouldReturnNullWhenPropertyNotSet() {
+    void shouldReturnEmptyWhenPropertyNotSet() {
       givenGameStepPropertyNotSet(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS);
 
-      assertThat(getTurnSummaryPlayers(gameData), is(nullValue()));
+      assertThat(getTurnSummaryPlayers(gameData), is(empty()));
     }
 
     @Test
