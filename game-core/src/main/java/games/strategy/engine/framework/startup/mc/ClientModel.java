@@ -60,7 +60,6 @@ import games.strategy.io.IoUtils;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IClientMessenger;
-import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;

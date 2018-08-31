@@ -1,7 +1,5 @@
 package games.strategy.engine.gamePlayer;
 
-import java.util.Properties;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.IRemote;
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BombingUnitDamageChange;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;

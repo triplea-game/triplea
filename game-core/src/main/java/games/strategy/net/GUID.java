@@ -1,7 +1,5 @@
 package games.strategy.net;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
