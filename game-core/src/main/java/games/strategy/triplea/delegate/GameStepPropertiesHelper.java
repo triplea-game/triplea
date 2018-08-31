@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
@@ -45,27 +44,38 @@ public final class GameStepPropertiesHelper {
   public static Set<PlayerID> getTurnSummaryPlayers(final GameData data) {
     checkNotNull(data);
 
-    final Set<PlayerID> allowedIDs = new HashSet<>();
-    data.acquireReadLock();
+    return getPlayersFromProperty(data, GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, null);
+  }
+
+  private static Set<PlayerID> getPlayersFromProperty(
+      final GameData gameData,
+      final String propertyKey,
+      final @Nullable PlayerID defaultPlayer) {
+    final Set<PlayerID> players = new HashSet<>();
+    if (defaultPlayer != null) {
+      players.add(defaultPlayer);
+    }
+
+    gameData.acquireReadLock();
     try {
-      final @Nullable String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS);
-      if (allowedPlayers != null) {
-        for (final String p : allowedPlayers.split(":")) {
-          final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
-          if (id == null) {
-            log.log(Level.SEVERE,
-                "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                    + GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS + " player: " + p + " DOES NOT EXIST");
+      final @Nullable String encodedPlayerNames =
+          gameData.getSequence().getStep().getProperties().getProperty(propertyKey);
+      if (encodedPlayerNames != null) {
+        for (final String playerName : encodedPlayerNames.split(":")) {
+          final @Nullable PlayerID player = gameData.getPlayerList().getPlayerId(playerName);
+          if (player != null) {
+            players.add(player);
           } else {
-            allowedIDs.add(id);
+            log.severe(() -> String.format("gameplay sequence step: %s stepProperty: %s player: %s DOES NOT EXIST",
+                gameData.getSequence().getStep().getName(), propertyKey, playerName));
           }
         }
       }
     } finally {
-      data.releaseReadLock();
+      gameData.releaseReadLock();
     }
-    return allowedIDs;
+
+    return players;
   }
 
   /**
@@ -214,31 +224,7 @@ public final class GameStepPropertiesHelper {
   public static Set<PlayerID> getCombinedTurns(final GameData data, final @Nullable PlayerID player) {
     checkNotNull(data);
 
-    data.acquireReadLock();
-    final Set<PlayerID> allowedIDs = new HashSet<>();
-    try {
-      final @Nullable String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.COMBINED_TURNS);
-      if (player != null) {
-        allowedIDs.add(player);
-      }
-      if (allowedPlayers != null) {
-        for (final String p : allowedPlayers.split(":")) {
-          final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
-          if (id == null) {
-            log.log(
-                Level.SEVERE,
-                "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                    + GameStep.PropertyKeys.COMBINED_TURNS + " player: " + p + " DOES NOT EXIST");
-          } else {
-            allowedIDs.add(id);
-          }
-        }
-      }
-    } finally {
-      data.releaseReadLock();
-    }
-    return allowedIDs;
+    return getPlayersFromProperty(data, GameStep.PropertyKeys.COMBINED_TURNS, player);
   }
 
   /**
@@ -292,30 +278,7 @@ public final class GameStepPropertiesHelper {
   public static Set<PlayerID> getRepairPlayers(final GameData data, final @Nullable PlayerID player) {
     checkNotNull(data);
 
-    data.acquireReadLock();
-    final Set<PlayerID> allowedIDs = new HashSet<>();
-    try {
-      final @Nullable String allowedPlayers =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REPAIR_PLAYERS);
-      if (player != null) {
-        allowedIDs.add(player);
-      }
-      if (allowedPlayers != null) {
-        for (final String p : allowedPlayers.split(":")) {
-          final @Nullable PlayerID id = data.getPlayerList().getPlayerId(p);
-          if (id == null) {
-            log.log(Level.SEVERE,
-                "gamePlay sequence step: " + data.getSequence().getStep().getName() + " stepProperty: "
-                    + GameStep.PropertyKeys.REPAIR_PLAYERS + " player: " + p + " DOES NOT EXIST");
-          } else {
-            allowedIDs.add(id);
-          }
-        }
-      }
-    } finally {
-      data.releaseReadLock();
-    }
-    return allowedIDs;
+    return getPlayersFromProperty(data, GameStep.PropertyKeys.REPAIR_PLAYERS, player);
   }
 
   // private static members for testing default situation based on name of delegate
