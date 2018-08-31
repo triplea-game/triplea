@@ -433,7 +433,7 @@ class OddsCalculatorPanel extends JPanel {
         } else {
           // we need to find out the defender for sea zones
           for (final PlayerID player : location.getUnits().getPlayersWithUnits()) {
-            if (player != getAttacker() && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
+            if (!player.equals(getAttacker()) && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
               defenderCombo.setSelectedItem(player);
               break;
             }

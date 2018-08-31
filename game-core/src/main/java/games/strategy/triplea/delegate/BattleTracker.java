@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.Change;
@@ -618,7 +620,7 @@ public class BattleTracker implements Serializable {
       }
     }
     // is this an allied territory, revert to original owner if it is, unless they dont own there captital
-    final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
+    final @Nullable PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
     PlayerID newOwner = id;
     // if the original owner is the current owner, and the current owner is our enemy or canTakeOver,
     // then we do not worry about this.
@@ -702,7 +704,7 @@ public class BattleTracker implements Serializable {
           CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       // give back the factories as well.
       for (final Territory item : friendlyTerritories) {
-        if (item.getOwner() == terrOrigOwner) {
+        if (item.getOwner().equals(terrOrigOwner)) {
           continue;
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);

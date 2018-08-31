@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -159,7 +161,7 @@ public class ProSimulateTurnUtils {
   private static boolean checkIfCapturedTerritoryIsAlliedCapital(final Territory t, final GameData data,
       final PlayerID player, final IDelegateBridge delegateBridge) {
 
-    final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
+    final @Nullable PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta != null && ta.getCapital() != null && terrOrigOwner != null
@@ -172,7 +174,7 @@ public class ProSimulateTurnUtils {
           CollectionUtils.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
       friendlyTerritories.add(t);
       for (final Territory item : friendlyTerritories) {
-        if (item.getOwner() == terrOrigOwner) {
+        if (item.getOwner().equals(terrOrigOwner)) {
           continue;
         }
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);

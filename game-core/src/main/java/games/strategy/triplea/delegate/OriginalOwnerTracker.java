@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -46,7 +48,7 @@ public class OriginalOwnerTracker implements Serializable {
     return TripleAUnit.get(unit).getOriginalOwner();
   }
 
-  public static PlayerID getOriginalOwner(final Territory t) {
+  public static @Nullable PlayerID getOriginalOwner(final Territory t) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null) {
       return null;
