@@ -433,7 +433,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message,
+  public int[] selectFixedDice(final int numRolls, final int hitAt, final String message,
       final int diceSides) {
     final int[] dice = new int[numRolls];
     for (int i = 0; i < numRolls; i++) {

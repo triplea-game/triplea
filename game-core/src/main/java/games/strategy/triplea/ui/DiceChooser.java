@@ -25,21 +25,17 @@ class DiceChooser extends JPanel {
   private int diceCount = 0;
   private final int numRolls;
   private final int hitAt;
-  private final boolean hitOnlyIfEquals;
   private final Collection<JButton> buttons;
   private JButton undoButton;
   private JLabel diceCountLabel;
-  // private final GameData m_data;
   private final int diceSides;
 
-  DiceChooser(final UiContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals,
+  DiceChooser(final UiContext uiContext, final int numRolls, final int hitAt,
       final int diceSides) {
     this.uiContext = uiContext;
     this.numRolls = numRolls;
     this.diceSides = diceSides;
     this.hitAt = hitAt;
-    this.hitOnlyIfEquals = hitOnlyIfEquals;
-    // m_data = data;
     buttons = new ArrayList<>(diceSides);
     random = new int[numRolls];
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -54,8 +50,7 @@ class DiceChooser extends JPanel {
   }
 
   private void addDie(final int roll) {
-    final boolean hit = (roll == hitAt || (!hitOnlyIfEquals && (hitAt > 0) && roll > hitAt));
-    final DieType dieType = hit ? DieType.HIT : DieType.MISS;
+    final DieType dieType = roll == hitAt ? DieType.HIT : DieType.MISS;
     dicePanel.add(new JLabel(uiContext.getDiceImageFactory().getDieIcon(roll, dieType)));
     dicePanel.add(Box.createHorizontalStrut(2));
     random[diceCount++] = roll - 1;
@@ -78,11 +73,11 @@ class DiceChooser extends JPanel {
   }
 
   private void updateDiceCount() {
-    final boolean showButtons = (diceCount < numRolls);
+    final boolean showButtons = diceCount < numRolls;
     for (final JButton button : buttons) {
       button.setEnabled(showButtons);
     }
-    undoButton.setEnabled((diceCount > 0));
+    undoButton.setEnabled(diceCount > 0);
     diceCountLabel.setText("Dice remaining: " + (numRolls - diceCount));
   }
 
@@ -91,10 +86,9 @@ class DiceChooser extends JPanel {
     diceButtonPanel.setLayout(new BoxLayout(diceButtonPanel, BoxLayout.X_AXIS));
     diceButtonPanel.add(Box.createHorizontalStrut(40));
     for (int roll = 1; roll <= diceSides; roll++) {
-      final boolean hit = (roll == hitAt || (!hitOnlyIfEquals && (hitAt > 0) && roll > hitAt));
       diceButtonPanel.add(Box.createHorizontalStrut(4));
       final int dieNum = roll;
-      final DieType dieType = hit ? DieType.HIT : DieType.MISS;
+      final DieType dieType = roll == hitAt ? DieType.HIT : DieType.MISS;
       final JButton button = new JButton(uiContext.getDiceImageFactory().getDieIcon(roll, dieType));
       button.addActionListener(e -> addDie(dieNum));
       buttons.add(button);

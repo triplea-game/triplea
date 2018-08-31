@@ -536,9 +536,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> im
   }
 
   @Override
-  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
+  public int[] selectFixedDice(final int numDice, final int hitAt, final String title,
       final int diceSides) {
-    return ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
+    return ui.selectFixedDice(numDice, hitAt, title, diceSides);
   }
 
   @Override
