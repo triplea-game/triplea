@@ -20,6 +20,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import games.strategy.sound.ISound;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 
 /**
  * Not for actual use, suitable for testing. Never returns messages, but can get
@@ -33,16 +34,15 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData gameData;
   private PlayerID playerId;
   private String stepName = "no name specified";
-  private IDisplay dummyDisplay;
+  private final IDisplay dummyDisplay = mock(ITripleADisplay.class);
   private final ISound soundChannel = mock(ISound.class);
   private IRandomSource randomSource;
   private final IDelegateHistoryWriter delegateHistoryWriter;
   private IRemotePlayer remotePlayer;
 
-  public TestDelegateBridge(final GameData data, final PlayerID id, final IDisplay dummyDisplay) {
+  public TestDelegateBridge(final GameData data, final PlayerID id) {
     gameData = data;
     playerId = id;
-    this.dummyDisplay = dummyDisplay;
     final History history = new History(gameData);
     final HistoryWriter historyWriter = new HistoryWriter(history);
     historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
