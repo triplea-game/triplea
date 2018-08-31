@@ -2835,18 +2835,18 @@ public class UnitAttachment extends DefaultAttachment {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
           continue;
         }
-        final StringBuilder sb = new StringBuilder();
-        sb.append(support.getBonus()).append(moreThanOneSupportType ? " " + support.getBonusType() : "")
-            .append(support.getStrength() && support.getRoll() ? " Power & Rolls"
-                : (support.getStrength() ? " Power" : " Rolls"))
-            .append(" to ").append(support.getNumber())
-            .append(support.getAllied() && support.getEnemy() ? " Allied & Enemy "
-                : (support.getAllied() ? " Allied " : " Enemy "))
-            .append(support.getUnitType().size() > 4 ? "Units"
-                : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
         final String key = "Support on " + (support.getOffence() && support.getDefence() ? "Attack & Defense"
             : (support.getOffence() ? "Attack" : "Defense"));
-        tuples.add(Tuple.of(key, sb.toString()));
+        final String text = String.valueOf(support.getBonus())
+            + (moreThanOneSupportType ? " " + support.getBonusType() : "")
+            + (support.getStrength() && support.getRoll() ? " Power & Rolls"
+            : (support.getStrength() ? " Power" : " Rolls"))
+            + " to " + support.getNumber()
+            + (support.getAllied() && support.getEnemy() ? " Allied & Enemy "
+            : (support.getAllied() ? " Allied " : " Enemy "))
+            + (support.getUnitType().size() > 4 ? "Units"
+            : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
+        tuples.add(Tuple.of(key, text));
       }
     }
 

@@ -17,7 +17,7 @@ public interface BannedMacDao {
    * if it already exists.
    *
    * @param bannedUser The user whose MAC will be banned.
-   * @param banTill The instant at which the ban will expire or {@ode null} to ban the MAC forever.
+   * @param banTill The instant at which the ban will expire or {@code null} to ban the MAC forever.
    * @param moderator The moderator executing the ban.
    *
    * @throws IllegalStateException If an error occurs while adding, updating, or removing the ban.

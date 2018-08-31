@@ -84,7 +84,7 @@ public class HeadlessGameServer {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       log.info("Running ShutdownHook.");
       shutDown = true;
-      shutdownListeners.stream()
+      shutdownListeners
           .forEach(Runnable::run);
     }));
     availableGames = new AvailableGames();

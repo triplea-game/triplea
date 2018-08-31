@@ -22,7 +22,6 @@ public interface Constants {
   String PLAYER_NAME_RUSSIANS = "Russians";
   // Attachment names
   String UNIT_ATTACHMENT_NAME = "unitAttachment";
-  String INF_ATTACHMENT_NAME = "infAttachment";
   String TECH_ATTACHMENT_NAME = "techAttachment";
   String TECH_ABILITY_ATTACHMENT_NAME = "techAbilityAttachment";
   String RESOURCE_ATTACHMENT_NAME = "resourceAttachment";

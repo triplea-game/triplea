@@ -92,9 +92,7 @@ public abstract class AbstractDelegate implements IDelegate {
     return bridge.getData();
   }
 
-  protected IDisplay getDisplay() {
-    return getDisplay(bridge);
-  }
+  protected abstract IDisplay getDisplay();
 
   protected static IDisplay getDisplay(final IDelegateBridge bridge) {
     return bridge.getDisplayChannelBroadcaster();
@@ -127,9 +125,7 @@ public abstract class AbstractDelegate implements IDelegate {
    * return bridge.getRemotePlayer(player);
    * </p>
    */
-  protected IRemotePlayer getRemotePlayer(final PlayerID player) {
-    return bridge.getRemotePlayer(player);
-  }
+  protected abstract IRemotePlayer getRemotePlayer(final PlayerID player);
 }
 /*
  * All overriding classes should use the following format for saveState and loadState, in order to save and load the
