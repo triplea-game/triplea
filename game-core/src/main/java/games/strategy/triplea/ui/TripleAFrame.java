@@ -1061,8 +1061,7 @@ public class TripleAFrame extends MainGameFrame {
    *
    * @return The selected dice rolls.
    */
-  public int[] selectFixedDice(final int numDice, final int hitAt, final String title,
-      final int diceSides) {
+  public int[] selectFixedDice(final int numDice, final int hitAt, final String title, final int diceSides) {
     messageAndDialogThreadPool.waitForAll();
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(
         () -> new DiceChooser(getUiContext(), numDice, hitAt, diceSides))).result

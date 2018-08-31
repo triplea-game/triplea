@@ -30,8 +30,7 @@ class DiceChooser extends JPanel {
   private JLabel diceCountLabel;
   private final int diceSides;
 
-  DiceChooser(final UiContext uiContext, final int numRolls, final int hitAt,
-      final int diceSides) {
+  DiceChooser(final UiContext uiContext, final int numRolls, final int hitAt, final int diceSides) {
     this.uiContext = uiContext;
     this.numRolls = numRolls;
     this.diceSides = diceSides;
