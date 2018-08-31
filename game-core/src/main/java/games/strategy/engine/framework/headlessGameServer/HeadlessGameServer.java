@@ -14,7 +14,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.io.File;
-import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -46,7 +45,6 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;

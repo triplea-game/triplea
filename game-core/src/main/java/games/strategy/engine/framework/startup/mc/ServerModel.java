@@ -484,7 +484,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   @Override
-  public void messengerInvalid(Throwable reason) {
+  public void messengerInvalid(final Throwable reason) {
     if (headless) {
       if (typePanelModel != null) {
         typePanelModel.showSelectType();
