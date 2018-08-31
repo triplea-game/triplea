@@ -20,7 +20,6 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import games.strategy.sound.ISound;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 
 /**
  * Not for actual use, suitable for testing. Never returns messages, but can get
@@ -40,7 +39,6 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   private final IDelegateHistoryWriter delegateHistoryWriter;
   private IRemotePlayer remotePlayer;
 
-  /** Creates new TestDelegateBridge. */
   public TestDelegateBridge(final GameData data, final PlayerID id, final IDisplay dummyDisplay) {
     gameData = data;
     playerId = id;
@@ -58,11 +56,6 @@ public class TestDelegateBridge implements ITestDelegateBridge {
     final ChannelMessenger channelMessenger =
         new ChannelMessenger(new UnifiedMessenger(messenger));
     delegateHistoryWriter = new DelegateHistoryWriter(channelMessenger);
-  }
-
-  @Override
-  public void setDisplay(final ITripleADisplay display) {
-    dummyDisplay = display;
   }
 
   /**
@@ -96,27 +89,20 @@ public class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void setStepName(final String name) {
-    setStepName(name, false);
-  }
-
-  @Override
-  public void setStepName(final String name, final boolean doNotChangeSequence) {
     stepName = name;
-    if (!doNotChangeSequence) {
-      gameData.acquireWriteLock();
-      try {
-        final int length = gameData.getSequence().size();
-        int i = 0;
-        while (i < length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
-          gameData.getSequence().next();
-          i++;
-        }
-        if (i > +length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
-          throw new IllegalStateException("Step not found: " + name);
-        }
-      } finally {
-        gameData.releaseWriteLock();
+    gameData.acquireWriteLock();
+    try {
+      final int length = gameData.getSequence().size();
+      int i = 0;
+      while (i < length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
+        gameData.getSequence().next();
+        i++;
       }
+      if (i > +length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
+        throw new IllegalStateException("Step not found: " + name);
+      }
+    } finally {
+      gameData.releaseWriteLock();
     }
   }
 
