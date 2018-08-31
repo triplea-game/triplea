@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Splitter;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -61,7 +63,7 @@ public final class GameStepPropertiesHelper {
       final @Nullable String encodedPlayerNames =
           gameData.getSequence().getStep().getProperties().getProperty(propertyKey);
       if (encodedPlayerNames != null) {
-        for (final String playerName : encodedPlayerNames.split(":")) {
+        for (final String playerName : Splitter.on(':').split(encodedPlayerNames)) {
           final @Nullable PlayerID player = gameData.getPlayerList().getPlayerId(playerName);
           if (player != null) {
             players.add(player);
