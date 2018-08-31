@@ -1056,19 +1056,15 @@ public class TripleAFrame extends MainGameFrame {
    *
    * @param numDice The number of dice the user is required to select.
    * @param hitAt The value at which the roll is considered a hit.
-   * @param hitOnlyIfEquals {@code true} if a roll is only considered a hit if it is exactly equal to {@code hitAt};
-   *        {@code false} if any roll equal to or greater than {@code hitAt} should be considered a hit.
    * @param title The dialog title.
    * @param diceSides The number of sides on a die.
    *
    * @return The selected dice rolls.
    */
-  public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title,
-      final int diceSides) {
+  public int[] selectFixedDice(final int numDice, final int hitAt, final String title, final int diceSides) {
     messageAndDialogThreadPool.waitForAll();
-    final Supplier<DiceChooser> action =
-        () -> new DiceChooser(getUiContext(), numDice, hitAt, hitOnlyIfEquals, diceSides);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(
+        () -> new DiceChooser(getUiContext(), numDice, hitAt, diceSides))).result
         .map(chooser -> {
           do {
             EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,

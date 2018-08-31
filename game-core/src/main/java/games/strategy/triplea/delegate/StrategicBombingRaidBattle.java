@@ -568,7 +568,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 + m_defender.getName() + " in " + m_battleSite.getName();
         final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(m_attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
-        m_dice = attacker.selectFixedDice(rollCount, 0, true, annotation, m_data.getDiceSides());
+        m_dice = attacker.selectFixedDice(rollCount, 0, annotation, m_data.getDiceSides());
       } else {
         final boolean doNotUseBombingBonus =
             !Properties.getUseBombingMaxDiceSidesAndBonus(m_data);

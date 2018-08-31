@@ -52,13 +52,12 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * Select a fixed dice roll
    *
    * @param numDice - the number of dice rolls
-   * @param hitAt - the lowest roll that constitutes a hit (0 for none)
-   * @param hitOnlyIfEquals - whether to count rolls greater than hitAt as hits
+   * @param hitAt - the roll value that constitutes a hit
    * @param title - the title for the DiceChooser
    * @param diceSides - the number of sides on the die, found by data.getDiceSides()
    * @return the resulting dice array
    */
-  int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides);
+  int[] selectFixedDice(int numDice, int hitAt, String title, int diceSides);
 
   // TODO: Remove noneAvailable as it is always passed as 'true'
   /**
