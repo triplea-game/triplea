@@ -96,12 +96,4 @@ public class SetupPanelModel {
   public ISetupPanel getPanel() {
     return panel;
   }
-
-  public void setServerMode(
-      @Nonnull final ServerModel serverModel,
-      @Nonnull final ServerConnectionProps props) {
-    serverModel.createServerMessenger(new JPanel(), props);
-    Preconditions.checkNotNull(serverModel.getChatPanel());
-    serverModel.createServerLauncher();
-  }
 }

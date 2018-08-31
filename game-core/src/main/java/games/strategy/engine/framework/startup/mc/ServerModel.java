@@ -74,10 +74,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
-  void createServerLauncher() {
-    setServerLauncher(getLauncher().orElse(null));
-  }
-
   public enum InteractionMode {
     HEADLESS, SWING_CLIENT_UI
   }
