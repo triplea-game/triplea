@@ -15,6 +15,9 @@ import swinglib.JPanelBuilder;
  */
 public class PlayersPanel {
 
+  /**
+   * Displays a dialog that shows which node (user) is controlling each player (nation, power, etc.).
+   */
   public static void showPlayers(final IGame game, final Component parent) {
     final JPanel panel = JPanelBuilder.builder()
         .verticalBoxLayout()

@@ -20,6 +20,19 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 
+/**
+ * A UI component that displays an extended set of game statistics beyond those displayed by {@link StatPanel}.
+ *
+ * <p>
+ * The additional statistics include:
+ * </p>
+ * <ul>
+ * <li>All resources other than PUs.</li>
+ * <li>Number of technologies.</li>
+ * <li>Details about each technology.</li>
+ * <li>Available unit types.</li>
+ * </ul>
+ */
 public class ExtendedStats extends StatPanel {
   private static final long serialVersionUID = 2502397606419491543L;
   private IStat[] statsExtended = new IStat[] {};

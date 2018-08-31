@@ -5,6 +5,9 @@ import java.util.Collection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
+/**
+ * A collection of units placed in a single territory.
+ */
 public class PlaceData {
   private final Collection<Unit> units;
   private final Territory at;

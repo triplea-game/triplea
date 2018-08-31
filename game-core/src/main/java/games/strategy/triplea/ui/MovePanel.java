@@ -50,6 +50,9 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
 import lombok.extern.java.Log;
 
+/**
+ * The action panel displayed during the combat and non-combat move actions.
+ */
 @Log
 public class MovePanel extends AbstractMovePanel {
   private static final long serialVersionUID = 5004515340964828564L;

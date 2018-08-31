@@ -17,6 +17,9 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.ui.SwingAction;
 
+/**
+ * A UI component used to display a dice roll. One image is displayed per die in a horizontal layout.
+ */
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
   private final UiContext uiContext;
@@ -36,6 +39,9 @@ public class DicePanel extends JPanel {
     invalidate();
   }
 
+  /**
+   * Sets the dice roll to display.
+   */
   public void setDiceRoll(final DiceRoll diceRoll) {
     SwingAction.invokeNowOrLater(() -> {
       removeAll();
