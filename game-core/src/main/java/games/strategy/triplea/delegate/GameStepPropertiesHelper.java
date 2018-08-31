@@ -66,7 +66,7 @@ public final class GameStepPropertiesHelper {
           if (player != null) {
             players.add(player);
           } else {
-            log.severe(() -> String.format("gameplay sequence step: %s stepProperty: %s player: %s DOES NOT EXIST",
+            log.warning(() -> String.format("gameplay sequence step: %s stepProperty: %s player: %s DOES NOT EXIST",
                 gameData.getSequence().getStep().getName(), propertyKey, playerName));
           }
         }
