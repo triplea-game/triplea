@@ -112,13 +112,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
-  public ServerModel(final ServerConnectionProps props) {
-    this(GameRunner.getGameSelectorModel(),
-        GameRunner.getSetupPanelModel(),
-        ServerModel.InteractionMode.SWING_CLIENT_UI);
-    GameRunner.getSetupPanelModel().setServerMode(this, props);
-  }
-
   ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this(gameSelectorModel, typePanelModel, InteractionMode.SWING_CLIENT_UI);
   }

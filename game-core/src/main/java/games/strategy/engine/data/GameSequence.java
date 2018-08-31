@@ -56,19 +56,9 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Removes the first instance of step.
    */
   protected void remove(final GameStep step) {
-    if (!m_steps.contains(step)) {
+    if (!m_steps.remove(step)) {
       throw new IllegalArgumentException("Step does not exist");
     }
-    m_steps.remove(step);
-  }
-
-  protected void removeStep(final int index) {
-    m_steps.remove(index);
-  }
-
-  public void removeAllSteps() {
-    m_steps.clear();
-    m_round = 1;
   }
 
   public int getRound() {
