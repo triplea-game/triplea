@@ -381,15 +381,6 @@ public class GameData implements Serializable {
     return readWriteLock == null;
   }
 
-  public void clearAllListeners() {
-    dataChangeListeners.clear();
-    territoryListeners.clear();
-    if (resourceLoader != null) {
-      resourceLoader.close();
-      resourceLoader = null;
-    }
-  }
-
   public void addToAttachmentOrderAndValues(
       final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);

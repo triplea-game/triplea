@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
  * A simple way to connect multiple socket end points.
  * An IMessenger listens for incoming messages, and sends
  * them to all registered listeners.
- * Messages are recieved and sent in order. Note that message listeners are multi threaded, in
+ * Messages are received and sent in order. Note that message listeners are multi threaded, in
  * that they process messages from multiple nodes at the same time, but no more than 1 message
  * from any particular node at a time.
  */

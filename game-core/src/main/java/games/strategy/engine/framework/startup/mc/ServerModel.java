@@ -74,10 +74,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
-  void createServerLauncher() {
-    setServerLauncher(getLauncher().orElse(null));
-  }
-
   public enum InteractionMode {
     HEADLESS, SWING_CLIENT_UI
   }
@@ -111,13 +107,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
-
-  public ServerModel(final ServerConnectionProps props) {
-    this(GameRunner.getGameSelectorModel(),
-        GameRunner.getSetupPanelModel(),
-        ServerModel.InteractionMode.SWING_CLIENT_UI);
-    GameRunner.getSetupPanelModel().setServerMode(this, props);
-  }
 
   ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
     this(gameSelectorModel, typePanelModel, InteractionMode.SWING_CLIENT_UI);

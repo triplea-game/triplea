@@ -4,8 +4,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
@@ -95,13 +93,5 @@ public class SetupPanelModel {
 
   public ISetupPanel getPanel() {
     return panel;
-  }
-
-  public void setServerMode(
-      @Nonnull final ServerModel serverModel,
-      @Nonnull final ServerConnectionProps props) {
-    serverModel.createServerMessenger(new JPanel(), props);
-    Preconditions.checkNotNull(serverModel.getChatPanel());
-    serverModel.createServerLauncher();
   }
 }
