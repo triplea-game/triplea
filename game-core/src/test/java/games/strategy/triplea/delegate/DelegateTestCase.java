@@ -15,7 +15,15 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class DelegateTest {
+/**
+ * Superclass for fixtures that test delegates.
+ *
+ * <p>
+ * Pre-loads the {@link TestMapGameData#DELEGATE_TEST} save game and provides fields for the most-commonly-accessed
+ * players, territories, and unit types.
+ * </p>
+ */
+public class DelegateTestCase {
   protected GameData gameData;
   protected PlayerID british;
   protected PlayerID japanese;
@@ -77,6 +85,8 @@ public class DelegateTest {
   protected UnitType bomber;
   protected UnitType carrier;
   protected Resource pus;
+
+  protected DelegateTestCase() {}
 
   @BeforeEach
   public void setUp() throws Exception {

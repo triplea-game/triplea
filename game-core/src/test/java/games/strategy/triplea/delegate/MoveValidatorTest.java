@@ -25,7 +25,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class MoveValidatorTest extends DelegateTest {
+public class MoveValidatorTest extends DelegateTestCase {
 
   @Test
   public void testEnemyUnitsInPath() {

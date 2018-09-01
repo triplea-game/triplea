@@ -19,7 +19,7 @@ import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.util.IntegerMap;
 
-public class PlaceDelegateTest extends DelegateTest {
+public class PlaceDelegateTest extends DelegateTestCase {
   protected PlaceDelegate delegate;
   protected ITestDelegateBridge bridge;
 
