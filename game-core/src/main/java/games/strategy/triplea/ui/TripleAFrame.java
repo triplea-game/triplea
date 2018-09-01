@@ -1081,14 +1081,14 @@ public final class TripleAFrame extends JFrame {
     messageAndDialogThreadPool.waitForAll();
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(
         () -> new DiceChooser(getUiContext(), numDice, hitAt, diceSides))).result
-        .map(chooser -> {
-          do {
-            EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
-                getUiContext().getCountDownLatchHandler());
-          } while (chooser.getDice() == null);
-          return chooser.getDice();
-        })
-        .orElseGet(() -> new int[numDice]);
+            .map(chooser -> {
+              do {
+                EventThreadJOptionPane.showMessageDialog(null, chooser, title, JOptionPane.PLAIN_MESSAGE,
+                    getUiContext().getCountDownLatchHandler());
+              } while (chooser.getDice() == null);
+              return chooser.getDice();
+            })
+            .orElseGet(() -> new int[numDice]);
   }
 
   /**
