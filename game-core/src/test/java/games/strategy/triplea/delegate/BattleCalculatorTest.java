@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.TripleAUnit;

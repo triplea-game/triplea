@@ -64,7 +64,6 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;

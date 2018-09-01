@@ -9,11 +9,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHolder;
 import games.strategy.engine.data.UnitType;

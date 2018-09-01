@@ -1,4 +1,4 @@
-package games.strategy.engine.data;
+package games.strategy.triplea.delegate;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -7,6 +7,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -30,7 +33,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
  *             coupling to the rest of the system, do not build on it.
  */
 @Deprecated
-public class TestDelegateBridge implements ITestDelegateBridge {
+class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData gameData;
   private PlayerID playerId;
   private String stepName = "no name specified";
@@ -40,7 +43,7 @@ public class TestDelegateBridge implements ITestDelegateBridge {
   private final IDelegateHistoryWriter delegateHistoryWriter;
   private IRemotePlayer remotePlayer;
 
-  public TestDelegateBridge(final GameData data, final PlayerID id) {
+  TestDelegateBridge(final GameData data, final PlayerID id) {
     gameData = data;
     playerId = id;
     final History history = new History(gameData);
