@@ -72,25 +72,6 @@ public class TransportTracker {
     return returnVal;
   }
 
-  /**
-   * Returns a map of transport -> collection of transported units.
-   */
-  public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> transports,
-      final Collection<Unit> transportedUnits) {
-    final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
-    for (final Unit transported : transportedUnits) {
-      final Unit transport = transportedBy(transported);
-      Collection<Unit> transporting = null;
-      if (transport != null) {
-        transporting = transporting(transport, transportedUnits);
-      }
-      if (transporting != null) {
-        returnVal.put(transport, transporting);
-      }
-    }
-    return returnVal;
-  }
-
   public static boolean isTransporting(final Unit transport) {
     return !((TripleAUnit) transport).getTransporting().isEmpty();
   }

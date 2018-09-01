@@ -45,7 +45,6 @@ public class SelectAndViewEditor extends EditorPanel {
    * @param defaultHelp the name of the Help file to use when no bean is selected (when disabled)
    */
   public SelectAndViewEditor(final String labelTitle, final String defaultHelp) {
-    super();
     this.defaultHelp = defaultHelp;
     final JButton helpButton = new JButton("Help?");
     final Font oldFont = helpButton.getFont();

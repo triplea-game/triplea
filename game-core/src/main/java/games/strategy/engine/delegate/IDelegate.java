@@ -46,14 +46,25 @@ public interface IDelegate {
 
   /**
    * Returns the state of the Delegate.
-   *
+   * All implementations should follow this scheme:
+   * <pre><code>
+   *  DelegateImplementationState state = new DelegateImplementationState();
+   *  state.superState = super.saveState();
+   *  // add other variables to state here:
+   *  return state;
+   * </code></pre>
    * @return state of the Delegate.
    */
   Serializable saveState();
 
   /**
    * Loads the delegate state.
-   *
+   * All implementations should follow this scheme:
+   * <pre><code>
+   *  DelegateImplementationState s = (DelegateImplementationState) state;
+   *  super.loadState(s.superState);
+   *  // load other variables from state here
+   * </code></pre>
    * @param state the delegates state.
    */
   void loadState(final Serializable state);

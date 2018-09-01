@@ -2324,10 +2324,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
+  private static void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
       final Collection<IBattle> dependents) {
     for (final IBattle dependent : dependents) {
-      dependent.unitsLostInPrecedingBattle(this, units, bridge, false);
+      dependent.unitsLostInPrecedingBattle(units, bridge, false);
     }
   }
 
@@ -2655,7 +2655,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     Collection<Unit> lost = getDependentUnits(units);
     lost.addAll(CollectionUtils.intersection(units, m_attackingUnits));

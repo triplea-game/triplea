@@ -17,7 +17,6 @@ class MouseDetails {
   private final double y;
 
   MouseDetails(final MouseEvent mouseEvent, final double x, final double y) {
-    super();
     this.mouseEvent = mouseEvent;
     this.x = x;
     this.y = y;

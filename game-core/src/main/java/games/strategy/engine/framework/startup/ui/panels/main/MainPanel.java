@@ -170,9 +170,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
   }
 
   private void setWidgetActivation() {
-    SwingAction.invokeNowOrLater(() -> {
-      playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart());
-    });
+    SwingAction.invokeNowOrLater(() -> playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart()));
   }
 
   @Override

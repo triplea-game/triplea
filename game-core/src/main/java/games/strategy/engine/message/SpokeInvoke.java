@@ -13,9 +13,7 @@ public class SpokeInvoke extends Invoke {
   private static final long serialVersionUID = -2007645463748969L;
   private INode invoker;
 
-  public SpokeInvoke() {
-    super();
-  }
+  public SpokeInvoke() {}
 
   public SpokeInvoke(final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call,
       final INode invoker) {

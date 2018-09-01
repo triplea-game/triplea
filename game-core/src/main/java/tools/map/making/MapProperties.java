@@ -50,7 +50,6 @@ public class MapProperties {
   public int screenshotTitleFontSize = 20;
 
   MapProperties() {
-    super();
     // fill the color map
     colorMap.put(Constants.PLAYER_NAME_AMERICANS, new Color(0x666600));
     colorMap.put(Constants.PLAYER_NAME_AUSTRALIANS, new Color(0xCCCC00));

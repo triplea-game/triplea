@@ -85,7 +85,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     PoliticsDelegate.chainAlliancesTogether(bridge);
   }
 
-  @Override
   protected ITripleADisplay getDisplay() {
     return getDisplay(bridge);
   }
@@ -103,7 +102,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     return (ITripleAPlayer) bridge.getRemotePlayer();
   }
 
-  @Override
   protected ITripleAPlayer getRemotePlayer(final PlayerID player) {
     return getRemotePlayer(player, bridge);
   }

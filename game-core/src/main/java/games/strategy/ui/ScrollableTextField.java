@@ -36,9 +36,10 @@ public class ScrollableTextField extends JPanel {
   private final JButton minButton;
   private final List<ScrollableTextFieldListener> listeners = new ArrayList<>();
 
-  /** Creates new ScrollableTextField. */
+  /**
+   * Creates new ScrollableTextField.
+   */
   public ScrollableTextField(final int minVal, final int maxVal) {
-    super();
     loadImages();
     text = new IntTextField(minVal, maxVal);
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -135,10 +136,6 @@ public class ScrollableTextField extends JPanel {
     setWidgetActivation();
   }
 
-  public void setTerr(final String terr) {
-    text.setTerr(terr);
-  }
-
   public void setShowMaxAndMin(final boolean showMaxAndMin) {
     maxButton.setVisible(showMaxAndMin);
     minButton.setVisible(showMaxAndMin);
@@ -146,10 +143,6 @@ public class ScrollableTextField extends JPanel {
 
   public int getMax() {
     return text.getMax();
-  }
-
-  public String getTerr() {
-    return text.getTerr();
   }
 
   public void setMin(final int min) {

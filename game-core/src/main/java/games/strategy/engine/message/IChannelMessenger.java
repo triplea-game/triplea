@@ -83,9 +83,4 @@ public interface IChannelMessenger {
   void unregisterChannelSubscriber(Object implementor, RemoteName channelName);
 
   INode getLocalNode();
-
-  /**
-   * Indicates the underlying messenger is a server.
-   */
-  boolean isServer();
 }

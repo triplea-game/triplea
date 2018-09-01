@@ -3,14 +3,12 @@ package games.strategy.engine.framework.startup.login;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.net.SocketAddress;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.common.collect.ImmutableMap;
@@ -26,11 +24,8 @@ public final class ClientLoginValidatorTest {
     public abstract class AbstractTestCase {
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(null);
 
-      @Mock
-      private SocketAddress socketAddress;
-
       Map<String, String> getChallengeProperties() {
-        return clientLoginValidator.getChallengeProperties("userName", socketAddress);
+        return clientLoginValidator.getChallengeProperties("userName");
       }
     }
 

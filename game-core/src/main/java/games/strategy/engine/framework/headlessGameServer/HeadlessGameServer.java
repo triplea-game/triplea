@@ -84,8 +84,7 @@ public class HeadlessGameServer {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       log.info("Running ShutdownHook.");
       shutDown = true;
-      shutdownListeners.stream()
-          .forEach(Runnable::run);
+      shutdownListeners.forEach(Runnable::run);
     }));
     availableGames = new AvailableGames();
     gameSelectorModel = new GameSelectorModel();
@@ -174,11 +173,7 @@ public class HeadlessGameServer {
         log.info("Loading GameData failed for: " + fileName);
         return;
       }
-
-
       final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
-
-
       if (!availableGames.containsMapName(mapNameProperty)) {
         log.info("Game mapName not in available games listing: " + mapNameProperty);
         return;

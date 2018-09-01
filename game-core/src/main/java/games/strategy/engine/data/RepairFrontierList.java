@@ -19,10 +19,6 @@ public class RepairFrontierList extends GameDataComponent {
     m_repairFrontiers.put(pf.getName(), pf);
   }
 
-  public int size() {
-    return m_repairFrontiers.size();
-  }
-
   public RepairFrontier getRepairFrontier(final String name) {
     return m_repairFrontiers.get(name);
   }

@@ -70,10 +70,6 @@ public class UndoableMove extends AbstractUndoableMove {
     m_reasonCantUndo = reason;
   }
 
-  public String getDescription() {
-    return m_description;
-  }
-
   public void setDescription(final String description) {
     m_description = description;
   }

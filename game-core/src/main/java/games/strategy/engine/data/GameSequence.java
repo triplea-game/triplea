@@ -52,15 +52,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     m_steps.add(step);
   }
 
-  /**
-   * Removes the first instance of step.
-   */
-  protected void remove(final GameStep step) {
-    if (!m_steps.remove(step)) {
-      throw new IllegalArgumentException("Step does not exist");
-    }
-  }
-
   public int getRound() {
     return m_round + m_roundOffset;
   }

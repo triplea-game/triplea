@@ -163,7 +163,7 @@ public final class LobbyLoginValidatorTest {
     final void whenAuthenticating(final ResponseGenerator responseGenerator) {
       final InetSocketAddress remoteAddress = new InetSocketAddress(user.getInetAddress(), 9999);
       final Map<String, String> challenge =
-          lobbyLoginValidator.getChallengeProperties(user.getUsername(), remoteAddress);
+          lobbyLoginValidator.getChallengeProperties(user.getUsername());
       authenticationErrorMessage = lobbyLoginValidator.verifyConnection(
           challenge,
           responseGenerator.apply(challenge),

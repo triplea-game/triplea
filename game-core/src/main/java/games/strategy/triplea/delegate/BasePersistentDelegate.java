@@ -11,10 +11,6 @@ import games.strategy.engine.delegate.IPersistentDelegate;
  * Persistent Delegates are active all the time.
  */
 public abstract class BasePersistentDelegate extends AbstractDelegate implements IPersistentDelegate {
-  public BasePersistentDelegate() {
-    super();
-  }
-
   @Override
   public void start() {
     super.start();

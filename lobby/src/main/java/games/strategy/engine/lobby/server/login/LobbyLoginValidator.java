@@ -106,7 +106,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
   }
 
   @Override
-  public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress) {
+  public Map<String, String> getChallengeProperties(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
     challenge.putAll(newMd5CryptAuthenticatorChallenge(userName));
     challenge.putAll(rsaAuthenticator.newChallenge());

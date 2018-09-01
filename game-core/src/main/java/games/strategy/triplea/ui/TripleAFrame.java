@@ -282,7 +282,7 @@ public final class TripleAFrame extends JFrame {
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
     tooltipManager = new MapUnitTooltipManager(mapPanel);
     mapPanel.addMapSelectionListener(mapSelectionListener);
-    mapPanel.addMouseOverUnitListener((units, territory, me) -> {
+    mapPanel.addMouseOverUnitListener((units, territory) -> {
       unitsBeingMousedOver = units;
       tooltipManager.updateTooltip(getUnitInfo());
     });

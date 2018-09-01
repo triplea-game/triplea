@@ -21,7 +21,6 @@ public class ConvoyZoneDrawable implements IDrawable {
   private final UiContext uiContext;
 
   public ConvoyZoneDrawable(final PlayerID player, final Territory location, final UiContext uiContext) {
-    super();
     this.player = player.getName();
     this.location = location.getName();
     this.uiContext = uiContext;

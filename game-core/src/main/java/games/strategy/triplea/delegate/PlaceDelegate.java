@@ -21,7 +21,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
  */
 @MapSupport
 public class PlaceDelegate extends AbstractPlaceDelegate {
-  @Override
   protected int getProduction(final Territory territory) {
     // Can be null!
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);

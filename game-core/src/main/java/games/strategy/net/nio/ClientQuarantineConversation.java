@@ -55,10 +55,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     return localName;
   }
 
-  public String getMacAddress() {
-    return macAddress;
-  }
-
   public String getErrorMessage() {
     return errorMessage;
   }

@@ -82,14 +82,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     return new ArrayList<>(m_unresolvedUnitsList.get(index));
   }
 
-  public Collection<String> getDisallowedUnitWarnings() {
-    return new ArrayList<>(m_disallowedUnitWarnings);
-  }
-
-  public Collection<String> getUnresolvedUnitWarnings() {
-    return new ArrayList<>(m_unresolvedUnitWarnings);
-  }
-
   public String getDisallowedUnitWarning(final int index) {
     if (index < 0 || index >= m_disallowedUnitWarnings.size()) {
       return null;

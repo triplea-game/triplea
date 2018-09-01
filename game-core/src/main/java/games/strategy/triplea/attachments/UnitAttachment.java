@@ -2835,18 +2835,23 @@ public class UnitAttachment extends DefaultAttachment {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
           continue;
         }
-        final StringBuilder sb = new StringBuilder();
-        sb.append(support.getBonus()).append(moreThanOneSupportType ? " " + support.getBonusType() : "")
-            .append(support.getStrength() && support.getRoll() ? " Power & Rolls"
+        final String key = "Support on "
+            + (support.getOffence() && support.getDefence()
+                ? "Attack & Defense"
+                : (support.getOffence() ? "Attack" : "Defense"));
+        final String text = String.valueOf(support.getBonus())
+            + (moreThanOneSupportType ? " " + support.getBonusType() : "")
+            + (support.getStrength() && support.getRoll()
+                ? " Power & Rolls"
                 : (support.getStrength() ? " Power" : " Rolls"))
-            .append(" to ").append(support.getNumber())
-            .append(support.getAllied() && support.getEnemy() ? " Allied & Enemy "
+            + " to " + support.getNumber()
+            + (support.getAllied() && support.getEnemy()
+                ? " Allied & Enemy "
                 : (support.getAllied() ? " Allied " : " Enemy "))
-            .append(support.getUnitType().size() > 4 ? "Units"
+            + (support.getUnitType().size() > 4
+                ? "Units"
                 : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
-        final String key = "Support on " + (support.getOffence() && support.getDefence() ? "Attack & Defense"
-            : (support.getOffence() ? "Attack" : "Defense"));
-        tuples.add(Tuple.of(key, sb.toString()));
+        tuples.add(Tuple.of(key, text));
       }
     }
 
@@ -3099,13 +3104,12 @@ public class UnitAttachment extends DefaultAttachment {
   private void addAaDescription(final String startOfKey, final int aa, final int aaMaxDieSides,
       final List<Tuple<String, String>> tuples) {
     if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly()) && (aa > 0)) {
-      final StringBuilder sb = new StringBuilder();
-      sb.append(aa).append("/")
-          .append(aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
-          .append(" ").append(getTypeAa())
-          .append(" with ").append(getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
-          .append(" Attacks for ").append(getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited").append(" Rounds");
-      tuples.add(Tuple.of(startOfKey + getAaKey(), sb.toString()));
+      final String string = String.valueOf(aa) + "/"
+          + (aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
+          + " " + getTypeAa()
+          + " with " + (getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
+          + " Attacks for " + (getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited") + " Rounds";
+      tuples.add(Tuple.of(startOfKey + getAaKey(), string));
     }
   }
 

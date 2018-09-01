@@ -37,13 +37,11 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
     gameData.addDataChangeListener(this);
   }
 
-  @Override
   protected void initLayout() {
     setBorder(new EtchedBorder(EtchedBorder.RAISED));
     this.setLayout(new GridBagLayout());
   }
 
-  @Override
   public void setGameData(final GameData data) {
     gameData.removeDataChangeListener(this);
     gameData = data;

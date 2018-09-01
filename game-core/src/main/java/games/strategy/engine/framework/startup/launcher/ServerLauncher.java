@@ -79,11 +79,6 @@ public class ServerLauncher extends AbstractLauncher {
     this.serverModel = serverModel;
   }
 
-  public void signalGameStart(final byte[] bytes) {
-    ((IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME))
-        .doneSelectingPlayers(bytes, serverGame.getPlayerManager().getPlayerMapping());
-  }
-
   public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper watcher) {
     inGameLobbyWatcher = watcher;
   }

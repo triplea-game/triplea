@@ -308,10 +308,6 @@ public class TripleAUnit extends Unit {
     m_wasLoadedAfterCombat = value;
   }
 
-  public List<Unit> getDependents() {
-    return getTransporting();
-  }
-
   public boolean getWasAmphibious() {
     return m_wasAmphibious;
   }

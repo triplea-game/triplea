@@ -81,7 +81,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     objectiveModel.removeDataChangeListener();
   }
 
-  @Override
   protected void initLayout() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     objectiveModel = new ObjectiveTableModel();
@@ -366,7 +365,6 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
   }
 
-  @Override
   public void setGameData(final GameData data) {
     dummyDelegate = new ObjectiveDummyDelegateBridge(data);
     gameData = data;

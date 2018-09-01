@@ -100,10 +100,6 @@ class ProductionRepairPanel extends JPanel {
     return getProduction();
   }
 
-  List<Rule> getRules() {
-    return this.rules;
-  }
-
   private void initDialog(final JFrame root) {
     dialog = new JDialog(root, "Repair", true);
     dialog.getContentPane().add(this);

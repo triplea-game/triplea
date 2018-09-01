@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BombingUnitDamageChange;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
@@ -170,16 +169,6 @@ public class ChangeFactory {
   public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue,
       final String property, final boolean resetFirst) {
     return new ChangeAttachmentChange(attachment, newValue, property, resetFirst);
-  }
-
-  /**
-   * You don't want to clear the variable first unless you are setting some variable where the setting method is
-   * actually adding things to a
-   * list rather than overwriting.
-   */
-  public static Change attachmentPropertyChange(final Attachable attachment, final String attachmentName,
-      final Object newValue, final Object oldValue, final String property, final boolean clearFirst) {
-    return new ChangeAttachmentChange(attachment, attachmentName, newValue, oldValue, property, clearFirst);
   }
 
   /**

@@ -118,7 +118,7 @@ public class FinishedBattle extends AbstractBattle {
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     final Collection<Unit> lost = getDependentUnits(units);
     lost.addAll(CollectionUtils.intersection(units, m_attackingUnits));

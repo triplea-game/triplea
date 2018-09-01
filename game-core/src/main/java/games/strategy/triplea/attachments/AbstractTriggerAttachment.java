@@ -100,10 +100,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     m_usedThisRound = usedThisRound;
   }
 
-  private void setUsedThisRound(final Boolean usedThisRound) {
-    m_usedThisRound = usedThisRound;
-  }
-
   protected boolean getUsedThisRound() {
     return m_usedThisRound;
   }
@@ -227,19 +223,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   public static Predicate<TriggerAttachment> notificationMatch() {
     return t -> t.getNotification() != null;
-  }
-
-  protected static String getValueFromStringArrayForAllSubStrings(final String[] s) {
-    final StringBuilder sb = new StringBuilder();
-    for (final String subString : s) {
-      sb.append(":");
-      sb.append(subString);
-    }
-    // remove leading colon
-    if (sb.length() > 0 && sb.substring(0, 1).equals(":")) {
-      sb.replace(0, 1, "");
-    }
-    return sb.toString();
   }
 
   protected static String getValueFromStringArrayForAllExceptLastSubstring(final String[] s) {

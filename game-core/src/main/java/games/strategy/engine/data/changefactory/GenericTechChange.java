@@ -13,14 +13,6 @@ class GenericTechChange extends Change {
   private final boolean m_oldValue;
   private final String m_property;
 
-  public Attachable getAttachedTo() {
-    return m_attachedTo;
-  }
-
-  public String getAttachmentName() {
-    return m_attachmentName;
-  }
-
   GenericTechChange(final TechAttachment attachment, final boolean newValue, final String property) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);

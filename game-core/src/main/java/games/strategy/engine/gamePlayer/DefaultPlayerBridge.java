@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import com.google.common.base.Preconditions;
@@ -121,11 +120,6 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     } catch (final MessengerException me) {
       throw new GameOverException("Game Over!");
     }
-  }
-
-  @Override
-  public Properties getStepProperties() {
-    return game.getData().getSequence().getStep().getProperties();
   }
 
   private IRemote getRemoteThatChecksForGameOver(final IRemote implementor) {

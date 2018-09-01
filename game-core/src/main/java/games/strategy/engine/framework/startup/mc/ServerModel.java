@@ -59,7 +59,6 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.io.IoUtils;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -529,7 +528,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   @Override
-  public void messengerInvalid(final IMessenger messenger, final Exception reason) {
+  public void messengerInvalid(final Throwable reason) {
     if (headless) {
       if (typePanelModel != null) {
         typePanelModel.showSelectType();

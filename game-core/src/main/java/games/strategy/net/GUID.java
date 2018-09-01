@@ -1,7 +1,5 @@
 package games.strategy.net;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -34,21 +32,6 @@ public final class GUID implements Externalizable {
       vmPrefix = new VMID();
       lastId = new AtomicInteger();
     }
-  }
-
-  public GUID(final VMID prefix, final int id) {
-    checkNotNull(prefix);
-
-    this.id = id;
-    this.prefix = prefix;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public VMID getPrefix() {
-    return prefix;
   }
 
   @Override

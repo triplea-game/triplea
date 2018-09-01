@@ -23,7 +23,6 @@ public class KamikazeZoneDrawable implements IDrawable {
   private final UiContext uiContext;
 
   public KamikazeZoneDrawable(final Territory location, final UiContext uiContext) {
-    super();
     this.location = location.getName();
     this.uiContext = uiContext;
   }

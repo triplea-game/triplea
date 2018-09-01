@@ -359,11 +359,6 @@ public class TechAttachment extends DefaultAttachment {
     genericTech.put(name, value);
   }
 
-  @InternalDoNotExport
-  public void setGenericTech(final HashMap<String, Boolean> value) {
-    genericTech = value;
-  }
-
   public Map<String, Boolean> getGenericTech() {
     return genericTech;
   }

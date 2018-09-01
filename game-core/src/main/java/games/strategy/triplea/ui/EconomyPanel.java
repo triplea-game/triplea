@@ -37,7 +37,6 @@ class EconomyPanel extends AbstractStatPanel {
     initLayout();
   }
 
-  @Override
   protected void initLayout() {
     setLayout(new GridLayout(1, 1));
     resourceModel = new ResourceTableModel();
@@ -130,7 +129,7 @@ class EconomyPanel extends AbstractStatPanel {
       if (income >= 0) {
         resourceAmountAndIncome.append("+");
       }
-      resourceAmountAndIncome.append(income + ")</html>");
+      resourceAmountAndIncome.append(income).append(")</html>");
       return resourceAmountAndIncome.toString();
     }
 
@@ -177,7 +176,6 @@ class EconomyPanel extends AbstractStatPanel {
     }
   }
 
-  @Override
   public void setGameData(final GameData data) {
     gameData = data;
     resourceModel.setGameData(data);

@@ -35,18 +35,10 @@ public class CollectionProperty<T> extends AEditableProperty {
     return m_values;
   }
 
-  public List<T> getValueT() {
-    return m_values;
-  }
-
   @Override
   @SuppressWarnings("unchecked")
   public void setValue(final Object value) throws ClassCastException {
     m_values = (List<T>) value;
-  }
-
-  public void setValueT(final List<T> value) {
-    m_values = value;
   }
 
   @Override

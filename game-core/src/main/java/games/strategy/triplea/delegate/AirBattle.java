@@ -735,10 +735,10 @@ public class AirBattle extends AbstractBattle {
     bridge.enterDelegateExecution();
   }
 
-  private void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
+  private static void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
       final Collection<IBattle> dependents, final boolean withdrawn) {
     for (final IBattle dependent : dependents) {
-      dependent.unitsLostInPrecedingBattle(this, units, bridge, withdrawn);
+      dependent.unitsLostInPrecedingBattle(units, bridge, withdrawn);
     }
   }
 
@@ -748,6 +748,6 @@ public class AirBattle extends AbstractBattle {
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {}
 }

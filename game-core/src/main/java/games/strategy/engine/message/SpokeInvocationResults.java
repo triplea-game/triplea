@@ -6,9 +6,7 @@ import games.strategy.net.GUID;
 public class SpokeInvocationResults extends InvocationResults {
   private static final long serialVersionUID = 8998965687635348969L;
 
-  public SpokeInvocationResults() {
-    super();
-  }
+  public SpokeInvocationResults() {}
 
   public SpokeInvocationResults(final RemoteMethodCallResults results, final GUID methodCallId) {
     super(results, methodCallId);

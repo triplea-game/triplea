@@ -3,15 +3,12 @@ package games.strategy.triplea.delegate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -136,9 +133,6 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public abstract boolean isEmpty();
-
-  @Override
   public final boolean isOver() {
     return m_isOver;
   }
@@ -194,20 +188,6 @@ abstract class AbstractBattle implements IBattle {
   public void setHeadless(final boolean headless) {
     m_headless = headless;
   }
-
-  @Override
-  public abstract void fight(IDelegateBridge bridge);
-
-  @Override
-  public abstract Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, HashSet<Unit>> targets);
-
-  @Override
-  public abstract void removeAttack(Route route, Collection<Unit> units);
-
-  @Override
-  public abstract void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge,
-      boolean withdrawn);
 
   @Override
   public int hashCode() {

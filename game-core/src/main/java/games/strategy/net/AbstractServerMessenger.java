@@ -86,11 +86,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void removeMessageListener(final IMessageListener listener) {
-    listeners.remove(listener);
-  }
-
-  @Override
   public Set<INode> getNodes() {
     final Set<INode> nodes = new HashSet<>(nodeToChannel.keySet());
     nodes.add(node);

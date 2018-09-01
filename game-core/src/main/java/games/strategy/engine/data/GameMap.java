@@ -204,17 +204,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return neighbors;
   }
 
-  /**
-   * Returns all neighbors within a certain distance of the starting territory set.
-   * Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
-   * other.
-   */
-  public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance) {
-    final Set<Territory> neighbors = getNeighbors(frontier, new HashSet<>(frontier), distance);
-    neighbors.removeAll(frontier);
-    return neighbors;
-  }
-
   private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, final int distance,
       @Nullable final Predicate<Territory> cond) {
     if (distance == 0) {
@@ -318,12 +307,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       return new Route(start, end);
     }
     return new CompositeRouteFinder(this, matches).findRoute(start, end);
-  }
-
-  public Route getCompositeRoute_IgnoreEnd(final Territory t1, final Territory t2,
-      final Map<Predicate<Territory>, Integer> matches) {
-    matches.put(Matches.territoryIs(t2), 0);
-    return getCompositeRoute(t1, t2, matches);
   }
 
   /**

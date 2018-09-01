@@ -123,7 +123,7 @@ public class DummyDelegateBridge implements IDelegateBridge {
       allChanges.add(change);
       gameData.performChange(change);
     } else if (change instanceof CompositeChange) {
-      ((CompositeChange) change).getChanges().forEach(c -> addChange(c));
+      ((CompositeChange) change).getChanges().forEach(this::addChange);
     }
   }
 

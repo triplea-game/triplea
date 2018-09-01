@@ -58,7 +58,6 @@ public class EmailSenderEditor extends EditorPanel {
    * @param editorConfiguration configures which editor fields should be visible
    */
   public EmailSenderEditor(final GenericEmailSender bean, final EditorConfiguration editorConfiguration) {
-    super();
     genericEmailSender = bean;
     subject.setText(genericEmailSender.getSubjectPrefix());
     host.setText(genericEmailSender.getHost());

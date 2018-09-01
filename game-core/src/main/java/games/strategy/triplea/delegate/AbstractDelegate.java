@@ -8,7 +8,6 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
-import games.strategy.engine.message.IRemote;
 import games.strategy.sound.ISound;
 
 /**
@@ -20,11 +19,6 @@ public abstract class AbstractDelegate implements IDelegate {
   protected String displayName;
   protected PlayerID player;
   protected IDelegateBridge bridge;
-
-  /**
-   * Creates a new instance of the Delegate.
-   */
-  public AbstractDelegate() {}
 
   @Override
   public void initialize(final String name, final String displayName) {
@@ -81,19 +75,12 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   @Override
-  public abstract Class<? extends IRemote> getRemoteType();
-
-  @Override
   public IDelegateBridge getBridge() {
     return bridge;
   }
 
   protected GameData getData() {
     return bridge.getData();
-  }
-
-  protected IDisplay getDisplay() {
-    return getDisplay(bridge);
   }
 
   protected static IDisplay getDisplay(final IDelegateBridge bridge) {
@@ -115,45 +102,4 @@ public abstract class AbstractDelegate implements IDelegate {
   protected static IRemotePlayer getRemotePlayer(final IDelegateBridge bridge) {
     return bridge.getRemotePlayer();
   }
-
-  /**
-   * You should override this class with some variation of the following code (changing the AI to be something
-   * meaningful if needed)
-   * because otherwise an "isNull" (ie: the static "Neutral" player) will not have any remote.
-   * <p>
-   * if (player.isNull()) {
-   * return new WeakAi(player.getName(), TripleA.WEAK_AI);
-   * }
-   * return bridge.getRemotePlayer(player);
-   * </p>
-   */
-  protected IRemotePlayer getRemotePlayer(final PlayerID player) {
-    return bridge.getRemotePlayer(player);
-  }
 }
-/*
- * All overriding classes should use the following format for saveState and loadState, in order to save and load the
- * superstate
- * class ExtendedDelegateState implements Serializable
- * {
- * Serializable superState;
- * // add other variables here:
- * }
- *
- * @Override
- * public Serializable saveState()
- * {
- * ExtendedDelegateState state = new ExtendedDelegateState();
- * state.superState = super.saveState();
- * // add other variables to state here:
- * return state;
- * }
- *
- * @Override
- * public void loadState(Serializable state)
- * {
- * ExtendedDelegateState s = (ExtendedDelegateState) state;
- * super.loadState(s.superState);
- * // load other variables from state here:
- * }
- */

@@ -111,7 +111,6 @@ public class GameData implements Serializable {
 
   /** Creates new GameData. */
   public GameData() {
-    super();
     delegateList = new DelegateList(this);
     properties.set(GAME_UUID, UUID.randomUUID().toString());
   }

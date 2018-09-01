@@ -125,7 +125,7 @@ public class MapPanel extends ImageScrollerLargeView {
         if (unitsChanged(null)) {
           final MouseDetails md = convert(e);
           currentUnits = null;
-          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()), md);
+          notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()));
         }
       }
 
@@ -192,16 +192,14 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     });
     // When map is scrolled, update information about what we're hovering over.
-    model.addObserver((object, arg) -> {
-      SwingUtilities.invokeLater(() -> {
-        final PointerInfo pointer = MouseInfo.getPointerInfo();
-        if (pointer != null) {
-          final Point loc = pointer.getLocation();
-          SwingUtilities.convertPointFromScreen(loc, MapPanel.this);
-          updateMouseHoverState(null, loc.x, loc.y);
-        }
-      });
-    });
+    model.addObserver((object, arg) -> SwingUtilities.invokeLater(() -> {
+      final PointerInfo pointer = MouseInfo.getPointerInfo();
+      if (pointer != null) {
+        final Point loc = pointer.getLocation();
+        SwingUtilities.convertPointFromScreen(loc, MapPanel.this);
+        updateMouseHoverState(null, loc.x, loc.y);
+      }
+    }));
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     executor.execute(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {
@@ -229,9 +227,9 @@ public class MapPanel extends ImageScrollerLargeView {
     if (unitsChanged(tuple)) {
       currentUnits = tuple;
       if (tuple == null) {
-        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y), md);
+        notifyMouseEnterUnit(Collections.emptyList(), getTerritory(x, y));
       } else {
-        notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst(), md);
+        notifyMouseEnterUnit(tuple.getSecond(), tuple.getFirst());
       }
     }
   }
@@ -361,9 +359,9 @@ public class MapPanel extends ImageScrollerLargeView {
     }
   }
 
-  private void notifyMouseEnterUnit(final List<Unit> units, final Territory t, final MouseDetails me) {
+  private void notifyMouseEnterUnit(final List<Unit> units, final Territory t) {
     for (final MouseOverUnitListener listener : mouseOverUnitsListeners) {
-      listener.mouseEnter(units, t, me);
+      listener.mouseEnter(units, t);
     }
   }
 

@@ -142,7 +142,7 @@ public class NonFightingBattle extends DependentBattle {
   }
 
   @Override
-  public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units,
+  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     if (withdrawn) {
       return;

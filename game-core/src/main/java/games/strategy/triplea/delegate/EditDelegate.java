@@ -19,7 +19,6 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
@@ -118,17 +117,6 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       }
     }
     return null;
-  }
-
-  /**
-   * Returns the production of the territory, ignores whether the territory was an original factory.
-   */
-  protected int getProduction(final Territory territory) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta != null) {
-      return ta.getProduction();
-    }
-    return 0;
   }
 
   @Override

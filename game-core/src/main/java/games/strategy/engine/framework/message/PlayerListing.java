@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -124,10 +123,6 @@ public class PlayerListing implements Serializable {
   @Override
   public String toString() {
     return "PlayerListingMessage:" + m_playerToNodeListing;
-  }
-
-  public Set<String> getPlayers() {
-    return m_playerToNodeListing.keySet();
   }
 
   public String getGameRound() {

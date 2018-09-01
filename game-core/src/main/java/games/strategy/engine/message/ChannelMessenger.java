@@ -46,7 +46,6 @@ public class ChannelMessenger implements IChannelMessenger {
     return unifiedMessenger.getLocalNode();
   }
 
-  @Override
   public boolean isServer() {
     return unifiedMessenger.isServer();
   }

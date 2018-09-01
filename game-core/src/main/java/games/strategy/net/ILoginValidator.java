@@ -11,7 +11,7 @@ public interface ILoginValidator {
    * The challenge properties to send to the client. The client will be sent the challenge properties,
    * and will be expected to return a properties object to validate its connection.
    */
-  Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress);
+  Map<String, String> getChallengeProperties(String userName);
 
   /**
    * Validates a login attempt.

@@ -21,7 +21,6 @@ public class CapitolMarkerDrawable implements IDrawable {
   private final UiContext uiContext;
 
   public CapitolMarkerDrawable(final PlayerID player, final Territory location, final UiContext uiContext) {
-    super();
     if (player == null) {
       throw new IllegalStateException("no player for capitol:" + location);
     }

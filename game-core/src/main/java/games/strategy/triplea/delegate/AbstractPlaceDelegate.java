@@ -1189,14 +1189,6 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Returns the production of the territory.
-   */
-  protected int getProduction(final Territory territory) {
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    return ta == null ? 0 : ta.getProduction();
-  }
-
-  /**
    * Calculates how many of each of the specified construction units can be placed in the specified territory.
    *
    * @param to referring territory.

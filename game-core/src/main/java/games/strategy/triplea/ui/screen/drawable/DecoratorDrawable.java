@@ -17,7 +17,6 @@ public class DecoratorDrawable implements IDrawable {
   private final Image image;
 
   public DecoratorDrawable(final Point point, final Image image) {
-    super();
     this.point = point;
     this.image = image;
   }
