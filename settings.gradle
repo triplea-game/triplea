@@ -1,5 +1,6 @@
 rootProject.name='triplea'
 include 'game-core'
+include 'game-headless'
 include 'lobby'
 include 'lobby-db'
 include 'test-common'

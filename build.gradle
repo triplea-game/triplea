@@ -44,6 +44,7 @@ subprojects {
     apply plugin: 'net.ltgt.errorprone'
 
     apply from: "${rootProject.projectDir}/gradle/scripts/release.gradle"
+    apply from: "${rootProject.projectDir}/gradle/scripts/version.gradle"
 
     repositories {
         jcenter()
