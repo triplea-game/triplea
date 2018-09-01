@@ -14,6 +14,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.io.File;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
@@ -136,6 +138,49 @@ public class HeadlessGameServer {
 
   public Set<String> getAvailableGames() {
     return availableGames.getGameNames();
+  }
+
+  public synchronized void setGameMapTo(final String gameName) {
+    // don't change mid-game
+    if (setupPanelModel.getPanel() != null && game == null) {
+      if (!availableGames.getGameNames().contains(gameName)) {
+        return;
+      }
+      gameSelectorModel.load(availableGames.getGameData(gameName), availableGames.getGameFilePath(gameName));
+      log.info("Changed to game map: " + gameName);
+    }
+  }
+
+  public synchronized void loadGameSave(final File file) {
+    // don't change mid-game
+    if (setupPanelModel.getPanel() != null && game == null) {
+      if (file == null || !file.exists()) {
+        return;
+      }
+      gameSelectorModel.load(file);
+      log.info("Changed to save: " + file.getName());
+    }
+  }
+
+  public synchronized void loadGameSave(final InputStream input, final String fileName) {
+    // don't change mid-game
+    if (setupPanelModel.getPanel() != null && game == null) {
+      if (input == null || fileName == null) {
+        return;
+      }
+      final GameData data = gameSelectorModel.getGameData(input);
+      if (data == null) {
+        log.info("Loading GameData failed for: " + fileName);
+        return;
+      }
+      final String mapNameProperty = data.getProperties().get(Constants.MAP_NAME, "");
+      if (!availableGames.containsMapName(mapNameProperty)) {
+        log.info("Game mapName not in available games listing: " + mapNameProperty);
+        return;
+      }
+      gameSelectorModel.load(data, fileName);
+      log.info("Changed to user savegame: " + fileName);
+    }
   }
 
   public synchronized void loadGameOptions(final byte[] bytes) {

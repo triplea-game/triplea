@@ -6,7 +6,10 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.awt.Component;
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,6 +50,7 @@ import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
+import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -352,6 +356,46 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         return null;
       }
       return headless.getAvailableGames();
+    }
+
+    @Override
+    public void changeServerGameTo(final String gameName) {
+      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+      if (headless == null) {
+        return;
+      }
+      headless.setGameMapTo(gameName);
+    }
+
+    @Override
+    public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
+      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2) {
+        return;
+      }
+      final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
+      if (!save.exists()) {
+        return;
+      }
+      HeadlessGameServer.getInstance().loadGameSave(save);
+    }
+
+    @Override
+    public void changeToGameSave(final byte[] bytes, final String fileName) {
+      // TODO: change to a string message return, so we can tell the user/requestor if it was successful or not, and why
+      // if not.
+      final HeadlessGameServer headless = HeadlessGameServer.getInstance();
+      if (headless == null || bytes == null) {
+        return;
+      }
+      try {
+        IoUtils.consumeFromMemory(bytes, is -> {
+          try (InputStream oinput = new BufferedInputStream(is)) {
+            headless.loadGameSave(oinput, fileName);
+          }
+        });
+      } catch (final Exception e) {
+        log.log(Level.SEVERE, "Failed to load save game: " + fileName, e);
+      }
     }
 
     @Override
