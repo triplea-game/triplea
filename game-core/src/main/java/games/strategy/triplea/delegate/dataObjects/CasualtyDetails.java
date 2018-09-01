@@ -26,7 +26,6 @@ public class CasualtyDetails extends CasualtyList {
   }
 
   public CasualtyDetails(final boolean autoCalculated) {
-    super();
     m_autoCalculated = autoCalculated;
   }
 
@@ -34,7 +33,6 @@ public class CasualtyDetails extends CasualtyList {
    * Empty details, with autoCalculated as true.
    */
   public CasualtyDetails() {
-    super();
     m_autoCalculated = true;
   }
 

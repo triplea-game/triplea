@@ -36,9 +36,10 @@ public class ScrollableTextField extends JPanel {
   private final JButton minButton;
   private final List<ScrollableTextFieldListener> listeners = new ArrayList<>();
 
-  /** Creates new ScrollableTextField. */
+  /**
+   * Creates new ScrollableTextField.
+   */
   public ScrollableTextField(final int minVal, final int maxVal) {
-    super();
     loadImages();
     text = new IntTextField(minVal, maxVal);
     setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));

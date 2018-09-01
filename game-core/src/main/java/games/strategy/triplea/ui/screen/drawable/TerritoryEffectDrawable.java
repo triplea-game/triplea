@@ -17,7 +17,6 @@ public class TerritoryEffectDrawable implements IDrawable {
   private final Point point;
 
   public TerritoryEffectDrawable(final TerritoryEffect te, final Point point) {
-    super();
     effect = te;
     this.point = point;
   }

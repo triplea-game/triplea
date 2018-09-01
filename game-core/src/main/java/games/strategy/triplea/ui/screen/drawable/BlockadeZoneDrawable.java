@@ -16,7 +16,6 @@ public class BlockadeZoneDrawable implements IDrawable {
   private final String location;
 
   public BlockadeZoneDrawable(final Territory location) {
-    super();
     this.location = location.getName();
   }
 

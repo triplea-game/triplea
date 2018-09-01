@@ -9,8 +9,8 @@ import games.strategy.engine.data.Unit;
 
 public class CasualtyList implements Serializable {
   private static final long serialVersionUID = 6501752134047891398L;
-  protected List<Unit> m_killed;
-  protected List<Unit> m_damaged;
+  protected final List<Unit> m_killed;
+  protected final List<Unit> m_damaged;
 
   /**
    * Creates a new CasualtyList.
@@ -32,8 +32,7 @@ public class CasualtyList implements Serializable {
    * Creates a new blank CasualtyList with empty lists.
    */
   public CasualtyList() {
-    m_killed = new ArrayList<>();
-    m_damaged = new ArrayList<>();
+    this(new ArrayList<>(), new ArrayList<>());
   }
 
   /**

@@ -53,7 +53,6 @@ public abstract class AbstractStatPanel extends JPanel {
     final Resource resource;
 
     ResourceStat(final Resource resource) {
-      super();
       this.resource = resource;
     }
 

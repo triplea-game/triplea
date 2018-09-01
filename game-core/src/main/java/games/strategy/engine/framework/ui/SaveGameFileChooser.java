@@ -80,7 +80,6 @@ public class SaveGameFileChooser extends JFileChooser {
   }
 
   private SaveGameFileChooser() {
-    super();
     setFileFilter(createGameDataFileFilter());
     ensureDirectoryExists(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
     setCurrentDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
