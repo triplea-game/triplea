@@ -15,7 +15,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
-import games.strategy.triplea.ui.MainGameFrame;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.SwingAction;
 
@@ -27,7 +27,7 @@ public final class ForumPosterComponent extends JPanel {
 
   private final GameData data;
   private PBEMMessagePoster poster;
-  private MainGameFrame frame;
+  private TripleAFrame frame;
   private HistoryLog historyLog;
   private final JButton postButton;
   private final JCheckBox includeTerritoryCheckBox;
@@ -83,7 +83,7 @@ public final class ForumPosterComponent extends JPanel {
    * @return A reference to this panel; must be added to the parent container's layout.
    */
   public ForumPosterComponent layoutComponents(final PBEMMessagePoster poster,
-      final IAbstractForumPosterDelegate forumPosterDelegate, final MainGameFrame frame,
+      final IAbstractForumPosterDelegate forumPosterDelegate, final TripleAFrame frame,
       final boolean hasPosted, final boolean allowIncludeTerritorySummary,
       final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary,
       final boolean allowDiceBattleDetails, final boolean allowDiceStatistics) {

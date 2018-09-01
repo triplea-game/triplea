@@ -14,7 +14,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
-import games.strategy.triplea.ui.MainGameFrame;
+import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.ProgressWindow;
 import lombok.extern.java.Log;
@@ -193,7 +193,7 @@ public class PBEMMessagePoster implements Serializable {
    */
   public static void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame,
       final PBEMMessagePoster posterPbem, final IAbstractForumPosterDelegate postingDelegate,
-      final MainGameFrame mainGameFrame, final JComponent postButton) {
+      final TripleAFrame frame, final JComponent postButton) {
     String message = "";
     final IForumPoster turnSummaryMsgr = posterPbem.getForumPoster();
     final StringBuilder sb = new StringBuilder();
@@ -209,13 +209,13 @@ public class PBEMMessagePoster implements Serializable {
       sb.append("Send email to ").append(emailSender.getToAddress()).append("?\n");
     }
     message = sb.toString();
-    final int choice = JOptionPane.showConfirmDialog(mainGameFrame, message, "Post " + title + "?",
+    final int choice = JOptionPane.showConfirmDialog(frame, message, "Post " + title + "?",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
     if (choice == 0) {
       if (postButton != null) {
         postButton.setEnabled(false);
       }
-      final ProgressWindow progressWindow = new ProgressWindow(mainGameFrame, "Posting " + title + "...");
+      final ProgressWindow progressWindow = new ProgressWindow(frame, "Posting " + title + "...");
       progressWindow.setVisible(true);
       // start a new thread for posting the summary.
       new Thread(() -> {
@@ -226,7 +226,7 @@ public class PBEMMessagePoster implements Serializable {
         }
         try {
           saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
-          mainGameFrame.getGame().saveGame(saveGameFile);
+          frame.getGame().saveGame(saveGameFile);
           posterPbem.setSaveGame(saveGameFile);
         } catch (final Exception e) {
           postOk = false;
@@ -280,10 +280,10 @@ public class PBEMMessagePoster implements Serializable {
             postButton.setEnabled(!finalPostOk);
           }
           if (finalPostOk) {
-            JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted",
+            JOptionPane.showMessageDialog(frame, finalMessage, title + " Posted",
                 JOptionPane.INFORMATION_MESSAGE);
           } else {
-            JOptionPane.showMessageDialog(mainGameFrame, finalMessage, title + " Posted",
+            JOptionPane.showMessageDialog(frame, finalMessage, title + " Posted",
                 JOptionPane.ERROR_MESSAGE);
           }
         });

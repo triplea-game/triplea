@@ -18,12 +18,11 @@ import games.strategy.util.ExitStatus;
  * Needs AppleJavaExtensions.jar to compile on non-Mac platform.
  * </p>
  */
-public class MacQuitMenuWrapper {
-  private static MainGameFrame shutdownFrame;
+public final class MacQuitMenuWrapper {
+  private static TripleAFrame shutdownFrame;
 
   static {
     Application.getApplication().setQuitHandler(new QuitHandler() {
-
       @Override
       public void handleQuitRequestWith(final QuitEvent arg0, final QuitResponse arg1) {
         if (shutdownFrame != null) {
@@ -35,10 +34,12 @@ public class MacQuitMenuWrapper {
     });
   }
 
+  private MacQuitMenuWrapper() {}
+
   // keep this in its own class, otherwise we get a no class def error when
   // we try to load the game and the stubs arent in the classpath
   // i think the java validator triggers this
-  public static void registerMacShutdownHandler(final MainGameFrame frame) {
+  public static void registerMacShutdownHandler(final TripleAFrame frame) {
     shutdownFrame = frame;
   }
 
