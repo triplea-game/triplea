@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.random.IRandomSource;
@@ -10,11 +9,6 @@ import games.strategy.engine.random.IRandomSource;
  * random and implements changes immediately.
  */
 interface ITestDelegateBridge extends IDelegateBridge {
-  /**
-   * Player is initialized to the player specified in the xml data.
-   */
-  void setPlayerId(PlayerID playerId);
-
   void setStepName(String name);
 
   void setRandomSource(IRandomSource randomSource);

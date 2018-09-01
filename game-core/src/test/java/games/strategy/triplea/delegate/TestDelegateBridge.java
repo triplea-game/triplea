@@ -35,7 +35,7 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 @Deprecated
 class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData gameData;
-  private PlayerID playerId;
+  private final PlayerID playerId;
   private String stepName = "no name specified";
   private final IDisplay dummyDisplay = mock(ITripleADisplay.class);
   private final ISound soundChannel = mock(ISound.class);
@@ -43,9 +43,9 @@ class TestDelegateBridge implements ITestDelegateBridge {
   private final IDelegateHistoryWriter delegateHistoryWriter;
   private IRemotePlayer remotePlayer;
 
-  TestDelegateBridge(final GameData data, final PlayerID id) {
+  TestDelegateBridge(final GameData data, final PlayerID playerId) {
     gameData = data;
-    playerId = id;
+    this.playerId = playerId;
     final History history = new History(gameData);
     final HistoryWriter historyWriter = new HistoryWriter(history);
     historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
@@ -73,11 +73,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) {
     return randomSource.getRandom(max, count, annotation);
-  }
-
-  @Override
-  public void setPlayerId(final PlayerID playerId) {
-    this.playerId = playerId;
   }
 
   @Override

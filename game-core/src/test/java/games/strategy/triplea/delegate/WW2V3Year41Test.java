@@ -479,12 +479,12 @@ public class WW2V3Year41Test {
     map.add(aaGun, 1);
     // Set up the test
     final PlayerID germans = GameDataTestUtil.germans(gameData);
+    delegateBridge = getDelegateBridge(germans);
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     delegateBridge.setStepName("Place");
-    delegateBridge.setPlayerId(germans);
-    placeDelegate.setDelegateBridgeAndPlayer(getDelegateBridge(germans(gameData)));
+    placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
-    addTo(germans(gameData), aaGun(gameData).create(1, germans(gameData)), gameData);
+    addTo(germans, aaGun(gameData).create(1, germans), gameData);
     errorResults = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), germany,
         IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(errorResults);
@@ -594,7 +594,6 @@ public class WW2V3Year41Test {
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     delegateBridge.setStepName("Place");
-    delegateBridge.setPlayerId(british);
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the factory
@@ -619,8 +618,7 @@ public class WW2V3Year41Test {
      */
     // Set up game
     final PlayerID chinese = GameDataTestUtil.chinese(gameData);
-    final ITestDelegateBridge delegateBridge = getDelegateBridge(chinese(gameData));
-    delegateBridge.setPlayerId(chinese);
+    final ITestDelegateBridge delegateBridge = getDelegateBridge(chinese);
     delegateBridge.setStepName("CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
@@ -689,7 +687,7 @@ public class WW2V3Year41Test {
   public void testPlaceInOccupiedSeaZone() {
     // Set up game
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
+    final ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
     // Clear all units from the SZ and add an enemy unit
     final Territory sz5 = territory("5 Sea Zone", gameData);
     removeFrom(sz5, sz5.getUnits().getUnits());
@@ -699,13 +697,12 @@ public class WW2V3Year41Test {
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     delegateBridge.setStepName("Place");
-    delegateBridge.setPlayerId(germans);
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the transport
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transportType, 1);
-    addTo(germans(gameData), transport(gameData).create(1, germans(gameData)), gameData);
+    addTo(germans, transport(gameData).create(1, germans), gameData);
     // Place it
     final String response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), sz5);
     assertValid(response);

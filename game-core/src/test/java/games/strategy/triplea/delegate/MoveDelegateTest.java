@@ -518,7 +518,6 @@ public class MoveDelegateTest extends DelegateTest {
   public void testLoadUnloadLoadMoveTransports() {
     bridge = super.getDelegateBridge(japanese);
     bridge.setStepName("japaneseCombatMove");
-    bridge.setPlayerId(japanese);
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     // Set up the test
@@ -1237,8 +1236,8 @@ public class MoveDelegateTest extends DelegateTest {
 
   @Test
   public void testAaCantMoveToConquered() {
+    bridge = super.getDelegateBridge(japanese);
     bridge.setStepName("japaneseCombatMove");
-    bridge.setPlayerId(japanese);
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     final Route route = new Route();
