@@ -2,12 +2,9 @@ package games.strategy.engine.framework;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.logging.Level;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -42,29 +39,10 @@ class ProcessRunnerUtil {
   }
 
   static void exec(final List<String> commands) {
-    final ProcessBuilder builder = new ProcessBuilder(commands);
-    // merge the streams, so we only have to start one reader thread
-    builder.redirectErrorStream(true);
     try {
-      final Process p = builder.start();
-      final InputStream s = p.getInputStream();
-      // we need to read the input stream to prevent possible
-      // deadlocks
-      startDaemonThread(() -> {
-        try (Scanner scanner = new Scanner(s, Charset.defaultCharset().name())) {
-          while (scanner.hasNextLine()) {
-            System.out.println(scanner.nextLine());
-          }
-        }
-      }, "Process output gobbler");
+      new ProcessBuilder(commands).inheritIO().start();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to start new process", e);
     }
-  }
-
-  private static void startDaemonThread(final Runnable runnable, final String name) {
-    final Thread thread = new Thread(runnable, name);
-    thread.setDaemon(true);
-    thread.start();
   }
 }
