@@ -8,7 +8,6 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
-import games.strategy.engine.message.IRemote;
 import games.strategy.sound.ISound;
 
 /**
