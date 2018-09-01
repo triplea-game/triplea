@@ -42,7 +42,7 @@ class TestDelegateBridge implements ITestDelegateBridge {
   private final ISound soundChannel = mock(ISound.class);
   private IRandomSource randomSource;
   private final IDelegateHistoryWriter delegateHistoryWriter;
-  private IRemotePlayer remotePlayer = mock(ITripleAPlayer.class);
+  private final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
 
   TestDelegateBridge(final GameData data, final PlayerID playerId) {
     gameData = data;
@@ -116,7 +116,7 @@ class TestDelegateBridge implements ITestDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer() {
+  public ITripleAPlayer getRemotePlayer() {
     return remotePlayer;
   }
 
@@ -149,11 +149,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
   @Override
   public void setRandomSource(final IRandomSource randomSource) {
     this.randomSource = randomSource;
-  }
-
-  @Override
-  public void setRemote(final IRemotePlayer remote) {
-    remotePlayer = remote;
   }
 
   @Override

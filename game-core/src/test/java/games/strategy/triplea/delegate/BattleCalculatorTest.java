@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -28,13 +27,35 @@ import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CollectionUtils;
 
 public class BattleCalculatorTest {
   private ITestDelegateBridge bridge;
-  private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+
+  private void givenRemotePlayerWillSelectStrategicBombersForCasualties() {
+    when(bridge.getRemotePlayer().selectCasualties(
+        any(),
+        any(),
+        anyInt(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        anyBoolean(),
+        any(),
+        any(),
+        any(),
+        any(),
+        anyBoolean())).thenAnswer(invocation -> {
+          final Collection<Unit> selectFrom = invocation.getArgument(0);
+          final int count = invocation.getArgument(2);
+          final List<Unit> selected = CollectionUtils.getNMatches(selectFrom, count, Matches.unitIsStrategicBomber());
+          return new CasualtyDetails(selected, new ArrayList<>(), false);
+        });
+  }
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -136,15 +157,7 @@ public class BattleCalculatorTest {
     planes.addAll(fighter(data).create(6, british(data)));
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnits().getMatches(Matches.unitIsAaForAnything());
-    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(),
-        any(), any(), any(), any(), anyBoolean())).thenAnswer(invocation -> {
-          final Collection<Unit> selectFrom = invocation.getArgument(0);
-          final int count = invocation.getArgument(2);
-
-          final List<Unit> selected = CollectionUtils.getNMatches(selectFrom, count, Matches.unitIsStrategicBomber());
-          return new CasualtyDetails(selected, new ArrayList<>(), false);
-        });
-    bridge.setRemote(dummyPlayer);
+    givenRemotePlayerWillSelectStrategicBombersForCasualties();
     // don't allow rolling, 6 of each is deterministic
     bridge.setRandomSource(new ScriptedRandomSource(ScriptedRandomSource.ERROR));
     final DiceRoll roll = DiceRoll.rollAa(
@@ -170,14 +183,7 @@ public class BattleCalculatorTest {
     planes.addAll(fighter(data).create(7, british(data)));
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnits().getMatches(Matches.unitIsAaForAnything());
-    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(),
-        any(), any(), any(), any(), anyBoolean())).thenAnswer(invocation -> {
-          final Collection<Unit> selectFrom = invocation.getArgument(0);
-          final int count = invocation.getArgument(2);
-          final List<Unit> selected = CollectionUtils.getNMatches(selectFrom, count, Matches.unitIsStrategicBomber());
-          return new CasualtyDetails(selected, new ArrayList<>(), false);
-        });
-    bridge.setRemote(dummyPlayer);
+    givenRemotePlayerWillSelectStrategicBombersForCasualties();
     // only 1 roll, a hit
     bridge.setRandomSource(new ScriptedRandomSource(0, ScriptedRandomSource.ERROR));
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,

@@ -47,6 +47,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -86,21 +88,21 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class WW2V3Year41Test {
   private GameData gameData;
-  private final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
 
-  private void givenRemotePlayerWillSelectAttackSubs() {
-    when(remotePlayer.selectAttackSubs(any())).thenReturn(true);
+  private static void givenRemotePlayerWillSelectAttackSubs(final ITestDelegateBridge delegateBridge) {
+    when(delegateBridge.getRemotePlayer().selectAttackSubs(any())).thenReturn(true);
   }
 
-  private void givenRemotePlayerWillSelectCasualtiesPer(final Answer<?> answer) {
-    when(remotePlayer.selectCasualties(
+  private static void givenRemotePlayerWillSelectCasualtiesPer(
+      final ITestDelegateBridge delegateBridge,
+      final Answer<?> answer) {
+    when(delegateBridge.getRemotePlayer().selectCasualties(
         any(),
         any(),
         anyInt(),
@@ -118,15 +120,12 @@ public class WW2V3Year41Test {
         anyBoolean())).thenAnswer(answer);
   }
 
-  private void givenRemotePlayerWillSelectShoreBombard() {
-    when(remotePlayer.selectShoreBombard(any())).thenReturn(true);
+  private static void givenRemotePlayerWillSelectShoreBombard(final ITestDelegateBridge delegateBridge) {
+    when(delegateBridge.getRemotePlayer().selectShoreBombard(any())).thenReturn(true);
   }
 
-  private void givenRemotePlayerShouldNotBeAskedToRetreat() {
-    when(remotePlayer.retreatQuery(any(), anyBoolean(), any(), any(), any()))
-        .thenAnswer(invocation -> {
-          throw new AssertionError("Should not be asked to retreat:" + invocation.getArgument(4));
-        });
+  private static void thenRemotePlayerShouldNotBeAskedToRetreat(final ITestDelegateBridge delegateBridge) {
+    verify(delegateBridge.getRemotePlayer(), never()).retreatQuery(any(), anyBoolean(), any(), any(), any());
   }
 
   @BeforeEach
@@ -346,8 +345,7 @@ public class WW2V3Year41Test {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("britishCombatMove");
-    givenRemotePlayerWillSelectAttackSubs();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectAttackSubs(bridge);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Territory sz9 = territory("9 Sea Zone", gameData);
@@ -947,11 +945,10 @@ public class WW2V3Year41Test {
             defender + SELECT_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, defender + FIRE,
             attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    givenRemotePlayerWillSelectCasualtiesPer(invocation -> {
+    givenRemotePlayerWillSelectCasualtiesPer(bridge, invocation -> {
       final Collection<Unit> selectFrom = invocation.getArgument(0);
       return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
     });
-    bridge.setRemote(remotePlayer);
     // attacking subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
@@ -965,8 +962,7 @@ public class WW2V3Year41Test {
   public void testLimitBombardtoNumberOfUnloaded() {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
-    givenRemotePlayerWillSelectShoreBombard();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectShoreBombard(bridge);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1012,8 +1008,7 @@ public class WW2V3Year41Test {
   public void testBombardStrengthVariable() {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
-    givenRemotePlayerWillSelectShoreBombard();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectShoreBombard(bridge);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1074,8 +1069,7 @@ public class WW2V3Year41Test {
   public void testAmphAttackUndoAndAttackAgainBombard() {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
-    givenRemotePlayerWillSelectShoreBombard();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectShoreBombard(bridge);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1405,8 +1399,6 @@ public class WW2V3Year41Test {
     // remove the sub
     removeFrom(sz5, sz5.getUnits().getMatches(Matches.unitIsSub()));
 
-    givenRemotePlayerShouldNotBeAskedToRetreat();
-    bridge.setRemote(remotePlayer);
     move(uk.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(uk, sz5));
     // move units for amphib assault
     moveDelegate(gameData).end();
@@ -1418,6 +1410,7 @@ public class WW2V3Year41Test {
     battleDelegate(gameData).start();
     // make sure the transports died
     assertTrue(sz5.getUnits().getMatches(Matches.unitIsOwnedBy(germans(gameData))).isEmpty());
+    thenRemotePlayerShouldNotBeAskedToRetreat(bridge);
   }
 
   @Test

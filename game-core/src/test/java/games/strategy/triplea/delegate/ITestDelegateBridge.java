@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.triplea.player.ITripleAPlayer;
 
 /**
  * Not for actual use, suitable for testing. Never returns messages, but can get
@@ -13,5 +13,11 @@ interface ITestDelegateBridge extends IDelegateBridge {
 
   void setRandomSource(IRandomSource randomSource);
 
-  void setRemote(IRemotePlayer remote);
+  /**
+   * Returns the remote for the current player.
+   *
+   * @return A mock that can be configured using standard Mockito idioms.
+   */
+  @Override
+  ITripleAPlayer getRemotePlayer();
 }

@@ -42,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -74,23 +73,23 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CollectionUtils;
 
 public class RevisedTest {
   private GameData gameData;
-  private final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
 
-  private void givenRemotePlayerWillSelectDefaultCasualties() {
-    givenRemotePlayerWillSelectCasualtiesPer(invocation -> {
+  private static void givenRemotePlayerWillSelectDefaultCasualties(final ITestDelegateBridge delegateBridge) {
+    givenRemotePlayerWillSelectCasualtiesPer(delegateBridge, invocation -> {
       final CasualtyList defaultCasualties = invocation.getArgument(11);
       return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
     });
   }
 
-  private void givenRemotePlayerWillSelectCasualtiesPer(final Answer<?> answer) {
-    when(remotePlayer.selectCasualties(
+  private static void givenRemotePlayerWillSelectCasualtiesPer(
+      final ITestDelegateBridge delegateBridge,
+      final Answer<?> answer) {
+    when(delegateBridge.getRemotePlayer().selectCasualties(
         any(),
         any(),
         anyInt(),
@@ -108,8 +107,8 @@ public class RevisedTest {
         anyBoolean())).thenAnswer(answer);
   }
 
-  private void givenRemotePlayerWillConfirmMoveInFaceOfAa() {
-    when(remotePlayer.confirmMoveInFaceOfAa(any())).thenReturn(true);
+  private static void givenRemotePlayerWillConfirmMoveInFaceOfAa(final ITestDelegateBridge delegateBridge) {
+    when(delegateBridge.getRemotePlayer().confirmMoveInFaceOfAa(any())).thenReturn(true);
   }
 
   @BeforeEach
@@ -324,8 +323,7 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    givenRemotePlayerWillConfirmMoveInFaceOfAa();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillConfirmMoveInFaceOfAa(bridge);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", gameData);
     final Territory we = territory("Western Europe", gameData);
@@ -346,8 +344,7 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    givenRemotePlayerWillConfirmMoveInFaceOfAa();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillConfirmMoveInFaceOfAa(bridge);
     bridge.setRandomSource(new ScriptedRandomSource(0, 4));
     final Territory uk = territory("United Kingdom", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
@@ -374,8 +371,7 @@ public class RevisedTest {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    givenRemotePlayerWillConfirmMoveInFaceOfAa();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillConfirmMoveInFaceOfAa(bridge);
     bridge.setRandomSource(new ScriptedRandomSource(0));
     final Territory uk = territory("United Kingdom", gameData);
     final Territory we = territory("Western Europe", gameData);
@@ -1055,8 +1051,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    givenRemotePlayerWillSelectDefaultCasualties();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
     // attacking subs still gets to fire even if defending sub hits
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 2, 0, 0, ScriptedRandomSource.ERROR);
@@ -1115,8 +1110,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    givenRemotePlayerWillSelectDefaultCasualties();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
     // attacking subs still gets to fire even if defending sub hits
     // battleship will not get to fire since it is killed by defending sub's sneak attack
@@ -1156,8 +1150,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    givenRemotePlayerWillSelectDefaultCasualties();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking sub hits with sneak attack, but defending sub gets to return fire because it is a sub and this is
     // revised rules
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, ScriptedRandomSource.ERROR);
@@ -1216,8 +1209,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    givenRemotePlayerWillSelectDefaultCasualties();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectDefaultCasualties(bridge);
     // attacking subs fires, defending destroyer and sub still gets to fire
     // attacking subs still gets to fire even if defending sub hits
     // battleship will not get to fire since it is killed by defending sub's sneak attack
@@ -1258,11 +1250,10 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    givenRemotePlayerWillSelectCasualtiesPer(invocation -> {
+    givenRemotePlayerWillSelectCasualtiesPer(bridge, invocation -> {
       final Collection<Unit> selectFrom = invocation.getArgument(0);
       return new CasualtyDetails(Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
     });
-    bridge.setRemote(remotePlayer);
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
     bridge.setRandomSource(randomSource);
     battle.fight(bridge);
@@ -1360,8 +1351,7 @@ public class RevisedTest {
     addTo(germany, armour(gameData).create(3, germans));
     final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
     bridge.setStepName("CombatMove");
-    givenRemotePlayerWillSelectDefaultCasualties();
-    bridge.setRemote(remotePlayer);
+    givenRemotePlayerWillSelectDefaultCasualties(bridge);
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // load two transports, 1 tank each
