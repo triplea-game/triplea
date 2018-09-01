@@ -46,7 +46,6 @@ public interface IDelegate {
 
   /**
    * Returns the state of the Delegate.
-   *
    * All implementations should follow this scheme:
    * <pre><code>
    *  DelegateImplementationState state = new DelegateImplementationState();
@@ -60,7 +59,6 @@ public interface IDelegate {
 
   /**
    * Loads the delegate state.
-   *
    * All implementations should follow this scheme:
    * <pre><code>
    *  DelegateImplementationState s = (DelegateImplementationState) state;
