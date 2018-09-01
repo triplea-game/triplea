@@ -123,7 +123,6 @@ public class MapPanel extends ImageScrollerLargeView {
       @Override
       public void mouseExited(final MouseEvent e) {
         if (unitsChanged(null)) {
-          final MouseDetails md = convert(e);
           currentUnits = null;
           notifyMouseEnterUnit(Collections.emptyList(), getTerritory(e.getX(), e.getY()));
         }
