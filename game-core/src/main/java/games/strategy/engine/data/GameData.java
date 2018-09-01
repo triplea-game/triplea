@@ -28,7 +28,6 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.history.History;
 import games.strategy.io.IoUtils;
 import games.strategy.thread.LockUtil;
-import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.TripleA;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
@@ -100,7 +99,6 @@ public class GameData implements Serializable {
   private final GameProperties properties = new GameProperties(this);
   private final UnitsList unitsList = new UnitsList();
   private final TechnologyFrontier technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
-  private transient ResourceLoader resourceLoader;
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
   private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
