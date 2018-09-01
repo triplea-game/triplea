@@ -120,7 +120,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
 
       for (final PlayerID otherPlayer : playersToSearch) {
-        if (otherPlayer == player) {
+        if (otherPlayer.equals(player)) {
           continue;
         }
         ta = (TriggerAttachment) otherPlayer.getAttachment(nameOfAttachment);

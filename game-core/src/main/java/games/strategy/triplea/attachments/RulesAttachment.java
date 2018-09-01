@@ -109,7 +109,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         }
       } else {
         for (final PlayerID otherPlayer : playersToSearch) {
-          if (otherPlayer == player) {
+          if (otherPlayer.equals(player)) {
             continue;
           }
           ra = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);

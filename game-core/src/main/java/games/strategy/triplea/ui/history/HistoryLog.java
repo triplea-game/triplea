@@ -527,7 +527,6 @@ public class HistoryLog extends JFrame {
     textArea.setText(stringWriter.toString());
   }
 
-  // copied from StatPanel
   private static int getProduction(final PlayerID player, final GameData data) {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
@@ -537,7 +536,7 @@ public class HistoryLog extends JFrame {
           || (place.isWater()
               && ta != null
               && !PlayerID.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
-              && OriginalOwnerTracker.getOriginalOwner(place) == player
+              && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && place.getOwner().equals(player))) {
         isConvoyOrLand = true;
       }

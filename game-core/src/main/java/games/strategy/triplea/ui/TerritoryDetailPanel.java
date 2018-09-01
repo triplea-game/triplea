@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -92,10 +93,11 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     final List<UnitCategory> units = UnitSeperator.getSortedUnitCategories(territory, uiContext.getMapData());
+    @Nullable
     PlayerID currentPlayer = null;
     for (final UnitCategory item : units) {
       // seperate players with a seperator
-      if (item.getOwner() != currentPlayer) {
+      if (!item.getOwner().equals(currentPlayer)) {
         currentPlayer = item.getOwner();
         panel.add(Box.createVerticalStrut(15));
       }

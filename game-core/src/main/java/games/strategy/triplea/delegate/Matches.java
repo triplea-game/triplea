@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -801,11 +803,11 @@ public final class Matches {
       if (ta == null) {
         return false;
       }
-      final PlayerID origOwner = OriginalOwnerTracker.getOriginalOwner(t);
+      final @Nullable PlayerID origOwner = OriginalOwnerTracker.getOriginalOwner(t);
       if (t.isWater()) {
         // if it's water, it is a Convoy Center
         // Can't get PUs for capturing a CC, only original owner can get them. (Except capturing null player CCs)
-        if (!(origOwner == null || origOwner.equals(PlayerID.NULL_PLAYERID) || origOwner == player)) {
+        if (!(origOwner == null || origOwner.equals(PlayerID.NULL_PLAYERID) || origOwner.equals(player))) {
           return false;
         }
       }

@@ -8,9 +8,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -85,6 +88,7 @@ final class ProTechAi {
       final PlayerID player) {
     final boolean transportsFirst = false;
 
+    @Nullable
     PlayerID enemyPlayer = null;
     final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
     final HashMap<PlayerID, Float> enemyPlayerAttackMap = new HashMap<>();
@@ -268,7 +272,7 @@ final class ProTechAi {
       }
     }
     for (final PlayerID enemyPlayerCandidate : enemyPlayers) {
-      if (enemyPlayer != enemyPlayerCandidate) {
+      if (!Objects.equals(enemyPlayer, enemyPlayerCandidate)) {
         // give 40% of other players...this is will affect a lot of decisions by AI
         maxStrength += enemyPlayerAttackMap.get(enemyPlayerCandidate) * 0.40F;
       }

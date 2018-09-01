@@ -65,7 +65,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       }
 
       for (final PlayerID otherPlayer : playersToSearch) {
-        if (otherPlayer == player) {
+        if (otherPlayer.equals(player)) {
           continue;
         }
         paa = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);

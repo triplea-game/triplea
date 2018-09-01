@@ -14,9 +14,11 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -291,6 +293,7 @@ final class ExportMenu extends JMenu {
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       @SuppressWarnings("unchecked")
       final Enumeration<TreeNode> nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
+      @Nullable
       PlayerID currentPlayer = null;
       int round = 0;
       while (nodes.hasMoreElements()) {
@@ -308,7 +311,7 @@ final class ExportMenu extends JMenu {
         }
         // this is to stop from having multiple entries for each players turn.
         if (!showPhaseStats) {
-          if (step.getPlayerId() == currentPlayer) {
+          if (Objects.equals(step.getPlayerId(), currentPlayer)) {
             continue;
           }
         }
