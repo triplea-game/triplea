@@ -22,7 +22,7 @@ import games.strategy.triplea.xml.TestMapGameData;
  * players, territories, and unit types.
  * </p>
  */
-public class DelegateTestCase {
+public abstract class AbstractDelegateTestCase {
   protected GameData gameData;
   protected PlayerID british;
   protected PlayerID japanese;
@@ -85,7 +85,7 @@ public class DelegateTestCase {
   protected UnitType carrier;
   protected Resource pus;
 
-  protected DelegateTestCase() {}
+  protected AbstractDelegateTestCase() {}
 
   @BeforeEach
   public void setUp() throws Exception {

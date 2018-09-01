@@ -26,7 +26,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-public class MoveDelegateTest extends DelegateTestCase {
+public class MoveDelegateTest extends AbstractDelegateTestCase {
   MoveDelegate delegate;
   ITestDelegateBridge bridge;
 

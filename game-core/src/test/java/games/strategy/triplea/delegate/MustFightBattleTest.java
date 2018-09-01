@@ -15,7 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class MustFightBattleTest extends DelegateTestCase {
+public class MustFightBattleTest extends AbstractDelegateTestCase {
   @Test
   public void testFightWithIsSuicideOnHit() throws Exception {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();

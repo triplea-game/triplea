@@ -22,7 +22,7 @@ import games.strategy.util.IntegerMap;
 
 final class AbstractEndTurnDelegateTest {
   @Nested
-  final class FindEstimatedIncomeTest extends DelegateTestCase {
+  final class FindEstimatedIncomeTest extends AbstractDelegateTestCase {
     @Test
     void testFindEstimatedIncome() throws Exception {
       final GameData global40Data = TestMapGameData.GLOBAL1940.getGameData();

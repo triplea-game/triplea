@@ -20,7 +20,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 
-public class PacificTest extends DelegateTestCase {
+public class PacificTest extends AbstractDelegateTestCase {
   UnitType armor;
   UnitType artillery;
   UnitType marine;
