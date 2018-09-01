@@ -279,7 +279,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     } else {
       getSoundChannel().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_FAILURE, player);
     }
-    return new TechResults(random, remainder, techHits, advancesAsString, player);
+    return new TechResults(random, remainder, techHits, advancesAsString);
   }
 
   boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch) {
