@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -15,7 +14,15 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class DelegateTest {
+/**
+ * Superclass for fixtures that test delegates.
+ *
+ * <p>
+ * Pre-loads the {@link TestMapGameData#DELEGATE_TEST} save game and provides fields for the most-commonly-accessed
+ * players, territories, and unit types.
+ * </p>
+ */
+public abstract class AbstractDelegateTestCase {
   protected GameData gameData;
   protected PlayerID british;
   protected PlayerID japanese;
@@ -77,6 +84,8 @@ public class DelegateTest {
   protected UnitType bomber;
   protected UnitType carrier;
   protected Resource pus;
+
+  protected AbstractDelegateTestCase() {}
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -152,21 +161,15 @@ public class DelegateTest {
         new TechAttachment(Constants.TECH_ATTACHMENT_NAME, player, gameData));
   }
 
-  public void assertValid(final String string) {
+  protected static void assertValid(final String string) {
     assertNull(string, string);
   }
 
-  public void assertError(final String string) {
+  protected static void assertError(final String string) {
     assertNotNull(string, string);
   }
 
   protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
-  }
-
-  @Test
-  public void testTest() {
-    assertValid(null);
-    assertError("Cannot do this");
   }
 }
