@@ -21,11 +21,6 @@ public abstract class AbstractDelegate implements IDelegate {
   protected PlayerID player;
   protected IDelegateBridge bridge;
 
-  /**
-   * Creates a new instance of the Delegate.
-   */
-  public AbstractDelegate() {}
-
   @Override
   public void initialize(final String name, final String displayName) {
     this.name = name;
@@ -79,9 +74,6 @@ public abstract class AbstractDelegate implements IDelegate {
   public void loadState(final Serializable state) {
     // nothing to save
   }
-
-  @Override
-  public abstract Class<? extends IRemote> getRemoteType();
 
   @Override
   public IDelegateBridge getBridge() {

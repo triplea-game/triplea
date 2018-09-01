@@ -6,12 +6,10 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.AbstractDelegate;
 
 /**
- * A simple dumb delegate, dont acutally call these methods.
+ * A simple dumb delegate, don't actually call these methods.
  * Simply to satisfy the interface requirements for testing.
  */
 public final class TestDelegate extends AbstractDelegate {
-  public TestDelegate() {}
-
   @Override
   public void initialize(final String name, final String displayName) {
     this.name = name;

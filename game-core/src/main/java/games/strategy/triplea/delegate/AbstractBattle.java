@@ -136,9 +136,6 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public abstract boolean isEmpty();
-
-  @Override
   public final boolean isOver() {
     return m_isOver;
   }
@@ -194,19 +191,6 @@ abstract class AbstractBattle implements IBattle {
   public void setHeadless(final boolean headless) {
     m_headless = headless;
   }
-
-  @Override
-  public abstract void fight(IDelegateBridge bridge);
-
-  @Override
-  public abstract Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, HashSet<Unit>> targets);
-
-  @Override
-  public abstract void removeAttack(Route route, Collection<Unit> units);
-
-  @Override
-  public abstract void unitsLostInPrecedingBattle(Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 
   @Override
   public int hashCode() {
