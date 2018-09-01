@@ -162,11 +162,11 @@ public class DelegateTestCase {
         new TechAttachment(Constants.TECH_ATTACHMENT_NAME, player, gameData));
   }
 
-  public void assertValid(final String string) {
+  protected static void assertValid(final String string) {
     assertNull(string, string);
   }
 
-  public void assertError(final String string) {
+  protected static void assertError(final String string) {
     assertNotNull(string, string);
   }
 
