@@ -2324,7 +2324,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
+  private static void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge,
       final Collection<IBattle> dependents) {
     for (final IBattle dependent : dependents) {
       dependent.unitsLostInPrecedingBattle(units, bridge, false);

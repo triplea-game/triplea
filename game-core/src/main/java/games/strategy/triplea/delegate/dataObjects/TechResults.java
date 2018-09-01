@@ -12,6 +12,11 @@ public class TechResults implements Serializable {
   private int m_remainder = 0;
   // a list of Strings
   private List<String> m_advances;
+  /**
+   * @deprecated Should be removed in a future release.
+   */
+  @Deprecated
+  @SuppressWarnings("unused")
   private PlayerID m_playerID;
   private String m_errorString;
 
