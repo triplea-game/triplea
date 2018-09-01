@@ -153,12 +153,6 @@ public class LhtrTest {
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
     bridge.setRandomSource(new ScriptedRandomSource(2, 2, 3));
-    // if we try to move aa, then the game will ask us if we want to move
-    // fail if we are called
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> null);
-    bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
@@ -188,12 +182,6 @@ public class LhtrTest {
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
     bridge.setRandomSource(new ScriptedRandomSource(3, 3, 2, 3, 0, 1));
-    // if we try to move aa, then the game will ask us if we want to move
-    // fail if we are called
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> null);
-    bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));

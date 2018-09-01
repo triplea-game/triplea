@@ -23,6 +23,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import games.strategy.sound.ISound;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
 /**
@@ -41,7 +42,7 @@ class TestDelegateBridge implements ITestDelegateBridge {
   private final ISound soundChannel = mock(ISound.class);
   private IRandomSource randomSource;
   private final IDelegateHistoryWriter delegateHistoryWriter;
-  private IRemotePlayer remotePlayer;
+  private IRemotePlayer remotePlayer = mock(ITripleAPlayer.class);
 
   TestDelegateBridge(final GameData data, final PlayerID playerId) {
     gameData = data;

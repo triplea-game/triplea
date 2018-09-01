@@ -74,9 +74,9 @@ public class WW2V3Year42Test {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
-    when(dummyPlayer.shouldBomberBomb(any())).thenReturn(true);
-    bridge.setRemote(dummyPlayer);
+    final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
+    when(remotePlayer.shouldBomberBomb(any())).thenReturn(true);
+    bridge.setRemote(remotePlayer);
     // remove the russian units
     removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.unitCanBeDamaged().negate()));
     // move the bomber to attack
