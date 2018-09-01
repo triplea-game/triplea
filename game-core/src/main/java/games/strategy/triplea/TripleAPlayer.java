@@ -351,7 +351,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       log.log(Level.SEVERE, errorContext, e);
       throw new IllegalStateException(errorContext, e);
     }
-    return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight, true));
+    return !(unitsCantFight.isEmpty() || ui.getOkToLetUnitsDie(unitsCantFight));
   }
 
   private void purchase(final boolean bid) {
