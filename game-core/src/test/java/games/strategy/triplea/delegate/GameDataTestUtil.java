@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,11 +9,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHolder;
 import games.strategy.engine.data.UnitType;
@@ -23,7 +20,6 @@ import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
 import junit.framework.AssertionFailedError;
 
@@ -393,7 +389,7 @@ public class GameDataTestUtil {
    * Returns a TestDelegateBridge for the given GameData + PlayerID objects.
    */
   public static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
-    return new TestDelegateBridge(data, player, mock(ITripleADisplay.class));
+    return new TestDelegateBridge(data, player);
   }
 
   static void load(final Collection<Unit> units, final Route route) {

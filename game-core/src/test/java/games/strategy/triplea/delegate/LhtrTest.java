@@ -4,9 +4,10 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
-import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -26,11 +26,16 @@ import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class LhtrTest {
   private GameData gameData;
+
+  private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final ITestDelegateBridge delegateBridge) {
+    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveHariKari();
+    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveInFaceOfAa(any());
+    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveKamikaze();
+  }
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -102,12 +107,6 @@ public class LhtrTest {
     bridge.setStepName("germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
-    // if we try to move aa, then the game will ask us if we want to move
-    // fail if we are called
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> fail("method called:" + m));
-    bridge.setRemote(player);
     // move 1 fighter over the aa gun in caucus
     final Route route = new Route();
     route.setStart(gameData.getMap().getTerritory("Ukraine S.S.R."));
@@ -115,6 +114,8 @@ public class LhtrTest {
     route.add(gameData.getMap().getTerritory("West Russia"));
     final List<Unit> fighter = route.getStart().getUnits().getMatches(Matches.unitIsAir());
     delegate.move(fighter, route);
+    // if we try to move aa, then the game will ask us if we want to move
+    thenRemotePlayerShouldNeverBeAskedToConfirmMove(bridge);
   }
 
   @Test
@@ -154,12 +155,6 @@ public class LhtrTest {
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
     bridge.setRandomSource(new ScriptedRandomSource(2, 2, 3));
-    // if we try to move aa, then the game will ask us if we want to move
-    // fail if we are called
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> null);
-    bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
@@ -189,12 +184,6 @@ public class LhtrTest {
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
     bridge.setRandomSource(new ScriptedRandomSource(3, 3, 2, 3, 0, 1));
-    // if we try to move aa, then the game will ask us if we want to move
-    // fail if we are called
-    final ITripleAPlayer player = (ITripleAPlayer) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-            new Class<?>[] {ITripleAPlayer.class}, (p, m, a) -> null);
-    bridge.setRemote(player);
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));

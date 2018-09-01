@@ -47,6 +47,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -60,11 +62,11 @@ import java.util.Map.Entry;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
@@ -82,30 +84,52 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class WW2V3Year41Test {
   private GameData gameData;
-  private final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
+
+  private static void givenRemotePlayerWillSelectAttackSubs(final ITestDelegateBridge delegateBridge) {
+    when(delegateBridge.getRemotePlayer().selectAttackSubs(any())).thenReturn(true);
+  }
+
+  private static void givenRemotePlayerWillSelectCasualtiesPer(
+      final ITestDelegateBridge delegateBridge,
+      final Answer<?> answer) {
+    when(delegateBridge.getRemotePlayer().selectCasualties(
+        any(),
+        any(),
+        anyInt(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        anyBoolean(),
+        any(),
+        any(),
+        any(),
+        any(),
+        anyBoolean())).thenAnswer(answer);
+  }
+
+  private static void givenRemotePlayerWillSelectShoreBombard(final ITestDelegateBridge delegateBridge) {
+    when(delegateBridge.getRemotePlayer().selectShoreBombard(any())).thenReturn(true);
+  }
+
+  private static void thenRemotePlayerShouldNotBeAskedToRetreat(final ITestDelegateBridge delegateBridge) {
+    verify(delegateBridge.getRemotePlayer(), never()).retreatQuery(any(), anyBoolean(), any(), any(), any());
+  }
 
   @BeforeEach
   public void setUp() throws Exception {
-    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
-        anyBoolean(), any(), any(), any(), any(), anyBoolean())).thenAnswer(invocation -> {
-          final CasualtyList defaultCasualties = invocation.getArgument(11);
-          if (defaultCasualties != null) {
-            return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
-          }
-          return null;
-        });
     gameData = TestMapGameData.WW2V3_1941.getGameData();
   }
 
@@ -300,7 +324,6 @@ public class WW2V3Year41Test {
     bridge.setStepName("britishCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    bridge.setRemote(dummyPlayer);
     final Territory sz9 = territory("9 Sea Zone", gameData);
     final Territory sz13 = territory("13 Sea Zone", gameData);
     final Route sz9ToSz13 = new Route(sz9, territory("12 Sea Zone", gameData), sz13);
@@ -322,8 +345,7 @@ public class WW2V3Year41Test {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
     bridge.setStepName("britishCombatMove");
-    when(dummyPlayer.selectAttackSubs(any())).thenReturn(true);
-    bridge.setRemote(dummyPlayer);
+    givenRemotePlayerWillSelectAttackSubs(bridge);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Territory sz9 = territory("9 Sea Zone", gameData);
@@ -480,12 +502,12 @@ public class WW2V3Year41Test {
     map.add(aaGun, 1);
     // Set up the test
     final PlayerID germans = GameDataTestUtil.germans(gameData);
+    delegateBridge = getDelegateBridge(germans);
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     delegateBridge.setStepName("Place");
-    delegateBridge.setPlayerId(germans);
-    placeDelegate.setDelegateBridgeAndPlayer(getDelegateBridge(germans(gameData)));
+    placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
-    addTo(germans(gameData), aaGun(gameData).create(1, germans(gameData)), gameData);
+    addTo(germans, aaGun(gameData).create(1, germans), gameData);
     errorResults = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), germany,
         IAbstractPlaceDelegate.BidMode.NOT_BID);
     assertValid(errorResults);
@@ -595,7 +617,6 @@ public class WW2V3Year41Test {
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     delegateBridge.setStepName("Place");
-    delegateBridge.setPlayerId(british);
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the factory
@@ -620,8 +641,7 @@ public class WW2V3Year41Test {
      */
     // Set up game
     final PlayerID chinese = GameDataTestUtil.chinese(gameData);
-    final ITestDelegateBridge delegateBridge = getDelegateBridge(chinese(gameData));
-    delegateBridge.setPlayerId(chinese);
+    final ITestDelegateBridge delegateBridge = getDelegateBridge(chinese);
     delegateBridge.setStepName("CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
@@ -690,7 +710,7 @@ public class WW2V3Year41Test {
   public void testPlaceInOccupiedSeaZone() {
     // Set up game
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
+    final ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
     // Clear all units from the SZ and add an enemy unit
     final Territory sz5 = territory("5 Sea Zone", gameData);
     removeFrom(sz5, sz5.getUnits().getUnits());
@@ -700,13 +720,12 @@ public class WW2V3Year41Test {
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
     delegateBridge.setStepName("Place");
-    delegateBridge.setPlayerId(germans);
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the transport
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(transportType, 1);
-    addTo(germans(gameData), transport(gameData).create(1, germans(gameData)), gameData);
+    addTo(germans, transport(gameData).create(1, germans), gameData);
     // Place it
     final String response = placeDelegate.placeUnits(GameDataTestUtil.getUnits(map, germans), sz5);
     assertValid(response);
@@ -821,7 +840,6 @@ public class WW2V3Year41Test {
             defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
             REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    bridge.setRemote(dummyPlayer);
     // fight, each sub should fire
     // and hit
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, ScriptedRandomSource.ERROR);
@@ -856,7 +874,6 @@ public class WW2V3Year41Test {
             REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + FIRE,
             attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    bridge.setRemote(dummyPlayer);
     // defending subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, ScriptedRandomSource.ERROR);
@@ -892,7 +909,6 @@ public class WW2V3Year41Test {
             REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES, defender + SUBS_FIRE,
             attacker + SELECT_SUB_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    bridge.setRemote(dummyPlayer);
     // attacking subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, ScriptedRandomSource.ERROR);
@@ -929,12 +945,10 @@ public class WW2V3Year41Test {
             defender + SELECT_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, defender + FIRE,
             attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(),
         steps.toString());
-    when(dummyPlayer.selectCasualties(any(), any(), anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(),
-        any(), any(), any(), any(), anyBoolean())).thenAnswer(invocation -> {
-          final Collection<Unit> selectFrom = invocation.getArgument(0);
-          return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
-        });
-    bridge.setRemote(dummyPlayer);
+    givenRemotePlayerWillSelectCasualtiesPer(bridge, invocation -> {
+      final Collection<Unit> selectFrom = invocation.getArgument(0);
+      return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
+    });
     // attacking subs sneak attack and hit
     // no chance to return fire
     final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, 0, 0, 0, ScriptedRandomSource.ERROR);
@@ -948,9 +962,7 @@ public class WW2V3Year41Test {
   public void testLimitBombardtoNumberOfUnloaded() {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
-
-    when(dummyPlayer.selectShoreBombard(any())).thenReturn(true);
-    bridge.setRemote(dummyPlayer);
+    givenRemotePlayerWillSelectShoreBombard(bridge);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -996,8 +1008,7 @@ public class WW2V3Year41Test {
   public void testBombardStrengthVariable() {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
-    when(dummyPlayer.selectShoreBombard(any())).thenReturn(true);
-    bridge.setRemote(dummyPlayer);
+    givenRemotePlayerWillSelectShoreBombard(bridge);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1058,8 +1069,7 @@ public class WW2V3Year41Test {
   public void testAmphAttackUndoAndAttackAgainBombard() {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
-    when(dummyPlayer.selectShoreBombard(any())).thenReturn(true);
-    bridge.setRemote(dummyPlayer);
+    givenRemotePlayerWillSelectShoreBombard(bridge);
     bridge.setStepName("CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1128,7 +1138,6 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // don't allow kamikaze
-    bridge.setRemote(dummyPlayer);
     final String error = moveDelegate(gameData).move(madagascar.getUnits().getUnits(), route);
     assertError(error);
   }
@@ -1390,11 +1399,6 @@ public class WW2V3Year41Test {
     // remove the sub
     removeFrom(sz5, sz5.getUnits().getMatches(Matches.unitIsSub()));
 
-    when(dummyPlayer.retreatQuery(any(), anyBoolean(), any(), any(), any()))
-        .thenAnswer(invocation -> {
-          throw new IllegalStateException("Should not be asked to retreat:" + invocation.getArgument(4));
-        });
-    bridge.setRemote(dummyPlayer);
     move(uk.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(uk, sz5));
     // move units for amphib assault
     moveDelegate(gameData).end();
@@ -1406,6 +1410,7 @@ public class WW2V3Year41Test {
     battleDelegate(gameData).start();
     // make sure the transports died
     assertTrue(sz5.getUnits().getMatches(Matches.unitIsOwnedBy(germans(gameData))).isEmpty());
+    thenRemotePlayerShouldNotBeAskedToRetreat(bridge);
   }
 
   @Test
@@ -1418,7 +1423,6 @@ public class WW2V3Year41Test {
     bridge.setStepName("CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    bridge.setRemote(dummyPlayer);
     // the fighter should be able to move and hover in the sea zone
     // the fighter has no movement left
     final Territory neEurope = territory("Northwestern Europe", gameData);
@@ -1435,7 +1439,6 @@ public class WW2V3Year41Test {
     bridge.setStepName("CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
-    bridge.setRemote(dummyPlayer);
     // the fighter should not be able to move and hover in the sea zone
     // since their are no carriers to place
     // the fighter has no movement left

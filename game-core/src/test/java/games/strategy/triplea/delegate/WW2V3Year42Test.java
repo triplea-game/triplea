@@ -15,7 +15,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -24,12 +23,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class WW2V3Year42Test {
@@ -75,9 +72,7 @@ public class WW2V3Year42Test {
     bridge.setStepName("CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final ITripleAPlayer dummyPlayer = mock(ITripleAPlayer.class);
-    when(dummyPlayer.shouldBomberBomb(any())).thenReturn(true);
-    bridge.setRemote(dummyPlayer);
+    when(bridge.getRemotePlayer().shouldBomberBomb(any())).thenReturn(true);
     // remove the russian units
     removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.unitCanBeDamaged().negate()));
     // move the bomber to attack
