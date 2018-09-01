@@ -890,20 +890,17 @@ public final class TripleAFrame extends JFrame {
   }
 
   /**
-   * Prompts the user with a list of territories that have units that either cannot fight (movement action) or be
-   * placed (placement action) in the territory. The user is asked whether they wish to end the current
-   * movement/placement action, which will destroy the units in the specified territories, or if they wish to
-   * continue the current movement/placement action in order to possibly move/place those units in a different
+   * Prompts the user with a list of territories that have units that cannot fight in the territory. The user is asked
+   * whether they wish to end the current movement action, which will destroy the units in the specified territories, or
+   * if they wish to continue the current movement action in order to possibly move those units to a different
    * territory.
    *
    * @param unitsCantFight The collection of territories that have units that cannot fight.
-   * @param movePhase {@code true} if a movement action is active; otherwise {@code false} if a placement action is
-   *        active.
    *
-   * @return {@code true} if the user wishes to end the current movement/placement action, and thus destroy the affected
-   *         units; otherwise {@code false} if the user wishes to continue the current movement/placement action.
+   * @return {@code true} if the user wishes to end the current movement action, and thus destroy the affected units;
+   *         otherwise {@code false} if the user wishes to continue the current movement action.
    */
-  public boolean getOkToLetUnitsDie(final Collection<Territory> unitsCantFight, final boolean movePhase) {
+  public boolean getOkToLetUnitsDie(final Collection<Territory> unitsCantFight) {
     if (unitsCantFight == null || unitsCantFight.isEmpty()) {
       return true;
     }
@@ -911,8 +908,8 @@ public final class TripleAFrame extends JFrame {
     final String message = unitsCantFight.stream()
         .map(DefaultNamed::getName)
         .collect(Collectors.joining(" ", "Units in the following territories will die: ", ""));
-    final String ok = movePhase ? "Done Moving" : "Kill Units";
-    final String cancel = movePhase ? "Keep Moving" : "Change Placement";
+    final String ok = "Done Moving";
+    final String cancel = "Keep Moving";
     final String[] options = {cancel, ok};
     this.mapPanel.centerOn(unitsCantFight.iterator().next());
     final int choice = EventThreadJOptionPane.showOptionDialog(this, message,
