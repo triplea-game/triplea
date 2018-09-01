@@ -2835,17 +2835,22 @@ public class UnitAttachment extends DefaultAttachment {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
           continue;
         }
-        final String key = "Support on " + (support.getOffence() && support.getDefence() ? "Attack & Defense"
-            : (support.getOffence() ? "Attack" : "Defense"));
+        final String key = "Support on "
+            + (support.getOffence() && support.getDefence()
+                ? "Attack & Defense"
+                : (support.getOffence() ? "Attack" : "Defense"));
         final String text = String.valueOf(support.getBonus())
             + (moreThanOneSupportType ? " " + support.getBonusType() : "")
-            + (support.getStrength() && support.getRoll() ? " Power & Rolls"
-            : (support.getStrength() ? " Power" : " Rolls"))
+            + (support.getStrength() && support.getRoll()
+                ? " Power & Rolls"
+                : (support.getStrength() ? " Power" : " Rolls"))
             + " to " + support.getNumber()
-            + (support.getAllied() && support.getEnemy() ? " Allied & Enemy "
-            : (support.getAllied() ? " Allied " : " Enemy "))
-            + (support.getUnitType().size() > 4 ? "Units"
-            : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
+            + (support.getAllied() && support.getEnemy()
+                ? " Allied & Enemy "
+                : (support.getAllied() ? " Allied " : " Enemy "))
+            + (support.getUnitType().size() > 4
+                ? "Units"
+                : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
         tuples.add(Tuple.of(key, text));
       }
     }
