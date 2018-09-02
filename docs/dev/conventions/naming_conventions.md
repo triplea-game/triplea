@@ -1,5 +1,5 @@
 Casing Types:
-- [Kebab_case](https://en.wikipedia.org/wiki/Kebab_case)
+- [Kebab-case](https://en.wikipedia.org/wiki/Kebab_case)
 
 
 ## java
@@ -9,4 +9,4 @@ Casing Types:
 
 ## urls
 
-- kebab_case
+- kebab-case
