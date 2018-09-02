@@ -1,0 +1,31 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+}
+
+description = 'TripleA Http Server'
+mainClassName = 'org.triplea.server.http.spark.SparkServerMain'
+version = getEngineVersion();
+
+dependencies {
+    compile 'com.sparkjava:spark-core:2.3'
+    testCompile project(':test-common')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task httpServerArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from(shadowJar.outputs) {
+        into('bin')
+    }
+}
+
+task release(group: 'release', dependsOn: httpServerArchive) {
+    doLast {
+        publishArtifacts(httpServerArchive.outputs.files)
+    }
+}
