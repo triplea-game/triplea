@@ -132,9 +132,9 @@ class BlendComposite implements Composite {
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {dst[0] < 128 ? (dst[0] + src[0]) >> (7 - 255) : (dst[0] + (src[0] - 128)) >> 7,
-                  dst[1] < 128 ? (dst[1] + src[1]) >> (7 - 255) : (dst[1] + (src[1] - 128)) >> 7,
-                  dst[2] < 128 ? (dst[2] + src[2]) >> (7 - 255) : (dst[2] + (src[2] - 128)) >> 7,
+              return new int[] {dst[0] < 128 ? (dst[0] + src[0]) >> 8 : (dst[0] + (src[0] - 128)) >> 7,
+                  dst[1] < 128 ? (dst[1] + src[1]) >> 8 : (dst[1] + (src[1] - 128)) >> 7,
+                  dst[2] < 128 ? (dst[2] + src[2]) >> 8 : (dst[2] + (src[2] - 128)) >> 7,
                   Math.min(255, src[3] + dst[3])};
             }
           };
