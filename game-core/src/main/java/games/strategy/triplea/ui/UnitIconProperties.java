@@ -6,7 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.logging.Level;
+
+import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -25,14 +29,24 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class UnitIconProperties extends PropertyFile {
-
   private static final String PROPERTY_FILE = "unit_icons.properties";
-  private static Map<ICondition, Boolean> conditionsStatus = new HashMap<>();
 
-  private UnitIconProperties(final GameData data) {
+  private Map<ICondition, Boolean> conditionsStatus = new HashMap<>();
+
+  private UnitIconProperties(final GameData gameData) {
     super(PROPERTY_FILE);
+    initializeConditionsStatus(gameData, AbstractPlayerRulesAttachment::getCondition);
+  }
+
+  @VisibleForTesting
+  UnitIconProperties(final Properties properties, final GameData gameData, final ConditionSupplier conditionSupplier) {
+    super(properties);
+    initializeConditionsStatus(gameData, conditionSupplier);
+  }
+
+  private void initializeConditionsStatus(final GameData gameData, final ConditionSupplier conditionSupplier) {
     final String gameName =
-        FileNameUtils.replaceIllegalCharacters(data.getGameName(), '_').replaceAll(" ", "_").concat(".");
+        FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
     for (final String key : properties.stringPropertyNames()) {
       if (!key.startsWith(gameName)) {
         continue;
@@ -43,8 +57,8 @@ public final class UnitIconProperties extends PropertyFile {
         if (unitInfoAndCondition.length != 2) {
           continue;
         }
-        final ICondition condition =
-            AbstractPlayerRulesAttachment.getCondition(unitInfo[1], unitInfoAndCondition[1], data);
+        final @Nullable ICondition condition =
+            conditionSupplier.getCondition(unitInfo[1], unitInfoAndCondition[1], gameData);
         if (condition != null) {
           conditionsStatus.put(condition, false);
         }
@@ -56,7 +70,7 @@ public final class UnitIconProperties extends PropertyFile {
             e);
       }
     }
-    conditionsStatus = getTestedConditions(data);
+    conditionsStatus = getTestedConditions(gameData);
   }
 
   /**
@@ -105,19 +119,34 @@ public final class UnitIconProperties extends PropertyFile {
    * Get all unit icon images for given player and unit type that are currently true, ensuring order
    * from the properties file.
    */
-  public List<String> getImagePaths(final String player, final String unitType, final GameData data) {
+  public List<String> getImagePaths(final String playerName, final String unitTypeName, final GameData gameData) {
+    return getImagePaths(
+        playerName,
+        unitTypeName,
+        gameData,
+        AbstractPlayerRulesAttachment::getCondition,
+        conditionsStatus::get);
+  }
+
+  @VisibleForTesting
+  List<String> getImagePaths(
+      final String playerName,
+      final String unitTypeName,
+      final GameData gameData,
+      final ConditionSupplier conditionSupplier,
+      final Predicate<ICondition> isConditionEnabled) {
     final List<String> imagePaths = new ArrayList<>();
     final String gameName =
-        FileNameUtils.replaceIllegalCharacters(data.getGameName(), '_').replaceAll(" ", "_");
-    final String startOfKey = gameName + "." + player + "." + unitType;
+        FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_");
+    final String startOfKey = gameName + "." + playerName + "." + unitTypeName;
     for (final Object key : properties.keySet()) {
       try {
         final String keyString = key.toString();
         final String[] keyParts = keyString.split(";");
         if (startOfKey.equals(keyParts[0])) {
           if (keyParts.length == 2) {
-            final ICondition condition = AbstractPlayerRulesAttachment.getCondition(player, keyParts[1], data);
-            if (conditionsStatus.get(condition)) {
+            final @Nullable ICondition condition = conditionSupplier.getCondition(playerName, keyParts[1], gameData);
+            if (isConditionEnabled.test(condition)) {
               imagePaths.add(properties.get(key).toString());
             }
           } else {
@@ -144,11 +173,17 @@ public final class UnitIconProperties extends PropertyFile {
     return false;
   }
 
-  private static Map<ICondition, Boolean> getTestedConditions(final GameData data) {
+  private Map<ICondition, Boolean> getTestedConditions(final GameData data) {
     final HashSet<ICondition> allConditionsNeeded =
         AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(conditionsStatus.keySet()), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null,
         new ObjectiveDummyDelegateBridge(data));
+  }
+
+  @VisibleForTesting
+  interface ConditionSupplier {
+    @Nullable
+    ICondition getCondition(String playerName, String conditionName, GameData gameData);
   }
 
   @AllArgsConstructor

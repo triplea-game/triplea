@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -46,6 +47,14 @@ public abstract class PropertyFile {
 
   protected PropertyFile(final String fileName) {
     this(fileName, AbstractUiContext.getResourceLoader());
+  }
+
+  @VisibleForTesting
+  protected PropertyFile(final Properties properties) {
+    // need to implement OrderedProperties#entrySet() in order to use Properties#putAll()
+    for (final Object key : properties.keySet()) {
+      this.properties.put(key, properties.get(key));
+    }
   }
 
   @SuppressWarnings("unchecked")
