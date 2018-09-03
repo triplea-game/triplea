@@ -14,8 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.server.error.report.upload.ErrorReport;
-import org.triplea.server.error.report.upload.ErrorReportIngestion;
+import org.triplea.server.reporting.error.upload.ErrorReport;
+import org.triplea.server.reporting.error.upload.ErrorReportIngestion;
 
 import spark.Request;
 

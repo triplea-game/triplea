@@ -1,4 +1,4 @@
-package org.triplea.server.error.report.upload;
+package org.triplea.server.reporting.error.upload;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;

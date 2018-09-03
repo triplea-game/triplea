@@ -1,4 +1,4 @@
-package org.triplea.server.error.report.upload;
+package org.triplea.server.reporting.error.upload;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

@@ -5,8 +5,8 @@ import static spark.Spark.post;
 import java.time.Instant;
 import java.util.function.Supplier;
 
-import org.triplea.server.error.report.upload.ErrorReport;
-import org.triplea.server.error.report.upload.ErrorReportIngestion;
+import org.triplea.server.reporting.error.upload.ErrorReport;
+import org.triplea.server.reporting.error.upload.ErrorReportIngestion;
 
 import com.google.common.annotations.VisibleForTesting;
 
