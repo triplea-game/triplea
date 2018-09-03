@@ -64,20 +64,19 @@ public class HeadlessGameServer {
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
-  private final AvailableGames availableGames;
-  private final GameSelectorModel gameSelectorModel;
+  private final AvailableGames availableGames = new AvailableGames();
+  private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final ScheduledExecutorService lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private final String startDate = TimeManager.getFullUtcString(Instant.now());
   private static HeadlessGameServer instance = null;
-  private SetupPanelModel setupPanelModel = null;
+  private final SetupPanelModel setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
   private ServerGame game = null;
   private boolean shutDown = false;
 
   private final List<Runnable> shutdownListeners = Arrays.asList(
       lobbyWatcherResetupThread::shutdown,
       () -> Optional.ofNullable(game).ifPresent(ServerGame::stopGame),
-      () -> Optional.ofNullable(setupPanelModel)
-          .ifPresent(model -> model.getPanel().cancel()));
+      () -> setupPanelModel.getPanel().cancel());
 
 
   private HeadlessGameServer() {
@@ -90,8 +89,6 @@ public class HeadlessGameServer {
       shutDown = true;
       shutdownListeners.forEach(Runnable::run);
     }));
-    availableGames = new AvailableGames();
-    gameSelectorModel = new GameSelectorModel();
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (!fileName.isEmpty()) {
       try {
@@ -105,7 +102,6 @@ public class HeadlessGameServer {
     }
     new Thread(() -> {
       log.info("Headless Start");
-      setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
       setupPanelModel.showSelectType();
       log.info("Waiting for users to connect.");
       waitForUsersHeadless();
