@@ -10,41 +10,37 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.lobby.server.GameDescription;
 
-public final class GameDescriptionTest {
+final class GameDescriptionTest {
   @Nested
-  public final class GetBotSupportEmailTest {
-    private final GameDescription gameDescription = new GameDescription();
-
+  final class GetBotSupportEmailTest {
     @Test
-    public void shouldReturnBotSupportEmailWhenBotSupportEmailIsNotEmpty() {
+    void shouldReturnBotSupportEmailWhenBotSupportEmailIsNotEmpty() {
       final String botSupportEmail = "bot@me.com";
-      gameDescription.setBotSupportEmail(botSupportEmail);
+      final GameDescription gameDescription = GameDescription.builder().botSupportEmail(botSupportEmail).build();
 
       assertThat(gameDescription.getBotSupportEmail(), is(Optional.of(botSupportEmail)));
     }
 
     @Test
-    public void shouldReturnEmptyWhenBotSupportEmailIsEmpty() {
-      gameDescription.setBotSupportEmail("");
+    void shouldReturnEmptyWhenBotSupportEmailIsEmpty() {
+      final GameDescription gameDescription = GameDescription.builder().botSupportEmail("").build();
 
       assertThat(gameDescription.getBotSupportEmail(), is(Optional.empty()));
     }
   }
 
   @Nested
-  public final class IsBotTest {
-    private final GameDescription gameDescription = new GameDescription();
-
+  final class IsBotTest {
     @Test
-    public void shouldReturnTrueWhenBotSupportEmailIsNotEmpty() {
-      gameDescription.setBotSupportEmail("bot@me.com");
+    void shouldReturnTrueWhenBotSupportEmailIsNotEmpty() {
+      final GameDescription gameDescription = GameDescription.builder().botSupportEmail("bot@me.com").build();
 
       assertThat(gameDescription.isBot(), is(true));
     }
 
     @Test
-    public void shouldReturnFalseWhenBotSupportEmailIsEmpty() {
-      gameDescription.setBotSupportEmail("");
+    void shouldReturnFalseWhenBotSupportEmailIsEmpty() {
+      final GameDescription gameDescription = GameDescription.builder().botSupportEmail("").build();
 
       assertThat(gameDescription.isBot(), is(false));
     }
