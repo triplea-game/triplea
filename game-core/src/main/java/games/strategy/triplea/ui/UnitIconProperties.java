@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
@@ -102,16 +103,16 @@ public final class UnitIconProperties extends PropertyFile {
    */
   @VisibleForTesting
   static UnitIconDescriptor parseUnitIconDescriptor(final String encodedIconId, final String iconPath) {
-    final String[] iconIdTokens = encodedIconId.split(";");
-    final String encodedUnitTypeId = iconIdTokens[0];
-    final Optional<String> conditionName = (iconIdTokens.length == 2)
-        ? Optional.ofNullable(iconIdTokens[1])
+    final List<String> iconIdTokens = Splitter.on(';').splitToList(encodedIconId);
+    final String encodedUnitTypeId = iconIdTokens.get(0);
+    final Optional<String> conditionName = (iconIdTokens.size() == 2)
+        ? Optional.ofNullable(iconIdTokens.get(1))
         : Optional.empty();
 
-    final String[] unitTypeIdTokens = encodedUnitTypeId.split("\\.", 3);
-    final String gameName = unitTypeIdTokens[0];
-    final String playerName = unitTypeIdTokens[1];
-    final String unitTypeName = unitTypeIdTokens[2];
+    final List<String> unitTypeIdTokens = Splitter.on('.').limit(3).splitToList(encodedUnitTypeId);
+    final String gameName = unitTypeIdTokens.get(0);
+    final String playerName = unitTypeIdTokens.get(1);
+    final String unitTypeName = unitTypeIdTokens.get(2);
 
     return new UnitIconDescriptor(gameName, playerName, unitTypeName, conditionName, iconPath);
   }
