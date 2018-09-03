@@ -1,10 +1,13 @@
 package games.strategy.triplea.ui;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -19,6 +22,13 @@ public class OrderedProperties extends Properties {
   @Override
   public Enumeration<?> propertyNames() {
     return Collections.enumeration(keys);
+  }
+
+  @Override
+  public Set<Map.Entry<Object, Object>> entrySet() {
+    return keys.stream()
+        .map(key -> new AbstractMap.SimpleEntry<>(key, get(key)))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   @Override

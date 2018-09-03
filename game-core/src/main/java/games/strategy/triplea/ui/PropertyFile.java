@@ -51,10 +51,7 @@ public abstract class PropertyFile {
 
   @VisibleForTesting
   protected PropertyFile(final Properties properties) {
-    // need to implement OrderedProperties#entrySet() in order to use Properties#putAll()
-    for (final Object key : properties.keySet()) {
-      this.properties.put(key, properties.get(key));
-    }
+    this.properties.putAll(properties);
   }
 
   @SuppressWarnings("unchecked")

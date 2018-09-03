@@ -52,17 +52,16 @@ public final class UnitIconProperties extends PropertyFile {
   }
 
   private ImmutableList<UnitIconDescriptor> parseUnitIconDescriptors() {
-    final ImmutableList.Builder<UnitIconDescriptor> unitIconDescriptorsBuilder = ImmutableList.builder();
-    // need to implement OrderedProperties#entrySet() to ensure it preserves order; fallback to keySet() for now
-    for (final Object key : properties.keySet()) {
+    final ImmutableList.Builder<UnitIconDescriptor> builder = ImmutableList.builder();
+    for (final Map.Entry<Object, Object> property : properties.entrySet()) {
       try {
-        unitIconDescriptorsBuilder.add(parseUnitIconDescriptor(key.toString(), properties.getProperty(key.toString())));
+        builder.add(parseUnitIconDescriptor(property.getKey().toString(), property.getValue().toString()));
       } catch (final MalformedUnitIconDescriptorException e) {
         log.log(Level.WARNING, e, () -> "Expected " + PROPERTY_FILE + " property key to be of the form "
             + "<game_name>.<player>.<unit_type>;attachmentName OR if always true <game_name>.<player>.<unit_type>");
       }
     }
-    return unitIconDescriptorsBuilder.build();
+    return builder.build();
   }
 
   /**
