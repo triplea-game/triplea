@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -110,6 +111,23 @@ final class UnitIconPropertiesTest {
     @Test
     void shouldParseUnitIconDescriptorWithoutCondition() {
       assertThat(parseUnitIconDescriptorWithCondition(null), is(newUnitIconDescriptorWithCondition(null)));
+    }
+
+    @Test
+    void shouldReturnNullObjectWhenIconIdTokenCountNotEqualToOneOrTwo() {
+      assertThrows(
+          UnitIconProperties.MalformedUnitIconDescriptorException.class,
+          () -> UnitIconProperties.parseUnitIconDescriptor("", ICON_1_PATH));
+      assertThrows(
+          UnitIconProperties.MalformedUnitIconDescriptorException.class,
+          () -> UnitIconProperties.parseUnitIconDescriptor("a1.a2.a3;b1;c1", ICON_1_PATH));
+    }
+
+    @Test
+    void shouldReturnNullObjectWhenUnitTypeIdTokenCountNotEqualToThree() {
+      assertThrows(
+          UnitIconProperties.MalformedUnitIconDescriptorException.class,
+          () -> UnitIconProperties.parseUnitIconDescriptor("a1.a2;b1", ICON_1_PATH));
     }
   }
 
