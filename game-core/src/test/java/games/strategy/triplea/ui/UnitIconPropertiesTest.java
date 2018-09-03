@@ -139,7 +139,7 @@ final class UnitIconPropertiesTest {
     }
 
     @Test
-    void shouldReturnNullObjectWhenIconIdTokenCountNotEqualToOneOrTwo() {
+    void shouldThrowExceptionWhenIconIdTokenCountNotEqualToOneOrTwo() {
       assertThrows(
           MalformedUnitIconDescriptorException.class,
           () -> UnitIconProperties.parseUnitIconDescriptor("", ICON_1_PATH));
@@ -149,7 +149,7 @@ final class UnitIconPropertiesTest {
     }
 
     @Test
-    void shouldReturnNullObjectWhenUnitTypeIdTokenCountNotEqualToThree() {
+    void shouldThrowExceptionWhenUnitTypeIdTokenCountNotEqualToThree() {
       assertThrows(
           MalformedUnitIconDescriptorException.class,
           () -> UnitIconProperties.parseUnitIconDescriptor("a1.a2;b1", ICON_1_PATH));
