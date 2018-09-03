@@ -322,12 +322,6 @@ public class ServerLauncher extends AbstractLauncher {
       serverGame.saveGame(f);
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to save game: " + f.getAbsolutePath(), e);
-      if (headless && HeadlessGameServer.getInstance() != null) {
-        HeadlessGameServer.getInstance().printThreadDumpsAndStatus();
-        // TODO: We seem to be getting this bug once a week (1.8.0.1 and previous versions). Trying a fix for 1.8.0.3,
-        // need to see if it
-        // works.
-      }
     }
     stopGame();
     if (headless) {

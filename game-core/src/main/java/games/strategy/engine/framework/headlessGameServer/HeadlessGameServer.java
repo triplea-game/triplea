@@ -26,7 +26,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import games.strategy.debug.DebugUtils;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -431,10 +430,6 @@ public class HeadlessGameServer {
     return "Invalid password!";
   }
 
-  ServerGame getIGame() {
-    return game;
-  }
-
   private synchronized void restartLobbyWatcher() {
     try {
       final HeadlessServerSetup setup = setupPanelModel.getPanel();
@@ -445,32 +440,6 @@ public class HeadlessGameServer {
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to restart lobby watcher", e);
     }
-  }
-
-  String getStatus() {
-    String message = "Server Start Date: " + startDate;
-    final ServerGame game = getIGame();
-    if (game != null) {
-      message += "\nIs currently running: " + game.isGameSequenceRunning() + "\nIs GameOver: " + game.isGameOver()
-          + "\nGame: " + game.getData().getGameName() + "\nRound: " + game.getData().getSequence().getRound()
-          + "\nPlayers: " + game.getPlayerManager().toString();
-    } else {
-      message += "\nCurrently Waiting To Start A Game";
-    }
-    return message;
-  }
-
-  public void printThreadDumpsAndStatus() {
-    log.info("Dump to Log:"
-        + "\n\nStatus:\n"
-        + getStatus()
-        + "\n\nServer:\n"
-        + getServerModel()
-        + "\n\n"
-        + DebugUtils.getThreadDumps()
-        + "\n\n"
-        + DebugUtils.getMemory()
-        + "\n\nDump finished.\n");
   }
 
   private void waitForUsersHeadless() {
