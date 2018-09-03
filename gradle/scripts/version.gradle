@@ -2,7 +2,8 @@ ext.getEngineVersion = {
     if (project.hasProperty('engineVersion')) {
         return project.engineVersion
     }
-     def props = new Properties()
+
+    def props = new Properties()
     def gameEnginePropertiesFile = project(':game-core').file('game_engine.properties')
     gameEnginePropertiesFile.withInputStream { props.load(it) }
     def devEngineVersion = props.getProperty('engine_version')
