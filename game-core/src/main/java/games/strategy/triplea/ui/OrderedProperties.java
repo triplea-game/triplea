@@ -48,6 +48,12 @@ public class OrderedProperties extends Properties {
   }
 
   @Override
+  public synchronized void putAll(final Map<?, ?> m) {
+    keys.addAll(m.keySet());
+    super.putAll(m);
+  }
+
+  @Override
   public synchronized Object remove(final Object key) {
     keys.remove(key);
     return super.remove(key);
