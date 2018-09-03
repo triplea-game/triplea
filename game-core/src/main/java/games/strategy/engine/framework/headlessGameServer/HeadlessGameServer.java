@@ -69,7 +69,7 @@ public class HeadlessGameServer {
   private final ScheduledExecutorService lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
   private final String startDate = TimeManager.getFullUtcString(Instant.now());
   private static HeadlessGameServer instance = null;
-  private final SetupPanelModel setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
+  private final HeadlessServerSetupPanelModel setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
   private ServerGame game = null;
   private boolean shutDown = false;
 
@@ -437,7 +437,7 @@ public class HeadlessGameServer {
 
   private synchronized void restartLobbyWatcher() {
     try {
-      final HeadlessServerSetup setup = (HeadlessServerSetup) setupPanelModel.getPanel();
+      final HeadlessServerSetup setup = setupPanelModel.getPanel();
       if (setup == null || game != null || setup.canGameStart()) {
         return;
       }
