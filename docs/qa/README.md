@@ -1,4 +1,8 @@
 
+
+QA verification is tracked on the [Release Tracking Sheet](https://docs.google.com/spreadsheets/d/1CSZ4s7wBLcvgue_IHwl-CbjQd95qj8hhR8m89ngCzbU/edit)
+
+
 ## Game compatibility testing
 
 It is important to ensure that any proposed change does not break game compatibility 
