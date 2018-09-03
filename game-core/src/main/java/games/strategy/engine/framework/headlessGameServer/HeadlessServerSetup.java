@@ -11,7 +11,6 @@ import javax.swing.JComponent;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
@@ -45,20 +44,14 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
-  synchronized void repostLobbyWatcher(final IGame game) {
-    if (game != null) {
-      return;
-    }
+  @Override
+  public synchronized void repostLobbyWatcher() {
     if (canGameStart()) {
       return;
     }
-    shutDownLobbyWatcher();
+    lobbyWatcher.shutDown();
     Interruptibles.sleep(3000);
     createLobbyWatcher();
-  }
-
-  void shutDownLobbyWatcher() {
-    lobbyWatcher.shutDown();
   }
 
   @Override

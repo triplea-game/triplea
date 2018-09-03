@@ -29,7 +29,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
 import games.strategy.engine.framework.network.ui.MutePlayerAction;
@@ -74,20 +73,14 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
-  public synchronized void repostLobbyWatcher(final IGame game) {
-    if (game != null) {
-      return;
-    }
+  @Override
+  public synchronized void repostLobbyWatcher() {
     if (canGameStart()) {
       return;
     }
-    shutDownLobbyWatcher();
+    lobbyWatcher.shutDown();
     Interruptibles.sleep(1000);
     createLobbyWatcher();
-  }
-
-  void shutDownLobbyWatcher() {
-    lobbyWatcher.shutDown();
   }
 
   private void createComponents() {

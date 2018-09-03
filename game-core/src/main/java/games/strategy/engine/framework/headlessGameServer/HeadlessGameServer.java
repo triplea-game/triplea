@@ -445,20 +445,10 @@ public class HeadlessGameServer {
       final SetupPanelModel setupPanelModel, final ServerGame serverGame) {
     try {
       final ISetupPanel setup = setupPanelModel.getPanel();
-      if (setup == null) {
+      if (setup == null || serverGame != null || setup.canGameStart()) {
         return;
       }
-      if (serverGame != null) {
-        return;
-      }
-      if (setup.canGameStart()) {
-        return;
-      }
-      if (setup instanceof ServerSetupPanel) {
-        ((ServerSetupPanel) setup).repostLobbyWatcher(serverGame);
-      } else if (setup instanceof HeadlessServerSetup) {
-        ((HeadlessServerSetup) setup).repostLobbyWatcher(serverGame);
-      }
+      setup.repostLobbyWatcher();
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to restart lobby watcher", e);
     }
