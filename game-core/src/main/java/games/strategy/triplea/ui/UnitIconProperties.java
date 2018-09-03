@@ -5,17 +5,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.util.FileNameUtils;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.extern.java.Log;
 
 /**
- * Loads objective text from objectives.properties.
+ * Loads unit icons from unit_icons.properties.
  */
 @Log
 public final class UnitIconProperties extends PropertyFile {
@@ -51,6 +57,44 @@ public final class UnitIconProperties extends PropertyFile {
       }
     }
     conditionsStatus = getTestedConditions(data);
+  }
+
+  /**
+   * Parses a unit icon descriptor from a line in a unit_icons.properties file.
+   *
+   * <p>
+   * Each line in a unit_icons.properties file has the format:
+   * </p>
+   * <p>
+   * {@code <encodedIconId>=<iconPath>}
+   * </p>
+   * <p>
+   * Where {@code encodedIconId} is
+   * </p>
+   * <p>
+   * {@code <encodedUnitTypeId>[;conditionName]}
+   * </p>
+   * <p>
+   * Where {@code encodedUnitTypeId} is
+   * </p>
+   * <p>
+   * {@code <gameName>.<playerName>.<unitTypeName>}
+   * </p>
+   */
+  @VisibleForTesting
+  static UnitIconDescriptor parseUnitIconDescriptor(final String encodedIconId, final String iconPath) {
+    final String[] iconIdTokens = encodedIconId.split(";");
+    final String encodedUnitTypeId = iconIdTokens[0];
+    final Optional<String> conditionName = (iconIdTokens.length == 2)
+        ? Optional.ofNullable(iconIdTokens[1])
+        : Optional.empty();
+
+    final String[] unitTypeIdTokens = encodedUnitTypeId.split("\\.", 3);
+    final String gameName = unitTypeIdTokens[0];
+    final String playerName = unitTypeIdTokens[1];
+    final String unitTypeName = unitTypeIdTokens[2];
+
+    return new UnitIconDescriptor(gameName, playerName, unitTypeName, conditionName, iconPath);
   }
 
   public static UnitIconProperties getInstance(final GameData data) {
@@ -105,5 +149,17 @@ public final class UnitIconProperties extends PropertyFile {
         AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(conditionsStatus.keySet()), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null,
         new ObjectiveDummyDelegateBridge(data));
+  }
+
+  @AllArgsConstructor
+  @EqualsAndHashCode
+  @ToString
+  @VisibleForTesting
+  static final class UnitIconDescriptor {
+    final String gameName;
+    final String playerName;
+    final String unitTypeName;
+    final Optional<String> conditionName;
+    final String unitIconPath;
   }
 }
