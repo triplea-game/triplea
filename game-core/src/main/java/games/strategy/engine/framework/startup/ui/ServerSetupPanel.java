@@ -42,7 +42,6 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.IServerMessenger;
-import games.strategy.util.Interruptibles;
 
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
