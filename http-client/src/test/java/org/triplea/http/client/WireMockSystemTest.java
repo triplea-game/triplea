@@ -55,7 +55,8 @@ class WireMockSystemTest {
   private static final String MESSAGE_FROM_USER = "msg";
   private static final String GAME_VERSION = "version";
   private static final LogRecord logRecord = new LogRecord(Level.SEVERE, "record");
-  private static final int timeoutMillis = 20;
+  private static final int TIMEOUT_MILLIS = 200;
+  private static final int SHORT_TIMEOUT_MILLIS = 5;
 
   @Test
   void sendErrorReportSuccessCase(
@@ -88,21 +89,24 @@ class WireMockSystemTest {
   }
 
   private ServiceCallResult<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
-    return createClient(wireMockServer)
-        .sendErrorReport(ErrorReportDetails.builder()
-            .messageFromUser(MESSAGE_FROM_USER)
-            .gameVersion(GAME_VERSION)
-            .logRecord(logRecord)
-            .build());
+    return doServiceCall(wireMockServer, TIMEOUT_MILLIS);
   }
 
-  private ErrorReportingClient createClient(final WireMockServer wireMockServer) {
+  private ServiceCallResult<ErrorReportResponse> doServiceCall(
+      final WireMockServer wireMockServer,
+      final int timeoutMillis) {
+
     WireMock.configureFor("localhost", wireMockServer.port());
     final URI hostUri = URI.create(wireMockServer.url(""));
     return new ErrorReportingClient(
         ErrorReportingHttpClient.newClient(hostUri, timeoutMillis, timeoutMillis),
         ErrorReport::new,
-        Collections.emptyList());
+        Collections.emptyList())
+        .sendErrorReport(ErrorReportDetails.builder()
+            .messageFromUser(MESSAGE_FROM_USER)
+            .gameVersion(GAME_VERSION)
+            .logRecord(logRecord)
+            .build());
   }
 
   @Test
@@ -166,7 +170,7 @@ class WireMockSystemTest {
       @WiremockUriResolver.WiremockUri final String uri) {
     WireMock.configureFor("localhost", wireMockServer.port());
 
-    final int delayGreaterThanTheTimeout = timeoutMillis + 5;
+    final int delayGreaterThanTheTimeout = SHORT_TIMEOUT_MILLIS + 5;
 
     wireMockServer.stubFor(post(urlEqualTo(ErrorReportingHttpClient.ERROR_REPORT_PATH))
         .withHeader(HttpHeaders.ACCEPT, equalTo(CONTENT_TYPE_JSON))
@@ -176,7 +180,7 @@ class WireMockSystemTest {
             .withHeader(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE_JSON)
             .withBody("{ \"result\":\"SUCCESS\" }")));
 
-    final ServiceCallResult<ErrorReportResponse> response = doServiceCall(wireMockServer);
+    final ServiceCallResult<ErrorReportResponse> response = doServiceCall(wireMockServer, SHORT_TIMEOUT_MILLIS);
 
     assertThat(response.getPayload().isPresent(), is(false));
     assertThat(response.getThrown().isPresent(), is(true));
