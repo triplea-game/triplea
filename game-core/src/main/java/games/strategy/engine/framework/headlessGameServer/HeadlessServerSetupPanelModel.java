@@ -20,8 +20,7 @@ public class HeadlessServerSetupPanelModel extends SetupPanelModel {
       model.cancel();
       return;
     }
-    final HeadlessServerSetup serverSetup = new HeadlessServerSetup(model, gameSelectorModel);
-    setGameTypePanel(serverSetup);
+    setGameTypePanel(new HeadlessServerSetup(model, gameSelectorModel));
   }
 
   @Override
