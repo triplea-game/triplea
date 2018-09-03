@@ -38,7 +38,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     internalPlayerListChanged();
   }
 
-  void createLobbyWatcher() {
+  private void createLobbyWatcher() {
     lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), null,
         lobbyWatcher.getInGameLobbyWatcher()));
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);

@@ -67,7 +67,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     internalPlayerListChanged();
   }
 
-  void createLobbyWatcher() {
+  private void createLobbyWatcher() {
     lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), this,
         lobbyWatcher.getInGameLobbyWatcher()));
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
