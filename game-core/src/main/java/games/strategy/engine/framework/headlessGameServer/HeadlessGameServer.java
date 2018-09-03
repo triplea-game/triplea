@@ -117,11 +117,9 @@ public class HeadlessGameServer {
     }
     lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
       try {
-        restartLobbyWatcher(setupPanelModel, game);
+        restartLobbyWatcher();
       } catch (final Exception e) {
-        Interruptibles.sleep(10 * 60 * 1000);
-        // try again, but don't catch it this time
-        restartLobbyWatcher(setupPanelModel, game);
+        log.log(Level.WARNING, "Failed to restart Lobby watcher", e);
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
     log.info("Game Server initialized");
@@ -437,11 +435,10 @@ public class HeadlessGameServer {
     return game;
   }
 
-  private static synchronized void restartLobbyWatcher(
-      final SetupPanelModel setupPanelModel, final ServerGame serverGame) {
+  private synchronized void restartLobbyWatcher() {
     try {
-      final ISetupPanel setup = setupPanelModel.getPanel();
-      if (setup == null || serverGame != null || setup.canGameStart()) {
+      final HeadlessServerSetup setup = (HeadlessServerSetup) setupPanelModel.getPanel();
+      if (setup == null || game != null || setup.canGameStart()) {
         return;
       }
       setup.repostLobbyWatcher();

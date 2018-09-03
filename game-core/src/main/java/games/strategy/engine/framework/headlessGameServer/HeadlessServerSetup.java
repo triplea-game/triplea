@@ -44,8 +44,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
-  @Override
-  public synchronized void repostLobbyWatcher() {
+  synchronized void repostLobbyWatcher() {
     if (canGameStart()) {
       return;
     }

@@ -45,8 +45,4 @@ public interface ISetupPanel {
   Optional<ILauncher> getLauncher();
 
   List<Action> getUserActions();
-
-  default void repostLobbyWatcher() {
-    throw new UnsupportedOperationException(getClass() + " is not a lobby related class");
-  }
 }

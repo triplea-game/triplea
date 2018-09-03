@@ -73,16 +73,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
-  @Override
-  public synchronized void repostLobbyWatcher() {
-    if (canGameStart()) {
-      return;
-    }
-    lobbyWatcher.shutDown();
-    Interruptibles.sleep(1000);
-    createLobbyWatcher();
-  }
-
   private void createComponents() {
     final IServerMessenger messenger = model.getMessenger();
     final Color backGround = new JTextField().getBackground();
