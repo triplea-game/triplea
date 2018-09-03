@@ -85,9 +85,6 @@ import lombok.extern.java.Log;
 public class GameRunner {
 
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
-  public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
-  public static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
-  public static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
   // not arguments:
   public static final int PORT = 3300;

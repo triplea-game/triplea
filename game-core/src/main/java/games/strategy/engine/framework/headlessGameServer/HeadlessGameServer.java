@@ -60,6 +60,10 @@ import lombok.extern.java.Log;
  */
 @Log
 public class HeadlessGameServer {
+  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
+  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
+  private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
+
   private final AvailableGames availableGames;
   private final GameSelectorModel gameSelectorModel;
   private final ScheduledExecutorService lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
@@ -110,11 +114,10 @@ public class HeadlessGameServer {
     int reconnect;
     try {
       final String reconnectionSeconds = System.getProperty(LOBBY_GAME_RECONNECTION,
-          "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-      reconnect =
-          Math.max(Integer.parseInt(reconnectionSeconds), GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
+          "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+      reconnect = Math.max(Integer.parseInt(reconnectionSeconds), LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
     } catch (final NumberFormatException e) {
-      reconnect = GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
+      reconnect = LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
     }
     lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
       try {
@@ -244,7 +247,7 @@ public class HeadlessGameServer {
 
   public String remoteShutdown(final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
+    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
     if (hashPassword(password, salt).equals(hashedPassword)) {
@@ -260,7 +263,7 @@ public class HeadlessGameServer {
 
   public String remoteStopGame(final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
+    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
     if (hashPassword(password, salt).equals(hashedPassword)) {
@@ -286,7 +289,7 @@ public class HeadlessGameServer {
 
   public String remoteGetChatLog(final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
+    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
     if (hashPassword(password, salt).equals(hashedPassword)) {
@@ -303,7 +306,7 @@ public class HeadlessGameServer {
   public String remoteMutePlayer(final String playerName, final int minutes, final String hashedPassword,
       final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
+    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
     // (48 hours max)
@@ -344,7 +347,7 @@ public class HeadlessGameServer {
 
   public String remoteBootPlayer(final String playerName, final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
+    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
     if (hashPassword(password, salt).equals(hashedPassword)) {
@@ -381,7 +384,7 @@ public class HeadlessGameServer {
   public String remoteBanPlayer(final String playerName, final int hours, final String hashedPassword,
       final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(GameRunner.NO_REMOTE_REQUESTS_ALLOWED)) {
+    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
     // milliseconds (30 days max)
@@ -617,7 +620,7 @@ public class HeadlessGameServer {
         + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
         + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
         + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
-        + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
+        + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
         + "   " + MAP_FOLDER + "=mapFolder"
         + "\n"
         + "   You must start the Name and HostedBy with \"Bot\".\n"
@@ -665,21 +668,21 @@ public class HeadlessGameServer {
     }
 
     final String reconnection = System.getProperty(LOBBY_GAME_RECONNECTION,
-        "" + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
+        "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
     try {
       final int reconnect = Integer.parseInt(reconnection);
-      if (reconnect < GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
+      if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
         log.warning("Invalid argument: " + LOBBY_GAME_RECONNECTION
-            + " must be an integer equal to or greater than " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-            + " seconds, and should normally be either " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
-            + " or " + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
+            + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
+            + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
+            + " or " + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
         printUsage = true;
       }
     } catch (final NumberFormatException e) {
       log.warning("Invalid argument: " + LOBBY_GAME_RECONNECTION
-          + " must be an integer equal to or greater than " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-          + " seconds, and should normally be either " + GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
-          + (2 * GameRunner.LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
+          + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
+          + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
+          + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
       printUsage = true;
     }
 
