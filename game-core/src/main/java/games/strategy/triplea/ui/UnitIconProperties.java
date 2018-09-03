@@ -18,6 +18,7 @@ import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.util.FileNameUtils;
+import games.strategy.util.OptionalUtils;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -34,32 +35,33 @@ public final class UnitIconProperties extends PropertyFile {
 
   private UnitIconProperties(final GameData gameData) {
     super(PROPERTY_FILE);
+
     initializeConditionsStatus(gameData, AbstractPlayerRulesAttachment::getCondition);
   }
 
   @VisibleForTesting
   UnitIconProperties(final Properties properties, final GameData gameData, final ConditionSupplier conditionSupplier) {
     super(properties);
+
     initializeConditionsStatus(gameData, conditionSupplier);
   }
 
   private void initializeConditionsStatus(final GameData gameData, final ConditionSupplier conditionSupplier) {
-    final String gameName =
-        FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_").concat(".");
+    final String gameName = normalizeGameName(gameData);
     for (final String key : properties.stringPropertyNames()) {
-      if (!key.startsWith(gameName)) {
-        continue;
-      }
+      // TODO: extract parse error handling to parseUnitIconDescriptor method
+      // will log and return a Null Object in the error case
       try {
-        final String[] unitInfoAndCondition = key.split(";");
-        final String[] unitInfo = unitInfoAndCondition[0].split("\\.", 3);
-        if (unitInfoAndCondition.length != 2) {
-          continue;
-        }
-        final @Nullable ICondition condition =
-            conditionSupplier.getCondition(unitInfo[1], unitInfoAndCondition[1], gameData);
-        if (condition != null) {
-          conditionsStatus.put(condition, false);
+        final UnitIconDescriptor unitIconDescriptor = parseUnitIconDescriptor(key, properties.getProperty(key));
+        // TODO: eventually extract a matches(gameName) method
+        if (gameName.equals(unitIconDescriptor.gameName)) {
+          unitIconDescriptor.conditionName.ifPresent(conditionName -> {
+            final @Nullable ICondition condition =
+                conditionSupplier.getCondition(unitIconDescriptor.playerName, conditionName, gameData);
+            if (condition != null) {
+              conditionsStatus.put(condition, false);
+            }
+          });
         }
       } catch (final RuntimeException e) {
         log.log(
@@ -70,6 +72,10 @@ public final class UnitIconProperties extends PropertyFile {
       }
     }
     conditionsStatus = getTestedConditions(gameData);
+  }
+
+  private static String normalizeGameName(final GameData gameData) {
+    return FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_");
   }
 
   /**
@@ -119,11 +125,7 @@ public final class UnitIconProperties extends PropertyFile {
    * from the properties file.
    */
   public List<String> getImagePaths(final String playerName, final String unitTypeName, final GameData gameData) {
-    return getImagePaths(
-        playerName,
-        unitTypeName,
-        gameData,
-        AbstractPlayerRulesAttachment::getCondition);
+    return getImagePaths(playerName, unitTypeName, gameData, AbstractPlayerRulesAttachment::getCondition);
   }
 
   @VisibleForTesting
@@ -133,22 +135,26 @@ public final class UnitIconProperties extends PropertyFile {
       final GameData gameData,
       final ConditionSupplier conditionSupplier) {
     final List<String> imagePaths = new ArrayList<>();
-    final String gameName =
-        FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_");
-    final String startOfKey = gameName + "." + playerName + "." + unitTypeName;
+    final String gameName = normalizeGameName(gameData);
     for (final Object key : properties.keySet()) {
       try {
-        final String keyString = key.toString();
-        final String[] keyParts = keyString.split(";");
-        if (startOfKey.equals(keyParts[0])) {
-          if (keyParts.length == 2) {
-            final @Nullable ICondition condition = conditionSupplier.getCondition(playerName, keyParts[1], gameData);
-            if (conditionsStatus.get(condition)) {
-              imagePaths.add(properties.get(key).toString());
-            }
-          } else {
-            imagePaths.add(properties.get(key).toString());
-          }
+        final UnitIconDescriptor unitIconDescriptor =
+            parseUnitIconDescriptor(key.toString(), properties.getProperty(key.toString()));
+        // TODO: to test the other branch, modify test to add a satisfied condition for a different game
+        // just add additional properties for entries that have different game name, different player name, and
+        // different unit type name
+        // TODO: eventually extract a matches(gameName, playerName, unitTypeName) method
+        if (gameName.equals(unitIconDescriptor.gameName)
+            && playerName.equals(unitIconDescriptor.playerName)
+            && unitTypeName.equals(unitIconDescriptor.unitTypeName)) {
+          OptionalUtils.ifPresentOrElse(
+              unitIconDescriptor.conditionName,
+              conditionName -> {
+                if (conditionsStatus.get(conditionSupplier.getCondition(playerName, conditionName, gameData))) {
+                  imagePaths.add(unitIconDescriptor.unitIconPath);
+                }
+              },
+              () -> imagePaths.add(unitIconDescriptor.unitIconPath));
         }
       } catch (final RuntimeException e) {
         log.log(
