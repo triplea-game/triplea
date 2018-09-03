@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.LogRecord;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -92,10 +93,10 @@ public enum ErrorMessage {
     INSTANCE.enableErrorPopup = true;
   }
 
-  public static void show(final String msg) {
+  public static void show(final LogRecord record) {
     if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
       SwingUtilities.invokeLater(() -> {
-        INSTANCE.errorMessage.setText(TextUtils.textToHtml(msg));
+        INSTANCE.errorMessage.setText(TextUtils.textToHtml(record.getMessage()));
         INSTANCE.windowReference.pack();
         INSTANCE.windowReference.setLocationRelativeTo(null);
         INSTANCE.windowReference.setVisible(true);

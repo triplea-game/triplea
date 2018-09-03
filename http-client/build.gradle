@@ -1,0 +1,10 @@
+description = 'Http client library for http-server, provides an API for client-server interactions'
+
+dependencies {
+  compile project(':http-data')
+  compile 'com.netflix.feign:feign-core:8.18.0'
+  compile 'com.netflix.feign:feign-gson:8.18.0'
+  testCompile project(':test-common')
+  testCompile 'ru.lanwen.wiremock:wiremock-junit5:1.2.0'
+  testCompile 'com.github.tomakehurst:wiremock:2.18.0'
+}
