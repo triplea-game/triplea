@@ -7,29 +7,13 @@ plugins {
 
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
 mainClassName = 'games.strategy.engine.framework.GameRunner'
+version = getEngineVersion()
 
 ext {
     releasesDir = file("$buildDir/releases")
     remoteLibsDir = file('.remote-libs')
     rootFilesDir = file("$buildDir/rootFiles")
     shadowLibsDir = file("$buildDir/shadowLibs")
-
-    gameEnginePropertiesFile = file('game_engine.properties')
-}
-
-def getEngineVersion() {
-    if (project.hasProperty('engineVersion')) {
-        return project.engineVersion
-    }
-
-    def props = new Properties()
-    gameEnginePropertiesFile.withInputStream { props.load(it) }
-    def devEngineVersion = props.getProperty('engine_version')
-    if (!devEngineVersion) {
-        throw new GradleException("unable to determine engine version: "
-                + "you must define either the project property 'engineVersion' or the game engine property 'engine_version'")
-    }
-    return "${devEngineVersion}"
 }
 
 def remoteFile(url) {
@@ -41,8 +25,6 @@ def remoteFile(url) {
     }
     files(file)
 }
-
-version = getEngineVersion()
 
 jar {
     manifest {
@@ -134,7 +116,7 @@ task generateZipReleases(type: Zip, group: 'release', dependsOn: shadowJar) {
             into(folder)
         }
     }
-    from(gameEnginePropertiesFile)
+    from(file('game_engine.properties'))
     from(shadowJar.outputs) {
         into('bin')
     }
