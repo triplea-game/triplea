@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +36,15 @@ final class UnitIconPropertiesTest {
   private static final String UNIT_TYPE_NAME = "unitTypeName";
 
   private static String formatIconId(final @Nullable String conditionName) {
-    final String encodedUnitTypeId = Joiner.on('.').join(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME);
+    return formatIconId(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, conditionName);
+  }
+
+  private static String formatIconId(
+      final String gameName,
+      final String playerName,
+      final String unitTypeName,
+      final @Nullable String conditionName) {
+    final String encodedUnitTypeId = Joiner.on('.').join(gameName, playerName, unitTypeName);
     return (conditionName != null)
         ? Joiner.on(';').join(encodedUnitTypeId, conditionName)
         : encodedUnitTypeId;
@@ -83,6 +92,21 @@ final class UnitIconPropertiesTest {
       assertThat(
           unitIconProperties.getImagePaths(PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
           contains(ICON_1_PATH, ICON_3_PATH));
+    }
+
+    @Test
+    void shouldIgnoreIconsThatHaveDifferentUnitTypeId() {
+      final GameData gameData = givenGameData();
+      final UnitIconProperties.ConditionSupplier conditionSupplier = givenConditionSupplier(gameData);
+      final Properties properties = new OrderedProperties();
+      properties.put(formatIconId("otherGameName", PLAYER_NAME, UNIT_TYPE_NAME, null), ICON_1_PATH);
+      properties.put(formatIconId(GAME_NAME, "otherPlayerName", UNIT_TYPE_NAME, null), ICON_2_PATH);
+      properties.put(formatIconId(GAME_NAME, PLAYER_NAME, "otherUnitTypeName", null), ICON_3_PATH);
+      final UnitIconProperties unitIconProperties = new UnitIconProperties(properties, gameData, conditionSupplier);
+
+      assertThat(
+          unitIconProperties.getImagePaths(PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
+          is(empty()));
     }
   }
 

@@ -152,9 +152,6 @@ public final class UnitIconProperties extends PropertyFile {
     final String gameName = normalizeGameName(gameData);
     // TODO: convert to stream
     for (final UnitIconDescriptor unitIconDescriptor : unitIconDescriptors) {
-      // TODO: to test the other branch, modify test to add a satisfied condition for a different game
-      // just add additional properties for entries that have different game name, different player name, and
-      // different unit type name
       // TODO: eventually extract a matches(gameName, playerName, unitTypeName) method
       if (gameName.equals(unitIconDescriptor.gameName)
           && playerName.equals(unitIconDescriptor.playerName)
