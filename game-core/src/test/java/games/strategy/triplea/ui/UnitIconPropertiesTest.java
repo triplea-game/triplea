@@ -3,12 +3,13 @@ package games.strategy.triplea.ui;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -47,39 +48,39 @@ final class UnitIconPropertiesTest {
       return gameData;
     }
 
-    private ICondition givenCondition(final String name) {
+    private ICondition givenCondition(final String name, final boolean satisfied) {
       final ICondition condition = mock(ICondition.class);
+      when(condition.getConditions()).thenReturn(Collections.emptyList());
       when(condition.getName()).thenReturn(name);
+      when(condition.isSatisfied(any(), any())).thenReturn(satisfied);
       return condition;
     }
 
-    private UnitIconProperties.ConditionSupplier givenConditionSupplier(final GameData gameData) {
+    private UnitIconProperties.ConditionSupplier givenConditionSupplier(
+        final GameData gameData,
+        final ICondition... conditions) {
       final UnitIconProperties.ConditionSupplier conditionSupplier = mock(UnitIconProperties.ConditionSupplier.class);
-      final ICondition condition1 = givenCondition(CONDITION_1_NAME);
-      when(conditionSupplier.getCondition(PLAYER_NAME, CONDITION_1_NAME, gameData)).thenReturn(condition1);
-      final ICondition condition2 = givenCondition(CONDITION_2_NAME);
-      when(conditionSupplier.getCondition(PLAYER_NAME, CONDITION_2_NAME, gameData)).thenReturn(condition2);
+      for (final ICondition condition : conditions) {
+        when(conditionSupplier.getCondition(PLAYER_NAME, condition.getName(), gameData)).thenReturn(condition);
+      }
       return conditionSupplier;
     }
 
     @Test
-    void shouldReturnImagePathsForIconsWithEnabledConditionOrNoCondition() {
+    void shouldReturnImagePathsForIconsWithSatisfiedConditionOrNoCondition() {
       final GameData gameData = givenGameData();
-      final UnitIconProperties.ConditionSupplier conditionSupplier = givenConditionSupplier(gameData);
+      final UnitIconProperties.ConditionSupplier conditionSupplier = givenConditionSupplier(
+          gameData,
+          givenCondition(CONDITION_1_NAME, true),
+          givenCondition(CONDITION_2_NAME, false));
       final Properties properties = new OrderedProperties();
       properties.put(formatIconId(CONDITION_1_NAME), ICON_1_PATH);
       properties.put(formatIconId(CONDITION_2_NAME), ICON_2_PATH);
       properties.put(formatIconId(null), ICON_3_PATH);
       final UnitIconProperties unitIconProperties = new UnitIconProperties(properties, gameData, conditionSupplier);
-      final Predicate<ICondition> isConditionEnabled = condition -> CONDITION_1_NAME.equals(condition.getName());
 
       assertThat(
-          unitIconProperties.getImagePaths(
-              PLAYER_NAME,
-              UNIT_TYPE_NAME,
-              gameData,
-              conditionSupplier,
-              isConditionEnabled),
+          unitIconProperties.getImagePaths(PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
           contains(ICON_1_PATH, ICON_3_PATH));
     }
   }

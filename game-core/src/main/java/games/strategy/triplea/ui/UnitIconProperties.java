@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -124,8 +123,7 @@ public final class UnitIconProperties extends PropertyFile {
         playerName,
         unitTypeName,
         gameData,
-        AbstractPlayerRulesAttachment::getCondition,
-        conditionsStatus::get);
+        AbstractPlayerRulesAttachment::getCondition);
   }
 
   @VisibleForTesting
@@ -133,8 +131,7 @@ public final class UnitIconProperties extends PropertyFile {
       final String playerName,
       final String unitTypeName,
       final GameData gameData,
-      final ConditionSupplier conditionSupplier,
-      final Predicate<ICondition> isConditionEnabled) {
+      final ConditionSupplier conditionSupplier) {
     final List<String> imagePaths = new ArrayList<>();
     final String gameName =
         FileNameUtils.replaceIllegalCharacters(gameData.getGameName(), '_').replaceAll(" ", "_");
@@ -146,7 +143,7 @@ public final class UnitIconProperties extends PropertyFile {
         if (startOfKey.equals(keyParts[0])) {
           if (keyParts.length == 2) {
             final @Nullable ICondition condition = conditionSupplier.getCondition(playerName, keyParts[1], gameData);
-            if (isConditionEnabled.test(condition)) {
+            if (conditionsStatus.get(condition)) {
               imagePaths.add(properties.get(key).toString());
             }
           } else {
