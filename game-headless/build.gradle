@@ -1,0 +1,35 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Headless Game Server'
+mainClassName = 'org.triplea.game.headless.runner.HeadlessGameRunner'
+version = getEngineVersion()
+
+dependencies {
+    compile project(':game-core')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task headlessGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from project(':game-core').file('game_engine.properties')
+    from(project(':game-core').file('assets')) {
+        into 'assets'
+    }
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: headlessGameArchive) {
+    doLast {
+        publishArtifacts(headlessGameArchive.outputs.files)
+    }
+}

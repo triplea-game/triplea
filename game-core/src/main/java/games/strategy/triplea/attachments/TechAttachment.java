@@ -63,7 +63,7 @@ public class TechAttachment extends DefaultAttachment {
   // do not export at this point. currently map xml cannot
   // define a player having a custom tech at start of game
   @InternalDoNotExport
-  private Map<String, Boolean> genericTech = new HashMap<>();
+  private final Map<String, Boolean> genericTech = new HashMap<>();
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
