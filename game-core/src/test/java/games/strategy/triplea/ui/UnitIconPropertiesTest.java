@@ -22,6 +22,7 @@ import com.google.common.base.Joiner;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.ICondition;
+import games.strategy.triplea.ui.UnitIconProperties.MalformedUnitIconDescriptorException;
 import games.strategy.triplea.ui.UnitIconProperties.UnitIconDescriptor;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -140,17 +141,17 @@ final class UnitIconPropertiesTest {
     @Test
     void shouldReturnNullObjectWhenIconIdTokenCountNotEqualToOneOrTwo() {
       assertThrows(
-          UnitIconProperties.MalformedUnitIconDescriptorException.class,
+          MalformedUnitIconDescriptorException.class,
           () -> UnitIconProperties.parseUnitIconDescriptor("", ICON_1_PATH));
       assertThrows(
-          UnitIconProperties.MalformedUnitIconDescriptorException.class,
+          MalformedUnitIconDescriptorException.class,
           () -> UnitIconProperties.parseUnitIconDescriptor("a1.a2.a3;b1;c1", ICON_1_PATH));
     }
 
     @Test
     void shouldReturnNullObjectWhenUnitTypeIdTokenCountNotEqualToThree() {
       assertThrows(
-          UnitIconProperties.MalformedUnitIconDescriptorException.class,
+          MalformedUnitIconDescriptorException.class,
           () -> UnitIconProperties.parseUnitIconDescriptor("a1.a2;b1", ICON_1_PATH));
     }
   }
@@ -162,6 +163,40 @@ final class UnitIconPropertiesTest {
       @Test
       void shouldBeEquatableAndHashable() {
         EqualsVerifier.forClass(UnitIconDescriptor.class).verify();
+      }
+    }
+
+    @Nested
+    final class MatchesGameNameTest {
+      private final UnitIconDescriptor unitIconDescriptor =
+          new UnitIconDescriptor(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, Optional.empty(), ICON_1_PATH);
+
+      @Test
+      void shouldReturnTrueWhenGameNameMatches() {
+        assertThat(unitIconDescriptor.matches(GAME_NAME), is(true));
+      }
+
+      @Test
+      void shouldReturnFalseWhenGameNameDoesNotMatch() {
+        assertThat(unitIconDescriptor.matches("otherGameName"), is(false));
+      }
+    }
+
+    @Nested
+    final class MatchesGameNameAndPlayerNameAndUnitTypeNameTest {
+      private final UnitIconDescriptor unitIconDescriptor =
+          new UnitIconDescriptor(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, Optional.empty(), ICON_1_PATH);
+
+      @Test
+      void shouldReturnTrueWhenGameNameAndPlayerNameAndUnitTypeNameMatches() {
+        assertThat(unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME), is(true));
+      }
+
+      @Test
+      void shouldReturnFalseWhenGameNameOrPlayerNameOrUnitTypeNameDoesNotMatch() {
+        assertThat(unitIconDescriptor.matches("otherGameName", PLAYER_NAME, UNIT_TYPE_NAME), is(false));
+        assertThat(unitIconDescriptor.matches(GAME_NAME, "otherPlayerName", UNIT_TYPE_NAME), is(false));
+        assertThat(unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, "otherUnitTypeName"), is(false));
       }
     }
   }

@@ -112,8 +112,7 @@ public final class UnitIconProperties extends PropertyFile {
   private void initializeConditionsStatus(final GameData gameData, final ConditionSupplier conditionSupplier) {
     final String gameName = normalizeGameName(gameData);
     for (final UnitIconDescriptor unitIconDescriptor : unitIconDescriptors) {
-      // TODO: eventually extract a matches(gameName) method
-      if (gameName.equals(unitIconDescriptor.gameName)) {
+      if (unitIconDescriptor.matches(gameName)) {
         unitIconDescriptor.conditionName.ifPresent(conditionName -> {
           final @Nullable ICondition condition =
               conditionSupplier.getCondition(unitIconDescriptor.playerName, conditionName, gameData);
@@ -150,12 +149,8 @@ public final class UnitIconProperties extends PropertyFile {
       final ConditionSupplier conditionSupplier) {
     final List<String> imagePaths = new ArrayList<>();
     final String gameName = normalizeGameName(gameData);
-    // TODO: convert to stream
     for (final UnitIconDescriptor unitIconDescriptor : unitIconDescriptors) {
-      // TODO: eventually extract a matches(gameName, playerName, unitTypeName) method
-      if (gameName.equals(unitIconDescriptor.gameName)
-          && playerName.equals(unitIconDescriptor.playerName)
-          && unitTypeName.equals(unitIconDescriptor.unitTypeName)) {
+      if (unitIconDescriptor.matches(gameName, playerName, unitTypeName)) {
         OptionalUtils.ifPresentOrElse(
             unitIconDescriptor.conditionName,
             conditionName -> {
@@ -201,6 +196,16 @@ public final class UnitIconProperties extends PropertyFile {
     final String unitTypeName;
     final Optional<String> conditionName;
     final String unitIconPath;
+
+    boolean matches(final String gameName) {
+      return this.gameName.equals(gameName);
+    }
+
+    boolean matches(final String gameName, final String playerName, final String unitTypeName) {
+      return this.gameName.equals(gameName)
+          && this.playerName.equals(playerName)
+          && this.unitTypeName.equals(unitTypeName);
+    }
   }
 
   @VisibleForTesting
