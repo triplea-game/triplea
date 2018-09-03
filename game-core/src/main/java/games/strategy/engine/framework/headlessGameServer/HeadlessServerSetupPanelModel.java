@@ -3,6 +3,7 @@ package games.strategy.engine.framework.headlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.startup.ui.ISetupPanel;
 
 /**
  * Setup panel model for headless server.
@@ -19,7 +20,20 @@ public class HeadlessServerSetupPanelModel extends SetupPanelModel {
       model.cancel();
       return;
     }
-    final HeadlessServerSetup serverSetup = new HeadlessServerSetup(model, gameSelectorModel);
-    setGameTypePanel(serverSetup);
+    setGameTypePanel(new HeadlessServerSetup(model, gameSelectorModel));
+  }
+
+  @Override
+  protected void setGameTypePanel(final ISetupPanel panel) {
+    if (panel == null || panel instanceof  HeadlessServerSetup) {
+      super.setGameTypePanel(panel);
+    } else {
+      throw new IllegalArgumentException("Invalid panel of type " + panel.getClass());
+    }
+  }
+
+  @Override
+  public HeadlessServerSetup getPanel() {
+    return (HeadlessServerSetup) super.getPanel();
   }
 }

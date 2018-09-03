@@ -29,7 +29,6 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
 import games.strategy.engine.framework.network.ui.MutePlayerAction;
@@ -43,7 +42,6 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.net.IServerMessenger;
-import games.strategy.util.Interruptibles;
 
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
@@ -68,26 +66,10 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     internalPlayerListChanged();
   }
 
-  void createLobbyWatcher() {
+  private void createLobbyWatcher() {
     lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), this,
         lobbyWatcher.getInGameLobbyWatcher()));
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
-  }
-
-  public synchronized void repostLobbyWatcher(final IGame game) {
-    if (game != null) {
-      return;
-    }
-    if (canGameStart()) {
-      return;
-    }
-    shutDownLobbyWatcher();
-    Interruptibles.sleep(1000);
-    createLobbyWatcher();
-  }
-
-  void shutDownLobbyWatcher() {
-    lobbyWatcher.shutDown();
   }
 
   private void createComponents() {
