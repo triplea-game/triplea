@@ -109,6 +109,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
   /**
    * RelatedPlayers is a class of 2 players that are related, used in relationships.
    */
+  @SuppressWarnings("ClassCanBeStatic") // TODO: make class static upon next incompatible release
   public class RelatedPlayers implements Serializable {
     private static final long serialVersionUID = 2124258606502106751L;
 
