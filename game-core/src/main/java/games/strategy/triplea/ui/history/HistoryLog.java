@@ -22,6 +22,8 @@ import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -233,9 +235,8 @@ public class HistoryLog extends JFrame {
               logWriter.println(indent + moreIndent + title);
             } else {
               // dice roll
-              // Japanese roll dice for 1 armour in Russia, round 1
               logWriter.print(indent + moreIndent + diceMsg1);
-              final String player = diceMsg1.split(" roll ")[0];
+              final String player = parsePlayerNameFromDiceRollMessage(diceMsg1);
               final DiceRoll diceRoll = (DiceRoll) details;
               final int hits = diceRoll.getHits();
               int rolls = 0;
@@ -400,6 +401,11 @@ public class HistoryLog extends JFrame {
     }
     logWriter.println();
     textArea.setText(stringWriter.toString());
+  }
+
+  @VisibleForTesting
+  static String parsePlayerNameFromDiceRollMessage(final String message) {
+    return message.split(" roll ")[0];
   }
 
   /**
