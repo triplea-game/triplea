@@ -153,7 +153,7 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
 
   @Override
   public String getTitle() {
-    return nodeSupplier.get().getTitle();
+    return "";
   }
 
   @Override

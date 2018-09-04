@@ -109,11 +109,6 @@ class JavaFxSelectionComponentFactory {
       public void reset() {
         spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.value()));
       }
-
-      @Override
-      public String getTitle() {
-        return "";
-      }
     };
   }
 
