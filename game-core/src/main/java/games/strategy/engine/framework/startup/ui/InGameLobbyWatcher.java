@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
+import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
@@ -166,18 +167,21 @@ public class InGameLobbyWatcher {
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
             ? "-"
             : oldWatcher.gameDescription.getRound();
-    gameDescription = new GameDescription(
-        messenger.getLocalNode(),
-        serverMessenger.getLocalNode().getPort(),
-        startDateTime,
-        "???",
-        playerCount,
-        gameStatus,
-        gameRound,
-        serverMessenger.getLocalNode().getName(),
-        System.getProperty(LOBBY_GAME_COMMENTS),
-        passworded,
-        ClientContext.engineVersion().toString(), "0");
+    gameDescription = GameDescription.builder()
+        .hostedBy(messenger.getLocalNode())
+        .port(serverMessenger.getLocalNode().getPort())
+        .startDateTime(startDateTime)
+        .gameName("???")
+        .playerCount(playerCount)
+        .status(gameStatus)
+        .round(gameRound)
+        .hostName(serverMessenger.getLocalNode().getName())
+        .comment(System.getProperty(LOBBY_GAME_COMMENTS))
+        .passworded(passworded)
+        .engineVersion(ClientContext.engineVersion().toString())
+        .gameVersion("0")
+        .botSupportEmail(HeadlessGameServer.headless() ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "")
+        .build();
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
     synchronized (mutex) {

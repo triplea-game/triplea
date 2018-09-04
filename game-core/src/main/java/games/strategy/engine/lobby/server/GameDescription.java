@@ -7,13 +7,11 @@ import java.io.ObjectOutput;
 import java.time.Instant;
 import java.util.Optional;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
-import games.strategy.engine.framework.CliProperties;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
+import lombok.Builder;
 
 // TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
 
@@ -69,7 +67,7 @@ public class GameDescription implements Externalizable, Cloneable {
   private boolean passworded;
   /**
    * Engine version, used to be useful when multiple engine versions were in same lobby,
-   * now that lobby has homogonous versions and should going forward, this column is no
+   * now that lobby has homogeneous versions and should going forward, this column is no
    * longer useful.
    *
    * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
@@ -77,16 +75,26 @@ public class GameDescription implements Externalizable, Cloneable {
   @Deprecated
   private String engineVersion;
   private String gameVersion;
-  private String botSupportEmail = (HeadlessGameServer.getInstance() != null)
-      ? System.getProperty(CliProperties.LOBBY_GAME_SUPPORT_EMAIL, "")
-      : "";
+  private String botSupportEmail = "";
 
   // if you add a field, add it to write/read object as well for Externalizable
   public GameDescription() {}
 
-  public GameDescription(final INode hostedBy, final int port, final Instant startDateTime, final String gameName,
-      final int playerCount, final GameStatus status, final String round, final String hostName, final String comment,
-      final boolean passworded, final String engineVersion, final String gameVersion) {
+  @Builder
+  private GameDescription(
+      final INode hostedBy,
+      final int port,
+      final Instant startDateTime,
+      final String gameName,
+      final int playerCount,
+      final GameStatus status,
+      final String round,
+      final String hostName,
+      final String comment,
+      final boolean passworded,
+      final String engineVersion,
+      final String gameVersion,
+      final String botSupportEmail) {
     this.hostName = hostName;
     this.hostedBy = hostedBy;
     this.port = port;
@@ -99,6 +107,7 @@ public class GameDescription implements Externalizable, Cloneable {
     this.passworded = passworded;
     this.engineVersion = engineVersion;
     this.gameVersion = gameVersion;
+    this.botSupportEmail = Strings.nullToEmpty(botSupportEmail);
   }
 
   @Override
@@ -182,11 +191,6 @@ public class GameDescription implements Externalizable, Cloneable {
 
   public Optional<String> getBotSupportEmail() {
     return Optional.ofNullable(Strings.emptyToNull(botSupportEmail));
-  }
-
-  @VisibleForTesting
-  public void setBotSupportEmail(final String botSupportEmail) {
-    this.botSupportEmail = botSupportEmail;
   }
 
   public boolean isBot() {
