@@ -267,7 +267,7 @@ public class HeadlessGameServer {
           try {
             serverGame.saveGame(new File(
                 ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
-                SaveGameFileChooser.getAutoSaveFileName()));
+                SaveGameFileChooser.getHeadlessAutoSaveFileName()));
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to save game", e);
           }

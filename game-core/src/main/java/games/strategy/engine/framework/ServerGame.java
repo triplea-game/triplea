@@ -26,6 +26,7 @@ import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
+import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -442,8 +443,8 @@ public class ServerGame extends AbstractGame {
     if (gameData.getSequence().next()) {
       gameData.getHistory().getHistoryWriter().startNextRound(gameData.getSequence().getRound());
       autoSave(gameData.getSequence().getRound() % 2 == 0
-          ? SaveGameFileChooser.getAutoSaveEvenFileName()
-          : SaveGameFileChooser.getAutoSaveOddFileName());
+          ? SaveGameFileChooser.getEvenRoundAutoSaveFileName(HeadlessGameServer.headless())
+          : SaveGameFileChooser.getOddRoundAutoSaveFileName(HeadlessGameServer.headless()));
     }
     if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
       autoSave(getAutoSaveAfterFileNameForDelegate(currentDelegate));
