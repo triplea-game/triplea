@@ -44,5 +44,10 @@ public interface GameSettingUiBinding<T> {
    */
   String getTitle();
 
+  /**
+   * Returns the setting type used to group related settings in the UI.
+   */
+  SettingType getType();
+
   void resetToDefault();
 }

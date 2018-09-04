@@ -100,7 +100,7 @@ public enum SettingsWindow {
 
   private static List<ClientSettingSwingUiBinding> getSettingsByType(final SettingType type) {
     return Arrays.stream(ClientSettingSwingUiBinding.values())
-        .filter(setting -> setting.type == type)
+        .filter(setting -> setting.getType().equals(type))
         .collect(Collectors.toList());
   }
 
