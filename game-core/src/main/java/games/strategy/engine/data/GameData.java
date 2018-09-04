@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.swing.SwingUtilities;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 
 import games.strategy.engine.data.events.GameDataChangeListener;
@@ -289,7 +290,8 @@ public class GameData implements Serializable {
     return gameVersion;
   }
 
-  void setGameName(final String gameName) {
+  @VisibleForTesting
+  public void setGameName(final String gameName) {
     this.gameName = gameName;
   }
 

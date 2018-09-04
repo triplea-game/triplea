@@ -1,10 +1,13 @@
 package games.strategy.triplea.ui;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -22,6 +25,13 @@ public class OrderedProperties extends Properties {
   }
 
   @Override
+  public Set<Map.Entry<Object, Object>> entrySet() {
+    return keys.stream()
+        .map(key -> new AbstractMap.SimpleEntry<>(key, get(key)))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  @Override
   public synchronized Enumeration<Object> keys() {
     return Collections.enumeration(keys);
   }
@@ -35,6 +45,12 @@ public class OrderedProperties extends Properties {
   public synchronized Object put(final Object key, final Object value) {
     keys.add(key);
     return super.put(key, value);
+  }
+
+  @Override
+  public synchronized void putAll(final Map<?, ?> m) {
+    keys.addAll(m.keySet());
+    super.putAll(m);
   }
 
   @Override
