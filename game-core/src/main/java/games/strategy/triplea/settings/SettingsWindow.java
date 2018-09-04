@@ -121,7 +121,7 @@ public enum SettingsWindow {
       final int topInset = (row == 0) ? 0 : 10;
       panel.add(
           JLabelBuilder.builder()
-              .text(setting.title)
+              .text(setting.getTitle())
               .build(),
           new GridBagConstraints(0, row, 1, 1, 0.0, 0.0,
               GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(topInset, 0, 0, 0), 0, 0));

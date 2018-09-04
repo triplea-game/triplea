@@ -182,7 +182,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "Just a proof-of-concept. Requires a restart.");
 
   private final SettingType type;
-  final String title;
+  private final String title;
   final String description;
   private final Supplier<SelectionComponent<JComponent>> selectionComponentBuilder;
 
