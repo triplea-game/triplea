@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -47,6 +48,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.ObjectUtils;
 import games.strategy.util.PredicateBuilder;
 import lombok.extern.java.Log;
 
@@ -715,7 +717,7 @@ public class MovePanel extends AbstractMovePanel {
       final boolean rightMouse = me.isRightButton();
       final boolean isMiddleMouseButton = me.getButton() == MouseEvent.BUTTON2;
       final boolean noSelectedTerritory = (firstSelectedTerritory == null);
-      final boolean isFirstSelectedTerritory = (firstSelectedTerritory == t);
+      final boolean isFirstSelectedTerritory = Objects.equals(firstSelectedTerritory, t);
       // select units
       final GameData data = getData();
       data.acquireReadLock();
@@ -1162,7 +1164,9 @@ public class MovePanel extends AbstractMovePanel {
           // if we find that two categories are compatable, and some units
           // are selected from one category, but not the other
           // then the user has to refine his selection
-          if (category1 != category2 && category1.getType() == category2.getType() && !category1.equals(category2)) {
+          if (!ObjectUtils.referenceEquals(category1, category2)
+              && Objects.equals(category1.getType(), category2.getType())
+              && !category1.equals(category2)) {
             // if we are moving all the units from both categories, then nothing to choose
             if (units.containsAll(category1.getUnits()) && units.containsAll(category2.getUnits())) {
               continue;
@@ -1224,7 +1228,7 @@ public class MovePanel extends AbstractMovePanel {
       final PlayerID owner = getUnitOwner(selectedUnits);
       final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
       final boolean someOwned = units.stream().anyMatch(match);
-      final boolean isCorrectTerritory = firstSelectedTerritory == null || firstSelectedTerritory == territory;
+      final boolean isCorrectTerritory = (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
       if (someOwned && isCorrectTerritory) {
         final Map<Territory, List<Unit>> highlight = new HashMap<>();
         highlight.put(territory, units);
@@ -1282,7 +1286,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   final void setFirstSelectedTerritory(final Territory firstSelectedTerritory) {
-    if (this.firstSelectedTerritory == firstSelectedTerritory) {
+    if (Objects.equals(this.firstSelectedTerritory, firstSelectedTerritory)) {
       return;
     }
     this.firstSelectedTerritory = firstSelectedTerritory;
