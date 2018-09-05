@@ -116,7 +116,7 @@ public class GameRunner {
         LogManager.getLogManager().getLogger("").addHandler(new ConsoleHandler(
             logMsg -> {
               if (logMsg.getLevel().intValue() > Level.INFO.intValue()) {
-                ErrorMessage.show(logMsg.getMessage());
+                ErrorMessage.show(logMsg);
               }
               console.append(formatter.format(logMsg));
             }));
