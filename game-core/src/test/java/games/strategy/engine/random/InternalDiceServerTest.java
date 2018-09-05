@@ -31,7 +31,7 @@ final class InternalDiceServerTest {
     void shouldThrowExceptionWhenStringIsMalformed() {
       assertThrows(NumberFormatException.class, () -> getDice(""));
       assertThrows(NumberFormatException.class, () -> getDice("A"));
-      // assertThrows(NumberFormatException.class, () -> getDice("1,"));
+      assertThrows(NumberFormatException.class, () -> getDice("1,"));
       assertThrows(NumberFormatException.class, () -> getDice(",2"));
       assertThrows(NumberFormatException.class, () -> getDice("1,,3"));
       assertThrows(NumberFormatException.class, () -> getDice("1,A,3"));

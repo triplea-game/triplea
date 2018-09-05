@@ -2,6 +2,8 @@ package games.strategy.engine.random;
 
 import java.util.Objects;
 
+import com.google.common.base.Splitter;
+
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 
@@ -13,6 +15,8 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
  */
 public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
+  private static final char DICE_SEPARATOR = ',';
+
   private final transient IRandomSource _randomSource;
 
   public InternalDiceServer() {
@@ -31,19 +35,16 @@ public class InternalDiceServer implements IRemoteDiceServer {
     final int[] ints = _randomSource.getRandom(max, numDice, "Internal Dice Server");
     final StringBuilder sb = new StringBuilder();
     for (final int i : ints) {
-      sb.append(i).append(",");
+      sb.append(i).append(DICE_SEPARATOR);
     }
     return sb.substring(0, sb.length() - 1);
   }
 
   @Override
   public int[] getDice(final String string, final int count) {
-    final String[] strArray = string.split(",");
-    final int[] intArray = new int[strArray.length];
-    for (int i = 0; i < strArray.length; i++) {
-      intArray[i] = Integer.parseInt(strArray[i]);
-    }
-    return intArray;
+    return Splitter.on(DICE_SEPARATOR).splitToList(string).stream()
+        .mapToInt(Integer::parseInt)
+        .toArray();
   }
 
   @Override
