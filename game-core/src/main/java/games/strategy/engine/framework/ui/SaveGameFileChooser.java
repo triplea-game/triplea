@@ -8,25 +8,41 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.framework.GameDataFileUtils;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.settings.ClientSetting;
 
-public class SaveGameFileChooser extends JFileChooser {
+/**
+ * A file chooser for save games. Defaults to the user's configured save game folder.
+ *
+ * <p>
+ * Also provides several methods for getting the names of auto-save files periodically generated during a game.
+ * </p>
+ */
+public final class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
-  private static final String AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave");
-  private static final String AUTOSAVE_ODD_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_odd");
-  private static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_even");
+
+  @VisibleForTesting
+  static final String HEADLESS_AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave");
+  @VisibleForTesting
+  static final String ODD_ROUND_AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_odd");
+  @VisibleForTesting
+  static final String EVEN_ROUND_AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_even");
+
   private static SaveGameFileChooser instance;
 
+  /**
+   * The available auto-saves that can be loaded by a headless game server.
+   */
   public enum AUTOSAVE_TYPE {
-    AUTOSAVE(getAutoSaveFileName()),
+    AUTOSAVE(getHeadlessAutoSaveFileName()),
 
     AUTOSAVE2(""),
 
-    AUTOSAVE_ODD(getAutoSaveOddFileName()),
+    AUTOSAVE_ODD(getOddRoundAutoSaveFileName(true)),
 
-    AUTOSAVE_EVEN(getAutoSaveEvenFileName());
+    AUTOSAVE_EVEN(getEvenRoundAutoSaveFileName(true));
 
     private final String fileName;
 
@@ -39,37 +55,26 @@ public class SaveGameFileChooser extends JFileChooser {
     }
   }
 
-  public static String getAutoSaveFileName() {
-    if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(TRIPLEA_NAME,
-          System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
-      if (saveSuffix.length() > 0) {
-        return saveSuffix + "_" + AUTOSAVE_FILE_NAME;
-      }
-    }
-    return AUTOSAVE_FILE_NAME;
+  public static String getHeadlessAutoSaveFileName() {
+    return getAutoSaveFileName(HEADLESS_AUTOSAVE_FILE_NAME, true);
   }
 
-  public static String getAutoSaveOddFileName() {
-    if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(TRIPLEA_NAME,
-          System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
-      if (saveSuffix.length() > 0) {
-        return saveSuffix + "_" + AUTOSAVE_ODD_ROUND_FILE_NAME;
+  private static String getAutoSaveFileName(final String baseFileName, final boolean headless) {
+    if (headless) {
+      final String prefix = System.getProperty(TRIPLEA_NAME, System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
+      if (!prefix.isEmpty()) {
+        return prefix + "_" + baseFileName;
       }
     }
-    return AUTOSAVE_ODD_ROUND_FILE_NAME;
+    return baseFileName;
   }
 
-  public static String getAutoSaveEvenFileName() {
-    if (HeadlessGameServer.headless()) {
-      final String saveSuffix = System.getProperty(TRIPLEA_NAME,
-          System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
-      if (saveSuffix.length() > 0) {
-        return saveSuffix + "_" + AUTOSAVE_EVEN_ROUND_FILE_NAME;
-      }
-    }
-    return AUTOSAVE_EVEN_ROUND_FILE_NAME;
+  public static String getOddRoundAutoSaveFileName(final boolean headless) {
+    return getAutoSaveFileName(ODD_ROUND_AUTOSAVE_FILE_NAME, headless);
+  }
+
+  public static String getEvenRoundAutoSaveFileName(final boolean headless) {
+    return getAutoSaveFileName(EVEN_ROUND_AUTOSAVE_FILE_NAME, headless);
   }
 
   public static SaveGameFileChooser getInstance() {

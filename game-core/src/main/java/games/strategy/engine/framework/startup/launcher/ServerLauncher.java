@@ -212,7 +212,7 @@ public class ServerLauncher extends AbstractLauncher {
             serverModel.setAllPlayersToNullNodes();
             final File f1 = new File(
                 ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
-                SaveGameFileChooser.getAutoSaveFileName());
+                SaveGameFileChooser.getHeadlessAutoSaveFileName());
             if (f1.exists()) {
               gameSelectorModel.load(f1);
             } else {
@@ -316,7 +316,7 @@ public class ServerLauncher extends AbstractLauncher {
   private void saveAndEndGame(final INode node) {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = headless
-        ? new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), SaveGameFileChooser.getAutoSaveFileName())
+        ? new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), SaveGameFileChooser.getHeadlessAutoSaveFileName())
         : new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), getConnectionLostFileName());
     try {
       serverGame.saveGame(f);
