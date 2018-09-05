@@ -35,9 +35,7 @@ public class RateLimitingThrottle implements Consumer<ErrorReport> {
   @Override
   public void accept(final ErrorReport errorReport) {
     final Instant nextInstant = instantSupplier.get();
-
-    final long millisSinceLast;
-    millisSinceLast = lastInstant.until(nextInstant, ChronoUnit.MILLIS);
+    final long millisSinceLast = lastInstant.until(nextInstant, ChronoUnit.MILLIS);
     lastInstant = nextInstant;
 
     if (millisSinceLast < minMillisBetweenRequests) {
