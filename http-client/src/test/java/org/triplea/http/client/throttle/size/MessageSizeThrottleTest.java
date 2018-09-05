@@ -1,6 +1,9 @@
 package org.triplea.http.client.throttle.size;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.triplea.test.common.Assertions.assertNotThrows;
+
 import org.junit.jupiter.api.Test;
 
 import org.triplea.http.data.error.report.ErrorReport;
@@ -16,7 +19,7 @@ class MessageSizeThrottleTest {
   void messageSizeOverLimitIsNotAllowed() {
     final int characterLimit = ERROR_REPORT.toString().length() - 1;
 
-    Assertions.assertThrows(MessageExceedsMaxSizeException.class,
+    assertThrows(MessageExceedsMaxSizeException.class,
         () -> new MessageSizeThrottle(characterLimit)
             .accept(ERROR_REPORT));
   }
@@ -26,8 +29,7 @@ class MessageSizeThrottleTest {
   void messageSizeUnderLimitIsAllowed() {
     final int characterLimit = ERROR_REPORT.toString().length() + 1;
 
-    new MessageSizeThrottle(characterLimit)
-        .accept(ERROR_REPORT);
-    // no exceptions expected
+    assertNotThrows(() -> new MessageSizeThrottle(characterLimit)
+        .accept(ERROR_REPORT));
   }
 }
