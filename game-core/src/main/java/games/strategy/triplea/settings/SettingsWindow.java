@@ -100,7 +100,7 @@ public enum SettingsWindow {
 
   private static List<ClientSettingSwingUiBinding> getSettingsByType(final SettingType type) {
     return Arrays.stream(ClientSettingSwingUiBinding.values())
-        .filter(setting -> setting.type == type)
+        .filter(setting -> setting.getType().equals(type))
         .collect(Collectors.toList());
   }
 
@@ -121,7 +121,7 @@ public enum SettingsWindow {
       final int topInset = (row == 0) ? 0 : 10;
       panel.add(
           JLabelBuilder.builder()
-              .text(setting.title)
+              .text(setting.getTitle())
               .build(),
           new GridBagConstraints(0, row, 1, 1, 0.0, 0.0,
               GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(topInset, 0, 0, 0), 0, 0));

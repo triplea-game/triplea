@@ -114,17 +114,16 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
       SettingType.TESTING,
       ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI);
 
-  private final SettingType category;
+  private final SettingType type;
   private final Supplier<SelectionComponent<Region>> nodeSupplier;
 
-  ClientSettingJavaFxUiBinding(final SettingType category,
-      final Supplier<SelectionComponent<Region>> nodeSupplier) {
-    this.category = category;
+  ClientSettingJavaFxUiBinding(final SettingType type, final Supplier<SelectionComponent<Region>> nodeSupplier) {
+    this.type = type;
     this.nodeSupplier = Suppliers.memoize(nodeSupplier::get);
   }
 
-  ClientSettingJavaFxUiBinding(final SettingType category, final ClientSetting setting) {
-    this(category, JavaFxSelectionComponentFactory.toggleButton(setting));
+  ClientSettingJavaFxUiBinding(final SettingType type, final ClientSetting setting) {
+    this(type, JavaFxSelectionComponentFactory.toggleButton(setting));
   }
 
   @Override
@@ -154,7 +153,7 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
 
   @Override
   public String getTitle() {
-    return nodeSupplier.get().getTitle();
+    return "";
   }
 
   @Override
@@ -162,7 +161,8 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
     nodeSupplier.get().resetToDefault();
   }
 
-  public SettingType getCategory() {
-    return category;
+  @Override
+  public SettingType getType() {
+    return type;
   }
 }

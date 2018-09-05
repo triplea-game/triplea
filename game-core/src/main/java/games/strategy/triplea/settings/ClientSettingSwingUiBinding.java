@@ -181,9 +181,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Enable the experimental JavaFX UI. Not recommended. Isn't working yet.\n"
           + "Just a proof-of-concept. Requires a restart.");
 
-
-  final SettingType type;
-  final String title;
+  private final SettingType type;
+  private final String title;
   final String description;
   private final Supplier<SelectionComponent<JComponent>> selectionComponentBuilder;
 
@@ -252,5 +251,10 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   @Override
   public String getTitle() {
     return title;
+  }
+
+  @Override
+  public SettingType getType() {
+    return type;
   }
 }

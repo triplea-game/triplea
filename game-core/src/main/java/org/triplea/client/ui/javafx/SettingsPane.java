@@ -56,7 +56,7 @@ class SettingsPane extends StackPane {
       tab.setContent(new ScrollPane(pane));
       pane.prefWidthProperty().bind(tabPane.widthProperty());
       Arrays.stream(ClientSettingJavaFxUiBinding.values())
-          .filter(b -> b.getCategory() == type)
+          .filter(b -> b.getType().equals(type))
           .forEach(b -> {
             final Tooltip tooltip = new Tooltip(bundle.getString("settings.tooltip." + b.name().toLowerCase()));
             final Region element = b.buildSelectionComponent();

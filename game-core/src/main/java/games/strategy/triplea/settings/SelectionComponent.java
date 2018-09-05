@@ -34,8 +34,4 @@ public interface SelectionComponent<T> {
   void resetToDefault();
 
   void reset();
-
-  default String getTitle() {
-    return "";
-  }
 }
