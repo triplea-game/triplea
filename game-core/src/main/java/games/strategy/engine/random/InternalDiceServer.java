@@ -17,11 +17,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
   private static final char DICE_SEPARATOR = ',';
 
-  private final transient IRandomSource randomSource;
-
-  public InternalDiceServer() {
-    randomSource = new PlainRandomSource();
-  }
+  private final transient IRandomSource randomSource = new PlainRandomSource();
 
   @Override
   public EditorPanel getEditor() {
