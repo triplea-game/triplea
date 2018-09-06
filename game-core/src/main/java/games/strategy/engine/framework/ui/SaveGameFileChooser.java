@@ -38,7 +38,15 @@ public final class SaveGameFileChooser extends JFileChooser {
   public enum AUTOSAVE_TYPE {
     AUTOSAVE(getHeadlessAutoSaveFileName()),
 
-    AUTOSAVE2(""),
+    /**
+     * A second auto-save that a headless game server will alternate between (the other being {@link #AUTOSAVE}).
+     *
+     * @deprecated No longer supported. If an old client happens to request this auto-save, it now forwards to the
+     *             same file as {@link #AUTOSAVE} instead of simply doing nothing. Remove upon next stable release (i.e.
+     *             once no stable client will ever request this auto-save).
+     */
+    @Deprecated
+    AUTOSAVE2(getHeadlessAutoSaveFileName()),
 
     AUTOSAVE_ODD(getOddRoundAutoSaveFileName(true)),
 
