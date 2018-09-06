@@ -369,7 +369,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
-      if (HeadlessGameServer.getInstance() == null || autoSaveType == SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE2) {
+      if (HeadlessGameServer.getInstance() == null) {
         return;
       }
       final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
