@@ -1,5 +1,7 @@
 package games.strategy.engine.framework;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -349,27 +351,20 @@ public class ServerGame extends AbstractGame {
     gameData.getGameLoader().shutDown();
   }
 
-  private void autoSave(final String fileName) {
-    final File autoSaveDir = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), "autoSave");
-    // Above creates an autoSave subdirectorty pathname below the game games path
-    if (!autoSaveDir.exists()) {
-      autoSaveDir.mkdirs();
-    }
-    saveGame(new File(autoSaveDir, fileName));
-  }
-
-  private void autoSaveBefore(final IDelegate currentDelegate) {
-    autoSave(getAutoSaveBeforeFileName(currentDelegate.getName()));
-  }
-
-  private static String getAutoSaveBeforeFileName(final String stepName) {
-    final String baseFileName = "autosaveBefore" + stepName.substring(0, 1).toUpperCase() + stepName.substring(1);
-    return GameDataFileUtils.addExtension(baseFileName);
+  private void autoSaveBefore(final IDelegate delegate) {
+    saveGame(SaveGameFileChooser.getBeforeStepAutoSaveFile(delegate.getName()));
   }
 
   @Override
   public void saveGame(final File file) {
-    try (FileOutputStream fout = new FileOutputStream(file)) {
+    checkNotNull(file);
+
+    final File parentDir = file.getParentFile();
+    if (!parentDir.exists() && !parentDir.mkdirs()) {
+      log.severe("Failed to create save game directory (or one of its ancestors): " + parentDir.getAbsolutePath());
+    }
+
+    try (OutputStream fout = new FileOutputStream(file)) {
       saveGame(fout);
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to save game to file: " + file.getAbsolutePath(), e);
@@ -434,7 +429,7 @@ public class ServerGame extends AbstractGame {
     final boolean autoSaveThisDelegate = currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
         && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
     if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
-      autoSave(getAutoSaveAfterFileNameForGameStep(currentStep));
+      autoSaveAfter(currentStep);
     }
     endStep();
     if (isGameOver) {
@@ -442,28 +437,23 @@ public class ServerGame extends AbstractGame {
     }
     if (gameData.getSequence().next()) {
       gameData.getHistory().getHistoryWriter().startNextRound(gameData.getSequence().getRound());
-      autoSave(gameData.getSequence().getRound() % 2 == 0
-          ? SaveGameFileChooser.getEvenRoundAutoSaveFileName(HeadlessGameServer.headless())
-          : SaveGameFileChooser.getOddRoundAutoSaveFileName(HeadlessGameServer.headless()));
+      saveGame(gameData.getSequence().getRound() % 2 == 0
+          ? SaveGameFileChooser.getEvenRoundAutoSaveFile(HeadlessGameServer.headless())
+          : SaveGameFileChooser.getOddRoundAutoSaveFile(HeadlessGameServer.headless()));
     }
     if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
-      autoSave(getAutoSaveAfterFileNameForDelegate(currentDelegate));
+      autoSaveAfter(currentDelegate);
     }
   }
 
-  private static String getAutoSaveAfterFileNameForGameStep(final GameStep gameStep) {
-    return getAutoSaveAfterFileName(gameStep.getName());
+  private void autoSaveAfter(final GameStep gameStep) {
+    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(gameStep.getName()));
   }
 
-  private static String getAutoSaveAfterFileNameForDelegate(final IDelegate delegate) {
+  private void autoSaveAfter(final IDelegate delegate) {
     final String typeName = delegate.getClass().getTypeName();
     final String stepName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
-    return getAutoSaveAfterFileName(stepName);
-  }
-
-  private static String getAutoSaveAfterFileName(final String stepName) {
-    final String baseFileName = "autosaveAfter" + stepName.substring(0, 1).toUpperCase() + stepName.substring(1);
-    return GameDataFileUtils.addExtension(baseFileName);
+    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName));
   }
 
   private void endStep() {

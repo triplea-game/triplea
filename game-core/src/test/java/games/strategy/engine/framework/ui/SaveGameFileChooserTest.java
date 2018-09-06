@@ -1,38 +1,55 @@
 package games.strategy.engine.framework.ui;
 
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.EVEN_ROUND_AUTOSAVE_FILE_NAME;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.HEADLESS_AUTOSAVE_FILE_NAME;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.ODD_ROUND_AUTOSAVE_FILE_NAME;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getEvenRoundAutoSaveFileName;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getHeadlessAutoSaveFileName;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getOddRoundAutoSaveFileName;
+import static games.strategy.engine.framework.ui.SaveGameFileChooser.getAfterStepAutoSaveFile;
+import static games.strategy.engine.framework.ui.SaveGameFileChooser.getAutoSaveFile;
+import static games.strategy.engine.framework.ui.SaveGameFileChooser.getAutoSaveFileName;
+import static games.strategy.engine.framework.ui.SaveGameFileChooser.getBeforeStepAutoSaveFile;
+import static games.strategy.engine.framework.ui.SaveGameFileChooser.getLostConnectionAutoSaveFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.framework.CliProperties;
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
+import games.strategy.triplea.settings.ClientSetting;
 
-final class SaveGameFileChooserTest {
-  abstract class AbstractAutoSaveFileNameTestCase {
-    static final String HOST_NAME = "hostName";
-    static final String PLAYER_NAME = "playerName";
+final class SaveGameFileChooserTest extends AbstractClientSettingTestCase {
+  @Nested
+  final class GetAutoSaveFileTest {
+    @Test
+    void shouldReturnFileInAutoSaveFolder() {
+      ClientSetting.SAVE_GAMES_FOLDER_PATH.save(Paths.get("path", "to", "saves").toString());
 
-    void givenHostName(final String hostName) {
+      final String fileName = "savegame.tsvg";
+      assertThat(getAutoSaveFile(fileName), is(Paths.get("path", "to", "saves", "autoSave", fileName).toFile()));
+    }
+  }
+
+  @Nested
+  final class GetAutoSaveFileNameTest {
+    private static final String BASE_FILE_NAME = "baseFileName";
+    private static final String HOST_NAME = "hostName";
+    private static final String PLAYER_NAME = "playerName";
+
+    private void givenHostName(final String hostName) {
       System.setProperty(CliProperties.LOBBY_GAME_HOSTED_BY, hostName);
     }
 
-    void givenHostNameNotDefined() {
+    private void givenHostNameNotDefined() {
       System.clearProperty(CliProperties.LOBBY_GAME_HOSTED_BY);
     }
 
-    void givenPlayerName(final String playerName) {
+    private void givenPlayerName(final String playerName) {
       System.setProperty(CliProperties.TRIPLEA_NAME, playerName);
     }
 
-    void givenPlayerNameNotDefined() {
+    private void givenPlayerNameNotDefined() {
       System.clearProperty(CliProperties.TRIPLEA_NAME);
     }
 
@@ -41,40 +58,10 @@ final class SaveGameFileChooserTest {
       givenHostNameNotDefined();
       givenPlayerNameNotDefined();
     }
-  }
 
-  @Nested
-  final class GetHeadlessAutoSaveFileNameTest extends AbstractAutoSaveFileNameTestCase {
-    @Test
-    void shouldPrefixFileNameWithPlayerName() {
-      givenPlayerName(PLAYER_NAME);
-      givenHostName(HOST_NAME);
-
-      assertThat(getHeadlessAutoSaveFileName(), is(PLAYER_NAME + "_" + HEADLESS_AUTOSAVE_FILE_NAME));
-    }
-
-    @Test
-    void shouldPrefixFileNameWithHostNameWhenPlayerNameNotDefined() {
-      givenPlayerNameNotDefined();
-      givenHostName(HOST_NAME);
-
-      assertThat(getHeadlessAutoSaveFileName(), is(HOST_NAME + "_" + HEADLESS_AUTOSAVE_FILE_NAME));
-    }
-
-    @Test
-    void shouldNotPrefixFileNameWhenPlayerNameNotDefinedAndHostNameNotDefined() {
-      givenPlayerNameNotDefined();
-      givenHostNameNotDefined();
-
-      assertThat(getHeadlessAutoSaveFileName(), is(HEADLESS_AUTOSAVE_FILE_NAME));
-    }
-  }
-
-  @Nested
-  final class GetEvenRoundAutoSaveFileNameTest extends AbstractAutoSaveFileNameTestCase {
     @Test
     void shouldNotPrefixFileNameWhenHeaded() {
-      assertThat(getEvenRoundAutoSaveFileName(false), is(EVEN_ROUND_AUTOSAVE_FILE_NAME));
+      assertThat(getAutoSaveFileName(BASE_FILE_NAME, false), is(BASE_FILE_NAME));
     }
 
     @Test
@@ -82,7 +69,7 @@ final class SaveGameFileChooserTest {
       givenPlayerName(PLAYER_NAME);
       givenHostName(HOST_NAME);
 
-      assertThat(getEvenRoundAutoSaveFileName(true), is(PLAYER_NAME + "_" + EVEN_ROUND_AUTOSAVE_FILE_NAME));
+      assertThat(getAutoSaveFileName(BASE_FILE_NAME, true), is(PLAYER_NAME + "_" + BASE_FILE_NAME));
     }
 
     @Test
@@ -90,7 +77,7 @@ final class SaveGameFileChooserTest {
       givenPlayerNameNotDefined();
       givenHostName(HOST_NAME);
 
-      assertThat(getEvenRoundAutoSaveFileName(true), is(HOST_NAME + "_" + EVEN_ROUND_AUTOSAVE_FILE_NAME));
+      assertThat(getAutoSaveFileName(BASE_FILE_NAME, true), is(HOST_NAME + "_" + BASE_FILE_NAME));
     }
 
     @Test
@@ -98,39 +85,33 @@ final class SaveGameFileChooserTest {
       givenPlayerNameNotDefined();
       givenHostNameNotDefined();
 
-      assertThat(getEvenRoundAutoSaveFileName(true), is(EVEN_ROUND_AUTOSAVE_FILE_NAME));
+      assertThat(getAutoSaveFileName(BASE_FILE_NAME, true), is(BASE_FILE_NAME));
     }
   }
 
   @Nested
-  final class GetOddRoundAutoSaveFileNameTest extends AbstractAutoSaveFileNameTestCase {
+  final class GetLostConnectionAutoSaveFileTest {
     @Test
-    void shouldNotPrefixFileNameWhenHeaded() {
-      assertThat(getOddRoundAutoSaveFileName(false), is(ODD_ROUND_AUTOSAVE_FILE_NAME));
+    void shouldReturnFileNameWithLocalDateTime() {
+      assertThat(
+          getLostConnectionAutoSaveFile(LocalDateTime.of(2008, 5, 9, 22, 8)).getName(),
+          is("connection_lost_on_May_09_at_22_08.tsvg"));
     }
+  }
 
+  @Nested
+  final class GetBeforeStepAutoSaveFileTest {
     @Test
-    void shouldPrefixFileNameWithPlayerNameWhenHeadless() {
-      givenPlayerName(PLAYER_NAME);
-      givenHostName(HOST_NAME);
-
-      assertThat(getOddRoundAutoSaveFileName(true), is(PLAYER_NAME + "_" + ODD_ROUND_AUTOSAVE_FILE_NAME));
+    void shouldReturnFileNameWithCapitalizedStepName() {
+      assertThat(getBeforeStepAutoSaveFile("step").getName(), is("autosaveBeforeStep.tsvg"));
     }
+  }
 
+  @Nested
+  final class GetAfterStepAutoSaveFileTest {
     @Test
-    void shouldPrefixFileNameWithHostNameWhenHeadlessAndPlayerNameNotDefined() {
-      givenPlayerNameNotDefined();
-      givenHostName(HOST_NAME);
-
-      assertThat(getOddRoundAutoSaveFileName(true), is(HOST_NAME + "_" + ODD_ROUND_AUTOSAVE_FILE_NAME));
-    }
-
-    @Test
-    void shouldNotPrefixFileNameWhenHeadlessAndPlayerNameNotDefinedAndHostNameNotDefined() {
-      givenPlayerNameNotDefined();
-      givenHostNameNotDefined();
-
-      assertThat(getOddRoundAutoSaveFileName(true), is(ODD_ROUND_AUTOSAVE_FILE_NAME));
+    void shouldReturnFileNameWithCapitalizedStepName() {
+      assertThat(getAfterStepAutoSaveFile("step").getName(), is("autosaveAfterStep.tsvg"));
     }
   }
 }

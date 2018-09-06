@@ -7,7 +7,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.awt.Component;
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -369,14 +368,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
-      if (HeadlessGameServer.getInstance() == null) {
-        return;
+      final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
+      if (headlessGameServer != null) {
+        headlessGameServer.loadGameSave(autoSaveType.getFile());
       }
-      final File save = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), autoSaveType.getFileName());
-      if (!save.exists()) {
-        return;
-      }
-      HeadlessGameServer.getInstance().loadGameSave(save);
     }
 
     @Override

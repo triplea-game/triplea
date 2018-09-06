@@ -1,9 +1,15 @@
 package games.strategy.engine.framework.ui;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
+import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
+import static games.strategy.util.StringUtils.capitalize;
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -23,20 +29,13 @@ import games.strategy.triplea.settings.ClientSetting;
 public final class SaveGameFileChooser extends JFileChooser {
   private static final long serialVersionUID = 1548668790891292106L;
 
-  @VisibleForTesting
-  static final String HEADLESS_AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave");
-  @VisibleForTesting
-  static final String ODD_ROUND_AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_odd");
-  @VisibleForTesting
-  static final String EVEN_ROUND_AUTOSAVE_FILE_NAME = GameDataFileUtils.addExtension("autosave_round_even");
-
   private static SaveGameFileChooser instance;
 
   /**
    * The available auto-saves that can be loaded by a headless game server.
    */
   public enum AUTOSAVE_TYPE {
-    AUTOSAVE(getHeadlessAutoSaveFileName()),
+    AUTOSAVE(getHeadlessAutoSaveFile()),
 
     /**
      * A second auto-save that a headless game server will alternate between (the other being {@link #AUTOSAVE}).
@@ -46,28 +45,34 @@ public final class SaveGameFileChooser extends JFileChooser {
      *             once no stable client will ever request this auto-save).
      */
     @Deprecated
-    AUTOSAVE2(getHeadlessAutoSaveFileName()),
+    AUTOSAVE2(getHeadlessAutoSaveFile()),
 
-    AUTOSAVE_ODD(getOddRoundAutoSaveFileName(true)),
+    AUTOSAVE_ODD(getOddRoundAutoSaveFile(true)),
 
-    AUTOSAVE_EVEN(getEvenRoundAutoSaveFileName(true));
+    AUTOSAVE_EVEN(getEvenRoundAutoSaveFile(true));
 
     private final String fileName;
 
-    AUTOSAVE_TYPE(final String fileName) {
-      this.fileName = fileName;
+    AUTOSAVE_TYPE(final File file) {
+      this.fileName = file.getName();
     }
 
-    public String getFileName() {
-      return fileName;
+    public File getFile() {
+      return getAutoSaveFile(fileName);
     }
   }
 
-  public static String getHeadlessAutoSaveFileName() {
-    return getAutoSaveFileName(HEADLESS_AUTOSAVE_FILE_NAME, true);
+  @VisibleForTesting
+  static File getAutoSaveFile(final String fileName) {
+    return Paths.get(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), "autoSave", fileName).toFile();
   }
 
-  private static String getAutoSaveFileName(final String baseFileName, final boolean headless) {
+  private static File getAutoSaveFile(final String baseFileName, final boolean headless) {
+    return getAutoSaveFile(getAutoSaveFileName(baseFileName, headless));
+  }
+
+  @VisibleForTesting
+  static String getAutoSaveFileName(final String baseFileName, final boolean headless) {
     if (headless) {
       final String prefix = System.getProperty(TRIPLEA_NAME, System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
       if (!prefix.isEmpty()) {
@@ -77,12 +82,35 @@ public final class SaveGameFileChooser extends JFileChooser {
     return baseFileName;
   }
 
-  public static String getOddRoundAutoSaveFileName(final boolean headless) {
-    return getAutoSaveFileName(ODD_ROUND_AUTOSAVE_FILE_NAME, headless);
+  public static File getHeadlessAutoSaveFile() {
+    return getAutoSaveFile(addExtension("autosave"), true);
   }
 
-  public static String getEvenRoundAutoSaveFileName(final boolean headless) {
-    return getAutoSaveFileName(EVEN_ROUND_AUTOSAVE_FILE_NAME, headless);
+  public static File getOddRoundAutoSaveFile(final boolean headless) {
+    return getAutoSaveFile(addExtension("autosave_round_odd"), headless);
+  }
+
+  public static File getEvenRoundAutoSaveFile(final boolean headless) {
+    return getAutoSaveFile(addExtension("autosave_round_even"), headless);
+  }
+
+  public static File getLostConnectionAutoSaveFile(final LocalDateTime localDateTime) {
+    checkNotNull(localDateTime);
+
+    return getAutoSaveFile(
+        addExtension("connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(localDateTime)));
+  }
+
+  public static File getBeforeStepAutoSaveFile(final String stepName) {
+    checkNotNull(stepName);
+
+    return getAutoSaveFile(addExtension("autosaveBefore" + capitalize(stepName)));
+  }
+
+  public static File getAfterStepAutoSaveFile(final String stepName) {
+    checkNotNull(stepName);
+
+    return getAutoSaveFile(addExtension("autosaveAfter" + capitalize(stepName)));
   }
 
   public static SaveGameFileChooser getInstance() {
@@ -94,8 +122,9 @@ public final class SaveGameFileChooser extends JFileChooser {
 
   private SaveGameFileChooser() {
     setFileFilter(createGameDataFileFilter());
-    ensureDirectoryExists(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
-    setCurrentDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()));
+    final File saveGamesFolder = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value());
+    ensureDirectoryExists(saveGamesFolder);
+    setCurrentDirectory(saveGamesFolder);
   }
 
   private static void ensureDirectoryExists(final File f) {

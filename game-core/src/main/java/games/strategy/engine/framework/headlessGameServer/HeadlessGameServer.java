@@ -263,9 +263,7 @@ public class HeadlessGameServer {
         new Thread(() -> {
           log.info("Remote Stop Game Initiated.");
           try {
-            serverGame.saveGame(new File(
-                ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
-                SaveGameFileChooser.getHeadlessAutoSaveFileName()));
+            serverGame.saveGame(SaveGameFileChooser.getHeadlessAutoSaveFile());
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to save game", e);
           }

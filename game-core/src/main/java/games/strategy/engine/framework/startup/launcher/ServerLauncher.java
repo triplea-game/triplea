@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.launcher;
 import java.awt.Component;
 import java.io.File;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +16,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -210,9 +208,7 @@ public class ServerLauncher extends AbstractLauncher {
             // if we do not do this, we can get into an infinite loop of launching a game,
             // then crashing out, then launching, etc.
             serverModel.setAllPlayersToNullNodes();
-            final File f1 = new File(
-                ClientSetting.SAVE_GAMES_FOLDER_PATH.value(),
-                SaveGameFileChooser.getHeadlessAutoSaveFileName());
+            final File f1 = SaveGameFileChooser.getHeadlessAutoSaveFile();
             if (f1.exists()) {
               gameSelectorModel.load(f1);
             } else {
@@ -316,28 +312,22 @@ public class ServerLauncher extends AbstractLauncher {
   private void saveAndEndGame(final INode node) {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = headless
-        ? new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), SaveGameFileChooser.getHeadlessAutoSaveFileName())
-        : new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), getConnectionLostFileName());
+        ? SaveGameFileChooser.getHeadlessAutoSaveFile()
+        : SaveGameFileChooser.getLostConnectionAutoSaveFile(LocalDateTime.now());
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to save game: " + f.getAbsolutePath(), e);
     }
-    stopGame();
-    if (headless) {
-      log.info("Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName());
-    } else {
-      SwingUtilities.invokeLater(() -> {
-        final String message =
-            "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
-        JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message);
-      });
-    }
-  }
 
-  private static String getConnectionLostFileName() {
-    return GameDataFileUtils.addExtension(
-        "connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(LocalDateTime.now()));
+    stopGame();
+
+    final String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+    if (headless) {
+      log.info(message);
+    } else {
+      SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message));
+    }
   }
 
   static class ServerReady implements IServerReady {
