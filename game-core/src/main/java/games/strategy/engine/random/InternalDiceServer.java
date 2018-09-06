@@ -17,11 +17,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
   private static final char DICE_SEPARATOR = ',';
 
-  private final transient IRandomSource _randomSource;
-
-  public InternalDiceServer() {
-    _randomSource = new PlainRandomSource();
-  }
+  private final transient IRandomSource randomSource = new PlainRandomSource();
 
   @Override
   public EditorPanel getEditor() {
@@ -32,7 +28,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId,
       final String gameUuid) {
     // the interface is rather stupid, you have to return a string here, which is then passed back in getDice()
-    final int[] ints = _randomSource.getRandom(max, numDice, "Internal Dice Server");
+    final int[] ints = randomSource.getRandom(max, numDice, "Internal Dice Server");
     final StringBuilder sb = new StringBuilder();
     for (final int i : ints) {
       sb.append(i).append(DICE_SEPARATOR);
