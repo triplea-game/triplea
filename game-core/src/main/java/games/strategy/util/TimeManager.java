@@ -1,6 +1,5 @@
 package games.strategy.util;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -10,16 +9,8 @@ import java.time.format.FormatStyle;
 /**
  * Provides methods for formatting time in various formats.
  */
-public class TimeManager {
-  /**
-   * Prints an {@link Instant} localized, with all details.
-   *
-   * @param instant The {@link Instant} being returned as String
-   * @return formatted GMT Date String
-   */
-  public static String getFullUtcString(final Instant instant) {
-    return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withZone(ZoneOffset.UTC).format(instant);
-  }
+public final class TimeManager {
+  private TimeManager() {}
 
   /**
    * Returns a String representing the current {@link LocalDateTime}.

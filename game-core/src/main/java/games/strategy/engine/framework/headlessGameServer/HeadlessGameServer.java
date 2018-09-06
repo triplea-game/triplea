@@ -50,7 +50,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Md5Crypt;
-import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
 
@@ -66,7 +65,6 @@ public class HeadlessGameServer {
   private final AvailableGames availableGames = new AvailableGames();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final ScheduledExecutorService lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
-  private final String startDate = TimeManager.getFullUtcString(Instant.now());
   private static HeadlessGameServer instance = null;
   private final HeadlessServerSetupPanelModel setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
   private ServerGame game = null;
