@@ -1920,10 +1920,10 @@ public final class Matches {
     };
   }
 
-  static Predicate<Territory> territoryHasWhenCapturedByGoesTo() {
+  static Predicate<Territory> territoryHasCaptureOwnershipChanges() {
     return t -> {
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      return ta != null && !ta.getWhenCapturedByGoesTo().isEmpty();
+      return (ta != null) && !ta.getCaptureOwnershipChanges().isEmpty();
     };
   }
 

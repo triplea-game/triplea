@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -25,6 +26,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @MapSupport
 public class TerritoryAttachment extends DefaultAttachment {
@@ -455,7 +460,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_captureUnitOnEnteringBy = new ArrayList<>();
   }
 
-  private void setWhenCapturedByGoesTo(final String value) throws GameParseException {
+  @VisibleForTesting
+  void setWhenCapturedByGoesTo(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length != 2) {
       throw new GameParseException(
@@ -474,12 +480,27 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_whenCapturedByGoesTo = value;
   }
 
-  public ArrayList<String> getWhenCapturedByGoesTo() {
+  private ArrayList<String> getWhenCapturedByGoesTo() {
     return m_whenCapturedByGoesTo;
   }
 
   private void resetWhenCapturedByGoesTo() {
     m_whenCapturedByGoesTo = new ArrayList<>();
+  }
+
+  public List<CaptureOwnershipChange> getCaptureOwnershipChanges() {
+    return m_whenCapturedByGoesTo.stream()
+        .map(this::parseCaptureOwnershipChange)
+        .collect(Collectors.toList());
+  }
+
+  private CaptureOwnershipChange parseCaptureOwnershipChange(final String encodedCaptureOwnershipChange) {
+    final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
+    assert tokens.length == 2;
+    final GameData gameData = getData();
+    return new CaptureOwnershipChange(
+        gameData.getPlayerList().getPlayerId(tokens[0]),
+        gameData.getPlayerList().getPlayerId(tokens[1]));
   }
 
   private void setTerritoryEffect(final String value) throws GameParseException {
@@ -847,5 +868,16 @@ public class TerritoryAttachment extends DefaultAttachment {
                 this::getResources,
                 this::resetResources))
         .build();
+  }
+
+  /**
+   * Specifies the player that will take ownership of a territory when it is captured by another player.
+   */
+  @AllArgsConstructor(access = AccessLevel.PACKAGE)
+  @EqualsAndHashCode
+  @ToString
+  public static final class CaptureOwnershipChange {
+    public final PlayerID capturingPlayer;
+    public final PlayerID receivingPlayer;
   }
 }

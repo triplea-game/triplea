@@ -644,16 +644,15 @@ public class BattleTracker implements Serializable {
     }
     // if we have specially set this territory to have whenCapturedByGoesTo,
     // then we set that here (except we don't set it if we are liberating allied owned territory)
-    if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.territoryHasWhenCapturedByGoesTo().test(territory)) {
-      for (final String value : ta.getWhenCapturedByGoesTo()) {
-        final String[] s = value.split(":");
-        final PlayerID capturingPlayer = data.getPlayerList().getPlayerId(s[0]);
-        final PlayerID goesToPlayer = data.getPlayerList().getPlayerId(s[1]);
-        if (capturingPlayer.equals(goesToPlayer)) {
+    if (isTerritoryOwnerAnEnemy
+        && newOwner.equals(id)
+        && Matches.territoryHasCaptureOwnershipChanges().test(territory)) {
+      for (final TerritoryAttachment.CaptureOwnershipChange captureOwnershipChange : ta.getCaptureOwnershipChanges()) {
+        if (captureOwnershipChange.capturingPlayer.equals(captureOwnershipChange.receivingPlayer)) {
           continue;
         }
-        if (capturingPlayer.equals(id)) {
-          newOwner = goesToPlayer;
+        if (captureOwnershipChange.capturingPlayer.equals(id)) {
+          newOwner = captureOwnershipChange.receivingPlayer;
           break;
         }
       }
