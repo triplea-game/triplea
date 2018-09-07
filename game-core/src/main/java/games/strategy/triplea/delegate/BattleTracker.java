@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -794,7 +796,7 @@ public class BattleTracker implements Serializable {
             UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
         final PlayerID currentOwner = u.getOwner();
         for (final String value : map.keySet()) {
-          final String[] s = value.split(":");
+          final String[] s = Iterables.toArray(Splitter.on(':').split(value), String.class);
           if (!(s[0].equals("any") || data.getPlayerList().getPlayerId(s[0]).equals(currentOwner))) {
             continue;
           }
