@@ -1,0 +1,108 @@
+import com.install4j.gradle.Install4jTask
+
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'com.install4j.gradle' version '7.0.1'
+    id 'de.undercouch.download' version '3.4.3'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Headed Game Client'
+mainClassName = 'org.triplea.game.headed.runner.HeadedGameRunner'
+version = getEngineVersion()
+
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+dependencies {
+    compile project(':game-core')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+run {
+    workingDir = project(':game-core').projectDir
+}
+
+task downloadAssets(group: 'release') {
+    doLast {
+        [
+            'icons/triplea_icon_16_16.png',
+            'icons/triplea_icon_32_32.png',
+            'icons/triplea_icon_48_48.png',
+            'icons/triplea_icon_64_64.png',
+            'icons/triplea_icon_128_128.png',
+            'icons/triplea_icon_256_256.png',
+            'install4j/macosx-amd64-1.8.0_144.tar.gz',
+            'install4j/windows-amd64-1.8.0_144.tar.gz',
+            'install4j/windows-x86-1.8.0_144.tar.gz'
+        ].each { path ->
+            download {
+                src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
+                dest "$buildDir/assets/$path"
+                overwrite false
+            }
+        }
+    }
+}
+
+task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {
+    projectFile = file('build.install4j')
+    release project.version
+    doFirst {
+        logger.lifecycle("building installer release of version '${project.version}'")
+    }
+}
+
+task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]) {
+    doLast {
+        ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
+    }
+}
+
+task generateZipReleases(type: Zip, group: 'release', dependsOn: shadowJar) {
+    baseName = 'triplea'
+    classifier = 'all_platforms'
+    from project(':game-core').file('game_engine.properties')
+    from(project(':game-core').file('assets')) {
+        into 'assets'
+    }
+    from(project(':game-core').file('dice_servers')) {
+        into 'dice_servers'
+    }
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: [generateZipReleases, generateInstallerReleases]) {
+    doLast {
+        publishArtifacts([
+            file("$distsDir/triplea-${version}-all_platforms.zip"),
+            file("$releasesDir/TripleA_${version}_macos.dmg"),
+            file("$releasesDir/TripleA_${version}_unix.sh"),
+            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
+            file("$releasesDir/TripleA_${version}_windows-64bit.exe")
+        ])
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    graph.getAllTasks().any({
+        if (it.name == "generateInstallers") {
+            if (!project.hasProperty('install4jHomeDir')) {
+                File propertiesFile = file("${System.getProperty('user.home')}/.gradle/gradle.properties")
+                throw new RuntimeException("Specify install4jHomeDir in $propertiesFile")
+            }
+            def p = file(project.install4jHomeDir)
+            logger.lifecycle('using install4j home directory ' + p.getAbsolutePath())
+            it.project.install4j.installDir = file(project.install4jHomeDir)
+        }
+    })
+}

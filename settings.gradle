@@ -1,5 +1,6 @@
 rootProject.name='triplea'
 include 'game-core'
+include 'game-headed'
 include 'game-headless'
 include 'http-client'
 include 'http-data'
