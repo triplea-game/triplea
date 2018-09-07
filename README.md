@@ -1,7 +1,7 @@
 [![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)
-[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
 [![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/triplea-game/triplea/context:java)
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
+[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
 
 TripleA is an open source gaming community, free to play, 100% open source and volunteer run
 
