@@ -19,6 +19,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
+import games.strategy.util.StringUtils;
 import lombok.extern.java.Log;
 
 @Log
@@ -48,7 +49,7 @@ class UnitInformation {
         if (currentType.getName().equals(Constants.UNIT_TYPE_AAGUN)) {
           unitInformation.write(currentType.getName() + ",");
         } else {
-          unitInformation.write(currentType.getNameCapitalized() + ",");
+          unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
         }
         unitInformation.write(getCostInformation(currentType) + ",");
         unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + ","
