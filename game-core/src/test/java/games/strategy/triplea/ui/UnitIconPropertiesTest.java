@@ -18,8 +18,6 @@ import javax.annotation.Nullable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.base.Joiner;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.ui.UnitIconProperties.MalformedUnitIconDescriptorException;
@@ -45,9 +43,9 @@ final class UnitIconPropertiesTest {
       final String playerName,
       final String unitTypeName,
       final @Nullable String conditionName) {
-    final String encodedUnitTypeId = Joiner.on('.').join(gameName, playerName, unitTypeName);
+    final String encodedUnitTypeId = String.join(".", gameName, playerName, unitTypeName);
     return (conditionName != null)
-        ? Joiner.on(';').join(encodedUnitTypeId, conditionName)
+        ? String.join(";", encodedUnitTypeId, conditionName)
         : encodedUnitTypeId;
   }
 

@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import com.google.common.base.Joiner;
-
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -194,7 +192,7 @@ public class GameDataExporter {
         // TODO: unchecked reflection
         listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME);
         listField.setAccessible(true);
-        typeString = "            <list>" + Joiner.on(',').join((List<String>) listField.get(prop)) + "</list>\n";
+        typeString = "            <list>" + String.join(",", (List<String>) listField.get(prop)) + "</list>\n";
       } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
         log.log(Level.SEVERE, "An Error occured whilst trying to print the Property \"" + value + "\"", e);
       }
