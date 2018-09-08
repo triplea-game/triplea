@@ -19,16 +19,16 @@ interface SaveFunction {
    * Returns a result message after persisting settings.
    */
   static SaveResult saveSettings(
-      final Iterable<? extends GameSettingUiBinding<JComponent>> settings,
+      final Iterable<? extends SelectionComponent<JComponent>> selectionComponents,
       final Runnable settingsFlushToDisk) {
     final StringBuilder successMsg = new StringBuilder();
     final StringBuilder failMsg = new StringBuilder();
 
     // save all the values, save stuff that is valid and that was updated
-    settings.forEach(setting -> {
-      if (setting.isValid()) {
+    selectionComponents.forEach(selectionComponent -> {
+      if (selectionComponent.isValid()) {
         // read and save all settings
-        setting.readValues()
+        selectionComponent.readValues()
             .entrySet()
             .stream()
             .filter(entry -> !entry.getKey().value().equals(entry.getValue()))
@@ -37,9 +37,9 @@ interface SaveFunction {
               successMsg.append(String.format("%s was updated to: %s\n", entry.getKey(), entry.getValue()));
             });
       } else {
-        final Map<GameSetting, String> values = setting.readValues();
-        values.forEach((entry, value) -> failMsg.append(String.format("Could not set %s to %s, %s\n",
-            setting.getTitle(), value, setting.validValueDescription())));
+        final Map<GameSetting, String> values = selectionComponent.readValues();
+        values.forEach((key, value) -> failMsg.append(String.format("Could not set %s to %s, %s\n",
+            key, value, selectionComponent.validValueDescription())));
       }
     });
 

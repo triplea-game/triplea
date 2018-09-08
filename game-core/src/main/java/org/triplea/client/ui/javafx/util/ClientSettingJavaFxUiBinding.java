@@ -1,12 +1,8 @@
 package org.triplea.client.ui.javafx.util;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
-import com.google.common.base.Suppliers;
-
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.GameSettingUiBinding;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;
@@ -115,11 +111,13 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
       ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI);
 
   private final SettingType type;
-  private final Supplier<SelectionComponent<Region>> nodeSupplier;
+  private final Supplier<SelectionComponent<Region>> selectionComponentFactory;
 
-  ClientSettingJavaFxUiBinding(final SettingType type, final Supplier<SelectionComponent<Region>> nodeSupplier) {
+  ClientSettingJavaFxUiBinding(
+      final SettingType type,
+      final Supplier<SelectionComponent<Region>> selectionComponentFactory) {
     this.type = type;
-    this.nodeSupplier = Suppliers.memoize(nodeSupplier::get);
+    this.selectionComponentFactory = selectionComponentFactory;
   }
 
   ClientSettingJavaFxUiBinding(final SettingType type, final ClientSetting setting) {
@@ -127,38 +125,13 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
   }
 
   @Override
-  public Region buildSelectionComponent() {
-    return nodeSupplier.get().getUiComponent();
-  }
-
-  @Override
-  public boolean isValid() {
-    return nodeSupplier.get().isValid();
-  }
-
-  @Override
-  public Map<GameSetting, String> readValues() {
-    return nodeSupplier.get().readValues();
-  }
-
-  @Override
-  public String validValueDescription() {
-    return nodeSupplier.get().validValueDescription();
-  }
-
-  @Override
-  public void reset() {
-    nodeSupplier.get().reset();
+  public SelectionComponent<Region> newSelectionComponent() {
+    return selectionComponentFactory.get();
   }
 
   @Override
   public String getTitle() {
     return "";
-  }
-
-  @Override
-  public void resetToDefault() {
-    nodeSupplier.get().resetToDefault();
   }
 
   @Override

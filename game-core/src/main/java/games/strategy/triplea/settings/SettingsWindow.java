@@ -5,8 +5,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,8 +47,8 @@ public enum SettingsWindow {
 
   private @Nullable JDialog dialog;
   private @Nullable JTabbedPane tabbedPane;
-  private final List<SettingType> settingTypes = Collections.unmodifiableList(Arrays.asList(SettingType.values()));
-
+  private final Map<ClientSettingSwingUiBinding, SelectionComponent<JComponent>> selectionComponentsBySetting =
+      new EnumMap<>(ClientSettingSwingUiBinding.class);
 
   public static void updateLookAndFeel() {
     Optional.ofNullable(INSTANCE.dialog).ifPresent(SwingUtilities::updateComponentTreeUI);
@@ -60,9 +62,9 @@ public enum SettingsWindow {
     if (dialog != null) {
       dialog.dispose();
       dialog = null;
-      Arrays.stream(ClientSettingSwingUiBinding.values())
-          .forEach(ClientSettingSwingUiBinding::dispose);
     }
+
+    selectionComponentsBySetting.clear();
   }
 
   /**
@@ -87,8 +89,8 @@ public enum SettingsWindow {
 
   private JComponent createContents() {
     tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
-    settingTypes.forEach(settingType -> tabbedPane.add(settingType.tabTitle,
-        buildTabPanel(getSettingsByType(settingType))));
+    Arrays.stream(SettingType.values())
+        .forEach(settingType -> tabbedPane.add(settingType.tabTitle, buildTabPanel(getSettingsByType(settingType))));
 
     return JPanelBuilder.builder()
         .borderLayout()
@@ -104,7 +106,7 @@ public enum SettingsWindow {
         .collect(Collectors.toList());
   }
 
-  private static JComponent buildTabPanel(final Iterable<ClientSettingSwingUiBinding> settings) {
+  private JComponent buildTabPanel(final Iterable<ClientSettingSwingUiBinding> settings) {
     final JPanel panel = JPanelBuilder.builder()
         .borderEmpty(10)
         .build();
@@ -118,6 +120,8 @@ public enum SettingsWindow {
 
     int row = 0;
     for (final ClientSettingSwingUiBinding setting : settings) {
+      final SelectionComponent<JComponent> selectionComponent =
+          selectionComponentsBySetting.computeIfAbsent(setting, GameSettingUiBinding::newSelectionComponent);
       final int topInset = (row == 0) ? 0 : 10;
       panel.add(
           JLabelBuilder.builder()
@@ -126,7 +130,7 @@ public enum SettingsWindow {
           new GridBagConstraints(0, row, 1, 1, 0.0, 0.0,
               GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(topInset, 0, 0, 0), 0, 0));
       panel.add(
-          setting.buildSelectionComponent(),
+          selectionComponent.getUiComponent(),
           new GridBagConstraints(1, row, 1, 1, 0.0, 0.0,
               GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(topInset, 10, 0, 0), 0, 0));
       panel.add(
@@ -181,26 +185,26 @@ public enum SettingsWindow {
   }
 
   private void saveSettings() {
-    getSelectedSettings().ifPresent(settings -> {
-      final SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(settings, ClientSetting::flush);
-      JOptionPane.showMessageDialog(dialog, saveResult.message, "Results", saveResult.dialogType);
-    });
+    final SaveFunction.SaveResult saveResult =
+        SaveFunction.saveSettings(getSelectedSelectionComponents(), ClientSetting::flush);
+    JOptionPane.showMessageDialog(dialog, saveResult.message, "Results", saveResult.dialogType);
   }
 
   private void resetSettings() {
-    getSelectedSettings().ifPresent(settings -> settings.forEach(ClientSettingSwingUiBinding::reset));
+    getSelectedSelectionComponents().forEach(SelectionComponent::reset);
   }
 
   private void resetSettingsToDefault() {
-    getSelectedSettings().ifPresent(settings -> settings.forEach(ClientSettingSwingUiBinding::resetToDefault));
+    getSelectedSelectionComponents().forEach(SelectionComponent::resetToDefault);
   }
 
-  private Optional<List<ClientSettingSwingUiBinding>> getSelectedSettings() {
+  private Collection<SelectionComponent<JComponent>> getSelectedSelectionComponents() {
     assert tabbedPane != null;
 
     final int selectedTabIndex = tabbedPane.getSelectedIndex();
-    return (selectedTabIndex != -1)
-        ? Optional.of(getSettingsByType(settingTypes.get(selectedTabIndex)))
-        : Optional.empty();
+    assert selectedTabIndex != -1 : "you called this method before adding any tabs";
+    return getSettingsByType(SettingType.values()[selectedTabIndex]).stream()
+        .map(selectionComponentsBySetting::get)
+        .collect(Collectors.toList());
   }
 }

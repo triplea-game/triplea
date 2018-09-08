@@ -22,10 +22,10 @@ import com.google.common.collect.ImmutableMap;
 public class SaveFunctionTest {
 
   @Mock
-  private GameSettingUiBinding<JComponent> mockBinding;
+  private SelectionComponent<JComponent> mockSelectionComponent;
 
   @Mock
-  private GameSettingUiBinding<JComponent> mockBinding2;
+  private SelectionComponent<JComponent> mockSelectionComponent2;
 
   @Mock
   private GameSetting mockSetting;
@@ -34,7 +34,7 @@ public class SaveFunctionTest {
   public void messageOnValidIsInformation() {
     givenValidationResults(true, true);
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-        Arrays.asList(mockBinding, mockBinding2), () -> {
+        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), () -> {
         });
 
     MatcherAssert.assertThat("There will always be a message back to the user",
@@ -44,13 +44,13 @@ public class SaveFunctionTest {
   }
 
   private void givenValidationResults(final boolean first, final boolean second) {
-    Mockito.when(mockBinding.isValid()).thenReturn(first);
-    Mockito.when(mockBinding.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
+    Mockito.when(mockSelectionComponent.isValid()).thenReturn(first);
+    Mockito.when(mockSelectionComponent.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
     if (first) {
       Mockito.when(mockSetting.value()).thenReturn("");
     }
-    Mockito.when(mockBinding2.isValid()).thenReturn(second);
-    Mockito.when(mockBinding2.readValues()).thenReturn(ImmutableMap.of(mockSetting, "abc"));
+    Mockito.when(mockSelectionComponent2.isValid()).thenReturn(second);
+    Mockito.when(mockSelectionComponent2.readValues()).thenReturn(ImmutableMap.of(mockSetting, "abc"));
   }
 
   @Test
@@ -58,7 +58,7 @@ public class SaveFunctionTest {
     givenValidationResults(false, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-        Arrays.asList(mockBinding, mockBinding2), () -> {
+        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), () -> {
         });
 
     MatcherAssert.assertThat(result.message.isEmpty(), is(false));
@@ -70,7 +70,7 @@ public class SaveFunctionTest {
     givenValidationResults(true, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-        Arrays.asList(mockBinding, mockBinding2), () -> {
+        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), () -> {
         });
 
     MatcherAssert.assertThat(result.message.isEmpty(), is(false));
@@ -82,13 +82,15 @@ public class SaveFunctionTest {
   public void valueSavedWhenValid() {
     final AtomicInteger callCount = new AtomicInteger(0);
 
-    Mockito.when(mockBinding.isValid()).thenReturn(true);
-    Mockito.when(mockBinding.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
+    Mockito.when(mockSelectionComponent.isValid()).thenReturn(true);
+    Mockito.when(mockSelectionComponent.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
     Mockito.when(mockSetting.value()).thenReturn("");
 
-    Mockito.when(mockBinding2.isValid()).thenReturn(false);
+    Mockito.when(mockSelectionComponent2.isValid()).thenReturn(false);
 
-    SaveFunction.saveSettings(Arrays.asList(mockBinding, mockBinding2), callCount::incrementAndGet);
+    SaveFunction.saveSettings(
+        Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
+        callCount::incrementAndGet);
 
     MatcherAssert.assertThat("Make sure we flushed! A call count of '1' means our runnable was called,"
         + "which should only happen when settings were successfully saved.",
@@ -101,9 +103,9 @@ public class SaveFunctionTest {
   public void noSettingsSavedIfAllInvalid() {
     final AtomicInteger callCount = new AtomicInteger(0);
 
-    Mockito.when(mockBinding.isValid()).thenReturn(false);
+    Mockito.when(mockSelectionComponent.isValid()).thenReturn(false);
 
-    SaveFunction.saveSettings(Collections.singletonList(mockBinding), callCount::incrementAndGet);
+    SaveFunction.saveSettings(Collections.singletonList(mockSelectionComponent), callCount::incrementAndGet);
 
     MatcherAssert.assertThat("The one setting value was not valid, nothing should be saved, our "
         + "increment value runnable should not have been called, callCount should still be at zero.",

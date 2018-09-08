@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
 import javax.swing.JComponent;
@@ -184,18 +183,16 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   private final SettingType type;
   private final String title;
   final String description;
-  private final Supplier<SelectionComponent<JComponent>> selectionComponentBuilder;
-
-  private SelectionComponent<JComponent> selectionComponent;
+  private final Supplier<SelectionComponent<JComponent>> selectionComponentFactory;
 
   ClientSettingSwingUiBinding(
       final String title,
       final SettingType type,
-      final Supplier<SelectionComponent<JComponent>> selectionComponentBuilder,
+      final Supplier<SelectionComponent<JComponent>> selectionComponentFactory,
       final String description) {
     this.title = Preconditions.checkNotNull(Strings.emptyToNull(title));
     this.type = Preconditions.checkNotNull(type);
-    this.selectionComponentBuilder = Preconditions.checkNotNull(selectionComponentBuilder);
+    this.selectionComponentFactory = Preconditions.checkNotNull(selectionComponentFactory);
     this.description = Preconditions.checkNotNull(Strings.emptyToNull(description));
   }
 
@@ -208,44 +205,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   }
 
   @Override
-  public JComponent buildSelectionComponent() {
-    return current().getUiComponent();
-  }
-
-  private SelectionComponent<JComponent> current() {
-    if (selectionComponent == null) {
-      selectionComponent = selectionComponentBuilder.get();
-    }
-    return selectionComponent;
-  }
-
-  public void dispose() {
-    selectionComponent = null;
-  }
-
-  @Override
-  public boolean isValid() {
-    return current().isValid();
-  }
-
-  @Override
-  public Map<GameSetting, String> readValues() {
-    return current().readValues();
-  }
-
-  @Override
-  public String validValueDescription() {
-    return current().validValueDescription();
-  }
-
-  @Override
-  public void reset() {
-    current().reset();
-  }
-
-  @Override
-  public void resetToDefault() {
-    current().resetToDefault();
+  public SelectionComponent<JComponent> newSelectionComponent() {
+    return selectionComponentFactory.get();
   }
 
   @Override

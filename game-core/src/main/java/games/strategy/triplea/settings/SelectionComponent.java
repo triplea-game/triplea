@@ -11,6 +11,9 @@ import java.util.Map;
 public interface SelectionComponent<T> {
   T getUiComponent();
 
+  /**
+   * Reads the value set in the UI and return true if it is valid, false otherwise.
+   */
   boolean isValid();
 
   String validValueDescription();
@@ -33,5 +36,8 @@ public interface SelectionComponent<T> {
 
   void resetToDefault();
 
+  /**
+   * Reset any settings that are bound, and reset the UI.
+   */
   void reset();
 }
