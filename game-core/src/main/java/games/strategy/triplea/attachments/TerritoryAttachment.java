@@ -222,6 +222,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private int m_unitProduction = 0;
   private boolean m_blockadeZone = false;
   private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<>();
+  // TODO: change to List<CaptureOwnershipChange> upon next incompatible release
   private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<>();
   private ResourceCollection m_resources = null;
 
