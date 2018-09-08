@@ -3,15 +3,10 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
+archivesBaseName = "$group-$name"
 description = 'TripleA Lobby'
 mainClassName = 'games.strategy.engine.lobby.server.LobbyRunner'
-version = project.hasProperty('lobbyVersion') ? project.lobbyVersion : 'dev'
-
-jar {
-    manifest {
-        attributes 'Main-Class': mainClassName, 'TripleA-Version': version
-    }
-}
+version = getEngineVersion()
 
 dependencies {
     compile project(':game-core')
@@ -22,27 +17,25 @@ dependencies {
     testCompile project(':test-common')
 }
 
-shadowJar {
-    destinationDir = libsDir
-    baseName = 'triplea-lobby'
-    classifier = 'all'
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
 }
 
-task lobbyServer(type: Zip, group: 'release', dependsOn: shadowJar) {
+task lobbyArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     baseName = 'triplea'
     classifier = 'server'
     from('config') {
-        into('config')
+        into 'config'
     }
     from(shadowJar.outputs) {
-        into('bin')
+        into 'bin'
     }
 }
 
-task release(group: 'release', dependsOn: lobbyServer) {
+task release(group: 'release', dependsOn: lobbyArchive) {
     doLast {
-        publishArtifacts([
-            file("$distsDir/triplea-$version-server.zip")
-        ])
+        publishArtifacts(lobbyArchive.outputs.files)
     }
 }
