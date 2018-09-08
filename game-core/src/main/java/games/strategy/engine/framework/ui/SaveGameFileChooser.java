@@ -18,6 +18,8 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.triplea.settings.ClientSetting;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * A file chooser for save games. Defaults to the user's configured save game folder.
@@ -34,6 +36,8 @@ public final class SaveGameFileChooser extends JFileChooser {
   /**
    * The available auto-saves that can be loaded by a headless game server.
    */
+  @AllArgsConstructor
+  @Getter
   public enum AUTOSAVE_TYPE {
     AUTOSAVE(getHeadlessAutoSaveFile()),
 
@@ -51,15 +55,7 @@ public final class SaveGameFileChooser extends JFileChooser {
 
     AUTOSAVE_EVEN(getEvenRoundAutoSaveFile(true));
 
-    private final String fileName;
-
-    AUTOSAVE_TYPE(final File file) {
-      this.fileName = file.getName();
-    }
-
-    public File getFile() {
-      return getAutoSaveFile(fileName);
-    }
+    private final File file;
   }
 
   @VisibleForTesting
