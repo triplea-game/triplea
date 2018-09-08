@@ -24,7 +24,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.SwingComponents;
@@ -45,8 +44,6 @@ import swinglib.JTextAreaBuilder;
 @SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
 public enum SettingsWindow {
   INSTANCE;
-
-  private static final ImmutableList<SettingType> SETTING_TYPES = ImmutableList.copyOf(SettingType.values());
 
   private @Nullable JDialog dialog;
   private @Nullable JTabbedPane tabbedPane;
@@ -92,7 +89,7 @@ public enum SettingsWindow {
 
   private JComponent createContents() {
     tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
-    SETTING_TYPES
+    Arrays.stream(SettingType.values())
         .forEach(settingType -> tabbedPane.add(settingType.tabTitle, buildTabPanel(getSettingsByType(settingType))));
 
     return JPanelBuilder.builder()
@@ -206,7 +203,7 @@ public enum SettingsWindow {
 
     final int selectedTabIndex = tabbedPane.getSelectedIndex();
     assert selectedTabIndex != -1 : "you called this method before adding any tabs";
-    return getSettingsByType(SETTING_TYPES.get(selectedTabIndex)).stream()
+    return getSettingsByType(SettingType.values()[selectedTabIndex]).stream()
         .map(selectionComponentsBySetting::get)
         .collect(Collectors.toList());
   }
