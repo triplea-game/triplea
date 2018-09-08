@@ -1,6 +1,7 @@
 package games.strategy.engine.chat;
 
 import java.awt.Component;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,20 +44,27 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   @Override
   public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
       final boolean isSelected, final boolean cellHasFocus) {
-    final List<Icon> icons = iconMap.get(value.toString());
+    final INode node = (INode) value;
+    final List<Icon> icons = iconMap.get(node.toString());
     if (icons != null) {
-      super.getListCellRendererComponent(list, ((INode) value).getName(), index, isSelected, cellHasFocus);
+      super.getListCellRendererComponent(list, getNodeLabel(node, false), index, isSelected, cellHasFocus);
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     } else {
-      final StringBuilder sb = new StringBuilder(((INode) value).getName());
-      final Set<String> players = playerMap.get(value.toString());
-      if (players != null && !players.isEmpty()) {
-        sb.append(players.stream().collect(Collectors.joining(", ", " (", ")")));
-      }
-      super.getListCellRendererComponent(list, sb.toString(), index, isSelected, cellHasFocus);
+      super.getListCellRendererComponent(list, getNodeLabel(node, true), index, isSelected, cellHasFocus);
     }
     return this;
+  }
+
+  private String getNodeLabel(final INode node, final boolean includePlayers) {
+    final StringBuilder sb = new StringBuilder(node.getName());
+    if (includePlayers) {
+      final Set<String> playerNames = playerMap.getOrDefault(node.toString(), Collections.emptySet());
+      if (!playerNames.isEmpty()) {
+        sb.append(playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
+      }
+    }
+    return sb.toString();
   }
 
   private void setIconMap() {
