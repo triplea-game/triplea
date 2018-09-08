@@ -18,6 +18,10 @@ jar {
     }
 }
 
+run {
+    workingDir = project(':game-core').projectDir
+}
+
 task headlessGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     from project(':game-core').file('game_engine.properties')
     from(project(':game-core').file('assets')) {
