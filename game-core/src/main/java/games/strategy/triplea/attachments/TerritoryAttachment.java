@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -489,7 +490,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     m_whenCapturedByGoesTo = new ArrayList<>();
   }
 
-  public List<CaptureOwnershipChange> getCaptureOwnershipChanges() {
+  public Collection<CaptureOwnershipChange> getCaptureOwnershipChanges() {
     return m_whenCapturedByGoesTo.stream()
         .map(this::parseCaptureOwnershipChange)
         .collect(Collectors.toList());

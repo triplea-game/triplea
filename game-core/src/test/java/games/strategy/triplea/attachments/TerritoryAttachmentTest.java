@@ -34,12 +34,12 @@ final class TerritoryAttachmentTest {
     }
 
     @Test
-    void shouldReturnEmptyListWhenZeroCaptureOwnershipChangesExist() {
+    void shouldReturnEmptyCollectionWhenZeroCaptureOwnershipChangesExist() {
       assertThat(territoryAttachment.getCaptureOwnershipChanges(), hasSize(0));
     }
 
     @Test
-    void shouldReturnListOfSizeOneWhenOneCaptureOwnershipChangeExists() throws Exception {
+    void shouldReturnCollectionOfSizeOneWhenOneCaptureOwnershipChangeExists() throws Exception {
       territoryAttachment.setWhenCapturedByGoesTo(join(player1.getName(), player2.getName()));
 
       assertThat(
@@ -48,7 +48,7 @@ final class TerritoryAttachmentTest {
     }
 
     @Test
-    void shouldReturnListOfSizeTwoWhenTwoCaptureOwnershipChangesExists() throws Exception {
+    void shouldReturnCollectionOfSizeTwoWhenTwoCaptureOwnershipChangesExists() throws Exception {
       territoryAttachment.setWhenCapturedByGoesTo(join(player1.getName(), player3.getName()));
       territoryAttachment.setWhenCapturedByGoesTo(join(player2.getName(), player3.getName()));
 
