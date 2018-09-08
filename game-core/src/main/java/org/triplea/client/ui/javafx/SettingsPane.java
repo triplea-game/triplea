@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.triplea.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
@@ -35,7 +36,7 @@ class SettingsPane extends StackPane {
   private final TripleA triplea;
   private final Map<ClientSettingJavaFxUiBinding, SelectionComponent<Region>> selectionComponentsBySetting =
       Arrays.stream(ClientSettingJavaFxUiBinding.values()).collect(Collectors.toMap(
-          setting -> setting,
+          Function.identity(),
           setting -> setting.newSelectionComponent(),
           (oldValue, newValue) -> {
             throw new AssertionError("impossible condition: enum contains duplicate values");
