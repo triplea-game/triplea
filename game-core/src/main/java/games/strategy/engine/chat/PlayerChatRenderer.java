@@ -47,24 +47,23 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     final INode node = (INode) value;
     final List<Icon> icons = iconMap.get(node.toString());
     if (icons != null) {
-      super.getListCellRendererComponent(list, getNodeLabel(node, false), index, isSelected, cellHasFocus);
+      super.getListCellRendererComponent(list, getNodeLabel(node), index, isSelected, cellHasFocus);
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     } else {
-      super.getListCellRendererComponent(list, getNodeLabel(node, true), index, isSelected, cellHasFocus);
+      super.getListCellRendererComponent(list, getNodeLabelWithPlayers(node), index, isSelected, cellHasFocus);
     }
     return this;
   }
 
-  private String getNodeLabel(final INode node, final boolean includePlayers) {
-    final StringBuilder sb = new StringBuilder(node.getName());
-    if (includePlayers) {
-      final Set<String> playerNames = playerMap.getOrDefault(node.toString(), Collections.emptySet());
-      if (!playerNames.isEmpty()) {
-        sb.append(playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
-      }
-    }
-    return sb.toString();
+  private static String getNodeLabel(final INode node) {
+    return node.getName();
+  }
+
+  private String getNodeLabelWithPlayers(final INode node) {
+    final Set<String> playerNames = playerMap.getOrDefault(node.toString(), Collections.emptySet());
+    return getNodeLabel(node)
+        + (playerNames.isEmpty() ? "" : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
   }
 
   private void setIconMap() {
