@@ -1,7 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Map;
-
 /**
  * Interface for UI components used to update ClientSetting values. Since the components can get their
  * initial value from the ClientSetting they represent, the only 'write' operation is 'resetToDefault'.
@@ -11,29 +9,9 @@ import java.util.Map;
  */
 public interface GameSettingUiBinding<T> {
   /**
-   * Builds or rebuilds the underlying UI component from current settings.
+   * Returns a new selection component for the setting.
    */
-  T buildSelectionComponent();
-
-  /**
-   * Reads the value set in the UI and return true if it is valid, false otherwise.
-   */
-  boolean isValid();
-
-  /**
-   * Reads values from UI components, returns them in a map of Setting -> value.
-   */
-  Map<GameSetting, String> readValues();
-
-  /**
-   * Returns helpful description message of what values are valid.
-   */
-  String validValueDescription();
-
-  /**
-   * Reset any settings that are bound, and reset the UI.
-   */
-  void reset();
+  SelectionComponent<T> newSelectionComponent();
 
   /**
    * The title describing the setting that can be updated in 2 or 3 words. The space for this value is very
@@ -48,6 +26,4 @@ public interface GameSettingUiBinding<T> {
    * Returns the setting type used to group related settings in the UI.
    */
   SettingType getType();
-
-  void resetToDefault();
 }
