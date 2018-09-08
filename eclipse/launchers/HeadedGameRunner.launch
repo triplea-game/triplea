@@ -2,14 +2,15 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="bad_container_name" value="/triplea/eclipse/lauc"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/game-core/src/main/java/games/strategy/engine/framework/GameRunner.java"/>
+<listEntry value="/game-headed/src/main/java/org/triplea/game/headed/runner/HeadedGameRunner.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.buildship.core.classpathprovider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="games.strategy.engine.framework.GameRunner"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="game-core"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.triplea.game.headed.runner.HeadedGameRunner"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="game-headed"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:game-core}"/>
 </launchConfiguration>
