@@ -37,7 +37,7 @@ class SettingsPane extends StackPane {
   private final Map<ClientSettingJavaFxUiBinding, SelectionComponent<Region>> selectionComponentsBySetting =
       Arrays.stream(ClientSettingJavaFxUiBinding.values()).collect(Collectors.toMap(
           Function.identity(),
-          setting -> setting.newSelectionComponent(),
+          ClientSettingJavaFxUiBinding::newSelectionComponent,
           (oldValue, newValue) -> {
             throw new AssertionError("impossible condition: enum contains duplicate values");
           },
