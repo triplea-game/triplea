@@ -32,7 +32,7 @@ final class UndoablePlacementTest {
   final class GetMoveLabelTest {
     @Test
     void shouldUsePlaceTerritoryWhenPlaceTerritoryEqualsProducerTerritory() {
-      final Territory producerTerritory = placeTerritory;
+      final Territory producerTerritory = new Territory(placeTerritory.getName(), gameData);
       final UndoablePlacement undoablePlacement = newUndoablePlacement(producerTerritory, placeTerritory);
 
       assertThat(undoablePlacement.getMoveLabel(), is(placeTerritory.getName()));
@@ -51,7 +51,7 @@ final class UndoablePlacementTest {
   final class ToStringTest {
     @Test
     void shouldUsePlaceTerritoryWhenPlaceTerritoryEqualsProducerTerritory() {
-      final Territory producerTerritory = placeTerritory;
+      final Territory producerTerritory = new Territory(placeTerritory.getName(), gameData);
       final UndoablePlacement undoablePlacement = newUndoablePlacement(producerTerritory, placeTerritory);
 
       assertThat(undoablePlacement.toString(), is(placeTerritory.getName() + ": 1 " + UNIT_TYPE_NAME));

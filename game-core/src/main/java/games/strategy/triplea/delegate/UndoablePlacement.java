@@ -57,7 +57,7 @@ public class UndoablePlacement extends AbstractUndoableMove {
 
   @Override
   public final String getMoveLabel() {
-    if (m_producerTerritory != m_placeTerritory) {
+    if (!m_producerTerritory.equals(m_placeTerritory)) {
       return m_producerTerritory.getName() + " -> " + m_placeTerritory.getName();
     }
     return m_placeTerritory.getName();
@@ -75,7 +75,7 @@ public class UndoablePlacement extends AbstractUndoableMove {
 
   @Override
   public String toString() {
-    if (m_producerTerritory != m_placeTerritory) {
+    if (!m_producerTerritory.equals(m_placeTerritory)) {
       return m_producerTerritory.getName() + " produces in " + m_placeTerritory.getName() + ": "
           + MyFormatter.unitsToTextNoOwner(m_units);
     }
