@@ -16,7 +16,6 @@ public class ClientContextIntegrationTest extends AbstractClientSettingTestCase 
   public void verifyClientContext() {
     assertThat(ClientContext.downloadCoordinator(), notNullValue());
     assertThat(ClientContext.engineVersion(), notNullValue());
-    assertThat(ClientContext.gameEnginePropertyReader(), notNullValue());
     assertThat(ClientContext.mapDownloadController(), notNullValue());
 
     assertThat(ClientContext.getMapDownloadList(), notNullValue());

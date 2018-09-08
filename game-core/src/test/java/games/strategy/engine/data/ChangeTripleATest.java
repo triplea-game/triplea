@@ -10,7 +10,6 @@ import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.io.IoUtils;
@@ -23,7 +22,6 @@ public class ChangeTripleATest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    ClientContext.gameEnginePropertyReader();
     gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
     can = gameData.getMap().getTerritory("Western Canada");
     assertEquals(2, can.getUnits().getUnitCount());
