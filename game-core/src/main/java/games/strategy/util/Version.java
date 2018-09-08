@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Joiner;
-
 /**
  * Represents a version string.
  * versions are of the form major.minor.point.micro
@@ -187,7 +185,12 @@ public final class Version implements Serializable, Comparable<Version> {
    * Creates a complete version string with '.' as separator, even if some version numbers are 0.
    */
   public String toStringFull() {
-    return Joiner.on('.').join(m_major, m_minor, m_point, m_micro == Integer.MAX_VALUE ? "dev" : m_micro);
+    return String.join(
+        ".",
+        String.valueOf(m_major),
+        String.valueOf(m_minor),
+        String.valueOf(m_point),
+        (m_micro == Integer.MAX_VALUE) ? "dev" : String.valueOf(m_micro));
   }
 
   @Override

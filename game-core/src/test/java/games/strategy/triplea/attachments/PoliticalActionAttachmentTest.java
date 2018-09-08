@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.base.Joiner;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
@@ -28,7 +26,7 @@ final class PoliticalActionAttachmentTest {
         new PoliticalActionAttachment("politicalActionAttachment", null, gameData);
 
     private String join(final String... values) {
-      return Joiner.on(':').join(values);
+      return String.join(":", values);
     }
 
     @BeforeEach
