@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -187,32 +188,26 @@ public enum SettingsWindow {
   }
 
   private void saveSettings() {
-    getSelectedSelectionComponents().ifPresent(selectionComponents -> {
-      final SaveFunction.SaveResult saveResult = SaveFunction.saveSettings(selectionComponents, ClientSetting::flush);
-      JOptionPane.showMessageDialog(dialog, saveResult.message, "Results", saveResult.dialogType);
-    });
+    final SaveFunction.SaveResult saveResult =
+        SaveFunction.saveSettings(getSelectedSelectionComponents(), ClientSetting::flush);
+    JOptionPane.showMessageDialog(dialog, saveResult.message, "Results", saveResult.dialogType);
   }
 
   private void resetSettings() {
-    getSelectedSelectionComponents()
-        .ifPresent(selectionComponents -> selectionComponents.forEach(SelectionComponent::reset));
+    getSelectedSelectionComponents().forEach(SelectionComponent::reset);
   }
 
   private void resetSettingsToDefault() {
-    getSelectedSelectionComponents()
-        .ifPresent(selectionComponents -> selectionComponents.forEach(SelectionComponent::resetToDefault));
+    getSelectedSelectionComponents().forEach(SelectionComponent::resetToDefault);
   }
 
-  private Optional<List<SelectionComponent<JComponent>>> getSelectedSelectionComponents() {
+  private Collection<SelectionComponent<JComponent>> getSelectedSelectionComponents() {
     assert tabbedPane != null;
 
     final int selectedTabIndex = tabbedPane.getSelectedIndex();
-    if (selectedTabIndex == -1) {
-      return Optional.empty();
-    }
-
-    return Optional.of(getSettingsByType(SETTING_TYPES.get(selectedTabIndex)).stream()
+    assert selectedTabIndex != -1 : "you called this method before adding any tabs";
+    return getSettingsByType(SETTING_TYPES.get(selectedTabIndex)).stream()
         .map(selectionComponentsBySetting::get)
-        .collect(Collectors.toList()));
+        .collect(Collectors.toList());
   }
 }
