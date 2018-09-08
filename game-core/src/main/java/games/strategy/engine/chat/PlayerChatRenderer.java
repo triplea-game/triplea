@@ -47,7 +47,7 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     final INode node = (INode) value;
     final List<Icon> icons = iconMap.get(node.toString());
     if (icons != null) {
-      super.getListCellRendererComponent(list, getNodeLabel(node), index, isSelected, cellHasFocus);
+      super.getListCellRendererComponent(list, node.getName(), index, isSelected, cellHasFocus);
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     } else {
@@ -56,13 +56,9 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     return this;
   }
 
-  private static String getNodeLabel(final INode node) {
-    return node.getName();
-  }
-
   private String getNodeLabelWithPlayers(final INode node) {
     final Set<String> playerNames = playerMap.getOrDefault(node.toString(), Collections.emptySet());
-    return getNodeLabel(node)
+    return node.getName()
         + (playerNames.isEmpty() ? "" : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
   }
 
