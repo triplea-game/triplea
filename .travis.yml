@@ -27,10 +27,9 @@ after_success:
 before_deploy:
 ## Update engine property file in-place, append build number. eg: "engine_version = 1.9.0.0" -> "engine_version = 1.9.0.0.1234"
 - ENGINE_VERSION="1.9.0.0.${TRAVIS_BUILD_NUMBER}"
-- LOBBY_VERSION="$ENGINE_VERSION"
 - sed -i "s/^\(engine_version\s*=\).*/\1 ${ENGINE_VERSION}/" game-core/game_engine.properties
 - ./.travis/install_install4j
-- ./gradlew -PengineVersion="$ENGINE_VERSION" -PlobbyVersion="$LOBBY_VERSION" release
+- ./gradlew -PengineVersion="$ENGINE_VERSION" release
 - ./.travis/collect_artifacts
 - ./.travis/generate_artifact_checksums
 ## push tag triggers 'deploy' to occur, files listed in 'deploy.files' are uploaded to github releases.
