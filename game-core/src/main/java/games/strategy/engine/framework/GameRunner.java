@@ -120,7 +120,7 @@ public final class GameRunner {
   public static void start(final Context context) {
     checkNotNull(context);
     checkState(!GraphicsEnvironment.isHeadless(),
-        "UI client launcher invoked from headless environment. This is current prohibited by design to "
+        "UI client launcher invoked from headless environment. This is currently prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
 
     contextRef.set(context);
