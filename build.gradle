@@ -78,7 +78,7 @@ subprojects {
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
     }
 
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
             '-Xep:ParameterName:OFF', // workaround for https://github.com/google/error-prone/issues/780
             '-Xlint:all',
@@ -100,12 +100,12 @@ subprojects {
 
     checkstyleMain {
         maxWarnings = 0
-        source sourceSets.main.output.resourcesDir
+        source = sourceSets.main.output.resourcesDir
     }
 
     checkstyleTest {
         maxWarnings = 0
-        source sourceSets.test.output.resourcesDir
+        source = sourceSets.test.output.resourcesDir
     }
 
     compileTestJava {
