@@ -51,10 +51,6 @@ public final class ClientContext {
 
   private ClientContext() {}
 
-  public static GameEnginePropertyReader gameEnginePropertyReader() {
-    return instance.gameEnginePropertyReader;
-  }
-
   public static DownloadCoordinator downloadCoordinator() {
     return instance.downloadCoordinator;
   }
