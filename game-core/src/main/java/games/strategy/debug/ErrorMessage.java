@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import games.strategy.triplea.settings.ClientSetting;
 import swinglib.JButtonBuilder;
@@ -96,7 +97,7 @@ public enum ErrorMessage {
   public static void show(final LogRecord record) {
     if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
       SwingUtilities.invokeLater(() -> {
-        INSTANCE.errorMessage.setText(TextUtils.textToHtml(record.getMessage()));
+        INSTANCE.errorMessage.setText(TextUtils.textToHtml(Strings.nullToEmpty(record.getMessage())));
         INSTANCE.windowReference.pack();
         INSTANCE.windowReference.setLocationRelativeTo(null);
         INSTANCE.windowReference.setVisible(true);
