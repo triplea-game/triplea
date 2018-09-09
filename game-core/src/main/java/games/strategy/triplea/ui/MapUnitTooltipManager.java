@@ -23,6 +23,7 @@ import javax.swing.event.AncestorListener;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.util.StringUtils;
 
 /**
  * Responsible for showing tool tips when hovering over units on the main map.
@@ -121,7 +122,7 @@ public final class MapUnitTooltipManager implements ActionListener {
   public static String getTooltipTextForUnit(final UnitType unitType, final PlayerID player, final int count) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
     final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
-        unitType.getNameCapitalized(), player.getName());
+        StringUtils.capitalize(unitType.getName()), player.getName());
     return firstLine + ua.toStringShortAndOnlyImportantDifferences(player);
   }
 
