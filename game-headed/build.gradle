@@ -1,5 +1,3 @@
-import com.install4j.gradle.Install4jTask
-
 plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
@@ -18,6 +16,14 @@ ext {
 
 dependencies {
     compile project(':game-core')
+}
+
+install4j {
+    gradle.taskGraph.whenReady {
+        if (gradle.taskGraph.hasTask(generateInstallers)) {
+            installDir = file(install4jHomeDir)
+        }
+    }
 }
 
 jar {
@@ -52,12 +58,9 @@ task downloadAssets(group: 'release') {
     }
 }
 
-task generateInstallers(type: Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {
+task generateInstallers(type: com.install4j.gradle.Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {
     projectFile = file('build.install4j')
-    release project.version
-    doFirst {
-        logger.lifecycle("building installer release of version '${project.version}'")
-    }
+    release = version
 }
 
 task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]) {
@@ -91,18 +94,4 @@ task release(group: 'release', dependsOn: [generateZipReleases, generateInstalle
             file("$releasesDir/TripleA_${version}_windows-64bit.exe")
         ])
     }
-}
-
-gradle.taskGraph.whenReady { graph ->
-    graph.getAllTasks().any({
-        if (it.name == "generateInstallers") {
-            if (!project.hasProperty('install4jHomeDir')) {
-                File propertiesFile = file("${System.getProperty('user.home')}/.gradle/gradle.properties")
-                throw new RuntimeException("Specify install4jHomeDir in $propertiesFile")
-            }
-            def p = file(project.install4jHomeDir)
-            logger.lifecycle('using install4j home directory ' + p.getAbsolutePath())
-            it.project.install4j.installDir = file(project.install4jHomeDir)
-        }
-    })
 }
