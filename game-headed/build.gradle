@@ -32,7 +32,7 @@ run {
     workingDir = project(':game-core').projectDir
 }
 
-task downloadAssets(group: 'release') {
+task downloadInstallerAssets(group: 'release') {
     doLast {
         [
             'icons/triplea_icon_16_16.png',
@@ -54,12 +54,13 @@ task downloadAssets(group: 'release') {
     }
 }
 
-task generateInstallers(type: com.install4j.gradle.Install4jTask, dependsOn: [shadowJar, downloadAssets], group: 'release') {
+task headedGameInstallers(
+        type: com.install4j.gradle.Install4jTask,
+        group: 'release',
+        dependsOn: [shadowJar, downloadInstallerAssets]) {
     projectFile = file('build.install4j')
     release = version
-}
 
-task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]) {
     doLast {
         ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
     }
@@ -80,7 +81,7 @@ task headedGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
-task release(group: 'release', dependsOn: [headedGameArchive, generateInstallerReleases]) {
+task release(group: 'release', dependsOn: [headedGameArchive, headedGameInstallers]) {
     doLast {
         publishArtifacts(headedGameArchive.outputs.files + [
             file("$releasesDir/TripleA_${version}_macos.dmg"),
