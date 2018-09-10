@@ -65,7 +65,7 @@ task generateInstallerReleases(group: 'release', dependsOn: [generateInstallers]
     }
 }
 
-task generateZipReleases(type: Zip, group: 'release', dependsOn: shadowJar) {
+task headedGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     baseName = 'triplea'
     classifier = 'all_platforms'
     from project(':game-core').file('game_engine.properties')
@@ -80,9 +80,9 @@ task generateZipReleases(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
-task release(group: 'release', dependsOn: [generateZipReleases, generateInstallerReleases]) {
+task release(group: 'release', dependsOn: [headedGameArchive, generateInstallerReleases]) {
     doLast {
-        publishArtifacts(generateZipReleases.outputs.files + [
+        publishArtifacts(headedGameArchive.outputs.files + [
             file("$releasesDir/TripleA_${version}_macos.dmg"),
             file("$releasesDir/TripleA_${version}_unix.sh"),
             file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
