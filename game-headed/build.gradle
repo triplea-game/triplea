@@ -19,11 +19,7 @@ dependencies {
 }
 
 install4j {
-    gradle.taskGraph.whenReady {
-        if (gradle.taskGraph.hasTask(generateInstallers)) {
-            installDir = file(install4jHomeDir)
-        }
-    }
+    installDir = file(install4jHomeDir)
 }
 
 jar {

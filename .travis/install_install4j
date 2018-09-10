@@ -9,23 +9,10 @@ if [ -z "$INSTALL4J_7_LICENSE" ]; then
  exit -1
 fi
 
-echo "Downloading and installing install4j"
+readonly INSTALL4J_HOME=$1
+
+echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
 wget --no-verbose -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_7_0_1.sh
 chmod +x install4j_unix.sh
-./install4j_unix.sh -q -dir ~/install4j
-
-## Next, append install4jHomeDir property to ~/.gradle/gradle.properties, 
-## iff the property is not already present in the file
-## Detailed explanation of the commands:
-## The grep simply does the check if the property is there, the echo then 
-## does the append, the CD subshell gets us the absolute path to the home folder,
-## and last this is appended to the gradle properties file
-mkdir -p ~/.gradle
-grep -q "install4jHomeDir" ~/.gradle/gradle.properties 2> /dev/null \
-    || echo "install4jHomeDir=$(cd ~ && pwd)/install4j" >> ~/.gradle/gradle.properties
-
-echo "Now Running Install4j to build OS specific installers"
-~/install4j/bin/install4jc -L $INSTALL4J_7_LICENSE
-
-echo "Environment Now ready to execute 'gradle release'"
-echo ""
+./install4j_unix.sh -q -dir "$INSTALL4J_HOME"
+"$INSTALL4J_HOME/bin/install4jc" -L $INSTALL4J_7_LICENSE
