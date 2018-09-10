@@ -162,7 +162,13 @@ class JavaFxSelectionComponentFactory {
 
   static Supplier<SelectionComponent<Region>> textField(final ClientSetting clientSetting) {
     return () -> new SelectionComponent<Region>() {
-      final TextField textField = new TextField();
+      final TextField textField = newTextField();
+
+      private TextField newTextField() {
+        final TextField textField = new TextField();
+        textField.setText(clientSetting.value());
+        return textField;
+      }
 
       @Override
       public Region getUiComponent() {
