@@ -121,7 +121,7 @@ public enum SettingsWindow {
     int row = 0;
     for (final ClientSettingSwingUiBinding setting : settings) {
       final SelectionComponent<JComponent> selectionComponent =
-          selectionComponentsBySetting.computeIfAbsent(setting, GameSettingUiBinding::newSelectionComponent);
+          selectionComponentsBySetting.computeIfAbsent(setting, ClientSettingSwingUiBinding::newSelectionComponent);
       final int topInset = (row == 0) ? 0 : 10;
       panel.add(
           JLabelBuilder.builder()
