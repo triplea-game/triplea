@@ -152,11 +152,19 @@ public final class MapUnitTooltipManager implements ActionListener {
   public void actionPerformed(final ActionEvent e) {
     if (text.length() > 0) {
       final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
-      final PopupFactory popupFactory = PopupFactory.getSharedInstance();
-      final JToolTip info = new JToolTip();
-      info.setTipText("<html>" + text + "</html>");
-      popup = popupFactory.getPopup(parent, info, currentPoint.x + 20, currentPoint.y - 20);
-      popup.show();
+      if (isPointWithinParentBounds(currentPoint)) {
+        final PopupFactory popupFactory = PopupFactory.getSharedInstance();
+        final JToolTip info = new JToolTip();
+        info.setTipText("<html>" + text + "</html>");
+        popup = popupFactory.getPopup(parent, info, currentPoint.x + 20, currentPoint.y - 20);
+        popup.show();
+      }
     }
+  }
+
+  private boolean isPointWithinParentBounds(final Point pointInScreenCoordinates) {
+    final Point pointInParentCoordinates = new Point(pointInScreenCoordinates);
+    SwingUtilities.convertPointFromScreen(pointInParentCoordinates, parent);
+    return parent.getBounds().contains(pointInParentCoordinates);
   }
 }
