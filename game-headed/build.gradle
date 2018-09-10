@@ -82,8 +82,7 @@ task generateZipReleases(type: Zip, group: 'release', dependsOn: shadowJar) {
 
 task release(group: 'release', dependsOn: [generateZipReleases, generateInstallerReleases]) {
     doLast {
-        publishArtifacts([
-            file("$distsDir/triplea-${version}-all_platforms.zip"),
+        publishArtifacts(generateZipReleases.outputs.files + [
             file("$releasesDir/TripleA_${version}_macos.dmg"),
             file("$releasesDir/TripleA_${version}_unix.sh"),
             file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
