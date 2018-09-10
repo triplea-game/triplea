@@ -12,10 +12,21 @@ version = getEngineVersion()
 
 ext {
     releasesDir = file("$buildDir/releases")
+    testFxVersion = '4.0.13-alpha'
 }
 
 dependencies {
     compile project(':game-core')
+
+    testCompile "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testCompile "org.testfx:testfx-core:$testFxVersion"
+    testCompile "org.testfx:testfx-junit5:$testFxVersion"
+
+    if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
+        testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-9+181'
+    } else if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+        testRuntimeOnly 'org.testfx:openjfx-monocle:8u76-b04'
+    }
 }
 
 install4j {

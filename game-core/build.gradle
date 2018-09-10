@@ -1,6 +1,7 @@
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 dependencies {
+    // clean up dependencies (extract version of httpcomponents)
     compile 'com.github.kirill-grouchnikov:substance:master-v8.0.02-g5d33cea-2'
     compile 'com.github.openjson:openjson:1.0.10'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1.4'
@@ -17,15 +18,7 @@ dependencies {
     runtime 'com.github.kirill-grouchnikov:trident:v1.5.00'
 
     testCompile project(':test-common')
-    testCompile 'org.sonatype.goodies:goodies-prefs:2.2.4'
-    testCompile 'org.testfx:testfx-junit5:4.0.13-alpha'
-    testCompile 'org.testfx:testfx-core:4.0.13-alpha'
-
-    if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
-        testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-9+181'
-    } else if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
-        testRuntimeOnly 'org.testfx:openjfx-monocle:8u76-b04'
-    }
+    testCompile "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
 checkstyleMain {
