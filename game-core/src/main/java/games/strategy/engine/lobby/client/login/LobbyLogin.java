@@ -8,12 +8,13 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
+import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
+import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
+import org.triplea.lobby.common.login.RsaAuthenticator;
+
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
-import games.strategy.engine.lobby.common.LobbyConstants;
-import games.strategy.engine.lobby.common.login.LobbyLoginChallengeKeys;
-import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
-import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IMessenger;

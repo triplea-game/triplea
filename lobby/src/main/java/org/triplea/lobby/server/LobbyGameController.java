@@ -9,8 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.lobby.common.ILobbyGameBroadcaster;
-import games.strategy.engine.lobby.common.ILobbyGameController;
+import org.triplea.lobby.common.ILobbyGameBroadcaster;
+import org.triplea.lobby.common.ILobbyGameController;
+
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;

@@ -1,12 +1,12 @@
 package org.triplea.lobby.server;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.server.config.LobbyPropertyReader;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserController;
 
-import games.strategy.engine.lobby.common.IUserManager;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;

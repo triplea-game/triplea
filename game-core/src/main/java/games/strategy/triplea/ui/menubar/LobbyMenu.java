@@ -20,6 +20,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.triplea.lobby.common.IModeratorController;
+import org.triplea.lobby.common.IUserManager;
+import org.triplea.lobby.common.login.RsaAuthenticator;
+
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.SystemProperties;
@@ -28,9 +32,6 @@ import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.client.ui.TimespanDialog;
-import games.strategy.engine.lobby.common.IModeratorController;
-import games.strategy.engine.lobby.common.IUserManager;
-import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;

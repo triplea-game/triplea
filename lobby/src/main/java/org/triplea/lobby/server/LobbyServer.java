@@ -2,13 +2,13 @@ package org.triplea.lobby.server;
 
 import java.io.IOException;
 
+import org.triplea.lobby.common.ILobbyGameBroadcaster;
+import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.server.config.LobbyPropertyReader;
 import org.triplea.lobby.server.login.LobbyLoginValidator;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
-import games.strategy.engine.lobby.common.ILobbyGameBroadcaster;
-import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;

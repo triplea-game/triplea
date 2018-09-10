@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.common.login;
+package org.triplea.lobby.common.login;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;

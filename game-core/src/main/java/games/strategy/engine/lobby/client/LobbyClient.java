@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.client;
 
-import games.strategy.engine.lobby.common.IModeratorController;
+import org.triplea.lobby.common.IModeratorController;
+
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;

@@ -1,12 +1,12 @@
 package org.triplea.lobby.server.login;
 
-import static games.strategy.engine.lobby.common.login.RsaAuthenticator.hashPasswordWithSalt;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.triplea.lobby.common.login.RsaAuthenticator.hashPasswordWithSalt;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -20,6 +20,9 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
+import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.TestLobbyPropertyReaders;
 import org.triplea.lobby.server.db.BadWordController;
 import org.triplea.lobby.server.db.Database;
@@ -27,9 +30,6 @@ import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserController;
 import org.triplea.test.common.Integration;
 
-import games.strategy.engine.lobby.common.LobbyConstants;
-import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
-import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;

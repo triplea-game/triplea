@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.common;
+package org.triplea.lobby.common;
 
 import java.util.Map;
 

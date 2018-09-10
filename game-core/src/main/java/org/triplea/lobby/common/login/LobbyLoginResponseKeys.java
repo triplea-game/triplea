@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.common.login;
+package org.triplea.lobby.common.login;
 
 /**
  * The property keys that may be present in a lobby authentication protocol response.

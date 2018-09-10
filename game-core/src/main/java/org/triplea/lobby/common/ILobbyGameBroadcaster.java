@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.common;
+package org.triplea.lobby.common;
 
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IChannelSubscribor;

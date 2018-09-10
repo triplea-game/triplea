@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.common;
+package org.triplea.lobby.common;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

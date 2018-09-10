@@ -14,9 +14,9 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.test.common.Integration;
 
-import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;

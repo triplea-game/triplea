@@ -11,6 +11,10 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
+import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
+import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.config.LobbyPropertyReader;
 import org.triplea.lobby.server.db.AccessLogController;
@@ -28,10 +32,6 @@ import org.triplea.lobby.server.db.UserDao;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
-import games.strategy.engine.lobby.common.LobbyConstants;
-import games.strategy.engine.lobby.common.login.LobbyLoginChallengeKeys;
-import games.strategy.engine.lobby.common.login.LobbyLoginResponseKeys;
-import games.strategy.engine.lobby.common.login.RsaAuthenticator;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
