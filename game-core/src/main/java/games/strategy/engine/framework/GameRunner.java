@@ -148,9 +148,9 @@ public class GameRunner {
       SwingUtilities.invokeLater(() -> {
         mainFrame = newMainFrame();
         setupPanelModel.showSelectType();
+        new Thread(GameRunner::showMainFrame).start();
       });
 
-      showMainFrame();
       LocalSystemChecker.launch();
       UpdateChecks.launch();
     }
