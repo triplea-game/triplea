@@ -8,12 +8,13 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import org.junit.jupiter.api.Test;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 import org.testfx.framework.junit5.ApplicationTest;
+import org.triplea.test.common.Integration;
 
 import games.strategy.triplea.settings.ClientSetting;
 import javafx.stage.Stage;
 
+@Integration
 final class TripleAApplicationTest extends ApplicationTest {
-
   static {
     System.setProperty("testfx.robot", "glass");
     System.setProperty("testfx.headless", String.valueOf(true));

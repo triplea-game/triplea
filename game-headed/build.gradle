@@ -18,6 +18,7 @@ ext {
 dependencies {
     compile project(':game-core')
 
+    testCompile project(':test-common')
     testCompile "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testCompile "org.testfx:testfx-core:$testFxVersion"
     testCompile "org.testfx:testfx-junit5:$testFxVersion"
@@ -31,6 +32,10 @@ dependencies {
 
 install4j {
     installDir = file(install4jHomeDir)
+}
+
+integTest {
+    workingDir = project(':game-core').projectDir
 }
 
 jar {
