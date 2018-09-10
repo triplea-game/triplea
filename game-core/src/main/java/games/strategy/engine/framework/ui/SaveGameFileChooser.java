@@ -7,6 +7,7 @@ import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 import static games.strategy.util.StringUtils.capitalize;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,8 +19,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.triplea.settings.ClientSetting;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * A file chooser for save games. Defaults to the user's configured save game folder.
@@ -36,8 +35,6 @@ public final class SaveGameFileChooser extends JFileChooser {
   /**
    * The available auto-saves that can be loaded by a headless game server.
    */
-  @AllArgsConstructor
-  @Getter
   public enum AUTOSAVE_TYPE {
     AUTOSAVE(getHeadlessAutoSaveFile()),
 
@@ -55,7 +52,15 @@ public final class SaveGameFileChooser extends JFileChooser {
 
     AUTOSAVE_EVEN(getEvenRoundAutoSaveFile(true));
 
-    private final File file;
+    private final Path path;
+
+    AUTOSAVE_TYPE(final File file) {
+      path = file.toPath();
+    }
+
+    public File getFile() {
+      return path.toFile();
+    }
   }
 
   @VisibleForTesting
