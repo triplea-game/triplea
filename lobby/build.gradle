@@ -5,7 +5,7 @@ plugins {
 
 archivesBaseName = "$group-$name"
 description = 'TripleA Lobby'
-mainClassName = 'games.strategy.engine.lobby.server.LobbyRunner'
+mainClassName = 'org.triplea.lobby.server.LobbyRunner'
 version = getEngineVersion()
 
 dependencies {

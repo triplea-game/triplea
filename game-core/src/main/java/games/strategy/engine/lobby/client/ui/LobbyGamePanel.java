@@ -22,10 +22,11 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.lobby.common.IModeratorController;
+import org.triplea.lobby.common.LobbyConstants;
+
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.lobby.common.IModeratorController;
-import games.strategy.engine.lobby.common.LobbyConstants;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;

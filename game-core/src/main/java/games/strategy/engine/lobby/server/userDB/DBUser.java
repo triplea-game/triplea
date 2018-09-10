@@ -2,7 +2,8 @@ package games.strategy.engine.lobby.server.userDB;
 
 import java.io.Serializable;
 
-import games.strategy.engine.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.LobbyConstants;
+
 import games.strategy.util.Util;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

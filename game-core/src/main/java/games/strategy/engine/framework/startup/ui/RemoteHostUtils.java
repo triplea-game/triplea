@@ -2,8 +2,9 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.util.Set;
 
+import org.triplea.lobby.common.IRemoteHostUtils;
+
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
-import games.strategy.engine.lobby.common.IRemoteHostUtils;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
