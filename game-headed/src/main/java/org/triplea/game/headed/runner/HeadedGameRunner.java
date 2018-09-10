@@ -12,6 +12,9 @@ public final class HeadedGameRunner {
    * Entry point for running a new headed game client.
    */
   public static void main(final String[] args) {
-    GameRunner.main(args);
+    GameRunner.start(GameRunner.Context.builder()
+        .args(args)
+        .mainClass(HeadedGameRunner.class)
+        .build());
   }
 }

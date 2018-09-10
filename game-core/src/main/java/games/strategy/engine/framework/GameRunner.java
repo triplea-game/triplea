@@ -1,6 +1,7 @@
 package games.strategy.engine.framework;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
@@ -31,10 +32,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.SimpleFormatter;
 
+import javax.annotation.Nullable;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -44,8 +47,6 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
 import org.triplea.client.ui.javafx.TripleA;
-
-import com.google.common.base.Preconditions;
 
 import games.strategy.debug.Console;
 import games.strategy.debug.ConsoleHandler;
@@ -75,6 +76,9 @@ import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 import javafx.application.Application;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.java.Log;
 
 /**
@@ -82,29 +86,44 @@ import lombok.extern.java.Log;
  * In this class commonly used constants are getting defined and the Game is being launched
  */
 @Log
-public class GameRunner {
-
+public final class GameRunner {
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
-
-  // not arguments:
   public static final int PORT = 3300;
-
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
 
   private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
+  private static final AtomicReference<Context> contextRef = new AtomicReference<>();
   private static JFrame mainFrame;
 
+  private GameRunner() {}
+
+  private static Context getContext() {
+    final @Nullable Context context = contextRef.get();
+    checkState(
+        context != null,
+        "GameRunner execution context has not been initialized. Did you forget to call GameRunner#start()?");
+    return context;
+  }
+
   /**
-   * Launches the "main" TripleA gui enabled game client.
-   * No args will launch a client, additional args can be supplied to specify additional behavior.
-   * Warning: game engine code invokes this method to spawn new game clients.
+   * Starts a new UI-enabled game client. This method will return before the game client UI exits. The game client UI
+   * will continue to run until it is shut down by the user.
+   *
+   * <p>
+   * Command-line arguments are specified via {@code context}. No arguments will launch a client; additional arguments
+   * can be supplied to specify additional behavior.
+   * </p>
+   *
+   * @throws IllegalStateException If called from a headless environment.
    */
-  public static void main(final String[] args) {
-    Preconditions.checkState(!GraphicsEnvironment.isHeadless(),
-        "UI client launcher invoked from headless environment. This is current prohibited by design to "
+  public static void start(final Context context) {
+    checkNotNull(context);
+    checkState(!GraphicsEnvironment.isHeadless(),
+        "UI client launcher invoked from headless environment. This is currently prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
 
+    contextRef.set(context);
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
     ClientSetting.initialize();
 
@@ -123,7 +142,7 @@ public class GameRunner {
         ErrorMessage.enable();
       }));
     }
-    ArgParser.handleCommandLineArgs(args);
+    ArgParser.handleCommandLineArgs(context.args);
 
     if (SystemProperties.isMac()) {
       com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
@@ -143,7 +162,7 @@ public class GameRunner {
     }
 
     if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      Application.launch(TripleA.class, args);
+      Application.launch(TripleA.class, context.args);
     } else {
       SwingUtilities.invokeLater(() -> {
         mainFrame = newMainFrame();
@@ -206,7 +225,6 @@ public class GameRunner {
     return Optional.empty();
   }
 
-
   /**
    * Opens a file selection dialog where a user can select/create a file for TripleA save game.
    * An empty optional is returned if user just closes down the dialog window.
@@ -250,16 +268,13 @@ public class GameRunner {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 
-
   public static void showMessageDialog(final String message, final Title title, final int messageType) {
     JOptionPane.showMessageDialog(mainFrame, message, title.value, messageType);
   }
 
-
   public static void hideMainFrame() {
     SwingUtilities.invokeLater(() -> mainFrame.setVisible(false));
   }
-
 
   /**
    * Sets the 'main frame' to visible. In this context the main frame is the initial
@@ -285,7 +300,7 @@ public class GameRunner {
   }
 
   private static void loadGame() {
-    Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
+    checkState(!SwingUtilities.isEventDispatchThread());
     gameSelectorModel.loadDefaultGameSameThread();
     final String fileName = System.getProperty(TRIPLEA_GAME, "");
     if (!fileName.isEmpty() && new File(fileName).exists()) {
@@ -298,6 +313,9 @@ public class GameRunner {
     }
   }
 
+  /**
+   * Returns the standard application icon typically displayed in a window's title bar.
+   */
   public static Image getGameIcon(final Window frame) {
     Image img = null;
     try {
@@ -315,6 +333,9 @@ public class GameRunner {
     return img;
   }
 
+  /**
+   * Spawns a new process to host a network game.
+   */
   public static void hostGame(final int port, final String playerName, final String comments, final String password,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
@@ -335,16 +356,19 @@ public class GameRunner {
     if (fileName.length() > 0) {
       commands.add("-D" + TRIPLEA_GAME + "=" + fileName);
     }
-    final String javaClass = GameRunner.class.getName();
-    commands.add(javaClass);
+    commands.add(getContext().mainClass.getName());
     ProcessRunnerUtil.exec(commands);
   }
 
+  /**
+   * Spawns a new process to join a network game.
+   */
   public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
     final GameDescription.GameStatus status = description.getStatus();
     if (GameDescription.GameStatus.LAUNCHING == status) {
       return;
     }
+
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
     if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(engineVersionOfGameToJoin)) {
       JOptionPane.showMessageDialog(parent,
@@ -353,21 +377,17 @@ public class GameRunner {
           "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
       return;
     }
-    joinGame(description.getPort(), description.getHostedBy().getAddress().getHostAddress(), messengers);
-  }
 
-  private static void joinGame(final int port, final String hostAddressIp, final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT + "=true");
-    commands.add(prefix + TRIPLEA_PORT + "=" + port);
-    commands.add(prefix + TRIPLEA_HOST + "=" + hostAddressIp);
+    commands.add(prefix + TRIPLEA_PORT + "=" + description.getPort());
+    commands.add(prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
     commands.add(prefix + TRIPLEA_NAME + "=" + messengers.getMessenger().getLocalNode().getName());
-    commands.add(GameRunner.class.getName());
+    commands.add(getContext().mainClass.getName());
     ProcessRunnerUtil.exec(commands);
   }
-
 
   public static void exitGameIfFinished() {
     SwingUtilities.invokeLater(() -> {
@@ -392,5 +412,15 @@ public class GameRunner {
 
   public static void quitGame() {
     mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+  }
+
+  /**
+   * Execution context for {@link GameRunner}.
+   */
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  @Builder
+  public static final class Context {
+    public final String[] args;
+    public final Class<?> mainClass;
   }
 }
