@@ -50,12 +50,15 @@ public class ResourceLoader implements Closeable {
    * Returns a resource loader that will find assets in a map directory.
    */
   public static ResourceLoader getMapResourceLoader(final String mapName) {
+    @Nullable
     File atFolder = ClientFileSystemHelper.getRootFolder();
     File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
 
-    while (!resourceFolder.exists() && !resourceFolder.isDirectory()) {
+    while ((atFolder != null) && !resourceFolder.exists() && !resourceFolder.isDirectory()) {
       atFolder = atFolder.getParentFile();
-      resourceFolder = new File(atFolder, RESOURCE_FOLDER);
+      if (atFolder != null) {
+        resourceFolder = new File(atFolder, RESOURCE_FOLDER);
+      }
     }
 
     final List<String> dirs = getPaths(mapName);
@@ -68,7 +71,9 @@ public class ResourceLoader implements Closeable {
       throw new MapNotFoundException();
     }
 
-    dirs.add(resourceFolder.getAbsolutePath());
+    if (resourceFolder.exists()) {
+      dirs.add(resourceFolder.getAbsolutePath());
+    }
 
     return new ResourceLoader(mapName, dirs.toArray(new String[0]));
   }
