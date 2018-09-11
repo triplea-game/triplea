@@ -126,8 +126,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Map List Override",
       SettingType.TESTING,
       SelectionComponentFactory.filePath(ClientSetting.MAP_LIST_OVERRIDE),
-      "Overrides the map listing file specified in 'game_engine.properties'. You can for example download a copy of the"
-          + "listing file, update it, and put the path to that file here."),
+      "Overrides the location of the map listing file. You can, for example, download a copy of the listing file, "
+          + "update it, and put the path to that file here."),
 
   TEST_LOBBY_HOST_BINDING(
       "Lobby Host Override",
