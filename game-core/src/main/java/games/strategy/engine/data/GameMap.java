@@ -228,7 +228,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Collection<Unit> units, final PlayerID player) {
     final Set<Territory> neighbors = getNeighbors(territory, neighborFilter);
     if (player != null) {
-      neighbors.removeIf(t -> MoveValidator.validateCanal(new Route(territory, t), units, player, getData()) != null);
+      return neighbors.parallelStream()
+          .filter(t -> MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData()))
+          .collect(Collectors.toSet());
     }
     return neighbors;
   }

@@ -238,7 +238,7 @@ public class MoveValidator {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();
         for (final CanalAttachment canalAttachment : CanalAttachment.get(t)) {
-          if (!isCanalOnRoute(canalAttachment, route, data)) {
+          if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
             continue; // Only check canals that are on the route
           }
           failureMessage = canPassThroughCanal(canalAttachment, unit, player, data);
@@ -266,6 +266,28 @@ public class MoveValidator {
         .filter(unit -> unitsThatFailCanal.contains(unit) || !Matches.unitHasEnoughMovementForRoute(route).test(unit))
         .collect(Collectors.toSet());
     return checkLandTransports(data, player, potentialLandTransports, unitsToLandTransport).isEmpty() ? null : result;
+  }
+
+  /**
+   * Simplified version of {@link #validateCanal(Route, Collection, PlayerID, GameData) validateCanal} used for route
+   * finding to check neighboring territories and avoid validating every unit. Performance of this method is critical.
+   */
+  public static boolean canAnyUnitsPassCanal(final Territory start, final Territory end, final Collection<Unit> units,
+      final PlayerID player, final GameData data) {
+    boolean canPass = true;
+    final Route route = new Route(start, end);
+    for (final CanalAttachment canalAttachment : CanalAttachment.get(start)) {
+      if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
+        continue; // Only check canals that are on the route
+      }
+      final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, new HashMap<>());
+      canPass = !canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player, data).isPresent();
+      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
+          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+        break; // If need to control any canal and can pass OR need to control all canals and can't pass
+      }
+    }
+    return canPass;
   }
 
   private static MoveValidationResult validateCombat(final GameData data, final Collection<Unit> units,
@@ -1251,37 +1273,24 @@ public class MoveValidator {
     return result;
   }
 
-  /*
-   * Checks if route is either null or includes both canal territories so needs to be checked.
-   */
-  private static boolean isCanalOnRoute(final CanalAttachment canalAttachment, final Route route, final GameData data) {
-    if (route == null) {
-      return true;
-    }
-    Territory last = null;
-    final Set<Territory> connectionToCheck = CanalAttachment.getAllCanalSeaZones(canalAttachment.getCanalName(), data);
-    for (final Territory current : route.getAllTerritories()) {
-      if (last != null) {
-        final Collection<Territory> lastTwo = new ArrayList<>();
-        lastTwo.add(last);
-        lastTwo.add(current);
-        if (lastTwo.containsAll(connectionToCheck)) {
-          return true;
-        }
-      }
-      last = current;
-    }
-    return false;
-  }
-
-  /**
-   * Checks if units can pass through canal and returns Optional.empty() if true or a failure message if false.
-   */
   private static Optional<String> canPassThroughCanal(final CanalAttachment canalAttachment,
       final Unit unit, final PlayerID player, final GameData data) {
     if (unit != null && Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()).test(unit)) {
       return Optional.empty();
     }
+    return checkCanalOwnership(canalAttachment, player, data);
+  }
+
+  private static Optional<String> canAnyPassThroughCanal(final CanalAttachment canalAttachment,
+      final Collection<Unit> units, final PlayerID player, final GameData data) {
+    if (units.stream().anyMatch(Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()))) {
+      return Optional.empty();
+    }
+    return checkCanalOwnership(canalAttachment, player, data);
+  }
+
+  private static Optional<String> checkCanalOwnership(final CanalAttachment canalAttachment,
+      final PlayerID player, final GameData data) {
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
         return Optional.of("Must control " + canalAttachment.getCanalName() + " to move through");

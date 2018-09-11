@@ -12,6 +12,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -31,24 +32,29 @@ public class CanalAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  public static Set<Territory> getAllCanalSeaZones(final String canalName, final GameData data) {
-    final Set<Territory> territories = new HashSet<>();
-    for (final Territory t : data.getMap()) {
-      final Set<CanalAttachment> canalAttachments = get(t);
-      if (canalAttachments.isEmpty()) {
-        continue;
-      }
-      for (final CanalAttachment canalAttachment : canalAttachments) {
+  /**
+   * Checks if the route contains both territories to pass through the given canal. If route is
+   * null returns true.
+   */
+  public static boolean isCanalOnRoute(final String canalName, final Route route) {
+    if (route == null) {
+      return true;
+    }
+    boolean previousTerritoryHasCanal = false;
+    for (final Territory t : route) {
+      boolean currentTerritoryHasCanal = false;
+      for (final CanalAttachment canalAttachment : get(t)) {
         if (canalAttachment.getCanalName().equals(canalName)) {
-          territories.add(t);
+          currentTerritoryHasCanal = true;
+          break;
         }
       }
+      if (previousTerritoryHasCanal && currentTerritoryHasCanal) {
+        return true;
+      }
+      previousTerritoryHasCanal = currentTerritoryHasCanal;
     }
-    if (territories.size() != 2) {
-      throw new IllegalStateException(
-          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + territories);
-    }
-    return territories;
+    return false;
   }
 
   public static Set<CanalAttachment> get(final Territory t) {
@@ -153,6 +159,22 @@ public class CanalAttachment extends DefaultAttachment {
     }
     if (m_landTerritories == null || m_landTerritories.size() == 0) {
       throw new GameParseException("Canal named " + m_canalName + " must have landTerritories set!" + thisErrorMsg());
+    }
+    final Set<Territory> territories = new HashSet<>();
+    for (final Territory t : data.getMap()) {
+      final Set<CanalAttachment> canalAttachments = get(t);
+      if (canalAttachments.isEmpty()) {
+        continue;
+      }
+      for (final CanalAttachment canalAttachment : canalAttachments) {
+        if (canalAttachment.getCanalName().equals(m_canalName)) {
+          territories.add(t);
+        }
+      }
+    }
+    if (territories.size() != 2) {
+      throw new GameParseException(
+          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + territories);
     }
   }
 
