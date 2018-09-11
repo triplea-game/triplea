@@ -7,14 +7,16 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.awt.Point;
 import java.awt.Polygon;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,11 +50,21 @@ public final class PointFileReaderWriterTest {
     return new String(IoUtils.writeToMemory(consumer), StandardCharsets.UTF_8);
   }
 
+  private static InputStream newInputStreamForCloseTest() throws Exception {
+    final InputStream is = mock(InputStream.class);
+    when(is.read(any(), anyInt(), anyInt())).thenReturn(-1);
+    return is;
+  }
+
+  private static OutputStream newOutputStreamForCloseTest() {
+    return mock(OutputStream.class);
+  }
+
   @Nested
   public final class ReadOneToOneTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final InputStream is = spy(new ByteArrayInputStream(new byte[0]));
+      final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToOne(is);
 
@@ -149,7 +161,7 @@ public final class PointFileReaderWriterTest {
   public final class ReadOneToManyTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final InputStream is = spy(new ByteArrayInputStream(new byte[0]));
+      final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToMany(is);
 
@@ -222,7 +234,7 @@ public final class PointFileReaderWriterTest {
   public final class ReadOneToManyPlacementsTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final InputStream is = spy(new ByteArrayInputStream(new byte[0]));
+      final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToManyPlacements(is);
 
@@ -305,7 +317,7 @@ public final class PointFileReaderWriterTest {
   public final class ReadOneToManyPolygonsTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final InputStream is = spy(new ByteArrayInputStream(new byte[0]));
+      final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToManyPolygons(is);
 
@@ -398,7 +410,7 @@ public final class PointFileReaderWriterTest {
   public final class WriteOneToOneTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final OutputStream os = spy(new ByteArrayOutputStream());
+      final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToOne(os, Collections.emptyMap());
 
@@ -425,7 +437,7 @@ public final class PointFileReaderWriterTest {
   public final class WriteOneToManyTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final OutputStream os = spy(new ByteArrayOutputStream());
+      final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToMany(os, Collections.emptyMap());
 
@@ -452,7 +464,7 @@ public final class PointFileReaderWriterTest {
   public final class WriteOneToManyPlacementsTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final OutputStream os = spy(new ByteArrayOutputStream());
+      final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToManyPlacements(os, Collections.emptyMap());
 
@@ -483,7 +495,7 @@ public final class PointFileReaderWriterTest {
   public final class WriteOneToManyPolygonsTest {
     @Test
     public void shouldNotCloseStream() throws Exception {
-      final OutputStream os = spy(new ByteArrayOutputStream());
+      final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToManyPolygons(os, Collections.emptyMap());
 
