@@ -238,7 +238,7 @@ public class MoveValidator {
       for (final Territory t : route.getAllTerritories()) {
         Optional<String> failureMessage = Optional.empty();
         for (final CanalAttachment canalAttachment : CanalAttachment.get(t)) {
-          if (!isCanalOnRoute(canalAttachment, route, data)) {
+          if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
             continue; // Only check canals that are on the route
           }
           failureMessage = canPassThroughCanal(canalAttachment, unit, player, data);
@@ -266,6 +266,28 @@ public class MoveValidator {
         .filter(unit -> unitsThatFailCanal.contains(unit) || !Matches.unitHasEnoughMovementForRoute(route).test(unit))
         .collect(Collectors.toSet());
     return checkLandTransports(data, player, potentialLandTransports, unitsToLandTransport).isEmpty() ? null : result;
+  }
+
+  /**
+   * Simplified version of {@link #validateCanal(Route, Collection, PlayerID, GameData) validateCanal} used for route
+   * finding to check neighboring territories and avoid validating every unit. Performance of this method is critical.
+   */
+  public static boolean canAnyUnitsPassCanal(final Territory start, final Territory end, final Collection<Unit> units,
+      final PlayerID player, final GameData data) {
+    boolean canPass = true;
+    final Route route = new Route(start, end);
+    for (final CanalAttachment canalAttachment : CanalAttachment.get(start)) {
+      if (!CanalAttachment.isCanalOnRoute(canalAttachment.getCanalName(), route)) {
+        continue; // Only check canals that are on the route
+      }
+      final Collection<Unit> unitsWithoutDependents = findNonDependentUnits(units, route, new HashMap<>());
+      canPass = !canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player, data).isPresent();
+      if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
+          || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
+        break; // If need to control any canal and can pass OR need to control all canals and can't pass
+      }
+    }
+    return canPass;
   }
 
   private static MoveValidationResult validateCombat(final GameData data, final Collection<Unit> units,
@@ -1251,37 +1273,24 @@ public class MoveValidator {
     return result;
   }
 
-  /*
-   * Checks if route is either null or includes both canal territories so needs to be checked.
-   */
-  private static boolean isCanalOnRoute(final CanalAttachment canalAttachment, final Route route, final GameData data) {
-    if (route == null) {
-      return true;
-    }
-    Territory last = null;
-    final Set<Territory> connectionToCheck = CanalAttachment.getAllCanalSeaZones(canalAttachment.getCanalName(), data);
-    for (final Territory current : route.getAllTerritories()) {
-      if (last != null) {
-        final Collection<Territory> lastTwo = new ArrayList<>();
-        lastTwo.add(last);
-        lastTwo.add(current);
-        if (lastTwo.containsAll(connectionToCheck)) {
-          return true;
-        }
-      }
-      last = current;
-    }
-    return false;
-  }
-
-  /**
-   * Checks if units can pass through canal and returns Optional.empty() if true or a failure message if false.
-   */
   private static Optional<String> canPassThroughCanal(final CanalAttachment canalAttachment,
       final Unit unit, final PlayerID player, final GameData data) {
     if (unit != null && Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()).test(unit)) {
       return Optional.empty();
     }
+    return checkCanalOwnership(canalAttachment, player, data);
+  }
+
+  private static Optional<String> canAnyPassThroughCanal(final CanalAttachment canalAttachment,
+      final Collection<Unit> units, final PlayerID player, final GameData data) {
+    if (units.stream().anyMatch(Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()))) {
+      return Optional.empty();
+    }
+    return checkCanalOwnership(canalAttachment, player, data);
+  }
+
+  private static Optional<String> checkCanalOwnership(final CanalAttachment canalAttachment,
+      final PlayerID player, final GameData data) {
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
         return Optional.of("Must control " + canalAttachment.getCanalName() + " to move through");
@@ -1443,20 +1452,16 @@ public class MoveValidator {
     final boolean isNeutralsImpassable =
         isNeutralsImpassable(data) || (hasAir && !Properties.getNeutralFlyoverAllowed(data));
     final Predicate<Territory> noNeutral = Matches.territoryIsNeutralButNotWater().negate();
-    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
-    final Predicate<Territory> noEnemyUnits = Matches.territoryHasEnemyUnits(player, data).negate();
     final Predicate<Territory> noImpassableOrRestricted =
         PredicateBuilder.of(Matches.territoryIsPassableAndNotRestricted(player, data))
             .and(Matches.territoryEffectsAllowUnits(units))
-            // if we have air or land, we don't want to move over territories owned by players who's
-            // relationships will not let us move into them
             .andIf(hasAir, Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))
             .andIf(hasLand, Matches.territoryAllowsCanMoveLandUnitsOverOwnedLand(player, data)).build();
+    final Predicate<Territory> noImpassableOrRestrictedOrNeutral =
+        PredicateBuilder.of(noImpassableOrRestricted).andIf(isNeutralsImpassable, noNeutral).build();
 
-    Route defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
-        PredicateBuilder.of(noImpassableOrRestricted).andIf(isNeutralsImpassable, noNeutral).build());
-    // since all routes require at least noImpassable, then if we cannot find a route without impassables, just return
-    // any route
+    Route defaultRoute =
+        data.getMap().getRouteIgnoreEndValidatingCanals(start, end, noImpassableOrRestrictedOrNeutral, units, player);
     if (defaultRoute == null) {
       // at least try for a route without impassable territories, but allowing restricted
       // territories, since there is a chance politics may change in the future.
@@ -1468,23 +1473,18 @@ public class MoveValidator {
       }
       return defaultRoute;
     }
+
     // we don't want to look at the dependents
     final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent =
         new ArrayList<>(CollectionUtils.getMatches(units,
             Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, player, data, true)
                 .negate()));
-    boolean mustGoLand = false;
+
     // If start and end are land, try a land route. Don't force a land route, since planes may be moving
+    boolean mustGoLand = false;
     if (!start.isWater() && !end.isWater()) {
-      final Route landRoute;
-      if (isNeutralsImpassable) {
-        landRoute =
-            data.getMap().getRoute_IgnoreEnd(start, end,
-                Matches.territoryIsLand().and(noNeutral).and(noImpassableOrRestricted));
-      } else {
-        landRoute =
-            data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsLand().and(noImpassableOrRestricted));
-      }
+      final Route landRoute = data.getMap().getRouteIgnoreEndValidatingCanals(start, end,
+          Matches.territoryIsLand().and(noImpassableOrRestrictedOrNeutral), units, player);
       if ((landRoute != null)
           && ((landRoute.numberOfSteps() <= defaultRoute.numberOfSteps())
               || (forceLandOrSeaRoute
@@ -1493,11 +1493,12 @@ public class MoveValidator {
         mustGoLand = true;
       }
     }
+
     // If the start and end are water, try and get a water route don't force a water route, since planes may be moving
     boolean mustGoSea = false;
     if (start.isWater() && end.isWater()) {
-      final Route waterRoute =
-          data.getMap().getRoute_IgnoreEnd(start, end, Matches.territoryIsWater().and(noImpassableOrRestricted));
+      final Route waterRoute = data.getMap().getRouteIgnoreEndValidatingCanals(start, end,
+          Matches.territoryIsWater().and(noImpassableOrRestricted), units, player);
       if ((waterRoute != null)
           && ((waterRoute.numberOfSteps() <= defaultRoute.numberOfSteps())
               || (forceLandOrSeaRoute
@@ -1506,7 +1507,10 @@ public class MoveValidator {
         mustGoSea = true;
       }
     }
+
     // these are the conditions we would like the route to satisfy, starting with the most important
+    final Predicate<Territory> noEnemyUnits = Matches.territoryHasEnemyUnits(player, data).negate();
+    final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
     final List<Predicate<Territory>> tests;
     if (isNeutralsImpassable) {
       tests = new ArrayList<>(Arrays.asList(
@@ -1532,7 +1536,7 @@ public class MoveValidator {
       } else {
         testMatch = t.and(noImpassableOrRestricted);
       }
-      final Route testRoute = data.getMap().getRoute_IgnoreEnd(start, end, testMatch);
+      final Route testRoute = data.getMap().getRouteIgnoreEndValidatingCanals(start, end, testMatch, units, player);
       if ((testRoute != null) && (testRoute.numberOfSteps() <= defaultRoute.numberOfSteps())) {
         return testRoute;
       }

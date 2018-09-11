@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,18 +13,28 @@ import java.util.function.Predicate;
 // TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
 // always...
 class RouteFinder {
+
   private final GameMap map;
   private final Predicate<Territory> condition;
   private final Map<Territory, Territory> previous;
+  private final Collection<Unit> units;
+  private final PlayerID player;
 
   RouteFinder(final GameMap map, final Predicate<Territory> condition) {
+    this(map, condition, new HashSet<>(), null);
+  }
+
+  RouteFinder(final GameMap map, final Predicate<Territory> condition, final Collection<Unit> units,
+      final PlayerID player) {
     this.map = map;
     this.condition = condition;
     previous = new HashMap<>();
+    this.units = units;
+    this.player = player;
   }
 
   Route findRoute(final Territory start, final Territory end) {
-    final Set<Territory> startSet = map.getNeighbors(start, condition);
+    final Set<Territory> startSet = map.getNeighborsValidatingCanals(start, condition, units, player);
     for (final Territory t : startSet) {
       previous.put(t, start);
     }
@@ -36,7 +47,7 @@ class RouteFinder {
   private boolean calculate(final Set<Territory> startSet, final Territory end) {
     final Set<Territory> nextSet = new HashSet<>();
     for (final Territory t : startSet) {
-      final Set<Territory> neighbors = map.getNeighbors(t, condition);
+      final Set<Territory> neighbors = map.getNeighborsValidatingCanals(t, condition, units, player);
       for (final Territory neighbor : neighbors) {
         if (!previous.containsKey(neighbor)) {
           previous.put(neighbor, t);

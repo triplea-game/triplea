@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -223,6 +224,17 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return getNeighbors(frontier, searched, distance, null);
   }
 
+  Set<Territory> getNeighborsValidatingCanals(final Territory territory, final Predicate<Territory> neighborFilter,
+      final Collection<Unit> units, final PlayerID player) {
+    final Set<Territory> neighbors = getNeighbors(territory, neighborFilter);
+    if (player != null) {
+      return neighbors.parallelStream()
+          .filter(t -> MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData()))
+          .collect(Collectors.toSet());
+    }
+    return neighbors;
+  }
+
   /**
    * Returns the shortest route between two territories or null if no route exists.
    *
@@ -276,6 +288,16 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   public Route getRoute_IgnoreEnd(final Territory start, final Territory end, final Predicate<Territory> match) {
     return getRoute(start, end, Matches.territoryIs(end).or(match));
+  }
+
+  public Route getRouteIgnoreEndValidatingCanals(final Territory t1, final Territory t2,
+      final Predicate<Territory> cond, final Collection<Unit> units, final PlayerID player) {
+    checkNotNull(t1);
+    checkNotNull(t2);
+    if (t1.equals(t2)) {
+      return new Route(t1);
+    }
+    return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2);
   }
 
   /**
