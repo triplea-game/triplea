@@ -405,7 +405,7 @@ public class HistoryLog extends JFrame {
 
   @VisibleForTesting
   static String parsePlayerNameFromDiceRollMessage(final String message) {
-    return message.substring(0, message.indexOf(" roll "));
+    return message.contains(" roll ") ? message.substring(0, message.indexOf(" roll ")) : message;
   }
 
   /**
