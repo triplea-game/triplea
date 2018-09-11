@@ -7,8 +7,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Level;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
@@ -45,6 +46,8 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.extern.java.Log;
 
 /**
@@ -641,28 +644,12 @@ public class GameDataExporter {
     xmlfile.append("    </map>\n");
   }
 
-  private static final class Connection {
+  @AllArgsConstructor
+  @EqualsAndHashCode
+  @VisibleForTesting
+  static final class Connection {
     private final Territory territory1;
     private final Territory territory2;
-
-    private Connection(final Territory t1, final Territory t2) {
-      territory1 = t1;
-      territory2 = t2;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hashCode(territory1) + Objects.hashCode(territory2);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-      if (o == null) {
-        return false;
-      }
-      final Connection con = (Connection) o;
-      return (territory1 == con.territory1 && territory2 == con.territory2);
-    }
   }
 
   private void connections(final GameData data) {
