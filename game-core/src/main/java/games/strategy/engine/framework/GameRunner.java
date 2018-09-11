@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.SimpleFormatter;
@@ -45,8 +46,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
-
-import org.triplea.client.ui.javafx.TripleA;
 
 import games.strategy.debug.Console;
 import games.strategy.debug.ConsoleHandler;
@@ -75,7 +74,6 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
-import javafx.application.Application;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -162,7 +160,7 @@ public final class GameRunner {
     }
 
     if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      Application.launch(TripleA.class, context.args);
+      context.startJavaFxClient.accept(context.args);
     } else {
       SwingUtilities.invokeLater(() -> {
         mainFrame = newMainFrame();
@@ -422,5 +420,6 @@ public final class GameRunner {
   public static final class Context {
     public final String[] args;
     public final Class<?> mainClass;
+    public final Consumer<String[]> startJavaFxClient;
   }
 }

@@ -1,6 +1,9 @@
 package org.triplea.game.headed.runner;
 
+import org.triplea.client.ui.javafx.TripleA;
+
 import games.strategy.engine.framework.GameRunner;
+import javafx.application.Application;
 
 /**
  * Runs a headed game client.
@@ -15,6 +18,11 @@ public final class HeadedGameRunner {
     GameRunner.start(GameRunner.Context.builder()
         .args(args)
         .mainClass(HeadedGameRunner.class)
+        .startJavaFxClient(HeadedGameRunner::startJavaFxClient)
         .build());
+  }
+
+  private static void startJavaFxClient(final String[] args) {
+    Application.launch(TripleA.class, args);
   }
 }
