@@ -38,6 +38,7 @@ subprojects {
         lombokVersion = '1.18.0'
         mockitoVersion = '2.19.1'
         postgresqlVersion = '42.2.2'
+        sonatypeGoodiesPrefsVersion = '2.2.4'
     }
 
     apply plugin: 'checkstyle'
