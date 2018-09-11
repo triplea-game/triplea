@@ -21,11 +21,7 @@ class RouteFinder {
   private final PlayerID player;
 
   RouteFinder(final GameMap map, final Predicate<Territory> condition) {
-    this.map = map;
-    this.condition = condition;
-    previous = new HashMap<>();
-    units = new HashSet<>();
-    player = null;
+    this(map, condition, new HashSet<>(), null);
   }
 
   RouteFinder(final GameMap map, final Predicate<Territory> condition, final Collection<Unit> units,

@@ -163,9 +163,6 @@ public class CanalAttachment extends DefaultAttachment {
     final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
       final Set<CanalAttachment> canalAttachments = get(t);
-      if (canalAttachments.isEmpty()) {
-        continue;
-      }
       for (final CanalAttachment canalAttachment : canalAttachments) {
         if (canalAttachment.getCanalName().equals(m_canalName)) {
           territories.add(t);
