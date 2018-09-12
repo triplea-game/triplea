@@ -64,7 +64,7 @@ class RouteFinder {
   private Route getRoute(final Territory start, final Territory destination) {
     final List<Territory> route = new ArrayList<>();
     Territory current = destination;
-    while (current != start) {
+    while (!start.equals(current)) {
       if (current == null) {
         return null;
       }
