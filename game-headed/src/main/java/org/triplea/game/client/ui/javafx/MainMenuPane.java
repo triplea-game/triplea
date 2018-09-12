@@ -1,10 +1,10 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.game.client.ui.javafx;
 
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.function.Function;
 
-import org.triplea.client.ui.javafx.util.FxmlManager;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;

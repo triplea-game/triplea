@@ -16,7 +16,7 @@
 	-fx-font-size: 20px !important;
 }
 .file-container {
-	-fx-background-image: url('/org/triplea/client/ui/javafx/images/folder.png');
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/folder.png');
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center top;
 }
@@ -25,7 +25,7 @@
 }
 #subtitle {
 	-fx-font-size: 17px;
-	-fx-background-image: url('/org/triplea/client/ui/javafx/images/subtitle_background.png');
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/subtitle_background.png');
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: stretch;
 	-fx-padding: 0 5px 0 5px;
@@ -34,25 +34,25 @@
 	-fx-font-size: 37px;
 }
 #rootPane {
-	-fx-background-image: url('/org/triplea/client/ui/javafx/images/wood.png'), url('/org/triplea/client/ui/javafx/images/background.png');
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/wood.png'), url('/org/triplea/game/client/ui/javafx/images/background.png');
 	-fx-background-position: center center, center center;
 	-fx-background-size: 100% auto, 100% auto;
 	-fx-background-repeat: repeat, no-repeat;
 }
 #bottomFolderBody {
-	-fx-background-image: url('/org/triplea/client/ui/javafx/images/dice.png');
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/dice.png');
 	-fx-background-position: center 20px;
 	-fx-background-repeat: no-repeat;
 	-fx-translate-x: -300px;
 }
 #header {
-	-fx-background-image: url('/org/triplea/client/ui/javafx/images/header.png');
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/header.png');
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center center;
 	-fx-background-size: auto 100%;
 }
 .check-box {
-	-fx-skin: 'org.triplea.client.ui.javafx.controls.TripleACheckBoxSkin';
+	-fx-skin: 'org.triplea.game.client.ui.javafx.controls.TripleACheckBoxSkin';
 }
 .check-box .box {
 	-fx-fill: ANTIQUEWHITE;
@@ -60,7 +60,7 @@
 	-fx-stroke-width: 5;
 }
 .check-box .mark {
-	-fx-image: url('/org/triplea/client/ui/javafx/images/checkmark.png');
+	-fx-image: url('/org/triplea/game/client/ui/javafx/images/checkmark.png');
 }
 .combo-box {
 	-fx-background-color: rgba(0, 0, 0, 0);

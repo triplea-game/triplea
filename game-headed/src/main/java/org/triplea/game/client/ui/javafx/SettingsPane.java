@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.game.client.ui.javafx;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -9,8 +9,8 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.triplea.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
-import org.triplea.client.ui.javafx.util.FxmlManager;
+import org.triplea.game.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;

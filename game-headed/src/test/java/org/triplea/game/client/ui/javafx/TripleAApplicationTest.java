@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.game.client.ui.javafx;
 
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.hasChildren;

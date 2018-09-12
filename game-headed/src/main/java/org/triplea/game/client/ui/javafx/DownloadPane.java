@@ -1,8 +1,8 @@
-package org.triplea.client.ui.javafx;
+package org.triplea.game.client.ui.javafx;
 
 import java.io.IOException;
 
-import org.triplea.client.ui.javafx.util.FxmlManager;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

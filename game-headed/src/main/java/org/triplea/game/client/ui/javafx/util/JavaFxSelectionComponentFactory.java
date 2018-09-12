@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx.util;
+package org.triplea.game.client.ui.javafx.util;
 
 import java.io.File;
 import java.util.Collections;

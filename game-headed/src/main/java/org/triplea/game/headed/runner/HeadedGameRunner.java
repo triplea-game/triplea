@@ -1,6 +1,6 @@
 package org.triplea.game.headed.runner;
 
-import org.triplea.client.ui.javafx.TripleA;
+import org.triplea.game.client.ui.javafx.TripleA;
 
 import games.strategy.engine.framework.GameRunner;
 import javafx.application.Application;
