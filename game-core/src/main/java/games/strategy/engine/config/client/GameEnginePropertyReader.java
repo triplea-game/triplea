@@ -2,20 +2,18 @@ package games.strategy.engine.config.client;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.engine.config.PropertyReader;
+import games.strategy.engine.config.ResourcePropertyReader;
 import games.strategy.util.Version;
 
 /**
  * Reads property values from the game engine configuration file.
  */
 public final class GameEnginePropertyReader {
-  private static final String GAME_ENGINE_PROPERTIES_FILE = "game_engine.properties";
-
   private final PropertyReader propertyReader;
 
   public GameEnginePropertyReader() {
-    this(new FilePropertyReader(GAME_ENGINE_PROPERTIES_FILE));
+    this(new ResourcePropertyReader("META-INF/triplea/game_engine.properties"));
   }
 
   @VisibleForTesting
