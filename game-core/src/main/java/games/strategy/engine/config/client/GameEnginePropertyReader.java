@@ -10,7 +10,7 @@ import games.strategy.util.Version;
  * Reads property values from the game engine configuration file.
  */
 public final class GameEnginePropertyReader {
-  public static final String GAME_ENGINE_PROPERTIES_FILE = "game_engine.properties";
+  private static final String GAME_ENGINE_PROPERTIES_FILE = "game_engine.properties";
 
   private final PropertyReader propertyReader;
 

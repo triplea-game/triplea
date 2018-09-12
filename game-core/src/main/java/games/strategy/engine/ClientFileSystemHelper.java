@@ -1,7 +1,5 @@
 package games.strategy.engine;
 
-import static games.strategy.engine.config.client.GameEnginePropertyReader.GAME_ENGINE_PROPERTIES_FILE;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,7 +34,7 @@ public final class ClientFileSystemHelper {
    */
   public static File getRootFolder() {
     try {
-      return getFolderContainingFileWithName(GAME_ENGINE_PROPERTIES_FILE, getCodeSourceFolder());
+      return getFolderContainingFileWithName(".triplea-root", getCodeSourceFolder());
     } catch (final IOException e) {
       throw new IllegalStateException("unable to locate root folder", e);
     }
