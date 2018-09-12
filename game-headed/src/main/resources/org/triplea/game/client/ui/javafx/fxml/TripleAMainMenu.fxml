@@ -51,7 +51,7 @@
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/join_lobby.png" />
+                              <Image url="@/org/triplea/game/client/ui/javafx/images/join_lobby.png" />
                            </image></ImageView>
                      </graphic>
                      <effect>
@@ -65,7 +65,7 @@
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/local_game.png" />
+                              <Image url="@/org/triplea/game/client/ui/javafx/images/local_game.png" />
                            </image></ImageView>
                      </graphic>
                      <effect>
@@ -76,7 +76,7 @@
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/play_by_forum.png" />
+                              <Image url="@/org/triplea/game/client/ui/javafx/images/play_by_forum.png" />
                            </image></ImageView>
                      </graphic>
                      <HBox.margin>
@@ -90,7 +90,7 @@
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/play_by_email.png" />
+                              <Image url="@/org/triplea/game/client/ui/javafx/images/play_by_email.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -108,7 +108,7 @@
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/host_game.png" />
+                              <Image url="@/org/triplea/game/client/ui/javafx/images/host_game.png" />
                            </image></ImageView>
                      </graphic>
                      <effect>
@@ -122,7 +122,7 @@
                      <graphic>
                         <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/org/triplea/client/ui/javafx/images/join_game.png" />
+                              <Image url="@/org/triplea/game/client/ui/javafx/images/join_game.png" />
                            </image></ImageView>
                      </graphic>
                      <effect>

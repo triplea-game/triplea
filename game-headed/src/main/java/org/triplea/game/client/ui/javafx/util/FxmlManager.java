@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx.util;
+package org.triplea.game.client.ui.javafx.util;
 
 import java.net.URL;
 import java.util.Locale;
@@ -10,19 +10,19 @@ import javafx.fxml.FXMLLoader;
  * Enum with relative Paths to fxml-related resources.
  */
 public enum FxmlManager {
-  ROOT_CONTAINER("/org/triplea/client/ui/javafx/fxml/TripleAMain.fxml"),
+  ROOT_CONTAINER("/org/triplea/game/client/ui/javafx/fxml/TripleAMain.fxml"),
 
-  DOWNLOAD_PANE("/org/triplea/client/ui/javafx/fxml/TripleADownload.fxml"),
+  DOWNLOAD_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleADownload.fxml"),
 
-  MAIN_MENU_PANE("/org/triplea/client/ui/javafx/fxml/TripleAMainMenu.fxml"),
+  MAIN_MENU_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleAMainMenu.fxml"),
 
-  SETTINGS_PANE("/org/triplea/client/ui/javafx/fxml/TripleASettings.fxml"),
+  SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml"),
 
-  LANG_CLASS_BASENAME("org.triplea.client.ui.javafx.lang.TripleA"),
+  LANG_CLASS_BASENAME("org.triplea.game.client.ui.javafx.lang.TripleA"),
 
-  STYLESHEET_MAIN("/org/triplea/client/ui/javafx/css/main.css"),
+  STYLESHEET_MAIN("/org/triplea/game/client/ui/javafx/css/main.css"),
 
-  FONT_PATH("/org/triplea/client/ui/javafx/css/fonts/1942-report.ttf"),
+  FONT_PATH("/org/triplea/game/client/ui/javafx/css/fonts/1942-report.ttf"),
 
   ICON_LOCATION("/games/strategy/engine/framework/ta_icon.png");
 

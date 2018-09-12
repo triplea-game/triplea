@@ -1,4 +1,4 @@
-package org.triplea.client.ui.javafx.controls;
+package org.triplea.game.client.ui.javafx.controls;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
