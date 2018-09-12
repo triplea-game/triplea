@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -64,7 +65,7 @@ class RouteFinder {
   private Route getRoute(final Territory start, final Territory destination) {
     final List<Territory> route = new ArrayList<>();
     Territory current = destination;
-    while (current != start) {
+    while (!Objects.equals(current, start)) {
       if (current == null) {
         return null;
       }
