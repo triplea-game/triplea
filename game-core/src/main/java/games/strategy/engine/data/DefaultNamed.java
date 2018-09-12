@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
@@ -40,5 +42,11 @@ public class DefaultNamed extends GameDataComponent implements Named {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(getClass()).add("name", m_name).toString();
+  }
+
+  // Workaround for JDK-8199664
+  @SuppressWarnings("static-method")
+  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
   }
 }
