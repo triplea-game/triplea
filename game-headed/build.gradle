@@ -85,7 +85,7 @@ task headedGameInstallers(
 task headedGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     baseName = 'triplea'
     classifier = 'all_platforms'
-    from project(':game-core').file('game_engine.properties')
+    from project(':game-core').file('.triplea-root')
     from(project(':game-core').file('assets')) {
         into 'assets'
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="7.0.1" transformSequenceNumber="7">
-  <directoryPresets config="../game-core/game_engine.properties" />
+  <directoryPresets config="../game-core/.triplea-root" />
   <application name="TripleA" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="false" shrinkRuntime="true" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="http://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="1.8" allowBetaVM="true" jdkMode="jdk" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
@@ -34,7 +34,7 @@
       <dirEntry mountPoint="27" file="../game-core/dice_servers" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" entryMode="direct" subDirectory="dice_servers" excludeSuffixes="" dirMode="755" overrideDirMode="false">
         <exclude />
       </dirEntry>
-      <fileEntry mountPoint="22" file="../game-core/game_engine.properties" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
+      <fileEntry mountPoint="22" file="../game-core/.triplea-root" overwriteMode="4" shared="false" fileMode="644" uninstallMode="0" overrideFileMode="false" overrideOverwriteMode="false" overrideUninstallMode="false" />
     </entries>
     <components />
   </files>

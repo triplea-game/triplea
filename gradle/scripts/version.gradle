@@ -4,7 +4,7 @@ ext.getEngineVersion = {
     }
 
     def props = new Properties()
-    def gameEnginePropertiesFile = project(':game-core').file('game_engine.properties')
+    def gameEnginePropertiesFile = project(':game-core').file('src/main/resources/META-INF/triplea/game_engine.properties')
     gameEnginePropertiesFile.withInputStream { props.load(it) }
     def devEngineVersion = props.getProperty('engine_version')
     if (!devEngineVersion) {

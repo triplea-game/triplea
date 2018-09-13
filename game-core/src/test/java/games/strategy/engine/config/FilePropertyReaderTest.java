@@ -9,49 +9,36 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import games.strategy.test.extensions.TemporaryFolder;
 import games.strategy.test.extensions.TemporaryFolderExtension;
 
-@ExtendWith(TemporaryFolderExtension.class)
-public final class FilePropertyReaderTest {
-  private FilePropertyReader filePropertyReader;
-  private TemporaryFolder temporaryFolder;
-
-  @BeforeEach
-  public void setup() throws Exception {
-    final File file = temporaryFolder.newFile(getClass().getName());
-    try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
-      writer.write("a=b\n");
-      writer.write(" 1 = 2 \n");
-      writer.write("whitespace =      \n");
+final class FilePropertyReaderTest {
+  @Nested
+  final class ConstructorTest {
+    @Test
+    void shouldThrowExceptionWhenFileDoesNotExist() {
+      assertThrows(IllegalArgumentException.class, () -> new FilePropertyReader("path/to/nonexistent/file"));
     }
-
-    filePropertyReader = new FilePropertyReader(file.getAbsolutePath());
   }
 
-  @Test
-  public void constructor_ShouldThrowExceptionWhenFileDoesNotExist() {
-    assertThrows(IllegalArgumentException.class, () -> new FilePropertyReader("path/to/nonexistent/file"));
-  }
+  @ExtendWith(TemporaryFolderExtension.class)
+  @Nested
+  final class NewInputStreamTest {
+    private TemporaryFolder temporaryFolder;
 
-  @Test
-  public void checkPropertyParsing() {
-    assertThat("basic happy case, we wrote 'a=b' in the props file",
-        filePropertyReader.readProperty("a"), is("b"));
-    assertThat("we are also checking string trimming here",
-        filePropertyReader.readProperty("1"), is("2"));
-  }
+    @Test
+    void shouldReturnInputStreamForPropertySource() throws Exception {
+      final File file = temporaryFolder.newFile(getClass().getName());
+      try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
+        writer.write("key=value");
+      }
+      final FilePropertyReader propertyReader = new FilePropertyReader(file.getAbsolutePath());
 
-  @Test
-  public void checkPropertyNotFound() {
-    assertThat("not found is empty value back, same thing as if we did not set the value",
-        filePropertyReader.readProperty("notFound"), is(""));
-
-    assertThat("verify trimming, will look like no property found with only whitespace set",
-        filePropertyReader.readProperty("whitespace"), is(""));
+      assertThat(propertyReader.readProperty("key"), is("value"));
+    }
   }
 }
