@@ -2889,10 +2889,10 @@ public class UnitAttachment extends DefaultAttachment {
     }
 
     if (getAirAttack(player) > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
-      tuples.add(Tuple.of("Air Attack", attackRolls > 1 ? (attackRolls + "x") : "" + getAirAttack(player)));
+      tuples.add(Tuple.of("Air Attack", (attackRolls > 1 ? (attackRolls + "x") : "") + getAirAttack(player)));
     }
     if (getAirDefense(player) > 0 && (getCanIntercept() || getCanAirBattle())) {
-      tuples.add(Tuple.of("Air Defense", defenseRolls > 1 ? (defenseRolls + "x") : "" + getAirDefense(player)));
+      tuples.add(Tuple.of("Air Defense", (defenseRolls > 1 ? (defenseRolls + "x") : "") + getAirDefense(player)));
     }
 
     if (getIsSub()) {
