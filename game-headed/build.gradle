@@ -11,6 +11,7 @@ mainClassName = 'org.triplea.game.headed.runner.HeadedGameRunner'
 version = getEngineVersion()
 
 ext {
+    javaFxRuntimeUrl = 'https://github.com/triplea-game/assets/raw/master/javafx/jfxrt-1.8.0_181.jar'
     releasesDir = file("$buildDir/releases")
     testFxVersion = '4.0.13-alpha'
 }
@@ -18,10 +19,18 @@ ext {
 dependencies {
     compile project(':game-core')
 
+    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+        compileOnly remoteLib(javaFxRuntimeUrl)
+    }
+
     testCompile project(':test-common')
     testCompile "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testCompile "org.testfx:testfx-core:$testFxVersion"
     testCompile "org.testfx:testfx-junit5:$testFxVersion"
+
+    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+        testCompileOnly remoteLib(javaFxRuntimeUrl)
+    }
 
     if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
         testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-9+181'
