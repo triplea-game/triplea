@@ -23,7 +23,22 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class LookAndFeel {
-  static {
+  private LookAndFeel() {}
+
+  /**
+   * Initializes the Swing Look-And-Feel subsystem.
+   *
+   * <p>
+   * Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be used.
+   * </p>
+   * <p>
+   * This method must be called before creating the first UI component but after initializing the client settings
+   * framework.
+   * </p>
+   *
+   * @throws IllegalStateException If this method is not called from the EDT.
+   */
+  public static void initialize() {
     ClientSetting.LOOK_AND_FEEL_PREF.addSaveListener(newValue -> {
       setupLookAndFeel(newValue);
       SettingsWindow.updateLookAndFeel();
@@ -34,9 +49,8 @@ public final class LookAndFeel {
           "Close TripleA and Restart",
           JOptionPane.WARNING_MESSAGE);
     });
+    setupLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
   }
-
-  private LookAndFeel() {}
 
   /**
    * Returns a collection of the available Look-And-Feels.
@@ -90,13 +104,8 @@ public final class LookAndFeel {
     return "org.pushingpixels.substance.api.skin.Substance" + baseName + "LookAndFeel";
   }
 
-  /**
-   * Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be used.
-   *
-   * @throws IllegalStateException If this method is not called from the EDT.
-   */
-  public static void setupLookAndFeel() {
-    setupLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
+  public static String getDefaultLookAndFeelClassName() {
+    return SystemProperties.isMac() ? UIManager.getSystemLookAndFeelClassName() : substance("Graphite");
   }
 
   private static void setupLookAndFeel(final String lookAndFeelName) {

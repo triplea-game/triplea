@@ -11,13 +11,13 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.annotation.Nonnull;
-import javax.swing.UIManager;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.SystemProperties;
 import lombok.extern.java.Log;
 
@@ -69,10 +69,7 @@ public enum ClientSetting implements GameSetting {
 
   LOBBY_LAST_USED_PORT,
 
-  LOOK_AND_FEEL_PREF(
-      SystemProperties.isMac()
-          ? UIManager.getSystemLookAndFeelClassName()
-          : "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel"),
+  LOOK_AND_FEEL_PREF(LookAndFeel.getDefaultLookAndFeelClassName()),
 
   MAP_EDGE_SCROLL_SPEED(30),
 
