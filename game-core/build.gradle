@@ -5,7 +5,6 @@ ext {
 }
 
 dependencies {
-    compile 'com.github.kirill-grouchnikov:substance:master-v8.0.02-g5d33cea-2'
     compile 'com.github.openjson:openjson:1.0.10'
     compile 'com.googlecode.soundlibs:jlayer:1.0.1.4'
     compile 'com.sun.mail:javax.mail:1.6.1'
@@ -17,8 +16,6 @@ dependencies {
     compile "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     compile "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     compile 'org.yaml:snakeyaml:1.19'
-
-    runtime 'com.github.kirill-grouchnikov:trident:v1.5.00'
 
     testCompile project(':test-common')
     testCompile "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"

@@ -127,7 +127,7 @@ public final class GameRunner {
 
     if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-        LookAndFeel.setupLookAndFeel();
+        LookAndFeel.initialize();
         final Console console = new Console();
         final SimpleFormatter formatter = new SimpleFormatter();
         LogManager.getLogManager().getLogger("").addHandler(new ConsoleHandler(
