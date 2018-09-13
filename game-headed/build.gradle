@@ -23,6 +23,9 @@ dependencies {
         compileOnly remoteLib(javaFxRuntimeUrl)
     }
 
+    runtime 'com.github.kirill-grouchnikov:substance:5d33cea' // v8.0.02 + Jitpack build fix
+    runtime 'com.github.kirill-grouchnikov:trident:v1.5.00'
+
     testCompile project(':test-common')
     testCompile "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testCompile "org.testfx:testfx-core:$testFxVersion"

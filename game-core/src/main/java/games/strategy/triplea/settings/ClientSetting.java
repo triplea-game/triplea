@@ -13,8 +13,6 @@ import java.util.prefs.Preferences;
 import javax.annotation.Nonnull;
 import javax.swing.UIManager;
 
-import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -74,7 +72,7 @@ public enum ClientSetting implements GameSetting {
   LOOK_AND_FEEL_PREF(
       SystemProperties.isMac()
           ? UIManager.getSystemLookAndFeelClassName()
-          : SubstanceGraphiteLookAndFeel.class.getName()),
+          : "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel"),
 
   MAP_EDGE_SCROLL_SPEED(30),
 
