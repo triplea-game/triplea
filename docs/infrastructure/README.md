@@ -14,7 +14,7 @@ loosely maps to an app.
 ### User-Facing TripleA Apps
 - [Lobby](https://github.com/triplea-game/triplea/tree/master/lobby)
 - Dice Roller (aka: marti)
-- [Bot (game hosting) servers](https://github.com/triplea-game/triplea/blob/master/game-core/src/main/java/games/strategy/engine/framework/headlessGameServer/HeadlessGameServer.java)
+- [Bot (game hosting) servers](https://github.com/triplea-game/triplea/tree/master/game-headless)
 - [NodeBB Forums](https://forums.triplea-game.org) (nodeBB)
 
 ### Support Apps

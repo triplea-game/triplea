@@ -527,9 +527,14 @@ public class HeadlessGameServer {
   }
 
   /**
-   * Launches a bot server. Most properties are passed via command line-like arguments.
+   * Starts a new headless game server. This method will return before the headless game server exits. The headless game
+   * server runs until the process is killed or the headless game server is shut down via administrative command.
+   *
+   * <p>
+   * Most properties are passed via command line-like arguments.
+   * </p>
    */
-  public static void main(final String[] args) {
+  public static void start(final String[] args) {
     final ArgValidationResult validation = HeadlessGameServerCliParam.validateArgs(args);
     if (!validation.isValid()) {
       log.log(Level.SEVERE,
