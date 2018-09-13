@@ -24,8 +24,6 @@ jar {
 }
 
 task lobbyArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
-    baseName = 'triplea'
-    classifier = 'server'
     from('config') {
         into 'config'
     }
