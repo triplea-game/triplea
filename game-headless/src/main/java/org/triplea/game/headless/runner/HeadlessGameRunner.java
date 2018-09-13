@@ -13,6 +13,6 @@ public final class HeadlessGameRunner {
    * the headless game server is shut down via administrative command.
    */
   public static void main(final String[] args) {
-    HeadlessGameServer.main(args);
+    HeadlessGameServer.start(args);
   }
 }
