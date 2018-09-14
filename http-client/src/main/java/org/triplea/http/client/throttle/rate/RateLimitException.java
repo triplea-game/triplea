@@ -7,4 +7,5 @@ import org.triplea.http.client.throttle.MessageNotSentException;
  * are blocked client-side from being sent.
  */
 public class RateLimitException extends MessageNotSentException {
+  private static final long serialVersionUID = -6955742287574721284L;
 }
