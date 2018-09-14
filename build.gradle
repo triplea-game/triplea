@@ -83,7 +83,7 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
             '-Xep:ParameterName:OFF', // workaround for https://github.com/google/error-prone/issues/780
-            '-Xlint:all',
+            '-Xlint:all,-processing',
             '-Xmaxwarns', '1000'
         ]
         options.encoding = 'UTF-8'
