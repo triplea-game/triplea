@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
@@ -54,7 +56,9 @@ public class TerritoryAttachment extends DefaultAttachment {
    * own.
    * If a capital has no neighbor connections, it will be sent last.
    */
-  public static Territory getFirstOwnedCapitalOrFirstUnownedCapital(final PlayerID player, final GameData data) {
+  public static @Nullable Territory getFirstOwnedCapitalOrFirstUnownedCapital(
+      final PlayerID player,
+      final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
     final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {

@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Streams;
 
 import games.strategy.engine.data.GameData;
@@ -776,7 +778,7 @@ public class WeakAi extends AbstractAi {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int totalPu = player.getResources().getQuantity(pus);
     int leftToSpend = totalPu;
-    final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+    final @Nullable Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final List<ProductionRule> rules = player.getProductionFrontier().getRules();
     final IntegerMap<ProductionRule> purchase = new IntegerMap<>();
     final List<RepairRule> repairRules;
@@ -808,7 +810,7 @@ public class WeakAi extends AbstractAi {
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
         }
-        if (fixTerr == capitol) {
+        if (fixTerr.equals(capitol)) {
           capProduction =
               TripleAUnit.getHowMuchCanUnitProduce(possibleFactoryNeedingRepair, fixTerr, player, data, true, true);
           capUnit = possibleFactoryNeedingRepair;
@@ -990,13 +992,13 @@ public class WeakAi extends AbstractAi {
     if (player.getUnits().size() == 0) {
       return;
     }
-    final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+    final @Nullable Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     // place in capitol first
     placeAllWeCanOn(data, capitol, placeDelegate, player);
     final List<Territory> randomTerritories = new ArrayList<>(data.getMap().getTerritories());
     Collections.shuffle(randomTerritories);
     for (final Territory t : randomTerritories) {
-      if (t != capitol && t.getOwner().equals(player) && t.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
+      if (!t.equals(capitol) && t.getOwner().equals(player) && t.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
         placeAllWeCanOn(data, t, placeDelegate, player);
       }
     }

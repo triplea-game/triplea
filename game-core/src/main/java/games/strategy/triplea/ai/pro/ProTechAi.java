@@ -192,7 +192,7 @@ final class ProTechAi {
             }
             if (!t4.equals(waterCheck)) {
               final Route seaRoute = getMaxSeaRoute(data, t4, waterCheck, enemyPlayer, maxTransportDistance);
-              if (seaRoute == null || seaRoute.getEnd() == null || seaRoute.getEnd() != waterCheck) {
+              if (seaRoute == null || seaRoute.getEnd() == null || !seaRoute.getEnd().equals(waterCheck)) {
                 continue;
               }
             }
