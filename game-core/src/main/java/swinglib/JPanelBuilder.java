@@ -4,19 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.logging.Level;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -32,9 +26,7 @@ import org.apache.commons.math3.util.Pair;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import games.strategy.triplea.ResourceLoader;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 import swinglib.GridBagHelper.Anchor;
 import swinglib.GridBagHelper.ColumnSpan;
 import swinglib.GridBagHelper.Fill;
@@ -49,12 +41,10 @@ import swinglib.GridBagHelper.Fill;
  *       .build();
  * </pre></code>
  */
-@Log
 public class JPanelBuilder {
 
   private final Collection<Pair<Component, PanelProperties>> components = new ArrayList<>();
   private Float horizontalAlignment;
-  private String backgroundImage;
   private Border border;
   private LayoutManager layout;
   private BoxLayoutType boxLayoutType = null;
@@ -63,9 +53,7 @@ public class JPanelBuilder {
   private boolean flowLayoutWrapper = false;
   private Integer preferredHeight;
 
-  private JPanelBuilder() {
-
-  }
+  private JPanelBuilder() {}
 
   public static JPanelBuilder builder() {
     return new JPanelBuilder();
@@ -76,29 +64,9 @@ public class JPanelBuilder {
    * Values that must be set: (requires no values to be set)
    */
   public JPanel build() {
-
-    JPanel panel = new JPanel();
+    final JPanel panel = new JPanel();
 
     panel.setOpaque(false);
-
-    if (backgroundImage != null) {
-      final URL backgroundImageUrl = ResourceLoader.getGameEngineAssetLoader().getResource(backgroundImage);
-
-      try {
-        final BufferedImage bufferedImaged = ImageIO.read(backgroundImageUrl);
-        panel = new JPanel() {
-          private static final long serialVersionUID = -5926048824903223767L;
-
-          @Override
-          protected void paintComponent(final Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(bufferedImaged, 50, 200, null);
-          }
-        };
-      } catch (final IOException e) {
-        log.log(Level.SEVERE, "Could not load image: " + backgroundImage, e);
-      }
-    }
 
     if (border != null) {
       panel.setBorder(border);
@@ -301,11 +269,6 @@ public class JPanelBuilder {
 
   public JPanelBuilder horizontalAlignmentCenter() {
     this.horizontalAlignment = JComponent.CENTER_ALIGNMENT;
-    return this;
-  }
-
-  public JPanelBuilder backgroundImage(final String imagePath) {
-    this.backgroundImage = imagePath;
     return this;
   }
 
