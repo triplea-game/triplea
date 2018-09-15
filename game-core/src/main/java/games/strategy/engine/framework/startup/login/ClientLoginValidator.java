@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
@@ -38,16 +41,16 @@ public final class ClientLoginValidator implements ILoginValidator {
   }
 
   private final IServerMessenger serverMessenger;
-  private String password;
+  private @Nullable String password;
 
   public ClientLoginValidator(final IServerMessenger serverMessenger) {
     this.serverMessenger = serverMessenger;
   }
 
   /**
-   * Set the password required for the game, or to null if no password is required.
+   * Set the password required for the game. If {@code null} or empty, no password is required.
    */
-  public void setGamePassword(final String password) {
+  public void setGamePassword(final @Nullable String password) {
     // TODO do not store the plain password, but the hash instead in the next incompatible release
     this.password = password;
   }
@@ -58,7 +61,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     challenge.put("Sever Version", ClientContext.engineVersion().toString());
 
-    if (password != null) {
+    if (!Strings.isNullOrEmpty(password)) {
       challenge.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
       challenge.putAll(Md5CryptAuthenticator.newChallenge());
       challenge.putAll(HmacSha512Authenticator.newChallenge());
