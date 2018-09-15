@@ -1,4 +1,4 @@
-package games.strategy.engine.config;
+package org.triplea.common.config;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;

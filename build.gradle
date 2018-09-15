@@ -40,6 +40,7 @@ subprojects {
     group = 'triplea'
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    version = getProductVersion()
 
     ext {
         hamcrestVersion = '2.0.0.0'

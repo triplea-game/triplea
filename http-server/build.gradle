@@ -5,7 +5,6 @@ plugins {
 
 description = 'TripleA Http Server'
 mainClassName = 'org.triplea.server.http.spark.SparkServerMain'
-version = getEngineVersion()
 
 dependencies {
     compile 'com.sparkjava:spark-core:2.3'

@@ -9,7 +9,6 @@ plugins {
 archivesBaseName = "$group-$name"
 description = 'TripleA Headless Game Server'
 mainClassName = 'org.triplea.game.headless.runner.HeadlessGameRunner'
-version = getEngineVersion()
 
 dependencies {
     compile project(':game-core')
@@ -32,8 +31,8 @@ task headlessGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
     from file('scripts/run_bot')
     from(file('scripts/run_bot.bat')) {
-        filter(ReplaceTokens, tokens: [version: version])
-        filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("crlf")) // workaround for https://github.com/gradle/gradle/issues/1151
+        filter ReplaceTokens, tokens: [version: version]
+        filter FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("crlf") // workaround for https://github.com/gradle/gradle/issues/1151
     }
     from(shadowJar.outputs) {
         into 'bin'

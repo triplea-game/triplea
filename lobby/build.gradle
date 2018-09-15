@@ -6,7 +6,6 @@ plugins {
 archivesBaseName = "$group-$name"
 description = 'TripleA Lobby'
 mainClassName = 'org.triplea.lobby.server.LobbyRunner'
-version = getEngineVersion()
 
 dependencies {
     compile project(':game-core')

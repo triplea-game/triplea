@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# This script outputs the product version.
+#
+
+readonly PRODUCT_VERSION_QUALIFIER=$1
+
+./gradlew --console=plain -PproductVersionQualifier="$PRODUCT_VERSION_QUALIFIER" :game-core:properties \
+    | grep -Po '(?<=^version: )\S+$'

@@ -19,21 +19,20 @@ install:
  - ./gradlew flywayMigrate
 before_script: ./.travis/setup_gpg
 script:
-- ./gradlew --parallel check jacocoTestReport
+- ./gradlew --parallel -PproductVersionQualifier="$TRAVIS_BUILD_NUMBER" check jacocoTestReport
 after_success:
 ## if checkstyle violation counts are lower, submit a automatic PR to update the current violation count.
 - ./.travis/update_checkstyle_thresholds
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
-- ENGINE_VERSION="1.9.0.0.${TRAVIS_BUILD_NUMBER}"
-- ./.travis/update_engine_version "$ENGINE_VERSION"
 - INSTALL4J_HOME=~/install4j
 - ./.travis/install_install4j "$INSTALL4J_HOME"
-- ./gradlew -PengineVersion="$ENGINE_VERSION" -Pinstall4jHomeDir="$INSTALL4J_HOME" release
+- ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" -PproductVersionQualifier="$TRAVIS_BUILD_NUMBER" release
 - ./.travis/collect_artifacts
 - ./.travis/generate_artifact_checksums
 ## push tag triggers 'deploy' to occur, files listed in 'deploy.files' are uploaded to github releases.
-- ./.travis/push_tag $ENGINE_VERSION
+- PRODUCT_VERSION=$(./.travis/get_product_version "$TRAVIS_BUILD_NUMBER")
+- ./.travis/push_tag "$PRODUCT_VERSION"
 ## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
 ## to website json data directory.
 - ./.travis/push_maps

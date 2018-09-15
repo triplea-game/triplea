@@ -1,4 +1,4 @@
-package games.strategy.engine.config;
+package org.triplea.common.config;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
