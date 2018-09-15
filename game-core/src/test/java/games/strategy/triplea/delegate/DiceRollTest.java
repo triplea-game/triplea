@@ -25,7 +25,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CollectionUtils;
 
@@ -151,20 +150,6 @@ public class DiceRollTest {
     final DiceRoll roll = DiceRoll.rollDice(units, true, russians, bridge, battle, "",
         TerritoryEffectHelper.getEffects(westRussia), null);
     assertThat(roll.getHits(), is(1));
-  }
-
-  @Test
-  public void testSerialize() {
-    for (int i = 0; i < 254; i++) {
-      for (int j = 0; j < 254; j++) {
-        final Die hit = new Die(i, j, DieType.MISS);
-        assertThat(hit, is(Die.getFromWriteValue(hit.getCompressedValue())));
-        final Die notHit = new Die(i, j, DieType.HIT);
-        assertThat(notHit, is(Die.getFromWriteValue(notHit.getCompressedValue())));
-        final Die ignored = new Die(i, j, DieType.IGNORED);
-        assertThat(ignored, is(Die.getFromWriteValue(ignored.getCompressedValue())));
-      }
-    }
   }
 
   @Test
@@ -454,7 +439,4 @@ public class DiceRollTest {
     assertThat(BattleCalculator.getRolls(bombers, british, false, true, territoryEffects), is(2));
     assertThat(BattleCalculator.getRolls(bombers, british, true, true, territoryEffects), is(2));
   }
-
-
-
 }
