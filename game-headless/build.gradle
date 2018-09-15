@@ -1,3 +1,6 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
@@ -26,6 +29,11 @@ task headlessGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     from project(':game-core').file('.triplea-root')
     from(project(':game-core').file('assets')) {
         into 'assets'
+    }
+    from file('scripts/run_bot')
+    from(file('scripts/run_bot.bat')) {
+        filter(ReplaceTokens, tokens: [version: version])
+        filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("crlf")) // workaround for https://github.com/gradle/gradle/issues/1151
     }
     from(shadowJar.outputs) {
         into 'bin'
