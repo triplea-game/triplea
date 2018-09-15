@@ -710,8 +710,8 @@ public class DiceRoll implements Externalizable {
 
   public static void sortByStrength(final List<Unit> units, final boolean defending) {
     final Comparator<Unit> comp = (u1, u2) -> {
-      final Integer v1;
-      final Integer v2;
+      final int v1;
+      final int v2;
       if (defending) {
         v1 = UnitAttachment.get(u1.getType()).getDefense(u1.getOwner());
         v2 = UnitAttachment.get(u2.getType()).getDefense(u2.getOwner());
@@ -719,7 +719,7 @@ public class DiceRoll implements Externalizable {
         v1 = UnitAttachment.get(u1.getType()).getAttack(u1.getOwner());
         v2 = UnitAttachment.get(u2.getType()).getAttack(u2.getOwner());
       }
-      return v1.compareTo(v2);
+      return Integer.compare(v1, v2);
     };
     units.sort(comp);
   }
@@ -741,33 +741,33 @@ public class DiceRoll implements Externalizable {
         // favor rolls over strength
         if (u1.getRoll() || u2.getRoll()) {
           final int u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
-          final Integer u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
-          compareTo = u2Bonus.compareTo(u1Bonus);
+          final int u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
+          compareTo = Integer.compare(u2Bonus, u1Bonus);
           if (compareTo != 0) {
             return compareTo;
           }
         }
         if (u1.getStrength() || u2.getStrength()) {
           final int u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
-          final Integer u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
-          compareTo = u2Bonus.compareTo(u1Bonus);
+          final int u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
+          compareTo = Integer.compare(u2Bonus, u1Bonus);
           if (compareTo != 0) {
             return compareTo;
           }
         }
       } else {
         if (u1.getRoll() || u2.getRoll()) {
-          final Integer u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
+          final int u1Bonus = u1.getRoll() && u1CanBonus ? u1.getBonus() : 0;
           final int u2Bonus = u2.getRoll() && u2CanBonus ? u2.getBonus() : 0;
-          compareTo = u1Bonus.compareTo(u2Bonus);
+          compareTo = Integer.compare(u1Bonus, u2Bonus);
           if (compareTo != 0) {
             return compareTo;
           }
         }
         if (u1.getStrength() || u2.getStrength()) {
-          final Integer u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
+          final int u1Bonus = u1.getStrength() && u1CanBonus ? u1.getBonus() : 0;
           final int u2Bonus = u2.getStrength() && u2CanBonus ? u2.getBonus() : 0;
-          compareTo = u1Bonus.compareTo(u2Bonus);
+          compareTo = Integer.compare(u1Bonus, u2Bonus);
           if (compareTo != 0) {
             return compareTo;
           }
@@ -790,9 +790,9 @@ public class DiceRoll implements Externalizable {
       // come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
       final Set<UnitType> types1 = u1.getUnitType();
       final Set<UnitType> types2 = u2.getUnitType();
-      final Integer s1 = types1 == null ? 0 : types1.size();
+      final int s1 = types1 == null ? 0 : types1.size();
       final int s2 = types2 == null ? 0 : types2.size();
-      compareTo = s1.compareTo(s2);
+      compareTo = Integer.compare(s1, s2);
       if (compareTo != 0) {
         return compareTo;
       }
@@ -804,7 +804,7 @@ public class DiceRoll implements Externalizable {
       final UnitAttachment ua1 = UnitAttachment.get(unitType1);
       final UnitAttachment ua2 = UnitAttachment.get(unitType2);
       final int unitPower1;
-      final Integer unitPower2;
+      final int unitPower2;
       if (u1.getDefence()) {
         unitPower1 = ua1.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua1.getDefense(PlayerID.NULL_PLAYERID);
         unitPower2 = ua2.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua2.getDefense(PlayerID.NULL_PLAYERID);
@@ -812,7 +812,7 @@ public class DiceRoll implements Externalizable {
         unitPower1 = ua1.getAttackRolls(PlayerID.NULL_PLAYERID) * ua1.getAttack(PlayerID.NULL_PLAYERID);
         unitPower2 = ua2.getAttackRolls(PlayerID.NULL_PLAYERID) * ua2.getAttack(PlayerID.NULL_PLAYERID);
       }
-      return unitPower2.compareTo(unitPower1);
+      return Integer.compare(unitPower2, unitPower1);
     };
     for (final List<UnitSupportAttachment> attachments : support) {
       attachments.sort(compList);
