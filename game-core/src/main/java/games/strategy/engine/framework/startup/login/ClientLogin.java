@@ -63,11 +63,19 @@ public class ClientLogin implements IConnectionLogin {
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
       final JPasswordField passwordField = new JPasswordField();
       passwordField.setColumns(15);
-      JOptionPane.showMessageDialog(
-          JOptionPane.getFrameForComponent(parentComponent),
+      final JOptionPane optionPane = new JOptionPane(
           passwordField,
-          "Enter a password to join the game",
-          JOptionPane.QUESTION_MESSAGE);
+          JOptionPane.QUESTION_MESSAGE,
+          JOptionPane.DEFAULT_OPTION) {
+        private static final long serialVersionUID = -6461902648509091914L;
+
+        @Override
+        public void selectInitialValue() {
+          super.selectInitialValue();
+          passwordField.requestFocusInWindow();
+        }
+      };
+      optionPane.createDialog(parentComponent, "Enter a password to join the game").setVisible(true);
       return new String(passwordField.getPassword());
     })).result.orElse("");
   }
