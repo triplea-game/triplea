@@ -52,6 +52,7 @@ import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.ObjectUtils;
 import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
@@ -305,7 +306,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (trigger == null) {
       throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
     }
-    if (trigger == this) {
+    if (ObjectUtils.referenceEquals(trigger, this)) {
       throw new GameParseException("Cannot have a trigger activate itself!" + thisErrorMsg());
     }
     String options = value;
