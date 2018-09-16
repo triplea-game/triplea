@@ -227,17 +227,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
     final StringBuilder sb = new StringBuilder(64);
     sb.append("Ban time left: ");
     if (days > 0) {
-      sb.append(days);
-      sb.append(" Days ");
+      sb.append(days).append(" Days ");
     }
     if (hours > 0) {
-      sb.append(hours);
-      sb.append(" Hours ");
+      sb.append(hours).append(" Hours ");
     }
-    if (minutes > 0) {
-      sb.append(minutes);
-      sb.append(" Minutes ");
-    }
+    sb.append(minutes).append(" Minutes");
     return sb.toString();
   }
 
