@@ -63,12 +63,18 @@ import lombok.extern.java.Log;
 public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
-  private final GameData data = new GameData();
+  private final GameData data;
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
 
   private GameParser(final String mapName) {
+    this(new GameData(), mapName);
+  }
+
+  @VisibleForTesting
+  GameParser(final GameData gameData, final String mapName) {
+    data = gameData;
     this.mapName = mapName;
   }
 
@@ -707,17 +713,22 @@ public final class GameParser {
       } else if (isDisplayedFor.equalsIgnoreCase(RESOURCE_IS_DISPLAY_FOR_NONE)) {
         data.getResourceList().addResource(new Resource(name, data));
       } else {
-        final List<PlayerID> players = new ArrayList<>();
-        for (final String s : isDisplayedFor.split(":")) {
-          final PlayerID player = data.getPlayerList().getPlayerId(s);
-          if (player == null) {
-            throw newGameParseException("Parse resources could not find player: " + s);
-          }
-          players.add(player);
-        }
-        data.getResourceList().addResource(new Resource(name, data, players));
+        data.getResourceList().addResource(new Resource(name, data, parsePlayersFromIsDisplayedFor(isDisplayedFor)));
       }
     }
+  }
+
+  @VisibleForTesting
+  List<PlayerID> parsePlayersFromIsDisplayedFor(final String encodedPlayerNames) throws GameParseException {
+    final List<PlayerID> players = new ArrayList<>();
+    for (final String playerName : Splitter.on(':').split(encodedPlayerNames)) {
+      final @Nullable PlayerID player = data.getPlayerList().getPlayerId(playerName);
+      if (player == null) {
+        throw newGameParseException("Parse resources could not find player: " + playerName);
+      }
+      players.add(player);
+    }
+    return players;
   }
 
   private void parseRelationshipTypes(final Element root) {
