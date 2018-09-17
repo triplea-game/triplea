@@ -1,9 +1,0 @@
-#!/bin/bash
-#
-# This script outputs the product version.
-#
-
-readonly BUILD_ID=$1
-
-./gradlew --console=plain -PbuildId="$BUILD_ID" :game-core:properties \
-    | grep -Po '(?<=^version: )\S+$'

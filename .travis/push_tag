@@ -6,7 +6,7 @@
 # Note, the tag itself is also considered a branch and trigger an extraneous branch build in travis.
 #
 
-TAG_VALUE=$1
+TAG_VALUE=$(./gradlew --console=plain :game-core:properties | grep -Po '(?<=^version: )\S+$')
 
 set -u
 
@@ -21,4 +21,3 @@ git tag "$TAG_VALUE" -a -f -m "$TAG_VALUE"
 
 echo "Pushing tag: $TAG_VALUE to github to trigger releases deployment"
 git push -q https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea --tags
-
