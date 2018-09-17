@@ -14,6 +14,6 @@ final class ProductConfigurationIntegrationTest {
   void shouldReadPropertiesFromResource() {
     assertThat(
         productConfiguration.getVersion().getExactVersion(),
-        matchesPattern("1\\.9\\.0\\.0\\.(@qualifier@|dev|\\d+)"));
+        matchesPattern("1\\.9\\.0\\.0\\.(@buildId@|dev|\\d+)"));
   }
 }

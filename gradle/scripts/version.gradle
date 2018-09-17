@@ -1,7 +1,5 @@
-ext.getProductVersionQualifier = {
-    return (project.hasProperty('productVersionQualifier') && !project.productVersionQualifier.isEmpty())
-            ? project.productVersionQualifier
-            : 'dev'
+ext.getBuildId = {
+    return (project.hasProperty('buildId') && !project.buildId.isEmpty()) ? project.buildId : 'dev'
 }
 
 ext.getProductVersion = {
@@ -13,5 +11,5 @@ ext.getProductVersion = {
         throw new GradleException('"version" property missing from the "product.properties" resource')
     }
 
-    return productVersion.replace('@qualifier@', getProductVersionQualifier())
+    return productVersion.replace('@buildId@', getBuildId())
 }

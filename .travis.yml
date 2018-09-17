@@ -19,7 +19,8 @@ install:
  - ./gradlew flywayMigrate
 before_script: ./.travis/setup_gpg
 script:
-- ./gradlew --parallel -PproductVersionQualifier="$TRAVIS_BUILD_NUMBER" check jacocoTestReport
+- BUILD_ID="$TRAVIS_BUILD_NUMBER"
+- ./gradlew --parallel -PbuildId="$BUILD_ID" check jacocoTestReport
 after_success:
 ## if checkstyle violation counts are lower, submit a automatic PR to update the current violation count.
 - ./.travis/update_checkstyle_thresholds
@@ -27,12 +28,11 @@ after_success:
 before_deploy:
 - INSTALL4J_HOME=~/install4j
 - ./.travis/install_install4j "$INSTALL4J_HOME"
-- ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" -PproductVersionQualifier="$TRAVIS_BUILD_NUMBER" release
+- ./gradlew -PbuildId="$BUILD_ID" -Pinstall4jHomeDir="$INSTALL4J_HOME" release
 - ./.travis/collect_artifacts
 - ./.travis/generate_artifact_checksums
 ## push tag triggers 'deploy' to occur, files listed in 'deploy.files' are uploaded to github releases.
-- PRODUCT_VERSION=$(./.travis/get_product_version "$TRAVIS_BUILD_NUMBER")
-- ./.travis/push_tag "$PRODUCT_VERSION"
+- ./.travis/push_tag $(./.travis/get_product_version "$BUILD_ID")
 ## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
 ## to website json data directory.
 - ./.travis/push_maps

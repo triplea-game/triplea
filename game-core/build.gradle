@@ -33,6 +33,6 @@ checkstyleTest {
 
 processResources {
     filesMatching('**/product.properties') {
-        filter ReplaceTokens, tokens: [qualifier: getProductVersionQualifier()]
+        filter ReplaceTokens, tokens: [buildId: getBuildId()]
     }
 }

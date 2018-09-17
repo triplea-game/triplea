@@ -3,7 +3,7 @@
 # This script outputs the product version.
 #
 
-readonly PRODUCT_VERSION_QUALIFIER=$1
+readonly BUILD_ID=$1
 
-./gradlew --console=plain -PproductVersionQualifier="$PRODUCT_VERSION_QUALIFIER" :game-core:properties \
+./gradlew --console=plain -PbuildId="$BUILD_ID" :game-core:properties \
     | grep -Po '(?<=^version: )\S+$'
