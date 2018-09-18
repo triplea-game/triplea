@@ -50,17 +50,6 @@ public class ResourceLoader implements Closeable {
    * Returns a resource loader that will find assets in a map directory.
    */
   public static ResourceLoader getMapResourceLoader(final String mapName) {
-    @Nullable
-    File atFolder = ClientFileSystemHelper.getRootFolder();
-    File resourceFolder = new File(atFolder, RESOURCE_FOLDER);
-
-    while ((atFolder != null) && !resourceFolder.exists() && !resourceFolder.isDirectory()) {
-      atFolder = atFolder.getParentFile();
-      if (atFolder != null) {
-        resourceFolder = new File(atFolder, RESOURCE_FOLDER);
-      }
-    }
-
     final List<String> dirs = getPaths(mapName);
     if (mapName != null && dirs.isEmpty()) {
       SwingComponents.promptUser("Download Map?",
@@ -71,11 +60,23 @@ public class ResourceLoader implements Closeable {
       throw new MapNotFoundException();
     }
 
-    if (resourceFolder.exists()) {
-      dirs.add(resourceFolder.getAbsolutePath());
-    }
+    findDirectory(ClientFileSystemHelper.getRootFolder(), RESOURCE_FOLDER)
+        .map(File::getAbsolutePath)
+        .ifPresent(dirs::add);
 
     return new ResourceLoader(mapName, dirs.toArray(new String[0]));
+  }
+
+  @VisibleForTesting
+  static Optional<File> findDirectory(final File startDir, final String targetDirName) {
+    for (File currentDir = startDir; currentDir != null; currentDir = currentDir.getParentFile()) {
+      final File targetDir = new File(currentDir, targetDirName);
+      if (targetDir.isDirectory()) {
+        return Optional.of(targetDir);
+      }
+    }
+
+    return Optional.empty();
   }
 
   /**
