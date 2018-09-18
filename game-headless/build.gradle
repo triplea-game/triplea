@@ -8,7 +8,7 @@ plugins {
 
 archivesBaseName = "$group-$name"
 description = 'TripleA Headless Game Server'
-mainClassName = 'org.triplea.game.headless.runner.HeadlessGameRunner'
+mainClassName = 'org.triplea.game.server.HeadlessGameRunner'
 
 dependencies {
     compile project(':game-core')
@@ -20,15 +20,8 @@ jar {
     }
 }
 
-run {
-    workingDir = project(':game-core').projectDir
-}
-
 task headlessGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
-    from project(':game-core').file('.triplea-root')
-    from(project(':game-core').file('assets')) {
-        into 'assets'
-    }
+    from file('.triplea-root')
     from file('scripts/run_bot')
     from(file('scripts/run_bot.bat')) {
         filter ReplaceTokens, tokens: [version: version]

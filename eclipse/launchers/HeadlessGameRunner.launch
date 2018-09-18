@@ -2,15 +2,14 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="bad_container_name" value="/triplea/eclipse/lau"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/game-headless/src/main/java/org/triplea/game/headless/runner/HeadlessGameRunner.java"/>
+<listEntry value="/game-headless/src/main/java/org/triplea/game/server/HeadlessGameRunner.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.buildship.core.classpathprovider"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.triplea.game.headless.runner.HeadlessGameRunner"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.triplea.game.server.HeadlessGameRunner"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-Ptriplea.game=&#13;&#10;-Ptriplea.server=true&#13;&#10;-Ptriplea.port=3300&#13;&#10;-Ptriplea.lobby.host=127.0.0.1&#13;&#10;-Ptriplea.lobby.port=3304&#13;&#10;-Ptriplea.name=Bot1_TestServer &#13;&#10;-Ptriplea.lobby.game.hostedBy=Bot1_TestServer&#13;&#10;-Ptriplea.lobby.game.supportEmail=developer@gmail.com&#13;&#10;-Ptriplea.lobby.game.comments=automated_host&#13;&#10;-Ptriplea.map.folder=${system_property:user.home}/triplea/downloadedMaps"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="game-headless"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea"/>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:game-core}"/>
 </launchConfiguration>

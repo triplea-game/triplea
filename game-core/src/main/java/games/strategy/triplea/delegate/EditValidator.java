@@ -29,7 +29,7 @@ class EditValidator {
     // territory cannot be in an UndoableMove route
     final List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();
     for (final UndoableMove move : moves) {
-      if (move.getRoute().getStart() == territory || move.getRoute().getEnd() == territory) {
+      if (move.getRoute().getStart().equals(territory) || move.getRoute().getEnd().equals(territory)) {
         return "Territory is start or end of a pending move";
       }
     }

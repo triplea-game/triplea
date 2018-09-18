@@ -7,7 +7,7 @@ plugins {
 
 archivesBaseName = "$group-$name"
 description = 'TripleA Headed Game Client'
-mainClassName = 'org.triplea.game.headed.runner.HeadedGameRunner'
+mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 
 ext {
     javaFxRuntimeUrl = 'https://github.com/triplea-game/assets/raw/master/javafx/jfxrt-1.8.0_181.jar'
@@ -45,18 +45,10 @@ install4j {
     installDir = file(install4jHomeDir)
 }
 
-integTest {
-    workingDir = project(':game-core').projectDir
-}
-
 jar {
     manifest {
         attributes 'Main-Class': mainClassName
     }
-}
-
-run {
-    workingDir = project(':game-core').projectDir
 }
 
 task downloadInstallerAssets(group: 'release') {
@@ -94,11 +86,11 @@ task headedGameInstallers(
 }
 
 task headedGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
-    from project(':game-core').file('.triplea-root')
-    from(project(':game-core').file('assets')) {
+    from file('.triplea-root')
+    from(file('assets')) {
         into 'assets'
     }
-    from(project(':game-core').file('dice_servers')) {
+    from(file('dice_servers')) {
         into 'dice_servers'
     }
     from(shadowJar.outputs) {

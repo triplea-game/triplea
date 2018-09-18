@@ -8,6 +8,9 @@ import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
+import org.triplea.common.util.Services;
+import org.triplea.game.ApplicationContext;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.framework.system.SystemProperties;
@@ -41,7 +44,8 @@ public final class ClientFileSystemHelper {
   }
 
   private static File getCodeSourceFolder() throws IOException {
-    final @Nullable CodeSource codeSource = ClientFileSystemHelper.class.getProtectionDomain().getCodeSource();
+    final ApplicationContext applicationContext = Services.loadAny(ApplicationContext.class);
+    final @Nullable CodeSource codeSource = applicationContext.getMainClass().getProtectionDomain().getCodeSource();
     if (codeSource == null) {
       throw new IOException("code source is not available");
     }

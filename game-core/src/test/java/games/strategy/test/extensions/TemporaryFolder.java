@@ -22,6 +22,16 @@ public class TemporaryFolder {
     return result;
   }
 
+  /**
+   * Creates and returns a new temporary directory which gets deleted when the Virtual Machine terminates.
+   */
+  public File newDirectory(final String name) {
+    final File result = new File(rootFolder, name);
+    result.mkdirs();
+    result.deleteOnExit();
+    return result;
+  }
+
   void prepare() {
     try {
       rootFolder = File.createTempFile("junit5-", ".tmp");
