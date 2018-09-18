@@ -32,7 +32,6 @@ before_deploy:
 - ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release
 - ./.travis/collect_artifacts
 - ./.travis/generate_artifact_checksums
-## push tag triggers 'deploy' to occur, files listed in 'deploy.files' are uploaded to github releases.
 - ./.travis/push_tag
 ## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
 ## to website json data directory.
