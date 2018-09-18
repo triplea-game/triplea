@@ -45,7 +45,7 @@ final class ResourceLoaderTest {
     }
 
     @Test
-    void shouldIncludesGithubName() {
+    void shouldIncludeGithubName() {
       final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
       assertThat(candidates, containsDirectoryEndingWith("map_name-master"));
     }
