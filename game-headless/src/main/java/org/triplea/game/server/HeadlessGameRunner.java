@@ -1,4 +1,4 @@
-package org.triplea.game.headless.runner;
+package org.triplea.game.server;
 
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 

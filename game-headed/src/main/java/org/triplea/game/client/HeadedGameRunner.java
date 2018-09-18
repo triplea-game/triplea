@@ -1,4 +1,4 @@
-package org.triplea.game.headed.runner;
+package org.triplea.game.client;
 
 import org.triplea.game.client.ui.javafx.TripleA;
 

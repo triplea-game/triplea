@@ -7,61 +7,72 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.test.common.CustomMatcher;
 
 import com.google.common.collect.Maps;
 
+import games.strategy.test.extensions.TemporaryFolder;
+import games.strategy.test.extensions.TemporaryFolderExtension;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
-public class ResourceLoaderTest extends AbstractClientSettingTestCase {
+final class ResourceLoaderTest {
+  @Nested
+  final class GetMapDirectoryCandidatesTest extends AbstractClientSettingTestCase {
+    @Test
+    void shouldIncludeNameThenMap() {
+      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+      assertThat(candidates, containsDirectoryEndingWith("MapName" + File.separator + "map"));
+    }
 
-  @Test
-  public void testGetMapDirectoryCandidatesIncludesNameThenMap() {
-    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-    assertThat(candidates, containsDirectoryEndingWith("MapName" + File.separator + "map"));
+    @Test
+    void shouldIncludeName() {
+      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+      assertThat(candidates, containsDirectoryEndingWith("MapName"));
+    }
+
+    @Test
+    void shouldIncludeGithubNameThenMap() {
+      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+      assertThat(candidates, containsDirectoryEndingWith("map_name-master" + File.separator + "map"));
+    }
+
+    @Test
+    void shouldIncludeGithubName() {
+      final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
+      assertThat(candidates, containsDirectoryEndingWith("map_name-master"));
+    }
   }
 
-  @Test
-  public void testGetMapDirectoryCandidatesIncludesName() {
-    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-    assertThat(candidates, containsDirectoryEndingWith("MapName"));
-  }
+  @Nested
+  final class GetMapZipFileCandidatesTest extends AbstractClientSettingTestCase {
+    @Test
+    void shouldIncludeDefaultZipFile() {
+      final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
 
-  @Test
-  public void testGetMapDirectoryCandidatesIncludesGithubNameThenMap() {
-    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-    assertThat(candidates, containsDirectoryEndingWith("map_name-master" + File.separator + "map"));
-  }
+      assertThat(candidates, containsFileWithName("MapName.zip"));
+    }
 
-  @Test
-  public void testGetMapDirectoryCandidatesIncludesGithubName() {
-    final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-    assertThat(candidates, containsDirectoryEndingWith("map_name-master"));
-  }
+    @Test
+    void shouldIncludeNormalizedZipFile() {
+      final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
 
-  @Test
-  public void testGetMapZipFileCandidates_ShouldIncludeDefaultZipFile() {
-    final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
+      assertThat(candidates, containsFileWithName("map_name.zip"));
+    }
 
-    assertThat(candidates, containsFileWithName("MapName.zip"));
-  }
+    @Test
+    void shouldIncludeGitHubZipFile() {
+      final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
 
-  @Test
-  public void testGetMapZipFileCandidates_ShouldIncludeNormalizedZipFile() {
-    final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
-
-    assertThat(candidates, containsFileWithName("map_name.zip"));
-  }
-
-  @Test
-  public void testGetMapZipFileCandidates_ShouldIncludeGitHubZipFile() {
-    final List<File> candidates = ResourceLoader.getMapZipFileCandidates("MapName");
-
-    assertThat(candidates, containsFileWithName("map_name-master.zip"));
+      assertThat(candidates, containsFileWithName("map_name-master.zip"));
+    }
   }
 
   private static Matcher<Iterable<File>> containsDirectoryEndingWith(final String name) {
@@ -82,17 +93,72 @@ public class ResourceLoaderTest extends AbstractClientSettingTestCase {
         .build();
   }
 
-  @Test
-  public void testMapNameNormalization() {
-    final Map<String, String> testPairs = Maps.newHashMap();
-    testPairs.put("same.zip", "same.zip");
-    testPairs.put("camelCase.zip", "camel_case.zip");
-    testPairs.put("spaces removed.zip", "spaces_removed.zip");
-    testPairs.put("LowerCased.zip", "lower_cased.zip");
-    testPairs.put("LOWER.zip", "lower.zip");
+  @Nested
+  final class NormalizeMapNameTest {
+    @Test
+    public void shouldNormalizeMapName() {
+      final Map<String, String> testPairs = Maps.newHashMap();
+      testPairs.put("same.zip", "same.zip");
+      testPairs.put("camelCase.zip", "camel_case.zip");
+      testPairs.put("spaces removed.zip", "spaces_removed.zip");
+      testPairs.put("LowerCased.zip", "lower_cased.zip");
+      testPairs.put("LOWER.zip", "lower.zip");
 
-    for (final Entry<String, String> testPair : testPairs.entrySet()) {
-      assertThat(ResourceLoader.normalizeMapName(testPair.getKey()), is(testPair.getValue()));
+      for (final Entry<String, String> testPair : testPairs.entrySet()) {
+        assertThat(ResourceLoader.normalizeMapName(testPair.getKey()), is(testPair.getValue()));
+      }
+    }
+  }
+
+  @ExtendWith(TemporaryFolderExtension.class)
+  @Nested
+  final class FindDirectoryTest {
+    private static final String START_DIR_NAME = "a20bb5cb0c";
+    private static final String TARGET_DIR_NAME = "182c91fa8e";
+
+    private TemporaryFolder temporaryFolder;
+    private File startDir;
+
+    @BeforeEach
+    void createStartDir() {
+      startDir = temporaryFolder.newDirectory(START_DIR_NAME);
+    }
+
+    @Test
+    void shouldReturnDirWhenTargetDirExistsInStartDir() {
+      final File targetDir = new File(startDir, TARGET_DIR_NAME);
+      targetDir.mkdirs();
+
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
+    }
+
+    @Test
+    void shouldReturnEmptyWhenTargetFileExistsInStartDir() throws Exception {
+      final File targetDir = new File(startDir, TARGET_DIR_NAME);
+      targetDir.createNewFile();
+
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
+    }
+
+    @Test
+    void shouldReturnDirWhenTargetDirExistsInParentDir() {
+      final File targetDir = new File(startDir.getParentFile(), TARGET_DIR_NAME);
+      targetDir.mkdirs();
+
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
+    }
+
+    @Test
+    void shouldReturnEmptyWhenTargetFileExistsInParentDir() throws Exception {
+      final File targetDir = new File(startDir.getParentFile(), TARGET_DIR_NAME);
+      targetDir.createNewFile();
+
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
+    }
+
+    @Test
+    void shouldReturnEmptyWhenTargetDirDoesNotExist() {
+      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.empty()));
     }
   }
 }
