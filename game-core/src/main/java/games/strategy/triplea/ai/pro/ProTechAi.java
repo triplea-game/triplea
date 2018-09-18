@@ -306,9 +306,9 @@ final class ProTechAi {
           // played with this value a good bit
           strength += 1.00F;
           if (attacking) {
-            strength += unitAttack * unitAttachment.getHitPoints();
+            strength += (float) unitAttack * unitAttachment.getHitPoints();
           } else {
-            strength += unitAttachment.getDefense(u.getOwner()) * unitAttachment.getHitPoints();
+            strength += (float) unitAttachment.getDefense(u.getOwner()) * unitAttachment.getHitPoints();
           }
           if (attacking && unitAttack == 0) {
             strength -= 0.50F;
@@ -320,7 +320,7 @@ final class ProTechAi {
         } else if (unitAttachment.getIsAir() == sea) {
           strength += 1.00F;
           if (attacking) {
-            strength += unitAttachment.getAttack(u.getOwner()) * unitAttachment.getAttackRolls(u.getOwner());
+            strength += (float) unitAttachment.getAttack(u.getOwner()) * unitAttachment.getAttackRolls(u.getOwner());
           } else {
             strength += unitAttachment.getDefense(u.getOwner());
           }

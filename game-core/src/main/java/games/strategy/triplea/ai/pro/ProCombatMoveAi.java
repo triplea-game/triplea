@@ -226,10 +226,10 @@ class ProCombatMoveAi {
       if (isFfa == 1 && tuvSwing > 0) {
         tuvSwing *= 0.5;
       }
-      final double territoryValue = (1 + isLand + isCanHold * (1 + 2 * isFfa * isLand)) * (1 + isEmptyLand)
+      final double territoryValue = (1 + isLand + isCanHold * (1 + 2.0 * isFfa * isLand)) * (1 + isEmptyLand)
           * (1 + isFactory) * (1 - 0.5 * isAmphib) * production;
-      double attackValue = (tuvSwing + territoryValue) * (1 + 4 * isEnemyCapital)
-          * (1 + 2 * isNotNeutralAdjacentToMyCapital) * (1 - 0.9 * isNeutral);
+      double attackValue = (tuvSwing + territoryValue) * (1 + 4.0 * isEnemyCapital)
+          * (1 + 2.0 * isNotNeutralAdjacentToMyCapital) * (1 - 0.9 * isNeutral);
 
       // Check if a negative value neutral territory should be attacked
       if (attackValue <= 0 && !patd.isNeedAmphibUnits() && ProUtils.isNeutralLand(t)) {
@@ -413,7 +413,7 @@ class ProCombatMoveAi {
         totalValue += territoryValueMap.get(ProData.unitTerritoryMap.get(u));
       }
       final double averageValue = totalValue / nonAirAttackers.size() * 0.75;
-      final double territoryValue = territoryValueMap.get(t) * (1 + 4 * isFactory);
+      final double territoryValue = territoryValueMap.get(t) * (1 + 4.0 * isFactory);
       if (!t.isWater() && territoryValue < averageValue) {
         attackMap.get(t).setCanHold(false);
         ProLogger.debug(
@@ -668,7 +668,7 @@ class ProCombatMoveAi {
             isEnemyCapital = 1;
           }
         }
-        final double attackValue = result.getTuvSwing() + production * (1 + 3 * isEnemyCapital);
+        final double attackValue = result.getTuvSwing() + production * (1 + 3.0 * isEnemyCapital);
         if (!patd.isStrafing() && (0.75 * enemyTuvSwing) > attackValue) {
           ProLogger.debug("Removing amphib territory: " + patd.getTerritory() + ", enemyTUVSwing="
               + enemyTuvSwing + ", attackValue=" + attackValue);
@@ -923,7 +923,7 @@ class ProCombatMoveAi {
           capitalValue = ProUtils.getPlayerProduction(t.getOwner(), data);
         }
         final double territoryValue =
-            (1 + isLand - isCantHoldAmphib + isFactory + isCanHold * (1 + 2 * isFfa + 2 * isFactory)) * production
+            (1 + isLand - isCantHoldAmphib + isFactory + isCanHold * (1 + 2.0 * isFfa + 2.0 * isFactory)) * production
                 + capitalValue;
         double tuvSwing = result.getTuvSwing();
         if (isFfa == 1 && tuvSwing > 0) {

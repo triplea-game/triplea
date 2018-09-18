@@ -89,7 +89,7 @@ public class ProBattleUtils {
     }
     final int myHitPoints = BattleCalculator.getTotalHitpointsLeft(unitsThatCanFight);
     final double myPower = estimatePower(t, myUnits, enemyUnits, attacking);
-    return (2 * myHitPoints) + myPower;
+    return (2.0 * myHitPoints) + myPower;
   }
 
   private static double estimatePower(final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits,

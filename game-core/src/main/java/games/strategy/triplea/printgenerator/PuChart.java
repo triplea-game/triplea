@@ -69,7 +69,7 @@ class PuChart {
 
   private void drawEllipseAndString(final int x, final int y, final String string) {
     g2d.setFont(chartFont);
-    g2d.draw(new Ellipse2D.Double(5 + 87 * x, 5 + 87 * y, 72, 72));
+    g2d.draw(new Ellipse2D.Double(5 + 87.0 * x, 5 + 87.0 * y, 72, 72));
     final FontMetrics metrics = g2d.getFontMetrics();
     final int h = metrics.stringWidth(string) / 2;
     final int k = metrics.getHeight() / 2;

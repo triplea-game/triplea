@@ -423,7 +423,7 @@ class StatPanel extends AbstractStatPanel {
       /*
        * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
        */
-      return production * Properties.getPuMultiplier(data);
+      return (double) production * Properties.getPuMultiplier(data);
     }
   }
 
