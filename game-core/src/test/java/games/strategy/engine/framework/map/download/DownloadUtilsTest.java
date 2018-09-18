@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -32,24 +33,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
-import games.strategy.test.extensions.TemporaryFolder;
-import games.strategy.test.extensions.TemporaryFolderExtension;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
   private static final String URI = "some://uri";
 
   @ExtendWith(MockitoExtension.class)
-  @ExtendWith(TemporaryFolderExtension.class)
+  @ExtendWith(TempDirectory.class)
   @Nested
   public final class DownloadToFileTest {
-
-    private TemporaryFolder temporaryFolder;
-
     @Mock
     private CloseableHttpClient client;
 
@@ -68,8 +66,8 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
      * Sets up the test fixture.
      */
     @BeforeEach
-    public void setUp() throws Exception {
-      file = temporaryFolder.newFile(getClass().getName());
+    public void setUp(@TempDir final Path tempDirPath) throws Exception {
+      file = Files.createTempFile(tempDirPath, null, null).toFile();
 
       when(client.execute(any())).thenReturn(response);
       when(response.getStatusLine()).thenReturn(statusLine);
