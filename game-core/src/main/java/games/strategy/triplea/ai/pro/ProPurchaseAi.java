@@ -515,7 +515,7 @@ class ProPurchaseAi {
 
       // Calculate defense value for prioritization
       final double territoryValue =
-          (2.0 * production + 4 * isFactory + 0.5 * defendingUnitValue) * (1 + isFactory) * (1 + 10.0 * isMyCapital);
+          (2.0 * production + 4.0 * isFactory + 0.5 * defendingUnitValue) * (1 + isFactory) * (1 + 10.0 * isMyCapital);
       placeTerritory.setDefenseValue(territoryValue);
     }
 
