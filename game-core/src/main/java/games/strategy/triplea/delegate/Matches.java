@@ -1883,7 +1883,7 @@ public final class Matches {
       final String filterForUnitType) {
     return u -> {
       for (final String receives : UnitAttachment.get(u.getType()).getReceivesAbilityWhenWith()) {
-        final String[] s = receives.split(":");
+        final String[] s = receives.split(":", 2);
         if (s[0].equals(filterForAbility) && s[1].equals(filterForUnitType)) {
           return true;
         }
