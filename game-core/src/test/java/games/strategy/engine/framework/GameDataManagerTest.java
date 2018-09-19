@@ -1,21 +1,38 @@
 package games.strategy.engine.framework;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
+import java.io.OutputStream;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.io.IoUtils;
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
-public class GameDataManagerTest extends AbstractClientSettingTestCase {
-  @Test
-  public void testLoadStoreKeepsGameUuid() throws IOException {
-    final GameData data = new GameData();
-    final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
-    final GameData loaded = IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
-    assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
+final class GameDataManagerTest {
+  @Nested
+  final class RoundTripTest {
+    @Test
+    void shouldPreserveGameUuid() throws Exception {
+      final GameData data = new GameData();
+      final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
+      final GameData loaded = IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
+      assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
+    }
+  }
+
+  @Nested
+  final class SaveGameTest {
+    @Test
+    void shouldCloseOutputStream() throws Exception {
+      final OutputStream os = mock(OutputStream.class);
+
+      GameDataManager.saveGame(os, new GameData());
+
+      verify(os).close();
+    }
   }
 }
