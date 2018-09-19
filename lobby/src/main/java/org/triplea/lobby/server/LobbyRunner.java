@@ -2,9 +2,9 @@ package org.triplea.lobby.server;
 
 import java.util.logging.Level;
 
+import org.triplea.common.config.FilePropertyReader;
 import org.triplea.lobby.server.config.LobbyPropertyReader;
 
-import games.strategy.engine.config.FilePropertyReader;
 import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
 
