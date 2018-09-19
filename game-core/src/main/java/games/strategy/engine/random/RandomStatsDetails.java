@@ -68,7 +68,7 @@ public class RandomStatsDetails implements Serializable {
       double sumOfSquaredMeanDeviations = 0;
       // TODO: does this need to be updated to take data.getDiceSides() ?
       for (int i = 1; i <= diceSides; i++) {
-        sumOfSquaredMeanDeviations += (stats.getInt(i) - (localTotal / diceSides))
+        sumOfSquaredMeanDeviations += (double) (stats.getInt(i) - (localTotal / diceSides))
             * (stats.getInt(i) - (localTotal / diceSides));
       }
       variance = sumOfSquaredMeanDeviations / (localTotal - 1);

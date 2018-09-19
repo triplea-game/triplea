@@ -29,7 +29,7 @@ public class ProTerritoryValueUtils {
   public static double findTerritoryAttackValue(final PlayerID player, final Territory t) {
     final GameData data = ProData.getData();
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
-    double value = 3 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
+    double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
           ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnits().getUnits()), new ArrayList<>(), false);
@@ -191,7 +191,7 @@ public class ProTerritoryValueUtils {
       final int isNeutral = ProUtils.isNeutralLand(t) ? 1 : 0;
       final int landMassSize = 1 + data.getMap()
           .getNeighbors(t, 6, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data)).size();
-      final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32 / (1 + 3 * isNeutral)
+      final double value = Math.sqrt(factoryProduction + Math.sqrt(playerProduction)) * 32 / (1 + 3.0 * isNeutral)
           * landMassSize / maxLandMassSize;
       enemyCapitalsAndFactoriesMap.put(t, value);
     }

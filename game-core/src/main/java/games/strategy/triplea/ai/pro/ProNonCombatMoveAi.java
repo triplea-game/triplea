@@ -395,7 +395,7 @@ class ProNonCombatMoveAi {
       final List<Unit> extraUnits = new ArrayList<>(defendingUnitsAndNotAa);
       extraUnits.removeAll(minDefendingUnitsAndNotAa);
       final double extraUnitValue = TuvUtils.getTuv(extraUnits, ProData.unitValueMap);
-      final double holdValue = extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2 * isMyCapital);
+      final double holdValue = extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2.0 * isMyCapital);
       if (minDefendingUnitsAndNotAa.size() != defendingUnitsAndNotAa.size()
           && (result.getTuvSwing() - holdValue) < minResult.getTuvSwing()) {
         ProLogger
@@ -477,8 +477,8 @@ class ProNonCombatMoveAi {
 
       // Calculate defense value for prioritization
       final double territoryValue =
-          unitOwnerMultiplier * (2 * production + 10 * isFactory + 0.5 * cantMoveUnitValue + 0.5 * neighborValue)
-              * (1 + 10 * isMyCapital) * (1 + 4 * isEnemyOrAlliedCapital);
+          unitOwnerMultiplier * (2.0 * production + 10.0 * isFactory + 0.5 * cantMoveUnitValue + 0.5 * neighborValue)
+              * (1 + 10.0 * isMyCapital) * (1 + 4.0 * isEnemyOrAlliedCapital);
       moveMap.get(t).setValue(territoryValue);
     }
 
@@ -904,7 +904,7 @@ class ProNonCombatMoveAi {
         }
         final int unsafeTransportValue = TuvUtils.getTuv(unsafeTransports, ProData.unitValueMap);
         final double holdValue =
-            extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2 * isMyCapital) - unsafeTransportValue;
+            extraUnitValue / 8 * (1 + 0.5 * isFactory) * (1 + 2.0 * isMyCapital) - unsafeTransportValue;
 
         // Find strategic value
         boolean hasHigherStrategicValue = true;
@@ -1422,7 +1422,7 @@ class ProNonCombatMoveAi {
               final int transports = CollectionUtils.countMatches(moveMap.get(t).getAllDefenders(),
                   ProMatches.unitIsOwnedTransport(player));
               final double value = (1 + transports) * moveMap.get(t).getSeaValue()
-                  + (1 + transports * 100) * moveMap.get(t).getValue() / 10000;
+                  + (1 + transports * 100.0) * moveMap.get(t).getValue() / 10000;
               ProLogger.trace(t + ", value=" + value + ", seaValue=" + moveMap.get(t).getSeaValue() + ", tValue="
                   + moveMap.get(t).getValue() + ", transports=" + transports);
               if (value > maxValue) {
@@ -1787,9 +1787,9 @@ class ProNonCombatMoveAi {
         final int isntFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 0 : 1;
         final int hasOwnedCarrier =
             moveMap.get(t).getAllDefenders().stream().anyMatch(ProMatches.unitIsOwnedCarrier(player)) ? 1 : 0;
-        final double airValue = (200.0 * numSeaAttackTerritories + 100 * numLandAttackTerritories
-            + 10 * numEnemyAttackTerritories + numNearbyEnemyTerritories) / (1 + cantHoldWithoutAllies)
-            / (1 + cantHoldWithoutAllies * isntFactory) * (1 + hasOwnedCarrier);
+        final double airValue = (200.0 * numSeaAttackTerritories + 100.0 * numLandAttackTerritories
+            + 10.0 * numEnemyAttackTerritories + numNearbyEnemyTerritories) / (1 + cantHoldWithoutAllies)
+            / (1 + (double) cantHoldWithoutAllies * isntFactory) * (1 + hasOwnedCarrier);
         if (airValue > maxAirValue) {
           maxAirValue = airValue;
           maxTerritory = t;

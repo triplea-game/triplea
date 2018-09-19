@@ -515,7 +515,7 @@ class ProPurchaseAi {
 
       // Calculate defense value for prioritization
       final double territoryValue =
-          (2 * production + 4 * isFactory + 0.5 * defendingUnitValue) * (1 + isFactory) * (1 + 10 * isMyCapital);
+          (2.0 * production + 4.0 * isFactory + 0.5 * defendingUnitValue) * (1 + isFactory) * (1 + 10.0 * isMyCapital);
       placeTerritory.setDefenseValue(territoryValue);
     }
 
@@ -1087,8 +1087,8 @@ class ProPurchaseAi {
       }
 
       // Calculate sea value for prioritization
-      final double territoryValue =
-          placeTerritory.getStrategicValue() * (1 + numMyTransports + 0.1 * numSeaDefenders) / (1 + 3 * needDefenders);
+      final double territoryValue = placeTerritory.getStrategicValue()
+          * (1 + numMyTransports + 0.1 * numSeaDefenders) / (1 + 3.0 * needDefenders);
       ProLogger.debug(t + ", value=" + territoryValue + ", strategicValue=" + placeTerritory.getStrategicValue()
           + ", numMyTransports=" + numMyTransports + ", numSeaDefenders=" + numSeaDefenders + ", needDefenders="
           + needDefenders);

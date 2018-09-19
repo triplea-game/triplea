@@ -651,8 +651,8 @@ public class MapPanel extends ImageScrollerLargeView {
     // that way when we scroll slowly we wont notice a glitch
     if (undrawnTiles.isEmpty()) {
       final Rectangle2D extendedBounds = new Rectangle2D.Double(Math.max(model.getX() - preDrawMargin, 0),
-          Math.max(model.getY() - preDrawMargin, 0), getScaledWidth() + (2 * preDrawMargin),
-          getScaledHeight() + (2 * preDrawMargin));
+          Math.max(model.getY() - preDrawMargin, 0), getScaledWidth() + (2.0 * preDrawMargin),
+          getScaledHeight() + (2.0 * preDrawMargin));
       final List<Tile> tileList = tileManager.getTiles(extendedBounds);
       for (final Tile tile : tileList) {
         if (tile.isDirty()) {
