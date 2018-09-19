@@ -1,16 +1,15 @@
-ext.getEngineVersion = {
-    if (project.hasProperty('engineVersion')) {
-        return project.engineVersion
+ext.getBuildId = {
+    return (project.hasProperty('buildId') && !project.buildId.isEmpty()) ? project.buildId : 'dev'
+}
+
+ext.getProductVersion = {
+    def props = new Properties()
+    def productPropertiesFile = project(':game-core').file('src/main/resources/META-INF/triplea/product.properties')
+    productPropertiesFile.withInputStream { props.load(it) }
+    def productVersion = props.getProperty('version')
+    if (!productVersion) {
+        throw new GradleException('"version" property missing from the "product.properties" resource')
     }
 
-    def props = new Properties()
-    def gameEnginePropertiesFile = project(':game-core').file('src/main/resources/META-INF/triplea/game_engine.properties')
-    gameEnginePropertiesFile.withInputStream { props.load(it) }
-    def devEngineVersion = props.getProperty('engine_version')
-    if (!devEngineVersion) {
-        throw new GradleException('unable to determine engine version: '
-                + 'you must define either the project property "engineVersion" '
-                + 'or the game engine property "engine_version"')
-    }
-    return devEngineVersion
+    return productVersion.replace('@buildId@', getBuildId())
 }

@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 ext {
@@ -27,4 +29,10 @@ checkstyleMain {
 
 checkstyleTest {
     maxWarnings = checkstyleTestMaxWarnings.toInteger()
+}
+
+processResources {
+    filesMatching('**/product.properties') {
+        filter ReplaceTokens, tokens: [buildId: getBuildId()]
+    }
 }

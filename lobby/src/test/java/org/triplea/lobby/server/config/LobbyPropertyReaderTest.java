@@ -6,10 +6,9 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.common.config.MemoryPropertyReader;
 import org.triplea.lobby.server.config.LobbyPropertyReader.DefaultValues;
 import org.triplea.lobby.server.config.LobbyPropertyReader.PropertyKeys;
-
-import games.strategy.engine.config.MemoryPropertyReader;
 
 public final class LobbyPropertyReaderTest {
   private final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();

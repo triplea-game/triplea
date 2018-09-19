@@ -1,8 +1,8 @@
 package org.triplea.lobby.server.config;
 
-import com.google.common.collect.ImmutableMap;
+import org.triplea.common.config.MemoryPropertyReader;
 
-import games.strategy.engine.config.MemoryPropertyReader;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Collection of {@link LobbyPropertyReader} instances suitable for various testing scenarios.

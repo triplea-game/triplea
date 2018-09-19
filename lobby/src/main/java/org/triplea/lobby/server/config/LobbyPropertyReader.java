@@ -2,9 +2,9 @@ package org.triplea.lobby.server.config;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.annotations.VisibleForTesting;
+import org.triplea.common.config.PropertyReader;
 
-import games.strategy.engine.config.PropertyReader;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Reads property values from a lobby configuration.

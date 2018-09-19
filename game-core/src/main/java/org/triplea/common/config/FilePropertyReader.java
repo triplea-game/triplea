@@ -1,4 +1,4 @@
-package games.strategy.engine.config;
+package org.triplea.common.config;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
