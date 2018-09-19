@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,12 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import org.triplea.test.common.CustomMatcher;
 
 import com.google.common.collect.Maps;
 
-import games.strategy.test.extensions.TemporaryFolder;
-import games.strategy.test.extensions.TemporaryFolderExtension;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 final class ResourceLoaderTest {
@@ -110,18 +112,16 @@ final class ResourceLoaderTest {
     }
   }
 
-  @ExtendWith(TemporaryFolderExtension.class)
+  @ExtendWith(TempDirectory.class)
   @Nested
   final class FindDirectoryTest {
-    private static final String START_DIR_NAME = "a20bb5cb0c";
     private static final String TARGET_DIR_NAME = "182c91fa8e";
 
-    private TemporaryFolder temporaryFolder;
     private File startDir;
 
     @BeforeEach
-    void createStartDir() {
-      startDir = temporaryFolder.newDirectory(START_DIR_NAME);
+    void createStartDir(@TempDir final Path tempDirPath) throws Exception {
+      startDir = Files.createTempDirectory(tempDirPath, null).toFile();
     }
 
     @Test

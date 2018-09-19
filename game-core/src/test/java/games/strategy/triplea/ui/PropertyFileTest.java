@@ -7,25 +7,25 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
-import games.strategy.test.extensions.TemporaryFolder;
-import games.strategy.test.extensions.TemporaryFolderExtension;
 import games.strategy.triplea.ResourceLoader;
 
-@ExtendWith(TemporaryFolderExtension.class)
+@ExtendWith(TempDirectory.class)
 public class PropertyFileTest {
-  private TemporaryFolder temporaryFolder;
   private final ResourceLoader mock = mock(ResourceLoader.class);
   private File file;
 
   @BeforeEach
-  public void setup() throws Exception {
-    file = temporaryFolder.newFile(getClass().getName());
+  public void setup(@TempDir final Path tempDirPath) throws Exception {
+    file = Files.createTempFile(tempDirPath, null, null).toFile();
     when(mock.getResource(file.getAbsolutePath())).thenReturn(file.toURI().toURL());
     PropertyFile.cache.invalidateAll();
   }
