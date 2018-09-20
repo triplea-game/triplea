@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'net.ltgt.errorprone' version '0.0.15' apply false
+    id 'io.franzbecker.gradle-lombok' version '1.14' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -32,6 +33,7 @@ subprojects {
     apply plugin: 'jacoco'
     apply plugin: 'java'
     apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'io.franzbecker.gradle-lombok'
 
     apply from: "${rootProject.projectDir}/gradle/scripts/release.gradle"
     apply from: "${rootProject.projectDir}/gradle/scripts/remote-lib.gradle"
@@ -45,7 +47,6 @@ subprojects {
     ext {
         hamcrestVersion = '2.0.0.0'
         junitJupiterVersion = '5.3.1'
-        lombokVersion = '1.18.0'
         mockitoVersion = '2.22.0'
         postgresqlVersion = '42.2.2'
         sonatypeGoodiesPrefsVersion = '2.2.5'
@@ -61,8 +62,6 @@ subprojects {
     dependencies {
         compile 'com.google.guava:guava:24.1-jre'
 
-        compileOnly "org.projectlombok:lombok:$lombokVersion"
-
         errorprone 'com.google.errorprone:error_prone_core:2.3.1'
 
         testCompile 'nl.jqno.equalsverifier:equalsverifier:2.5.2'
@@ -70,8 +69,6 @@ subprojects {
         testCompile 'org.junit-pioneer:junit-pioneer:0.1.2'
         testCompile "org.mockito:mockito-core:$mockitoVersion"
         testCompile "org.mockito:mockito-junit-jupiter:$mockitoVersion"
-
-        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
 
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
 
@@ -126,6 +123,11 @@ subprojects {
             xml.enabled = true
             html.enabled = true
         }
+    }
+
+    lombok {
+        version = '1.18.2'
+        sha256 = 'f13db210efa2092a58bb7befce58ffa502e5fefc5e1099f45007074008756bc0'
     }
 
     test {
