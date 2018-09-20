@@ -8,10 +8,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.function.Predicate;
+
+import com.google.common.base.Preconditions;
 
 // TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
 // always...
@@ -35,8 +36,8 @@ class RouteFinder {
   }
 
   Optional<Route> findRoute(final Territory start, final Territory end) {
-    Objects.requireNonNull(start);
-    Objects.requireNonNull(end);
+    Preconditions.checkNotNull(start);
+    Preconditions.checkNotNull(end);
 
     final Map<Territory, Territory> previous = new HashMap<>();
     final Queue<Territory> toVisit = new ArrayDeque<>();
