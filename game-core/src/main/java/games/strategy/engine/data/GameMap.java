@@ -253,6 +253,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
    */
+  @Nullable
   public Route getRoute(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     checkNotNull(t1);
     checkNotNull(t2);
@@ -263,7 +264,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (getNeighbors(t1, cond).contains(t2)) {
       return new Route(t1, t2);
     }
-    return new RouteFinder(this, cond).findRoute(t1, t2);
+    return new RouteFinder(this, cond).findRoute(t1, t2).orElse(null);
   }
 
   /**
@@ -290,6 +291,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return getRoute(start, end, Matches.territoryIs(end).or(match));
   }
 
+  @Nullable
   public Route getRouteIgnoreEndValidatingCanals(final Territory t1, final Territory t2,
       final Predicate<Territory> cond, final Collection<Unit> units, final PlayerID player) {
     checkNotNull(t1);
@@ -297,7 +299,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       return new Route(t1);
     }
-    return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2);
+    return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2).orElse(null);
   }
 
   /**

@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -16,7 +19,6 @@ class RouteFinder {
 
   private final GameMap map;
   private final Predicate<Territory> condition;
-  private final Map<Territory, Territory> previous;
   private final Collection<Unit> units;
   private final PlayerID player;
 
@@ -28,51 +30,43 @@ class RouteFinder {
       final PlayerID player) {
     this.map = map;
     this.condition = condition;
-    previous = new HashMap<>();
     this.units = units;
     this.player = player;
   }
 
-  Route findRoute(final Territory start, final Territory end) {
-    final Set<Territory> startSet = map.getNeighborsValidatingCanals(start, condition, units, player);
-    for (final Territory t : startSet) {
-      previous.put(t, start);
-    }
-    if (calculate(startSet, end)) {
-      return getRoute(start, end);
-    }
-    return null;
-  }
-
-  private boolean calculate(final Set<Territory> startSet, final Territory end) {
-    final Set<Territory> nextSet = new HashSet<>();
-    for (final Territory t : startSet) {
-      final Set<Territory> neighbors = map.getNeighborsValidatingCanals(t, condition, units, player);
+  Optional<Route> findRoute(final Territory start, final Territory end) {
+    final Map<Territory, Territory> previous = new HashMap<>();
+    final Queue<Territory> toVisit = new ArrayDeque<>();
+    toVisit.add(start);
+    while (!toVisit.isEmpty()) {
+      final Territory currentTerritory = toVisit.poll();
+      final Set<Territory> neighbors = map.getNeighborsValidatingCanals(currentTerritory, condition, units, player);
       for (final Territory neighbor : neighbors) {
         if (!previous.containsKey(neighbor)) {
-          previous.put(neighbor, t);
+          previous.put(neighbor, currentTerritory);
           if (neighbor.equals(end)) {
-            return true;
+            return getRoute(start, end, previous);
           }
-          nextSet.add(neighbor);
+          toVisit.add(neighbor);
         }
       }
     }
-    return !nextSet.isEmpty() && calculate(nextSet, end);
+    return Optional.empty();
   }
 
-  private Route getRoute(final Territory start, final Territory destination) {
+  private Optional<Route> getRoute(final Territory start, final Territory destination,
+      final Map<Territory, Territory> previous) {
     final List<Territory> route = new ArrayList<>();
     Territory current = destination;
     while (!start.equals(current)) {
       if (current == null) {
-        return null;
+        return Optional.empty();
       }
       route.add(current);
       current = previous.get(current);
     }
     route.add(start);
     Collections.reverse(route);
-    return new Route(route);
+    return Optional.of(new Route(route));
   }
 }
