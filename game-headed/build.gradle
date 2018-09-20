@@ -42,7 +42,9 @@ dependencies {
 }
 
 install4j {
-    installDir = file(install4jHomeDir)
+    // If you wish to build the installers, you must install install4j and define the "install4jHomeDir" property on the
+    // command line (e.g. -Pinstall4jHomeDir=...) or in your personal Gradle properties (e.g. ~/.gradle/gradle.properties).
+    installDir = file(project.findProperty('install4jHomeDir') ?: '.')
 }
 
 jar {

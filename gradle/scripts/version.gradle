@@ -1,5 +1,5 @@
 ext.getBuildId = {
-    return (project.hasProperty('buildId') && !project.buildId.isEmpty()) ? project.buildId : 'dev'
+    return project.findProperty('buildId') ?: 'dev'
 }
 
 ext.getProductVersion = {
