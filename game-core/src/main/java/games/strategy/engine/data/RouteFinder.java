@@ -44,7 +44,7 @@ class RouteFinder {
     toVisit.add(start);
 
     while (!toVisit.isEmpty()) {
-      final Territory currentTerritory = toVisit.poll();
+      final Territory currentTerritory = toVisit.remove();
       for (final Territory neighbor : map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
         if (!previous.containsKey(neighbor)) {
           previous.put(neighbor, currentTerritory);
@@ -58,7 +58,7 @@ class RouteFinder {
     return Optional.empty();
   }
 
-  private Route getRoute(final Territory start, final Territory destination,
+  private static Route getRoute(final Territory start, final Territory destination,
       final Map<Territory, Territory> previous) {
     final List<Territory> route = new ArrayList<>();
     Territory current = destination;
