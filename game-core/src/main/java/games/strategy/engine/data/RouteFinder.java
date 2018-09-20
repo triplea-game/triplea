@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.Set;
 import java.util.function.Predicate;
 
 // TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
@@ -35,17 +35,20 @@ class RouteFinder {
   }
 
   Optional<Route> findRoute(final Territory start, final Territory end) {
+    Objects.requireNonNull(start);
+    Objects.requireNonNull(end);
+
     final Map<Territory, Territory> previous = new HashMap<>();
     final Queue<Territory> toVisit = new ArrayDeque<>();
     toVisit.add(start);
+
     while (!toVisit.isEmpty()) {
       final Territory currentTerritory = toVisit.poll();
-      final Set<Territory> neighbors = map.getNeighborsValidatingCanals(currentTerritory, condition, units, player);
-      for (final Territory neighbor : neighbors) {
+      for (final Territory neighbor : map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
         if (!previous.containsKey(neighbor)) {
           previous.put(neighbor, currentTerritory);
           if (neighbor.equals(end)) {
-            return getRoute(start, end, previous);
+            return Optional.of(getRoute(start, end, previous));
           }
           toVisit.add(neighbor);
         }
@@ -54,19 +57,17 @@ class RouteFinder {
     return Optional.empty();
   }
 
-  private Optional<Route> getRoute(final Territory start, final Territory destination,
+  private Route getRoute(final Territory start, final Territory destination,
       final Map<Territory, Territory> previous) {
     final List<Territory> route = new ArrayList<>();
     Territory current = destination;
     while (!start.equals(current)) {
-      if (current == null) {
-        return Optional.empty();
-      }
+      assert current != null : "Route was calculated but isn't connected";
       route.add(current);
       current = previous.get(current);
     }
     route.add(start);
     Collections.reverse(route);
-    return Optional.of(new Route(route));
+    return new Route(route);
   }
 }
