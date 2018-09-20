@@ -267,26 +267,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return new RouteFinder(this, cond).findRoute(t1, t2).orElse(null);
   }
 
-  /**
-   * Returns the shortest land route between two territories or null if no route exists.
-   *
-   * @param start start territory of the route
-   * @param end end territory of the route
-   */
-  public Route getLandRoute(final Territory start, final Territory end) {
-    return getRoute(start, end, Matches.territoryIsLand());
-  }
-
-  /**
-   * Returns the shortest water route between two territories or null if no route exists.
-   *
-   * @param start start territory of the route
-   * @param end end territory of the route
-   */
-  public Route getWaterRoute(final Territory start, final Territory end) {
-    return getRoute(start, end, Matches.territoryIsWater());
-  }
-
   public Route getRoute_IgnoreEnd(final Territory start, final Territory end, final Predicate<Territory> match) {
     return getRoute(start, end, Matches.territoryIs(end).or(match));
   }

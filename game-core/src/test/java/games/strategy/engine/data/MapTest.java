@@ -152,12 +152,6 @@ public class MapTest {
   }
 
   @Test
-  public void testLongRoute() {
-    final Route route = map.getLandRoute(ad, da);
-    assertEquals(6, route.numberOfSteps());
-  }
-
-  @Test
   public void testNeighborLandNoSeaConnect() {
     assertEquals(-1, map.getWaterDistance(aa, ab));
   }
@@ -186,24 +180,9 @@ public class MapTest {
   }
 
   @Test
-  public void testImpossibleLandRoute() {
-    final Route rt = map.getLandRoute(aa, cd);
-    assertNull(rt);
-  }
-
-  @Test
   public void testImpossibleLandDistance() {
     final int distance = map.getLandDistance(aa, cd);
     assertEquals(-1, distance, "wrong distance");
-  }
-
-  @Test
-  public void testWaterRout() {
-    final Route rt = map.getWaterRoute(bd, dd);
-    assertEquals(bc, rt.getTerritoryAtStep(0), "bc:" + rt);
-    assertEquals(cc, rt.getTerritoryAtStep(1), "cc");
-    assertEquals(dc, rt.getTerritoryAtStep(2), "dc");
-    assertEquals(dd, rt.getTerritoryAtStep(3), "dd");
   }
 
   @Test
