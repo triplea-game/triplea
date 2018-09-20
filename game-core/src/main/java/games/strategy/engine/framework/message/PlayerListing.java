@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -81,7 +82,13 @@ public class PlayerListing implements Serializable {
             .orElse(Collections.emptyMap())
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(Entry::getKey, e -> Sets.newHashSet(e.getValue())));
+            .collect(Collectors.toMap(
+                Entry::getKey,
+                e -> Sets.newHashSet(e.getValue()),
+                (u, v) -> {
+                  throw new IllegalStateException(String.format("Duplicate key %s", u));
+                },
+                LinkedHashMap::new));
 
     // make sure none of the collection values are null.
     // m_playerToNodeListing is an exception, it can have null values meaning no user has chosen a given nation.
