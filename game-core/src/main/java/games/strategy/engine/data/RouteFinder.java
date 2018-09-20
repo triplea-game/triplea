@@ -39,6 +39,10 @@ class RouteFinder {
     Preconditions.checkNotNull(start);
     Preconditions.checkNotNull(end);
 
+    if (start.equals(end)) {
+      return Optional.of(new Route(start));
+    }
+
     final Map<Territory, Territory> previous = new HashMap<>();
     final Queue<Territory> toVisit = new ArrayDeque<>();
     toVisit.add(start);

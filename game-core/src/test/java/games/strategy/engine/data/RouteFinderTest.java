@@ -1,6 +1,7 @@
 package games.strategy.engine.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -59,13 +61,30 @@ public class RouteFinderTest {
 
   @Test
   void testFindRoute() {
-    final Predicate<Territory> condition = t -> true;
-    final Collection<Unit> units = new ArrayList<>();
-    final RouteFinder routeFinder = new RouteFinder(map, condition, units, player);
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
     final Optional<Route> optRoute = routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
     assertTrue(optRoute.isPresent());
     final Route route = optRoute.get();
     final List<Territory> result = route.getAllTerritories();
     assertEquals(Stream.of(0, 3, 6, 8).map(territories::get).collect(Collectors.toList()), result);
+  }
+
+  @Test
+  void testFindRouteEndAndStartAreTheSame() {
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
+    final Optional<Route> optRoute = routeFinder.findRoute(territories.get(0), territories.get(0));
+    assertTrue(optRoute.isPresent());
+    final Route route = optRoute.get();
+    assertEquals(Collections.singletonList(territories.get(0)), route.getAllTerritories());
+  }
+
+  @Test
+  void testNoRouteOnInvalidGraph() {
+    final GameMap map = mock(GameMap.class);
+    when(map.getNeighborsValidatingCanals(eq(territories.get(0)), any(), any(), any()))
+        .thenReturn(Collections.singleton(territories.get(1)));
+    final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
+    final Optional<Route> optRoute = routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
+    assertFalse(optRoute.isPresent());
   }
 }
