@@ -27,7 +27,8 @@ public class RouteFinderTest {
   private final List<Territory> territories = new ArrayList<>();
 
   /**
-   * Representing this graph:
+   * This is an adjacency matrix.
+   * It's representing this graph:
    * <pre><code>
    * (7)---(5)---(4)
    *  |     |     |
