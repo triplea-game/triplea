@@ -159,7 +159,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       int relationshipUpkeepCostFlat = 0;
       int relationshipUpkeepCostPercentage = 0;
       for (final Relationship r : data.getRelationshipTracker().getRelationships(player)) {
-        final String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
+        final String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":", 2);
         if (upkeep.length == 1 || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT)) {
           relationshipUpkeepCostFlat += Integer.parseInt(upkeep[0]);
         } else if (upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_PERCENTAGE)) {
