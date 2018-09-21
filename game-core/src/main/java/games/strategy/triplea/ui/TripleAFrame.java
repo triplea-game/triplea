@@ -79,6 +79,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.triplea.common.util.concurrent.CompletableFutureUtils;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
@@ -1576,9 +1578,11 @@ public final class TripleAFrame extends JFrame {
       }
     });
     if (player != null && !player.isNull()) {
-      CompletableFuture.supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
+      final CompletableFuture<?> future = CompletableFuture
+          .supplyAsync(() -> uiContext.getFlagImageFactory().getFlag(player))
           .thenApplyAsync(ImageIcon::new)
           .thenAccept(icon -> SwingUtilities.invokeLater(() -> this.round.setIcon(icon)));
+      CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to set round icon for " + player);
       lastStepPlayer = currentStepPlayer;
       currentStepPlayer = player;
     }

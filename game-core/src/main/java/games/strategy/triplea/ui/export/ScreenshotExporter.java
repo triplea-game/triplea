@@ -10,10 +10,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import org.triplea.common.util.concurrent.CompletableFutureUtils;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.HistoryNode;
@@ -57,7 +60,7 @@ public final class ScreenshotExporter {
   }
 
   private void runSave(final GameData gameData, final HistoryNode node, final File file) {
-    SwingComponents.runWithProgressBar(frame, "Saving map snapshot...", () -> {
+    final CompletableFuture<?> future = SwingComponents.runWithProgressBar(frame, "Saving map snapshot...", () -> {
       save(gameData, node, file);
       return null;
     }).whenComplete((ignore, e) -> SwingUtilities.invokeLater(() -> {
@@ -68,6 +71,7 @@ public final class ScreenshotExporter {
         JOptionPane.showMessageDialog(frame, e.getMessage(), "Error Saving Map Snapshot", JOptionPane.ERROR_MESSAGE);
       }
     }));
+    CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to save map snapshot");
   }
 
   private void save(final GameData gameData, final HistoryNode node, final File file) throws IOException {
