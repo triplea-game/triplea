@@ -78,7 +78,7 @@ public abstract class EditorPanel extends JPanel {
   private boolean validateText(final String text, final JLabel label, final IValidator validator) {
     Preconditions.checkNotNull(label);
     Preconditions.checkNotNull(validator);
-    boolean valid = validator.isValid(text);
+    final boolean valid = validator.isValid(text);
     label.setForeground(valid ? labelColor : Color.RED);
     return valid;
   }

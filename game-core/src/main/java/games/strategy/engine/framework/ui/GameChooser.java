@@ -56,6 +56,7 @@ public class GameChooser extends JDialog {
     setupListeners();
     updateInfoPanel();
   }
+
   private void layoutCoponents() {
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();

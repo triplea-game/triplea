@@ -734,13 +734,13 @@ public class BattleDisplay extends JPanel {
         unitPowerAndRollsMap = null;
       } else {
         gameData.acquireReadLock();
-          try {
+        try {
           unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
               new ArrayList<>(enemyBattleModel.getUnits()), !attack, false, gameData, location,
               territoryEffects, isAmphibious, amphibiousLandAttackers);
-          } finally {
-            gameData.releaseReadLock();
-          }
+        } finally {
+          gameData.releaseReadLock();
+        }
       }
       final int diceSides = gameData.getDiceSides();
       final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
