@@ -28,6 +28,8 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.triplea.common.util.concurrent.CompletableFutureUtils;
+
 import com.apple.eawt.Application;
 
 import games.strategy.engine.ClientContext;
@@ -246,8 +248,10 @@ public final class HelpMenu extends JMenu {
     // displays whatever is in the notes field in html
     final String trimmedNotes = gameData.getProperties().get("notes", "").trim();
     if (!trimmedNotes.isEmpty()) {
-      CompletableFuture.supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
+      final CompletableFuture<?> future = CompletableFuture
+          .supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
           .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
+      CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to set game notes text");
       gameNotesPane.setEditable(false);
       gameNotesPane.setContentType("text/html");
       gameNotesPane.setForeground(Color.BLACK);
