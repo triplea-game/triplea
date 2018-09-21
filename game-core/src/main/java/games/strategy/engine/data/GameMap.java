@@ -258,12 +258,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     checkNotNull(t1);
     checkNotNull(t2);
 
-    if (t1.equals(t2)) {
-      return new Route(t1);
-    }
-    if (getNeighbors(t1, cond).contains(t2)) {
-      return new Route(t1, t2);
-    }
     return new RouteFinder(this, cond).findRoute(t1, t2).orElse(null);
   }
 
@@ -276,9 +270,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Predicate<Territory> cond, final Collection<Unit> units, final PlayerID player) {
     checkNotNull(t1);
     checkNotNull(t2);
-    if (t1.equals(t2)) {
-      return new Route(t1);
-    }
     return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2).orElse(null);
   }
 
