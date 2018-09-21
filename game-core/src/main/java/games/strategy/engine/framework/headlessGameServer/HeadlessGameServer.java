@@ -104,6 +104,13 @@ public class HeadlessGameServer {
       waitForUsersHeadless();
     }, "Initialize Headless Server Setup Model").start();
 
+    startLobbyWatcher();
+
+    log.info("Game Server initialized");
+  }
+
+  @SuppressWarnings("FutureReturnValueIgnored") // false positive; see https://github.com/google/error-prone/issues/883
+  private void startLobbyWatcher() {
     int reconnect;
     try {
       final String reconnectionSeconds = System.getProperty(LOBBY_GAME_RECONNECTION,
@@ -119,7 +126,6 @@ public class HeadlessGameServer {
         log.log(Level.WARNING, "Failed to restart Lobby watcher", e);
       }
     }, reconnect, reconnect, TimeUnit.SECONDS);
-    log.info("Game Server initialized");
   }
 
   public static synchronized HeadlessGameServer getInstance() {
