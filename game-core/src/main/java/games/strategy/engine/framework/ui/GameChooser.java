@@ -32,24 +32,17 @@ public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
 
-  private JButton okButton;
-  private JButton cancelButton;
-  private JList<GameChooserEntry> gameList;
-  private JPanel infoPanel;
-  private JEditorPane notesPanel;
+  private final JButton okButton;
+  private final JButton cancelButton;
+  private final JList<GameChooserEntry> gameList;
+  private final JPanel infoPanel;
+  private final JEditorPane notesPanel;
   private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
   private GameChooser(final Frame owner, final GameChooserModel gameChooserModel) {
     super(owner, "Select a Game", true);
     gameListModel = gameChooserModel;
-    createComponents();
-    layoutCoponents();
-    setupListeners();
-    updateInfoPanel();
-  }
-
-  private void createComponents() {
     okButton = new JButton("OK");
     cancelButton = new JButton("Cancel");
     gameList = new JList<>(gameListModel);
@@ -59,8 +52,10 @@ public class GameChooser extends JDialog {
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
+    layoutCoponents();
+    setupListeners();
+    updateInfoPanel();
   }
-
   private void layoutCoponents() {
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();
@@ -144,15 +139,11 @@ public class GameChooser extends JDialog {
       }
       notesPanel.setText(notes.toString());
     } else {
-      if (notesPanel != null) {
-        notesPanel.setText("");
-      }
+      notesPanel.setText("");
     }
     // scroll to the top of the notes screen
     SwingUtilities.invokeLater(() -> {
-      if (notesPanel != null) {
-        notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-      }
+      notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
     });
   }
 
