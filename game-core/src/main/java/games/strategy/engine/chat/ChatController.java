@@ -69,6 +69,15 @@ public class ChatController implements IChatController {
     chatChannel = getChatChannelName(name);
     this.remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
     ((IServerMessenger) this.messenger).addConnectionChangeListener(connectionChangeListener);
+    startPinger();
+  }
+
+  public ChatController(final String name, final Messengers messenger, final Predicate<INode> isModerator) {
+    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), isModerator);
+  }
+
+  @SuppressWarnings("FutureReturnValueIgnored") // false positive; see https://github.com/google/error-prone/issues/883
+  private void startPinger() {
     pingThread.scheduleAtFixedRate(() -> {
       try {
         getChatBroadcaster().ping();
@@ -76,10 +85,6 @@ public class ChatController implements IChatController {
         log.log(Level.SEVERE, "Error pinging", e);
       }
     }, 180, 60, TimeUnit.SECONDS);
-  }
-
-  public ChatController(final String name, final Messengers messenger, final Predicate<INode> isModerator) {
-    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), isModerator);
   }
 
   // clean up
