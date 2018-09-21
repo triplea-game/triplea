@@ -26,6 +26,16 @@ public class RouteFinderTest {
   private final GameMap map = mock(GameMap.class);
   private final List<Territory> territories = new ArrayList<>();
 
+  /**
+   * Representing this graph:
+   * <pre><code>
+   * (7)---(5)---(4)
+   *  |     |     |
+   * (8)---(6)---(3)---(0)
+   *              |     |
+   *             (2)---(1)
+   * </code></pre>
+   */
   private final int[][] graph = {
       {0, 1, 0, 1, 0, 0, 0, 0, 0},
       {1, 0, 1, 0, 0, 0, 0, 0, 0},
