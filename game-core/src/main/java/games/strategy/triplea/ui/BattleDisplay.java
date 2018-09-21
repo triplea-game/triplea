@@ -729,17 +729,18 @@ public class BattleDisplay extends JPanel {
       final List<Unit> units = new ArrayList<>(this.units);
       DiceRoll.sortByStrength(units, !attack);
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
-      gameData.acquireReadLock();
-      try {
-        if (battleType.isAirPreBattleOrPreRaid()) {
-          unitPowerAndRollsMap = null;
-        } else {
+      final boolean isAirPreBattleOrPreRaid = battleType.isAirPreBattleOrPreRaid();
+      if (isAirPreBattleOrPreRaid) {
+        unitPowerAndRollsMap = null;
+      } else {
+        gameData.acquireReadLock();
+          try {
           unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
               new ArrayList<>(enemyBattleModel.getUnits()), !attack, false, gameData, location,
               territoryEffects, isAmphibious, amphibiousLandAttackers);
-        }
-      } finally {
-        gameData.releaseReadLock();
+          } finally {
+            gameData.releaseReadLock();
+          }
       }
       final int diceSides = gameData.getDiceSides();
       final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
@@ -748,7 +749,7 @@ public class BattleDisplay extends JPanel {
         final UnitAttachment attachment = UnitAttachment.get(category.getType());
         final int[] shift = new int[gameData.getDiceSides() + 1];
         for (final Unit current : category.getUnits()) {
-          if (battleType.isAirPreBattleOrPreRaid()) {
+          if (isAirPreBattleOrPreRaid) {
             if (attack) {
               strength = attachment.getAirAttack(category.getOwner());
             } else {
