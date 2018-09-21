@@ -145,7 +145,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (neighborFilter == null) {
       return getNeighbors(territory);
     }
-    return m_connections.getOrDefault(territory, Collections.emptySet()).stream()
+    return m_connections.getOrDefault(territory, Collections.emptySet())
+        .parallelStream()
         .filter(neighborFilter)
         .collect(Collectors.toSet());
   }
@@ -226,13 +227,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   Set<Territory> getNeighborsValidatingCanals(final Territory territory, final Predicate<Territory> neighborFilter,
       final Collection<Unit> units, final PlayerID player) {
-    final Set<Territory> neighbors = getNeighbors(territory, neighborFilter);
-    if (player != null) {
-      return neighbors.parallelStream()
-          .filter(t -> MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData()))
-          .collect(Collectors.toSet());
-    }
-    return neighbors;
+    return getNeighbors(territory, player == null
+        ? neighborFilter
+        : neighborFilter.and(t ->  MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData())));
   }
 
   /**
