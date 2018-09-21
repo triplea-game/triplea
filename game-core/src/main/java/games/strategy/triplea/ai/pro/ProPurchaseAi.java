@@ -1032,7 +1032,9 @@ class ProPurchaseAi {
             } else {
               resourceTracker.purchase(bestFactoryOption);
               resourceTracker.removePurchase(maxPlacedOption);
-              maxPlacedTerritory.getPlaceUnits().remove(maxPlacedUnit);
+              if (maxPlacedTerritory != null) {
+                maxPlacedTerritory.getPlaceUnits().remove(maxPlacedUnit);
+              }
               ProLogger.debug(maxTerritory + ", placedFactory=" + factory + ", removedUnit=" + maxPlacedUnit);
             }
           }
