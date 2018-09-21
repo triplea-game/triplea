@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,8 +8,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.function.Predicate;
+
+import com.google.common.base.Preconditions;
 
 // TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
 // always...
@@ -16,7 +20,6 @@ class RouteFinder {
 
   private final GameMap map;
   private final Predicate<Territory> condition;
-  private final Map<Territory, Territory> previous;
   private final Collection<Unit> units;
   private final PlayerID player;
 
@@ -28,46 +31,43 @@ class RouteFinder {
       final PlayerID player) {
     this.map = map;
     this.condition = condition;
-    previous = new HashMap<>();
     this.units = units;
     this.player = player;
   }
 
-  Route findRoute(final Territory start, final Territory end) {
-    final Set<Territory> startSet = map.getNeighborsValidatingCanals(start, condition, units, player);
-    for (final Territory t : startSet) {
-      previous.put(t, start);
-    }
-    if (calculate(startSet, end)) {
-      return getRoute(start, end);
-    }
-    return null;
-  }
+  Optional<Route> findRoute(final Territory start, final Territory end) {
+    Preconditions.checkNotNull(start);
+    Preconditions.checkNotNull(end);
 
-  private boolean calculate(final Set<Territory> startSet, final Territory end) {
-    final Set<Territory> nextSet = new HashSet<>();
-    for (final Territory t : startSet) {
-      final Set<Territory> neighbors = map.getNeighborsValidatingCanals(t, condition, units, player);
-      for (final Territory neighbor : neighbors) {
+    if (start.equals(end)) {
+      return Optional.of(new Route(start));
+    }
+
+    final Map<Territory, Territory> previous = new HashMap<>();
+    final Queue<Territory> toVisit = new ArrayDeque<>();
+    toVisit.add(start);
+
+    while (!toVisit.isEmpty()) {
+      final Territory currentTerritory = toVisit.remove();
+      for (final Territory neighbor : map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
         if (!previous.containsKey(neighbor)) {
-          previous.put(neighbor, t);
+          previous.put(neighbor, currentTerritory);
           if (neighbor.equals(end)) {
-            return true;
+            return Optional.of(getRoute(start, end, previous));
           }
-          nextSet.add(neighbor);
+          toVisit.add(neighbor);
         }
       }
     }
-    return !nextSet.isEmpty() && calculate(nextSet, end);
+    return Optional.empty();
   }
 
-  private Route getRoute(final Territory start, final Territory destination) {
+  private static Route getRoute(final Territory start, final Territory destination,
+      final Map<Territory, Territory> previous) {
     final List<Territory> route = new ArrayList<>();
     Territory current = destination;
     while (!start.equals(current)) {
-      if (current == null) {
-        return null;
-      }
+      assert current != null : "Route was calculated but isn't connected";
       route.add(current);
       current = previous.get(current);
     }

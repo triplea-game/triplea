@@ -253,6 +253,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
    */
+  @Nullable
   public Route getRoute(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
     checkNotNull(t1);
     checkNotNull(t2);
@@ -263,33 +264,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (getNeighbors(t1, cond).contains(t2)) {
       return new Route(t1, t2);
     }
-    return new RouteFinder(this, cond).findRoute(t1, t2);
-  }
-
-  /**
-   * Returns the shortest land route between two territories or null if no route exists.
-   *
-   * @param start start territory of the route
-   * @param end end territory of the route
-   */
-  public Route getLandRoute(final Territory start, final Territory end) {
-    return getRoute(start, end, Matches.territoryIsLand());
-  }
-
-  /**
-   * Returns the shortest water route between two territories or null if no route exists.
-   *
-   * @param start start territory of the route
-   * @param end end territory of the route
-   */
-  public Route getWaterRoute(final Territory start, final Territory end) {
-    return getRoute(start, end, Matches.territoryIsWater());
+    return new RouteFinder(this, cond).findRoute(t1, t2).orElse(null);
   }
 
   public Route getRoute_IgnoreEnd(final Territory start, final Territory end, final Predicate<Territory> match) {
     return getRoute(start, end, Matches.territoryIs(end).or(match));
   }
 
+  @Nullable
   public Route getRouteIgnoreEndValidatingCanals(final Territory t1, final Territory t2,
       final Predicate<Territory> cond, final Collection<Unit> units, final PlayerID player) {
     checkNotNull(t1);
@@ -297,7 +279,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       return new Route(t1);
     }
-    return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2);
+    return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2).orElse(null);
   }
 
   /**
