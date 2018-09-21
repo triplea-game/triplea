@@ -28,6 +28,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
@@ -198,6 +200,7 @@ class ProductionPanel extends JPanel {
 
   protected ResourceCollection getResources() {
     if (bid) {
+      Preconditions.checkNotNull(id, "bid was true while id is null");
       // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given?
       final String propertyName = id.getName() + " bid";
       final int bid = data.getProperties().get(propertyName, 0);
