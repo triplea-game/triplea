@@ -105,18 +105,12 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
-      TriggerAttachment toFire = null;
-      for (final PlayerID player : data.getPlayerList().getPlayers()) {
-        for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
-          if (ta.getName().equals(tuple.getFirst())) {
-            toFire = ta;
-            break;
-          }
-        }
-        if (toFire != null) {
-          break;
-        }
-      }
+      final TriggerAttachment toFire = data.getPlayerList().getPlayers().stream()
+          .map(player -> TriggerAttachment.getTriggers(player, null))
+          .flatMap(Collection::stream)
+          .filter(ta -> ta.getName().equals(tuple.getFirst()))
+          .findAny()
+          .orElseThrow(() -> new IllegalStateException("No element found"));
       final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
       toFireSet.add(toFire);
       final String[] options = splitOnColon(tuple.getSecond());
