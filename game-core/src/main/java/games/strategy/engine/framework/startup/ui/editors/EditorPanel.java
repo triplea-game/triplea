@@ -12,6 +12,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
 import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyValidator;
 
@@ -73,17 +75,11 @@ public abstract class EditorPanel extends JPanel {
    * @param validator the validator
    * @return true if text field content is valid
    */
-  protected boolean validateText(final String text, final JLabel label, final IValidator validator) {
-    boolean valid = true;
-    Color color = labelColor;
-    if (!validator.isValid(text)) {
-      valid = false;
-      color = Color.RED;
-      label.setForeground(color);
-    }
-    if (label != null) {
-      label.setForeground(color);
-    }
+  private boolean validateText(final String text, final JLabel label, final IValidator validator) {
+    Preconditions.checkNotNull(label);
+    Preconditions.checkNotNull(validator);
+    boolean valid = validator.isValid(text);
+    label.setForeground(valid ? labelColor : Color.RED);
     return valid;
   }
 
