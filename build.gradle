@@ -81,7 +81,22 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
+            '-Xep:ByteBufferBackingArray:ERROR',
+            '-Xep:CatchAndPrintStackTrace:ERROR',
+            '-Xep:ClassCanBeStatic:ERROR',
+            '-Xep:DefaultCharset:ERROR',
+            '-Xep:FutureReturnValueIgnored:ERROR',
+            '-Xep:InconsistentCapitalization:ERROR',
+            '-Xep:JdkObsolete:ERROR',
+            '-Xep:MissingOverride:ERROR',
+            '-Xep:MutableConstantField:ERROR',
+            '-Xep:NonAtomicVolatileUpdate:ERROR',
+            '-Xep:OperatorPrecedence:ERROR',
             '-Xep:ParameterName:OFF', // workaround for https://github.com/google/error-prone/issues/780
+            '-Xep:ReferenceEquality:ERROR',
+            '-Xep:StringSplitter:ERROR',
+            '-Xep:UnsynchronizedOverridesSynchronized:ERROR',
+            '-Xep:WaitNotInLoop:ERROR',
             '-Xlint:all,-processing',
             '-Xmaxwarns', '1000'
         ]
