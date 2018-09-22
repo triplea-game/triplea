@@ -2,7 +2,7 @@ package org.triplea.lobby.server;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.IUserManager;
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserController;
@@ -17,8 +17,8 @@ import lombok.extern.java.Log;
 final class UserManager implements IUserManager {
   private final Database database;
 
-  UserManager(final LobbyPropertyReader lobbyPropertyReader) {
-    database = new Database(lobbyPropertyReader);
+  UserManager(final LobbyConfiguration lobbyConfiguration) {
+    database = new Database(lobbyConfiguration);
   }
 
   void register(final IRemoteMessenger messenger) {

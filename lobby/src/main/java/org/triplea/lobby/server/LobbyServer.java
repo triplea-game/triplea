@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.login.LobbyLoginValidator;
 
 import games.strategy.engine.chat.ChatController;
@@ -28,22 +28,22 @@ public final class LobbyServer {
   private LobbyServer() {}
 
   /**
-   * Starts a new lobby server using the properties given by {@code lobbyPropertyReader}.
+   * Starts a new lobby server using the properties given by {@code lobbyConfiguration}.
    *
    * <p>
    * This method returns immediately after the lobby server is started; it does not block while the lobby server is
    * running.
    * </p>
    */
-  static void start(final LobbyPropertyReader lobbyPropertyReader) throws IOException {
+  static void start(final LobbyConfiguration lobbyConfiguration) throws IOException {
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 
-    final IServerMessenger server = new LobbyServerMessenger(LobbyConstants.ADMIN_USERNAME, lobbyPropertyReader);
+    final IServerMessenger server = new LobbyServerMessenger(LobbyConstants.ADMIN_USERNAME, lobbyConfiguration);
     final Messengers messengers = new Messengers(server);
-    server.setLoginValidator(new LobbyLoginValidator(lobbyPropertyReader));
+    server.setLoginValidator(new LobbyLoginValidator(lobbyConfiguration));
     // setup common objects
-    new UserManager(lobbyPropertyReader).register(messengers.getRemoteMessenger());
-    final ModeratorController moderatorController = new ModeratorController(server, messengers, lobbyPropertyReader);
+    new UserManager(lobbyConfiguration).register(messengers.getRemoteMessenger());
+    final ModeratorController moderatorController = new ModeratorController(server, messengers, lobbyConfiguration);
     moderatorController.register(messengers.getRemoteMessenger());
     new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
 

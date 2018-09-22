@@ -3,7 +3,7 @@ package org.triplea.lobby.server;
 import java.util.logging.Level;
 
 import org.triplea.common.config.FilePropertyReader;
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 
 import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
@@ -21,10 +21,10 @@ public final class LobbyRunner {
    */
   public static void main(final String[] args) {
     try {
-      final LobbyPropertyReader lobbyPropertyReader =
-          new LobbyPropertyReader(new FilePropertyReader("config/lobby/lobby.properties"));
-      log.info("Starting lobby on port " + lobbyPropertyReader.getPort());
-      LobbyServer.start(lobbyPropertyReader);
+      final LobbyConfiguration lobbyConfiguration =
+          new LobbyConfiguration(new FilePropertyReader("config/lobby/lobby.properties"));
+      log.info("Starting lobby on port " + lobbyConfiguration.getPort());
+      LobbyServer.start(lobbyConfiguration);
       log.info("Lobby started");
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to start lobby", e);

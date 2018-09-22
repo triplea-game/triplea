@@ -31,7 +31,7 @@ import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.db.BadWordDao;
 import org.triplea.lobby.server.db.BannedMacDao;
 import org.triplea.lobby.server.db.BannedUsernameDao;
@@ -86,7 +86,7 @@ public final class LobbyLoginValidatorTest {
     @BeforeEach
     public void createLobbyLoginValidator() throws Exception {
       lobbyLoginValidator = new LobbyLoginValidator(
-          new LobbyPropertyReader(memoryPropertyReader),
+          new LobbyConfiguration(memoryPropertyReader),
           badWordDao,
           bannedMacDao,
           bannedUsernameDao,
@@ -133,7 +133,7 @@ public final class LobbyLoginValidatorTest {
     }
 
     final void givenMaintenanceModeIsEnabled() {
-      memoryPropertyReader.setProperty(LobbyPropertyReader.PropertyKeys.MAINTENANCE_MODE, String.valueOf(true));
+      memoryPropertyReader.setProperty(LobbyConfiguration.PropertyKeys.MAINTENANCE_MODE, String.valueOf(true));
     }
 
     final void givenUserDoesNotExist() {

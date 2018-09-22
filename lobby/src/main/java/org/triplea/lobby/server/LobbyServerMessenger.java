@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.MutedMacController;
 import org.triplea.lobby.server.db.MutedUsernameController;
@@ -18,10 +18,10 @@ final class LobbyServerMessenger extends AbstractServerMessenger {
   private final MutedMacController mutedMacController;
   private final MutedUsernameController mutedUsernameController;
 
-  LobbyServerMessenger(final String name, final LobbyPropertyReader lobbyPropertyReader) throws IOException {
-    super(name, lobbyPropertyReader.getPort(), new DefaultObjectStreamFactory());
+  LobbyServerMessenger(final String name, final LobbyConfiguration lobbyConfiguration) throws IOException {
+    super(name, lobbyConfiguration.getPort(), new DefaultObjectStreamFactory());
 
-    final Database database = new Database(lobbyPropertyReader);
+    final Database database = new Database(lobbyConfiguration);
     mutedMacController = new MutedMacController(database);
     mutedUsernameController = new MutedUsernameController(database);
   }
