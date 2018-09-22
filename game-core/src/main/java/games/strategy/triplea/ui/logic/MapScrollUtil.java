@@ -9,7 +9,10 @@ import java.util.List;
 /**
  * Helper class to deal with infinitely scrolling maps.
  */
-public class MapScrollUtil {
+public final class MapScrollUtil {
+
+  private MapScrollUtil() {}
+
   /**
    * Creates an unmodifiable List of possible translations on the given map.
    * If a map has "fixed borders" i.e. you can't infinitely scroll along at least one axis
