@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.data.GameData;
@@ -1244,7 +1245,7 @@ public class MovePanel extends AbstractMovePanel {
     public void territorySelected(final Territory territory, final MouseDetails me) {}
 
     @Override
-    public void mouseMoved(final Territory territory, final MouseDetails me) {
+    public void mouseMoved(final @Nullable Territory territory, final MouseDetails me) {
       if (!getListening()) {
         return;
       }

@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.Territory;
 
 interface MapSelectionListener {
@@ -11,5 +13,5 @@ interface MapSelectionListener {
    */
   void mouseEntered(Territory territory);
 
-  void mouseMoved(Territory territory, MouseDetails md);
+  void mouseMoved(@Nullable Territory territory, MouseDetails md);
 }

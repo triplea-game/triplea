@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.Territory;
 
 class DefaultMapSelectionListener implements MapSelectionListener {
@@ -10,5 +12,5 @@ class DefaultMapSelectionListener implements MapSelectionListener {
   public void mouseEntered(final Territory territory) {}
 
   @Override
-  public void mouseMoved(final Territory territory, final MouseDetails me) {}
+  public void mouseMoved(final @Nullable Territory territory, final MouseDetails me) {}
 }

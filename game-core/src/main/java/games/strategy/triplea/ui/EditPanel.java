@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -791,7 +792,7 @@ class EditPanel extends ActionPanel {
     }
 
     @Override
-    public void mouseMoved(final Territory territory, final MouseDetails md) {
+    public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
       if (!getActive()) {
         return;
       }

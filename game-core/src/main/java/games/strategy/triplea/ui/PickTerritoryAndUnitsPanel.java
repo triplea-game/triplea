@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -42,7 +42,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private List<Unit> unitChoices = null;
   private int unitsPerPick = 1;
   private Action currentAction = null;
-  private Territory currentHighlightedTerritory = null;
+  private @Nullable Territory currentHighlightedTerritory;
 
   public PickTerritoryAndUnitsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
@@ -226,20 +226,21 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           setWidgetActivation();
         });
       } else {
-        log.log(Level.SEVERE, "Should not be able to select a territory outside of the selectTerritoryAction.");
+        log.severe("Should not be able to select a territory outside of the selectTerritoryAction.");
       }
     }
 
     @Override
-    public void mouseMoved(final Territory territory, final MouseDetails md) {
+    public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
       if (!getActive()) {
-        log.log(Level.SEVERE, "Should not be able to select a territory when inactive: " + territory);
+        log.severe("Should not be able to select a territory when inactive: " + territory);
         return;
       }
+
       if (territory != null) {
         // highlight territory
         if (currentAction == selectTerritoryAction) {
-          if (currentHighlightedTerritory != territory) {
+          if (!territory.equals(currentHighlightedTerritory)) {
             if (currentHighlightedTerritory != null) {
               getMap().clearTerritoryOverlay(currentHighlightedTerritory);
             }
