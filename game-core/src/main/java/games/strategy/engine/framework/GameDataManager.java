@@ -3,8 +3,10 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -17,12 +19,13 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.swing.JOptionPane;
 
+import org.apache.commons.io.IOUtils;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
-import games.strategy.io.IoUtils;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;
@@ -159,9 +162,13 @@ public final class GameDataManager {
       final GameData data,
       final boolean saveDelegateInfo)
       throws IOException {
-    // write internally first in case of error
-    final byte[] bytes = IoUtils.writeToMemory(os -> {
-      try (ObjectOutputStream outStream = new ObjectOutputStream(os)) {
+    final File tempFile = File.createTempFile(GameDataManager.class.getSimpleName(), GameDataFileUtils.getExtension());
+    try {
+      // write to temporary file first in case of error
+      try (OutputStream os = new FileOutputStream(tempFile);
+          OutputStream bufferedOutStream = new BufferedOutputStream(os);
+          OutputStream zippedOutStream = new GZIPOutputStream(bufferedOutStream);
+          ObjectOutputStream outStream = new ObjectOutputStream(zippedOutStream)) {
         outStream.writeObject(ClientContext.engineVersion());
         data.acquireReadLock();
         try {
@@ -175,11 +182,14 @@ public final class GameDataManager {
           data.releaseReadLock();
         }
       }
-    });
 
-    // now write to file
-    try (OutputStream zippedOut = new GZIPOutputStream(sink)) {
-      zippedOut.write(bytes);
+      // now write to sink (ensure sink is closed per method contract)
+      try (InputStream is = new FileInputStream(tempFile);
+          OutputStream os = new BufferedOutputStream(sink)) {
+        IOUtils.copy(is, os);
+      }
+    } finally {
+      tempFile.delete();
     }
   }
 
