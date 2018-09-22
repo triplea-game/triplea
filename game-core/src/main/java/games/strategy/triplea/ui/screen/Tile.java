@@ -26,8 +26,6 @@ import games.strategy.ui.Util;
  * Responsible for rendering a single map tile.
  */
 public class Tile {
-  public static final LockUtil LOCK_UTIL = LockUtil.INSTANCE;
-
   private boolean isDirty = true;
 
   private final Image image;
@@ -52,11 +50,11 @@ public class Tile {
   }
 
   public void acquireLock() {
-    LOCK_UTIL.acquireLock(lock);
+    LockUtil.INSTANCE.acquireLock(lock);
   }
 
   public void releaseLock() {
-    LOCK_UTIL.releaseLock(lock);
+    LockUtil.INSTANCE.releaseLock(lock);
   }
 
   /**

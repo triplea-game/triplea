@@ -28,6 +28,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UiContext;
@@ -142,11 +143,11 @@ public class TileManager {
   }
 
   private void acquireLock() {
-    Tile.LOCK_UTIL.acquireLock(lock);
+    LockUtil.INSTANCE.acquireLock(lock);
   }
 
   private void releaseLock() {
-    Tile.LOCK_UTIL.releaseLock(lock);
+    LockUtil.INSTANCE.releaseLock(lock);
   }
 
   Collection<UnitsDrawer> getUnitDrawables() {
