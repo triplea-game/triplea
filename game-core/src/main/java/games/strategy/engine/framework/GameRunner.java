@@ -32,13 +32,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.SimpleFormatter;
 
-import javax.annotation.Nullable;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -46,6 +43,10 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
+
+import org.triplea.common.util.Services;
+import org.triplea.game.ApplicationContext;
+import org.triplea.game.client.ui.javafx.JavaFxClientRunner;
 
 import games.strategy.debug.Console;
 import games.strategy.debug.ConsoleHandler;
@@ -74,9 +75,6 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.extern.java.Log;
 
 /**
@@ -91,37 +89,27 @@ public final class GameRunner {
 
   private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
-  private static final AtomicReference<Context> contextRef = new AtomicReference<>();
   private static JFrame mainFrame;
 
   private GameRunner() {}
-
-  private static Context getContext() {
-    final @Nullable Context context = contextRef.get();
-    checkState(
-        context != null,
-        "GameRunner execution context has not been initialized. Did you forget to call GameRunner#start()?");
-    return context;
-  }
 
   /**
    * Starts a new UI-enabled game client. This method will return before the game client UI exits. The game client UI
    * will continue to run until it is shut down by the user.
    *
    * <p>
-   * Command-line arguments are specified via {@code context}. No arguments will launch a client; additional arguments
-   * can be supplied to specify additional behavior.
+   * No command-line arguments will launch a client; additional arguments can be supplied to specify additional
+   * behavior.
    * </p>
    *
    * @throws IllegalStateException If called from a headless environment.
    */
-  public static void start(final Context context) {
-    checkNotNull(context);
+  public static void start(final String[] args) {
+    checkNotNull(args);
     checkState(!GraphicsEnvironment.isHeadless(),
         "UI client launcher invoked from headless environment. This is currently prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
 
-    contextRef.set(context);
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
     ClientSetting.initialize();
 
@@ -140,7 +128,7 @@ public final class GameRunner {
         ErrorMessage.enable();
       }));
     }
-    ArgParser.handleCommandLineArgs(context.args);
+    ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
       com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
@@ -160,7 +148,7 @@ public final class GameRunner {
     }
 
     if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      context.startJavaFxClient.accept(context.args);
+      Services.loadAny(JavaFxClientRunner.class).start(args);
     } else {
       SwingUtilities.invokeLater(() -> {
         mainFrame = newMainFrame();
@@ -354,7 +342,7 @@ public final class GameRunner {
     if (fileName.length() > 0) {
       commands.add("-D" + TRIPLEA_GAME + "=" + fileName);
     }
-    commands.add(getContext().mainClass.getName());
+    commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
     ProcessRunnerUtil.exec(commands);
   }
 
@@ -383,7 +371,7 @@ public final class GameRunner {
     commands.add(prefix + TRIPLEA_PORT + "=" + description.getPort());
     commands.add(prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
     commands.add(prefix + TRIPLEA_NAME + "=" + messengers.getMessenger().getLocalNode().getName());
-    commands.add(getContext().mainClass.getName());
+    commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
     ProcessRunnerUtil.exec(commands);
   }
 
@@ -410,16 +398,5 @@ public final class GameRunner {
 
   public static void quitGame() {
     mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
-  }
-
-  /**
-   * Execution context for {@link GameRunner}.
-   */
-  @AllArgsConstructor(access = AccessLevel.PRIVATE)
-  @Builder
-  public static final class Context {
-    public final String[] args;
-    public final Class<?> mainClass;
-    public final Consumer<String[]> startJavaFxClient;
   }
 }
