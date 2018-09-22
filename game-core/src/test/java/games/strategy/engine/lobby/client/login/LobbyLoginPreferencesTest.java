@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -27,7 +28,7 @@ import games.strategy.security.CredentialManagerException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 @ExtendWith(MockitoExtension.class)
-public final class LobbyLoginPreferencesTest {
+final class LobbyLoginPreferencesTest {
   private static final String PASSWORD = "password";
   private static final String PROTECTED_PASSWORD = String.format("PROTECTED(%s)", PASSWORD);
   private static final String USER_NAME = "userName";
@@ -39,176 +40,185 @@ public final class LobbyLoginPreferencesTest {
   @Mock
   private Preferences preferences;
 
-  @Test
-  public void shouldBeEquatableAndHashable() {
-    EqualsVerifier.forClass(LobbyLoginPreferences.class).verify();
+  @Nested
+  final class EqualsAndHashCodeTest {
+    @Test
+    void shouldBeEquatableAndHashable() {
+      EqualsVerifier.forClass(LobbyLoginPreferences.class).verify();
+    }
   }
 
-  private LobbyLoginPreferences whenLoad() {
-    return LobbyLoginPreferences.load(preferences, () -> credentialManager);
+  @Nested
+  final class LoadTest {
+    private LobbyLoginPreferences whenLoad() {
+      return LobbyLoginPreferences.load(preferences, () -> credentialManager);
+    }
+
+    @Test
+    void shouldMigrateLegacyPreferences() {
+      givenPreferenceNode()
+          .withLegacyAnonymousLogin(true)
+          .withLegacyUserName(USER_NAME)
+          .create();
+
+      assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, "", false, true)));
+    }
+
+    @Test
+    void shouldLoadUnsavedCredentials() {
+      givenPreferenceNode()
+          .withAnonymousLogin(false)
+          .withCredentialsProtected(false)
+          .withCredentialsSaved(false)
+          .create();
+
+      assertThat(whenLoad(), is(new LobbyLoginPreferences("", "", false, false)));
+    }
+
+    @Test
+    void shouldLoadUnprotectedSavedCredentials() {
+      givenPreferenceNode()
+          .withAnonymousLogin(false)
+          .withCredentialsProtected(false)
+          .withCredentialsSaved(true)
+          .withPassword(PASSWORD)
+          .withUserName(USER_NAME)
+          .create();
+
+      assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false)));
+    }
+
+    @Test
+    void shouldLoadProtectedSavedCredentials() throws Exception {
+      givenPreferenceNode()
+          .withAnonymousLogin(false)
+          .withCredentialsProtected(true)
+          .withCredentialsSaved(true)
+          .withPassword(PROTECTED_PASSWORD)
+          .withUserName(PROTECTED_USER_NAME)
+          .create();
+      givenCredentialManagerWillUnprotect(PROTECTED_PASSWORD, PASSWORD);
+      givenCredentialManagerWillUnprotect(PROTECTED_USER_NAME, USER_NAME);
+
+      assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false)));
+    }
+
+    @Test
+    void shouldLoadAnonymousCredentials() throws Exception {
+      givenPreferenceNode()
+          .withAnonymousLogin(true)
+          .withCredentialsProtected(true)
+          .withCredentialsSaved(true)
+          .withUserName(PROTECTED_USER_NAME)
+          .create();
+      givenCredentialManagerWillUnprotect(PROTECTED_USER_NAME, USER_NAME);
+
+      assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, "", true, true)));
+    }
+
+    @Test
+    void shouldReturnEmptyUserNameWhenProtectedUserNameIsAbsent() throws Exception {
+      givenPreferenceNode()
+          .withAnonymousLogin(false)
+          .withCredentialsProtected(true)
+          .withCredentialsSaved(true)
+          .withPassword(PROTECTED_PASSWORD)
+          .create();
+      givenCredentialManagerWillUnprotect(PROTECTED_PASSWORD, PASSWORD);
+
+      assertThat(whenLoad(), is(new LobbyLoginPreferences("", PASSWORD, true, false)));
+    }
+
+    @Test
+    void shouldReturnDefaultPreferencesWhenCredentialManagerThrowsException() throws Exception {
+      givenPreferenceNode()
+          .withAnonymousLogin(false)
+          .withCredentialsProtected(true)
+          .withCredentialsSaved(true)
+          .withPassword(PROTECTED_PASSWORD)
+          .withUserName(PROTECTED_USER_NAME)
+          .create();
+      givenCredentialManagerWillThrowWhenUnprotecting();
+
+      assertThat(whenLoad(), is(new LobbyLoginPreferences("", "", true, false)));
+    }
   }
 
-  @Test
-  public void load_ShouldMigrateLegacyPreferences() {
-    givenPreferenceNode()
-        .withLegacyAnonymousLogin(true)
-        .withLegacyUserName(USER_NAME)
-        .create();
+  @Nested
+  final class SaveTest {
+    private void whenSave(final LobbyLoginPreferences lobbyLoginPreferences) {
+      lobbyLoginPreferences.save(preferences, () -> credentialManager);
+    }
 
-    assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, "", false, true)));
-  }
+    @Test
+    void shouldRemoveLegacyPreferences() {
+      whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, false, false));
 
-  @Test
-  public void load_ShouldLoadUnsavedCredentials() {
-    givenPreferenceNode()
-        .withAnonymousLogin(false)
-        .withCredentialsProtected(false)
-        .withCredentialsSaved(false)
-        .create();
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.LEGACY_ANONYMOUS_LOGIN);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.LEGACY_USER_NAME);
+    }
 
-    assertThat(whenLoad(), is(new LobbyLoginPreferences("", "", false, false)));
-  }
+    @Test
+    void shouldSaveUnsavedCredentials() {
+      whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, false, false));
 
-  @Test
-  public void load_ShouldLoadUnprotectedSavedCredentials() {
-    givenPreferenceNode()
-        .withAnonymousLogin(false)
-        .withCredentialsProtected(false)
-        .withCredentialsSaved(true)
-        .withPassword(PASSWORD)
-        .withUserName(USER_NAME)
-        .create();
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, false);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, false);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.PASSWORD);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.USER_NAME);
+    }
 
-    assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false)));
-  }
+    @Test
+    void shouldSaveSavedCredentials() throws Exception {
+      givenCredentialManagerWillProtect(PASSWORD, PROTECTED_PASSWORD);
+      givenCredentialManagerWillProtect(USER_NAME, PROTECTED_USER_NAME);
 
-  @Test
-  public void load_ShouldLoadProtectedSavedCredentials() throws Exception {
-    givenPreferenceNode()
-        .withAnonymousLogin(false)
-        .withCredentialsProtected(true)
-        .withCredentialsSaved(true)
-        .withPassword(PROTECTED_PASSWORD)
-        .withUserName(PROTECTED_USER_NAME)
-        .create();
-    givenCredentialManagerWillUnprotect(PROTECTED_PASSWORD, PASSWORD);
-    givenCredentialManagerWillUnprotect(PROTECTED_USER_NAME, USER_NAME);
+      whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false));
 
-    assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false)));
-  }
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, false);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED, true);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, true);
+      thenPutsStringValueInPreferenceNode(PreferenceKeys.PASSWORD, PROTECTED_PASSWORD);
+      thenPutsStringValueInPreferenceNode(PreferenceKeys.USER_NAME, PROTECTED_USER_NAME);
+    }
 
-  @Test
-  public void load_ShouldLoadAnonymousCredentials() throws Exception {
-    givenPreferenceNode()
-        .withAnonymousLogin(true)
-        .withCredentialsProtected(true)
-        .withCredentialsSaved(true)
-        .withUserName(PROTECTED_USER_NAME)
-        .create();
-    givenCredentialManagerWillUnprotect(PROTECTED_USER_NAME, USER_NAME);
+    @Test
+    void shouldSaveAnonymousSavedCredentials() throws Exception {
+      givenCredentialManagerWillProtect(USER_NAME, PROTECTED_USER_NAME);
 
-    assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, "", true, true)));
-  }
+      whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, true));
 
-  @Test
-  public void load_ShouldReturnEmptyUserNameWhenProtectedUserNameIsAbsent() throws Exception {
-    givenPreferenceNode()
-        .withAnonymousLogin(false)
-        .withCredentialsProtected(true)
-        .withCredentialsSaved(true)
-        .withPassword(PROTECTED_PASSWORD)
-        .create();
-    givenCredentialManagerWillUnprotect(PROTECTED_PASSWORD, PASSWORD);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, true);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED, true);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, true);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.PASSWORD);
+      thenPutsStringValueInPreferenceNode(PreferenceKeys.USER_NAME, PROTECTED_USER_NAME);
+    }
 
-    assertThat(whenLoad(), is(new LobbyLoginPreferences("", PASSWORD, true, false)));
-  }
+    @Test
+    void shouldSaveAnonymousUnsavedCredentials() {
+      whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, false, true));
 
-  @Test
-  public void load_ShouldReturnDefaultPreferencesWhenCredentialManagerThrowsException() throws Exception {
-    givenPreferenceNode()
-        .withAnonymousLogin(false)
-        .withCredentialsProtected(true)
-        .withCredentialsSaved(true)
-        .withPassword(PROTECTED_PASSWORD)
-        .withUserName(PROTECTED_USER_NAME)
-        .create();
-    givenCredentialManagerWillThrowWhenUnprotecting();
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, true);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, false);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.PASSWORD);
+      thenRemovesValueFromPreferenceNode(PreferenceKeys.USER_NAME);
+    }
 
-    assertThat(whenLoad(), is(new LobbyLoginPreferences("", "", true, false)));
-  }
+    @Test
+    void shouldSaveEmptyCredentialsWhenCredentialManagerThrowsException() throws Exception {
+      givenCredentialManagerWillThrowWhenProtecting();
 
-  private void whenSave(final LobbyLoginPreferences lobbyLoginPreferences) {
-    lobbyLoginPreferences.save(preferences, () -> credentialManager);
-  }
+      whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false));
 
-  @Test
-  public void save_ShouldRemoveLegacyPreferences() {
-    whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, false, false));
-
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.LEGACY_ANONYMOUS_LOGIN);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.LEGACY_USER_NAME);
-  }
-
-  @Test
-  public void save_ShouldSaveUnsavedCredentials() {
-    whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, false, false));
-
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, false);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, false);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.PASSWORD);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.USER_NAME);
-  }
-
-  @Test
-  public void save_ShouldSaveSavedCredentials() throws Exception {
-    givenCredentialManagerWillProtect(PASSWORD, PROTECTED_PASSWORD);
-    givenCredentialManagerWillProtect(USER_NAME, PROTECTED_USER_NAME);
-
-    whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false));
-
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, false);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED, true);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, true);
-    thenPutsStringValueInPreferenceNode(PreferenceKeys.PASSWORD, PROTECTED_PASSWORD);
-    thenPutsStringValueInPreferenceNode(PreferenceKeys.USER_NAME, PROTECTED_USER_NAME);
-  }
-
-  @Test
-  public void save_ShouldSaveAnonymousSavedCredentials() throws Exception {
-    givenCredentialManagerWillProtect(USER_NAME, PROTECTED_USER_NAME);
-
-    whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, true));
-
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, true);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED, true);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, true);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.PASSWORD);
-    thenPutsStringValueInPreferenceNode(PreferenceKeys.USER_NAME, PROTECTED_USER_NAME);
-  }
-
-  @Test
-  public void save_ShouldSaveAnonymousUnsavedCredentials() {
-    whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, false, true));
-
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, true);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, false);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.PASSWORD);
-    thenRemovesValueFromPreferenceNode(PreferenceKeys.USER_NAME);
-  }
-
-  @Test
-  public void save_ShouldSaveEmptyCredentialsWhenCredentialManagerThrowsException() throws Exception {
-    givenCredentialManagerWillThrowWhenProtecting();
-
-    whenSave(new LobbyLoginPreferences(USER_NAME, PASSWORD, true, false));
-
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, false);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED, false);
-    thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, true);
-    thenPutsStringValueInPreferenceNode(PreferenceKeys.PASSWORD, "");
-    thenPutsStringValueInPreferenceNode(PreferenceKeys.USER_NAME, "");
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.ANONYMOUS_LOGIN, false);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_PROTECTED, false);
+      thenPutsBooleanValueInPreferenceNode(PreferenceKeys.CREDENTIALS_SAVED, true);
+      thenPutsStringValueInPreferenceNode(PreferenceKeys.PASSWORD, "");
+      thenPutsStringValueInPreferenceNode(PreferenceKeys.USER_NAME, "");
+    }
   }
 
   private GivenPreferenceNode givenPreferenceNode() {
