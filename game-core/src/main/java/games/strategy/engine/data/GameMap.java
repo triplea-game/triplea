@@ -145,7 +145,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (neighborFilter == null) {
       return getNeighbors(territory);
     }
-    return m_connections.getOrDefault(territory, Collections.emptySet()).stream()
+    return m_connections.getOrDefault(territory, Collections.emptySet())
+        .parallelStream()
         .filter(neighborFilter)
         .collect(Collectors.toSet());
   }
@@ -226,13 +227,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   Set<Territory> getNeighborsValidatingCanals(final Territory territory, final Predicate<Territory> neighborFilter,
       final Collection<Unit> units, final PlayerID player) {
-    final Set<Territory> neighbors = getNeighbors(territory, neighborFilter);
-    if (player != null) {
-      return neighbors.parallelStream()
-          .filter(t -> MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData()))
-          .collect(Collectors.toSet());
-    }
-    return neighbors;
+    return getNeighbors(territory, player == null
+        ? neighborFilter
+        : neighborFilter.and(t ->  MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData())));
   }
 
   /**
@@ -258,12 +255,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     checkNotNull(t1);
     checkNotNull(t2);
 
-    if (t1.equals(t2)) {
-      return new Route(t1);
-    }
-    if (getNeighbors(t1, cond).contains(t2)) {
-      return new Route(t1, t2);
-    }
     return new RouteFinder(this, cond).findRoute(t1, t2).orElse(null);
   }
 
@@ -276,9 +267,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Predicate<Territory> cond, final Collection<Unit> units, final PlayerID player) {
     checkNotNull(t1);
     checkNotNull(t2);
-    if (t1.equals(t2)) {
-      return new Route(t1);
-    }
     return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2).orElse(null);
   }
 
