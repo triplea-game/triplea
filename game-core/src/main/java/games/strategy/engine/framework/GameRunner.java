@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.SimpleFormatter;
@@ -47,6 +46,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.triplea.common.util.Services;
 import org.triplea.game.ApplicationContext;
+import org.triplea.game.client.ui.javafx.JavaFxClientRunner;
 
 import games.strategy.debug.Console;
 import games.strategy.debug.ConsoleHandler;
@@ -75,9 +75,6 @@ import games.strategy.ui.SwingComponents;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.extern.java.Log;
 
 /**
@@ -101,14 +98,14 @@ public final class GameRunner {
    * will continue to run until it is shut down by the user.
    *
    * <p>
-   * Command-line arguments are specified via {@code context}. No arguments will launch a client; additional arguments
-   * can be supplied to specify additional behavior.
+   * No command-line arguments will launch a client; additional arguments can be supplied to specify additional
+   * behavior.
    * </p>
    *
    * @throws IllegalStateException If called from a headless environment.
    */
-  public static void start(final Context context) {
-    checkNotNull(context);
+  public static void start(final String[] args) {
+    checkNotNull(args);
     checkState(!GraphicsEnvironment.isHeadless(),
         "UI client launcher invoked from headless environment. This is currently prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
@@ -131,7 +128,7 @@ public final class GameRunner {
         ErrorMessage.enable();
       }));
     }
-    ArgParser.handleCommandLineArgs(context.args);
+    ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
       com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
@@ -151,7 +148,7 @@ public final class GameRunner {
     }
 
     if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
-      context.startJavaFxClient.accept(context.args);
+      Services.loadAny(JavaFxClientRunner.class).start(args);
     } else {
       SwingUtilities.invokeLater(() -> {
         mainFrame = newMainFrame();
@@ -401,15 +398,5 @@ public final class GameRunner {
 
   public static void quitGame() {
     mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
-  }
-
-  /**
-   * Execution context for {@link GameRunner}.
-   */
-  @AllArgsConstructor(access = AccessLevel.PRIVATE)
-  @Builder
-  public static final class Context {
-    public final String[] args;
-    public final Consumer<String[]> startJavaFxClient;
   }
 }
