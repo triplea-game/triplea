@@ -400,7 +400,7 @@ public class BattleTracker implements Serializable {
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
       // in case we begin in enemy territory, and blitz out of it, check the first territory
-      if (route.getStart() != route.getEnd() && conquerable.test(route.getStart())) {
+      if (!route.getStart().equals(route.getEnd()) && conquerable.test(route.getStart())) {
         conquered.add(route.getStart());
       }
     }
