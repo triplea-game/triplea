@@ -9,23 +9,23 @@ import java.util.Properties;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 
 /**
  * Utility to get connections to the Postgres lobby database.
  *
  * <p>
- * Instances of this class are thread-safe if the underlying {@link LobbyPropertyReader} is thread-safe.
+ * Instances of this class are thread-safe if the underlying {@link LobbyConfiguration} is thread-safe.
  * </p>
  */
 @ThreadSafe
 public final class Database {
-  private final LobbyPropertyReader lobbyPropertyReader;
+  private final LobbyConfiguration lobbyConfiguration;
 
-  public Database(final LobbyPropertyReader lobbyPropertyReader) {
-    checkNotNull(lobbyPropertyReader);
+  public Database(final LobbyConfiguration lobbyConfiguration) {
+    checkNotNull(lobbyConfiguration);
 
-    this.lobbyPropertyReader = lobbyPropertyReader;
+    this.lobbyConfiguration = lobbyConfiguration;
   }
 
   public Connection newConnection() throws SQLException {
@@ -37,15 +37,15 @@ public final class Database {
   private String getConnectionUrl() {
     return String.format(
         "jdbc:postgresql://%s:%d/%s",
-        lobbyPropertyReader.getPostgresHost(),
-        lobbyPropertyReader.getPostgresPort(),
-        lobbyPropertyReader.getPostgresDatabase());
+        lobbyConfiguration.getPostgresHost(),
+        lobbyConfiguration.getPostgresPort(),
+        lobbyConfiguration.getPostgresDatabase());
   }
 
   private Properties getConnectionProperties() {
     final Properties props = new Properties();
-    props.put("user", lobbyPropertyReader.getPostgresUser());
-    props.put("password", lobbyPropertyReader.getPostgresPassword());
+    props.put("user", lobbyConfiguration.getPostgresUser());
+    props.put("password", lobbyConfiguration.getPostgresPassword());
     return props;
   }
 }

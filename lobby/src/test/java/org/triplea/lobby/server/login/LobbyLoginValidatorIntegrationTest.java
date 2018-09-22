@@ -23,7 +23,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
-import org.triplea.lobby.server.config.TestLobbyPropertyReaders;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.BadWordController;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
@@ -38,8 +38,8 @@ import games.strategy.util.Util;
 
 @Integration
 public class LobbyLoginValidatorIntegrationTest {
-  private final Database database = new Database(TestLobbyPropertyReaders.INTEGRATION_TEST);
-  private final ILoginValidator loginValidator = new LobbyLoginValidator(TestLobbyPropertyReaders.INTEGRATION_TEST);
+  private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
+  private final ILoginValidator loginValidator = new LobbyLoginValidator(TestLobbyConfigurations.INTEGRATION_TEST);
 
   @Test
   public void testLegacyCreateNewUser() {

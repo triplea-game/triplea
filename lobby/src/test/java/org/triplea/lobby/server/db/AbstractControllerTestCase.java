@@ -1,6 +1,6 @@
 package org.triplea.lobby.server.db;
 
-import org.triplea.lobby.server.config.TestLobbyPropertyReaders;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
 /**
@@ -8,7 +8,7 @@ import org.triplea.test.common.Integration;
  */
 @Integration
 public abstract class AbstractControllerTestCase {
-  protected final Database database = new Database(TestLobbyPropertyReaders.INTEGRATION_TEST);
+  protected final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
 
   protected AbstractControllerTestCase() {}
 }

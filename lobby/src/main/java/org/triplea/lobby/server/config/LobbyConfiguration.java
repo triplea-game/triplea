@@ -7,12 +7,12 @@ import org.triplea.common.config.PropertyReader;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * Reads property values from a lobby configuration.
+ * Provides access to the lobby configuration.
  */
-public final class LobbyPropertyReader {
+public final class LobbyConfiguration {
   private final PropertyReader propertyReader;
 
-  public LobbyPropertyReader(final PropertyReader propertyReader) {
+  public LobbyConfiguration(final PropertyReader propertyReader) {
     checkNotNull(propertyReader);
 
     this.propertyReader = propertyReader;

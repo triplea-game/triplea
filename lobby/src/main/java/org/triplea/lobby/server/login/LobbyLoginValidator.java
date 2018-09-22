@@ -16,7 +16,7 @@ import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.User;
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.db.AccessLogController;
 import org.triplea.lobby.server.db.BadWordController;
 import org.triplea.lobby.server.db.BadWordDao;
@@ -65,17 +65,17 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final BannedMacDao bannedMacDao;
   private final BannedUsernameDao bannedUsernameDao;
   private final BcryptSaltGenerator bcryptSaltGenerator;
-  private final LobbyPropertyReader lobbyPropertyReader;
+  private final LobbyConfiguration lobbyConfiguration;
   private final RsaAuthenticator rsaAuthenticator;
   private final UserDao userDao;
 
-  public LobbyLoginValidator(final LobbyPropertyReader lobbyPropertyReader) {
-    this(lobbyPropertyReader, new Database(lobbyPropertyReader));
+  public LobbyLoginValidator(final LobbyConfiguration lobbyConfiguration) {
+    this(lobbyConfiguration, new Database(lobbyConfiguration));
   }
 
-  private LobbyLoginValidator(final LobbyPropertyReader lobbyPropertyReader, final Database database) {
+  private LobbyLoginValidator(final LobbyConfiguration lobbyConfiguration, final Database database) {
     this(
-        lobbyPropertyReader,
+        lobbyConfiguration,
         new BadWordController(database),
         new BannedMacController(database),
         new BannedUsernameController(database),
@@ -87,7 +87,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   @VisibleForTesting
   LobbyLoginValidator(
-      final LobbyPropertyReader lobbyPropertyReader,
+      final LobbyConfiguration lobbyConfiguration,
       final BadWordDao badWordDao,
       final BannedMacDao bannedMacDao,
       final BannedUsernameDao bannedUsernameDao,
@@ -100,7 +100,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     this.bannedMacDao = bannedMacDao;
     this.bannedUsernameDao = bannedUsernameDao;
     this.bcryptSaltGenerator = bcryptSaltGenerator;
-    this.lobbyPropertyReader = lobbyPropertyReader;
+    this.lobbyConfiguration = lobbyConfiguration;
     this.rsaAuthenticator = rsaAuthenticator;
     this.userDao = userDao;
   }
@@ -115,7 +115,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
-    if (lobbyPropertyReader.isMaintenanceMode()) {
+    if (lobbyConfiguration.isMaintenanceMode()) {
       challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.newSalt());
     } else {
       final HashedPassword password = userDao.getLegacyPassword(userName);
@@ -134,7 +134,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
       final String clientName,
       final String clientMac,
       final SocketAddress remoteAddress) {
-    if (lobbyPropertyReader.isMaintenanceMode()) {
+    if (lobbyConfiguration.isMaintenanceMode()) {
       return ErrorMessages.MAINTENANCE_MODE_ENABLED;
     }
     final User user = User.builder()

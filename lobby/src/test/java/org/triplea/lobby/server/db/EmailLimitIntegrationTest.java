@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
-import org.triplea.lobby.server.config.TestLobbyPropertyReaders;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
 import com.google.common.base.Strings;
@@ -22,7 +22,7 @@ import games.strategy.util.Util;
  */
 @Integration
 public class EmailLimitIntegrationTest {
-  private final Database database = new Database(TestLobbyPropertyReaders.INTEGRATION_TEST);
+  private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
 
   @Test
   public void testAllowsMaximumLength() {

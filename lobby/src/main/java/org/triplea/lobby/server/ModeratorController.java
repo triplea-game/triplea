@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IRemoteHostUtils;
-import org.triplea.lobby.server.config.LobbyPropertyReader;
+import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.db.BannedMacController;
 import org.triplea.lobby.server.db.BannedUsernameController;
 import org.triplea.lobby.server.db.Database;
@@ -40,10 +40,10 @@ final class ModeratorController implements IModeratorController {
   ModeratorController(
       final IServerMessenger serverMessenger,
       final Messengers messengers,
-      final LobbyPropertyReader lobbyPropertyReader) {
+      final LobbyConfiguration lobbyConfiguration) {
     this.serverMessenger = serverMessenger;
     allMessengers = messengers;
-    database = new Database(lobbyPropertyReader);
+    database = new Database(lobbyConfiguration);
   }
 
   @Override
