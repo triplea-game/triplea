@@ -32,32 +32,28 @@ public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
 
-  private final JButton okButton;
-  private final JButton cancelButton;
+  private final JButton okButton = new JButton("OK");
+  private final JButton cancelButton = new JButton("Cancel");
   private final JList<GameChooserEntry> gameList;
-  private final JPanel infoPanel;
-  private final JEditorPane notesPanel;
+  private final JPanel infoPanel = new JPanel();
+  private final JEditorPane notesPanel = new JEditorPane();
   private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
   private GameChooser(final Frame owner, final GameChooserModel gameChooserModel) {
     super(owner, "Select a Game", true);
     gameListModel = gameChooserModel;
-    okButton = new JButton("OK");
-    cancelButton = new JButton("Cancel");
     gameList = new JList<>(gameListModel);
-    infoPanel = new JPanel();
-    infoPanel.setLayout(new BorderLayout());
-    notesPanel = new JEditorPane();
-    notesPanel.setEditable(false);
-    notesPanel.setContentType("text/html");
-    notesPanel.setForeground(Color.BLACK);
     layoutComponents();
     setupListeners();
     updateInfoPanel();
   }
 
   private void layoutComponents() {
+    infoPanel.setLayout(new BorderLayout());
+    notesPanel.setEditable(false);
+    notesPanel.setContentType("text/html");
+    notesPanel.setForeground(Color.BLACK);
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();
     add(mainSplit, BorderLayout.CENTER);
