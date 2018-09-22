@@ -32,36 +32,28 @@ public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
 
-  private JButton okButton;
-  private JButton cancelButton;
-  private JList<GameChooserEntry> gameList;
-  private JPanel infoPanel;
-  private JEditorPane notesPanel;
+  private final JButton okButton = new JButton("OK");
+  private final JButton cancelButton = new JButton("Cancel");
+  private final JList<GameChooserEntry> gameList;
+  private final JPanel infoPanel = new JPanel();
+  private final JEditorPane notesPanel = new JEditorPane();
   private final GameChooserModel gameListModel;
   private GameChooserEntry chosen;
 
   private GameChooser(final Frame owner, final GameChooserModel gameChooserModel) {
     super(owner, "Select a Game", true);
     gameListModel = gameChooserModel;
-    createComponents();
-    layoutCoponents();
+    gameList = new JList<>(gameListModel);
+    layoutComponents();
     setupListeners();
     updateInfoPanel();
   }
 
-  private void createComponents() {
-    okButton = new JButton("OK");
-    cancelButton = new JButton("Cancel");
-    gameList = new JList<>(gameListModel);
-    infoPanel = new JPanel();
+  private void layoutComponents() {
     infoPanel.setLayout(new BorderLayout());
-    notesPanel = new JEditorPane();
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
-  }
-
-  private void layoutCoponents() {
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();
     add(mainSplit, BorderLayout.CENTER);
@@ -144,15 +136,11 @@ public class GameChooser extends JDialog {
       }
       notesPanel.setText(notes.toString());
     } else {
-      if (notesPanel != null) {
-        notesPanel.setText("");
-      }
+      notesPanel.setText("");
     }
     // scroll to the top of the notes screen
     SwingUtilities.invokeLater(() -> {
-      if (notesPanel != null) {
-        notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-      }
+      notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
     });
   }
 

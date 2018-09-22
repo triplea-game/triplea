@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 
 /**
@@ -114,11 +116,10 @@ public class BattleRecordsList extends GameDataComponent {
   public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender,
       final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,
       final int beginningRound, final int endRound, final boolean currentRoundOnly) {
+    Preconditions.checkNotNull(brl);
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
-      if (brl != null) {
-        brs.add(brl.getCurrentRoundCopy());
-      }
+      brs.add(brl.getCurrentRoundCopy());
     } else {
       final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
       for (int i = beginningRound; i > endRound; i++) {

@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -962,7 +964,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final String historyText;
         if (!mustReturnToBase || !Matches.isTerritoryAllied(u.getOwner(), data).test(originatedFrom)) {
           final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
-              battleTracker, carrierCostOfCurrentTerr, 1, !mustReturnToBase);
+              battleTracker, carrierCostOfCurrentTerr);
           if (possible.size() > 1) {
             landingTerr = getRemotePlayer(u.getOwner()).selectTerritoryForAirToLand(possible, t,
                 "Select territory for air units to land. (Current territory is " + t.getName() + "): "
@@ -1431,24 +1433,19 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private static Collection<Territory> whereCanAirLand(final Collection<Unit> strandedAir, final Territory currentTerr,
       final PlayerID alliedPlayer, final GameData data, final BattleTracker battleTracker,
-      final int carrierCostForCurrentTerr, final int allowedMovement,
-      final boolean useMaxScrambleDistance) {
-    int maxDistance = allowedMovement;
-    if ((maxDistance > 1) || useMaxScrambleDistance) {
-      UnitType ut = null;
-      for (final Unit u : strandedAir) {
-        if (ut == null) {
-          ut = u.getType();
-        } else if (!ut.equals(u.getType())) {
-          throw new IllegalStateException(
-              "whereCanAirLand can only accept 1 UnitType if byMovementCost or scrambled is true");
-        }
-      }
-      if (useMaxScrambleDistance) {
-        maxDistance = UnitAttachment.get(ut).getMaxScrambleDistance();
+      final int carrierCostForCurrentTerr) {
+    Preconditions.checkNotNull(strandedAir);
+    UnitType ut = null;
+    for (final Unit u : strandedAir) {
+      if (ut == null) {
+        ut = u.getType();
+      } else if (!ut.equals(u.getType())) {
+        throw new IllegalStateException(
+            "whereCanAirLand can only accept 1 UnitType if byMovementCost or scrambled is true");
       }
     }
-    if (maxDistance < 1 || strandedAir == null || strandedAir.isEmpty()) {
+    final int maxDistance = UnitAttachment.get(ut).getMaxScrambleDistance();
+    if (maxDistance < 1 || strandedAir.isEmpty()) {
       return Collections.singletonList(currentTerr);
     }
     final boolean areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data)
