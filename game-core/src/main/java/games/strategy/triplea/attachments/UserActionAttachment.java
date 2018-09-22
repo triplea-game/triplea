@@ -112,7 +112,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
           .filter(ta -> ta.getName().equals(tuple.getFirst()))
           .findAny();
       if (!optionalTrigger.isPresent()) {
-        return;
+        continue;
       }
       final TriggerAttachment toFire  = optionalTrigger.get();
       final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
