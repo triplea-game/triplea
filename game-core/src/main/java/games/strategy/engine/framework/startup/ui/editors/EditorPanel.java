@@ -23,7 +23,7 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
  */
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
-  public static final String EDITOR_CHANGE = "EditorChange";
+  private static final String EDITOR_CHANGE = "EditorChange";
   protected final Color labelColor;
 
   public EditorPanel() {
@@ -46,7 +46,7 @@ public abstract class EditorPanel extends JPanel {
    * Validates that a text field is not empty. if the content is not valid the associated label is marked in red
    *
    * @param field the field to validate
-   * @param label the associated label (or null)
+   * @param label the associated label
    * @return true if text field content is valid
    */
   protected boolean validateTextFieldNotEmpty(final JTextField field, final JLabel label) {
@@ -58,7 +58,7 @@ public abstract class EditorPanel extends JPanel {
    * label is marked in red
    *
    * @param field the field to validate
-   * @param label the associated label (or null)
+   * @param label the associated label
    * @param validator the validator
    * @return true if text field content is valid
    */
@@ -67,11 +67,11 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Validates a the contents of textusing a specified validator. if the content is not valid the associated label is
+   * Validates a the contents of text using a specified validator. if the content is not valid the associated label is
    * marked in red
    *
    * @param text the text to validate
-   * @param label the associated label (or null)
+   * @param label the associated label
    * @param validator the validator
    * @return true if text field content is valid
    */
