@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,12 +106,15 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
-      final TriggerAttachment toFire = data.getPlayerList().getPlayers().stream()
+      final Optional<TriggerAttachment> optionalTrigger = data.getPlayerList().getPlayers().stream()
           .map(player -> TriggerAttachment.getTriggers(player, null))
           .flatMap(Collection::stream)
           .filter(ta -> ta.getName().equals(tuple.getFirst()))
-          .findAny()
-          .orElseThrow(() -> new IllegalStateException("No element found"));
+          .findAny();
+      if (!optionalTrigger.isPresent()) {
+        return;
+      }
+      final TriggerAttachment toFire  = optionalTrigger.get();
       final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
       toFireSet.add(toFire);
       final String[] options = splitOnColon(tuple.getSecond());
