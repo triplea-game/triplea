@@ -52,12 +52,12 @@ public class GameChooser extends JDialog {
     notesPanel.setEditable(false);
     notesPanel.setContentType("text/html");
     notesPanel.setForeground(Color.BLACK);
-    layoutCoponents();
+    layoutComponents();
     setupListeners();
     updateInfoPanel();
   }
 
-  private void layoutCoponents() {
+  private void layoutComponents() {
     setLayout(new BorderLayout());
     final JSplitPane mainSplit = new JSplitPane();
     add(mainSplit, BorderLayout.CENTER);
