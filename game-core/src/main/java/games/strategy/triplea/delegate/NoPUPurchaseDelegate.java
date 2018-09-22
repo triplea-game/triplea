@@ -50,12 +50,11 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     // if they have no rules attachments, but are calling NoPU purchase, and have the game property
     // isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with PU value > 0
-    if (isProductionPerValuedTerritoryRestricted()) {
-      if (ra == null || ra.getProductionPerXTerritories() == null || ra.getProductionPerXTerritories().size() == 0) {
-        productionPerXTerritories.put(getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
-      } else {
-        productionPerXTerritories = ra.getProductionPerXTerritories();
-      }
+    if (isProductionPerValuedTerritoryRestricted()
+        && (ra == null || ra.getProductionPerXTerritories() == null || ra.getProductionPerXTerritories().size() == 0)) {
+      productionPerXTerritories.put(getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
+    } else if (isProductionPerXTerritoriesRestricted() && ra != null) {
+      productionPerXTerritories = ra.getProductionPerXTerritories();
     } else {
       return productionUnits;
     }
