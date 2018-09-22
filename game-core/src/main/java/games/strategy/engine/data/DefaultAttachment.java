@@ -152,12 +152,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return false;
     }
     final DefaultAttachment other = (DefaultAttachment) obj;
-    if (m_attachedTo != null && other.m_attachedTo != null) {
-      return m_attachedTo.toString().equals(other.m_attachedTo.toString());
-    }
-    if (m_attachedTo != null || other.m_attachedTo != null) {
-      return false;
-    }
-    return Objects.equals(m_name, other.m_name) || this.toString().equals(other.toString());
+    return Objects.equals(Objects.toString(m_attachedTo, null), Objects.toString(other.m_attachedTo, null))
+        && (Objects.equals(m_name, other.m_name) || this.toString().equals(other.toString()));
   }
 }
