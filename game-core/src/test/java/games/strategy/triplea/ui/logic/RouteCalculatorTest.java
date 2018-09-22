@@ -22,6 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class RouteCalculatorTest {
 
+  private static final int MAP_WIDTH = 1000;
+  private static final int MAP_HEIGHT = 1000;
+
   @Test
   public void testRouteTranslation() {
     final Point2D[] inputArray = new Point2D[] {point(1, 4), point(1001, 1001), point(600, 600)};
@@ -29,8 +32,8 @@ public class RouteCalculatorTest {
         RouteCalculator.builder()
             .isInfiniteY(true)
             .isInfiniteX(true)
-            .mapWidth(1000)
-            .mapHeight(1000)
+            .mapWidth(MAP_WIDTH)
+            .mapHeight(MAP_HEIGHT)
             .build()
             .getTranslatedRoute(inputArray));
 
@@ -38,8 +41,8 @@ public class RouteCalculatorTest {
         RouteCalculator.builder()
             .isInfiniteX(true)
             .isInfiniteY(false)
-            .mapWidth(1000)
-            .mapHeight(1000)
+            .mapWidth(MAP_WIDTH)
+            .mapHeight(MAP_HEIGHT)
             .build()
             .getTranslatedRoute(inputArray));
 
@@ -47,8 +50,8 @@ public class RouteCalculatorTest {
         RouteCalculator.builder()
             .isInfiniteX(false)
             .isInfiniteY(true)
-            .mapWidth(1000)
-            .mapHeight(1000)
+            .mapWidth(MAP_WIDTH)
+            .mapHeight(MAP_HEIGHT)
             .build()
             .getTranslatedRoute(inputArray));
 
@@ -56,8 +59,8 @@ public class RouteCalculatorTest {
         RouteCalculator.builder()
             .isInfiniteX(false)
             .isInfiniteY(false)
-            .mapWidth(1000)
-            .mapHeight(1000)
+            .mapWidth(MAP_WIDTH)
+            .mapHeight(MAP_HEIGHT)
             .build()
             .getTranslatedRoute(inputArray));
   }
@@ -72,7 +75,7 @@ public class RouteCalculatorTest {
     final Point2D closestPoint = new Point2D.Double(1, 1);
     final List<Point2D> pool = new ArrayList<>();
     for (int i = 0; i < 9; i++) {
-      pool.add(point((int) (Math.random() * 1000 + 1), (int) (Math.random() * 1000 + 1)));
+      pool.add(point((int) (Math.random() * MAP_HEIGHT + 1), (int) (Math.random() * MAP_HEIGHT + 1)));
     }
     pool.add(closestPoint);
     assertEquals(closestPoint, RouteCalculator.getClosestPoint(origin, pool));
@@ -83,15 +86,15 @@ public class RouteCalculatorTest {
     final List<Point2D> possiblePoints = new ArrayList<>();
     // The values below must be all combinations of
     // x and y values 0, -mapWidth/height, +mapWidth/Height
-    possiblePoints.add(point(-1000, -1000));
-    possiblePoints.add(point(-1000, 0));
-    possiblePoints.add(point(-1000, 1000));
-    possiblePoints.add(point(0, -1000));
+    possiblePoints.add(point(-MAP_WIDTH, -MAP_HEIGHT));
+    possiblePoints.add(point(-MAP_WIDTH, 0));
+    possiblePoints.add(point(-MAP_WIDTH, MAP_HEIGHT));
+    possiblePoints.add(point(0, -MAP_HEIGHT));
     possiblePoints.add(point(0, 0));
-    possiblePoints.add(point(0, 1000));
-    possiblePoints.add(point(1000, -1000));
-    possiblePoints.add(point(1000, 0));
-    possiblePoints.add(point(1000, 1000));
+    possiblePoints.add(point(0, MAP_HEIGHT));
+    possiblePoints.add(point(MAP_WIDTH, -MAP_HEIGHT));
+    possiblePoints.add(point(MAP_WIDTH, 0));
+    possiblePoints.add(point(MAP_WIDTH, MAP_HEIGHT));
     checkPoints(0, possiblePoints, true, true);
     checkPoints(6, possiblePoints, true, false);
     checkPoints(6, possiblePoints, false, true);
@@ -103,8 +106,8 @@ public class RouteCalculatorTest {
     final List<Point2D> calculatedPoints = RouteCalculator.builder()
         .isInfiniteX(isInfiniteX)
         .isInfiniteY(isInfiniteY)
-        .mapWidth(1000)
-        .mapHeight(1000)
+        .mapWidth(MAP_WIDTH)
+        .mapHeight(MAP_HEIGHT)
         .build()
         .getPossiblePoints(new Point2D.Double());
     assertEquals(expected.size(), calculatedPoints.size() + offset);
@@ -116,20 +119,20 @@ public class RouteCalculatorTest {
   @Test
   public void testMatrixTransposal() {
     final Point2D[] input = new Point2D[] {point(0, 0), point(1, 1)};
-    final Point2D[] nw = new Point2D[] {point(-1000, -1000), point(-999, -999)};
-    final Point2D[] n = new Point2D[] {point(0, -1000), point(1, -999)};
-    final Point2D[] ne = new Point2D[] {point(1000, -1000), point(1001, -999)};
-    final Point2D[] w = new Point2D[] {point(-1000, 0), point(-999, 1)};
-    final Point2D[] e = new Point2D[] {point(1000, 0), point(1001, 1)};
-    final Point2D[] sw = new Point2D[] {point(-1000, 1000), point(-999, 1001)};
-    final Point2D[] s = new Point2D[] {point(0, 1000), point(1, 1001)};
-    final Point2D[] se = new Point2D[] {point(1000, 1000), point(1001, 1001)};
+    final Point2D[] nw = new Point2D[] {point(-MAP_WIDTH, -MAP_HEIGHT), point(-999, -999)};
+    final Point2D[] n = new Point2D[] {point(0, -MAP_HEIGHT), point(1, -999)};
+    final Point2D[] ne = new Point2D[] {point(MAP_WIDTH, -MAP_HEIGHT), point(1001, -999)};
+    final Point2D[] w = new Point2D[] {point(-MAP_WIDTH, 0), point(-999, 1)};
+    final Point2D[] e = new Point2D[] {point(MAP_WIDTH, 0), point(1001, 1)};
+    final Point2D[] sw = new Point2D[] {point(-MAP_WIDTH, MAP_HEIGHT), point(-999, 1001)};
+    final Point2D[] s = new Point2D[] {point(0, MAP_HEIGHT), point(1, 1001)};
+    final Point2D[] se = new Point2D[] {point(MAP_WIDTH, MAP_HEIGHT), point(1001, 1001)};
 
     final List<Point2D[]> points = RouteCalculator.builder()
         .isInfiniteX(true)
         .isInfiniteY(true)
-        .mapHeight(1000)
-        .mapWidth(1000)
+        .mapWidth(MAP_WIDTH)
+        .mapHeight(MAP_HEIGHT)
         .build()
         .getAllPoints(input);
     // This may be changed along with the RouteCalculator#getPossiblePoints method
@@ -149,14 +152,15 @@ public class RouteCalculatorTest {
     final RouteCalculator routeCalculator = RouteCalculator.builder()
         .isInfiniteX(true)
         .isInfiniteY(true)
-        .mapHeight(1000)
-        .mapWidth(1000)
+        .mapWidth(MAP_WIDTH)
+        .mapHeight(MAP_HEIGHT)
         .build();
 
-    final double[] testData = new double[1000];
+    final double[] testData = new double[MAP_WIDTH];
     Arrays.setAll(testData, Double::valueOf);
     final List<Path2D> paths = routeCalculator.getAllNormalizedLines(testData, testData);
-    final Iterator<AffineTransform> transforms = routeCalculator.getPossibleTranslations().iterator();
+    final Iterator<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(
+        true, true, MAP_WIDTH, MAP_HEIGHT).iterator();
     // This method looks more complicated than it actually is.
     // It checks whether all given points are contained in the returned paths
     // Unfortunately Path2D#contains does not work for whatever reason
