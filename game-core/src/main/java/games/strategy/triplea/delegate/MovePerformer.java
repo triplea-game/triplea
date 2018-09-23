@@ -195,7 +195,7 @@ public class MovePerformer implements Serializable {
           boolean targetedAttack = false;
           // if it's all bombers and there's something to bomb
           if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
-            boolean bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
+            final boolean bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
             // if bombing and there's something to target- ask what to bomb
             if (bombing) {
               // CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory,
@@ -219,7 +219,7 @@ public class MovePerformer implements Serializable {
                 final HashMap<Unit, HashSet<Unit>> targets = new HashMap<>();
                 targets.put(target, new HashSet<>(arrived));
                 // createdBattle = true;
-                getBattleTracker().addBattle(route, arrivedCopyForBattles, true, id, MovePerformer.this.bridge,
+                getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, MovePerformer.this.bridge,
                     m_currentMove, dependentOnSomethingTilTheEndOfRoute, targets, false);
               }
             }

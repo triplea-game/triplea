@@ -72,8 +72,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
 
     setLayout(new GridBagLayout());
     add(new JLabel("Engine Version:"), buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
-    JLabel engineVersionText = new JLabel(ClientContext.engineVersion().getExactVersion());
-    add(engineVersionText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
+    add(new JLabel(ClientContext.engineVersion().getExactVersion()), buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
 
     add(new JLabel("Map Name:"), buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
     add(nameText, buildGridCell(1, 1, new Insets(0, 0, 3, 0)));

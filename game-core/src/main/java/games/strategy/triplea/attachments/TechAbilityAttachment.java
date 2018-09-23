@@ -885,8 +885,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
               if (heavyBombersLhtr) {
                 // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
                 // does not get changed.
-                // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on,
-                // in the xml.)
+                // (meaning, turning on LHTR bombers will not result in this bonus damage,
+                // etc. It would have to start on, in the xml.)
                 taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
                 // LHTR adds 1 to base roll
                 taa.setBombingBonus("1:" + bomber.getName());

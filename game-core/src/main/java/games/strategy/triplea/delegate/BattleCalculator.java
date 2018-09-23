@@ -525,7 +525,7 @@ public class BattleCalculator {
           player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, defaultCasualties,
           battleId, battlesite, allowMultipleHitsPerUnit);
     }
-    List<Unit> killed = casualtySelection.getKilled();
+    final List<Unit> killed = casualtySelection.getKilled();
     // if partial retreat is possible, kill amphibious units first
     if (isPartialAmphibiousRetreat(data)) {
       killAmphibiousFirst(killed, sortedTargetsToPickFrom);

@@ -143,8 +143,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
                           : chooserScrollPane.getPreferredSize().height))));
       entries.add(chooserScrollPane);
     }
-    int rowIndex = 1;
-    add(entries, new GridBagConstraints(0, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+    add(entries, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
     if (showSelectAll) {
       add(autoSelectButton, new GridBagConstraints(0, 2, 7, 1, 0, 0.5, GridBagConstraints.CENTER,

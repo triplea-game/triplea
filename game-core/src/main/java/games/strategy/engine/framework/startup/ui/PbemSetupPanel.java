@@ -123,8 +123,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     emailPanel.setBorder(new TitledBorder("Play By Email"));
     add(emailPanel, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
-    int panelRow = 0;
-    emailPanel.add(emailSenderEditor, new GridBagConstraints(0, panelRow, 1, 1, 1.0d, 0d,
+
+    emailPanel.add(emailSenderEditor, new GridBagConstraints(0, 0, 1, 1, 1.0d, 0d,
         GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
 
     // add selection of local players
