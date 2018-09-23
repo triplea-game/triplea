@@ -137,7 +137,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (!fileKey.startsWith(gameName)) {
           continue;
         }
-        final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length(), fileKey.length()));
+        final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
           log.log(Level.SEVERE, "objective.properties keys must be 2 parts: <game_name>."
@@ -169,7 +169,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         if (!fileKey.startsWith(gameName)) {
           continue;
         }
-        final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length(), fileKey.length()));
+        final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
           log.log(Level.SEVERE,
