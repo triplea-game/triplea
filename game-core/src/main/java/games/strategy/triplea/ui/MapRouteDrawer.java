@@ -110,7 +110,7 @@ public class MapRouteDrawer {
     final Point2D[] newPoints = points.length > 1 ? Arrays.copyOf(points, points.length - 1) : points;
     for (final Point2D[] joints : routeCalculator.getAllPoints(newPoints)) {
       for (final Point2D p : joints) {
-        final Ellipse2D circle = new Ellipse2D.Double(jointsize / -2, jointsize / -2, jointsize, jointsize);
+        final Ellipse2D circle = new Ellipse2D.Double(jointsize / -2.0, jointsize / -2.0, jointsize, jointsize);
         final AffineTransform ellipseTransform = getDrawingTransform();
         ellipseTransform.translate(p.getX(), p.getY());
         final double scale = mapPanel.getScale();
