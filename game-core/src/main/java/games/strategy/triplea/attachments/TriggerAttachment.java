@@ -1528,6 +1528,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                       + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
               break;
             }
+            default:
+              break;
           }
           // TODO add other attachment changes here if they attach to a player
         }

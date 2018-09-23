@@ -893,6 +893,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
               }
             }
             break;
+          default:
+            break;
         }
         // The following technologies should NOT have ability attachments for them:
         // shipyards and industrialTechnology = because it is better to use a Trigger to change player's production

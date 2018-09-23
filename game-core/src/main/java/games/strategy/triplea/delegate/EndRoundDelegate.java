@@ -247,6 +247,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       case " Projection of Power VCs":
         defaultVc = 13;
         break;
+      default:
+        break;
     }
     return data.getProperties().get((alliance + type), defaultVc);
   }
