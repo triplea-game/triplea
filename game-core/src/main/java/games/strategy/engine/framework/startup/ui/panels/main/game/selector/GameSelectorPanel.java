@@ -43,15 +43,9 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private final GameSelectorModel model;
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
-  private final JLabel engineVersionLabel = new JLabel("Engine Version:");
-  private final JLabel engineVersionText = new JLabel(ClientContext.engineVersion().getExactVersion());
   private final JLabel nameText = new JLabel();
   private final JLabel versionText = new JLabel();
-  private final JLabel fileNameLabel = new JLabel("File Name:");
   private final JLabel fileNameText = new JLabel();
-  private final JLabel nameLabel = new JLabel("Map Name:");
-  private final JLabel versionLabel = new JLabel("Map Version:");
-  private final JLabel roundLabel = new JLabel("Game Round:");
   private final JLabel roundText = new JLabel();
   private final JButton loadSavedGame = JButtonBuilder.builder()
       .title("Open Saved Game")
@@ -77,19 +71,20 @@ public class GameSelectorPanel extends JPanel implements Observer {
     }
 
     setLayout(new GridBagLayout());
-    add(engineVersionLabel, buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
+    add(new JLabel("Engine Version:"), buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
+    JLabel engineVersionText = new JLabel(ClientContext.engineVersion().getExactVersion());
     add(engineVersionText, buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
 
-    add(nameLabel, buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
+    add(new JLabel("Map Name:"), buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
     add(nameText, buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
 
-    add(versionLabel, buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
+    add(new JLabel("Map Version:"), buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
     add(versionText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
 
-    add(roundLabel, buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
+    add(new JLabel("Game Round:"), buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
     add(roundText, buildGridCell(1, 3, new Insets(0, 0, 3, 0)));
 
-    add(fileNameLabel, buildGridCell(0, 4, new Insets(20, 10, 3, 5)));
+    add(new JLabel("File Name:"), buildGridCell(0, 4, new Insets(20, 10, 3, 5)));
 
     add(fileNameText, buildGridRow(0, 5, new Insets(0, 10, 3, 5)));
 
