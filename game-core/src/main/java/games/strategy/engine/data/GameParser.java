@@ -1223,34 +1223,25 @@ public final class GameParser {
   }
 
   private Attachable findAttachment(final Element element, final String type) throws GameParseException {
-    final Attachable returnVal;
     final String name = "attachTo";
     switch (type) {
       case "unitType":
-        returnVal = getUnitType(element, name, true);
-        break;
+        return getUnitType(element, name, true);
       case "territory":
-        returnVal = getTerritory(element, name, true);
-        break;
+        return getTerritory(element, name, true);
       case "resource":
-        returnVal = getResource(element, name, true);
-        break;
+        return getResource(element, name, true);
       case "territoryEffect":
-        returnVal = getTerritoryEffect(element, name, true);
-        break;
+        return getTerritoryEffect(element, name, true);
       case "player":
-        returnVal = getPlayerId(element, name, true);
-        break;
+        return getPlayerId(element, name, true);
       case "relationship":
-        returnVal = this.getRelationshipType(element, name, true);
-        break;
+        return getRelationshipType(element, name, true);
       case "technology":
-        returnVal = getTechnology(element, name, true);
-        break;
+        return getTechnology(element, name, true);
       default:
         throw newGameParseException("Type not found to attach to:" + type);
     }
-    return returnVal;
   }
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
