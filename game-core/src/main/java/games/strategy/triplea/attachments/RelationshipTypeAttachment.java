@@ -77,15 +77,19 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    *         if archeType isn't set to war, allied or neutral
    */
   public void setArcheType(final String archeType) throws GameParseException {
-    if (archeType.toLowerCase().equals(ARCHETYPE_WAR)) {
-      m_archeType = ARCHETYPE_WAR;
-    } else if (archeType.toLowerCase().equals(ARCHETYPE_ALLIED)) {
-      m_archeType = ARCHETYPE_ALLIED;
-    } else if (archeType.toLowerCase().equals(ARCHETYPE_NEUTRAL)) {
-      m_archeType = ARCHETYPE_NEUTRAL;
-    } else {
-      throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
-          + ARCHETYPE_NEUTRAL + " for " + thisErrorMsg());
+    switch (archeType.toLowerCase()) {
+      case ARCHETYPE_WAR:
+        m_archeType = ARCHETYPE_WAR;
+        break;
+      case ARCHETYPE_ALLIED:
+        m_archeType = ARCHETYPE_ALLIED;
+        break;
+      case ARCHETYPE_NEUTRAL:
+        m_archeType = ARCHETYPE_NEUTRAL;
+        break;
+      default:
+        throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
+            + ARCHETYPE_NEUTRAL + " for " + thisErrorMsg());
     }
   }
 
@@ -203,15 +207,18 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       }
       final int cost = getInt(s[0]);
       if (s.length == 2) {
-        if (s[1].equals(UPKEEP_FLAT)) {
-          // do nothing
-        } else if (s[1].equals(UPKEEP_PERCENTAGE)) {
-          if (cost > 100) {
-            throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
-          }
-        } else {
-          throw new GameParseException(
-              "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
+        switch (s[1]) {
+          case UPKEEP_FLAT:
+            // do nothing
+            break;
+          case UPKEEP_PERCENTAGE:
+            if (cost > 100) {
+              throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
+            }
+            break;
+          default:
+            throw new GameParseException(
+                "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
         }
       }
       m_upkeepCost = integerCost;

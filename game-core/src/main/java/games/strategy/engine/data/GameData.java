@@ -233,12 +233,13 @@ public class GameData implements Serializable {
   }
 
   public UnitHolder getUnitHolder(final String name, final String type) {
-    if (type.equals(UnitHolder.PLAYER)) {
-      return playerList.getPlayerId(name);
-    } else if (type.equals(UnitHolder.TERRITORY)) {
-      return map.getTerritory(name);
-    } else {
-      throw new IllegalStateException("Invalid type:" + type);
+    switch (type) {
+      case UnitHolder.PLAYER:
+        return playerList.getPlayerId(name);
+      case UnitHolder.TERRITORY:
+        return map.getTerritory(name);
+      default:
+        throw new IllegalStateException("Invalid type:" + type);
     }
   }
 

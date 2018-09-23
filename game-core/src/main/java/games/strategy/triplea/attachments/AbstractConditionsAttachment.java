@@ -202,44 +202,48 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static boolean areConditionsMet(final List<ICondition> rulesToTest,
       final Map<ICondition, Boolean> testedConditions, final String conditionType) {
     boolean met = false;
-    if (conditionType.equals(AND)) {
-      for (final ICondition c : rulesToTest) {
-        met = testedConditions.get(c);
-        if (!met) {
-          break;
+    switch (conditionType) {
+      case AND:
+        for (final ICondition c : rulesToTest) {
+          met = testedConditions.get(c);
+          if (!met) {
+            break;
+          }
         }
-      }
-    } else if (conditionType.equals(OR)) {
-      for (final ICondition c : rulesToTest) {
-        met = testedConditions.get(c);
-        if (met) {
-          break;
-        }
-      }
-    } else {
-      final String[] nums = splitOnHyphen(conditionType);
-      if (nums.length == 1) {
-        final int start = Integer.parseInt(nums[0]);
-        int count = 0;
+        break;
+      case OR:
         for (final ICondition c : rulesToTest) {
           met = testedConditions.get(c);
           if (met) {
-            count++;
+            break;
           }
         }
-        met = (count == start);
-      } else if (nums.length == 2) {
-        final int start = Integer.parseInt(nums[0]);
-        final int end = Integer.parseInt(nums[1]);
-        int count = 0;
-        for (final ICondition c : rulesToTest) {
-          met = testedConditions.get(c);
-          if (met) {
-            count++;
+        break;
+      default:
+        final String[] nums = splitOnHyphen(conditionType);
+        if (nums.length == 1) {
+          final int start = Integer.parseInt(nums[0]);
+          int count = 0;
+          for (final ICondition c : rulesToTest) {
+            met = testedConditions.get(c);
+            if (met) {
+              count++;
+            }
           }
+          met = (count == start);
+        } else if (nums.length == 2) {
+          final int start = Integer.parseInt(nums[0]);
+          final int end = Integer.parseInt(nums[1]);
+          int count = 0;
+          for (final ICondition c : rulesToTest) {
+            met = testedConditions.get(c);
+            if (met) {
+              count++;
+            }
+          }
+          met = (count >= start && count <= end);
         }
-        met = (count >= start && count <= end);
-      }
+        break;
     }
     return met;
   }
