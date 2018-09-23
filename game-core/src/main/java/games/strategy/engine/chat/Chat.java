@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.chat.IChatController.Tag;
@@ -45,7 +46,7 @@ public class Chat {
   private final List<ChatMessage> chatHistory = new ArrayList<>();
   private final StatusManager statusManager;
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
-  private final HashMap<INode, LinkedHashSet<String>> notesMap = new HashMap<>();
+  private final Map<INode, Set<String>> notesMap = new HashMap<>();
   private static final String TAG_MODERATOR = "[Mod]";
   private final ChatSoundProfile chatSoundProfile;
 
@@ -125,7 +126,7 @@ public class Chat {
   }
 
   String getNotesForNode(final INode node) {
-    final LinkedHashSet<String> notes = notesMap.get(node);
+    final Set<String> notes = notesMap.get(node);
     if (notes == null) {
       return null;
     }
