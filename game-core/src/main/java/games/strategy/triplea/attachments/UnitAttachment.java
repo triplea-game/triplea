@@ -522,7 +522,6 @@ public class UnitAttachment extends DefaultAttachment {
     String value = initialValue;
     String byOrFrom = "BY";
     if (value.startsWith("BY:") && getData().getPlayerList().getPlayerId("BY") == null) {
-      byOrFrom = "BY";
       value = value.replaceFirst("BY:", "");
     } else if (value.startsWith("FROM:") && getData().getPlayerList().getPlayerId("FROM") == null) {
       byOrFrom = "FROM";

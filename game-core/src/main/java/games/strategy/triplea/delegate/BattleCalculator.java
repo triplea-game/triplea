@@ -528,7 +528,7 @@ public class BattleCalculator {
     List<Unit> killed = casualtySelection.getKilled();
     // if partial retreat is possible, kill amphibious units first
     if (isPartialAmphibiousRetreat(data)) {
-      killed = killAmphibiousFirst(killed, sortedTargetsToPickFrom);
+      killAmphibiousFirst(killed, sortedTargetsToPickFrom);
     }
     final List<Unit> damaged = casualtySelection.getDamaged();
     int numhits = killed.size();
@@ -576,13 +576,13 @@ public class BattleCalculator {
     return casualtySelection;
   }
 
-  private static List<Unit> killAmphibiousFirst(final List<Unit> killed, final Collection<Unit> targets) {
+  private static void killAmphibiousFirst(final List<Unit> killed, final Collection<Unit> targets) {
     // Get a list of all selected killed units that are NOT amphibious
     final Predicate<Unit> match = Matches.unitIsLand().and(Matches.unitWasNotAmphibious());
     final Collection<Unit> killedNonAmphibUnits = new ArrayList<>(CollectionUtils.getMatches(killed, match));
     // If all killed units are amphibious, just return them
     if (killedNonAmphibUnits.isEmpty()) {
-      return killed;
+      return;
     }
     // Get a list of all units that are amphibious and remove those that are killed
     final Collection<Unit> allAmphibUnits =
@@ -611,7 +611,6 @@ public class BattleCalculator {
         }
       }
     }
-    return killed;
   }
 
   /**

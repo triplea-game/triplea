@@ -549,17 +549,12 @@ public class AirMovementValidator {
   private static boolean canAirReachThisSpot(final GameData data, final PlayerID player,
       final Territory currentSpot, final int movementLeft, final Territory landingSpot,
       final boolean areNeutralsPassableByAir) {
-    if (areNeutralsPassableByAir) {
-      final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot,
-          Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
-      return ((neutralViolatingRoute != null)
-          && (neutralViolatingRoute.numberOfSteps() <= movementLeft)
-          && (getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(Constants.PUS)));
-    }
-
-    final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot,
+    final Route route = data.getMap().getRoute(currentSpot, landingSpot,
         Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
-    return (noNeutralRoute != null) && (noNeutralRoute.numberOfSteps() <= movementLeft);
+    return (route != null)
+        && (route.numberOfSteps() <= movementLeft)
+        && (!areNeutralsPassableByAir
+          || getNeutralCharge(data, route) <= player.getResources().getQuantity(Constants.PUS));
   }
 
   /**

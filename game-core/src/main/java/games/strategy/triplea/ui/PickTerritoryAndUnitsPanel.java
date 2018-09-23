@@ -154,8 +154,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         if (unitChoices.size() < unitsPerPick) {
           // if we have fewer units than the number we are supposed to pick, set it to all
           pickedUnits.addAll(unitChoices);
-        } else if (!unitChoices.isEmpty()
-            && unitChoices.stream().allMatch(Matches.unitIsOfType(unitChoices.get(0).getType()))) {
+        } else if (unitChoices.stream().allMatch(Matches.unitIsOfType(unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           pickedUnits.clear();
           pickedUnits.addAll(CollectionUtils.getNMatches(unitChoices, unitsPerPick, Matches.always()));

@@ -717,9 +717,6 @@ public final class TripleAFrame extends JFrame {
   };
 
   void clearStatusMessage() {
-    if (status == null) {
-      return;
-    }
     status.setText("");
     status.setIcon(null);
   }
@@ -729,9 +726,6 @@ public final class TripleAFrame extends JFrame {
   }
 
   private void setStatus(final String msg, final Optional<Image> image) {
-    if (status == null) {
-      return;
-    }
     status.setText(msg);
 
     if (!msg.isEmpty() && image.isPresent()) {
@@ -1173,7 +1167,7 @@ public final class TripleAFrame extends JFrame {
     actionButtons.changeToPickTerritoryAndUnits(player);
     final Tuple<Territory, Set<Unit>> territoryAndUnits =
         actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
-    final int index = tabsPanel == null ? -1 : tabsPanel.indexOfTab("Actions");
+    final int index = tabsPanel.indexOfTab("Actions");
     if (index != -1 && inHistory) {
       final CountDownLatch latch2 = new CountDownLatch(1);
       SwingUtilities.invokeLater(() -> {
@@ -2047,25 +2041,19 @@ public final class TripleAFrame extends JFrame {
 
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(() -> {
-      if (showHistoryAction != null) {
-        showHistoryAction.setEnabled(!(inHistory || uiContext.getShowMapOnly()));
-      }
-      if (showGameAction != null) {
-        showGameAction.setEnabled(!inGame);
-      }
-      if (showMapOnlyAction != null) {
-        // We need to check and make sure there are no local human players
-        boolean foundHuman = false;
-        for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
-          if (gamePlayer instanceof TripleAPlayer) {
-            foundHuman = true;
-          }
+      showHistoryAction.setEnabled(!(inHistory || uiContext.getShowMapOnly()));
+      showGameAction.setEnabled(!inGame);
+      // We need to check and make sure there are no local human players
+      boolean foundHuman = false;
+      for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
+        if (gamePlayer instanceof TripleAPlayer) {
+          foundHuman = true;
         }
-        if (!foundHuman) {
-          showMapOnlyAction.setEnabled(inGame || inHistory);
-        } else {
-          showMapOnlyAction.setEnabled(false);
-        }
+      }
+      if (!foundHuman) {
+        showMapOnlyAction.setEnabled(inGame || inHistory);
+      } else {
+        showMapOnlyAction.setEnabled(false);
       }
       if (editModeButtonModel != null) {
         if (editDelegate == null || uiContext.getShowMapOnly()) {

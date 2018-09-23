@@ -453,7 +453,7 @@ public class HeadlessGameServer {
           shutDown = true;
           break;
         }
-        if (setupPanelModel != null && setupPanelModel.getPanel() != null
+        if (setupPanelModel.getPanel() != null
             && setupPanelModel.getPanel().canGameStart()) {
           final boolean started = startHeadlessGame(setupPanelModel);
           if (!started) {
@@ -525,11 +525,7 @@ public class HeadlessGameServer {
    */
   public Chat getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    return ((model instanceof ServerSetupPanel)
-        || (model instanceof ClientSetupPanel)
-        || (model instanceof HeadlessServerSetup))
-            ? model.getChatPanel().getChat()
-            : null;
+    return model != null ? model.getChatPanel().getChat() : null;
   }
 
   /**

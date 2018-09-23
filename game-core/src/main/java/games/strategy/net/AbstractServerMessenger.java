@@ -414,7 +414,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     }
     final SocketChannel socketChannel = nodeToChannel.get(msg.getFor());
     if (socketChannel == null) {
-      throw new IllegalStateException("No channel for:" + msg.getFor() + " all channels:" + socketChannel);
+      throw new IllegalStateException("No channel for:" + msg.getFor());
     }
     nioSocket.send(socketChannel, msg);
   }
