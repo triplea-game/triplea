@@ -109,6 +109,12 @@ subprojects {
         }
     }
 
+    tasks.withType(Test).configureEach {
+        testLogging {
+            exceptionFormat = 'full'
+        }
+    }
+
     check {
         dependsOn 'integTest'
     }
