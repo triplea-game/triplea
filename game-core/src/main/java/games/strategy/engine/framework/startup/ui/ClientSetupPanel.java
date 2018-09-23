@@ -106,7 +106,7 @@ public class ClientSetupPanel extends SetupPanel {
     playConstraints.insets = spacing;
     final GridBagConstraints allianceConstraints = new GridBagConstraints();
     allianceConstraints.anchor = GridBagConstraints.WEST;
-    allianceConstraints.gridx = gridx++;
+    allianceConstraints.gridx = gridx;
     allianceConstraints.insets = lastSpacing;
     if (!disableable) {
       final JLabel enableLabel = new JLabel("Use");

@@ -146,11 +146,9 @@ public class IndividualUnitPanelGrouped extends JPanel {
     int rowIndex = 1;
     add(entries, new GridBagConstraints(0, rowIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
         nullInsets, 0, 0));
-    rowIndex++;
     if (showSelectAll) {
       add(autoSelectButton, new GridBagConstraints(0, 2, 7, 1, 0, 0.5, GridBagConstraints.CENTER,
           GridBagConstraints.NONE, nullInsets, 0, 0));
-      rowIndex++;
     }
     add(leftToSelect, new GridBagConstraints(0, 3, 5, 2, 0, 0.5, GridBagConstraints.WEST,
         GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));

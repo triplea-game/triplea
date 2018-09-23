@@ -37,7 +37,7 @@ final class UnitChooser extends JPanel {
   private JTextArea title;
   private int total = -1;
   private final JLabel leftToSelect = new JLabel();
-  private boolean allowMultipleHits = false;
+  private final boolean allowMultipleHits;
   private JButton autoSelectButton;
   private JButton selectNoneButton;
   private final UiContext uiContext;

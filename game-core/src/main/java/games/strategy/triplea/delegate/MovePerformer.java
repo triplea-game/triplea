@@ -213,14 +213,13 @@ public class MovePerformer implements Serializable {
                 target = enemyTargetsTotal.iterator().next();
               }
               if (target == null) {
-                bombing = false;
                 targetedAttack = false;
               } else {
                 targetedAttack = true;
                 final HashMap<Unit, HashSet<Unit>> targets = new HashMap<>();
                 targets.put(target, new HashSet<>(arrived));
                 // createdBattle = true;
-                getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, MovePerformer.this.bridge,
+                getBattleTracker().addBattle(route, arrivedCopyForBattles, true, id, MovePerformer.this.bridge,
                     m_currentMove, dependentOnSomethingTilTheEndOfRoute, targets, false);
               }
             }

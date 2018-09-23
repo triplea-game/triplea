@@ -235,7 +235,7 @@ public final class MapPropertiesMaker {
         repaint();
       }));
       panel.add(showMore,
-          new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new GridBagConstraints(0, row, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
               new Insets(10, 10, 10, 10), 0, 0));
       return panel;
     }

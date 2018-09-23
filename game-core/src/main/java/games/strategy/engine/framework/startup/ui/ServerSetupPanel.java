@@ -145,7 +145,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     typeConstraints.insets = spacing;
     final GridBagConstraints allianceConstraints = new GridBagConstraints();
     allianceConstraints.anchor = GridBagConstraints.WEST;
-    allianceConstraints.gridx = gridx++;
+    allianceConstraints.gridx = gridx;
     allianceConstraints.insets = lastSpacing;
     if (disableable) {
       final JLabel enableLabel = new JLabel("Use");

@@ -19,7 +19,7 @@ import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
-  private GameData gameData = null;
+  private GameData gameData;
   private PlayerID attacker = null;
   private PlayerID defender = null;
   private Territory location = null;
