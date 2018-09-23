@@ -325,37 +325,31 @@ public class HistoryLog extends JFrame {
             // territory details
             logWriter.println(indent + title);
           } else if (details == null) {
-            if (title.equals("Adding original owners") || title.equals(MoveDelegate.CLEANING_UP_DURING_MOVEMENT_PHASE)
-                || title.equals("Game Loaded")
-                || title.contains("now being played by") || title
-                    .contains("Turn Summary")
-                || title
-                    .contains("Move Summary")
-                || title
-                    .contains("Setting uses for triggers used")
-                || title
-                    .equals("Resetting and Giving Bonus Movement to Units")
-                || title
-                    .equals("Recording Battle Statistics")
-                || title
-                    .equals("Preparing Airbases for Possible Scrambling")) {
-              // do nothing
-            } else if (title.matches("\\w+ collect \\d+ PUs?.*")) {
-              logWriter.println(indent + title);
-            } else if (title.matches("\\w+ takes? .*? from \\w+")) {
-              // British take Libya from Germans
-              if (moving) {
-                final String str = moveList.remove(moveList.size() - 1);
-                moveList.add(str + "\n  " + indent + title.replaceAll(" takes ", " take "));
-              } else {
-                conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
+            if (!title.equals("Adding original owners")
+             && !title.equals(MoveDelegate.CLEANING_UP_DURING_MOVEMENT_PHASE)
+             && !title.equals("Game Loaded")
+             && !title.contains("now being played by")
+             && !title.contains("Turn Summary")
+             && !title.contains("Move Summary")
+             && !title.contains("Setting uses for triggers used")
+             && !title.equals("Resetting and Giving Bonus Movement to Units")
+             && !title.equals("Recording Battle Statistics")
+             && !title.equals("Preparing Airbases for Possible Scrambling")) {
+              if (title.matches("\\w+ collect \\d+ PUs?.*")) {
+                logWriter.println(indent + title);
+              } else if (title.matches("\\w+ takes? .*? from \\w+")) {
+                // British take Libya from Germans
+                if (moving) {
+                  final String str = moveList.remove(moveList.size() - 1);
+                  moveList.add(str + "\n  " + indent + title.replaceAll(" takes ", " take "));
+                } else {
+                  conquerStr.append(title.replaceAll("^\\w+ takes ", ", taking "));
+                }
+              } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
+                logWriter.println(indent + title);
+              } else if (!title.startsWith("Rolls to resolve tech hits:")) {
+                logWriter.println(indent + title);
               }
-            } else if (title.matches("\\w+ spend \\d+ on tech rolls")) {
-              logWriter.println(indent + title);
-            } else if (title.startsWith("Rolls to resolve tech hits:")) {
-              // do nothing
-            } else {
-              logWriter.println(indent + title);
             }
           } else {
             // unknown details object

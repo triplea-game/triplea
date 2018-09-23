@@ -114,8 +114,6 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     boolean badStep = false;
     if (name.endsWith("Tech")) {
       tech();
-    } else if (name.endsWith("TechActivation")) {
-      // do nothing
     } else if (name.endsWith("Bid") || name.endsWith("Purchase")) { // the delegate handles everything
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
     } else if (name.endsWith("Move")) {
@@ -144,7 +142,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       soundPlayedAlreadyEndTurn = false;
       soundPlayedAlreadyPlacement = false;
     } else {
-      badStep = true;
+      badStep = !name.endsWith("TechActivation");
     }
     disableEditModeMenu();
     if (badStep) {

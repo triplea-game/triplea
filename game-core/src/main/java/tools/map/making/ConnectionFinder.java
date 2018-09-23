@@ -91,11 +91,9 @@ public final class ConnectionFinder {
     if (mapFolderLocation != null && mapFolderLocation.exists()) {
       polyFile = new File(mapFolderLocation, "polygons.txt");
     }
-    if (polyFile != null && polyFile.exists() && JOptionPane.showConfirmDialog(null,
+    if (polyFile == null || !polyFile.exists() || JOptionPane.showConfirmDialog(null,
         "A polygons.txt file was found in the map's folder, do you want to use it?", "File Suggestion",
-        JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
-      // yay
-    } else {
+        JOptionPane.YES_NO_CANCEL_OPTION) != 0) {
       polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !polyFile.exists()) {

@@ -212,8 +212,6 @@ public class GameSelectorPanel extends JPanel implements Observer {
       }
     } else if (buttonPressed.equals(makeDefault)) {
       gamePropertiesCache.cacheGameProperties(model.getGameData());
-    } else {
-      // ok was clicked, and we have modified the properties already
     }
   }
 

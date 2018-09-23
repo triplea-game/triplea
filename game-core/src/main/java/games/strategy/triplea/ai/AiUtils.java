@@ -75,9 +75,7 @@ public class AiUtils {
     float strength = 0;
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
-      if (unitAttachment.getIsInfrastructure()) {
-        // nothing
-      } else if (unitAttachment.getIsSea() == sea) {
+      if (!unitAttachment.getIsInfrastructure()&& unitAttachment.getIsSea() == sea) {
         // 2 points since we can absorb a hit
         strength += 2;
         // two hit

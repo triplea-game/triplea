@@ -248,9 +248,6 @@ public class UnitImageFactory {
         if (TechTracker.hasSuperSubs(id)) {
           name.append("_ss");
         }
-        if (TechTracker.hasRocket(id)) {
-          // do nothing
-        }
       }
       if (type.getName().equals(Constants.UNIT_TYPE_FACTORY) || UnitAttachment.get(type).getCanProduceUnits()) {
         if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id)) {

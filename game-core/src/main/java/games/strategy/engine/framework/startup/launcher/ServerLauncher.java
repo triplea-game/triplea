@@ -293,10 +293,6 @@ public class ServerLauncher extends AbstractLauncher {
       // if the game already exited do to a networking error
       // we need to let them continue
       errorLatch.countDown();
-    } else {
-      // nothing to do
-      // we just lost a connection to an observer
-      // which is ok.
     }
   }
 
