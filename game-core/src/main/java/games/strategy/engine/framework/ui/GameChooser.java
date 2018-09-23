@@ -139,9 +139,7 @@ public class GameChooser extends JDialog {
       notesPanel.setText("");
     }
     // scroll to the top of the notes screen
-    SwingUtilities.invokeLater(() -> {
-      notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-    });
+    SwingUtilities.invokeLater(() -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
   }
 
   private static void appendListItem(final String title, final String value, final StringBuilder builder) {
