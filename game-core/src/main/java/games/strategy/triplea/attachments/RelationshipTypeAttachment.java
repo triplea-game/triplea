@@ -77,15 +77,12 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    *         if archeType isn't set to war, allied or neutral
    */
   public void setArcheType(final String archeType) throws GameParseException {
-    switch (archeType.toLowerCase()) {
+    final String lowerArcheType = archeType.toLowerCase();
+    switch (lowerArcheType) {
       case ARCHETYPE_WAR:
-        m_archeType = ARCHETYPE_WAR;
-        break;
       case ARCHETYPE_ALLIED:
-        m_archeType = ARCHETYPE_ALLIED;
-        break;
       case ARCHETYPE_NEUTRAL:
-        m_archeType = ARCHETYPE_NEUTRAL;
+        m_archeType = lowerArcheType;
         break;
       default:
         throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
