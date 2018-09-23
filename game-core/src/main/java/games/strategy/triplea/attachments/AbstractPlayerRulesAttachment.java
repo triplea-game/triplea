@@ -78,7 +78,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       return null;
     }
     final Collection<PlayerID> allPlayers = data.getPlayerList().getPlayers();
-    final IAttachment attachment;
+    final ICondition attachment;
     try {
       if (conditionName.contains(Constants.RULES_OBJECTIVE_PREFIX)
           || conditionName.contains(Constants.RULES_CONDITION_PREFIX)) {
@@ -104,7 +104,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       log.log(Level.SEVERE, "Condition attachment does not exist: " + conditionName);
       return null;
     }
-    return (ICondition) attachment;
+    return attachment;
   }
 
   private void setMovementRestrictionTerritories(final String value) {
