@@ -16,23 +16,23 @@ ext {
 }
 
 dependencies {
-    compile project(':game-core')
-
     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
         compileOnly remoteLib(javaFxRuntimeUrl)
     }
 
-    runtime 'com.github.kirill-grouchnikov:substance:5d33cea' // v8.0.02 + Jitpack build fix
-    runtime 'com.github.kirill-grouchnikov:trident:v1.5.00'
+    implementation project(':game-core')
 
-    testCompile project(':test-common')
-    testCompile "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
-    testCompile "org.testfx:testfx-core:$testFxVersion"
-    testCompile "org.testfx:testfx-junit5:$testFxVersion"
+    runtimeOnly 'com.github.kirill-grouchnikov:substance:5d33cea' // v8.0.02 + Jitpack build fix
+    runtimeOnly 'com.github.kirill-grouchnikov:trident:v1.5.00'
 
     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
         testCompileOnly remoteLib(javaFxRuntimeUrl)
     }
+
+    testImplementation project(':test-common')
+    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation "org.testfx:testfx-core:$testFxVersion"
+    testImplementation "org.testfx:testfx-junit5:$testFxVersion"
 
     if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
         testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-9+181'

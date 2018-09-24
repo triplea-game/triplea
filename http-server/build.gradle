@@ -7,8 +7,9 @@ description = 'TripleA Http Server'
 mainClassName = 'org.triplea.server.http.spark.SparkServerMain'
 
 dependencies {
-    compile 'com.sparkjava:spark-core:2.3'
-    testCompile project(':test-common')
+    implementation 'com.sparkjava:spark-core:2.3'
+
+    testImplementation project(':test-common')
 }
 
 jar {
@@ -19,7 +20,7 @@ jar {
 
 task httpServerArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     from(shadowJar.outputs) {
-        into('bin')
+        into 'bin'
     }
 }
 

@@ -11,7 +11,7 @@ description = 'TripleA Headless Game Server'
 mainClassName = 'org.triplea.game.server.HeadlessGameRunner'
 
 dependencies {
-    compile project(':game-core')
+    implementation project(':game-core')
 }
 
 jar {
