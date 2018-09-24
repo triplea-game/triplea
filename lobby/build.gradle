@@ -8,12 +8,12 @@ description = 'TripleA Lobby'
 mainClassName = 'org.triplea.lobby.server.LobbyRunner'
 
 dependencies {
-    compile project(':game-core')
-    compile 'org.mindrot:jbcrypt:0.4'
+    implementation project(':game-core')
+    implementation 'org.mindrot:jbcrypt:0.4'
 
-    runtime "org.postgresql:postgresql:$postgresqlVersion"
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 
-    testCompile project(':test-common')
+    testImplementation project(':test-common')
 }
 
 jar {

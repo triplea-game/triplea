@@ -1,6 +1,6 @@
 description = 'Test utility library, generic test utilities useful for TripleA projects'
 
 dependencies {
-    compile "org.hamcrest:java-hamcrest:$hamcrestVersion"
-    compile "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    implementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
+    implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
 }
