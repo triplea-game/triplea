@@ -117,7 +117,7 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
         continue;
       }
       final String propertyName =
-          setter.getName().substring(Math.min(3, setter.getName().length()), setter.getName().length());
+          setter.getName().substring(Math.min(3, setter.getName().length()));
 
       final String fieldName = Introspector.decapitalize(propertyName);
       final Field field = getPropertyField(fieldName, object.getClass());

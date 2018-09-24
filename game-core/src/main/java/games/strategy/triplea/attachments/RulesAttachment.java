@@ -685,32 +685,40 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String[] terrs = getAlliedOwnershipTerritories();
       final Set<Territory> listedTerritories;
       if (terrs.length == 1) {
-        if (terrs[0].equals("original")) {
-          final Collection<PlayerID> allies =
-              CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-                  Matches.isAlliedWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
-        } else if (terrs[0].equals("enemy")) {
-          final Collection<PlayerID> enemies =
-              CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
-        } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+        switch (terrs[0]) {
+          case "original":
+            final Collection<PlayerID> allies =
+                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                    Matches.isAlliedWithAnyOfThesePlayers(players, data));
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
+            break;
+          case "enemy":
+            final Collection<PlayerID> enemies =
+                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
+            break;
+          default:
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+            break;
         }
       } else if (terrs.length == 2) {
-        if (terrs[1].equals("original")) {
-          final Collection<PlayerID> allies =
-              CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-                  Matches.isAlliedWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
-        } else if (terrs[1].equals("enemy")) {
-          final Collection<PlayerID> enemies =
-              CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
-        } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+        switch (terrs[1]) {
+          case "original":
+            final Collection<PlayerID> allies =
+                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                    Matches.isAlliedWithAnyOfThesePlayers(players, data));
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
+            break;
+          case "enemy":
+            final Collection<PlayerID> enemies =
+                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
+            break;
+          default:
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+            break;
         }
       } else {
         listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
@@ -723,26 +731,34 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String[] terrs = getDirectOwnershipTerritories();
       final Set<Territory> listedTerritories;
       if (terrs.length == 1) {
-        if (terrs[0].equals("original")) {
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
-        } else if (terrs[0].equals("enemy")) {
-          final Collection<PlayerID> enemies =
-              CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
-        } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+        switch (terrs[0]) {
+          case "original":
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+            break;
+          case "enemy":
+            final Collection<PlayerID> enemies =
+                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
+            break;
+          default:
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+            break;
         }
       } else if (terrs.length == 2) {
-        if (terrs[1].equals("original")) {
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
-        } else if (terrs[1].equals("enemy")) {
-          final Collection<PlayerID> enemies =
-              CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
-        } else {
-          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+        switch (terrs[1]) {
+          case "original":
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+            break;
+          case "enemy":
+            final Collection<PlayerID> enemies =
+                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
+            break;
+          default:
+            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
+            break;
         }
       } else {
         listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
@@ -887,15 +903,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     int numberMet = 0;
     for (final Territory terr : territories) {
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
-      if (exclType.equals("direct")) {
-        allUnits.removeAll(
-            CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
-      } else if (exclType.equals("allied")) {
-        allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
-      } else if (exclType.equals("enemy")) {
-        allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
-      } else {
-        return false;
+      switch (exclType) {
+        case "direct":
+          allUnits.removeAll(
+              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
+          break;
+        case "allied":
+          allUnits
+              .retainAll(CollectionUtils.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+          break;
+        case "enemy":
+          allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+          break;
+        default:
+          return false;
       }
       if (allUnits.size() > 0) {
         if (!useSpecific) {
@@ -957,21 +978,27 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     for (final Territory terr : territories) {
       // get all the units in the territory
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
-      if (exclType.equals("allied")) { // any allied units in the territory. (does not include owned units)
-        allUnits.removeAll(CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
-        allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
-      } else if (exclType.equals("direct")) {
-        allUnits.removeAll(
-            CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
-      } else if (exclType.equals("enemy")) { // any enemy units in the territory
-        allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
-      } else if (exclType.equals("enemy_surface")) { // any enemy units (not trn/sub) in the territory
-        allUnits.retainAll(
-            CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)
-                .and(Matches.unitIsNotSub())
-                .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
-      } else {
-        return false;
+      switch (exclType) {
+        case "allied":  // any allied units in the territory. (does not include owned units)
+          allUnits.removeAll(CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
+          allUnits
+              .retainAll(CollectionUtils.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+          break;
+        case "direct":
+          allUnits.removeAll(
+              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
+          break;
+        case "enemy":  // any enemy units in the territory
+          allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+          break;
+        case "enemy_surface":  // any enemy units (not trn/sub) in the territory
+          allUnits.retainAll(
+              CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)
+                  .and(Matches.unitIsNotSub())
+                  .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
+          break;
+        default:
+          return false;
       }
       if (allUnits.size() == 0) {
         numberMet += 1;

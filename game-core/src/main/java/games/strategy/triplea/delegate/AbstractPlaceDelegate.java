@@ -853,7 +853,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
 
     // we add factories and constructions later
-    if (water || wasFactoryThereAtStart || (!water && isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))) {
+    if (water || wasFactoryThereAtStart || isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player)) {
       final Predicate<Unit> seaOrLandMatch = water ? Matches.unitIsSea() : Matches.unitIsLand();
       placeableUnits.addAll(CollectionUtils.getMatches(units, seaOrLandMatch.and(Matches.unitIsNotConstruction())));
       if (!water) {

@@ -267,7 +267,7 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.NONE, new Insets(20, 0, 0, 0), 0, 0));
     resultsText.add(new JLabel("Retreat After Round:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
         GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-    resultsText.add(new JLabel("Retreat When X Units Left:"), new GridBagConstraints(0, row1++, 1, 1, 0, 0,
+    resultsText.add(new JLabel("Retreat When X Units Left:"), new GridBagConstraints(0, row1, 1, 1, 0, 0,
         GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
     int row2 = 0;
     resultsText.add(attackerWin, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
@@ -318,7 +318,7 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
     resultsText.add(amphibiousCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
-    resultsText.add(landBattleCheckBox, new GridBagConstraints(1, row2++, 1, 1, 0, 0, GridBagConstraints.WEST,
+    resultsText.add(landBattleCheckBox, new GridBagConstraints(1, row2, 1, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(2, 10, 0, 5), 0, 0));
 
     final JPanel resultsPanel = new JPanel();

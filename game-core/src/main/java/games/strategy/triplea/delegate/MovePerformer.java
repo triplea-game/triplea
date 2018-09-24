@@ -195,7 +195,7 @@ public class MovePerformer implements Serializable {
           boolean targetedAttack = false;
           // if it's all bombers and there's something to bomb
           if (allCanBomb && targetsOrEscort && GameStepPropertiesHelper.isCombatMove(data)) {
-            boolean bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
+            final boolean bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
             // if bombing and there's something to target- ask what to bomb
             if (bombing) {
               // CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory,
@@ -213,7 +213,6 @@ public class MovePerformer implements Serializable {
                 target = enemyTargetsTotal.iterator().next();
               }
               if (target == null) {
-                bombing = false;
                 targetedAttack = false;
               } else {
                 targetedAttack = true;

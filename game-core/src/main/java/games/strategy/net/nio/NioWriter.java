@@ -151,7 +151,7 @@ class NioWriter {
     synchronized (mutex) {
       final List<SocketWriteData> values = writing.get(to);
       if (values == null) {
-        log.severe("NO socket data to:" + to + " all:" + values);
+        log.severe("NO socket data to:" + to);
         return;
       }
       values.remove(0);

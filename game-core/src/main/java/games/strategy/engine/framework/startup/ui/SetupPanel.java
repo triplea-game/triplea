@@ -109,10 +109,9 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     incomeLabel.setVisible(false);
     gridx++;
     final JLabel puIncomeBonusLabel = new JLabel("Bonus Income");
-    panel.add(puIncomeBonusLabel, new GridBagConstraints(gridx++, gridy, 2, 1, 0, 0, GridBagConstraints.WEST,
+    panel.add(puIncomeBonusLabel, new GridBagConstraints(gridx, gridy, 2, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
     puIncomeBonusLabel.setVisible(false);
-    gridx++;
 
     // Add players in the order they were defined in the XML
     for (final PlayerID player : players) {

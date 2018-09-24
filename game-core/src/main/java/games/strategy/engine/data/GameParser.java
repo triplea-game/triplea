@@ -543,28 +543,37 @@ public final class GameParser {
       final String diagonalConnections) throws GameParseException {
     final GameMap map = data.getMap();
     final boolean horizontalConnectionsImplict;
-    if (horizontalConnections.equals("implicit")) {
-      horizontalConnectionsImplict = true;
-    } else if (horizontalConnections.equals("explicit")) {
-      horizontalConnectionsImplict = false;
-    } else {
-      throw newGameParseException("horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
+    switch (horizontalConnections) {
+      case "implicit":
+        horizontalConnectionsImplict = true;
+        break;
+      case "explicit":
+        horizontalConnectionsImplict = false;
+        break;
+      default:
+        throw newGameParseException("horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     final boolean verticalConnectionsImplict;
-    if (verticalConnections.equals("implicit")) {
-      verticalConnectionsImplict = true;
-    } else if (verticalConnections.equals("explicit")) {
-      verticalConnectionsImplict = false;
-    } else {
-      throw newGameParseException("vertical-connections attribute must be either \"explicit\" or \"implicit\"");
+    switch (verticalConnections) {
+      case "implicit":
+        verticalConnectionsImplict = true;
+        break;
+      case "explicit":
+        verticalConnectionsImplict = false;
+        break;
+      default:
+        throw newGameParseException("vertical-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     final boolean diagonalConnectionsImplict;
-    if (diagonalConnections.equals("implicit")) {
-      diagonalConnectionsImplict = true;
-    } else if (diagonalConnections.equals("explicit")) {
-      diagonalConnectionsImplict = false;
-    } else {
-      throw newGameParseException("diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
+    switch (diagonalConnections) {
+      case "implicit":
+        diagonalConnectionsImplict = true;
+        break;
+      case "explicit":
+        diagonalConnectionsImplict = false;
+        break;
+      default:
+        throw newGameParseException("diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
     final int sizeY = (ys != null) ? Integer.valueOf(ys) : 0;
     final int sizeX = Integer.valueOf(xs);
@@ -855,22 +864,27 @@ public final class GameParser {
           }
         } else {
           final String type = children2.get(0).getNodeName();
-          if (type.equals("boolean")) {
-            properties.set(property, Boolean.valueOf(value));
-          } else if (type.equals("file")) {
-            properties.set(property, new File(value));
-          } else if (type.equals("number")) {
-            int intValue = 0;
-            if (value != null) {
-              try {
-                intValue = Integer.parseInt(value);
-              } catch (final NumberFormatException e) {
-                // value already 0
+          switch (type) {
+            case "boolean":
+              properties.set(property, Boolean.valueOf(value));
+              break;
+            case "file":
+              properties.set(property, new File(value));
+              break;
+            case "number":
+              int intValue = 0;
+              if (value != null) {
+                try {
+                  intValue = Integer.parseInt(value);
+                } catch (final NumberFormatException e) {
+                  // value already 0
+                }
               }
-            }
-            properties.set(property, intValue);
-          } else {
-            properties.set(property, value);
+              properties.set(property, intValue);
+              break;
+            default:
+              properties.set(property, value);
+              break;
           }
         }
       }
@@ -893,28 +907,38 @@ public final class GameParser {
     final Element child = (Element) children.get(0);
     final String childName = child.getNodeName();
     final IEditableProperty editableProperty;
-    if (childName.equals("boolean")) {
-      editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue));
-    } else if (childName.equals("file")) {
-      editableProperty = new FileProperty(name, null, defaultValue);
-    } else if (childName.equals("list") || childName.equals("combo")) {
-      final List<String> values = Splitter.on(',')
-          .omitEmptyStrings()
-          .splitToList(child.getAttribute("values"));
-      editableProperty = new ComboProperty<>(name, null, defaultValue, values);
-    } else if (childName.equals("number")) {
-      final int max = Integer.valueOf(child.getAttribute("max"));
-      final int min = Integer.valueOf(child.getAttribute("min"));
-      final int def = Integer.valueOf(defaultValue);
-      editableProperty = new NumberProperty(name, null, max, min, def);
-    } else if (childName.equals("color")) {
-      // Parse the value as a hexadecimal number
-      final int def = Integer.valueOf(defaultValue, 16);
-      editableProperty = new ColorProperty(name, null, def);
-    } else if (childName.equals("string")) {
-      editableProperty = new StringProperty(name, null, defaultValue);
-    } else {
-      throw newGameParseException("Unrecognized property type:" + childName);
+    switch (childName) {
+      case "boolean":
+        editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue));
+        break;
+      case "file":
+        editableProperty = new FileProperty(name, null, defaultValue);
+        break;
+      case "list":
+      case "combo":
+        final List<String> values = Splitter.on(',')
+            .omitEmptyStrings()
+            .splitToList(child.getAttribute("values"));
+        editableProperty = new ComboProperty<>(name, null, defaultValue, values);
+        break;
+      case "number": {
+        final int max = Integer.valueOf(child.getAttribute("max"));
+        final int min = Integer.valueOf(child.getAttribute("min"));
+        final int def = Integer.valueOf(defaultValue);
+        editableProperty = new NumberProperty(name, null, max, min, def);
+        break;
+      }
+      case "color": {
+        // Parse the value as a hexadecimal number
+        final int def = Integer.valueOf(defaultValue, 16);
+        editableProperty = new ColorProperty(name, null, def);
+        break;
+      }
+      case "string":
+        editableProperty = new StringProperty(name, null, defaultValue);
+        break;
+      default:
+        throw newGameParseException("Unrecognized property type:" + childName);
     }
     data.getProperties().addEditableProperty(editableProperty);
   }
@@ -1199,26 +1223,25 @@ public final class GameParser {
   }
 
   private Attachable findAttachment(final Element element, final String type) throws GameParseException {
-    final Attachable returnVal;
     final String name = "attachTo";
-    if (type.equals("unitType")) {
-      returnVal = getUnitType(element, name, true);
-    } else if (type.equals("territory")) {
-      returnVal = getTerritory(element, name, true);
-    } else if (type.equals("resource")) {
-      returnVal = getResource(element, name, true);
-    } else if (type.equals("territoryEffect")) {
-      returnVal = getTerritoryEffect(element, name, true);
-    } else if (type.equals("player")) {
-      returnVal = getPlayerId(element, name, true);
-    } else if (type.equals("relationship")) {
-      returnVal = this.getRelationshipType(element, name, true);
-    } else if (type.equals("technology")) {
-      returnVal = getTechnology(element, name, true);
-    } else {
-      throw newGameParseException("Type not found to attach to:" + type);
+    switch (type) {
+      case "unitType":
+        return getUnitType(element, name, true);
+      case "territory":
+        return getTerritory(element, name, true);
+      case "resource":
+        return getResource(element, name, true);
+      case "territoryEffect":
+        return getTerritoryEffect(element, name, true);
+      case "player":
+        return getPlayerId(element, name, true);
+      case "relationship":
+        return getRelationshipType(element, name, true);
+      case "technology":
+        return getTechnology(element, name, true);
+      default:
+        throw newGameParseException("Type not found to attach to:" + type);
     }
-    return returnVal;
   }
 
   private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)

@@ -582,7 +582,7 @@ public class MapPanel extends ImageScrollerLargeView {
       final AffineTransform t = new AffineTransform();
       t.translate(scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
           scale * normalizeY(routeDescription.getEnd().getY() - getYOffset()));
-      t.translate(mouseShadowImage.getWidth() / -2, mouseShadowImage.getHeight() / -2);
+      t.translate(mouseShadowImage.getWidth() / -2.0, mouseShadowImage.getHeight() / -2.0);
       t.scale(scale, scale);
       g2d.drawImage(mouseShadowImage, t, this);
     }

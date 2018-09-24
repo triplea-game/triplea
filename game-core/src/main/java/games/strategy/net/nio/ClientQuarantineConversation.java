@@ -27,7 +27,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private final NioSocket socket;
   private final CountDownLatch showLatch = new CountDownLatch(1);
   private final CountDownLatch doneShowLatch = new CountDownLatch(1);
-  private final String macAddress;
   private Step step = Step.READ_CHALLENGE;
   private String localName;
   private String serverName;
@@ -42,13 +41,12 @@ public class ClientQuarantineConversation extends QuarantineConversation {
       final String localName, final String mac) {
     this.login = login;
     this.localName = localName;
-    macAddress = mac;
     this.socket = socket;
     this.channel = channel;
     // Send the local name
     send(this.localName);
     // Send the mac address
-    send(macAddress);
+    send(mac);
   }
 
   public String getLocalName() {

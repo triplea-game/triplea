@@ -119,7 +119,7 @@ public class IntTextField extends JTextField {
     public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
       final String currentText = this.getText(0, getLength());
       final String beforeOffset = currentText.substring(0, offs);
-      final String afterOffset = currentText.substring(offs, currentText.length());
+      final String afterOffset = currentText.substring(offs);
       // allow start of negative
       try {
         final String proposedResult = beforeOffset + str + afterOffset;

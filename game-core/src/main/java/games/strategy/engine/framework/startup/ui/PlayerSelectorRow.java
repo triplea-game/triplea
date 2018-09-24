@@ -143,7 +143,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       container.add(puIncomeBonus, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
           GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
       container.add(puIncomeBonusLabel,
-          new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+          new GridBagConstraints(gridx, row, 1, 1, 0, 0, GridBagConstraints.WEST,
               GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
     }
   }

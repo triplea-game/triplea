@@ -82,7 +82,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     parameters.add(new BasicNameValuePair("passwrd", getPassword()));
     httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
-      int status = response.getStatusLine().getStatusCode();
+      final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
         final String body = EntityUtils.toString(response.getEntity());
         if (body.toLowerCase().contains("password incorrect")) {
@@ -101,12 +101,9 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           final String url = m.group(1);
           final HttpGet httpGet = new HttpGet(url);
           HttpProxy.addProxy(httpGet);
-          try (CloseableHttpResponse response2 = client.execute(httpGet, httpContext)) {
-            status = response2.getStatusLine().getStatusCode();
-            if (status != 200) {
-              // something is probably wrong, but there is not much we can do about it, we handle errors when we post
-            }
-          }
+          client.execute(httpGet, httpContext).close();
+          // we ignore the status code if it's not 200 there is not much we can do about it,
+          // we handle errors when we post
         } else {
           throw new Exception("The refresh header didn't contain a URL");
         }

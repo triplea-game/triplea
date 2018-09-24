@@ -173,7 +173,7 @@ public class TransportUtils {
         if (transportCost > 0 && transportCapacity >= transportCost) {
           final int transportCount =
               CollectionUtils.countMatches(airTransports, Matches.unitIsOfType(transportType.getType()));
-          final int ttlTransportCapacity = transportCount * (int) Math.floor(transportCapacity / transportCost);
+          final int ttlTransportCapacity = transportCount * (transportCapacity / transportCost);
           totalLoad.addAll(CollectionUtils.getNMatches(canBeTransported, ttlTransportCapacity,
               Matches.unitIsOfType(unitType.getType())));
         }

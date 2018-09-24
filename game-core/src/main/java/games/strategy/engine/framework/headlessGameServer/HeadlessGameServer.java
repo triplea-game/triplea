@@ -38,7 +38,6 @@ import games.strategy.engine.framework.headless.game.server.HeadlessGameServerCl
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
@@ -453,7 +452,7 @@ public class HeadlessGameServer {
           shutDown = true;
           break;
         }
-        if (setupPanelModel != null && setupPanelModel.getPanel() != null
+        if (setupPanelModel.getPanel() != null
             && setupPanelModel.getPanel().canGameStart()) {
           final boolean started = startHeadlessGame(setupPanelModel);
           if (!started) {
@@ -525,11 +524,7 @@ public class HeadlessGameServer {
    */
   public Chat getChat() {
     final ISetupPanel model = setupPanelModel.getPanel();
-    return ((model instanceof ServerSetupPanel)
-        || (model instanceof ClientSetupPanel)
-        || (model instanceof HeadlessServerSetup))
-            ? model.getChatPanel().getChat()
-            : null;
+    return model != null ? model.getChatPanel().getChat() : null;
   }
 
   /**

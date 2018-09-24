@@ -1119,7 +1119,7 @@ class ProCombatMoveAi {
           final int distance = data.getMap().getDistance_IgnoreEndForCondition(ProData.unitTerritoryMap.get(unit), t,
               ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
           final boolean usesMoreThanHalfOfRange = distance > range / 2;
-          if (isAirUnit && !isEnemyCapital && !isAdjacentToAlliedCapital && usesMoreThanHalfOfRange) {
+          if (!isEnemyCapital && !isAdjacentToAlliedCapital && usesMoreThanHalfOfRange) {
             continue;
           }
 

@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -77,6 +79,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
 
   Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
+    Preconditions.checkArgument(unitsPerPick > 0, "unitsPerPick must be greater than 0");
     this.territoryChoices = territoryChoices;
     this.unitChoices = unitChoices;
     this.unitsPerPick = unitsPerPick;
@@ -154,8 +157,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
         if (unitChoices.size() < unitsPerPick) {
           // if we have fewer units than the number we are supposed to pick, set it to all
           pickedUnits.addAll(unitChoices);
-        } else if (!unitChoices.isEmpty()
-            && unitChoices.stream().allMatch(Matches.unitIsOfType(unitChoices.get(0).getType()))) {
+        } else if (unitChoices.stream().allMatch(Matches.unitIsOfType(unitChoices.get(0).getType()))) {
           // if we have only 1 unit type, set it to that
           pickedUnits.clear();
           pickedUnits.addAll(CollectionUtils.getNMatches(unitChoices, unitsPerPick, Matches.always()));

@@ -33,7 +33,7 @@ public class ComboProperty<T> extends AEditableProperty {
       final Collection<T> possibleValues) {
     super(name, description);
     this.possibleValues = new ArrayList<>(possibleValues);
-    if (defaultValue == null && !possibleValues.contains(defaultValue)) {
+    if (defaultValue != null && !possibleValues.contains(defaultValue)) {
       throw new IllegalStateException("possible values does not contain default");
     }
     value = defaultValue;

@@ -522,7 +522,6 @@ public class UnitAttachment extends DefaultAttachment {
     String value = initialValue;
     String byOrFrom = "BY";
     if (value.startsWith("BY:") && getData().getPlayerList().getPlayerId("BY") == null) {
-      byOrFrom = "BY";
       value = value.replaceFirst("BY:", "");
     } else if (value.startsWith("FROM:") && getData().getPlayerList().getPlayerId("FROM") == null) {
       byOrFrom = "FROM";
@@ -2391,15 +2390,19 @@ public class UnitAttachment extends DefaultAttachment {
       final Territory t, final PlayerID owner, final GameData data) {
     final UnitAttachment ua = UnitAttachment.get(ut);
     final Tuple<Integer, String> stackingLimit;
-    if (limitType.equals("movementLimit")) {
-      stackingLimit = ua.getMovementLimit();
-    } else if (limitType.equals("attackingLimit")) {
-      stackingLimit = ua.getAttackingLimit();
-    } else if (limitType.equals("placementLimit")) {
-      stackingLimit = ua.getPlacementLimit();
-    } else {
-      throw new IllegalStateException(
-          "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: " + limitType);
+    switch (limitType) {
+      case "movementLimit":
+        stackingLimit = ua.getMovementLimit();
+        break;
+      case "attackingLimit":
+        stackingLimit = ua.getAttackingLimit();
+        break;
+      case "placementLimit":
+        stackingLimit = ua.getPlacementLimit();
+        break;
+      default:
+        throw new IllegalStateException(
+            "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: " + limitType);
     }
     if (stackingLimit == null) {
       return Integer.MAX_VALUE;
@@ -2414,12 +2417,16 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final Predicate<Unit> stackingMatch;
     final String stackingType = stackingLimit.getSecond();
-    if (stackingType.equals("owned")) {
-      stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
-    } else if (stackingType.equals("allied")) {
-      stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner, data));
-    } else {
-      stackingMatch = Matches.unitIsOfType(ut);
+    switch (stackingType) {
+      case "owned":
+        stackingMatch = Matches.unitIsOfType(ut).and(Matches.unitIsOwnedBy(owner));
+        break;
+      case "allied":
+        stackingMatch = Matches.unitIsOfType(ut).and(Matches.isUnitAllied(owner, data));
+        break;
+      default:
+        stackingMatch = Matches.unitIsOfType(ut);
+        break;
     }
     // else if (stackingType.equals("total"))
     final int totalInTerritory = CollectionUtils.countMatches(t.getUnits().getUnits(), stackingMatch);

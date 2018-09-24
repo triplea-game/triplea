@@ -786,102 +786,115 @@ public class TechAbilityAttachment extends DefaultAttachment {
         // debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic
         // bomber", etc.
         // perhaps just the easy ones, of air, land, and sea?
-        if (propertyString.equals(TechAdvance.TECH_PROPERTY_LONG_RANGE_AIRCRAFT)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allAir =
-              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir());
-          for (final UnitType air : allAir) {
-            taa.setMovementBonus("2:" + air.getName());
-          }
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_AA_RADAR)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allAa =
-              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAaForAnything());
-          for (final UnitType aa : allAa) {
-            taa.setRadarBonus("1:" + aa.getName());
-          }
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_SUPER_SUBS)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allSubs =
-              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsSub());
-          for (final UnitType sub : allSubs) {
-            taa.setAttackBonus("1:" + sub.getName());
-          }
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_JET_POWER)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allJets = CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(),
-              Matches.unitTypeIsAir().and(Matches.unitTypeIsStrategicBomber().negate()));
-          final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
-          for (final UnitType jet : allJets) {
-            if (ww2v3TechModel) {
-              taa.setAttackBonus("1:" + jet.getName());
-              taa.setAirAttackBonus("1:" + jet.getName());
-            } else {
-              taa.setDefenseBonus("1:" + jet.getName());
-              taa.setAirDefenseBonus("1:" + jet.getName());
+        switch (propertyString) {
+          case TechAdvance.TECH_PROPERTY_LONG_RANGE_AIRCRAFT:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allAir =
+                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir());
+            for (final UnitType air : allAir) {
+              taa.setMovementBonus("2:" + air.getName());
             }
-          }
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allFactories =
-              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeCanProduceUnits());
-          for (final UnitType factory : allFactories) {
-            taa.setProductionBonus("2:" + factory.getName());
-            taa.setMinimumTerritoryValueForProductionBonus("3");
-            // means a 50% discount, which is half price
-            taa.setRepairDiscount("50");
-          }
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_WAR_BONDS)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          taa.setWarBondDiceSides(Integer.toString(data.getDiceSides()));
-          taa.setWarBondDiceNumber("1");
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_ROCKETS)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allRockets =
-              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsRocket());
-          for (final UnitType rocket : allRockets) {
-            taa.setRocketDiceNumber("1:" + rocket.getName());
-          }
-          taa.setRocketDistance("3");
-          taa.setRocketNumberPerTerritory("1");
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_DESTROYER_BOMBARD)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allDestroyers =
-              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsDestroyer());
-          for (final UnitType destroyer : allDestroyers) {
-            taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
-          }
-        } else if (propertyString.equals(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER)) {
-          taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
-          ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-          final List<UnitType> allBombers =
-              CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
-          final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
-          final boolean heavyBombersLhtr = Properties.getLhtrHeavyBombers(data);
-          for (final UnitType bomber : allBombers) {
-            // TODO: The bomber dice rolls get set when the xml is parsed.
-            // we subtract the base rolls to get the bonus
-            final int heavyBomberDiceRollsBonus =
-                heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID);
-            taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
-            if (heavyBombersLhtr) {
-              // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
-              // does not get changed.
-              // (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on,
-              // in the xml.)
-              taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
-              // LHTR adds 1 to base roll
-              taa.setBombingBonus("1:" + bomber.getName());
+            break;
+          case TechAdvance.TECH_PROPERTY_AA_RADAR:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allAa =
+                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAaForAnything());
+            for (final UnitType aa : allAa) {
+              taa.setRadarBonus("1:" + aa.getName());
             }
-          }
+            break;
+          case TechAdvance.TECH_PROPERTY_SUPER_SUBS:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allSubs =
+                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsSub());
+            for (final UnitType sub : allSubs) {
+              taa.setAttackBonus("1:" + sub.getName());
+            }
+            break;
+          case TechAdvance.TECH_PROPERTY_JET_POWER:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allJets = CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(),
+                Matches.unitTypeIsAir().and(Matches.unitTypeIsStrategicBomber().negate()));
+            final boolean ww2v3TechModel = Properties.getWW2V3TechModel(data);
+            for (final UnitType jet : allJets) {
+              if (ww2v3TechModel) {
+                taa.setAttackBonus("1:" + jet.getName());
+                taa.setAirAttackBonus("1:" + jet.getName());
+              } else {
+                taa.setDefenseBonus("1:" + jet.getName());
+                taa.setAirDefenseBonus("1:" + jet.getName());
+              }
+            }
+            break;
+          case TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allFactories =
+                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeCanProduceUnits());
+            for (final UnitType factory : allFactories) {
+              taa.setProductionBonus("2:" + factory.getName());
+              taa.setMinimumTerritoryValueForProductionBonus("3");
+              // means a 50% discount, which is half price
+              taa.setRepairDiscount("50");
+            }
+            break;
+          case TechAdvance.TECH_PROPERTY_WAR_BONDS:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            taa.setWarBondDiceSides(Integer.toString(data.getDiceSides()));
+            taa.setWarBondDiceNumber("1");
+            break;
+          case TechAdvance.TECH_PROPERTY_ROCKETS:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allRockets =
+                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsRocket());
+            for (final UnitType rocket : allRockets) {
+              taa.setRocketDiceNumber("1:" + rocket.getName());
+            }
+            taa.setRocketDistance("3");
+            taa.setRocketNumberPerTerritory("1");
+            break;
+          case TechAdvance.TECH_PROPERTY_DESTROYER_BOMBARD:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allDestroyers =
+                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsDestroyer());
+            for (final UnitType destroyer : allDestroyers) {
+              taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
+            }
+            break;
+          case TechAdvance.TECH_PROPERTY_HEAVY_BOMBER:
+            taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+            ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+            final List<UnitType> allBombers =
+                CollectionUtils
+                    .getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsStrategicBomber());
+            final int heavyBomberDiceRollsTotal = Properties.getHeavyBomberDiceRolls(data);
+            final boolean heavyBombersLhtr = Properties.getLhtrHeavyBombers(data);
+            for (final UnitType bomber : allBombers) {
+              // TODO: The bomber dice rolls get set when the xml is parsed.
+              // we subtract the base rolls to get the bonus
+              final int heavyBomberDiceRollsBonus =
+                  heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID);
+              taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
+              if (heavyBombersLhtr) {
+                // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
+                // does not get changed.
+                // (meaning, turning on LHTR bombers will not result in this bonus damage,
+                // etc. It would have to start on, in the xml.)
+                taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
+                // LHTR adds 1 to base roll
+                taa.setBombingBonus("1:" + bomber.getName());
+              }
+            }
+            break;
+          default:
+            break;
         }
         // The following technologies should NOT have ability attachments for them:
         // shipyards and industrialTechnology = because it is better to use a Trigger to change player's production

@@ -1422,99 +1422,114 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             clearFirst = true;
           }
           // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
-          if (t.getPlayerAttachmentName().getFirst().equals("PlayerAttachment")) {
-            final PlayerAttachment attachment = PlayerAttachment.get(player, t.getPlayerAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
+          switch (t.getPlayerAttachmentName().getFirst()) {
+            case "PlayerAttachment": {
+              final PlayerAttachment attachment = PlayerAttachment.get(player, t.getPlayerAttachmentName().getSecond());
+              if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
+                continue;
+              }
+              if (clearFirst && newValue.length() < 1) {
+                change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
+              } else {
+                change.add(
+                    ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+              }
+              bridge.getHistoryWriter()
+                  .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
+                      + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+                      + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+              break;
             }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+            case "RulesAttachment": {
+              final RulesAttachment attachment = RulesAttachment.get(player, t.getPlayerAttachmentName().getSecond());
+              if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
+                continue;
+              }
+              if (clearFirst && newValue.length() < 1) {
+                change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
+              } else {
+                change.add(
+                    ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+              }
+              bridge.getHistoryWriter()
+                  .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
+                      + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+                      + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+              break;
             }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
-          } else if (t.getPlayerAttachmentName().getFirst().equals("RulesAttachment")) {
-            final RulesAttachment attachment = RulesAttachment.get(player, t.getPlayerAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
+            case "TriggerAttachment": {
+              final TriggerAttachment attachment =
+                  TriggerAttachment.get(player, t.getPlayerAttachmentName().getSecond());
+              if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
+                continue;
+              }
+              if (clearFirst && newValue.length() < 1) {
+                change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
+              } else {
+                change.add(
+                    ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+              }
+              bridge.getHistoryWriter()
+                  .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
+                      + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+                      + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+              break;
             }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+            case "TechAttachment": {
+              final TechAttachment attachment = TechAttachment.get(player, t.getPlayerAttachmentName().getSecond());
+              if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
+                continue;
+              }
+              if (clearFirst && newValue.length() < 1) {
+                change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
+              } else {
+                change.add(
+                    ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+              }
+              bridge.getHistoryWriter()
+                  .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
+                      + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+                      + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+              break;
             }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
-          } else if (t.getPlayerAttachmentName().getFirst().equals("TriggerAttachment")) {
-            final TriggerAttachment attachment =
-                TriggerAttachment.get(player, t.getPlayerAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
+            case "PoliticalActionAttachment": {
+              final PoliticalActionAttachment attachment =
+                  PoliticalActionAttachment.get(player, t.getPlayerAttachmentName().getSecond());
+              if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
+                continue;
+              }
+              if (clearFirst && newValue.length() < 1) {
+                change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
+              } else {
+                change.add(
+                    ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+              }
+              bridge.getHistoryWriter()
+                  .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
+                      + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+                      + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+              break;
             }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+            case "UserActionAttachment": {
+              final UserActionAttachment attachment =
+                  UserActionAttachment.get(player, t.getPlayerAttachmentName().getSecond());
+              if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
+                continue;
+              }
+              if (clearFirst && newValue.length() < 1) {
+                change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
+              } else {
+                change.add(
+                    ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
+              }
+              bridge.getHistoryWriter()
+                  .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
+                      + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+                      + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+              break;
             }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
-          } else if (t.getPlayerAttachmentName().getFirst().equals("TechAttachment")) {
-            final TechAttachment attachment = TechAttachment.get(player, t.getPlayerAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
-          } else if (t.getPlayerAttachmentName().getFirst().equals("PoliticalActionAttachment")) {
-            final PoliticalActionAttachment attachment =
-                PoliticalActionAttachment.get(player, t.getPlayerAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
-          } else if (t.getPlayerAttachmentName().getFirst().equals("UserActionAttachment")) {
-            final UserActionAttachment attachment =
-                UserActionAttachment.get(player, t.getPlayerAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+            default:
+              break;
           }
           // TODO add other attachment changes here if they attach to a player
         }

@@ -134,7 +134,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     final String fullMessage = prefix + " " + message + "\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
+      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
     }
     allText.append(fullMessage);
   }
@@ -144,7 +144,7 @@ public class HeadlessChat implements IChatListener, IChatPanel {
     final String fullMessage = "--- " + message + " ---\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
-      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2, currentAllText.length()));
+      allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
     }
     allText.append(fullMessage);
   }

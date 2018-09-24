@@ -315,7 +315,7 @@ public class RocketsFireHelper {
           int bonus = ua.getBombingBonus();
           // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
           // map, and zero for the bonus.
-          if (maxDice < 0 || doNotUseBombingBonus) {
+          if (maxDice < 0) {
             maxDice = diceSides;
           }
           // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case

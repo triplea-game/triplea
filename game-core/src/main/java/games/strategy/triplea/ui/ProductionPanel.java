@@ -285,7 +285,7 @@ class ProductionPanel extends JPanel {
         final JLabel numberOfUnitsLabel = new JLabel("<html>for " + numberOfUnitsGiven + "<br>" + " units</html>");
         numberOfUnitsLabel.setFont(numberOfUnitsLabel.getFont().deriveFont(12f));
         costPanel.add(numberOfUnitsLabel,
-            new GridBagConstraints(0, count++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
+            new GridBagConstraints(0, count, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
                 new Insets(1, 0, 0, 0), 0, 0));
       }
       final JPanel label = new JPanel();
