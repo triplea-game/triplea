@@ -200,12 +200,11 @@ public class ProPurchaseOption {
       final List<Unit> unitsToPlace) {
     final double supportAttackFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, false);
     final double supportDefenseFactor = calculateSupportFactor(ownedLocalUnits, unitsToPlace, data, true);
-    final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
+    final double hitPointPerUnitFactor = (3 + (double) hitPoints / quantity);
     final double transportCostFactor = Math.pow(1.0 / transportCost, .2);
-    final double hitPointValue = 2 * hitPoints;
     final double attackValue = (amphibAttack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
     final double defenseValue = (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
-    return Math.pow((hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * transportCostFactor / cost,
+    return Math.pow(((2 * hitPoints) + attackValue + defenseValue) * hitPointPerUnitFactor * transportCostFactor / cost,
         30) / quantity;
   }
 
@@ -288,12 +287,11 @@ public class ProPurchaseOption {
   private double calculateEfficiency(final double attackFactor, final double defenseFactor,
       final double supportAttackFactor, final double supportDefenseFactor, final double distanceFactor,
       final double seaFactor, final GameData data) {
-    final double hitPointPerUnitFactor = (3 + hitPoints / quantity);
-    final double hitPointValue = 2 * hitPoints;
+    final double hitPointPerUnitFactor = (3 + (double) hitPoints / quantity);
     final double attackValue = attackFactor * (attack + supportAttackFactor * quantity) * 6 / data.getDiceSides();
     final double defenseValue = defenseFactor * (defense + supportDefenseFactor * quantity) * 6 / data.getDiceSides();
     return Math.pow(
-        (hitPointValue + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor / cost, 30)
+        ((2 * hitPoints) + attackValue + defenseValue) * hitPointPerUnitFactor * distanceFactor * seaFactor / cost, 30)
         / quantity;
   }
 }
