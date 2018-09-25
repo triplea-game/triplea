@@ -117,7 +117,7 @@ public final class IntegerMap<T> implements Serializable {
    */
   public boolean greaterThanOrEqualTo(final IntegerMap<T> map) {
     return map.entrySet().stream()
-        .allMatch(entry -> entry.getValue() >= map.getInt(entry.getKey()));
+        .allMatch(entry -> getInt(entry.getKey()) >= entry.getValue());
   }
 
   /**

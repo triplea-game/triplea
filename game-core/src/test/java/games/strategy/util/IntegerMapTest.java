@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -95,7 +96,7 @@ public class IntegerMapTest {
     map2.add(v1, 5);
     map2.add(v2, 3);
     map2.add(v3, 1);
-    assertTrue(!map1.greaterThanOrEqualTo(map2));
+    assertFalse(map1.greaterThanOrEqualTo(map2));
     assertTrue(map2.greaterThanOrEqualTo(map2));
     map1.add(v3, 3);
     assertTrue(map1.greaterThanOrEqualTo(map2));
