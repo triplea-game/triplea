@@ -35,11 +35,6 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     add(object, value);
   }
 
-  public IntegerMap(final Collection<T> objects, final int value) {
-    this(objects.size());
-    addAll(objects, value);
-  }
-
   /**
    * This will make a new IntegerMap.
    * The Objects will be linked, but the integers mapped to them will not be linked.
