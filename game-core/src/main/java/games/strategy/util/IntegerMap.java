@@ -69,30 +69,10 @@ public final class IntegerMap<T> implements Serializable {
 
   /**
    * Will multiply all values by a given double.
-   * Can be used to divide all numbers, if given a fractional double
-   * (ie: to divide by 2, use 0.5 as the double)
-   *
-   * @param roundType (1 = floor, 2 = round, 3 = ceil)
+   * Rounds up the results when converting to an int.
    */
-  public void multiplyAllValuesBy(final double multiplyBy, final int roundType) {
-    for (final T t : keySet()) {
-      double val = mapValues.get(t);
-      switch (roundType) {
-        case 1:
-          val = Math.floor(val * multiplyBy);
-          break;
-        case 2:
-          val = Math.round(val * multiplyBy);
-          break;
-        case 3:
-          val = Math.ceil(val * multiplyBy);
-          break;
-        default:
-          val = val * multiplyBy;
-          break;
-      }
-      put(t, (int) val);
-    }
+  public void multiplyAllValuesBy(final double multiplyBy) {
+    mapValues.replaceAll((key, value) -> (int) Math.ceil(value * multiplyBy));
   }
 
   public void clear() {
