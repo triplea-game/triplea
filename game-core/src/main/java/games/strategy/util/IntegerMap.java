@@ -26,7 +26,7 @@ public final class IntegerMap<T> implements Serializable {
   }
 
   /**
-   * Creates a shallow clone of the provided IntegerMap
+   * Creates a shallow clone of the provided IntegerMap.
    */
   public IntegerMap(final IntegerMap<T> integerMap) {
     this(integerMap.mapValues);
