@@ -31,16 +31,6 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void toMap_ShouldReturnEquivalentJavaMap() {
-    final IntegerMap<Object> map = new IntegerMap<>();
-    map.add(v1, 1);
-    map.add(v2, 2);
-    map.add(v3, 3);
-
-    assertThat(map.toMap(), is(ImmutableMap.of(v1, 1, v2, 2, v3, 3)));
-  }
-
-  @Test
   public void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(IntegerMap.class)
         .suppress(Warning.NULL_FIELDS)

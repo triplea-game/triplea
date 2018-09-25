@@ -55,10 +55,6 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
     mapValues = new LinkedHashMap<>(map);
   }
 
-  public Map<T, Integer> toMap() {
-    return new LinkedHashMap<>(mapValues);
-  }
-
   public int size() {
     return mapValues.size();
   }
