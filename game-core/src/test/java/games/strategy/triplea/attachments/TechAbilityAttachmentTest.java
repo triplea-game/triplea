@@ -19,6 +19,8 @@ import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -161,9 +163,9 @@ public class TechAbilityAttachmentTest {
     @SuppressWarnings("unchecked")
     final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper = mock(Function.class);
     doReturn(
-        new IntegerMap<>(dummyUnitType, -1),
-        new IntegerMap<>(dummyUnitType, 20),
-        new IntegerMap<>(dummyUnitType, 300))
+        new IntegerMap<>(ImmutableMap.of(dummyUnitType, -1)),
+        new IntegerMap<>(ImmutableMap.of(dummyUnitType, 20)),
+        new IntegerMap<>(ImmutableMap.of(dummyUnitType, 300)))
             .when(mapper).apply(attachment);
     final int result = TechAbilityAttachment.sumIntegerMap(mapper, dummyUnitType, mock(PlayerID.class), data);
     assertEquals(319, result);

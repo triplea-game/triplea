@@ -694,11 +694,7 @@ public class DiceRoll implements Externalizable {
               if (supportUnitsLeft.get(rule).getInt(u) <= 0) {
                 supportUnitsLeft.get(rule).removeKey(u);
               }
-              if (unitSupportMap.containsKey(u)) {
-                unitSupportMap.get(u).add(unit, rule.getBonus());
-              } else {
-                unitSupportMap.put(u, new IntegerMap<>(unit, rule.getBonus()));
-              }
+              unitSupportMap.computeIfAbsent(u, i -> new IntegerMap<>()).add(unit, rule.getBonus());
             }
           }
           break;

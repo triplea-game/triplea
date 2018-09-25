@@ -40,8 +40,8 @@ public class IntegerMapTest {
     // same value for all key/value pairs
     assertThat(
         "should not be equal when keys are equal but values are not equal",
-        new IntegerMap<>(v1, 1),
-        is(not(new IntegerMap<>(v1, 2))));
+        new IntegerMap<>(ImmutableMap.of(v1, 1)),
+        is(not(new IntegerMap<>(ImmutableMap.of(v1, 2)))));
   }
 
   @Test
