@@ -17,9 +17,12 @@ public final class IntegerMap<T> implements Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
   private final Map<T, Integer> mapValues;
 
-  /** Creates new IntegerMap. */
   public IntegerMap() {
     mapValues = new LinkedHashMap<>();
+  }
+
+  public IntegerMap(final Map<T, Integer> map) {
+    mapValues = new LinkedHashMap<>(map);
   }
 
   /**
@@ -27,10 +30,6 @@ public final class IntegerMap<T> implements Serializable {
    */
   public IntegerMap(final IntegerMap<T> integerMap) {
     this(integerMap.mapValues);
-  }
-
-  public IntegerMap(final Map<T, Integer> map) {
-    mapValues = new LinkedHashMap<>(map);
   }
 
   public int size() {
@@ -132,8 +131,8 @@ public final class IntegerMap<T> implements Serializable {
    * Add map * multiple.
    */
   public void addMultiple(final IntegerMap<T> map, final int multiple) {
-    for (final T key : map.keySet()) {
-      add(key, map.getInt(key) * multiple);
+    for (final Map.Entry<T, Integer> entry : map.entrySet()) {
+      add(entry.getKey(), entry.getValue() * multiple);
     }
   }
 
@@ -180,11 +179,10 @@ public final class IntegerMap<T> implements Serializable {
   public boolean equals(final Object o) {
     if (this == o) {
       return true;
-    } else if (!(o instanceof IntegerMap)) {
-      return false;
     }
-
-    final IntegerMap<?> other = (IntegerMap<?>) o;
-    return mapValues.equals(other.mapValues);
+    if (o instanceof IntegerMap) {
+      return mapValues.equals(((IntegerMap<?>) o).mapValues);
+    }
+    return false;
   }
 }
