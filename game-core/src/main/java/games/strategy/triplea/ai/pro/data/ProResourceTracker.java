@@ -54,7 +54,8 @@ public class ProResourceTracker {
   }
 
   public boolean isEmpty() {
-    return getRemaining().allValuesEqual(0);
+    final IntegerMap<Resource> remaining = getRemaining();
+    return !remaining.isEmpty() && remaining.allValuesEqual(0);
   }
 
   public int getTempPUs(final GameData data) {

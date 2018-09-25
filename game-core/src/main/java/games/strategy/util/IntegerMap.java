@@ -139,9 +139,7 @@ public final class IntegerMap<T> implements Cloneable, Serializable {
    * @return true if all values are equal to the given integer.
    */
   public boolean allValuesEqual(final int integer) {
-    return !mapValues.isEmpty()
-        && mapValues.values().stream()
-            .noneMatch(value -> integer != value);
+    return mapValues.values().stream().allMatch(value -> integer == value);
   }
 
   /**

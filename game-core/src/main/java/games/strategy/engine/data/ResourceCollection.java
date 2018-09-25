@@ -182,7 +182,7 @@ public class ResourceCollection extends GameDataComponent {
 
   private static String toString(final IntegerMap<Resource> resources, final GameData data,
       final String lineSeparator) {
-    if (resources == null || resources.isEmpty() || resources.allValuesEqual(0)) {
+    if (resources == null || resources.allValuesEqual(0)) {
       return "nothing";
     }
     final StringBuilder sb = new StringBuilder();
