@@ -317,7 +317,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
     final double discount = TechAbilityAttachment.getRepairDiscount(player, getData());
     if (discount != 1.0D) {
-      costs.multiplyAllValuesBy(discount, 3);
+      costs.multiplyAllValuesBy(discount);
     }
     return costs;
   }
