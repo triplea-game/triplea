@@ -157,10 +157,6 @@ public final class IntegerMap<T> implements Serializable {
     return mapValues.values().stream().allMatch(value -> value >= 0);
   }
 
-  public IntegerMap<T> copy() {
-    return new IntegerMap<>(this);
-  }
-
   /**
    * Add map * multiple.
    */

@@ -41,7 +41,7 @@ public class ProductionRule extends DefaultNamed {
   }
 
   public IntegerMap<Resource> getCosts() {
-    return m_cost.copy();
+    return new IntegerMap<>(m_cost);
   }
 
   public IntegerMap<NamedAttachable> getResults() {
