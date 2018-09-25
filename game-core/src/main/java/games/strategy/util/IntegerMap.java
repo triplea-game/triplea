@@ -22,10 +22,6 @@ public final class IntegerMap<T> implements Serializable {
     mapValues = new LinkedHashMap<>();
   }
 
-  public IntegerMap(final int size, final float loadFactor) {
-    mapValues = new LinkedHashMap<>(size, loadFactor);
-  }
-
   /**
    * Creates a shallow clone of the provided IntegerMap
    */
