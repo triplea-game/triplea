@@ -1,6 +1,11 @@
 package games.strategy.triplea.settings;
 
-import java.util.function.Supplier;
+import static games.strategy.triplea.settings.SelectionComponentFactory.booleanRadioButtons;
+import static games.strategy.triplea.settings.SelectionComponentFactory.filePath;
+import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
+import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
+import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
+import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
 import javax.swing.JComponent;
 
@@ -27,186 +32,263 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   AI_PAUSE_DURATION_BINDING(
       "AI Pause Duration",
       SettingType.AI,
-      SelectionComponentFactory.intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000),
-      "Time (in milliseconds) between AI moves"),
+      "Time (in milliseconds) between AI moves") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000).get();
+    }
+  },
 
   ARROW_KEY_SCROLL_SPEED_BINDING(
       "Arrow Key Scroll Speed",
       SettingType.MAP_SCROLLING,
-      SelectionComponentFactory.intValueRange(ClientSetting.ARROW_KEY_SCROLL_SPEED, 0, 500),
-      "How fast the map is scrolled (in pixels) when using the arrow keys"),
+      "How fast the map is scrolled (in pixels) when using the arrow keys") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.ARROW_KEY_SCROLL_SPEED, 0, 500).get();
+    }
+  },
 
   BATTLE_CALC_SIMULATION_COUNT_DICE_BINDING(
       "Simulation Count (Dice)",
       SettingType.BATTLE_SIMULATOR,
-      SelectionComponentFactory.intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE, 10, 100000),
-      "Default battle simulation count in dice games"),
+      "Default battle simulation count in dice games") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE, 10, 100000).get();
+    }
+  },
 
   BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK_BINDING(
       "Simulation Count (LL)",
       SettingType.BATTLE_SIMULATOR,
-      SelectionComponentFactory.intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, 10, 100000),
-      "Default battle simulation count in low luck games"),
+      "Default battle simulation count in low luck games") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, 10, 100000).get();
+    }
+  },
 
   CONFIRM_DEFENSIVE_ROLLS_BINDING(
       "Confirm defensive rolls",
       SettingType.COMBAT,
-      ClientSetting.CONFIRM_DEFENSIVE_ROLLS,
-      "Whether battle should proceed until you confirm the dice you roll while on defense"),
+      "Whether battle should proceed until you confirm the dice you roll while on defense") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.CONFIRM_DEFENSIVE_ROLLS);
+    }
+  },
 
   CONFIRM_ENEMY_CASUALTIES_BINDING(
       "Confirm enemy casualties",
       SettingType.COMBAT,
-      ClientSetting.CONFIRM_ENEMY_CASUALTIES,
-      "Whether battles should proceed only once every player has confirmed the casualties selected"),
+      "Whether battles should proceed only once every player has confirmed the casualties selected") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.CONFIRM_ENEMY_CASUALTIES);
+    }
+  },
 
   SPACE_BAR_CONFIRMS_CASUALTIES_BINDING(
       "Space bar confirms Casualties",
       SettingType.COMBAT,
-      ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES,
       "When set to true casualty confirmation can be accepted by pressing space bar.\n"
-          + "When set to false, the confirm casualty button has to always be clicked."),
+          + "When set to false, the confirm casualty button has to always be clicked.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES);
+    }
+  },
 
   LOOK_AND_FEEL_PREF_BINDING(
       "Look and Feel",
       SettingType.LOOK_AND_FEEL,
-      SelectionComponentFactory.selectionBox(
+      "Updates UI theme for TripleA.\n"
+          + "WARNING: restart all running TripleA instances after changing this setting to avoid system instability.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return selectionBox(
           ClientSetting.LOOK_AND_FEEL_PREF,
           LookAndFeel.getLookAndFeelAvailableList(),
           ClientSetting.LOOK_AND_FEEL_PREF.value(),
-          s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", "")),
-      "Updates UI theme for TripleA.\n"
-          + "WARNING: restart all running TripleA instances after changing this setting to avoid system instability."),
+          s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", "")).get();
+    }
+  },
 
   MAP_EDGE_SCROLL_SPEED_BINDING(
       "Map Scroll Speed",
       SettingType.MAP_SCROLLING,
-      SelectionComponentFactory.intValueRange(ClientSetting.MAP_EDGE_SCROLL_SPEED, 0, 300),
-      "How fast the map scrolls (in pixels) when the mouse is moved close to the map edge"),
+      "How fast the map scrolls (in pixels) when the mouse is moved close to the map edge") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_SPEED, 0, 300).get();
+    }
+  },
 
   MAP_EDGE_SCROLL_ZONE_SIZE_BINDING(
       "Scroll Zone Size",
       SettingType.MAP_SCROLLING,
-      SelectionComponentFactory.intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300),
-      "How close to the edge of the map (in pixels) the mouse needs to be for the map to start scrolling"),
+      "How close to the edge of the map (in pixels) the mouse needs to be for the map to start scrolling") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300).get();
+    }
+  },
 
   SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(
       "Start game timeout",
       SettingType.NETWORK_TIMEOUTS,
-      SelectionComponentFactory.intValueRange(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME, 120, 1500),
-      "Maximum time (in seconds) to wait for all clients to sync data on game start"),
+      "Maximum time (in seconds) to wait for all clients to sync data on game start") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME, 120, 1500).get();
+    }
+  },
 
   SERVER_OBSERVER_JOIN_WAIT_TIME_BINDING(
       "Observer join timeout",
       SettingType.NETWORK_TIMEOUTS,
-      SelectionComponentFactory.intValueRange(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME, 60, 1500),
-      "Maximum time (in seconds) for host to wait for clients and observers"),
+      "Maximum time (in seconds) for host to wait for clients and observers") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME, 60, 1500).get();
+    }
+  },
 
   SHOW_BATTLES_WHEN_OBSERVING_BINDING(
       "Show battles as observer",
       SettingType.GAME,
-      ClientSetting.SHOW_BATTLES_WHEN_OBSERVING,
-      "Whether to show a battle if you are only observing."),
+      "Whether to show a battle if you are only observing.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.SHOW_BATTLES_WHEN_OBSERVING);
+    }
+  },
 
   SHOW_BETA_FEATURES_BINDING(
       "Show Beta Features",
       SettingType.TESTING,
-      ClientSetting.SHOW_BETA_FEATURES,
       "Toggles whether to show 'beta' features. These are game features that are still "
           + "under development and potentially may not be working yet.\n"
-          + "Restart to fully activate"),
+          + "Restart to fully activate") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.SHOW_BETA_FEATURES);
+    }
+  },
 
   SHOW_CONSOLE_BINDING(
       "Show Console",
       SettingType.GAME,
-      ClientSetting.SHOW_CONSOLE,
-      "Shows the TripleA console, closing the window will turn this setting off"),
+      "Shows the TripleA console, closing the window will turn this setting off") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.SHOW_CONSOLE);
+    }
+  },
 
   MAP_LIST_OVERRIDE_BINDING(
       "Map List Override",
       SettingType.TESTING,
-      SelectionComponentFactory.filePath(ClientSetting.MAP_LIST_OVERRIDE),
       "Overrides the location of the map listing file. You can, for example, download a copy of the listing file, "
-          + "update it, and put the path to that file here."),
+          + "update it, and put the path to that file here.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return filePath(ClientSetting.MAP_LIST_OVERRIDE).get();
+    }
+  },
 
   TEST_LOBBY_HOST_BINDING(
       "Lobby Host Override",
       SettingType.TESTING,
-      SelectionComponentFactory.textField(ClientSetting.TEST_LOBBY_HOST),
-      "Overrides the IP address or hostname used to connect to the lobby. Useful for connecting to a test lobby."),
+      "Overrides the IP address or hostname used to connect to the lobby. Useful for connecting to a test lobby.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return textField(ClientSetting.TEST_LOBBY_HOST).get();
+    }
+  },
 
   TEST_LOBBY_PORT_BINDING(
       "Lobby Port Override",
       SettingType.TESTING,
-      SelectionComponentFactory.intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true),
       "Specifies the port for connecting to a test lobby.\n"
-          + "Set to 0 for no override"),
+          + "Set to 0 for no override") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true).get();
+    }
+  },
 
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
       "Show First Time Prompts",
       SettingType.GAME,
-      ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY,
-      "Setting to true will trigger for any first time prompts to be shown"),
+      "Setting to true will trigger for any first time prompts to be shown") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY);
+    }
+  },
 
   SAVE_GAMES_FOLDER_PATH_BINDING(
       "Saved Games Folder",
       SettingType.FOLDER_LOCATIONS,
-      SelectionComponentFactory.folderPath(ClientSetting.SAVE_GAMES_FOLDER_PATH),
-      "The folder where saved game files will be stored by default"),
+      "The folder where saved game files will be stored by default") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return folderPath(ClientSetting.SAVE_GAMES_FOLDER_PATH).get();
+    }
+  },
 
   USER_MAPS_FOLDER_PATH_BINDING(
       "Maps Folder",
       SettingType.FOLDER_LOCATIONS,
-      SelectionComponentFactory.folderPath(ClientSetting.USER_MAPS_FOLDER_PATH),
-      "The folder where game engine will download and find map files."),
+      "The folder where game engine will download and find map files.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return folderPath(ClientSetting.USER_MAPS_FOLDER_PATH).get();
+    }
+  },
 
   WHEEL_SCROLL_AMOUNT_BINDING(
       "Mouse Wheel Scroll Speed",
       SettingType.MAP_SCROLLING,
-      SelectionComponentFactory.intValueRange(ClientSetting.WHEEL_SCROLL_AMOUNT, 10, 300),
-      "How fast the map will scroll (in pixels) when using the mouse wheel"),
+      "How fast the map will scroll (in pixels) when using the mouse wheel") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.WHEEL_SCROLL_AMOUNT, 10, 300).get();
+    }
+  },
 
   PROXY_CHOICE(
       "Network Proxy",
       SettingType.NETWORK_PROXY,
-      SelectionComponentFactory.proxySettings(),
       "Configure TripleA's Network and Proxy Settings\n"
-          + "This only effects Play-By-Forum games, dice servers, and map downloads."),
+          + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return SelectionComponentFactory.proxySettings().get();
+    }
+  },
 
   USE_EXPERIMENTAL_JAVAFX_UI(
       "Use JavaFX UI (Incomplete!)",
       SettingType.TESTING,
-      ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI,
       "Enable the experimental JavaFX UI. Not recommended. Isn't working yet.\n"
-          + "Just a proof-of-concept. Requires a restart.");
+          + "Just a proof-of-concept. Requires a restart.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI);
+    }
+  };
 
   private final SettingType type;
   private final String title;
   final String description;
-  private final Supplier<SelectionComponent<JComponent>> selectionComponentFactory;
 
-  ClientSettingSwingUiBinding(
-      final String title,
-      final SettingType type,
-      final Supplier<SelectionComponent<JComponent>> selectionComponentFactory,
-      final String description) {
+  ClientSettingSwingUiBinding(final String title, final SettingType type, final String description) {
     this.title = Preconditions.checkNotNull(Strings.emptyToNull(title));
     this.type = Preconditions.checkNotNull(type);
-    this.selectionComponentFactory = Preconditions.checkNotNull(selectionComponentFactory);
     this.description = Preconditions.checkNotNull(Strings.emptyToNull(description));
-  }
-
-  ClientSettingSwingUiBinding(
-      final String title,
-      final SettingType type,
-      final ClientSetting clientSetting,
-      final String description) {
-    this(title, type, () -> SelectionComponentFactory.booleanRadioButtons(clientSetting), description);
-  }
-
-  @Override
-  public SelectionComponent<JComponent> newSelectionComponent() {
-    return selectionComponentFactory.get();
   }
 
   @Override
