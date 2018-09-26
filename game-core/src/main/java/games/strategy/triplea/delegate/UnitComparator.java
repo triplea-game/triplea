@@ -28,8 +28,10 @@ public class UnitComparator {
    * based on the total transporting cost of transportable
    * Units in the same territory as the Unit.
    *
+   * <p>
    * Because figuring out this cost is a relatively expensive operation
    * The returned Comparator stores lazily calculated costs for its lifetime.
+   * </p>
    *
    * @return A {@code Comparator<Unit>} that compares Units by transport capacity
    */
