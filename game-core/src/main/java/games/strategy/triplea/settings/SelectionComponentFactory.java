@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import javax.swing.DefaultListCellRenderer;
@@ -39,8 +38,8 @@ import swinglib.JPanelBuilder;
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
-  static Supplier<SelectionComponent<JComponent>> proxySettings() {
-    return () -> new SelectionComponent<JComponent>() {
+  static SelectionComponent<JComponent> proxySettings() {
+    return new SelectionComponent<JComponent>() {
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       final HttpProxy.ProxyChoice proxyChoice =
           HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
@@ -169,17 +168,16 @@ final class SelectionComponentFactory {
   /**
    * Text field that only accepts numbers between a certain range.
    */
-  static Supplier<SelectionComponent<JComponent>> intValueRange(final ClientSetting clientSetting, final int lo,
-      final int hi) {
+  static SelectionComponent<JComponent> intValueRange(final ClientSetting clientSetting, final int lo, final int hi) {
     return intValueRange(clientSetting, lo, hi, false);
   }
 
   /**
    * Text field that only accepts numbers between a certain range.
    */
-  static Supplier<SelectionComponent<JComponent>> intValueRange(final ClientSetting clientSetting, final int lo,
+  static SelectionComponent<JComponent> intValueRange(final ClientSetting clientSetting, final int lo,
       final int hi, final boolean allowUnset) {
-    return () -> new SelectionComponent<JComponent>() {
+    return new SelectionComponent<JComponent>() {
       private final JSpinner component = new JSpinner(new SpinnerNumberModel(
           toValidIntValue(clientSetting.value()), lo - (allowUnset ? 1 : 0), hi, 1));
 
@@ -276,14 +274,14 @@ final class SelectionComponentFactory {
   /**
    * File selection prompt.
    */
-  static Supplier<SelectionComponent<JComponent>> filePath(final ClientSetting clientSetting) {
+  static SelectionComponent<JComponent> filePath(final ClientSetting clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
   }
 
-  private static Supplier<SelectionComponent<JComponent>> selectFile(
+  private static SelectionComponent<JComponent> selectFile(
       final ClientSetting clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
-    return () -> new AlwaysValidInputSelectionComponent() {
+    return new AlwaysValidInputSelectionComponent() {
       final int expectedLength = 20;
       final JTextField field = new JTextField(clientSetting.value(), expectedLength);
       final JButton button = JButtonBuilder.builder()
@@ -330,17 +328,16 @@ final class SelectionComponentFactory {
   /**
    * Folder selection prompt.
    */
-  static Supplier<SelectionComponent<JComponent>> folderPath(final ClientSetting clientSetting) {
+  static SelectionComponent<JComponent> folderPath(final ClientSetting clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 
-
-  static <T> Supplier<SelectionComponent<JComponent>> selectionBox(
+  static <T> SelectionComponent<JComponent> selectionBox(
       final ClientSetting clientSetting,
       final List<T> availableOptions,
       final T selectedOption,
       final Function<T, ?> renderFunction) {
-    return () -> new AlwaysValidInputSelectionComponent() {
+    return new AlwaysValidInputSelectionComponent() {
       final JComboBox<T> comboBox = getCombobox();
 
       private JComboBox<T> getCombobox() {
@@ -390,8 +387,8 @@ final class SelectionComponentFactory {
     };
   }
 
-  static Supplier<SelectionComponent<JComponent>> textField(final ClientSetting clientSetting) {
-    return () -> new AlwaysValidInputSelectionComponent() {
+  static SelectionComponent<JComponent> textField(final ClientSetting clientSetting) {
+    return new AlwaysValidInputSelectionComponent() {
       final JTextField textField = new JTextField(clientSetting.value(), 20);
 
       @Override

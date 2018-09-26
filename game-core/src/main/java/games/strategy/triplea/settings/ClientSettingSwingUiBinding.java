@@ -35,7 +35,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Time (in milliseconds) between AI moves") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000).get();
+      return intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000);
     }
   },
 
@@ -45,7 +45,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How fast the map is scrolled (in pixels) when using the arrow keys") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.ARROW_KEY_SCROLL_SPEED, 0, 500).get();
+      return intValueRange(ClientSetting.ARROW_KEY_SCROLL_SPEED, 0, 500);
     }
   },
 
@@ -55,7 +55,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Default battle simulation count in dice games") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE, 10, 100000).get();
+      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE, 10, 100000);
     }
   },
 
@@ -65,7 +65,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Default battle simulation count in low luck games") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, 10, 100000).get();
+      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, 10, 100000);
     }
   },
 
@@ -111,7 +111,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           ClientSetting.LOOK_AND_FEEL_PREF,
           LookAndFeel.getLookAndFeelAvailableList(),
           ClientSetting.LOOK_AND_FEEL_PREF.value(),
-          s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", "")).get();
+          s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", ""));
     }
   },
 
@@ -121,7 +121,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How fast the map scrolls (in pixels) when the mouse is moved close to the map edge") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_SPEED, 0, 300).get();
+      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_SPEED, 0, 300);
     }
   },
 
@@ -131,7 +131,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How close to the edge of the map (in pixels) the mouse needs to be for the map to start scrolling") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300).get();
+      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300);
     }
   },
 
@@ -141,7 +141,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Maximum time (in seconds) to wait for all clients to sync data on game start") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME, 120, 1500).get();
+      return intValueRange(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME, 120, 1500);
     }
   },
 
@@ -151,7 +151,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Maximum time (in seconds) for host to wait for clients and observers") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME, 60, 1500).get();
+      return intValueRange(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME, 60, 1500);
     }
   },
 
@@ -194,7 +194,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "update it, and put the path to that file here.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return filePath(ClientSetting.MAP_LIST_OVERRIDE).get();
+      return filePath(ClientSetting.MAP_LIST_OVERRIDE);
     }
   },
 
@@ -204,7 +204,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Overrides the IP address or hostname used to connect to the lobby. Useful for connecting to a test lobby.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return textField(ClientSetting.TEST_LOBBY_HOST).get();
+      return textField(ClientSetting.TEST_LOBBY_HOST);
     }
   },
 
@@ -215,7 +215,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "Set to 0 for no override") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true).get();
+      return intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true);
     }
   },
 
@@ -235,7 +235,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "The folder where saved game files will be stored by default") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return folderPath(ClientSetting.SAVE_GAMES_FOLDER_PATH).get();
+      return folderPath(ClientSetting.SAVE_GAMES_FOLDER_PATH);
     }
   },
 
@@ -245,7 +245,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "The folder where game engine will download and find map files.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return folderPath(ClientSetting.USER_MAPS_FOLDER_PATH).get();
+      return folderPath(ClientSetting.USER_MAPS_FOLDER_PATH);
     }
   },
 
@@ -255,7 +255,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How fast the map will scroll (in pixels) when using the mouse wheel") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.WHEEL_SCROLL_AMOUNT, 10, 300).get();
+      return intValueRange(ClientSetting.WHEEL_SCROLL_AMOUNT, 10, 300);
     }
   },
 
@@ -266,7 +266,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.proxySettings().get();
+      return SelectionComponentFactory.proxySettings();
     }
   },
 
