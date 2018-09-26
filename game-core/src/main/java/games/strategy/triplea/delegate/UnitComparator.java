@@ -23,8 +23,17 @@ public class UnitComparator {
     return getLowestToHighestMovementComparator().reversed();
   }
 
+  /**
+   * A Helper method that returns a Comparator comparing Units
+   * based on the total transporting cost of transportable
+   * Units in the same territory as the Unit.
+   *
+   * Because figuring out this cost is a relatively expensive operation
+   * The returned Comparator stores lazily calculated costs for its lifetime.
+   *
+   * @return A {@link Comparator<Unit>} that compares Units by transport capacity
+   */
   public static Comparator<Unit> getIncreasingCapacityComparator() {
-    // this makes it more efficient
     final Map<Unit, Integer> cache = new HashMap<>();
     return Comparator.comparingInt(u -> cache.computeIfAbsent(u,
         k -> TransportUtils.getTransportCost(TripleAUnit.get(u).getTransporting())));
