@@ -9,10 +9,9 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.textFiel
 
 import javax.swing.JComponent;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Binds a {@code ClientSetting} to a UI component. This is done by adding an enum element. As part of that the
@@ -28,6 +27,7 @@ import games.strategy.engine.framework.lookandfeel.LookAndFeel;
  * typically it will be 1:1, and not all {@code ClientSettings} will be available in the UI.
  * </p>
  */
+@AllArgsConstructor
 enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   AI_PAUSE_DURATION_BINDING(
       "AI Pause Duration",
@@ -281,23 +281,10 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   };
 
-  private final SettingType type;
+  @Getter(onMethod_ = {@Override})
   private final String title;
-  final String description;
-
-  ClientSettingSwingUiBinding(final String title, final SettingType type, final String description) {
-    this.title = Preconditions.checkNotNull(Strings.emptyToNull(title));
-    this.type = Preconditions.checkNotNull(type);
-    this.description = Preconditions.checkNotNull(Strings.emptyToNull(description));
-  }
-
-  @Override
-  public String getTitle() {
-    return title;
-  }
-
-  @Override
-  public SettingType getType() {
-    return type;
-  }
+  @Getter(onMethod_ = {@Override})
+  private final SettingType type;
+  @Getter
+  private final String description;
 }
