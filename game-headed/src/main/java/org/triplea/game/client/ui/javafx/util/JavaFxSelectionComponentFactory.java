@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import com.google.common.base.Strings;
@@ -29,23 +28,23 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
-class JavaFxSelectionComponentFactory {
+final class JavaFxSelectionComponentFactory {
 
   private JavaFxSelectionComponentFactory() {}
 
-  static Supplier<SelectionComponent<Region>> intValueRange(
+  static SelectionComponent<Region> intValueRange(
       final ClientSetting clientSetting,
       final int minValue,
       final int maxValue) {
     return intValueRange(clientSetting, minValue, maxValue, false);
   }
 
-  static Supplier<SelectionComponent<Region>> intValueRange(
+  static SelectionComponent<Region> intValueRange(
       final ClientSetting clientSetting,
       final int minValue,
       final int maxValue,
       final boolean allowUnset) {
-    return () -> new SelectionComponent<Region>() {
+    return new SelectionComponent<Region>() {
 
       final Spinner<Integer> spinner = createSpinner();
 
@@ -112,8 +111,8 @@ class JavaFxSelectionComponentFactory {
     };
   }
 
-  static Supplier<SelectionComponent<Region>> toggleButton(final ClientSetting clientSetting) {
-    return () -> new SelectionComponent<Region>() {
+  static SelectionComponent<Region> toggleButton(final ClientSetting clientSetting) {
+    return new SelectionComponent<Region>() {
       final CheckBox checkBox = getCheckBox();
 
       private CheckBox getCheckBox() {
@@ -160,8 +159,8 @@ class JavaFxSelectionComponentFactory {
     };
   }
 
-  static Supplier<SelectionComponent<Region>> textField(final ClientSetting clientSetting) {
-    return () -> new SelectionComponent<Region>() {
+  static SelectionComponent<Region> textField(final ClientSetting clientSetting) {
+    return new SelectionComponent<Region>() {
       final TextField textField = newTextField();
 
       private TextField newTextField() {
@@ -208,20 +207,17 @@ class JavaFxSelectionComponentFactory {
     };
   }
 
-
-  static Supplier<SelectionComponent<Region>> folderPath(final ClientSetting clientSetting) {
-    return () -> new FolderSelector(clientSetting);
+  static SelectionComponent<Region> folderPath(final ClientSetting clientSetting) {
+    return new FolderSelector(clientSetting);
   }
 
-  static Supplier<SelectionComponent<Region>> filePath(final ClientSetting clientSetting) {
-    return () -> new FileSelector(clientSetting);
+  static SelectionComponent<Region> filePath(final ClientSetting clientSetting) {
+    return new FileSelector(clientSetting);
   }
 
-
-  static Supplier<SelectionComponent<Region>> proxySettings() {
-    return ProxySetting::new;
+  static SelectionComponent<Region> proxySettings() {
+    return new ProxySetting();
   }
-
 
   private static final class FolderSelector extends Region implements SelectionComponent<Region> {
     private final ClientSetting clientSetting;
