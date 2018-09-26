@@ -64,7 +64,7 @@ subprojects {
 
         implementation 'com.google.guava:guava:24.1-jre'
 
-        testImplementation 'nl.jqno.equalsverifier:equalsverifier:2.5.2'
+        testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.0'
         testImplementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
         testImplementation 'org.junit-pioneer:junit-pioneer:0.1.2'
