@@ -137,7 +137,7 @@ public enum SettingsWindow {
           JScrollPaneBuilder.builder()
               .border(descriptionScrollPaneBorder)
               .view(JTextAreaBuilder.builder()
-                  .text(setting.description)
+                  .text(setting.getDescription())
                   .rows(2)
                   .readOnly()
                   .build())
