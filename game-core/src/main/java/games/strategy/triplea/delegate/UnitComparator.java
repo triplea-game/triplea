@@ -31,7 +31,7 @@ public class UnitComparator {
    * Because figuring out this cost is a relatively expensive operation
    * The returned Comparator stores lazily calculated costs for its lifetime.
    *
-   * @return A {@link Comparator<Unit>} that compares Units by transport capacity
+   * @return A {@code Comparator<Unit>} that compares Units by transport capacity
    */
   public static Comparator<Unit> getIncreasingCapacityComparator() {
     final Map<Unit, Integer> cache = new HashMap<>();
