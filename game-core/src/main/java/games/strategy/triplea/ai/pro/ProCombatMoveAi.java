@@ -930,7 +930,7 @@ class ProCombatMoveAi {
           tuvSwing *= 0.5;
         }
         final double attackValue =
-            tuvSwing + territoryValue * result.getWinPercentage() / 100 - enemyCounterTuvSwing * 2 / 3;
+            1 + tuvSwing + territoryValue * result.getWinPercentage() / 100 - enemyCounterTuvSwing * 2 / 3;
         boolean allUnitsCanAttackOtherTerritory = true;
         if (isNeutral && attackValue < 0) {
           for (final Unit u : patd.getUnits()) {
@@ -1034,8 +1034,9 @@ class ProCombatMoveAi {
     // Set enough land and sea units in territories to have at least a chance of winning
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
-      if (isAirUnit || addedUnits.contains(unit)) {
-        continue; // skip air units
+      if (isAirUnit || ProData.unitValueMap.getInt(unit.getType()) > 2 * ProData.minCostPerHitPoint
+          || addedUnits.contains(unit)) {
+        continue; // skip air and expensive units
       }
       final TreeMap<Double, Territory> estimatesMap = new TreeMap<>();
       for (final Territory t : sortedUnitAttackOptions.get(unit)) {

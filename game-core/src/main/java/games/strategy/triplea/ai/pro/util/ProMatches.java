@@ -425,10 +425,6 @@ public class ProMatches {
     return Matches.enemyUnit(player, data).and(Matches.unitIsAir());
   }
 
-  public static Predicate<Unit> unitIsEnemyAndNotAa(final PlayerID player, final GameData data) {
-    return Matches.enemyUnit(player, data).and(Matches.unitIsAaForAnything().negate());
-  }
-
   public static Predicate<Unit> unitIsEnemyAndNotInfa(final PlayerID player, final GameData data) {
     return Matches.enemyUnit(player, data).and(Matches.unitIsNotInfrastructure());
   }
