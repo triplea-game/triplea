@@ -1034,8 +1034,9 @@ class ProCombatMoveAi {
     // Set enough land and sea units in territories to have at least a chance of winning
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
-      if (isAirUnit || ProData.unitValueMap.getInt(unit.getType()) > 2 * ProData.minCostPerHitPoint
-          || addedUnits.contains(unit)) {
+      final boolean isExpensiveLandUnit = Matches.unitIsLand().test(unit)
+          && ProData.unitValueMap.getInt(unit.getType()) > 2 * ProData.minCostPerHitPoint;
+      if (isAirUnit || isExpensiveLandUnit || addedUnits.contains(unit)) {
         continue; // skip air and expensive units
       }
       final TreeMap<Double, Territory> estimatesMap = new TreeMap<>();
