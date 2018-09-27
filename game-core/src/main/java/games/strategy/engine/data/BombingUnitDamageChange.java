@@ -25,7 +25,7 @@ public class BombingUnitDamageChange extends Change {
         throw new IllegalArgumentException("BombingUnitDamage can only apply to a TripleAUnit object");
       }
     }
-    this.hits = hits.copy();
+    this.hits = new IntegerMap<>(hits);
     undoHits = new IntegerMap<>();
     for (final Unit unit : this.hits.keySet()) {
       undoHits.put(unit, ((TripleAUnit) unit).getUnitDamage());

@@ -26,8 +26,8 @@ public class RepairRule extends DefaultNamed {
     checkNotNull(results);
     checkNotNull(costs);
 
-    m_cost = costs.copy();
-    m_results = results.copy();
+    m_cost = new IntegerMap<>(costs);
+    m_results = new IntegerMap<>(results);
   }
 
   protected void addCost(final Resource resource, final int quantity) {
@@ -45,7 +45,7 @@ public class RepairRule extends DefaultNamed {
   }
 
   public IntegerMap<Resource> getCosts() {
-    return m_cost.copy();
+    return new IntegerMap<>(m_cost);
   }
 
   public IntegerMap<NamedAttachable> getResults() {

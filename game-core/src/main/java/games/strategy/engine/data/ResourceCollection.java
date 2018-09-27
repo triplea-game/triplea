@@ -138,18 +138,7 @@ public class ResourceCollection extends GameDataComponent {
    * Will apply a discount if giving a fractional double (ie: 0.5 = 50% discount). Will round up remainder.
    */
   public void discount(final double discount) {
-    multiplyAllValuesBy(discount, 3);
-  }
-
-  /**
-   * Will multiply all values by a given double. Can be used to divide all numbers, if given a fractional double (ie: to
-   * divide by 2, use
-   * 0.5 as the double)
-   *
-   * @param roundType (1 = floor, 2 = round, 3 = ceil)
-   */
-  public void multiplyAllValuesBy(final double multiplyBy, final int roundType) {
-    m_resources.multiplyAllValuesBy(multiplyBy, roundType);
+    m_resources.multiplyAllValuesBy(discount);
   }
 
   /**
@@ -182,7 +171,7 @@ public class ResourceCollection extends GameDataComponent {
 
   private static String toString(final IntegerMap<Resource> resources, final GameData data,
       final String lineSeparator) {
-    if (resources == null || resources.isEmpty() || resources.allValuesEqual(0)) {
+    if (resources == null || resources.allValuesEqual(0)) {
       return "nothing";
     }
     final StringBuilder sb = new StringBuilder();

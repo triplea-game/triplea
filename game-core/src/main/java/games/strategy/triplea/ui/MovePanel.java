@@ -153,7 +153,7 @@ public class MovePanel extends AbstractMovePanel {
     if (transports.isEmpty()) {
       return;
     }
-    transports.sort(UnitComparator.getLoadableTransportsComparator(transports, route, getUnitOwner(transports)));
+    transports.sort(UnitComparator.getLoadableTransportsComparator(route, getUnitOwner(transports)));
   }
 
   /**
@@ -163,8 +163,7 @@ public class MovePanel extends AbstractMovePanel {
     if (transports.isEmpty()) {
       return;
     }
-    transports
-        .sort(UnitComparator.getUnloadableTransportsComparator(transports, route, getUnitOwner(transports), true));
+    transports.sort(UnitComparator.getUnloadableTransportsComparator(route, getUnitOwner(transports), true));
   }
 
   /**
@@ -219,8 +218,7 @@ public class MovePanel extends AbstractMovePanel {
         capacityMap.add(transport, TransportUtils.getTransportCost(transporting));
       }
       boolean hasChanged;
-      final Comparator<Unit> increasingCapacityComparator =
-          UnitComparator.getIncreasingCapacityComparator(sortedTransports);
+      final Comparator<Unit> increasingCapacityComparator = UnitComparator.getIncreasingCapacityComparator();
 
       // This algorithm will ensure that it is actually possible to distribute
       // the selected units amongst the current selection of chosen transports.
@@ -286,7 +284,7 @@ public class MovePanel extends AbstractMovePanel {
     sortUnitsToMove(allUnitsInSelectedTransports, route);
     final List<Unit> selectedUnitsToUnload = new ArrayList<>();
     final List<Unit> sortedTransports = new ArrayList<>(chosenTransports);
-    sortedTransports.sort(UnitComparator.getIncreasingCapacityComparator(sortedTransports));
+    sortedTransports.sort(UnitComparator.getIncreasingCapacityComparator());
     final Collection<Unit> selectedUnits = new ArrayList<>(unitsToUnload);
 
     // First pass: choose one unit from each selected transport

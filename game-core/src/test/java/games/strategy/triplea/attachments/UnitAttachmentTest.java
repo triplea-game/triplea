@@ -14,6 +14,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -116,7 +118,7 @@ public class UnitAttachmentTest {
     final Map<String, Tuple<String, IntegerMap<UnitType>>> mapReference = attachment.getWhenCapturedChangesInto();
 
     final int random1 = rand.nextInt();
-    final IntegerMap<UnitType> expected1 = new IntegerMap<>(unit1, random1);
+    final IntegerMap<UnitType> expected1 = new IntegerMap<>(ImmutableMap.of(unit1, random1));
 
     attachment.setWhenCapturedChangesInto(concatWithColon(from, to, trueString, unit1String, String.valueOf(random1)));
     assertEquals(Tuple.of(trueString, expected1), mapReference.get(from + ":" + to));

@@ -1,6 +1,6 @@
 package games.strategy.engine.data.util;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doReturn;
@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ public final class ResourceCollectionUtilsTest {
 
   private ResourceCollection createResourceCollection(final Resource... resources) {
     final ResourceCollection resourceCollection = new ResourceCollection(data);
-    resourceCollection.add(new IntegerMap<>(Arrays.stream(resources).collect(toList()), 42));
+    resourceCollection.add(new IntegerMap<>(Arrays.stream(resources).collect(toMap(Function.identity(), r -> 42))));
     return resourceCollection;
   }
 
