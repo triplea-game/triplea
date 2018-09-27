@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -23,6 +24,8 @@ import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
@@ -87,16 +90,13 @@ public class InGameLobbyWatcher {
    */
   public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
       final InGameLobbyWatcher oldWatcher) {
-    final String host = System.getProperty(LOBBY_HOST);
-    final String port = System.getProperty(LOBBY_PORT);
-    final String hostedBy = System.getProperty(LOBBY_GAME_HOSTED_BY);
+    final @Nullable String host = getLobbySystemProperty(LOBBY_HOST);
+    final @Nullable String port = getLobbySystemProperty(LOBBY_PORT);
+    final @Nullable String hostedBy = getLobbySystemProperty(LOBBY_GAME_HOSTED_BY);
     if (host == null || port == null) {
       return null;
     }
-    // clear the properties
-    System.clearProperty(LOBBY_HOST);
-    System.clearProperty(LOBBY_PORT);
-    System.clearProperty(LOBBY_GAME_HOSTED_BY);
+
     final IConnectionLogin login = challenge -> {
       final Map<String, String> response = new HashMap<>();
       response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -117,6 +117,19 @@ public class InGameLobbyWatcher {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return null;
     }
+  }
+
+  @VisibleForTesting
+  static @Nullable String getLobbySystemProperty(final String key) {
+    final String backupKey = key + ".backup";
+    final @Nullable String value = System.getProperty(key);
+    if (value != null) {
+      System.clearProperty(key);
+      System.setProperty(backupKey, value);
+      return value;
+    }
+
+    return System.getProperty(backupKey);
   }
 
   void setGame(final IGame game) {
