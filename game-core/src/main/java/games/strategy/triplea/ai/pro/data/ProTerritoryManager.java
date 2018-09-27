@@ -119,12 +119,9 @@ public class ProTerritoryManager {
     for (final Territory t : attackMap.keySet()) {
       final ProTerritory patd = attackMap.get(t);
 
-      // Check if I can win without amphib units and ignore AA since max units might have lots of planes
-      List<Unit> defenders = CollectionUtils.getMatches(patd.getMaxEnemyDefenders(player, data),
-          ProMatches.unitIsEnemyAndNotAa(player, data));
-      if (isIgnoringRelationships) {
-        defenders = new ArrayList<>(t.getUnits());
-      }
+      // Check if I can win without amphib units
+      final List<Unit> defenders =
+          new ArrayList<>(isIgnoringRelationships ? t.getUnits() : patd.getMaxEnemyDefenders(player, data));
       patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, patd.getMaxUnits(), defenders, new HashSet<>()));
 
       // Add in amphib units if I can't win without them
