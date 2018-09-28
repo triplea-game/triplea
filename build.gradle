@@ -17,6 +17,10 @@ check {
     dependsOn 'validateYamls'
 }
 
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 task validateYamls(group: 'verification', description: 'Validates YAML files.') {
     doLast {
         def lobbyServerYamlFile = file('lobby_server.yaml')
