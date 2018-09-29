@@ -78,6 +78,13 @@ public class JButtonBuilder {
   }
 
   /**
+   * Sets the button title to the system's Cancel button text.
+   */
+  public JButtonBuilder cancelTitle() {
+    return title(UIManager.getString("OptionPane.cancelButtonText"));
+  }
+
+  /**
    * Toggles the button as 'selected', which gives keyboard focus to the button. By default button is not selected.
    */
   public JButtonBuilder selected(final boolean value) {

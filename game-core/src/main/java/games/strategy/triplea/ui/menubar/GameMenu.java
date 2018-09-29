@@ -31,6 +31,7 @@ import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
@@ -74,13 +75,17 @@ final class GameMenu extends JMenu {
     addRollDice();
     addMenuItemWithHotkey(SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null)),
         KeyEvent.VK_B);
+    addSeparator();
+    addMenuItemWithHotkey(new FindTerritoryAction(frame), KeyEvent.VK_F)
+        .setMnemonic(KeyEvent.VK_F);
   }
 
-  private void addMenuItemWithHotkey(final Action action, final int keyCode) {
+  private JMenuItem addMenuItemWithHotkey(final Action action, final int keyCode) {
     final JMenuItem gameMenuItem = add(action);
     gameMenuItem.setMnemonic(keyCode);
     gameMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(keyCode, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    return gameMenuItem;
   }
 
   private void addEditMode() {
