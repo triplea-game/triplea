@@ -3,10 +3,13 @@ package games.strategy.triplea.ui;
 import java.awt.Frame;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.ui.SwingComponents;
@@ -53,10 +56,14 @@ final class SelectTerritoryDialog extends JDialog {
 
   Optional<Territory> open() {
     setVisible(true);
+    return getSelectedTerritory(result, territoryComboBox::getSelectedItem);
+  }
 
+  @VisibleForTesting
+  static Optional<Territory> getSelectedTerritory(final Result result, final Supplier<Object> selectedItemSupplier) {
     switch (result) {
       case OK:
-        return Optional.of((Territory) territoryComboBox.getSelectedItem());
+        return Optional.of((Territory) selectedItemSupplier.get());
       case CANCEL:
         return Optional.empty();
       default:
@@ -70,7 +77,8 @@ final class SelectTerritoryDialog extends JDialog {
     this.result = result;
   }
 
-  private enum Result {
+  @VisibleForTesting
+  enum Result {
     OK, CANCEL
   }
 }
