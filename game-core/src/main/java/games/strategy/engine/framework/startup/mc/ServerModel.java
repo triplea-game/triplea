@@ -182,7 +182,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           .password(System.getProperty(SERVER_PASSWORD))
           .build());
     }
-    final String playername = ClientSetting.PLAYER_NAME.value();
+    final String playername = ClientSetting.playerName.value();
     final Interruptibles.Result<ServerOptions> optionsResult = Interruptibles
         .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
           final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
@@ -194,7 +194,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           }
           final String name = options.getName();
           log.fine("Server playing as:" + name);
-          ClientSetting.PLAYER_NAME.save(name);
+          ClientSetting.playerName.save(name);
           ClientSetting.flush();
           final int port = options.getPort();
           if (port >= 65536 || port == 0) {

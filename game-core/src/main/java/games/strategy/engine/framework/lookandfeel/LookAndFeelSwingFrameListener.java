@@ -30,9 +30,9 @@ public final class LookAndFeelSwingFrameListener implements Consumer<String> {
    */
   public static void register(final JFrame component) {
     final Consumer<String> listener = new LookAndFeelSwingFrameListener(component);
-    ClientSetting.LOOK_AND_FEEL_PREF.addSaveListener(listener);
+    ClientSetting.lookAndFeel.addSaveListener(listener);
     SwingComponents.addWindowClosingListener(component,
-        () -> ClientSetting.LOOK_AND_FEEL_PREF.removeSaveListener(listener));
+        () -> ClientSetting.lookAndFeel.removeSaveListener(listener));
   }
 
   @Override

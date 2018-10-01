@@ -36,128 +36,103 @@ import lombok.extern.java.Log;
  *
  * <code><pre>
  * // loading a value
- * String value = ClientSetting.AI_PAUSE_DURATION.value();
+ * String value = ClientSetting.aiPauseDuration.value();
  *
  * // saving value
- * ClientSetting.AI_PAUSE_DURATION.save(500);
+ * ClientSetting.aiPauseDuration.save(500);
  * ClientSetting.flush();
  * </pre></code>
  */
 @Log
-public enum ClientSetting implements GameSetting {
-  AI_PAUSE_DURATION(400),
-
-  ARROW_KEY_SCROLL_SPEED(70),
-
-  BATTLE_CALC_SIMULATION_COUNT_DICE(200),
-
-  BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK(500),
-
-  CONFIRM_DEFENSIVE_ROLLS(false),
-
-  CONFIRM_ENEMY_CASUALTIES(false),
-
-  DEFAULT_GAME_NAME_PREF("Big World : 1942"),
-
-  DEFAULT_GAME_URI_PREF,
-
-  FASTER_ARROW_KEY_SCROLL_MULTIPLIER(2),
-
-  SPACE_BAR_CONFIRMS_CASUALTIES(true),
-
-  LOBBY_LAST_USED_HOST,
-
-  LOBBY_LAST_USED_PORT,
-
-  LOOK_AND_FEEL_PREF(LookAndFeel.getDefaultLookAndFeelClassName()),
-
-  MAP_EDGE_SCROLL_SPEED(30),
-
-  MAP_EDGE_SCROLL_ZONE_SIZE(30),
-
-  MAP_FOLDER_OVERRIDE,
-
-  MAP_LIST_OVERRIDE,
-
-  PROXY_CHOICE,
-
-  PROXY_HOST,
-
-  PROXY_PORT,
-
-  SAVE_GAMES_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames")),
-
-  SERVER_OBSERVER_JOIN_WAIT_TIME(180),
-
-  SERVER_START_GAME_SYNC_WAIT_TIME(180),
-
-  SHOW_BATTLES_WHEN_OBSERVING(true),
-
-  SHOW_BETA_FEATURES(false),
-
-  SHOW_CONSOLE(false),
-
-  TEST_LOBBY_HOST,
-
-  TEST_LOBBY_PORT,
-
-  TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY(true),
-
-  TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE,
-
-  TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES,
-
-  TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP(true),
-
-  TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME,
-
-  TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME,
-
-  USER_MAPS_FOLDER_PATH(new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps")),
-
-  WHEEL_SCROLL_AMOUNT(60),
-
-  PLAYER_NAME(SystemProperties.getUserName()),
-
-  USE_EXPERIMENTAL_JAVAFX_UI(false),
-
+public final class ClientSetting implements GameSetting {
+  public static final ClientSetting aiPauseDuration = new ClientSetting("AI_PAUSE_DURATION", 400);
+  public static final ClientSetting arrowKeyScrollSpeed = new ClientSetting("ARROW_KEY_SCROLL_SPEED", 70);
+  public static final ClientSetting battleCalcSimulationCountDice =
+      new ClientSetting("BATTLE_CALC_SIMULATION_COUNT_DICE", 200);
+  public static final ClientSetting battleCalcSimulationCountLowLuck =
+      new ClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
+  public static final ClientSetting confirmDefensiveRolls = new ClientSetting("CONFIRM_DEFENSIVE_ROLLS", false);
+  public static final ClientSetting confirmEnemyCasualties = new ClientSetting("CONFIRM_ENEMY_CASUALTIES", false);
+  public static final ClientSetting defaultGameName = new ClientSetting("DEFAULT_GAME_NAME_PREF", "Big World : 1942");
+  public static final ClientSetting defaultGameUri = new ClientSetting("DEFAULT_GAME_URI_PREF");
+  public static final ClientSetting fasterArrowKeyScrollMultiplier =
+      new ClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
+  public static final ClientSetting spaceBarConfirmsCasualties =
+      new ClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
+  public static final ClientSetting lobbyLastUsedHost = new ClientSetting("LOBBY_LAST_USED_HOST");
+  public static final ClientSetting lobbyLastUsedPort = new ClientSetting("LOBBY_LAST_USED_PORT");
+  public static final ClientSetting lookAndFeel =
+      new ClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
+  public static final ClientSetting mapEdgeScrollSpeed = new ClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
+  public static final ClientSetting mapEdgeScrollZoneSize = new ClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
+  public static final ClientSetting mapFolderOverride = new ClientSetting("MAP_FOLDER_OVERRIDE");
+  public static final ClientSetting mapListOverride = new ClientSetting("MAP_LIST_OVERRIDE");
+  public static final ClientSetting proxyChoice = new ClientSetting("PROXY_CHOICE");
+  public static final ClientSetting proxyHost = new ClientSetting("PROXY_HOST");
+  public static final ClientSetting proxyPort = new ClientSetting("PROXY_PORT");
+  public static final ClientSetting saveGamesFolderPath =
+      new ClientSetting("SAVE_GAMES_FOLDER_PATH", new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames"));
+  public static final ClientSetting serverObserverJoinWaitTime =
+      new ClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
+  public static final ClientSetting serverStartGameSyncWaitTime =
+      new ClientSetting("SERVER_START_GAME_SYNC_WAIT_TIME", 180);
+  public static final ClientSetting showBattlesWhenObserving =
+      new ClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
+  public static final ClientSetting showBetaFeatures = new ClientSetting("SHOW_BETA_FEATURES", false);
+  public static final ClientSetting showConsole = new ClientSetting("SHOW_CONSOLE", false);
+  public static final ClientSetting testLobbyHost = new ClientSetting("TEST_LOBBY_HOST");
+  public static final ClientSetting testLobbyPort = new ClientSetting("TEST_LOBBY_PORT");
+  public static final ClientSetting firstTimeThisVersion =
+      new ClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
+  public static final ClientSetting lastCheckForEngineUpdate =
+      new ClientSetting("TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE");
+  public static final ClientSetting lastCheckForMapUpdates = new ClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES");
+  public static final ClientSetting promptToDownloadTutorialMap =
+      new ClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
+  public static final ClientSetting tripleaServerObserverJointWaitTime =
+      new ClientSetting("TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME");
+  public static final ClientSetting tripleaServerStartGameSyncWaitTime =
+      new ClientSetting("TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME");
+  public static final ClientSetting userMapsFolderPath = new ClientSetting(
+      "USER_MAPS_FOLDER_PATH",
+      new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps"));
+  public static final ClientSetting wheelScrollAmount = new ClientSetting("WHEEL_SCROLL_AMOUNT", 60);
+  public static final ClientSetting playerName = new ClientSetting("PLAYER_NAME", SystemProperties.getUserName());
+  public static final ClientSetting useExperimentalJavaFxUi = new ClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
   /* for testing purposes, to be used in unit tests only */
   @VisibleForTesting
-  TEST_SETTING,
-
-  SELECTED_GAME_LOCATION,
-
-  DICE_SERVER_FOR_FORUM_GAMES,
-
-  FORUM_COMBO_BOX_SELECTION,
-
-  DICE_SERVER_FOR_PBEM_GAMES,
-
-  LOGGING_VERBOSITY(Level.WARNING.getName());
+  public static final ClientSetting test = new ClientSetting("TEST_SETTING");
+  public static final ClientSetting selectedGameLocation = new ClientSetting("SELECTED_GAME_LOCATION");
+  public static final ClientSetting diceServerForForumGames = new ClientSetting("DICE_SERVER_FOR_FORUM_GAMES");
+  public static final ClientSetting forumComboBoxSelection = new ClientSetting("FORUM_COMBO_BOX_SELECTION");
+  public static final ClientSetting diceServerForPbemGames = new ClientSetting("DICE_SERVER_FOR_PBEM_GAMES");
+  public static final ClientSetting loggingVerbosity = new ClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
+  private final String name;
   public final String defaultValue;
   private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
 
-  ClientSetting(final String defaultValue) {
+  ClientSetting(final String name, final String defaultValue) {
+    this.name = name;
     this.defaultValue = defaultValue;
   }
 
-  ClientSetting() {
-    this("");
+  ClientSetting(final String name) {
+    this(name, "");
   }
 
-  ClientSetting(final File file) {
-    this(file.getAbsolutePath());
+  ClientSetting(final String name, final File file) {
+    this(name, file.getAbsolutePath());
   }
 
-  ClientSetting(final int defaultValue) {
-    this(String.valueOf(defaultValue));
+  ClientSetting(final String name, final int defaultValue) {
+    this(name, String.valueOf(defaultValue));
   }
 
-  ClientSetting(final boolean defaultValue) {
-    this(String.valueOf(defaultValue));
+  ClientSetting(final String name, final boolean defaultValue) {
+    this(name, String.valueOf(defaultValue));
   }
 
   /**
@@ -233,9 +208,9 @@ public enum ClientSetting implements GameSetting {
     onSaveActions.forEach(saveAction -> saveAction.accept(Strings.nullToEmpty(newValue)));
 
     if (newValue == null) {
-      getPreferences().remove(name());
+      getPreferences().remove(name);
     } else {
-      getPreferences().put(name(), newValue);
+      getPreferences().put(name, newValue);
     }
   }
 
@@ -264,11 +239,33 @@ public enum ClientSetting implements GameSetting {
   @Override
   @Nonnull
   public String value() {
-    return Strings.nullToEmpty(getPreferences().get(name(), defaultValue));
+    return Strings.nullToEmpty(getPreferences().get(name, defaultValue));
   }
 
   @Override
   public void resetAndFlush() {
     saveAndFlush(defaultValue);
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == this) {
+      return true;
+    } else if (!(obj instanceof ClientSetting)) {
+      return false;
+    }
+
+    final ClientSetting other = (ClientSetting) obj;
+    return name.equals(other.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 }

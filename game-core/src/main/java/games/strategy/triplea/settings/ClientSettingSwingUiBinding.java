@@ -35,7 +35,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Time (in milliseconds) between AI moves") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000);
+      return intValueRange(ClientSetting.aiPauseDuration, 0, 3000);
     }
   },
 
@@ -45,7 +45,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How fast the map is scrolled (in pixels) when using the arrow keys") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.ARROW_KEY_SCROLL_SPEED, 0, 500);
+      return intValueRange(ClientSetting.arrowKeyScrollSpeed, 0, 500);
     }
   },
 
@@ -55,7 +55,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Default battle simulation count in dice games") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE, 10, 100000);
+      return intValueRange(ClientSetting.battleCalcSimulationCountDice, 10, 100000);
     }
   },
 
@@ -65,7 +65,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Default battle simulation count in low luck games") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, 10, 100000);
+      return intValueRange(ClientSetting.battleCalcSimulationCountLowLuck, 10, 100000);
     }
   },
 
@@ -75,7 +75,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Whether battle should proceed until you confirm the dice you roll while on defense") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.CONFIRM_DEFENSIVE_ROLLS);
+      return booleanRadioButtons(ClientSetting.confirmDefensiveRolls);
     }
   },
 
@@ -85,7 +85,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Whether battles should proceed only once every player has confirmed the casualties selected") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.CONFIRM_ENEMY_CASUALTIES);
+      return booleanRadioButtons(ClientSetting.confirmEnemyCasualties);
     }
   },
 
@@ -96,7 +96,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "When set to false, the confirm casualty button has to always be clicked.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES);
+      return booleanRadioButtons(ClientSetting.spaceBarConfirmsCasualties);
     }
   },
 
@@ -108,9 +108,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return selectionBox(
-          ClientSetting.LOOK_AND_FEEL_PREF,
+          ClientSetting.lookAndFeel,
           LookAndFeel.getLookAndFeelAvailableList(),
-          ClientSetting.LOOK_AND_FEEL_PREF.value(),
+          ClientSetting.lookAndFeel.value(),
           s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", ""));
     }
   },
@@ -121,7 +121,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How fast the map scrolls (in pixels) when the mouse is moved close to the map edge") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_SPEED, 0, 300);
+      return intValueRange(ClientSetting.mapEdgeScrollSpeed, 0, 300);
     }
   },
 
@@ -131,7 +131,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How close to the edge of the map (in pixels) the mouse needs to be for the map to start scrolling") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300);
+      return intValueRange(ClientSetting.mapEdgeScrollZoneSize, 0, 300);
     }
   },
 
@@ -141,7 +141,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Maximum time (in seconds) to wait for all clients to sync data on game start") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME, 120, 1500);
+      return intValueRange(ClientSetting.serverStartGameSyncWaitTime, 120, 1500);
     }
   },
 
@@ -151,7 +151,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Maximum time (in seconds) for host to wait for clients and observers") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME, 60, 1500);
+      return intValueRange(ClientSetting.serverObserverJoinWaitTime, 60, 1500);
     }
   },
 
@@ -161,7 +161,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Whether to show a battle if you are only observing.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.SHOW_BATTLES_WHEN_OBSERVING);
+      return booleanRadioButtons(ClientSetting.showBattlesWhenObserving);
     }
   },
 
@@ -173,7 +173,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "Restart to fully activate") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.SHOW_BETA_FEATURES);
+      return booleanRadioButtons(ClientSetting.showBetaFeatures);
     }
   },
 
@@ -183,7 +183,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Shows the TripleA console, closing the window will turn this setting off") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.SHOW_CONSOLE);
+      return booleanRadioButtons(ClientSetting.showConsole);
     }
   },
 
@@ -194,7 +194,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "update it, and put the path to that file here.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return filePath(ClientSetting.MAP_LIST_OVERRIDE);
+      return filePath(ClientSetting.mapListOverride);
     }
   },
 
@@ -204,7 +204,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Overrides the IP address or hostname used to connect to the lobby. Useful for connecting to a test lobby.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return textField(ClientSetting.TEST_LOBBY_HOST);
+      return textField(ClientSetting.testLobbyHost);
     }
   },
 
@@ -215,7 +215,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "Set to 0 for no override") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true);
+      return intValueRange(ClientSetting.testLobbyPort, 1, 65535, true);
     }
   },
 
@@ -225,7 +225,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Setting to true will trigger for any first time prompts to be shown") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY);
+      return booleanRadioButtons(ClientSetting.firstTimeThisVersion);
     }
   },
 
@@ -235,7 +235,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "The folder where saved game files will be stored by default") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return folderPath(ClientSetting.SAVE_GAMES_FOLDER_PATH);
+      return folderPath(ClientSetting.saveGamesFolderPath);
     }
   },
 
@@ -245,7 +245,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "The folder where game engine will download and find map files.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return folderPath(ClientSetting.USER_MAPS_FOLDER_PATH);
+      return folderPath(ClientSetting.userMapsFolderPath);
     }
   },
 
@@ -255,7 +255,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "How fast the map will scroll (in pixels) when using the mouse wheel") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return intValueRange(ClientSetting.WHEEL_SCROLL_AMOUNT, 10, 300);
+      return intValueRange(ClientSetting.wheelScrollAmount, 10, 300);
     }
   },
 
@@ -277,7 +277,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "Just a proof-of-concept. Requires a restart.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return booleanRadioButtons(ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI);
+      return booleanRadioButtons(ClientSetting.useExperimentalJavaFxUi);
     }
   };
 

@@ -66,7 +66,7 @@ public final class ClientContext {
 
   public static List<DownloadFileDescription> getMapDownloadList() {
     final String mapDownloadListUrl =
-        (ClientSetting.MAP_LIST_OVERRIDE.isSet()) ? ClientSetting.MAP_LIST_OVERRIDE.value()
+        (ClientSetting.mapListOverride.isSet()) ? ClientSetting.mapListOverride.value()
             : UrlConstants.MAP_DOWNLOAD_LIST.toString();
 
     return new DownloadRunnable(mapDownloadListUrl).getDownloads();
