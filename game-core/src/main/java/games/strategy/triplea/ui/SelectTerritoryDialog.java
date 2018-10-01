@@ -12,6 +12,7 @@ import javax.swing.JDialog;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.Territory;
+import games.strategy.ui.AutoCompletion;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
@@ -26,6 +27,7 @@ final class SelectTerritoryDialog extends JDialog {
     super(owner, title, true);
 
     territoryComboBox = new JComboBox<>(territories.toArray(new Territory[0]));
+    AutoCompletion.enable(territoryComboBox);
     final JButton okButton = JButtonBuilder.builder()
         .okTitle()
         .actionListener(() -> close(Result.OK))
