@@ -1,4 +1,4 @@
-package games.strategy.ui;
+package swinglib;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +25,7 @@ import javax.swing.text.PlainDocument;
  *
  * @param <E> The type of the combo box elements.
  */
-public final class AutoCompletion<E> extends PlainDocument {
+final class AutoCompletion<E> extends PlainDocument {
   private static final long serialVersionUID = 3467837392266952714L;
 
   private final JComboBox<E> comboBox;
@@ -114,7 +114,7 @@ public final class AutoCompletion<E> extends PlainDocument {
     highlightCompletedText(0);
   }
 
-  public static <E> void enable(final JComboBox<E> comboBox) {
+  static <E> void enable(final JComboBox<E> comboBox) {
     // has to be editable
     comboBox.setEditable(true);
     // change the editor's document
