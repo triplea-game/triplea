@@ -87,6 +87,7 @@ subprojects {
             '-Xep:ClassCanBeStatic:ERROR',
             '-Xep:DefaultCharset:ERROR',
             '-Xep:FutureReturnValueIgnored:ERROR',
+            '-Xep:ImmutableEnumChecker:ERROR',
             '-Xep:InconsistentCapitalization:ERROR',
             '-Xep:JdkObsolete:ERROR',
             '-Xep:MissingOverride:ERROR',
