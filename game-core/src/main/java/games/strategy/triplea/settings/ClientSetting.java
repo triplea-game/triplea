@@ -1,9 +1,9 @@
 package games.strategy.triplea.settings;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -11,10 +11,13 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -136,9 +139,10 @@ public enum ClientSetting implements GameSetting {
   LOGGING_VERBOSITY(Level.WARNING.getName());
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
+  @GuardedBy("onSaveActionsBySetting")
+  private static final Multimap<ClientSetting, Consumer<String>> onSaveActionsBySetting = HashMultimap.create();
 
   public final String defaultValue;
-  private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
 
   ClientSetting(final String defaultValue) {
     this.defaultValue = defaultValue;
@@ -183,12 +187,17 @@ public enum ClientSetting implements GameSetting {
   @Override
   public void addSaveListener(final Consumer<String> saveListener) {
     Preconditions.checkNotNull(saveListener);
-    onSaveActions.add(saveListener);
+    synchronized (onSaveActionsBySetting) {
+      onSaveActionsBySetting.put(this, saveListener);
+    }
   }
 
   @Override
   public void removeSaveListener(final Consumer<String> saveListener) {
-    onSaveActions.remove(saveListener);
+    Preconditions.checkNotNull(saveListener);
+    synchronized (onSaveActionsBySetting) {
+      onSaveActionsBySetting.remove(this, saveListener);
+    }
   }
 
   public static void showSettingsWindow() {
@@ -230,6 +239,10 @@ public enum ClientSetting implements GameSetting {
 
   @Override
   public void save(final String newValue) {
+    final Collection<Consumer<String>> onSaveActions;
+    synchronized (onSaveActionsBySetting) {
+      onSaveActions = new ArrayList<>(onSaveActionsBySetting.get(this));
+    }
     onSaveActions.forEach(saveAction -> saveAction.accept(Strings.nullToEmpty(newValue)));
 
     if (newValue == null) {
