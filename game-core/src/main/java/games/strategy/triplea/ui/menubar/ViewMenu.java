@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -33,6 +34,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -45,6 +47,7 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.AbstractUiContext;
+import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
@@ -90,6 +93,8 @@ final class ViewMenu extends JMenu {
     addShowCommentLog();
     addTabbedProduction();
     addShowGameUuid();
+    addSeparator();
+    addFindTerritory();
 
     showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
   }
@@ -523,5 +528,12 @@ final class ViewMenu extends JMenu {
     chatTimeBox.setSelected(false);
     add(chatTimeBox);
     chatTimeBox.setEnabled(frame.hasChat());
+  }
+
+  private void addFindTerritory() {
+    final JMenuItem menuItem = add(new FindTerritoryAction(frame));
+    menuItem
+        .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+    menuItem.setMnemonic(KeyEvent.VK_F);
   }
 }
