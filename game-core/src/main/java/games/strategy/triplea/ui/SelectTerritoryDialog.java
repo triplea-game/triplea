@@ -26,7 +26,7 @@ final class SelectTerritoryDialog extends JDialog {
   SelectTerritoryDialog(final Frame owner, final String title, final Collection<Territory> territories) {
     super(owner, title, true);
 
-    territoryComboBox = new JComboBox<>(territories.toArray(new Territory[0]));
+    territoryComboBox = new JComboBox<>(territories.stream().sorted().toArray(Territory[]::new));
     AutoCompletion.enable(territoryComboBox);
     final JButton okButton = JButtonBuilder.builder()
         .okTitle()
