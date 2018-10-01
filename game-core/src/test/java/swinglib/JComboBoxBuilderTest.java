@@ -1,48 +1,40 @@
 package swinglib;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.awt.Component;
 import java.awt.event.ItemEvent;
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JComboBox;
+import javax.swing.text.JTextComponent;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.triplea.settings.ClientSetting;
-
-
 @ExtendWith(MockitoExtension.class)
-public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
+class JComboBoxBuilderTest {
   @Mock
   private ItemEvent mockItemEvent;
 
   @Test
-  public void buildInvalidEmptyOptionSet() {
-    assertThrows(IllegalArgumentException.class, () -> JComboBoxBuilder.builder()
-        .menuOption("")
-        .build());
+  void builderNoItemsSpecified() {
+    assertThrows(IllegalStateException.class, JComboBoxBuilder.builder(Object.class)::build);
   }
 
   @Test
-  public void builderNoMenuOptionSpecified() {
-    assertThrows(IllegalStateException.class, JComboBoxBuilder.builder()::build);
-  }
-
-  @Test
-  public void basicBuilderWithMenuOptions() {
-    final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOption("option 1")
-        .menuOption("option 2")
-        .menuOption("option 3")
+  void basicBuilderWithItems() {
+    final JComboBox<String> box = JComboBoxBuilder.builder(String.class)
+        .item("option 1")
+        .item("option 2")
+        .item("option 3")
         .build();
 
     MatcherAssert.assertThat(box.getSelectedIndex(), Is.is(0));
@@ -54,16 +46,14 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void itemListener() {
-
+  void itemSelectedAction() {
     final AtomicInteger triggerCount = new AtomicInteger(0);
-
     final String secondOption = "option 2";
-    final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOption("option 1")
-        .menuOption(secondOption)
-        .menuOption("option 3")
-        .itemListener(value -> {
+    final JComboBox<String> box = JComboBoxBuilder.builder(String.class)
+        .item("option 1")
+        .item(secondOption)
+        .item("option 3")
+        .itemSelectedAction(value -> {
           if (value.equals(secondOption)) {
             triggerCount.incrementAndGet();
           }
@@ -73,48 +63,14 @@ public class JComboBoxBuilderTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void useLastSelectionAsFutureDefaultWithStringKey() {
-    final String settingKey = "settingKey";
-    ClientSetting.save(settingKey, "");
-    MatcherAssert.assertThat("establish a preconditions state to avoid pollution between runs",
-        ClientSetting.load(settingKey), Is.is(""));
-
-    final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOption("option 1")
-        .menuOption("option 2")
-        .useLastSelectionAsFutureDefault(settingKey)
-        .build();
-    Mockito.when(mockItemEvent.getStateChange()).thenReturn(ItemEvent.SELECTED);
-    Mockito.when(mockItemEvent.getSource()).thenReturn(box);
-    final String valueFromEvent = "test value";
-    Mockito.when(mockItemEvent.getItem()).thenReturn(valueFromEvent);
-    Arrays.stream(box.getItemListeners())
-        .forEach(listener -> listener.itemStateChanged(mockItemEvent));
-
-    MatcherAssert.assertThat(
-        "selecting the 1st index should be 'option 2', we expect that to "
-            + "have been flushed to client settings",
-        ClientSetting.load(settingKey), Is.is(valueFromEvent));
-  }
-
-  @Test
-  public void useLastSelectionAsFutureDefaultWithClientKey() {
-    ClientSetting.TEST_SETTING.saveAndFlush("");
-
-    final JComboBox<String> box = JComboBoxBuilder.builder()
-        .menuOption("option 1")
-        .menuOption("option 2")
-        .useLastSelectionAsFutureDefault(ClientSetting.TEST_SETTING)
+  void enableAutoCompleteShouldChangeComboBoxEditorComponentDocumentType() {
+    final JComboBox<Object> comboBox = JComboBoxBuilder.builder(Object.class)
+        .item(new Object())
+        .enableAutoComplete()
         .build();
 
-    Mockito.when(mockItemEvent.getStateChange()).thenReturn(ItemEvent.SELECTED);
-    Mockito.when(mockItemEvent.getSource()).thenReturn(box);
-    final String valueFromEvent = "test value";
-    Mockito.when(mockItemEvent.getItem()).thenReturn(valueFromEvent);
-    Arrays.stream(box.getItemListeners())
-        .forEach(listener -> listener.itemStateChanged(mockItemEvent));
-
-    MatcherAssert.assertThat("We expect any selected value to have been bound to our test setting",
-        ClientSetting.TEST_SETTING.value(), Is.is(valueFromEvent));
+    final Component editorComponent = comboBox.getEditor().getEditorComponent();
+    assertThat(editorComponent, is(instanceOf(JTextComponent.class)));
+    assertThat(((JTextComponent) editorComponent).getDocument(), is(instanceOf(AutoCompletion.class)));
   }
 }

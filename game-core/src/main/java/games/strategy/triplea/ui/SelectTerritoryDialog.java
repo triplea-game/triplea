@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,6 +15,7 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.Territory;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
+import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;
 
 final class SelectTerritoryDialog extends JDialog {
@@ -25,7 +27,10 @@ final class SelectTerritoryDialog extends JDialog {
   SelectTerritoryDialog(final Frame owner, final String title, final Collection<Territory> territories) {
     super(owner, title, true);
 
-    territoryComboBox = new JComboBox<>(territories.toArray(new Territory[0]));
+    territoryComboBox = JComboBoxBuilder.builder(Territory.class)
+        .items(territories.stream().sorted().collect(Collectors.toList()))
+        .enableAutoComplete()
+        .build();
     final JButton okButton = JButtonBuilder.builder()
         .okTitle()
         .actionListener(() -> close(Result.OK))
