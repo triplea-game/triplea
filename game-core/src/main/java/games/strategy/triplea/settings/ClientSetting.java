@@ -44,6 +44,7 @@ import lombok.extern.java.Log;
  * </pre></code>
  */
 @Log
+@SuppressWarnings("ImmutableEnumChecker") // conscious decision to violate enum immutability
 public enum ClientSetting implements GameSetting {
   AI_PAUSE_DURATION(400),
 
