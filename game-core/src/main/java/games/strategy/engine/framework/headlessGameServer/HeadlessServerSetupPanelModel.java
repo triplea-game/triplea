@@ -25,7 +25,7 @@ public class HeadlessServerSetupPanelModel extends SetupPanelModel {
 
   @Override
   protected void setGameTypePanel(final ISetupPanel panel) {
-    if (panel == null || panel instanceof  HeadlessServerSetup) {
+    if (panel == null || panel instanceof HeadlessServerSetup) {
       super.setGameTypePanel(panel);
     } else {
       throw new IllegalArgumentException("Invalid panel of type " + panel.getClass());

@@ -102,11 +102,11 @@ class WireMockSystemTest {
         ErrorReportingHttpClient.newClient(hostUri, timeoutMillis, timeoutMillis),
         ErrorReport::new,
         Collections.emptyList())
-        .sendErrorReport(ErrorReportDetails.builder()
-            .messageFromUser(MESSAGE_FROM_USER)
-            .gameVersion(GAME_VERSION)
-            .logRecord(logRecord)
-            .build());
+            .sendErrorReport(ErrorReportDetails.builder()
+                .messageFromUser(MESSAGE_FROM_USER)
+                .gameVersion(GAME_VERSION)
+                .logRecord(logRecord)
+                .build());
   }
 
   @Test

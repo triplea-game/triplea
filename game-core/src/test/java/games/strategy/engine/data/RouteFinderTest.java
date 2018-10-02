@@ -29,13 +29,16 @@ public class RouteFinderTest {
   /**
    * This is an adjacency matrix.
    * It's representing this graph:
-   * <pre><code>
+   *
+   * <pre>
+   * <code>
    * (7)---(5)---(4)
    *  |     |     |
    * (8)---(6)---(3)---(0)
    *              |     |
    *             (2)---(1)
-   * </code></pre>
+   * </code>
+   * </pre>
    */
   private final int[][] graph = {
       {0, 1, 0, 1, 0, 0, 0, 0, 0},
