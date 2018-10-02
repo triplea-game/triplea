@@ -1343,7 +1343,7 @@ public final class TripleAFrame extends JFrame {
             fuelCostPanel.add(label,
                 new GridBagConstraints(0, count, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(0, 0, 0, 0), 0, 0));
-            fuelCostPanel.add(uiContext.getResourceImageFactory().getResourcesPanel(entry.getValue(), data),
+            fuelCostPanel.add(uiContext.getResourceImageFactory().getResourcesPanel(entry.getValue()),
                 new GridBagConstraints(1, count++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(0, 0, 0, 0), 0, 0));
             if (!entry.getKey().getResources().has(entry.getValue().getResourcesCopy())) {

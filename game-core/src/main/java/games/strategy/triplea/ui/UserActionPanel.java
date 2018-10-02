@@ -160,7 +160,9 @@ public class UserActionPanel extends ActionPanel {
       userActionButtonPanel.add(getOtherPlayerFlags(uaa), new GridBagConstraints(0, row, 1, 1, 0.0, 0.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(topInset, 0, bottomInset, 4), 0, 0));
 
-      final JButton button = new JButton(getActionButtonText(uaa));
+      final JButton button = getMap().getUiContext().getResourceImageFactory().getResourcesButton(
+          new ResourceCollection(getData(), uaa.getCostResources()),
+          UserActionText.getInstance().getButtonText(uaa.getText()));
       button.addActionListener(ae -> {
         selectUserActionButton.setEnabled(false);
         doneButton.setEnabled(false);
@@ -214,12 +216,6 @@ public class UserActionPanel extends ActionPanel {
       panel.add(new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }
     return panel;
-  }
-
-  private String getActionButtonText(final UserActionAttachment paa) {
-    final String costString = paa.getCostResources().isEmpty() ? ""
-        : "[" + ResourceCollection.toString(paa.getCostResources(), getData()) + "] ";
-    return costString + UserActionText.getInstance().getButtonText(paa.getText());
   }
 
   private static JLabel getActionDescriptionLabel(final UserActionAttachment paa) {

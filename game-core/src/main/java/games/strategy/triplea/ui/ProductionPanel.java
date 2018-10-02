@@ -174,7 +174,7 @@ class ProductionPanel extends JPanel {
     remainingResources.removeAll();
     left.setText(String.format("%d total units purchased. Remaining resources: ", totalUnits));
     if (resourceCollection != null) {
-      remainingResources.add(uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, id, data));
+      remainingResources.add(uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, id));
     }
   }
 
