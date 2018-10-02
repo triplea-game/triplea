@@ -30,12 +30,13 @@ final class ClientSettingTest {
 
     @Mock
     private Consumer<String> mockSaveListener;
+    private final ClientSetting clientSetting = new ClientSetting("TEST_SETTING");
 
     @Test
     void saveActionListenerIsCalled() {
-      ClientSetting.test.addSaveListener(mockSaveListener);
+      clientSetting.addSaveListener(mockSaveListener);
 
-      ClientSetting.test.save(TEST_VALUE);
+      clientSetting.save(TEST_VALUE);
 
       Mockito.verify(mockSaveListener, Mockito.times(1))
           .accept(TEST_VALUE);
@@ -43,10 +44,10 @@ final class ClientSettingTest {
 
     @Test
     void verifyRemovedSavedListenersAreNotCalled() {
-      ClientSetting.test.addSaveListener(mockSaveListener);
-      ClientSetting.test.removeSaveListener(mockSaveListener);
+      clientSetting.addSaveListener(mockSaveListener);
+      clientSetting.removeSaveListener(mockSaveListener);
 
-      ClientSetting.test.save(TEST_VALUE);
+      clientSetting.save(TEST_VALUE);
 
       Mockito.verify(mockSaveListener, Mockito.never())
           .accept(TEST_VALUE);

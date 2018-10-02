@@ -95,9 +95,6 @@ public final class ClientSetting implements GameSetting {
   public static final ClientSetting wheelScrollAmount = new ClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting playerName = new ClientSetting("PLAYER_NAME", SystemProperties.getUserName());
   public static final ClientSetting useExperimentalJavaFxUi = new ClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
-  /* for testing purposes, to be used in unit tests only */
-  @VisibleForTesting
-  public static final ClientSetting test = new ClientSetting("TEST_SETTING");
   public static final ClientSetting loggingVerbosity = new ClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
@@ -106,24 +103,25 @@ public final class ClientSetting implements GameSetting {
   public final String defaultValue;
   private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
 
-  ClientSetting(final String name, final String defaultValue) {
+  private ClientSetting(final String name, final String defaultValue) {
     this.name = name;
     this.defaultValue = defaultValue;
   }
 
+  @VisibleForTesting
   ClientSetting(final String name) {
     this(name, "");
   }
 
-  ClientSetting(final String name, final File file) {
+  private ClientSetting(final String name, final File file) {
     this(name, file.getAbsolutePath());
   }
 
-  ClientSetting(final String name, final int defaultValue) {
+  private ClientSetting(final String name, final int defaultValue) {
     this(name, String.valueOf(defaultValue));
   }
 
-  ClientSetting(final String name, final boolean defaultValue) {
+  private ClientSetting(final String name, final boolean defaultValue) {
     this(name, String.valueOf(defaultValue));
   }
 
