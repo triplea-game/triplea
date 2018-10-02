@@ -114,7 +114,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       if (!optionalTrigger.isPresent()) {
         continue;
       }
-      final TriggerAttachment toFire  = optionalTrigger.get();
+      final TriggerAttachment toFire = optionalTrigger.get();
       final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
       toFireSet.add(toFire);
       final String[] options = splitOnColon(tuple.getSecond());

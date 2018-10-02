@@ -223,7 +223,7 @@ public class GameDataExporter {
   private void printConstantProperties(final Map<String, Object> conProperties) {
     for (final String propName : conProperties.keySet()) {
       switch (propName) {
-        case "notes":  // TODO: unchecked reflection
+        case "notes": // TODO: unchecked reflection
           // Special handling of notes property
           printNotes((String) conProperties.get(propName));
           break;
