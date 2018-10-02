@@ -1,10 +1,14 @@
 package games.strategy.triplea.image;
 
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -48,18 +52,18 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return label;
   }
 
-  public JPanel getResourcesPanel(final ResourceCollection resources, final GameData data) {
-    return getResourcesPanel(resources, false, null, data);
+  public JPanel getResourcesPanel(final ResourceCollection resources) {
+    return getResourcesPanel(resources, false, null);
   }
 
-  public JPanel getResourcesPanel(final ResourceCollection resources, final PlayerID player, final GameData data) {
-    return getResourcesPanel(resources, true, player, data);
+  public JPanel getResourcesPanel(final ResourceCollection resources, final PlayerID player) {
+    return getResourcesPanel(resources, true, player);
   }
 
-  private JPanel getResourcesPanel(final ResourceCollection resources, final boolean showEmpty, final PlayerID player,
-      final GameData data) {
+  private JPanel getResourcesPanel(final ResourceCollection resources, final boolean showEmpty, final PlayerID player) {
     final JPanel resourcePanel = new JPanel();
     final List<Resource> resourcesInOrder;
+    final GameData data = resources.getData();
     data.acquireReadLock();
     try {
       resourcesInOrder = data.getResourceList().getResources();
@@ -79,6 +83,26 @@ public class ResourceImageFactory extends AbstractImageFactory {
               new Insets(0, 0, 0, 0), 0, 0));
     }
     return resourcePanel;
+  }
+
+  /**
+   * Returns button with resource amounts and given text. If resources is empty then returns
+   * button with just the text.
+   */
+  public JButton getResourcesButton(final ResourceCollection resources, final String text) {
+    if (resources.isEmpty()) {
+      return new JButton(text);
+    }
+    final JPanel panel = getResourcesPanel(resources);
+    panel.setOpaque(false);
+    panel.add(new JLabel(text));
+    panel.setSize(panel.getPreferredSize());
+    panel.doLayout();
+    final BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = image.createGraphics();
+    panel.paint(g);
+    g.dispose();
+    return new JButton(new ImageIcon(image));
   }
 
 }
