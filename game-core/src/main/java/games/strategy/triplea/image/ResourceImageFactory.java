@@ -85,6 +85,10 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return resourcePanel;
   }
 
+  /**
+   * Returns button with resource amounts and given text. If resources is empty then returns
+   * button with just the text.
+   */
   public JButton getResourcesButton(final ResourceCollection resources, final String text) {
     if (resources.isEmpty()) {
       return new JButton(text);
