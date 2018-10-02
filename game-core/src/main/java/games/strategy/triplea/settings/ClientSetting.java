@@ -89,10 +89,6 @@ public final class ClientSetting implements GameSetting {
   public static final ClientSetting lastCheckForMapUpdates = new ClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES");
   public static final ClientSetting promptToDownloadTutorialMap =
       new ClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
-  public static final ClientSetting tripleaServerObserverJointWaitTime =
-      new ClientSetting("TRIPLEA_SERVER_OBSERVER_JOIN_WAIT_TIME");
-  public static final ClientSetting tripleaServerStartGameSyncWaitTime =
-      new ClientSetting("TRIPLEA_SERVER_START_GAME_SYNC_WAIT_TIME");
   public static final ClientSetting userMapsFolderPath = new ClientSetting(
       "USER_MAPS_FOLDER_PATH",
       new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps"));
@@ -102,10 +98,6 @@ public final class ClientSetting implements GameSetting {
   /* for testing purposes, to be used in unit tests only */
   @VisibleForTesting
   public static final ClientSetting test = new ClientSetting("TEST_SETTING");
-  public static final ClientSetting selectedGameLocation = new ClientSetting("SELECTED_GAME_LOCATION");
-  public static final ClientSetting diceServerForForumGames = new ClientSetting("DICE_SERVER_FOR_FORUM_GAMES");
-  public static final ClientSetting forumComboBoxSelection = new ClientSetting("FORUM_COMBO_BOX_SELECTION");
-  public static final ClientSetting diceServerForPbemGames = new ClientSetting("DICE_SERVER_FOR_PBEM_GAMES");
   public static final ClientSetting loggingVerbosity = new ClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
