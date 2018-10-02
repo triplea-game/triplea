@@ -133,13 +133,13 @@ public class MapDownloadController {
     return new TutorialMapPreferences() {
       @Override
       public void preventPromptToDownload() {
-        ClientSetting.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.save(false);
+        ClientSetting.promptToDownloadTutorialMap.save(false);
         ClientSetting.flush();
       }
 
       @Override
       public boolean canPromptToDownload() {
-        return ClientSetting.TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP.booleanValue();
+        return ClientSetting.promptToDownloadTutorialMap.booleanValue();
       }
     };
   }

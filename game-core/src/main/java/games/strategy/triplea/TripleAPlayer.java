@@ -635,7 +635,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       return;
     }
     // we dont want to confirm enemy casualties
-    if (!ClientSetting.CONFIRM_ENEMY_CASUALTIES.booleanValue()) {
+    if (!ClientSetting.confirmEnemyCasualties.booleanValue()) {
       return;
     }
     ui.getBattlePanel().confirmCasualties(battleId, message);

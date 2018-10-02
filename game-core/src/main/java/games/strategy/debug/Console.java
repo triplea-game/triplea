@@ -50,13 +50,13 @@ public final class Console {
   public Console() {
     setLogLevel(getDefaultLogLevel());
 
-    ClientSetting.SHOW_CONSOLE.addSaveListener(newValue -> {
+    ClientSetting.showConsole.addSaveListener(newValue -> {
       if (newValue.equals(String.valueOf(true))) {
         SwingUtilities.invokeLater(() -> setVisible(true));
       }
     });
 
-    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.SHOW_CONSOLE.saveAndFlush(false));
+    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.saveAndFlush(false));
     LookAndFeelSwingFrameListener.register(frame);
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     frame.getContentPane().setLayout(new BorderLayout());
@@ -80,17 +80,17 @@ public final class Console {
     actions.add(newLogLevelButton());
     SwingUtilities.invokeLater(frame::pack);
 
-    if (ClientSetting.SHOW_CONSOLE.booleanValue()) {
+    if (ClientSetting.showConsole.booleanValue()) {
       SwingUtilities.invokeLater(() -> setVisible(true));
     }
   }
 
   private static Level getDefaultLogLevel() {
-    final String logLevelName = ClientSetting.LOGGING_VERBOSITY.value();
+    final String logLevelName = ClientSetting.loggingVerbosity.value();
     try {
       return Level.parse(logLevelName);
     } catch (final IllegalArgumentException e) {
-      log.warning("Client setting " + ClientSetting.LOGGING_VERBOSITY + " contains malformed log level ("
+      log.warning("Client setting " + ClientSetting.loggingVerbosity + " contains malformed log level ("
           + logLevelName + "); defaulting to WARNING");
       return Level.WARNING;
     }
@@ -144,7 +144,7 @@ public final class Console {
   }
 
   private static void setDefaultLogLevel(final Level level) {
-    ClientSetting.LOGGING_VERBOSITY.saveAndFlush(level.getName());
+    ClientSetting.loggingVerbosity.saveAndFlush(level.getName());
   }
 
   public void setVisible(final boolean visible) {

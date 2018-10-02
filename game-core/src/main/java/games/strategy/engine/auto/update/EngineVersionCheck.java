@@ -43,8 +43,8 @@ final class EngineVersionCheck {
   private static boolean isEngineUpdateCheckRequired() {
     return isEngineUpdateCheckRequired(
         LocalDate.now(),
-        ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY,
-        ClientSetting.TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE,
+        ClientSetting.firstTimeThisVersion,
+        ClientSetting.lastCheckForEngineUpdate,
         ClientSetting::flush);
   }
 

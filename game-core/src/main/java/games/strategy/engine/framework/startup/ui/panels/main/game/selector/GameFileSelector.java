@@ -24,7 +24,7 @@ public final class GameFileSelector {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = GameRunner.newFileDialog();
       fileDialog.setMode(FileDialog.LOAD);
-      fileDialog.setDirectory(new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value()).getPath());
+      fileDialog.setDirectory(new File(ClientSetting.saveGamesFolderPath.value()).getPath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
       final String fileName = fileDialog.getFile();

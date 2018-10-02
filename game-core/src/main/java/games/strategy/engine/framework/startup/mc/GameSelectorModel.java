@@ -56,9 +56,9 @@ public class GameSelectorModel extends Observable {
     fileName = entry.getLocation();
     setGameData(entry.getGameData());
     if (entry.getGameData() != null) {
-      ClientSetting.DEFAULT_GAME_NAME_PREF.save(entry.getGameData().getGameName());
+      ClientSetting.defaultGameName.save(entry.getGameData().getGameName());
     }
-    ClientSetting.DEFAULT_GAME_URI_PREF.save(entry.getUri().toString());
+    ClientSetting.defaultGameUri.save(entry.getUri().toString());
     ClientSetting.flush();
   }
 
@@ -209,7 +209,7 @@ public class GameSelectorModel extends Observable {
    * on startup.
    */
   public void loadDefaultGameSameThread() {
-    final String userPreferredDefaultGameUri = ClientSetting.DEFAULT_GAME_URI_PREF.value();
+    final String userPreferredDefaultGameUri = ClientSetting.defaultGameUri.value();
 
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
     // version of triplea
@@ -249,12 +249,12 @@ public class GameSelectorModel extends Observable {
   }
 
   private static void resetToFactoryDefault() {
-    ClientSetting.DEFAULT_GAME_URI_PREF.save(ClientSetting.DEFAULT_GAME_URI_PREF.defaultValue);
+    ClientSetting.defaultGameUri.save(ClientSetting.defaultGameUri.defaultValue);
     ClientSetting.flush();
   }
 
   private static GameChooserEntry selectByName() {
-    final String userPreferredDefaultGameName = ClientSetting.DEFAULT_GAME_NAME_PREF.value();
+    final String userPreferredDefaultGameName = ClientSetting.defaultGameName.value();
 
     final GameChooserModel model = new GameChooserModel();
     GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName)

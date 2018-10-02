@@ -65,7 +65,7 @@ public final class SaveGameFileChooser extends JFileChooser {
 
   @VisibleForTesting
   static File getAutoSaveFile(final String fileName) {
-    return Paths.get(ClientSetting.SAVE_GAMES_FOLDER_PATH.value(), "autoSave", fileName).toFile();
+    return Paths.get(ClientSetting.saveGamesFolderPath.value(), "autoSave", fileName).toFile();
   }
 
   private static File getAutoSaveFile(final String baseFileName, final boolean headless) {
@@ -123,7 +123,7 @@ public final class SaveGameFileChooser extends JFileChooser {
 
   private SaveGameFileChooser() {
     setFileFilter(createGameDataFileFilter());
-    final File saveGamesFolder = new File(ClientSetting.SAVE_GAMES_FOLDER_PATH.value());
+    final File saveGamesFolder = new File(ClientSetting.saveGamesFolderPath.value());
     ensureDirectoryExists(saveGamesFolder);
     setCurrentDirectory(saveGamesFolder);
   }

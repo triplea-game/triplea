@@ -32,140 +32,140 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
   AI_PAUSE_DURATION_BINDING(SettingType.AI) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.AI_PAUSE_DURATION, 0, 3000);
+      return intValueRange(ClientSetting.aiPauseDuration, 0, 3000);
     }
   },
 
   ARROW_KEY_SCROLL_SPEED_BINDING(SettingType.MAP_SCROLLING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.ARROW_KEY_SCROLL_SPEED, 0, 500);
+      return intValueRange(ClientSetting.arrowKeyScrollSpeed, 0, 500);
     }
   },
 
   BATTLE_CALC_SIMULATION_COUNT_DICE_BINDING(SettingType.BATTLE_SIMULATOR) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_DICE, 10, 100000);
+      return intValueRange(ClientSetting.battleCalcSimulationCountDice, 10, 100000);
     }
   },
 
   BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK_BINDING(SettingType.BATTLE_SIMULATOR) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK, 10, 100000);
+      return intValueRange(ClientSetting.battleCalcSimulationCountLowLuck, 10, 100000);
     }
   },
 
   CONFIRM_DEFENSIVE_ROLLS_BINDING(SettingType.COMBAT) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.CONFIRM_DEFENSIVE_ROLLS);
+      return toggleButton(ClientSetting.confirmDefensiveRolls);
     }
   },
 
   CONFIRM_ENEMY_CASUALTIES_BINDING(SettingType.COMBAT) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.CONFIRM_ENEMY_CASUALTIES);
+      return toggleButton(ClientSetting.confirmEnemyCasualties);
     }
   },
 
   SPACE_BAR_CONFIRMS_CASUALTIES_BINDING(SettingType.COMBAT) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.SPACE_BAR_CONFIRMS_CASUALTIES);
+      return toggleButton(ClientSetting.spaceBarConfirmsCasualties);
     }
   },
 
   MAP_EDGE_SCROLL_SPEED_BINDING(SettingType.MAP_SCROLLING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_SPEED, 0, 300);
+      return intValueRange(ClientSetting.mapEdgeScrollSpeed, 0, 300);
     }
   },
 
   MAP_EDGE_SCROLL_ZONE_SIZE_BINDING(SettingType.MAP_SCROLLING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE, 0, 300);
+      return intValueRange(ClientSetting.mapEdgeScrollZoneSize, 0, 300);
     }
   },
 
   SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(SettingType.NETWORK_TIMEOUTS) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.SERVER_START_GAME_SYNC_WAIT_TIME, 120, 1500);
+      return intValueRange(ClientSetting.serverStartGameSyncWaitTime, 120, 1500);
     }
   },
 
   SERVER_OBSERVER_JOIN_WAIT_TIME_BINDING(SettingType.NETWORK_TIMEOUTS) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.SERVER_OBSERVER_JOIN_WAIT_TIME, 60, 1500);
+      return intValueRange(ClientSetting.serverObserverJoinWaitTime, 60, 1500);
     }
   },
 
   SHOW_BATTLES_WHEN_OBSERVING_BINDING(SettingType.GAME) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.SHOW_BATTLES_WHEN_OBSERVING);
+      return toggleButton(ClientSetting.showBattlesWhenObserving);
     }
   },
 
   SHOW_BETA_FEATURES_BINDING(SettingType.TESTING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.SHOW_BETA_FEATURES);
+      return toggleButton(ClientSetting.showBetaFeatures);
     }
   },
 
   MAP_LIST_OVERRIDE_BINDING(SettingType.TESTING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return filePath(ClientSetting.MAP_LIST_OVERRIDE);
+      return filePath(ClientSetting.mapListOverride);
     }
   },
 
   TEST_LOBBY_HOST_BINDING(SettingType.TESTING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return textField(ClientSetting.TEST_LOBBY_HOST);
+      return textField(ClientSetting.testLobbyHost);
     }
   },
 
   TEST_LOBBY_PORT_BINDING(SettingType.TESTING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.TEST_LOBBY_PORT, 1, 65535, true);
+      return intValueRange(ClientSetting.testLobbyPort, 1, 65535, true);
     }
   },
 
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(SettingType.GAME) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY);
+      return toggleButton(ClientSetting.firstTimeThisVersion);
     }
   },
 
   SAVE_GAMES_FOLDER_PATH_BINDING(SettingType.FOLDER_LOCATIONS) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return folderPath(ClientSetting.SAVE_GAMES_FOLDER_PATH);
+      return folderPath(ClientSetting.saveGamesFolderPath);
     }
   },
 
   USER_MAPS_FOLDER_PATH_BINDING(SettingType.FOLDER_LOCATIONS) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return folderPath(ClientSetting.USER_MAPS_FOLDER_PATH);
+      return folderPath(ClientSetting.userMapsFolderPath);
     }
   },
 
   WHEEL_SCROLL_AMOUNT_BINDING(SettingType.MAP_SCROLLING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return intValueRange(ClientSetting.WHEEL_SCROLL_AMOUNT, 10, 300);
+      return intValueRange(ClientSetting.wheelScrollAmount, 10, 300);
     }
   },
 
@@ -179,7 +179,7 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
   USE_EXPERIMENTAL_JAVAFX_UI(SettingType.TESTING) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return toggleButton(ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI);
+      return toggleButton(ClientSetting.useExperimentalJavaFxUi);
     }
   };
 
