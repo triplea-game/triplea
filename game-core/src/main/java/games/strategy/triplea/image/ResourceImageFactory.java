@@ -94,10 +94,11 @@ public class ResourceImageFactory extends AbstractImageFactory {
       return new JButton(text);
     }
     final JPanel panel = getResourcesPanel(resources);
+    panel.setOpaque(false);
     panel.add(new JLabel(text));
     panel.setSize(panel.getPreferredSize());
     panel.doLayout();
-    final BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB);
+    final BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
     final Graphics2D g = image.createGraphics();
     panel.paint(g);
     g.dispose();
