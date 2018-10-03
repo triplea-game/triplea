@@ -69,14 +69,10 @@ final class SelectionComponentFactory {
       final ActionListener enableUserSettings = e -> {
         if (userButton.isSelected()) {
           hostText.setEnabled(true);
-          hostText.setBackground(Color.WHITE);
           portText.setEnabled(true);
-          portText.setBackground(Color.WHITE);
         } else {
           hostText.setEnabled(false);
-          hostText.setBackground(Color.DARK_GRAY);
           portText.setEnabled(false);
-          portText.setBackground(Color.DARK_GRAY);
         }
       };
 
