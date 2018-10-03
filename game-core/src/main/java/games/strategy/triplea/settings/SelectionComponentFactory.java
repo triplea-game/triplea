@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -131,22 +130,6 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public void indicateError() {
-        if (!isHostTextValid()) {
-          hostText.setBackground(Color.RED);
-        }
-        if (!isPortTextValid()) {
-          portText.setBackground(Color.RED);
-        }
-      }
-
-      @Override
-      public void clearError() {
-        hostText.setBackground(Color.WHITE);
-        portText.setBackground(Color.WHITE);
-      }
-
-      @Override
       public void resetToDefault() {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.defaultValue);
@@ -202,12 +185,6 @@ final class SelectionComponentFactory {
       public String validValueDescription() {
         return "";
       }
-
-      @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
 
       @Override
       public Map<GameSetting, String> readValues() {
@@ -313,13 +290,11 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         field.setText(clientSetting.defaultValue);
-        clearError();
       }
 
       @Override
       public void reset() {
         field.setText(clientSetting.value());
-        clearError();
       }
     };
   }
@@ -375,13 +350,11 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         comboBox.setSelectedItem(clientSetting.defaultValue);
-        clearError();
       }
 
       @Override
       public void reset() {
         comboBox.setSelectedItem(clientSetting.value());
-        clearError();
       }
     };
   }
@@ -405,28 +378,16 @@ final class SelectionComponentFactory {
       @Override
       public void reset() {
         textField.setText(clientSetting.value());
-        clearError();
       }
 
       @Override
       public void resetToDefault() {
         textField.setText(clientSetting.defaultValue);
-        clearError();
       }
     };
   }
 
   private abstract static class AlwaysValidInputSelectionComponent implements SelectionComponent<JComponent> {
-    @Override
-    public void indicateError() {
-      // no-op, component only allows valid selections
-    }
-
-    @Override
-    public void clearError() {
-      // also a no-op
-    }
-
     @Override
     public boolean isValid() {
       return true;

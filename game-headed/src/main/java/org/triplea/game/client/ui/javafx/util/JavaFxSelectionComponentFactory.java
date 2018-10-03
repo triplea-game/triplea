@@ -85,20 +85,6 @@ final class JavaFxSelectionComponentFactory {
         return Collections.singletonMap(clientSetting, stringValue);
       }
 
-      /**
-       * Does nothing.
-       * Using a Spinner should ensure no invalid values can be entered.
-       */
-      @Override
-      public void indicateError() {}
-
-      /**
-       * Does nothing.
-       * Using a Spinner should ensure no invalid values can be entered.
-       */
-      @Override
-      public void clearError() {}
-
       @Override
       public void resetToDefault() {
         spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultValue));
@@ -142,12 +128,6 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
-
-      @Override
       public void resetToDefault() {
         checkBox.selectedProperty().set(Boolean.parseBoolean(clientSetting.defaultValue));
       }
@@ -188,12 +168,6 @@ final class JavaFxSelectionComponentFactory {
       public Map<GameSetting, String> readValues() {
         return Collections.singletonMap(clientSetting, textField.getText());
       }
-
-      @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
 
       @Override
       public void resetToDefault() {
@@ -283,12 +257,6 @@ final class JavaFxSelectionComponentFactory {
     public String validValueDescription() {
       return "";
     }
-
-    @Override
-    public void indicateError() {}
-
-    @Override
-    public void clearError() {}
   }
 
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
@@ -353,12 +321,6 @@ final class JavaFxSelectionComponentFactory {
     public String validValueDescription() {
       return "";
     }
-
-    @Override
-    public void indicateError() {}
-
-    @Override
-    public void clearError() {}
   }
 
   private static final class ProxySetting extends Region implements SelectionComponent<Region> {
@@ -441,16 +403,6 @@ final class JavaFxSelectionComponentFactory {
       noneButton.setSelected(proxyChoiceClientSetting.booleanValue());
     }
 
-    @Override
-    public void indicateError() {
-      if (!isHostTextValid()) {
-        hostText.setStyle("-fx-background-color: #FF0000;");
-      }
-      if (!isPortTextValid()) {
-        portText.setStyle("-fx-background-color: #FF0000;");
-      }
-    }
-
     private boolean isHostTextValid() {
       return !Strings.nullToEmpty(hostText.getText()).trim().isEmpty();
     }
@@ -471,12 +423,6 @@ final class JavaFxSelectionComponentFactory {
     @Override
     public boolean isValid() {
       return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
-    }
-
-    @Override
-    public void clearError() {
-      hostText.setStyle("-fx-background-color: #FFFFFF;");
-      portText.setStyle("-fx-background-color: #FFFFFF;");
     }
 
     @Override
