@@ -38,7 +38,10 @@ import swinglib.JPanelBuilder;
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
-  static SelectionComponent<JComponent> proxySettings() {
+  static SelectionComponent<JComponent> proxySettings(
+      final ClientSetting proxyChoiceClientSetting,
+      final ClientSetting proxyHostClientSetting,
+      final ClientSetting proxyPortClientSetting) {
     return new SelectionComponent<JComponent>() {
       final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
       final HttpProxy.ProxyChoice proxyChoice =
@@ -50,8 +53,8 @@ final class SelectionComponentFactory {
 
       final JRadioButton userButton =
           new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-      final JTextField hostText = new JTextField(ClientSetting.proxyHost.value(), 20);
-      final JTextField portText = new JTextField(ClientSetting.proxyPort.value(), 6);
+      final JTextField hostText = new JTextField(proxyHostClientSetting.value(), 20);
+      final JTextField portText = new JTextField(proxyPortClientSetting.value(), 6);
       final JPanel radioPanel = JPanelBuilder.builder()
           .verticalBoxLayout()
           .add(noneButton)
@@ -119,14 +122,14 @@ final class SelectionComponentFactory {
       public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> values = new HashMap<>();
         if (noneButton.isSelected()) {
-          values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.NONE.toString());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE.toString());
         } else if (systemButton.isSelected()) {
-          values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
           HttpProxy.updateSystemProxy();
         } else {
-          values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
-          values.put(ClientSetting.proxyHost, hostText.getText().trim());
-          values.put(ClientSetting.proxyPort, portText.getText().trim());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
+          values.put(proxyHostClientSetting, hostText.getText().trim());
+          values.put(proxyPortClientSetting, portText.getText().trim());
         }
         return values;
       }
@@ -150,17 +153,17 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         ClientSetting.flush();
-        hostText.setText(ClientSetting.proxyHost.defaultValue);
-        portText.setText(ClientSetting.proxyPort.defaultValue);
-        noneButton.setSelected(Boolean.valueOf(ClientSetting.proxyChoice.defaultValue));
+        hostText.setText(proxyHostClientSetting.defaultValue);
+        portText.setText(proxyPortClientSetting.defaultValue);
+        noneButton.setSelected(Boolean.valueOf(proxyChoiceClientSetting.defaultValue));
       }
 
       @Override
       public void reset() {
         ClientSetting.flush();
-        hostText.setText(ClientSetting.proxyHost.value());
-        portText.setText(ClientSetting.proxyPort.value());
-        noneButton.setSelected(ClientSetting.proxyChoice.booleanValue());
+        hostText.setText(proxyHostClientSetting.value());
+        portText.setText(proxyPortClientSetting.value());
+        noneButton.setSelected(proxyChoiceClientSetting.booleanValue());
       }
     };
   }

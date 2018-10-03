@@ -3,6 +3,7 @@ package org.triplea.game.client.ui.javafx.util;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.filePath;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.folderPath;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.intValueRange;
+import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.proxySettings;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.textField;
 import static org.triplea.game.client.ui.javafx.util.JavaFxSelectionComponentFactory.toggleButton;
 
@@ -172,7 +173,7 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
   PROXY_CHOICE(SettingType.NETWORK_PROXY) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return JavaFxSelectionComponentFactory.proxySettings();
+      return proxySettings(ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
   },
 
