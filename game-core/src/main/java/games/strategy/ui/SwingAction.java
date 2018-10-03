@@ -68,6 +68,13 @@ public final class SwingAction {
   }
 
   /**
+   * Creates a swing {@code Action} object that executes a simple {@code runnable} when executed.
+   */
+  public static Action of(final String name, final Runnable runner) {
+    return of(name, e -> runner.run());
+  }
+
+  /**
    * Synchronously executes the specified action on the Swing event dispatch thread.
    *
    * <p>

@@ -14,6 +14,7 @@ import org.opentest4j.AssertionFailedError;
  * Unless otherwise noted, a failed assertion will throw an {@link AssertionFailedError} or a subclass thereof.
  * </p>
  */
+// TODO: move to assertions package
 public final class Assertions {
   private Assertions() {}
 

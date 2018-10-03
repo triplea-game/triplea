@@ -19,6 +19,7 @@ import com.google.common.base.Strings;
 public final class JTextAreaBuilder {
 
   private String text;
+  private String componentName;
   private int rows = 3;
   private int columns = 15;
   private boolean readOnly = false;
@@ -40,6 +41,7 @@ public final class JTextAreaBuilder {
     final JTextArea textArea = new JTextArea(Strings.nullToEmpty(text), rows, columns);
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
+    textArea.setName(componentName);
 
     if (readOnly) {
       textArea.setEditable(false);
@@ -81,6 +83,11 @@ public final class JTextAreaBuilder {
 
   public JTextAreaBuilder text(final String text) {
     this.text = text;
+    return this;
+  }
+
+  public JTextAreaBuilder componentName(final String componentName) {
+    this.componentName = componentName;
     return this;
   }
 }

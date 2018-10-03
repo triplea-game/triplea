@@ -50,7 +50,6 @@ public class JPanelBuilder {
   private BoxLayoutType boxLayoutType = null;
   private boolean useGridBagHelper = false;
   private int gridBagHelperColumns;
-  private boolean flowLayoutWrapper = false;
   private Integer preferredHeight;
 
   private JPanelBuilder() {}
@@ -131,13 +130,6 @@ public class JPanelBuilder {
     }
     if (horizontalAlignment != null) {
       panel.setAlignmentX(horizontalAlignment);
-    }
-
-    if (flowLayoutWrapper) {
-      return JPanelBuilder.builder()
-          .flowLayout()
-          .add(panel)
-          .build();
     }
 
     if (preferredHeight != null) {
@@ -321,22 +313,6 @@ public class JPanelBuilder {
     return this;
   }
 
-
-  public JPanelBuilder flowLayoutWrapper() {
-    flowLayoutWrapper = true;
-    return this;
-  }
-
-  /**
-   * Assumes a border layout, adds a given component to the southern portion of the border layout
-   * if the boolean parameter is true.
-   */
-  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  public JPanelBuilder addSouthIf(final Optional<JComponent> component) {
-    component.ifPresent(this::addSouth);
-    return this;
-  }
-
   /**
    * Adds a given component to the southern portion of a border layout.
    */
@@ -348,8 +324,42 @@ public class JPanelBuilder {
   }
 
   public JPanelBuilder addLabel(final String text) {
-    add(new JLabel(text));
+    return addLabel(text, TextAlignment.CENTER);
+  }
+
+
+  /**
+   * Adds a text label with provided alignment. By default labels are center-aligned within their parent components.
+   * 
+   * @param text The text label value (should be plain text @see #addHtmlLabel)
+   * @param textAlignment Alignment value of the text, this is relative to the panel we are building.
+   */
+  public JPanelBuilder addLabel(final String text, final TextAlignment textAlignment) {
+    if (textAlignment == TextAlignment.CENTER) {
+      add(new JLabel(text));
+    } else {
+      final JPanel panel = JPanelBuilder.builder()
+          .flowLayout((textAlignment == TextAlignment.LEFT)
+              ? FlowLayoutJustification.LEFT
+              : FlowLayoutJustification.RIGHT)
+          .build();
+      panel.add(new JLabel(text));
+      add(panel);
+    }
+
     return this;
+  }
+
+  public JPanelBuilder addHtmlLabel(final String s) {
+    return addLabel(wrapHtml(s));
+  }
+
+  public JPanelBuilder addHtmlLabel(final String s, final TextAlignment textAlignment) {
+    return addLabel(wrapHtml(s), textAlignment);
+  }
+
+  private static String wrapHtml(final String input) {
+    return "<html>" + input + "</html>";
   }
 
   /**
@@ -389,13 +399,6 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder addHtmlLabel(final String s) {
-    return addLabel("<html>" + s + "</html>");
-  }
-
-  public JPanelBuilder addEmptyLabel() {
-    return addLabel("");
-  }
 
   public JPanelBuilder preferredHeight(final int height) {
     preferredHeight = height;
@@ -477,5 +480,16 @@ public class JPanelBuilder {
     public static Padding of(final int value) {
       return new Padding(value);
     }
+  }
+
+  /**
+   * Can be used to shift text to left hand or right hand edge of component. Center is often a default.
+   */
+  public enum TextAlignment {
+    LEFT,
+    
+    CENTER,
+    
+    RIGHT
   }
 }

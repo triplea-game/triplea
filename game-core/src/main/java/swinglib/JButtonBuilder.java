@@ -1,14 +1,16 @@
 package swinglib;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.swing.JButton;
 import javax.swing.UIManager;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
@@ -24,7 +26,8 @@ public class JButtonBuilder {
 
   private String title;
   private String toolTip;
-  private Runnable actionListener;
+  private String componentName;
+  private Function<Component, Runnable> clickAction;
   private boolean enabled = true;
   private boolean selected = false;
   private int biggerFont = 0;
@@ -43,12 +46,13 @@ public class JButtonBuilder {
     checkNotNull(title);
 
     final JButton button = new JButton(title);
-    if (toolTip != null) {
-      button.setToolTipText(toolTip);
-    }
-    Optional.ofNullable(actionListener)
-        .ifPresent(listener -> button.addActionListener(e -> listener.run()));
+    Optional.ofNullable(clickAction)
+        .ifPresent(listener -> button.addActionListener(e -> clickAction.apply(button).run()));
+    Optional.ofNullable(componentName).ifPresent(button::setName);
+    Optional.ofNullable(toolTip).ifPresent(button::setToolTipText);
+
     button.setEnabled(enabled);
+    button.setSelected(selected);
 
     if (biggerFont > 0) {
       button.setFont(
@@ -58,15 +62,23 @@ public class JButtonBuilder {
               button.getFont().getSize() + biggerFont));
     }
 
-    button.setSelected(selected);
     return button;
   }
 
 
   /** required - The text that will be on the button. */
   public JButtonBuilder title(final String title) {
-    Preconditions.checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
+    checkArgument(!Strings.nullToEmpty(title).trim().isEmpty());
     this.title = title;
+    return this;
+  }
+
+  /**
+   * Sets the name of the component used internally by swing, can be used later for programmatic lookup of
+   * components (notably useful in test context).
+   */
+  public JButtonBuilder componentName(final String componentName) {
+    this.componentName = checkNotNull(componentName);
     return this;
   }
 
@@ -105,7 +117,7 @@ public class JButtonBuilder {
    * @param plusAmount Text increase amount, typically somewhere around +2 to +4
    */
   public JButtonBuilder biggerFont(final int plusAmount) {
-    Preconditions.checkArgument(plusAmount > 0);
+    checkArgument(plusAmount > 0);
     biggerFont = plusAmount;
     return this;
   }
@@ -115,7 +127,7 @@ public class JButtonBuilder {
    * Sets the text shown when hovering on the button.
    */
   public JButtonBuilder toolTip(final String toolTip) {
-    Preconditions.checkArgument(!Strings.nullToEmpty(toolTip).trim().isEmpty());
+    checkArgument(!Strings.nullToEmpty(toolTip).trim().isEmpty());
     this.toolTip = toolTip;
     return this;
   }
@@ -125,7 +137,23 @@ public class JButtonBuilder {
    * SIDE EFFECT: Enables the button
    */
   public JButtonBuilder actionListener(final Runnable actionListener) {
-    this.actionListener = checkNotNull(actionListener);
+    checkNotNull(actionListener);
+    return actionListener(c -> actionListener);
+  }
+
+
+  /**
+   * Sets up an action listener that is passed an instance of the button it is attached to.
+   * For example: many components want a 'parent' so that the new component can be located above
+   * the 'parent' component on screen. We could easily have a button that opens a window
+   * that should be located above the button. Since we do not have a button reference yet while
+   * constructing the button, this method can be used in that situation.
+   * 
+   * @param clickAction The action listener to invoke when the button is clicked, this listener will be evaluated
+   *        and attached to the button when the button is constructed (ie: {@code #build}.
+   */
+  public JButtonBuilder actionListener(final Function<Component, Runnable> clickAction) {
+    this.clickAction = checkNotNull(clickAction);
     return this;
   }
 
