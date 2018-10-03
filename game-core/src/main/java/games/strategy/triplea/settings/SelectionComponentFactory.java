@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.prefs.Preferences;
+import java.util.logging.Level;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -23,9 +23,9 @@ import javax.swing.SpinnerNumberModel;
 
 import com.google.common.base.Strings;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
+import lombok.extern.java.Log;
 import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
 
@@ -34,6 +34,7 @@ import swinglib.JPanelBuilder;
  * For example, if we have a setting that needs a number, we could create an integer text field with this
  * class. This class takes care of the UI code to ensure we render the proper swing component with validation.
  */
+@Log
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
@@ -42,14 +43,10 @@ final class SelectionComponentFactory {
       final ClientSetting proxyHostClientSetting,
       final ClientSetting proxyPortClientSetting) {
     return new SelectionComponent<JComponent>() {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-      final HttpProxy.ProxyChoice proxyChoice =
-          HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
+      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(proxyChoiceClientSetting.value());
       final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
           new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
-
-
       final JRadioButton userButton =
           new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       final JTextField hostText = new JTextField(proxyHostClientSetting.value(), 20);
@@ -64,7 +61,6 @@ final class SelectionComponentFactory {
           .add(new JLabel("Proxy Port: "))
           .add(portText)
           .build();
-
       final ActionListener enableUserSettings = e -> {
         if (userButton.isSelected()) {
           hostText.setEnabled(true);
@@ -74,6 +70,15 @@ final class SelectionComponentFactory {
           portText.setEnabled(false);
         }
       };
+
+      private HttpProxy.ProxyChoice parseProxyChoice(final String encodedProxyChoice) {
+        try {
+          return HttpProxy.ProxyChoice.valueOf(encodedProxyChoice);
+        } catch (final IllegalArgumentException e) {
+          log.log(Level.WARNING, "Illegal proxy choice: '" + encodedProxyChoice + "'", e);
+          return HttpProxy.ProxyChoice.NONE;
+        }
+      }
 
       @Override
       public JComponent getUiComponent() {
@@ -134,7 +139,15 @@ final class SelectionComponentFactory {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.defaultValue);
         portText.setText(proxyPortClientSetting.defaultValue);
-        noneButton.setSelected(Boolean.valueOf(proxyChoiceClientSetting.defaultValue));
+        setProxyChoice(proxyChoiceClientSetting.defaultValue);
+      }
+
+      private void setProxyChoice(final String encodedProxyChoice) {
+        final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(encodedProxyChoice);
+        noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
+        systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+        userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+        enableUserSettings.actionPerformed(null);
       }
 
       @Override
@@ -142,7 +155,7 @@ final class SelectionComponentFactory {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.value());
         portText.setText(proxyPortClientSetting.value());
-        noneButton.setSelected(proxyChoiceClientSetting.booleanValue());
+        setProxyChoice(proxyChoiceClientSetting.value());
       }
     };
   }
