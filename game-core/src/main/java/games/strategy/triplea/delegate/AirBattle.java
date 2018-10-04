@@ -46,12 +46,19 @@ public class AirBattle extends AbstractBattle {
   protected static final String DEFENDERS_FIRE = "Defenders Fire";
   protected static final String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
   protected static final String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final ExecutionStack m_stack = new ExecutionStack();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<String> m_steps;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_intercept = false;
   // -1 would mean forever until one side is eliminated. (default is 1 round)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final int m_maxRounds;
 
   AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker,
@@ -539,7 +546,10 @@ public class AirBattle extends AbstractBattle {
 
   class AttackersFire implements IExecutable {
     private static final long serialVersionUID = -5289634214875797408L;
+
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     DiceRoll m_dice;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     CasualtyDetails m_details;
 
     @Override
@@ -584,7 +594,10 @@ public class AirBattle extends AbstractBattle {
 
   class DefendersFire implements IExecutable {
     private static final long serialVersionUID = -7277182945495744003L;
+
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     DiceRoll m_dice;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     CasualtyDetails m_details;
 
     @Override

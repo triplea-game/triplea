@@ -13,10 +13,13 @@ public class Die implements Serializable {
     MISS, HIT, IGNORED
   }
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final DieType m_type;
   // the value of the dice, 0 based
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_value;
   // this value is 1 based
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_rolledAt;
 
   public Die(final int value) {

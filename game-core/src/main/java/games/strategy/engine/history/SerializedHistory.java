@@ -16,7 +16,10 @@ import games.strategy.engine.data.GameData;
  */
 class SerializedHistory implements Serializable {
   private static final long serialVersionUID = -5808427923253751651L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<SerializationWriter> m_Writers = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final GameData m_data;
 
   public SerializedHistory(final History history, final GameData data, final List<Change> changes) {

@@ -30,14 +30,19 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
+
   // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for
   // backwards
   // compatibility.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_uses = -1;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_usedThisRound = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_notification = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_when = new ArrayList<>();
 
   protected AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {

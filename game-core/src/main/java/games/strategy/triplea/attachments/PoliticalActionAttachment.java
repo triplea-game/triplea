@@ -37,6 +37,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
 
   // list of relationship changes to be performed if this action is performed sucessfully
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String> m_relationshipChange = new ArrayList<>();
 
   public PoliticalActionAttachment(final String name, final Attachable attachable, final GameData gameData) {

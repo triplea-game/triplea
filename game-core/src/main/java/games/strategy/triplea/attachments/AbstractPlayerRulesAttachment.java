@@ -28,33 +28,46 @@ import lombok.extern.java.Log;
 @Log
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
+
   // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached player. They are
   // not related to
   // conditions at all.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_movementRestrictionType = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String[] m_movementRestrictionTerritories = null;
   // allows placing units in any owned land
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_placementAnyTerritory = false;
   // allows placing units in any sea by owned land
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_placementAnySeaZone = false;
   // allows placing units in a captured territory
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_placementCapturedTerritory = false;
   // turns of the warning to the player when they produce more than they can place
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_unlimitedProduction = false;
   // can only place units in the capital
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_placementInCapitalRestricted = false;
   // enemy units will defend at 1
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_dominatingFirstRoundAttack = false;
   // negates m_dominatingFirstRoundAttack
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_negateDominatingFirstRoundAttack = false;
   // automatically produces 1 unit of a certain
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<>();
   // type per every X territories owned
   // stops the user from placing units in any territory that already contains more than this
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_placementPerTerritory = -1;
   // number of owned units
   // maximum number of units that can be placed in each territory.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_maxPlacePerTerritory = -1;
 
   // It would wreck most map xmls to move the rulesAttachment's to another class, so don't move them out of here

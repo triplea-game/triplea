@@ -14,8 +14,12 @@ import games.strategy.triplea.delegate.TechAdvance;
  */
 public class TechnologyFrontier extends GameDataComponent implements Iterable<TechAdvance> {
   private static final long serialVersionUID = -5245743727479551766L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<TechAdvance> m_techs = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<TechAdvance> m_cachedTechs;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
 
   public TechnologyFrontier(final String name, final GameData data) {

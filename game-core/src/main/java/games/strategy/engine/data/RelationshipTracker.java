@@ -12,7 +12,9 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
  */
 public class RelationshipTracker extends RelationshipInterpreter {
   private static final long serialVersionUID = -4740671761925519069L;
+
   // map of "playername:playername" to RelationshipType that exists between those 2 players
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final HashMap<RelatedPlayers, Relationship> m_relationships = new HashMap<>();
 
   public RelationshipTracker(final GameData data) {
@@ -122,7 +124,9 @@ public class RelationshipTracker extends RelationshipInterpreter {
       return Objects.hashCode(m_p1) + Objects.hashCode(m_p2);
     }
 
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     private final PlayerID m_p1;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     private final PlayerID m_p2;
 
     public RelatedPlayers(final PlayerID p1, final PlayerID p2) {

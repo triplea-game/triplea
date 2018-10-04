@@ -18,9 +18,13 @@ class PlayerOwnerChange extends Change {
   /**
    * Maps unit id -> owner as String.
    */
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<GUID, String> m_old;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<GUID, String> m_new;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_location;
+
   private static final long serialVersionUID = -9154938431233632882L;
 
   PlayerOwnerChange(final Collection<Unit> units, final PlayerID newOwner, final Territory location) {

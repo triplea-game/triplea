@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -9,7 +12,10 @@ import games.strategy.engine.data.Unit;
 
 public class CasualtyList implements Serializable {
   private static final long serialVersionUID = 6501752134047891398L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final List<Unit> m_killed;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final List<Unit> m_damaged;
 
   /**

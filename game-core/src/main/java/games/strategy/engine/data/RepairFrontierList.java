@@ -9,6 +9,8 @@ import java.util.Set;
  */
 public class RepairFrontierList extends GameDataComponent {
   private static final long serialVersionUID = -5877933681560908405L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<>();
 
   public RepairFrontierList(final GameData data) {

@@ -24,8 +24,11 @@ import games.strategy.util.CollectionUtils;
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_canalName = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<Territory> m_landTerritories = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<UnitType> m_excludedUnits = null;
 
   public CanalAttachment(final String name, final Attachable attachable, final GameData gameData) {

@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.twoIfBySea.delegate;
 
 import games.strategy.engine.delegate.IDelegateBridge;

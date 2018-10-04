@@ -13,9 +13,13 @@ import lombok.extern.java.Log;
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<GameStep> m_steps = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_currentIndex;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_round = 1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_roundOffset = 0;
 
   public GameSequence(final GameData data) {

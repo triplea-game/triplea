@@ -10,7 +10,10 @@ import games.strategy.util.IntegerMap;
  */
 public class ProductionRule extends DefaultNamed {
   private static final long serialVersionUID = -6598296283127741307L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<Resource> m_cost = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<NamedAttachable> m_results = new IntegerMap<>();
 
   /** Creates new ProductionRule. */

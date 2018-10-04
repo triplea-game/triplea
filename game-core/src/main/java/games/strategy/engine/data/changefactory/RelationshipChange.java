@@ -13,9 +13,14 @@ import games.strategy.util.CollectionUtils;
  */
 class RelationshipChange extends Change {
   private static final long serialVersionUID = 2694339584633196289L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_player1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_player2;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_OldRelation;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_NewRelation;
 
   RelationshipChange(final PlayerID player1, final PlayerID player2, final RelationshipType oldRelation,

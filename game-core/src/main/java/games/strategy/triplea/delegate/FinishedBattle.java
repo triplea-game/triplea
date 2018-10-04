@@ -28,8 +28,11 @@ import games.strategy.util.IntegerMap;
  */
 public class FinishedBattle extends AbstractBattle {
   private static final long serialVersionUID = -5852495231826940879L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
 
   FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,

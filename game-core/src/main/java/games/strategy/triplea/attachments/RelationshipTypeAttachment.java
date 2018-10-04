@@ -26,18 +26,29 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_archeType = ARCHETYPE_WAR;
-  // private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_alliancesCanChainTogether = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_isDefaultWarPosition = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_upkeepCost = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_canMoveThroughCanals = PROPERTY_DEFAULT;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_rocketsCanFlyOver = PROPERTY_DEFAULT;
 
   /**

@@ -61,29 +61,40 @@ import lombok.extern.java.Log;
 @Log
 public class BattleTracker implements Serializable {
   private static final long serialVersionUID = 8806010984321554662L;
+
   // List of pending battles
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<IBattle> m_pendingBattles = new HashSet<>();
   // List of battle dependencies
   // maps blocked -> Collection of battles that must precede
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<IBattle, HashSet<IBattle>> m_dependencies = new HashMap<>();
   // enemy and neutral territories that have been conquered
   // blitzed is a subset of this
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Territory> m_conquered = new HashSet<>();
   // blitzed territories
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Territory> m_blitzed = new HashSet<>();
   // territories where a battle occurred
   // TODO: fix typo in name, 'fough' -> 'fought'
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Territory> m_foughBattles = new HashSet<>();
   // list of territory we have conquered in a FinishedBattle and where from and if amphibious
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final HashMap<Territory, Map<Territory, Collection<Unit>>> m_finishedBattlesUnitAttackFromMap =
       new HashMap<>();
   // things like kamikaze suicide attacks disallow bombarding from that sea zone for that turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Territory> m_noBombardAllowed = new HashSet<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand =
       new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private BattleRecords m_battleRecords = null;
   // to keep track of all relationships that have changed this turn
   // (so we can validate things like transports loading in newly created hostile zones)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<
       Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>> m_relationshipChangesThisTurn =
           new ArrayList<>();

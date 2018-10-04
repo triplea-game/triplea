@@ -35,12 +35,18 @@ public abstract class AbstractForumPoster implements IForumPoster {
   private static final String USE_TRANSIENT_CREDENTIAL = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
 
   private static final long serialVersionUID = -734015230309508040L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_username = null;
   private transient String transientUsername;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_password = null;
   private transient String transientPassword;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_topicId = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_includeSaveGame = true;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_alsoPostAfterCombatMove = false;
   protected transient File saveGameFile = null;
   protected transient String turnSummaryRef = null;

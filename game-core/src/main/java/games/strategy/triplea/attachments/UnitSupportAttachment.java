@@ -27,29 +27,44 @@ import games.strategy.triplea.MapSupport;
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<UnitType> m_unitType = null;
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_offence = false;
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_defence = false;
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_roll = false;
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_strength = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_bonus = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_number = 0;
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_allied = false;
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_enemy = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_bonusType = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_players = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_impArtTech = false;
   // strings
   // roll or strength
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_dice;
   // offence or defence
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_side;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_faction;
 
   public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData) {

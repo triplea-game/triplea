@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -10,10 +13,16 @@ import games.strategy.engine.data.Unit;
 
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult> {
   private static final long serialVersionUID = 6648363112533514955L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_error = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<String> m_disallowedUnitWarnings;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Collection<Unit>> m_disallowedUnitsList;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<String> m_unresolvedUnitWarnings;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Collection<Unit>> m_unresolvedUnitsList;
 
   public MoveValidationResult() {

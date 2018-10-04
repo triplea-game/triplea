@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.util.List;
@@ -6,6 +9,8 @@ import games.strategy.engine.data.Unit;
 
 public class CasualtyDetails extends CasualtyList {
   private static final long serialVersionUID = 2261683015991514918L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_autoCalculated;
 
   /**

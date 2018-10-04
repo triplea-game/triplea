@@ -33,8 +33,8 @@ import games.strategy.util.Tuple;
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
-
 
   public UserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);

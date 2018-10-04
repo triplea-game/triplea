@@ -16,6 +16,8 @@ import games.strategy.engine.delegate.IDelegate;
  */
 public class DelegateList extends GameDataComponent implements Iterable<IDelegate> {
   private static final long serialVersionUID = 4156921032854553312L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<String, IDelegate> m_delegates = new HashMap<>();
 
   public DelegateList(final GameData data) {

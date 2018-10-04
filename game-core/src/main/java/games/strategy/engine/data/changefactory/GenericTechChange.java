@@ -7,10 +7,16 @@ import games.strategy.triplea.attachments.TechAttachment;
 
 class GenericTechChange extends Change {
   private static final long serialVersionUID = -2439447526511535571L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Attachable m_attachedTo;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_attachmentName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_newValue;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_oldValue;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_property;
 
   GenericTechChange(final TechAttachment attachment, final boolean newValue, final String property) {

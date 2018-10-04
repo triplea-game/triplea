@@ -8,10 +8,16 @@ import java.io.Serializable;
  */
 public class DiceStatistic implements Serializable {
   private static final long serialVersionUID = -1422839840110240480L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final double m_average;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_total;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final double m_median;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final double m_stdDeviation;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final double m_variance;
 
   DiceStatistic(final double average, final int total, final double median, final double stdDeviation,

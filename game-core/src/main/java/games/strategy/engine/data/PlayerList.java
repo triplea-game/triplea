@@ -19,7 +19,9 @@ import lombok.ToString;
 @ToString
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID> {
   private static final long serialVersionUID = -3895068111754745446L;
+
   // maps String playerName -> PlayerID
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, PlayerID> m_players = new LinkedHashMap<>();
 
   public PlayerList(final GameData data) {

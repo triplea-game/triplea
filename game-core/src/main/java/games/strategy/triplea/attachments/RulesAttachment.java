@@ -48,38 +48,57 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
 
   // condition for having techs
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<TechAdvance> m_techs = null;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_techCount = -1;
   // condition for having specific relationships
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String> m_relationship = new ArrayList<>();
   // condition for being at war
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<PlayerID> m_atWarPlayers = null;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_atWarCount = -1;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to
   // the prices the defender pays for the units]
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private String m_destroyedTUV = null;
   // condition for having had a battle in some territory, attacker or defender, win
   // or lost, etc. these next 9 variables use m_territoryCount for determining the number needed.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, List<Territory>>> m_battle = new ArrayList<>();
   // ownership related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_alliedOwnershipTerritories = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_directOwnershipTerritories = null;
   // exclusion of units
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_alliedExclusionTerritories = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_directExclusionTerritories = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_enemyExclusionTerritories = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_enemySurfaceExclusionTerritories = null;
   // presence of units
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_directPresenceTerritories = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_alliedPresenceTerritories = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_enemyPresenceTerritories = null;
   // used with above 3 to determine the type of unit that must be present
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<String> m_unitPresence = new IntegerMap<>();
-
 
   /** Creates new RulesAttachment. */
   public RulesAttachment(final String name, final Attachable attachable, final GameData gameData) {

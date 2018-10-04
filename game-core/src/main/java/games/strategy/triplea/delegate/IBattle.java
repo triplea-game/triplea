@@ -25,6 +25,8 @@ public interface IBattle extends Serializable {
 
   enum BattleType {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
+
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     private final String m_type;
 
     BattleType(final String type) {

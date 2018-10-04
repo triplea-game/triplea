@@ -7,6 +7,8 @@ import games.strategy.triplea.attachments.TechAttachment;
 
 public class GenericTechAdvance extends TechAdvance {
   private static final long serialVersionUID = -5985281030083508185L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final TechAdvance m_advance;
 
   public GenericTechAdvance(final String name, final TechAdvance techAdvance, final GameData data) {

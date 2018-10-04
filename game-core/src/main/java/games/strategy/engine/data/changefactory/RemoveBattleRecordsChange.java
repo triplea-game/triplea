@@ -9,7 +9,10 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 
 class RemoveBattleRecordsChange extends Change {
   private static final long serialVersionUID = 3286634991233029854L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final BattleRecords m_recordsToRemove;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_round;
 
   RemoveBattleRecordsChange(final BattleRecords battleRecords, final int round) {

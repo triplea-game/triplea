@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.twoIfBySea.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -11,6 +14,7 @@ import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 
 @MapSupport
 public class EndTurnDelegate extends AbstractEndTurnDelegate {
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_gameOver = false;
 
   public EndTurnDelegate() {}

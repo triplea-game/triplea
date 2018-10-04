@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -16,6 +19,8 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
  */
 public class BattleListing implements Serializable {
   private static final long serialVersionUID = 2700129486225793827L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<BattleType, Collection<Territory>> m_battles;
 
   /**

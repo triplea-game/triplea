@@ -63,40 +63,69 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final String PREFIX_CLEAR = "-clear-";
   private static final String PREFIX_RESET = "-reset-";
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private ProductionFrontier m_frontier = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String> m_productionRule = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<TechAdvance> m_tech = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<Territory, IntegerMap<UnitType>> m_placement = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<Territory, IntegerMap<UnitType>> m_removeUnits = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_purchase = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_resource = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_resourceCount = 0;
   // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<String, Boolean> m_support = null;
   // List of relationshipChanges that should be executed when this trigger hits.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String> m_relationshipChange = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_victory = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String> m_changeOwnership = new ArrayList<>();
   // raw property changes below:
   //
   // really m_unitTypes, but we are not going to rename because it will break all existing maps
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<UnitType> m_unitType = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_unitProperty = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Territory> m_territories = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_territoryProperty = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_players = new ArrayList<>();
   // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, UserActionAttachment
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<String, String> m_playerAttachmentName = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_playerProperty = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<RelationshipType> m_relationshipTypes = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_relationshipTypeProperty = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<TerritoryEffect> m_territoryEffects = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, String>> m_territoryEffectProperty = null;
 
   public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {

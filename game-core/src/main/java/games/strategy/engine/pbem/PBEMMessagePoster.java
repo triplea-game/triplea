@@ -27,12 +27,16 @@ import lombok.extern.java.Log;
  * although the PBEM games will always be local
  */
 @Log
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
 public class PBEMMessagePoster implements Serializable {
   public static final String FORUM_POSTER_PROP_NAME = "games.strategy.engine.pbem.IForumPoster";
   public static final String EMAIL_SENDER_PROP_NAME = "games.strategy.engine.pbem.IEmailSender";
   public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PBEMMessagePoster";
   private static final long serialVersionUID = 2256265436928530566L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IForumPoster m_forumPoster;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IEmailSender m_emailSender;
   private transient File saveGameFile = null;
   private transient String turnSummary = null;

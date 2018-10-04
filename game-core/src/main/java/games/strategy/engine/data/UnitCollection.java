@@ -18,7 +18,10 @@ import games.strategy.util.IntegerMap;
  */
 public class UnitCollection extends GameDataComponent implements Collection<Unit> {
   private static final long serialVersionUID = -3534037864426122864L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Unit> m_units = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final NamedUnitHolder m_holder;
 
   /**

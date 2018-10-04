@@ -39,7 +39,10 @@ import games.strategy.util.Tuple;
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
   private static final List<Territory> EMPTY_TERRITORY_LIST = Collections.emptyList();
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Territory> m_steps = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Territory m_start;
 
   public Route() {}

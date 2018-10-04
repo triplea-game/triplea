@@ -22,9 +22,14 @@ import lombok.extern.java.Log;
 @Log
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private PlayerID m_owner;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final GUID m_uid;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_hits = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final UnitType m_type;
 
   /**

@@ -9,6 +9,8 @@ import java.util.Map;
  */
 public class NamedAttachable extends DefaultNamed implements Attachable {
   private static final long serialVersionUID = 8597712929519099255L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, IAttachment> m_attachments = new HashMap<>();
 
   /** Creates new NamedAttachable. */

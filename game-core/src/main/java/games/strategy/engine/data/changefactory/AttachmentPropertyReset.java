@@ -10,9 +10,14 @@ import games.strategy.engine.data.IAttachment;
  */
 class AttachmentPropertyReset extends Change {
   private static final long serialVersionUID = 9208154387325299072L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Attachable m_attachedTo;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_attachmentName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_oldValue;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_property;
 
   AttachmentPropertyReset(final IAttachment attachment, final String property) {

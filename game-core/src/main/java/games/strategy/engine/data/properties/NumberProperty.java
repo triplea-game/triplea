@@ -22,6 +22,7 @@ public class NumberProperty extends AEditableProperty {
   public static final String MIN_PROPERTY_NAME = "min";
   private final int min;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_value;
 
   public NumberProperty(final String name, final String description, final int max, final int min, final int def) {

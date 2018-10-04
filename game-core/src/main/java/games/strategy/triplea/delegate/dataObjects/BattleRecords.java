@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -21,6 +24,7 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 public class BattleRecords implements Serializable {
   private static final long serialVersionUID = 1473664374777905497L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records;
 
 

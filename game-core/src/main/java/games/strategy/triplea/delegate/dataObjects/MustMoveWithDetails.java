@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -14,9 +17,11 @@ import games.strategy.engine.data.Unit;
  */
 public class MustMoveWithDetails implements Serializable {
   private static final long serialVersionUID = 936060269327534445L;
+
   /**
    * Maps Unit -> Collection of units.
    */
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<Unit, Collection<Unit>> m_mapping;
 
   /**

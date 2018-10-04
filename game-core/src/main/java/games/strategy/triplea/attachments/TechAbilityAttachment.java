@@ -64,36 +64,64 @@ public class TechAbilityAttachment extends DefaultAttachment {
   // unitAbilitiesGained Static Strings
   public static final String ABILITY_CAN_BLITZ = "canBlitz";
   public static final String ABILITY_CAN_BOMBARD = "canBombard";
+
   // attachment fields
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_attackBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_defenseBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_movementBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_radarBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_airAttackBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_airDefenseBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_productionBonus = new IntegerMap<>();
   // -1 means not set
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_minimumTerritoryValueForProductionBonus = -1;
   // -1 means not set
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_repairDiscount = -1;
   // -1 means not set
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_warBondDiceSides = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_warBondDiceNumber = 0;
   // -1 means not set // not needed because this is controlled in the unit attachment with
   // private int m_rocketDiceSides = -1;
   // bombingBonus and bombingMaxDieSides
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_rocketDistance = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_rocketNumberPerTerritory = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<UnitType, Set<String>> m_unitAbilitiesGained = new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_airborneForces = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_airborneCapacity = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<UnitType> m_airborneTypes = new HashSet<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_airborneDistance = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<UnitType> m_airborneBases = new HashSet<>();
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private Map<String, Set<UnitType>> m_airborneTargettedByAA = new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_attackRollsBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<>();
 
   public TechAbilityAttachment(final String name, final Attachable attachable, final GameData gameData) {

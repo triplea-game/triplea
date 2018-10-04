@@ -33,28 +33,37 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
   // purposes of m_objectiveValue
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_countEach = false;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). The multiple that will be applied to m_objectiveValue
   // if m_countEach is true
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_eachMultiple = 1;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to
   // determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_territoryCount = -1;
   // A list of players that can be used with
   // directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<PlayerID> m_players = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_uses = -1;
   // condition for what turn it is
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected Map<Integer, Integer> m_turns = null;
   // for on/off conditions
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_switch = true;
   // allows custom GameProperties
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_gameProperty = null;
 
   protected AbstractRulesAttachment(final String name, final Attachable attachable, final GameData gameData) {

@@ -6,8 +6,12 @@ import games.strategy.engine.data.properties.GameProperties;
 
 class SetPropertyChange extends Change {
   private static final long serialVersionUID = -1377597975513821508L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_property;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_value;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_oldValue;
 
   SetPropertyChange(final String property, final Object value, final GameProperties properties) {

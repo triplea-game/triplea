@@ -16,6 +16,8 @@ import javax.swing.JTable;
  */
 public class CollectionProperty<T> extends AEditableProperty {
   private static final long serialVersionUID = 5338055034530377261L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<T> m_values;
 
   /**

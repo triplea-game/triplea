@@ -16,7 +16,10 @@ import lombok.extern.java.Log;
 @Log
 public class HistoryWriter implements Serializable {
   private static final long serialVersionUID = 4230519614567508061L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final History m_history;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private HistoryNode m_current;
 
   public HistoryWriter(final History history) {

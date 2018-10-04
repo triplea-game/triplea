@@ -14,7 +14,9 @@ import games.strategy.net.GUID;
  */
 public class UnitsList implements Serializable, Iterable<Unit> {
   private static final long serialVersionUID = -3134052492257867416L;
+
   // TODO - fix this, all units are never gcd
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<GUID, Unit> m_allUnits = new HashMap<>();
 
   UnitsList() {}

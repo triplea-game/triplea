@@ -7,7 +7,10 @@ import games.strategy.engine.data.ProductionRule;
 
 class AddProductionRule extends Change {
   private static final long serialVersionUID = 2583955907289570063L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final ProductionRule m_rule;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final ProductionFrontier m_frontier;
 
   public AddProductionRule(final ProductionRule rule, final ProductionFrontier frontier) {

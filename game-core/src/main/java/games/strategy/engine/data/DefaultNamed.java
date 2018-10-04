@@ -11,6 +11,8 @@ import com.google.common.base.MoreObjects;
  */
 public class DefaultNamed extends GameDataComponent implements Named {
   private static final long serialVersionUID = -5737716450699952621L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
 
   public DefaultNamed(final String name, final GameData data) {

@@ -23,37 +23,69 @@ import games.strategy.util.IntegerMap;
 
 abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
+
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   final GUID m_battleID = new GUID();
   /**
    * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results
    * for an odds
    * calculator so we can skip some steps for efficiency.
    */
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   boolean m_headless = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final Territory m_battleSite;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final PlayerID m_attacker;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   PlayerID m_defender;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final BattleTracker m_battleTracker;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   int m_round = 1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final boolean m_isBombingRun;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   boolean m_isAmphibious = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final BattleType m_battleType;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   boolean m_isOver = false;
   /**
    * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on
    * then we lose the corresponding collection of units.
    */
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   List<Unit> m_attackingUnits = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   List<Unit> m_defendingUnits = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   List<Unit> m_amphibiousLandAttackers = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   List<Unit> m_bombardingUnits = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   Collection<TerritoryEffect> m_territoryEffects;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   BattleResultDescription m_battleResultDescription;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   WhoWon m_whoWon = WhoWon.NOTFINISHED;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   int m_attackerLostTUV = 0;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   int m_defenderLostTUV = 0;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final GameData m_data;
 
   AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,

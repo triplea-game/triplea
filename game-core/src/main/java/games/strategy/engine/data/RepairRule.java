@@ -9,7 +9,10 @@ import games.strategy.util.IntegerMap;
  */
 public class RepairRule extends DefaultNamed {
   private static final long serialVersionUID = -45646671022993959L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IntegerMap<Resource> m_cost;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IntegerMap<NamedAttachable> m_results;
 
   public RepairRule(final String name, final GameData data) {

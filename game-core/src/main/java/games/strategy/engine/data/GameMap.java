@@ -28,14 +28,19 @@ import games.strategy.util.IntegerMap;
  */
 public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private static final long serialVersionUID = -4606700588396439283L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Territory> m_territories = new ArrayList<>();
   // note that all entries are unmodifiable
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<Territory, Set<Territory>> m_connections = new HashMap<>();
   // for fast lookup based on the string name of the territory
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, Territory> m_territoryLookup = new HashMap<>();
   // nil if the map is not grid-based
   // otherwise, m_gridDimensions.length is the number of dimensions,
   // and each element is the size of a dimension
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int[] m_gridDimensions = null;
 
   GameMap(final GameData data) {

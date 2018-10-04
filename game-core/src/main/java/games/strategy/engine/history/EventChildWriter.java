@@ -2,7 +2,10 @@ package games.strategy.engine.history;
 
 class EventChildWriter implements SerializationWriter {
   private static final long serialVersionUID = -7143658060171295697L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_text;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_renderingData;
 
   public EventChildWriter(final String text, final Object renderingData) {

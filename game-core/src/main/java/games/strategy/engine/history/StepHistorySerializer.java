@@ -4,9 +4,17 @@ import games.strategy.engine.data.PlayerID;
 
 class StepHistorySerializer implements SerializationWriter {
   private static final long serialVersionUID = 3546486775516371557L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_stepName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_delegateName;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private final PlayerID m_playerID;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_displayName;
 
   public StepHistorySerializer(final String stepName, final String delegateName, final PlayerID playerId,

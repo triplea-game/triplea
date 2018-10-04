@@ -27,6 +27,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_text = "";
   /**
    * The cost in PUs to attempt this action.
@@ -34,14 +35,21 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * @deprecated Replaced by costResources.
    */
   @Deprecated
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // remove upon next incompatible release
+      "checkstyle:MemberName" // remove upon next incompatible release
+  })
   protected int m_costPU = 0;
   // cost in any resources to attempt this action
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected IntegerMap<Resource> m_costResources = new IntegerMap<>();
   // how many times can you perform this action each round?
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_attemptsLeftThisTurn = 1;
   // which players should accept this action? this could be the player who is the target of this action in the case of
   // proposing a treaty or
@@ -49,6 +57,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
   // well. it is good to
   // set "actionAccept" to "UK" so UK can accept this action to go through.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<PlayerID> m_actionAccept = new ArrayList<>();
 
   protected AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {

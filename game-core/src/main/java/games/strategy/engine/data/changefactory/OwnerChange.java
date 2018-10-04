@@ -10,11 +10,15 @@ import games.strategy.engine.data.Territory;
  */
 class OwnerChange extends Change {
   private static final long serialVersionUID = -5938125380623744929L;
+
   /**
    * Either new or old owner can be null.
    */
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_old;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_new;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_territory;
 
   /**

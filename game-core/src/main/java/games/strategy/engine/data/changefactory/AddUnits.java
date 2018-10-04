@@ -14,8 +14,12 @@ import games.strategy.engine.data.UnitHolder;
  */
 class AddUnits extends Change {
   private static final long serialVersionUID = 2694342784633196289L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_units;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_type;
 
   AddUnits(final UnitCollection collection, final Collection<Unit> units) {

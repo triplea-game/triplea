@@ -8,6 +8,8 @@ import java.util.List;
  */
 public class CompositeChange extends Change {
   private static final long serialVersionUID = 8152962976769419486L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Change> m_changes;
 
   public CompositeChange(final Change... changes) {

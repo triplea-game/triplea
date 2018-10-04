@@ -10,7 +10,10 @@ import games.strategy.util.IntegerMap;
  */
 public class UnitHitsChange extends Change {
   private static final long serialVersionUID = 2862726651812142713L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IntegerMap<Unit> m_hits;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IntegerMap<Unit> m_undoHits;
 
   private UnitHitsChange(final IntegerMap<Unit> hits, final IntegerMap<Unit> undoHits) {

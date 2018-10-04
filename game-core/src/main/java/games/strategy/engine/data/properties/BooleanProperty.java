@@ -9,6 +9,8 @@ import javax.swing.JComponent;
 public class BooleanProperty extends AEditableProperty {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = -7265501762343216435L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean mValue;
 
   public BooleanProperty(final String name, final String description, final boolean defaultValue) {

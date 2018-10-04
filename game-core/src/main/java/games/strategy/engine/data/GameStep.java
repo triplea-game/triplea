@@ -15,12 +15,20 @@ import games.strategy.engine.delegate.IDelegate;
  */
 public class GameStep extends GameDataComponent {
   private static final long serialVersionUID = -7944468945162840931L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_displayName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final PlayerID m_player;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_delegate;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_runCount = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxRunCount = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Properties m_properties;
 
   /**

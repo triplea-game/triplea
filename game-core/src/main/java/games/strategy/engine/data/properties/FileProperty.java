@@ -27,7 +27,9 @@ public class FileProperty extends AEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;
   private static final String[] defaultImageSuffixes = {"png", "jpg", "jpeg", "gif"};
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String[] m_acceptableSuffixes;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private File m_file;
 
   /**

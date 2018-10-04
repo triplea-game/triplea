@@ -29,8 +29,10 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Attachable m_attachedTo;
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_name;
 
   protected DefaultAttachment(final String name, final Attachable attachable, final GameData gameData) {

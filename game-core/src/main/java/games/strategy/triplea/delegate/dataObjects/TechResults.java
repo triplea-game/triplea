@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -5,10 +8,16 @@ import java.util.List;
 
 public class TechResults implements Serializable {
   private static final long serialVersionUID = 5574673305892105782L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int[] m_rolls;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_hits;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_remainder;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<String> m_advances;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_errorString;
 
   public TechResults(final String errorString) {

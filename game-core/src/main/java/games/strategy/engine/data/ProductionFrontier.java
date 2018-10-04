@@ -12,7 +12,10 @@ import java.util.List;
  */
 public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule> {
   private static final long serialVersionUID = -5967251608158552892L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<ProductionRule> m_rules;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<ProductionRule> m_cachedRules;
 
   public ProductionFrontier(final String name, final GameData data) {
