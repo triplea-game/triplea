@@ -2083,6 +2083,10 @@ public final class Matches {
     return u -> UnitAttachment.get(u.getType()).getCanIntercept();
   }
 
+  public static Predicate<Unit> unitRequiresAirBaseToIntercept() {
+    return u -> UnitAttachment.get(u.getType()).getRequiresAirBaseToIntercept();
+  }
+
   static Predicate<Unit> unitCanEscort() {
     return u -> UnitAttachment.get(u.getType()).getCanEscort();
   }

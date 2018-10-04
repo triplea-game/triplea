@@ -66,7 +66,8 @@ public class AirBattle extends AbstractBattle {
   public void updateDefendingUnits() {
     // fill in defenders
     if (m_isBombingRun) {
-      m_defendingUnits = m_battleSite.getUnits().getMatches(defendingBombingRaidInterceptors(m_attacker, m_data));
+      m_defendingUnits =
+          m_battleSite.getUnits().getMatches(defendingBombingRaidInterceptors(m_battleSite, m_attacker, m_data));
     } else {
       m_defendingUnits = m_battleSite.getUnits().getMatches(defendingGroundSeaBattleInterceptors(m_attacker, m_data));
     }
@@ -477,6 +478,25 @@ public class AirBattle extends AbstractBattle {
     getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
   }
 
+  /**
+   * Finds the maximum number of units that can intercept from a given territory including checking
+   * on any air base requirements.
+   */
+  public static int getMaxInterceptionCount(final Territory t, final Collection<Unit> possible) {
+    if (possible.stream().noneMatch(Matches.unitRequiresAirBaseToIntercept())) {
+      return Integer.MAX_VALUE;
+    }
+    int result = 0;
+    for (final Unit base : t.getUnits().getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
+      final int baseMax = UnitAttachment.get(base.getType()).getMaxInterceptCount();
+      if (baseMax == -1) {
+        return Integer.MAX_VALUE;
+      }
+      result += baseMax;
+    }
+    return result;
+  }
+
   class InterceptorsLaunch implements IExecutable {
     private static final long serialVersionUID = 4300406315014471768L;
 
@@ -512,7 +532,8 @@ public class AirBattle extends AbstractBattle {
           groundedPlanesRetreated = false;
         }
       }
-      if (interceptors != null && !m_defendingUnits.containsAll(interceptors)) {
+      if (interceptors != null && (!m_defendingUnits.containsAll(interceptors)
+          || interceptors.size() > getMaxInterceptionCount(m_battleSite, m_defendingUnits))) {
         throw new IllegalStateException("Interceptors choose from outside of available units");
       }
       final Collection<Unit> beingRemoved = new ArrayList<>(m_defendingUnits);
@@ -648,19 +669,35 @@ public class AirBattle extends AbstractBattle {
         .build();
   }
 
-  public static Predicate<Unit> defendingBombingRaidInterceptors(final PlayerID attacker, final GameData data) {
-    return PredicateBuilder.of(
+  /**
+   * Returns a unit predicate that determines if it can potentially intercept including checking any
+   * air base requirements.
+   */
+  public static Predicate<Unit> defendingBombingRaidInterceptors(final Territory territory, final PlayerID attacker,
+      final GameData data) {
+    final Predicate<Unit> canIntercept = PredicateBuilder.of(
         Matches.unitCanIntercept())
         .and(Matches.unitIsEnemyOf(data, attacker))
         .and(Matches.unitWasInAirBattle().negate())
         .andIf(!Properties.getCanScrambleIntoAirBattles(data), Matches.unitWasScrambled().negate())
         .build();
+    final Predicate<Unit> airbasesCanIntercept = Matches.unitIsEnemyOf(data, attacker)
+        .and(Matches.unitIsAirBase())
+        .and(Matches.unitIsNotDisabled())
+        .and(Matches.unitIsBeingTransported().negate());
+    return u -> {
+      boolean result = canIntercept.test(u);
+      if (Matches.unitRequiresAirBaseToIntercept().test(u)) {
+        result = result && Matches.territoryHasUnitsThatMatch(airbasesCanIntercept).test(territory);
+      }
+      return result;
+    };
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
       final GameData data, final boolean bombing) {
     final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
-    final Predicate<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(attacker, data)
+    final Predicate<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(territory, attacker, data)
         : defendingGroundSeaBattleInterceptors(attacker, data);
     int maxScrambleDistance = 0;
     if (canScrambleToAirBattle) {
