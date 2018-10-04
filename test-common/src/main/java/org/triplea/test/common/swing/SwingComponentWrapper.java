@@ -7,8 +7,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import lombok.Value;
 
 /**
