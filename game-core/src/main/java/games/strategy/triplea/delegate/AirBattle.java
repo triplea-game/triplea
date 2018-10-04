@@ -688,13 +688,9 @@ public class AirBattle extends AbstractBattle {
         .and(Matches.unitIsAirBase())
         .and(Matches.unitIsNotDisabled())
         .and(Matches.unitIsBeingTransported().negate());
-    return u -> {
-      boolean result = canIntercept.test(u);
-      if (Matches.unitRequiresAirBaseToIntercept().test(u)) {
-        result = result && Matches.territoryHasUnitsThatMatch(airbasesCanIntercept).test(territory);
-      }
-      return result;
-    };
+    return u -> canIntercept.test(u)
+        && (!Matches.unitRequiresAirBaseToIntercept().test(u)
+            || Matches.territoryHasUnitsThatMatch(airbasesCanIntercept).test(territory));
   }
 
   static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
