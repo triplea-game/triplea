@@ -37,6 +37,9 @@ import games.strategy.util.Interruptibles;
 import games.strategy.util.PredicateBuilder;
 import lombok.extern.java.Log;
 
+/**
+ * Battle class used for air battles and interception before a standard battle.
+ */
 @Log
 public class AirBattle extends AbstractBattle {
   private static final long serialVersionUID = 4686241714027216395L;
