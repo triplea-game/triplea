@@ -1916,6 +1916,9 @@ public class UnitAttachment extends DefaultAttachment {
     m_bombingTargets = null;
   }
 
+  /**
+   * Finds potential unit types which all passed in bombers and rockets can target.
+   */
   public static Set<UnitType> getAllowedBombingTargetsIntersection(final Collection<Unit> bombersOrRockets,
       final GameData data) {
     if (bombersOrRockets.isEmpty()) {
