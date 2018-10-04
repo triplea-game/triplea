@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -24,11 +25,16 @@ final class SelectTerritoryDialog extends JDialog {
   private Result result = Result.CANCEL;
   private final JComboBox<Territory> territoryComboBox;
 
-  SelectTerritoryDialog(final Frame owner, final String title, final Collection<Territory> territories) {
+  SelectTerritoryDialog(
+      final Frame owner,
+      final String title,
+      final Collection<Territory> territories,
+      final @Nullable Territory initialSelectedTerritory) {
     super(owner, title, true);
 
     territoryComboBox = JComboBoxBuilder.builder(Territory.class)
         .items(territories.stream().sorted().collect(Collectors.toList()))
+        .nullableSelectedItem(initialSelectedTerritory)
         .enableAutoComplete()
         .build();
     final JButton okButton = JButtonBuilder.builder()
