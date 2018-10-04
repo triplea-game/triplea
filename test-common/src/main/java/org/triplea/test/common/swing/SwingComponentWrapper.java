@@ -33,18 +33,17 @@ public class SwingComponentWrapper {
    * @throws AssertionError Thrown when failing to match any components by name.
    */
   public <T> T findChildByName(final String childName, final Class<T> classType) {
-    return findChildByNameNonThrowing(childName, classType)
+    return findChildByNameRecursive(childName, classType)
         .orElseThrow(() -> new AssertionError("Expected to find a component with name: " + childName));
   }
 
 
-  @VisibleForTesting
-  <T> Optional<T> findChildByNameNonThrowing(final String childName, final Class<T> classType) {
+  private <T> Optional<T> findChildByNameRecursive(final String childName, final Class<T> classType) {
     return childName.equals(component.getName())
         ? Optional.of(classType.cast(component))
         : (component instanceof Container)
             ? Arrays.stream(((Container) component).getComponents())
-                .map(childComponent -> SwingComponentWrapper.of(childComponent).findChildByNameNonThrowing(childName,
+                .map(childComponent -> SwingComponentWrapper.of(childComponent).findChildByNameRecursive(childName,
                     classType))
                 .filter(Optional::isPresent)
                 .findAny()

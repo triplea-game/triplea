@@ -1,30 +1,23 @@
 package org.triplea.test.common.swing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.triplea.test.common.assertions.Optionals.isMissing;
-import static org.triplea.test.common.assertions.Optionals.isPresent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class SwingComponentWrapperTest {
 
   private static final String CHILD_NAME = "child_name";
 
-
   @Test
   void findChildByName() {
-    assertThat(
-        withChildComponentName(CHILD_NAME).findChildByNameNonThrowing(CHILD_NAME, JLabel.class),
-        isPresent());
+    withChildComponentName(CHILD_NAME).findChildByName(CHILD_NAME, JLabel.class);
 
-    assertThat(
-        withChildComponentName("other").findChildByNameNonThrowing(CHILD_NAME, JLabel.class),
-        isMissing());
+    Assertions.assertThrows(AssertionError.class,
+        () -> withChildComponentName("other").findChildByName(CHILD_NAME, JLabel.class));
   }
 
   /**
