@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.Normalizer;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
@@ -18,6 +19,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * From http://www.orbital-computer.de/JComboBox. Originally released into the Public Domain
@@ -210,14 +213,14 @@ final class AutoCompletion<E> extends PlainDocument {
   private Object lookupItem(final String pattern) {
     final Object selectedItem = model.getSelectedItem();
     // only search for a different item if the currently selected does not match
-    if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), pattern)) {
+    if (selectedItem != null && startsWith(selectedItem.toString(), pattern)) {
       return selectedItem;
     }
     // iterate over all items
     for (int i = 0, n = model.getSize(); i < n; i++) {
       final Object currentItem = model.getElementAt(i);
       // current item starts with the pattern?
-      if (currentItem != null && startsWithIgnoreCase(currentItem.toString(), pattern)) {
+      if (currentItem != null && startsWith(currentItem.toString(), pattern)) {
         return currentItem;
       }
     }
@@ -225,8 +228,14 @@ final class AutoCompletion<E> extends PlainDocument {
     return null;
   }
 
-  // checks if str1 starts with str2 - ignores case
-  private static boolean startsWithIgnoreCase(final String str1, final String str2) {
-    return str1.toUpperCase().startsWith(str2.toUpperCase());
+  @VisibleForTesting
+  static boolean startsWith(final String str1, final String str2) {
+    return normalize(str1).startsWith(normalize(str2));
+  }
+
+  private static String normalize(final String str) {
+    return Normalizer.normalize(str, Normalizer.Form.NFD)
+        .replaceAll("\\p{M}", "")
+        .toUpperCase();
   }
 }

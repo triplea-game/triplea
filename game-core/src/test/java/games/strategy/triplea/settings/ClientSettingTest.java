@@ -2,38 +2,55 @@ package games.strategy.triplea.settings;
 
 import java.util.function.Consumer;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-public class ClientSettingTest extends AbstractClientSettingTestCase {
+import nl.jqno.equalsverifier.EqualsVerifier;
 
-  private static final String TEST_VALUE = "value";
-
-  @Mock
-  private Consumer<String> mockSaveListener;
-
-  @Test
-  public void saveActionListenerIsCalled() {
-    ClientSetting.TEST_SETTING.addSaveListener(mockSaveListener);
-
-    ClientSetting.TEST_SETTING.save(TEST_VALUE);
-
-    Mockito.verify(mockSaveListener, Mockito.times(1))
-        .accept(TEST_VALUE);
+final class ClientSettingTest {
+  @Nested
+  final class EqualsAndHashCodeTest {
+    @Test
+    void shouldBeEquatableAndHashable() {
+      EqualsVerifier.forClass(ClientSetting.class)
+          .withNonnullFields("name")
+          .withOnlyTheseFields("name")
+          .verify();
+    }
   }
 
-  @Test
-  public void verifyRemovedSavedListenersAreNotCalled() {
-    ClientSetting.TEST_SETTING.addSaveListener(mockSaveListener);
-    ClientSetting.TEST_SETTING.removeSaveListener(mockSaveListener);
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  final class SaveActionTest extends AbstractClientSettingTestCase {
+    private static final String TEST_VALUE = "value";
 
-    ClientSetting.TEST_SETTING.save(TEST_VALUE);
+    @Mock
+    private Consumer<String> mockSaveListener;
+    private final ClientSetting clientSetting = new ClientSetting("TEST_SETTING");
 
-    Mockito.verify(mockSaveListener, Mockito.never())
-        .accept(TEST_VALUE);
+    @Test
+    void saveActionListenerIsCalled() {
+      clientSetting.addSaveListener(mockSaveListener);
+
+      clientSetting.save(TEST_VALUE);
+
+      Mockito.verify(mockSaveListener, Mockito.times(1))
+          .accept(TEST_VALUE);
+    }
+
+    @Test
+    void verifyRemovedSavedListenersAreNotCalled() {
+      clientSetting.addSaveListener(mockSaveListener);
+      clientSetting.removeSaveListener(mockSaveListener);
+
+      clientSetting.save(TEST_VALUE);
+
+      Mockito.verify(mockSaveListener, Mockito.never())
+          .accept(TEST_VALUE);
+    }
   }
 }

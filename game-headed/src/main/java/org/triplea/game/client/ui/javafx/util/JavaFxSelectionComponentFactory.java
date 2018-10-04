@@ -376,8 +376,8 @@ final class JavaFxSelectionComponentFactory {
 
       userButton = new RadioButton("Use These Settings:");
       userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-      hostText = new TextField(ClientSetting.PROXY_HOST.value());
-      portText = new TextField(ClientSetting.PROXY_PORT.value());
+      hostText = new TextField(ClientSetting.proxyHost.value());
+      portText = new TextField(ClientSetting.proxyPort.value());
       final VBox radioPanel = new VBox();
       radioPanel.getChildren().addAll(
           noneButton,
@@ -401,14 +401,14 @@ final class JavaFxSelectionComponentFactory {
     public Map<GameSetting, String> readValues() {
       final Map<GameSetting, String> values = new HashMap<>();
       if (noneButton.isSelected()) {
-        values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString());
+        values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.NONE.toString());
       } else if (systemButton.isSelected()) {
-        values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+        values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
         HttpProxy.updateSystemProxy();
       } else {
-        values.put(ClientSetting.PROXY_CHOICE, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
-        values.put(ClientSetting.PROXY_HOST, hostText.getText().trim());
-        values.put(ClientSetting.PROXY_PORT, portText.getText().trim());
+        values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
+        values.put(ClientSetting.proxyHost, hostText.getText().trim());
+        values.put(ClientSetting.proxyPort, portText.getText().trim());
       }
       return values;
     }
@@ -416,17 +416,17 @@ final class JavaFxSelectionComponentFactory {
     @Override
     public void resetToDefault() {
       ClientSetting.flush();
-      hostText.setText(ClientSetting.PROXY_HOST.defaultValue);
-      portText.setText(ClientSetting.PROXY_PORT.defaultValue);
-      noneButton.setSelected(Boolean.valueOf(ClientSetting.PROXY_CHOICE.defaultValue));
+      hostText.setText(ClientSetting.proxyHost.defaultValue);
+      portText.setText(ClientSetting.proxyPort.defaultValue);
+      noneButton.setSelected(Boolean.valueOf(ClientSetting.proxyChoice.defaultValue));
     }
 
     @Override
     public void reset() {
       ClientSetting.flush();
-      hostText.setText(ClientSetting.PROXY_HOST.value());
-      portText.setText(ClientSetting.PROXY_PORT.value());
-      noneButton.setSelected(ClientSetting.PROXY_CHOICE.booleanValue());
+      hostText.setText(ClientSetting.proxyHost.value());
+      portText.setText(ClientSetting.proxyPort.value());
+      noneButton.setSelected(ClientSetting.proxyChoice.booleanValue());
     }
 
     @Override

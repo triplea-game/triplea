@@ -113,7 +113,7 @@ public final class GameRunner {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
     ClientSetting.initialize();
 
-    if (!ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
+    if (!ClientSetting.useExperimentalJavaFxUi.booleanValue()) {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
         LookAndFeel.initialize();
         final Console console = new Console();
@@ -147,7 +147,7 @@ public final class GameRunner {
       HttpProxy.updateSystemProxy();
     }
 
-    if (ClientSetting.USE_EXPERIMENTAL_JAVAFX_UI.booleanValue()) {
+    if (ClientSetting.useExperimentalJavaFxUi.booleanValue()) {
       Services.loadAny(JavaFxClientRunner.class).start(args);
     } else {
       SwingUtilities.invokeLater(() -> {

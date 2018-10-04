@@ -15,7 +15,7 @@ final class UpdatedMapsCheck {
   static boolean isMapUpdateCheckRequired() {
     return isMapUpdateCheckRequired(
         LocalDate.now(),
-        ClientSetting.TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES,
+        ClientSetting.lastCheckForMapUpdates,
         ClientSetting::flush);
   }
 

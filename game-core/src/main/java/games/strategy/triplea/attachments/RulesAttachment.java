@@ -979,7 +979,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       // get all the units in the territory
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       switch (exclType) {
-        case "allied":  // any allied units in the territory. (does not include owned units)
+        case "allied": // any allied units in the territory. (does not include owned units)
           allUnits.removeAll(CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
           allUnits
               .retainAll(CollectionUtils.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
@@ -988,10 +988,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           allUnits.removeAll(
               CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
           break;
-        case "enemy":  // any enemy units in the territory
+        case "enemy": // any enemy units in the territory
           allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
           break;
-        case "enemy_surface":  // any enemy units (not trn/sub) in the territory
+        case "enemy_surface": // any enemy units (not trn/sub) in the territory
           allUnits.retainAll(
               CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)
                   .and(Matches.unitIsNotSub())

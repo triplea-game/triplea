@@ -39,7 +39,7 @@ public final class LookAndFeel {
    * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void initialize() {
-    ClientSetting.LOOK_AND_FEEL_PREF.addSaveListener(newValue -> {
+    ClientSetting.lookAndFeel.addSaveListener(newValue -> {
       setupLookAndFeel(newValue);
       SettingsWindow.updateLookAndFeel();
       JOptionPane.showMessageDialog(
@@ -49,7 +49,7 @@ public final class LookAndFeel {
           "Close TripleA and Restart",
           JOptionPane.WARNING_MESSAGE);
     });
-    setupLookAndFeel(ClientSetting.LOOK_AND_FEEL_PREF.value());
+    setupLookAndFeel(ClientSetting.lookAndFeel.value());
   }
 
   /**

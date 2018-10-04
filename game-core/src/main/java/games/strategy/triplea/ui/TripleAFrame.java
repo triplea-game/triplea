@@ -1343,7 +1343,7 @@ public final class TripleAFrame extends JFrame {
             fuelCostPanel.add(label,
                 new GridBagConstraints(0, count, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(0, 0, 0, 0), 0, 0));
-            fuelCostPanel.add(uiContext.getResourceImageFactory().getResourcesPanel(entry.getValue(), data),
+            fuelCostPanel.add(uiContext.getResourceImageFactory().getResourcesPanel(entry.getValue()),
                 new GridBagConstraints(1, count++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                     new Insets(0, 0, 0, 0), 0, 0));
             if (!entry.getKey().getResources().has(entry.getValue().getResourcesCopy())) {
@@ -1757,8 +1757,8 @@ public final class TripleAFrame extends JFrame {
 
   private int computeScrollSpeed() {
     return isCtrlPressed
-        ? ClientSetting.ARROW_KEY_SCROLL_SPEED.intValue() * ClientSetting.FASTER_ARROW_KEY_SCROLL_MULTIPLIER.intValue()
-        : ClientSetting.ARROW_KEY_SCROLL_SPEED.intValue();
+        ? ClientSetting.arrowKeyScrollSpeed.intValue() * ClientSetting.fasterArrowKeyScrollMultiplier.intValue()
+        : ClientSetting.arrowKeyScrollSpeed.intValue();
   }
 
   private void showEditMode() {

@@ -32,9 +32,9 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   private final String playerName;
   private final PlayerID player;
   private final JComboBox<String> playerTypes;
-  private JComponent incomePercentage;
+  private final JComponent incomePercentage;
   private final JLabel incomePercentageLabel;
-  private JComponent puIncomeBonus;
+  private final JComponent puIncomeBonus;
   private final JLabel puIncomeBonusLabel;
   private boolean enabled = true;
   private final JLabel name;
@@ -96,20 +96,9 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       });
     }
 
-    // TODO: remove null check for next incompatible release
-    incomePercentage = null;
-    if (gameProperties.getPlayerProperty(Constants.getIncomePercentageFor(player)) != null) {
-      incomePercentage =
-          gameProperties.getPlayerProperty(Constants.getIncomePercentageFor(player)).getEditorComponent();
-    }
+    incomePercentage = gameProperties.getPlayerProperty(Constants.getIncomePercentageFor(player)).getEditorComponent();
     incomePercentageLabel = new JLabel("%");
-
-    // TODO: remove null check for next incompatible release
-    puIncomeBonus = null;
-    if (gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)) != null) {
-      puIncomeBonus =
-          gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)).getEditorComponent();
-    }
+    puIncomeBonus = gameProperties.getPlayerProperty(Constants.getPuIncomeBonus(player)).getEditorComponent();
     puIncomeBonusLabel = new JLabel("PUs");
 
     setWidgetActivation();
@@ -130,35 +119,21 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
           GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
     }
     gridx++;
-    // TODO: remove null check for next incompatible release
-    if (incomePercentage != null) {
-      container.add(incomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
-      container.add(incomePercentageLabel,
-          new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-              GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
-    }
-    // TODO: remove null check for next incompatible release
-    if (puIncomeBonus != null) {
-      container.add(puIncomeBonus, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
-      container.add(puIncomeBonusLabel,
-          new GridBagConstraints(gridx, row, 1, 1, 0, 0, GridBagConstraints.WEST,
-              GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
-    }
+    container.add(incomePercentage, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
+    container.add(incomePercentageLabel, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
+    container.add(puIncomeBonus, new GridBagConstraints(gridx++, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 20, 2, 0), 0, 0));
+    container.add(puIncomeBonusLabel, new GridBagConstraints(gridx, row, 1, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
   }
 
   void setResourceModifiersVisble(final boolean isVisible) {
-    // TODO: remove null check for next incompatible release
-    if (incomePercentage != null) {
-      incomePercentage.setVisible(isVisible);
-      incomePercentageLabel.setVisible(isVisible);
-    }
-    // TODO: remove null check for next incompatible release
-    if (puIncomeBonus != null) {
-      puIncomeBonus.setVisible(isVisible);
-      puIncomeBonusLabel.setVisible(isVisible);
-    }
+    incomePercentage.setVisible(isVisible);
+    incomePercentageLabel.setVisible(isVisible);
+    puIncomeBonus.setVisible(isVisible);
+    puIncomeBonusLabel.setVisible(isVisible);
   }
 
   void setPlayerType(final String playerType) {
@@ -198,14 +173,8 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
       alliances.setEnabled(enabled);
     }
     enabledCheckBox.setEnabled(disableable.contains(playerName));
-    // TODO: remove null check for next incompatible release
-    if (incomePercentage != null) {
-      incomePercentage.setEnabled(enabled);
-    }
-    // TODO: remove null check for next incompatible release
-    if (puIncomeBonus != null) {
-      puIncomeBonus.setEnabled(enabled);
-    }
+    incomePercentage.setEnabled(enabled);
+    puIncomeBonus.setEnabled(enabled);
     parent.notifyObservers();
   }
 

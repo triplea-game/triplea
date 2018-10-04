@@ -423,13 +423,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_whenHitPointsDamagedChangesInto = value;
   }
 
-  /**
-   * Can remove null check and this comment for next incompatible release.
-   */
   public Map<Integer, Tuple<Boolean, UnitType>> getWhenHitPointsDamagedChangesInto() {
-    if (m_whenHitPointsDamagedChangesInto == null) {
-      resetWhenHitPointsDamagedChangesInto(); // TODO: Can remove for incompatible release
-    }
     return m_whenHitPointsDamagedChangesInto;
   }
 
@@ -454,13 +448,7 @@ public class UnitAttachment extends DefaultAttachment {
     m_whenHitPointsRepairedChangesInto = value;
   }
 
-  /**
-   * Can remove null check and this comment for next incompatible release.
-   */
   public Map<Integer, Tuple<Boolean, UnitType>> getWhenHitPointsRepairedChangesInto() {
-    if (m_whenHitPointsRepairedChangesInto == null) {
-      resetWhenHitPointsRepairedChangesInto(); // TODO: Can remove for incompatible release
-    }
     return m_whenHitPointsRepairedChangesInto;
   }
 
@@ -1817,10 +1805,6 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public IntegerMap<Resource> getFuelFlatCost() {
-    // TODO: remove for incompatible release
-    if (m_fuelFlatCost == null) {
-      m_fuelFlatCost = new IntegerMap<>();
-    }
     return m_fuelFlatCost;
   }
 

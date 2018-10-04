@@ -171,7 +171,9 @@ public class PoliticsPanel extends ActionPanel {
     for (final PoliticalActionAttachment paa : validPoliticalActions) {
       politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0,
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-      final JButton button = new JButton(getActionButtonText(paa));
+      final JButton button = getMap().getUiContext().getResourceImageFactory().getResourcesButton(
+          new ResourceCollection(getData(), paa.getCostResources()),
+          UserActionText.getInstance().getButtonText(paa.getText()));
       button.addActionListener(ae -> {
         selectPoliticalActionButton.setEnabled(false);
         doneButton.setEnabled(false);
@@ -218,12 +220,6 @@ public class PoliticsPanel extends ActionPanel {
       panel.add(new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }
     return panel;
-  }
-
-  private String getActionButtonText(final PoliticalActionAttachment paa) {
-    final String costString = paa.getCostResources().isEmpty() ? ""
-        : "[" + ResourceCollection.toString(paa.getCostResources(), getData()) + "] ";
-    return costString + PoliticsText.getInstance().getButtonText(paa.getText());
   }
 
   private static JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {

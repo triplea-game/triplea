@@ -554,7 +554,7 @@ public class AirMovementValidator {
     return (route != null)
         && (route.numberOfSteps() <= movementLeft)
         && (!areNeutralsPassableByAir
-          || getNeutralCharge(data, route) <= player.getResources().getQuantity(Constants.PUS));
+            || getNeutralCharge(data, route) <= player.getResources().getQuantity(Constants.PUS));
   }
 
   /**

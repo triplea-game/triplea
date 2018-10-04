@@ -109,7 +109,7 @@ public final class ClientFileSystemHelper {
    *         retained between engine installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    final String path = getUserMapsFolderPath(ClientSetting.USER_MAPS_FOLDER_PATH, ClientSetting.MAP_FOLDER_OVERRIDE);
+    final String path = getUserMapsFolderPath(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride);
     final File mapsFolder = new File(path);
     if (!mapsFolder.exists()) {
       mapsFolder.mkdirs();

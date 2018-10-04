@@ -46,8 +46,8 @@ public final class LobbyServerPropertiesFetcher {
    * configuration that we would pass back in case github is not available.
    *
    * <p>
-   * The lobby server properties may be overridden by setting values for {@link ClientSetting#TEST_LOBBY_HOST} and
-   * {@link ClientSetting#TEST_LOBBY_PORT} simultaneously. Setting only one or the other will cause them to be ignored.
+   * The lobby server properties may be overridden by setting values for {@link ClientSetting#testLobbyHost} and
+   * {@link ClientSetting#testLobbyPort} simultaneously. Setting only one or the other will cause them to be ignored.
    * </p>
    *
    * @return LobbyServerProperties as fetched and parsed from github hosted remote URL.
@@ -58,7 +58,7 @@ public final class LobbyServerPropertiesFetcher {
   }
 
   private static Optional<LobbyServerProperties> getTestOverrideProperties() {
-    return getTestOverrideProperties(ClientSetting.TEST_LOBBY_HOST, ClientSetting.TEST_LOBBY_PORT);
+    return getTestOverrideProperties(ClientSetting.testLobbyHost, ClientSetting.testLobbyPort);
   }
 
   @VisibleForTesting
@@ -80,13 +80,13 @@ public final class LobbyServerPropertiesFetcher {
     try {
       final LobbyServerProperties downloadedProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
           LobbyPropertyFileParser::parse);
-      ClientSetting.LOBBY_LAST_USED_HOST.save(downloadedProps.host);
-      ClientSetting.LOBBY_LAST_USED_PORT.save(downloadedProps.port);
+      ClientSetting.lobbyLastUsedHost.save(downloadedProps.host);
+      ClientSetting.lobbyLastUsedPort.save(downloadedProps.port);
       ClientSetting.flush();
       return downloadedProps;
     } catch (final IOException e) {
 
-      if (!ClientSetting.LOBBY_LAST_USED_HOST.isSet()) {
+      if (!ClientSetting.lobbyLastUsedHost.isSet()) {
         log.log(Level.SEVERE,
             String.format("Failed to download lobby server property file from %s; "
                 + "Please verify your internet connection and try again.",
@@ -100,8 +100,8 @@ public final class LobbyServerPropertiesFetcher {
 
       // graceful recovery case, use the last lobby address we knew about
       return new LobbyServerProperties(
-          ClientSetting.LOBBY_LAST_USED_HOST.value(),
-          ClientSetting.LOBBY_LAST_USED_PORT.intValue());
+          ClientSetting.lobbyLastUsedHost.value(),
+          ClientSetting.lobbyLastUsedPort.intValue());
     }
   }
 

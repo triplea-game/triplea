@@ -100,9 +100,9 @@ public class ImageScrollerLargeView extends JComponent {
         int dx = 0;
         int dy = 0;
         if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-          dx = e.getWheelRotation() * ClientSetting.WHEEL_SCROLL_AMOUNT.intValue();
+          dx = e.getWheelRotation() * ClientSetting.wheelScrollAmount.intValue();
         } else {
-          dy = e.getWheelRotation() * ClientSetting.WHEEL_SCROLL_AMOUNT.intValue();
+          dy = e.getWheelRotation() * ClientSetting.wheelScrollAmount.intValue();
         }
         // Update the model, which will handle its own clamping or wrapping depending on the map.
         this.model.set(this.model.getX() + dx, this.model.getY() + dy);
@@ -266,15 +266,15 @@ public class ImageScrollerLargeView extends JComponent {
   private void scroll() {
     int dy = 0;
     if ((edge & TOP) != 0) {
-      dy = -ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
+      dy = -ClientSetting.mapEdgeScrollSpeed.intValue();
     } else if ((edge & BOTTOM) != 0) {
-      dy = ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
+      dy = ClientSetting.mapEdgeScrollSpeed.intValue();
     }
     int dx = 0;
     if ((edge & LEFT) != 0) {
-      dx = -ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
+      dx = -ClientSetting.mapEdgeScrollSpeed.intValue();
     } else if ((edge & RIGHT) != 0) {
-      dx = ClientSetting.MAP_EDGE_SCROLL_SPEED.intValue();
+      dx = ClientSetting.mapEdgeScrollSpeed.intValue();
     }
 
     dx = (int) (dx / scale);
@@ -290,14 +290,14 @@ public class ImageScrollerLargeView extends JComponent {
 
   private static int getNewEdge(final int x, final int y, final int width, final int height) {
     int newEdge = NONE;
-    if (x < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
+    if (x < ClientSetting.mapEdgeScrollZoneSize.intValue()) {
       newEdge += LEFT;
-    } else if (width - x < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
+    } else if (width - x < ClientSetting.mapEdgeScrollZoneSize.intValue()) {
       newEdge += RIGHT;
     }
-    if (y < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
+    if (y < ClientSetting.mapEdgeScrollZoneSize.intValue()) {
       newEdge += TOP;
-    } else if (height - y < ClientSetting.MAP_EDGE_SCROLL_ZONE_SIZE.intValue()) {
+    } else if (height - y < ClientSetting.mapEdgeScrollZoneSize.intValue()) {
       newEdge += BOTTOM;
     }
     return newEdge;

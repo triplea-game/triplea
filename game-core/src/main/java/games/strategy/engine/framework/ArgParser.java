@@ -18,7 +18,7 @@ public final class ArgParser {
    * Move command line arguments to system properties or client settings.
    */
   public static void handleCommandLineArgs(final String... args) {
-    ClientSetting.MAP_FOLDER_OVERRIDE.save(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue);
+    ClientSetting.mapFolderOverride.save(ClientSetting.mapFolderOverride.defaultValue);
 
     if ((args.length == 1) && args[0].startsWith(TRIPLEA_PROTOCOL)) {
       handleMapDownloadArg(args[0]);
@@ -42,7 +42,7 @@ public final class ArgParser {
 
   private static void setSystemPropertyOrClientSetting(final String key, final String value) {
     if (CliProperties.MAP_FOLDER.equals(key)) {
-      ClientSetting.MAP_FOLDER_OVERRIDE.saveAndFlush(value);
+      ClientSetting.mapFolderOverride.saveAndFlush(value);
     } else {
       System.setProperty(key, value);
     }

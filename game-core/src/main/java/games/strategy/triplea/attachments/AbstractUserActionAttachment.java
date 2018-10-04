@@ -118,14 +118,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   public IntegerMap<Resource> getCostResources() {
-    // TODO: remove for incompatible release
-    if (m_costResources == null) {
-      m_costResources = new IntegerMap<>();
-    }
-    if (m_costPU != 0) {
-      final Resource r = getData().getResourceList().getResource(Constants.PUS);
-      m_costResources.add(r, m_costPU);
-    }
     return m_costResources;
   }
 

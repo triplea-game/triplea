@@ -70,21 +70,21 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void mapFolderOverrideClientSettingIsSetWhenSpecified() {
-    ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
+    ClientSetting.mapFolderOverride.save("some value");
     final String mapFolderPath = "/path/to/maps";
 
     ArgParser.handleCommandLineArgs("-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolderPath);
 
-    assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(mapFolderPath));
+    assertThat(ClientSetting.mapFolderOverride.value(), is(mapFolderPath));
   }
 
   @Test
   public void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
-    ClientSetting.MAP_FOLDER_OVERRIDE.save("some value");
+    ClientSetting.mapFolderOverride.save("some value");
 
     ArgParser.handleCommandLineArgs();
 
-    assertThat(ClientSetting.MAP_FOLDER_OVERRIDE.value(), is(ClientSetting.MAP_FOLDER_OVERRIDE.defaultValue));
+    assertThat(ClientSetting.mapFolderOverride.value(), is(ClientSetting.mapFolderOverride.defaultValue));
   }
 
   private interface TestData {

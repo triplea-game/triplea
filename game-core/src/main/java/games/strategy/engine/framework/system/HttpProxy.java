@@ -34,7 +34,7 @@ public class HttpProxy {
   public static final String PROXY_CHOICE = "proxy.choice";
 
   public static boolean isUsingSystemProxy() {
-    return ClientSetting.PROXY_CHOICE.value().equals(ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+    return ClientSetting.proxyChoice.value().equals(ProxyChoice.USE_SYSTEM_SETTINGS.toString());
   }
 
   /**
@@ -54,8 +54,8 @@ public class HttpProxy {
       port = host.isEmpty() ? "" : String.valueOf(address.get().getPort());
     }
 
-    ClientSetting.PROXY_HOST.save(host);
-    ClientSetting.PROXY_PORT.save(port);
+    ClientSetting.proxyHost.save(host);
+    ClientSetting.proxyPort.save(port);
     ClientSetting.flush();
   }
 
@@ -87,8 +87,8 @@ public class HttpProxy {
    * Attaches proxy host and port values, if any, to the http request parameter.
    */
   public static void addProxy(final HttpRequestBase request) {
-    final String host = ClientSetting.PROXY_HOST.value();
-    final String port = ClientSetting.PROXY_PORT.value();
+    final String host = ClientSetting.proxyHost.value();
+    final String port = ClientSetting.proxyPort.value();
 
     if (Strings.emptyToNull(host) != null && Strings.emptyToNull(port) != null) {
       request.setConfig(RequestConfig
