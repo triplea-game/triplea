@@ -42,7 +42,6 @@ class ErrorReportComponentsTest {
 
   @Test
   void submitButtonSendsAnErrorReport() {
-    System.setProperty("java.awt.headless", "true");
     when(guiReader.get()).thenReturn(userErrorReport);
 
     errorReportComponents.createSubmitButton(withMockedSubmitButtonConfig())
