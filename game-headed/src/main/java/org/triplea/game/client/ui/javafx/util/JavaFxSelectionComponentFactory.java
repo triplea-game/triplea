@@ -5,11 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.prefs.Preferences;
+import java.util.logging.Level;
 
 import com.google.common.base.Strings;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
@@ -27,7 +26,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import lombok.extern.java.Log;
 
+@Log
 final class JavaFxSelectionComponentFactory {
 
   private JavaFxSelectionComponentFactory() {}
@@ -85,20 +86,6 @@ final class JavaFxSelectionComponentFactory {
         return Collections.singletonMap(clientSetting, stringValue);
       }
 
-      /**
-       * Does nothing.
-       * Using a Spinner should ensure no invalid values can be entered.
-       */
-      @Override
-      public void indicateError() {}
-
-      /**
-       * Does nothing.
-       * Using a Spinner should ensure no invalid values can be entered.
-       */
-      @Override
-      public void clearError() {}
-
       @Override
       public void resetToDefault() {
         spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultValue));
@@ -140,12 +127,6 @@ final class JavaFxSelectionComponentFactory {
       public Map<GameSetting, String> readValues() {
         return Collections.singletonMap(clientSetting, String.valueOf(checkBox.selectedProperty().get()));
       }
-
-      @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
 
       @Override
       public void resetToDefault() {
@@ -190,12 +171,6 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
-
-      @Override
       public void resetToDefault() {
         textField.setText(clientSetting.defaultValue);
       }
@@ -215,8 +190,11 @@ final class JavaFxSelectionComponentFactory {
     return new FileSelector(clientSetting);
   }
 
-  static SelectionComponent<Region> proxySettings() {
-    return new ProxySetting();
+  static SelectionComponent<Region> proxySettings(
+      final ClientSetting proxyChoiceClientSetting,
+      final ClientSetting proxyHostClientSetting,
+      final ClientSetting proxyPortClientSetting) {
+    return new ProxySetting(proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
   }
 
   private static final class FolderSelector extends Region implements SelectionComponent<Region> {
@@ -280,12 +258,6 @@ final class JavaFxSelectionComponentFactory {
     public String validValueDescription() {
       return "";
     }
-
-    @Override
-    public void indicateError() {}
-
-    @Override
-    public void clearError() {}
   }
 
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
@@ -350,34 +322,35 @@ final class JavaFxSelectionComponentFactory {
     public String validValueDescription() {
       return "";
     }
-
-    @Override
-    public void indicateError() {}
-
-    @Override
-    public void clearError() {}
   }
 
   private static final class ProxySetting extends Region implements SelectionComponent<Region> {
+    private final ClientSetting proxyChoiceClientSetting;
+    private final ClientSetting proxyHostClientSetting;
+    private final ClientSetting proxyPortClientSetting;
     private final RadioButton noneButton;
     private final RadioButton systemButton;
     private final RadioButton userButton;
     private final TextField hostText;
     private final TextField portText;
 
-    ProxySetting() {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-      final HttpProxy.ProxyChoice proxyChoice =
-          HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
+    ProxySetting(
+        final ClientSetting proxyChoiceClientSetting,
+        final ClientSetting proxyHostClientSetting,
+        final ClientSetting proxyPortClientSetting) {
+      this.proxyChoiceClientSetting = proxyChoiceClientSetting;
+      this.proxyHostClientSetting = proxyHostClientSetting;
+      this.proxyPortClientSetting = proxyPortClientSetting;
+
+      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(proxyChoiceClientSetting.value());
       noneButton = new RadioButton("None");
       noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
       systemButton = new RadioButton("Use System Settings");
       systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
-
       userButton = new RadioButton("Use These Settings:");
       userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-      hostText = new TextField(ClientSetting.proxyHost.value());
-      portText = new TextField(ClientSetting.proxyPort.value());
+      hostText = new TextField(proxyHostClientSetting.value());
+      portText = new TextField(proxyPortClientSetting.value());
       final VBox radioPanel = new VBox();
       radioPanel.getChildren().addAll(
           noneButton,
@@ -397,18 +370,27 @@ final class JavaFxSelectionComponentFactory {
       getChildren().add(radioPanel);
     }
 
+    private static HttpProxy.ProxyChoice parseProxyChoice(final String encodedProxyChoice) {
+      try {
+        return HttpProxy.ProxyChoice.valueOf(encodedProxyChoice);
+      } catch (final IllegalArgumentException e) {
+        log.log(Level.WARNING, "Illegal proxy choice: '" + encodedProxyChoice + "'", e);
+        return HttpProxy.ProxyChoice.NONE;
+      }
+    }
+
     @Override
     public Map<GameSetting, String> readValues() {
       final Map<GameSetting, String> values = new HashMap<>();
       if (noneButton.isSelected()) {
-        values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.NONE.toString());
+        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE.toString());
       } else if (systemButton.isSelected()) {
-        values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
         HttpProxy.updateSystemProxy();
       } else {
-        values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
-        values.put(ClientSetting.proxyHost, hostText.getText().trim());
-        values.put(ClientSetting.proxyPort, portText.getText().trim());
+        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
+        values.put(proxyHostClientSetting, hostText.getText().trim());
+        values.put(proxyPortClientSetting, portText.getText().trim());
       }
       return values;
     }
@@ -416,27 +398,24 @@ final class JavaFxSelectionComponentFactory {
     @Override
     public void resetToDefault() {
       ClientSetting.flush();
-      hostText.setText(ClientSetting.proxyHost.defaultValue);
-      portText.setText(ClientSetting.proxyPort.defaultValue);
-      noneButton.setSelected(Boolean.valueOf(ClientSetting.proxyChoice.defaultValue));
+      hostText.setText(proxyHostClientSetting.defaultValue);
+      portText.setText(proxyPortClientSetting.defaultValue);
+      setProxyChoice(proxyChoiceClientSetting.defaultValue);
+    }
+
+    private void setProxyChoice(final String encodedProxyChoice) {
+      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(encodedProxyChoice);
+      noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
+      systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+      userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
     }
 
     @Override
     public void reset() {
       ClientSetting.flush();
-      hostText.setText(ClientSetting.proxyHost.value());
-      portText.setText(ClientSetting.proxyPort.value());
-      noneButton.setSelected(ClientSetting.proxyChoice.booleanValue());
-    }
-
-    @Override
-    public void indicateError() {
-      if (!isHostTextValid()) {
-        hostText.setStyle("-fx-background-color: #FF0000;");
-      }
-      if (!isPortTextValid()) {
-        portText.setStyle("-fx-background-color: #FF0000;");
-      }
+      hostText.setText(proxyHostClientSetting.value());
+      portText.setText(proxyPortClientSetting.value());
+      setProxyChoice(proxyChoiceClientSetting.value());
     }
 
     private boolean isHostTextValid() {
@@ -459,12 +438,6 @@ final class JavaFxSelectionComponentFactory {
     @Override
     public boolean isValid() {
       return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
-    }
-
-    @Override
-    public void clearError() {
-      hostText.setStyle("-fx-background-color: #FFFFFF;");
-      portText.setStyle("-fx-background-color: #FFFFFF;");
     }
 
     @Override

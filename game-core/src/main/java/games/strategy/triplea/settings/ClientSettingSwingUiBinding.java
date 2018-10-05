@@ -4,6 +4,7 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.booleanR
 import static games.strategy.triplea.settings.SelectionComponentFactory.filePath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.folderPath;
 import static games.strategy.triplea.settings.SelectionComponentFactory.intValueRange;
+import static games.strategy.triplea.settings.SelectionComponentFactory.proxySettings;
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
@@ -266,7 +267,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.proxySettings();
+      return proxySettings(ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
   },
 
