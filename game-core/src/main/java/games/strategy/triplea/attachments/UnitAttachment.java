@@ -253,11 +253,11 @@ public class UnitAttachment extends DefaultAttachment {
     m_canIntercept = false;
   }
 
-  public void setRequiresAirBaseToIntercept(final String value) {
+  private void setRequiresAirBaseToIntercept(final String value) {
     m_requiresAirBaseToIntercept = getBool(value);
   }
 
-  public void setRequiresAirBaseToIntercept(final Boolean value) {
+  private void setRequiresAirBaseToIntercept(final Boolean value) {
     m_requiresAirBaseToIntercept = value;
   }
 
@@ -265,7 +265,7 @@ public class UnitAttachment extends DefaultAttachment {
     return m_requiresAirBaseToIntercept;
   }
 
-  public void resetRequiresAirBaseToIntercept() {
+  private void resetRequiresAirBaseToIntercept() {
     m_requiresAirBaseToIntercept = false;
   }
 
@@ -1495,11 +1495,11 @@ public class UnitAttachment extends DefaultAttachment {
     m_maxScrambleDistance = -1;
   }
 
-  public void setMaxInterceptCount(final String s) {
+  private void setMaxInterceptCount(final String s) {
     m_maxInterceptCount = getInt(s);
   }
 
-  public void setMaxInterceptCount(final Integer s) {
+  private void setMaxInterceptCount(final Integer s) {
     m_maxInterceptCount = s;
   }
 
@@ -1507,7 +1507,7 @@ public class UnitAttachment extends DefaultAttachment {
     return m_maxInterceptCount;
   }
 
-  public void resetMaxInterceptCount() {
+  private void resetMaxInterceptCount() {
     m_maxInterceptCount = -1;
   }
 
