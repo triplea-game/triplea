@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Component;
 import java.awt.event.ItemEvent;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JComboBox;
@@ -14,6 +15,7 @@ import javax.swing.text.JTextComponent;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -62,15 +64,54 @@ class JComboBoxBuilderTest {
     MatcherAssert.assertThat(triggerCount.get(), Is.is(1));
   }
 
-  @Test
-  void enableAutoCompleteShouldChangeComboBoxEditorComponentDocumentType() {
-    final JComboBox<Object> comboBox = JComboBoxBuilder.builder(Object.class)
-        .item(new Object())
-        .enableAutoComplete()
-        .build();
+  @Nested
+  final class EnableAutoCompleteTest {
+    @Test
+    void shouldChangeComboBoxEditorComponentDocumentType() {
+      final JComboBox<Object> comboBox = JComboBoxBuilder.builder(Object.class)
+          .item(new Object())
+          .enableAutoComplete()
+          .build();
 
-    final Component editorComponent = comboBox.getEditor().getEditorComponent();
-    assertThat(editorComponent, is(instanceOf(JTextComponent.class)));
-    assertThat(((JTextComponent) editorComponent).getDocument(), is(instanceOf(AutoCompletion.class)));
+      final Component editorComponent = comboBox.getEditor().getEditorComponent();
+      assertThat(editorComponent, is(instanceOf(JTextComponent.class)));
+      assertThat(((JTextComponent) editorComponent).getDocument(), is(instanceOf(AutoCompletion.class)));
+    }
+  }
+
+  @Nested
+  final class SelectedItemTest {
+    @Test
+    void shouldSetSelectedItem() {
+      final JComboBox<String> comboBox = JComboBoxBuilder.builder(String.class)
+          .items(Arrays.asList("A", "B", "C"))
+          .selectedItem("B")
+          .build();
+
+      assertThat(comboBox.getSelectedItem(), is("B"));
+    }
+  }
+
+  @Nested
+  final class NullableSelectedItemTest {
+    @Test
+    void shouldSetSelectedItemWhenNonNull() {
+      final JComboBox<String> comboBox = JComboBoxBuilder.builder(String.class)
+          .items(Arrays.asList("A", "B", "C"))
+          .nullableSelectedItem("B")
+          .build();
+
+      assertThat(comboBox.getSelectedItem(), is("B"));
+    }
+
+    @Test
+    void shouldNotSetSelectedItemWhenNull() {
+      final JComboBox<String> comboBox = JComboBoxBuilder.builder(String.class)
+          .items(Arrays.asList("A", "B", "C"))
+          .nullableSelectedItem(null)
+          .build();
+
+      assertThat(comboBox.getSelectedItem(), is("A"));
+    }
   }
 }
