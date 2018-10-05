@@ -5,7 +5,6 @@ import static spark.Spark.halt;
 import static spark.Spark.path;
 import static spark.Spark.post;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
