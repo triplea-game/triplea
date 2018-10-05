@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 /**
- * A UI action that prompts the user to select a territory by name and then centers the map on the selected territory.
- * If no territory is selected, this action does nothing.
+ * A UI action that shows the Find Territory dialog. This dialog allows the user to search for a territory by name and
+ * highlights the selected territory on the map.
  */
 public final class FindTerritoryAction extends AbstractAction {
   private static final long serialVersionUID = 5122180892200519366L;
@@ -23,11 +23,6 @@ public final class FindTerritoryAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final SelectTerritoryDialog dialog = new SelectTerritoryDialog(
-        frame,
-        "Find Territory",
-        frame.getGame().getData().getMap().getTerritories(),
-        frame.getMapPanel().getCurrentTerritory());
-    dialog.open().ifPresent(frame.getMapPanel()::centerOnAndHighlight);
+    new FindTerritoryDialog(frame).open();
   }
 }
