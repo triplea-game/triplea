@@ -23,28 +23,54 @@ public class Fire implements IExecutable {
 
   private static final long serialVersionUID = -3687054738070722403L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_stepName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_firingUnits;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_attackableUnits;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final MustFightBattle.ReturnFire m_canReturnFire;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_text;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final MustFightBattle m_battle;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final PlayerID m_firingPlayer;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final PlayerID m_hitPlayer;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_defending;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<Unit, Collection<Unit>> m_dependentUnits;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private final GUID m_battleID;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private DiceRoll m_dice;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Collection<Unit> m_killed;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Collection<Unit> m_damaged;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_confirmOwnCasualties = true;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_isHeadless;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Territory m_battleSite;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<TerritoryEffect> m_territoryEffects;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Unit> m_allEnemyUnitsAliveOrWaitingToDie;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_allFriendlyUnitsNotIncludingWaitingToDie;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_allEnemyUnitsNotIncludingWaitingToDie;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_isAmphibious;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_amphibiousLandAttackers;
 
   Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire,

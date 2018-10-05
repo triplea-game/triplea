@@ -6,8 +6,12 @@ import games.strategy.engine.data.PlayerID;
 
 class PlayerWhoAmIChange extends Change {
   private static final long serialVersionUID = -1486914230174337300L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_startWhoAmI;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_endWhoAmI;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_player;
 
   PlayerWhoAmIChange(final String newWhoAmI, final PlayerID player) {

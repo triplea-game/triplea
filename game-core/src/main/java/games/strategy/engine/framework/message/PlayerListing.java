@@ -31,17 +31,26 @@ import games.strategy.util.Version;
 public class PlayerListing implements Serializable {
   // keep compatability with older versions
   private static final long serialVersionUID = -8913538086737733980L;
+
   /**
    * Maps String player name -> node Name
    * if node name is null then the player is available to play.
    */
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, String> m_playerToNodeListing;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, Boolean> m_playersEnabledListing;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, String> m_localPlayerTypes;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<String> m_playersAllowedToBeDisabled;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Version m_gameVersion;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_gameName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_gameRound;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder;
 
   /**

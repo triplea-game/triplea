@@ -8,6 +8,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 /**
  * A technology advance that provides anti-aircraft radar.
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
 final class AARadarAdvance extends TechAdvance {
   private static final long serialVersionUID = 6464021231625252901L;
 

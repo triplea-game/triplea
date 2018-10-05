@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.engine.gamePlayer;
 
 import java.lang.reflect.InvocationHandler;

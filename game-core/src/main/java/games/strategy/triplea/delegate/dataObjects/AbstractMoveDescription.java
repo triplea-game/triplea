@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -7,6 +10,8 @@ import games.strategy.engine.data.Unit;
 
 public abstract class AbstractMoveDescription implements Serializable {
   private static final long serialVersionUID = -6615899716448836002L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_units;
 
   public AbstractMoveDescription(final Collection<Unit> units) {

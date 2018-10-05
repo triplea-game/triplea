@@ -65,16 +65,25 @@ public class GenericEmailSender implements IEmailSender {
     NONE, TLS
   }
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private long m_timeout = TimeUnit.SECONDS.toMillis(60);
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_subjectPrefix;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_userName;
   private transient String transientUserName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_password;
   private transient String transientPassword;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_toAddress;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_host = "smptserver.example.com";
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_port = 25;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Encryption m_encryption;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_alsoPostAfterCombatMove = false;
   private boolean credentialsSaved = false;
   private boolean credentialsProtected = false;

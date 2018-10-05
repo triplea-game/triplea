@@ -13,9 +13,14 @@ import games.strategy.engine.data.Unit;
  */
 public class ObjectPropertyChange extends Change {
   private static final long serialVersionUID = 4218093376094170940L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Unit m_object;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_property;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_newValue;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_oldValue;
 
   ObjectPropertyChange(final Unit object, final String property, final Object newValue) {

@@ -9,9 +9,13 @@ import games.strategy.engine.data.ProductionFrontier;
  * Change a players production frontier.
  */
 class ProductionFrontierChange extends Change {
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_startFrontier;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_endFrontier;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_player;
+
   private static final long serialVersionUID = 3336145814067456701L;
 
   ProductionFrontierChange(final ProductionFrontier newFrontier, final PlayerID player) {

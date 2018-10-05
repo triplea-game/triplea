@@ -18,7 +18,10 @@ import javax.swing.JComponent;
  */
 public class MapProperty<T, U> extends AEditableProperty {
   private static final long serialVersionUID = -8021039503574228146L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<T, U> m_map;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final List<IEditableProperty> m_properties = new ArrayList<>();
 
   public MapProperty(final String name, final String description, final Map<T, U> map) {

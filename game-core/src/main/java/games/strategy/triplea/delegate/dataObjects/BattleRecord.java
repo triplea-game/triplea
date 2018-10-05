@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -63,7 +66,9 @@ public class BattleRecord implements Serializable {
   private Territory battleSite;
   private PlayerID attacker;
   private PlayerID defender;
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
   private int attackerLostTUV = 0;
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
   private int defenderLostTUV = 0;
   private BattleResultDescription battleResultDescription;
   private final BattleType battleType;
@@ -95,7 +100,9 @@ public class BattleRecord implements Serializable {
     private final Territory battleSite;
     private final PlayerID attacker;
     private final PlayerID defender;
+    @SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
     private final int attackerLostTUV;
+    @SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
     private final int defenderLostTUV;
     private final BattleResultDescription battleResultDescription;
     private final BattleType battleType;

@@ -9,11 +9,15 @@ import javax.annotation.Nullable;
  */
 public class Territory extends NamedAttachable implements NamedUnitHolder, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_water;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private PlayerID m_owner = PlayerID.NULL_PLAYERID;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final UnitCollection m_units;
   // In a grid-based game, stores the coordinate of the Territory
-  @SuppressWarnings("unused")
+  @SuppressWarnings({"checkstyle:MemberName", "unused"}) // remove upon next incompatible release
   private final int[] m_coordinate;
 
   public Territory(final String name, final GameData data) {

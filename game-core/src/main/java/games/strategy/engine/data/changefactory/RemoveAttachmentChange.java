@@ -7,10 +7,16 @@ import games.strategy.engine.data.IAttachment;
 
 class RemoveAttachmentChange extends Change {
   private static final long serialVersionUID = 6365648682759047674L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IAttachment m_attachment;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_originalAttachmentName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Attachable m_originalAttachable;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Attachable m_attachable;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
 
   public RemoveAttachmentChange(final IAttachment attachment, final Attachable attachable, final String name) {

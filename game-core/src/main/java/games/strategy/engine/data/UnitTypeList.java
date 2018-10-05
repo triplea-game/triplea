@@ -12,6 +12,8 @@ import java.util.Set;
  */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
   private static final long serialVersionUID = 9002927658524651749L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, UnitType> m_unitTypes = new LinkedHashMap<>();
 
   /**

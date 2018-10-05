@@ -8,9 +8,14 @@ import games.strategy.engine.data.MutableProperty;
 
 class AttachmentPropertyResetUndo extends Change {
   private static final long serialVersionUID = 5943939650116851332L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Attachable m_attachedTo;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_attachmentName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_newValue;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_property;
 
   AttachmentPropertyResetUndo(final Attachable attachTo, final String attachmentName, final Object newValue,

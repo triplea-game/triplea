@@ -85,9 +85,13 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     return rollers;
   }
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Properties m_props;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_toAddress;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_ccAddress;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_gameId;
 
   public PropertiesDiceRoller(final Properties props) {

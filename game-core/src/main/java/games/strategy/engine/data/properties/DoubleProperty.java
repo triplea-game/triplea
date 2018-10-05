@@ -15,9 +15,14 @@ import games.strategy.engine.ClientFileSystemHelper;
  */
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final double m_max;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final double m_min;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private double m_value;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_places;
 
   public DoubleProperty(final String name, final String description, final double max, final double min,

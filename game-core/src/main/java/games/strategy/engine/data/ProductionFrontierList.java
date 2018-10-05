@@ -11,6 +11,8 @@ import com.google.common.annotations.VisibleForTesting;
  */
 public class ProductionFrontierList extends GameDataComponent {
   private static final long serialVersionUID = -7565214499087021809L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<>();
 
   public ProductionFrontierList(final GameData data) {

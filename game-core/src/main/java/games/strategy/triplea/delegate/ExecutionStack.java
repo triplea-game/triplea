@@ -28,8 +28,13 @@ import games.strategy.engine.delegate.IDelegateBridge;
  */
 public class ExecutionStack implements Serializable {
   private static final long serialVersionUID = -8675285470515074530L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IExecutable m_current;
-  @SuppressWarnings("JdkObsolete") // change to Deque/ArrayDeque upon next incompatible release
+  @SuppressWarnings({
+      "checkstyle:MemberName", // rename upon next incompatible release
+      "JdkObsolete" // change to Deque/ArrayDeque upon next incompatible release
+  })
   private final Stack<IExecutable> m_stack = new Stack<>();
 
   void execute(final IDelegateBridge bridge) {

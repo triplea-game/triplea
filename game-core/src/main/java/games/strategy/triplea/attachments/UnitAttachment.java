@@ -69,167 +69,290 @@ public class UnitAttachment extends DefaultAttachment {
 
   public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
   public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
+
   // movement related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isAir = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isSea = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_movement = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canBlitz = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isKamikaze = false;
   // a colon delimited list of transports where this unit may invade from, it supports "none"
   // and if empty it allows you to invade from all
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_canInvadeOnlyFrom = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<Resource> m_fuelCost = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<Resource> m_fuelFlatCost = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canNotMoveDuringCombatMove = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<Integer, String> m_movementLimit = null;
   // combat related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_attack = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_defense = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isInfrastructure = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canBombard = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_bombard = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isSub = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isDestroyer = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_artillery = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_artillerySupportable = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_unitSupportCount = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_isMarine = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isSuicide = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isSuicideOnHit = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<Integer, String> m_attackingLimit = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_attackRolls = 1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_defenseRolls = 1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_chooseBestRoll = false;
   // transportation related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isCombatTransport = false;
   // -1 if cant transport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_transportCapacity = -1;
   // -1 if cant be transported
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_transportCost = -1;
   // -1 if cant act as a carrier
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_carrierCapacity = -1;
   // -1 if cant land on a carrier
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_carrierCost = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isAirTransport = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isAirTransportable = false;
   // isInfantry is DEPRECATED, use isLandTransportable
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isInfantry = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isLandTransport = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isLandTransportable = false;
   // aa related
   // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must
   // keep.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isAAforCombatOnly = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isAAforBombingThisUnitOnly = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isAAforFlyOverOnly = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isRocket = false;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private int m_attackAA = 1;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private int m_offensiveAttackAA = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_attackAAmaxDieSides = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_offensiveAttackAAmaxDieSides = -1;
   // -1 means infinite
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxAAattacks = -1;
   // -1 means infinite
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private int m_maxRoundsAA = 1;
   // default value for when it is not set
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private String m_typeAA = "AA";
   // null means targeting air units only
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private Set<UnitType> m_targetsAA = null;
   // if false, we cannot shoot more times than there are number of planes
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private boolean m_mayOverStackAA = false;
   // if false, we instantly kill anything our AA shot hits
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   private boolean m_damageableAA = false;
   // if these enemy units are present, the gun does not fire at all
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<UnitType> m_willNotFireIfPresent = new HashSet<>();
   // strategic bombing related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isStrategicBomber = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_bombingMaxDieSides = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_bombingBonus = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canIntercept = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_requiresAirBaseToIntercept = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canEscort = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canAirBattle = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_airDefense = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_airAttack = 0;
   // null means they can target any unit that can be damaged
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<UnitType> m_bombingTargets = null;
   // production related
   // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
   // private boolean m_isFactory = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canProduceUnits = false;
   // -1 means either it can't produce any, or it produces at the value of the territory it is located in
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_canProduceXUnits = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<Resource> m_createsResourcesList = new IntegerMap<>();
   // damage related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_hitPoints = 1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canBeDamaged = false;
   // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the territory value
   // they are in, of damage.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxDamage = 2;
   // -1 if can't be disabled
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxOperationalDamage = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canDieFromReachingMaxDamage = false;
   // placement related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isConstruction = false;
   // can be any String except for "none" if isConstruction is true
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_constructionType = "none";
   // -1 if not set, is meaningless
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_constructionsPerTerrPerTypePerTurn = -1;
   // -1 if not set, is meaningless
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxConstructionsPerTypePerTerr = -1;
   // -1 means anywhere
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_canOnlyBePlacedInTerritoryValuedAtX = -1;
   // multiple colon delimited lists of the unit combos required for
   // this unit to be built somewhere. (units must be in same
   // territory, owned by player, not be disabled)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String[]> m_requiresUnits = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<>();
   // multiple colon delimited lists of the unit combos required for
   // this unit to move into a territory. (units must be owned by player, not be disabled)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String[]> m_requiresUnitsToMove = new ArrayList<>();
   // a colon delimited list of territories where this unit may not be placed
   // also an allowed setter is "setUnitPlacementOnlyAllowedIn",
   // which just creates m_unitPlacementRestrictions with an inverted list of territories
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String[] m_unitPlacementRestrictions = null;
   // -1 if infinite (infinite is default)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxBuiltPerPlayer = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Tuple<Integer, String> m_placementLimit = null;
   // scrambling related
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canScramble = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isAirBase = false;
   // -1 if can't scramble
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxScrambleDistance = -1;
   // -1 for infinite
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxScrambleCount = -1;
   // -1 for infinite
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxInterceptCount = -1;
   // special abilities
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_blockade = 0;
   // a colon delimited list of the units this unit can repair.
   // (units must be in same territory, unless this unit is land
   // and the repaired unit is sea)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_repairsUnits = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_givesMovement = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<>();
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a
   // specific list
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<Integer, Tuple<Boolean, UnitType>> m_whenHitPointsDamagedChangesInto = new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<Integer, Tuple<Boolean, UnitType>> m_whenHitPointsRepairedChangesInto = new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_whenCapturedSustainsDamage = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<>();
   // a set of information for dealing with special abilities or
   // loss of abilities when a unit takes x-y amount of damage
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged = new ArrayList<>();
   // a kind of support attachment for giving actual unit
   // attachment abilities or other to a unit, when in the
   // precense or on the same route with another unit
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String> m_receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<String> m_special = new HashSet<>();
   // Manually set TUV
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_tuv = -1;
 
   /** Creates new UnitAttachment. */

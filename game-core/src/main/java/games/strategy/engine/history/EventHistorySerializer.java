@@ -2,7 +2,10 @@ package games.strategy.engine.history;
 
 class EventHistorySerializer implements SerializationWriter {
   private static final long serialVersionUID = 6404070330823708974L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_eventName;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Object m_renderingData;
 
   public EventHistorySerializer(final String eventName, final Object renderingData) {

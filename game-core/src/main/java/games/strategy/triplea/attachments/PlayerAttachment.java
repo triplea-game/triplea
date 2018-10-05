@@ -45,35 +45,50 @@ public class PlayerAttachment extends DefaultAttachment {
     return playerAttachment;
   }
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_vps = 0;
   // need to store some data during a turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_captureVps = 0;
   // number of capitals needed before we lose all our money
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_retainCapitalProduceNumber = 1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_giveUnitControl = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
   // gives any technology researched to this player automatically
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_shareTechnology = new ArrayList<>();
   // allows these players to help pay for technology
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<PlayerID> m_helpPayTechCost = new ArrayList<>();
   // do we lose our money and have it disappear or is that money captured?
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_destroysPUs = false;
   // are we immune to being blockaded?
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_immuneToBlockade = false;
   // what resources can be used for suicide attacks, and
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<>();
   // at what attack power
   // what can be hit by suicide attacks
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<UnitType> m_suicideAttackTargets = null;
   // placement limits on a flexible per player basis
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<Triple<Integer, String, Set<UnitType>>> m_placementLimit = new HashSet<>();
 
   // movement limits on a flexible per player basis
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<Triple<Integer, String, Set<UnitType>>> m_movementLimit = new HashSet<>();
 
   // attacking limits on a flexible per player basis
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<Triple<Integer, String, Set<UnitType>>> m_attackingLimit = new HashSet<>();
 
   /** Creates new PlayerAttachment. */

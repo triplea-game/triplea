@@ -75,26 +75,48 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private static final long serialVersionUID = 5879502298361231540L;
+
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Set<Territory> m_attackingFrom = new HashSet<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_killed = new ArrayList<>();
 
   // Our current execution state, we keep a stack of executables, this allows us to save our state and resume while in
   // the middle of a battle.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final ExecutionStack m_stack = new ExecutionStack();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<String> m_stepStrings;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   protected List<Unit> m_defendingAA;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   protected List<Unit> m_offensiveAA;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<String> m_defendingAAtypes;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<String> m_offensiveAAtypes;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Unit> m_attackingUnitsRetreated = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<Unit> m_defendingUnitsRetreated = new ArrayList<>();
   // -1 would mean forever until one side is eliminated (the default is infinite)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_maxRounds;
 
   public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data,
@@ -2045,11 +2067,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     m_stack.push(new FireAA(true));
   }
 
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
   class FireAA implements IExecutable {
     private static final long serialVersionUID = -6406659798754841382L;
+
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     private final boolean m_defending;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     private DiceRoll m_dice;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     private CasualtyDetails m_casualties;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     final Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
 
     private FireAA(final boolean defending) {

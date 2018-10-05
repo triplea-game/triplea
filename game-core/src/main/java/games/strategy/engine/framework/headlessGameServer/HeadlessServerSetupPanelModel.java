@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.engine.framework.headlessGameServer;
 
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;

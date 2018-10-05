@@ -38,12 +38,17 @@ import games.strategy.util.PredicateBuilder;
  */
 public class MovePerformer implements Serializable {
   private static final long serialVersionUID = 3752242292777658310L;
+
   private transient AbstractMoveDelegate moveDelegate;
   private transient IDelegateBridge bridge;
   private transient PlayerID player;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private AAInMoveUtil m_aaInMoveUtil;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final ExecutionStack m_executionStack = new ExecutionStack();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private UndoableMove m_currentMove;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Map<Unit, Collection<Unit>> m_newDependents;
   private Collection<Unit> arrivingUnits;
 

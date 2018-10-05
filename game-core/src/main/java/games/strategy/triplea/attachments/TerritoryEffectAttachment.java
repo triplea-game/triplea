@@ -24,9 +24,13 @@ import games.strategy.util.IntegerMap;
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<UnitType> m_noBlitz = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<UnitType> m_unitsNotAllowed = new ArrayList<>();
 
   /**

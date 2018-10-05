@@ -12,7 +12,9 @@ import games.strategy.engine.data.annotations.InternalDoNotExport;
  */
 public class GameDataComponent implements Serializable {
   private static final long serialVersionUID = -2066504666509851740L;
+
   @InternalDoNotExport
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private GameData m_data;
 
   /**

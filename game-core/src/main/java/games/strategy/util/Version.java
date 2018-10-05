@@ -18,9 +18,13 @@ import javax.annotation.Nullable;
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_major;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_minor;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_point;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_micro;
   private final String exactVersion;
 

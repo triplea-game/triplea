@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.engine.framework.headlessGameServer;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;

@@ -10,6 +10,8 @@ import java.util.Map;
 // TODO: rename this class upon next incompatible release to replace "List" suffix since this collection is not ordered
 public class RepairRuleList extends GameDataComponent {
   private static final long serialVersionUID = 8153102637443800391L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<String, RepairRule> m_repairRules = new HashMap<>();
 
   public RepairRuleList(final GameData data) {

@@ -10,7 +10,10 @@ import javax.swing.JComponent;
  */
 public abstract class AEditableProperty implements IEditableProperty, Serializable, Comparable<AEditableProperty> {
   private static final long serialVersionUID = -5005729898242568847L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_description;
 
   public AEditableProperty(final String name, final String description) {

@@ -35,6 +35,10 @@ public final class SaveGameFileChooser extends JFileChooser {
   /**
    * The available auto-saves that can be loaded by a headless game server.
    */
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:TypeName" // rename upon next incompatible release
+  })
   public enum AUTOSAVE_TYPE {
     AUTOSAVE(getHeadlessAutoSaveFile()),
 

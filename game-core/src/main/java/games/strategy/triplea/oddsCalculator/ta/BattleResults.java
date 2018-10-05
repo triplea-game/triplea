@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.oddsCalculator.ta;
 
 import java.util.List;
@@ -15,9 +18,13 @@ import games.strategy.util.CollectionUtils;
 public class BattleResults extends GameDataComponent {
   private static final long serialVersionUID = 1381361441940258702L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_battleRoundsFought;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final List<Unit> m_remainingAttackingUnits;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   final List<Unit> m_remainingDefendingUnits;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final WhoWon m_whoWon;
 
   // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with

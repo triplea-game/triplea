@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.io.Serializable;
@@ -7,8 +10,12 @@ import games.strategy.engine.data.Unit;
 
 public class PlaceableUnits implements Serializable {
   private static final long serialVersionUID = 6572719978603199091L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_errorMessage;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Collection<Unit> m_units;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxUnits;
 
   /**

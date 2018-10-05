@@ -11,8 +11,12 @@ import games.strategy.engine.data.UnitHolder;
 
 class RemoveUnits extends Change {
   private static final long serialVersionUID = -6410444472951010568L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_units;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_type;
 
   RemoveUnits(final UnitCollection collection, final Collection<Unit> units) {

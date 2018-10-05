@@ -15,6 +15,8 @@ import java.util.Set;
  */
 public final class LinkedIntegerMap<T> implements Cloneable, Serializable {
   private static final long serialVersionUID = 6856531659284300930L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final LinkedHashMap<T, Integer> m_values;
 
   /** Creates new LinkedIntegerMap. */

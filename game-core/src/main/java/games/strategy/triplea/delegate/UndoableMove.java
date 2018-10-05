@@ -28,20 +28,29 @@ import games.strategy.util.CollectionUtils;
  */
 public class UndoableMove extends AbstractUndoableMove {
   private static final long serialVersionUID = 8490182214651531358L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_reasonCantUndo;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_description;
   // this move is dependent on these moves
   // these moves cant be undone until this one has been
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<UndoableMove> m_iDependOn = new HashSet<>();
   // these moves depend on me
   // we cant be undone until this is empty
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<UndoableMove> m_dependOnMe = new HashSet<>();
   // list of countries we took over
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Territory> m_conquered = new HashSet<>();
   // transports loaded by this move
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Unit> m_loaded = new HashSet<>();
   // transports unloaded by this move
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Unit> m_unloaded = new HashSet<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Route m_route;
 
   public void addToConquered(final Territory t) {

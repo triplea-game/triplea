@@ -209,26 +209,44 @@ public class TerritoryAttachment extends DefaultAttachment {
     return m_unitProduction;
   }
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_capital = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_originalFactory = false;
   // "setProduction" will set both m_production and m_unitProduction.
   // While "setProductionOnly" sets only m_production.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_production = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_victoryCity = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isImpassable = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private PlayerID m_originalOwner = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_convoyRoute = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private HashSet<Territory> m_convoyAttached = new HashSet<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_navalBase = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_airBase = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_kamikazeZone = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_unitProduction = 0;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_blockadeZone = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<>();
   // TODO: change to List<CaptureOwnershipChange> upon next incompatible release
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private ResourceCollection m_resources = null;
 
   /** Creates new TerritoryAttachment. */

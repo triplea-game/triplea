@@ -31,11 +31,15 @@ import games.strategy.util.CollectionUtils;
 /**
  * Code to fire AA guns while in combat and non combat move.
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
 class AAInMoveUtil implements Serializable {
   private static final long serialVersionUID = 1787497998642717678L;
+
   private transient IDelegateBridge bridge;
   private transient PlayerID player;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Collection<Unit> m_casualties = new ArrayList<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final ExecutionStack m_executionStack = new ExecutionStack();
 
   AAInMoveUtil() {}

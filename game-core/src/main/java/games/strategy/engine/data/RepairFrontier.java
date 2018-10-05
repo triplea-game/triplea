@@ -12,7 +12,10 @@ import java.util.List;
  */
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule> {
   private static final long serialVersionUID = -5148536624986056753L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final List<RepairRule> m_rules;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<RepairRule> m_cachedRules;
 
   public RepairFrontier(final String name, final GameData data) {

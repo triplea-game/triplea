@@ -16,14 +16,18 @@ import games.strategy.triplea.delegate.dataObjects.AbstractMoveDescription;
  */
 public abstract class AbstractUndoableMove implements Serializable {
   private static final long serialVersionUID = -3164832285286161069L;
+
   /**
    * Stores the serialized state of the move and battle delegates (just
    * as if they were saved), and a CompositeChange that represents all the changes that
    * were made during the move.
    * Some moves (such as those following an aa fire) can't be undone.
    */
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final CompositeChange m_change;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_index;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final Collection<Unit> m_units;
 
   public AbstractUndoableMove(final CompositeChange change, final Collection<Unit> units) {

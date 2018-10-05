@@ -4,6 +4,8 @@ import games.strategy.engine.data.Change;
 
 class ChangeSerializationWriter implements SerializationWriter {
   private static final long serialVersionUID = -3802807345707883606L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Change aChange;
 
   public ChangeSerializationWriter(final Change change) {

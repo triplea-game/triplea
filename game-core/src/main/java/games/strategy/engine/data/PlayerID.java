@@ -19,22 +19,32 @@ import lombok.EqualsAndHashCode;
 /**
  * A game player (nation, power, etc.).
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
 public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
 
   private static final String DEFAULT_TYPE_AI = "AI";
   private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_optional;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final boolean m_canBeDisabled;
   private final String defaultType;
   private final boolean isHidden;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_isDisabled = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final UnitCollection m_unitsHeld;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final ResourceCollection m_resources;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private ProductionFrontier m_productionFrontier;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private RepairFrontier m_repairFrontier;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final TechnologyFrontierList m_technologyFrontiers;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private String m_whoAmI = "null:no_one";
 
   public PlayerID(final String name, final GameData data) {

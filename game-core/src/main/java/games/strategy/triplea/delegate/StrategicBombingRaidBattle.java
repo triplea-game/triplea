@@ -45,13 +45,24 @@ import games.strategy.util.Interruptibles;
 public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings {
   private static final long serialVersionUID = 8490171037606078890L;
   private static final String RAID = "Strategic bombing raid";
+
   // these would be the factories or other targets. does not include aa.
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<>();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected final ExecutionStack m_stack = new ExecutionStack();
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<String> m_steps;
+  @SuppressWarnings({
+      "checkstyle:AbbreviationAsWordInName", // rename upon next incompatible release
+      "checkstyle:MemberName" // rename upon next incompatible release
+  })
   protected List<Unit> m_defendingAA;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<String> m_AAtypes;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_bombingRaidTotal;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IntegerMap<Unit> m_bombingRaidDamage = new IntegerMap<>();
 
   /**
@@ -322,10 +333,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
   }
 
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
   class FireAA implements IExecutable {
     private static final long serialVersionUID = -4667856856747597406L;
+
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     DiceRoll m_dice;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     CasualtyDetails m_casualties;
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     final Collection<Unit> m_casualtiesSoFar = new ArrayList<>();
     Collection<Unit> validAttackingUnitsForThisRoll;
     final boolean determineAttackers;
@@ -523,6 +539,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   class ConductBombing implements IExecutable {
     private static final long serialVersionUID = 5579796391988452213L;
+
+    @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
     private int[] m_dice;
 
     @Override

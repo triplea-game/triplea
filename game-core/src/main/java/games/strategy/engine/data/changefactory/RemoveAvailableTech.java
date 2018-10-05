@@ -8,8 +8,12 @@ import games.strategy.triplea.delegate.TechAdvance;
 
 class RemoveAvailableTech extends Change {
   private static final long serialVersionUID = 6131447662760022521L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final TechAdvance m_tech;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final TechnologyFrontier m_frontier;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final PlayerID m_player;
 
   public RemoveAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerID player) {

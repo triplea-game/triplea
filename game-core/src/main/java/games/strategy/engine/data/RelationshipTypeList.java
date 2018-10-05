@@ -14,6 +14,8 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
  */
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<>();
 
   /**

@@ -23,9 +23,14 @@ import games.strategy.util.IntegerMap;
  */
 public class RandomStatsDetails implements Serializable {
   private static final long serialVersionUID = 69602197220912520L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<PlayerID, IntegerMap<Integer>> m_data;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IntegerMap<Integer> m_totalMap;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final DiceStatistic m_totalStats;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<PlayerID, DiceStatistic> m_playerStats = new HashMap<>();
 
   RandomStatsDetails(final Map<PlayerID, IntegerMap<Integer>> randomStats, final int diceSides) {

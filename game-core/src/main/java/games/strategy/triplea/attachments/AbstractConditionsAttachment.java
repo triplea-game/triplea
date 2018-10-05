@@ -43,18 +43,24 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
 
   // list of conditions that this condition can
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected List<RulesAttachment> m_conditions = new ArrayList<>();
   // contain
   // m_conditionType modifies the relationship of m_conditions
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_conditionType = AND;
   // will logically negate the entire condition, including contained conditions
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected boolean m_invert = false;
   // chance (x out of y) that this action is successful when attempted, default = 1:1 = always
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected String m_chance = DEFAULT_CHANCE;
   // successful
   // if chance fails, we should increment the chance by x
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_chanceIncrementOnFailure = 0;
   // if chance succeeds, we should decrement the chance by x
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   protected int m_chanceDecrementOnSuccess = 0;
 
   protected AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData) {

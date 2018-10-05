@@ -8,6 +8,8 @@ import games.strategy.util.IntegerMap;
  */
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final IntegerMap<Resource> m_resources = new IntegerMap<>();
 
   public ResourceCollection(final GameData data) {

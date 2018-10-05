@@ -58,6 +58,7 @@ public class TechAttachment extends DefaultAttachment {
   private boolean increasedFactoryProduction = false;
   private boolean warBonds = false;
   private boolean mechanizedInfantry = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean aARadar = false;
   private boolean shipyards = false;
   // do not export at this point. currently map xml cannot

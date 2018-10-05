@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.util.Collection;
@@ -12,8 +15,12 @@ import games.strategy.engine.data.Unit;
 
 public class MoveDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = 2199608152808948043L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Route m_route;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Unit> m_transportsThatCanBeLoaded;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<Unit, Collection<Unit>> m_dependentUnits;
 
   public MoveDescription(final Collection<Unit> units, final Route route,

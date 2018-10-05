@@ -11,8 +11,12 @@ import games.strategy.engine.data.ResourceCollection;
  */
 class ChangeResourceChange extends Change {
   private static final long serialVersionUID = -2304294240555842126L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_player;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_resource;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_quantity;
 
   ChangeResourceChange(final PlayerID player, final Resource resource, final int quantity) {

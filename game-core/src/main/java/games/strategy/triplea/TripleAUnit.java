@@ -56,41 +56,63 @@ public class TripleAUnit extends Unit {
   public static final String LAUNCHED = "launched";
   public static final String AIRBORNE = "airborne";
   public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
+
   // the transport that is currently transporting us
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private TripleAUnit m_transportedBy = null;
   // the units we have unloaded this turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private List<Unit> m_unloaded = Collections.emptyList();
   // was this unit loaded this turn?
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_wasLoadedThisTurn = false;
   // the territory this unit was unloaded to this turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Territory m_unloadedTo = null;
   // was this unit unloaded in combat phase this turn?
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_wasUnloadedInCombatPhase = false;
   // movement used this turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_alreadyMoved = 0;
   // movement used this turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_bonusMovement = 0;
   // amount of damage unit has sustained
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_unitDamage = 0;
   // is this submarine submerged
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_submerged = false;
   // original owner of this unit
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private PlayerID m_originalOwner = null;
   // Was this unit in combat
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_wasInCombat = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_wasLoadedAfterCombat = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_wasAmphibious = false;
   // the territory this unit started in (for use with scrambling)
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private Territory m_originatedFrom = null;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_wasScrambled = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxScrambleCount = -1;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_wasInAirBattle = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_disabled = false;
   // the number of airborne units launched by this unit this turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_launched = 0;
   // was this unit airborne and launched this turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_airborne = false;
   // was charged flat fuel cost already this turn
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_chargedFlatFuelCost = false;
 
   public static TripleAUnit get(final Unit u) {

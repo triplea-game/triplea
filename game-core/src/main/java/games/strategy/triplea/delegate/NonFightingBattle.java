@@ -30,8 +30,12 @@ import games.strategy.util.CollectionUtils;
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Set<Territory> m_attackingFrom;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Collection<Territory> m_amphibiousAttackFrom;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Map<Territory, Collection<Unit>> m_attackingFromMap;
 
   /**

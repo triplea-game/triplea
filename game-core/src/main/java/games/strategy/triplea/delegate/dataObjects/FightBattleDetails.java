@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Territory;

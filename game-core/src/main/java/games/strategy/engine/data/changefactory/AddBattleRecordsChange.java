@@ -9,7 +9,10 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 
 class AddBattleRecordsChange extends Change {
   private static final long serialVersionUID = -6927678548172402611L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final BattleRecords m_recordsToAdd;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_round;
 
   AddBattleRecordsChange(final BattleRecords battleRecords, final GameData data) {

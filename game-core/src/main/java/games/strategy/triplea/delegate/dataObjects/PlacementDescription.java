@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.triplea.delegate.dataObjects;
 
 import java.util.Collection;
@@ -7,6 +10,8 @@ import games.strategy.engine.data.Unit;
 
 public class PlacementDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = -3141153168992624631L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final Territory m_territory;
 
   public PlacementDescription(final Collection<Unit> units, final Territory territory) {

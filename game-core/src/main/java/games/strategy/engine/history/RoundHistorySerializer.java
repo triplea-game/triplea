@@ -2,6 +2,8 @@ package games.strategy.engine.history;
 
 class RoundHistorySerializer implements SerializationWriter {
   private static final long serialVersionUID = 9006488114384654514L;
+
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final int m_roundNo;
 
   public RoundHistorySerializer(final int roundNo) {

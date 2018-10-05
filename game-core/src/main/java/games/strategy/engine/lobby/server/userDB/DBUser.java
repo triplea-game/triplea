@@ -1,3 +1,6 @@
+// CHECKSTYLE-OFF: PackageName
+// rename upon next incompatible release
+
 package games.strategy.engine.lobby.server.userDB;
 
 import java.io.Serializable;
@@ -14,11 +17,14 @@ import lombok.ToString;
  * A lobby user.
  */
 @EqualsAndHashCode
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next incompatible release
 @ToString
 public final class DBUser implements Serializable {
   private static final long serialVersionUID = -5289923058375302916L;
 
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_name;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private final String m_email;
   private final Role userRole;
 
