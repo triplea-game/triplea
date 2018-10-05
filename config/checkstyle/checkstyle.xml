@@ -33,6 +33,7 @@
         <module name="FileTabCharacter">
             <property name="eachLine" value="true"/>
         </module>
+    <module name="NewlineAtEndOfFile"/>
 
     <module name="TreeWalker">
         <module name="SuppressionCommentFilter">

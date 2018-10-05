@@ -31,8 +31,6 @@ public class HttpProxy {
     NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
   }
 
-  public static final String PROXY_CHOICE = "proxy.choice";
-
   public static boolean isUsingSystemProxy() {
     return ClientSetting.proxyChoice.value().equals(ProxyChoice.USE_SYSTEM_SETTINGS.toString());
   }

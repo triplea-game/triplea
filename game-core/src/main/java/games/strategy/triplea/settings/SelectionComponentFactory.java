@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -8,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.prefs.Preferences;
+import java.util.logging.Level;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -24,9 +23,9 @@ import javax.swing.SpinnerNumberModel;
 
 import com.google.common.base.Strings;
 
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
+import lombok.extern.java.Log;
 import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
 
@@ -35,23 +34,23 @@ import swinglib.JPanelBuilder;
  * For example, if we have a setting that needs a number, we could create an integer text field with this
  * class. This class takes care of the UI code to ensure we render the proper swing component with validation.
  */
+@Log
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
-  static SelectionComponent<JComponent> proxySettings() {
+  static SelectionComponent<JComponent> proxySettings(
+      final ClientSetting proxyChoiceClientSetting,
+      final ClientSetting proxyHostClientSetting,
+      final ClientSetting proxyPortClientSetting) {
     return new SelectionComponent<JComponent>() {
-      final Preferences pref = Preferences.userNodeForPackage(GameRunner.class);
-      final HttpProxy.ProxyChoice proxyChoice =
-          HttpProxy.ProxyChoice.valueOf(pref.get(HttpProxy.PROXY_CHOICE, HttpProxy.ProxyChoice.NONE.toString()));
+      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(proxyChoiceClientSetting.value());
       final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
           new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
-
-
       final JRadioButton userButton =
           new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-      final JTextField hostText = new JTextField(ClientSetting.proxyHost.value(), 20);
-      final JTextField portText = new JTextField(ClientSetting.proxyPort.value(), 6);
+      final JTextField hostText = new JTextField(proxyHostClientSetting.value(), 20);
+      final JTextField portText = new JTextField(proxyPortClientSetting.value(), 6);
       final JPanel radioPanel = JPanelBuilder.builder()
           .verticalBoxLayout()
           .add(noneButton)
@@ -62,20 +61,24 @@ final class SelectionComponentFactory {
           .add(new JLabel("Proxy Port: "))
           .add(portText)
           .build();
-
       final ActionListener enableUserSettings = e -> {
         if (userButton.isSelected()) {
           hostText.setEnabled(true);
-          hostText.setBackground(Color.WHITE);
           portText.setEnabled(true);
-          portText.setBackground(Color.WHITE);
         } else {
           hostText.setEnabled(false);
-          hostText.setBackground(Color.DARK_GRAY);
           portText.setEnabled(false);
-          portText.setBackground(Color.DARK_GRAY);
         }
       };
+
+      private HttpProxy.ProxyChoice parseProxyChoice(final String encodedProxyChoice) {
+        try {
+          return HttpProxy.ProxyChoice.valueOf(encodedProxyChoice);
+        } catch (final IllegalArgumentException e) {
+          log.log(Level.WARNING, "Illegal proxy choice: '" + encodedProxyChoice + "'", e);
+          return HttpProxy.ProxyChoice.NONE;
+        }
+      }
 
       @Override
       public JComponent getUiComponent() {
@@ -119,48 +122,40 @@ final class SelectionComponentFactory {
       public Map<GameSetting, String> readValues() {
         final Map<GameSetting, String> values = new HashMap<>();
         if (noneButton.isSelected()) {
-          values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.NONE.toString());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE.toString());
         } else if (systemButton.isSelected()) {
-          values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
           HttpProxy.updateSystemProxy();
         } else {
-          values.put(ClientSetting.proxyChoice, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
-          values.put(ClientSetting.proxyHost, hostText.getText().trim());
-          values.put(ClientSetting.proxyPort, portText.getText().trim());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
+          values.put(proxyHostClientSetting, hostText.getText().trim());
+          values.put(proxyPortClientSetting, portText.getText().trim());
         }
         return values;
       }
 
       @Override
-      public void indicateError() {
-        if (!isHostTextValid()) {
-          hostText.setBackground(Color.RED);
-        }
-        if (!isPortTextValid()) {
-          portText.setBackground(Color.RED);
-        }
-      }
-
-      @Override
-      public void clearError() {
-        hostText.setBackground(Color.WHITE);
-        portText.setBackground(Color.WHITE);
-      }
-
-      @Override
       public void resetToDefault() {
         ClientSetting.flush();
-        hostText.setText(ClientSetting.proxyHost.defaultValue);
-        portText.setText(ClientSetting.proxyPort.defaultValue);
-        noneButton.setSelected(Boolean.valueOf(ClientSetting.proxyChoice.defaultValue));
+        hostText.setText(proxyHostClientSetting.defaultValue);
+        portText.setText(proxyPortClientSetting.defaultValue);
+        setProxyChoice(proxyChoiceClientSetting.defaultValue);
+      }
+
+      private void setProxyChoice(final String encodedProxyChoice) {
+        final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(encodedProxyChoice);
+        noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
+        systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+        userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+        enableUserSettings.actionPerformed(null);
       }
 
       @Override
       public void reset() {
         ClientSetting.flush();
-        hostText.setText(ClientSetting.proxyHost.value());
-        portText.setText(ClientSetting.proxyPort.value());
-        noneButton.setSelected(ClientSetting.proxyChoice.booleanValue());
+        hostText.setText(proxyHostClientSetting.value());
+        portText.setText(proxyPortClientSetting.value());
+        setProxyChoice(proxyChoiceClientSetting.value());
       }
     };
   }
@@ -203,12 +198,6 @@ final class SelectionComponentFactory {
       public String validValueDescription() {
         return "";
       }
-
-      @Override
-      public void indicateError() {}
-
-      @Override
-      public void clearError() {}
 
       @Override
       public Map<GameSetting, String> readValues() {
@@ -314,13 +303,11 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         field.setText(clientSetting.defaultValue);
-        clearError();
       }
 
       @Override
       public void reset() {
         field.setText(clientSetting.value());
-        clearError();
       }
     };
   }
@@ -376,13 +363,11 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         comboBox.setSelectedItem(clientSetting.defaultValue);
-        clearError();
       }
 
       @Override
       public void reset() {
         comboBox.setSelectedItem(clientSetting.value());
-        clearError();
       }
     };
   }
@@ -406,28 +391,16 @@ final class SelectionComponentFactory {
       @Override
       public void reset() {
         textField.setText(clientSetting.value());
-        clearError();
       }
 
       @Override
       public void resetToDefault() {
         textField.setText(clientSetting.defaultValue);
-        clearError();
       }
     };
   }
 
   private abstract static class AlwaysValidInputSelectionComponent implements SelectionComponent<JComponent> {
-    @Override
-    public void indicateError() {
-      // no-op, component only allows valid selections
-    }
-
-    @Override
-    public void clearError() {
-      // also a no-op
-    }
-
     @Override
     public boolean isValid() {
       return true;

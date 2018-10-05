@@ -225,6 +225,8 @@ public class UnitAttachment extends DefaultAttachment {
   @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canIntercept = false;
   @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
+  private boolean m_requiresAirBaseToIntercept = false;
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canEscort = false;
   @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private boolean m_canAirBattle = false;
@@ -308,6 +310,9 @@ public class UnitAttachment extends DefaultAttachment {
   // -1 for infinite
   @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_maxScrambleCount = -1;
+  // -1 for infinite
+  @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
+  private int m_maxInterceptCount = -1;
   // special abilities
   @SuppressWarnings("checkstyle:MemberName") // rename upon next incompatible release
   private int m_blockade = 0;
@@ -369,6 +374,22 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetCanIntercept() {
     m_canIntercept = false;
+  }
+
+  private void setRequiresAirBaseToIntercept(final String value) {
+    m_requiresAirBaseToIntercept = getBool(value);
+  }
+
+  private void setRequiresAirBaseToIntercept(final Boolean value) {
+    m_requiresAirBaseToIntercept = value;
+  }
+
+  public boolean getRequiresAirBaseToIntercept() {
+    return m_requiresAirBaseToIntercept;
+  }
+
+  private void resetRequiresAirBaseToIntercept() {
+    m_requiresAirBaseToIntercept = false;
   }
 
   private void setCanEscort(final String value) {
@@ -1597,6 +1618,22 @@ public class UnitAttachment extends DefaultAttachment {
     m_maxScrambleDistance = -1;
   }
 
+  private void setMaxInterceptCount(final String s) {
+    m_maxInterceptCount = getInt(s);
+  }
+
+  private void setMaxInterceptCount(final Integer s) {
+    m_maxInterceptCount = s;
+  }
+
+  public int getMaxInterceptCount() {
+    return m_maxInterceptCount;
+  }
+
+  private void resetMaxInterceptCount() {
+    m_maxInterceptCount = -1;
+  }
+
   private void setMaxOperationalDamage(final String s) {
     m_maxOperationalDamage = getInt(s);
   }
@@ -2002,6 +2039,9 @@ public class UnitAttachment extends DefaultAttachment {
     m_bombingTargets = null;
   }
 
+  /**
+   * Finds potential unit types which all passed in bombers and rockets can target.
+   */
   public static Set<UnitType> getAllowedBombingTargetsIntersection(final Collection<Unit> bombersOrRockets,
       final GameData data) {
     if (bombersOrRockets.isEmpty()) {
@@ -2819,8 +2859,11 @@ public class UnitAttachment extends DefaultAttachment {
         + (m_givesMovement != null ? (m_givesMovement.size() == 0 ? "empty" : m_givesMovement.toString()) : "null")
         + "  repairsUnits:"
         + (m_repairsUnits != null ? (m_repairsUnits.isEmpty() ? "empty" : m_repairsUnits.toString()) : "null")
-        + "  canScramble:" + m_canScramble + "  maxScrambleDistance:" + m_maxScrambleDistance + "  isAirBase:"
-        + m_isAirBase + "  maxScrambleCount:" + m_maxScrambleCount
+        + "  canScramble:" + m_canScramble
+        + "  maxScrambleDistance:" + m_maxScrambleDistance
+        + "  isAirBase:" + m_isAirBase
+        + "  maxScrambleCount:" + m_maxScrambleCount
+        + "  maxInterceptCount:" + m_maxInterceptCount
         + "  whenCapturedChangesInto:"
         + (m_whenCapturedChangesInto != null
             ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString())
@@ -2834,9 +2877,13 @@ public class UnitAttachment extends DefaultAttachment {
         + (m_whenHitPointsRepairedChangesInto != null
             ? (m_whenHitPointsRepairedChangesInto.size() == 0 ? "empty" : m_whenHitPointsRepairedChangesInto.toString())
             : "null")
-        + "  canIntercept:" + m_canIntercept + "  canEscort:" + m_canEscort + "  canAirBattle:" + m_canAirBattle
-        + "  airDefense:" + m_airDefense + "  airAttack:" + m_airAttack + "  canNotMoveDuringCombatMove:"
-        + m_canNotMoveDuringCombatMove + "  movementLimit:"
+        + "  canIntercept:" + m_canIntercept
+        + "  requiresAirBaseToIntercept:" + m_requiresAirBaseToIntercept
+        + "  canEscort:" + m_canEscort
+        + "  canAirBattle:" + m_canAirBattle
+        + "  airDefense:" + m_airDefense
+        + "  airAttack:" + m_airAttack
+        + "  canNotMoveDuringCombatMove:" + m_canNotMoveDuringCombatMove + "  movementLimit:"
         + (m_movementLimit != null ? m_movementLimit.toString() : "null") + "  attackingLimit:"
         + (m_attackingLimit != null ? m_attackingLimit.toString() : "null") + "  placementLimit:"
         + (m_placementLimit != null ? m_placementLimit.toString() : "null")
@@ -3608,6 +3655,12 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setCanIntercept,
                 this::getCanIntercept,
                 this::resetCanIntercept))
+        .put("requiresAirbaseToIntercept",
+            MutableProperty.of(
+                this::setRequiresAirBaseToIntercept,
+                this::setRequiresAirBaseToIntercept,
+                this::getRequiresAirBaseToIntercept,
+                this::resetRequiresAirBaseToIntercept))
         .put("canEscort",
             MutableProperty.of(
                 this::setCanEscort,
@@ -3781,6 +3834,12 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount,
                 this::resetMaxScrambleCount))
+        .put("maxInterceptCount",
+            MutableProperty.of(
+                this::setMaxInterceptCount,
+                this::setMaxInterceptCount,
+                this::getMaxInterceptCount,
+                this::resetMaxInterceptCount))
         .put("blockade",
             MutableProperty.of(
                 this::setBlockade,

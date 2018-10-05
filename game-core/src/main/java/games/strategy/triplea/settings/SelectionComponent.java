@@ -24,16 +24,6 @@ public interface SelectionComponent<T> {
    */
   Map<GameSetting, String> readValues();
 
-  /**
-   * UI component should update to show an error, eg: background turn red.
-   */
-  void indicateError();
-
-  /**
-   * UI component should revert back to a normal state, clearing any changes from {@code indicateError}.
-   */
-  void clearError();
-
   void resetToDefault();
 
   /**

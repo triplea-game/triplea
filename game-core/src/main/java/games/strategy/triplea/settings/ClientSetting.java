@@ -18,6 +18,7 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import lombok.extern.java.Log;
 
@@ -67,7 +68,8 @@ public final class ClientSetting implements GameSetting {
   public static final ClientSetting mapEdgeScrollZoneSize = new ClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
   public static final ClientSetting mapFolderOverride = new ClientSetting("MAP_FOLDER_OVERRIDE");
   public static final ClientSetting mapListOverride = new ClientSetting("MAP_LIST_OVERRIDE");
-  public static final ClientSetting proxyChoice = new ClientSetting("PROXY_CHOICE");
+  public static final ClientSetting proxyChoice =
+      new ClientSetting("PROXY_CHOICE", HttpProxy.ProxyChoice.NONE.toString());
   public static final ClientSetting proxyHost = new ClientSetting("PROXY_HOST");
   public static final ClientSetting proxyPort = new ClientSetting("PROXY_PORT");
   public static final ClientSetting saveGamesFolderPath =
