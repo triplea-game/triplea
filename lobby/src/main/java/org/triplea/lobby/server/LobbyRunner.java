@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import org.triplea.common.config.FilePropertyReader;
 import org.triplea.lobby.server.config.LobbyConfiguration;
+import org.triplea.lobby.server.controller.rest.ControllerHub;
 
 import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
@@ -25,6 +26,7 @@ public final class LobbyRunner {
           new LobbyConfiguration(new FilePropertyReader("config/lobby/lobby.properties"));
       log.info("Starting lobby on port " + lobbyConfiguration.getPort());
       LobbyServer.start(lobbyConfiguration);
+      ControllerHub.initializeControllers(lobbyConfiguration);
       log.info("Lobby started");
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to start lobby", e);

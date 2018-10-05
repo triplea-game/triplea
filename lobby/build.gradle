@@ -10,7 +10,9 @@ mainClassName = 'org.triplea.lobby.server.LobbyRunner'
 dependencies {
     implementation project(':game-core')
     implementation 'org.mindrot:jbcrypt:0.4'
+    implementation 'com.sparkjava:spark-core:2.8.0'
 
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.21'
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 
     testImplementation project(':test-common')
