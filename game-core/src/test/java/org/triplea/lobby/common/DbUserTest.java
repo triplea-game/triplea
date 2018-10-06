@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.base.Strings;
+
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -91,7 +93,7 @@ public class DbUserTest {
         "",
         "a",
         "ab", // still too short
-        "12345678901234567890123456789012345678901", // one character too long
+        Strings.repeat("a", 41), // one character too long
         "ab*", // no special characters other than '-' and '_'
         "ab$",
         ".ab",
@@ -125,7 +127,7 @@ public class DbUserTest {
   public void userNameValidationWithValidNames() {
     Arrays.asList(
         "abc",
-        "1234567890123456789012345678901234567890", // maximum length
+        Strings.repeat("a", 40), // maximum length
         "123",
         "---")
         .forEach(validName -> {
