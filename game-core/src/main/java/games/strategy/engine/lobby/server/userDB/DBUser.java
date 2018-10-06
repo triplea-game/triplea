@@ -31,6 +31,9 @@ public final class DBUser implements Serializable {
 
   /** User name value object with validation methods. */
   public static class UserName {
+    private static final int MIN_LENGTH = 3;
+    private static final int MAX_LENGTH = 40;
+
     public final String userName;
 
     public UserName(final String userName) {
@@ -38,8 +41,13 @@ public final class DBUser implements Serializable {
     }
 
     String validate() {
-      if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
-        return "Names must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
+      if ((userName == null)
+          || !userName.matches("[0-9a-zA-Z_-]+")
+          || (userName.length() < MIN_LENGTH)
+          || (userName.length() > MAX_LENGTH)) {
+        return String.format(
+            "Names must be between %d and %d characters long and can only contain alphanumeric characters, -, and _",
+            MIN_LENGTH, MAX_LENGTH);
       }
       if (userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())) {
         return LobbyConstants.LOBBY_WATCHER_NAME + " cannot be part of a name";
