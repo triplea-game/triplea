@@ -1,1 +1,5 @@
 description = 'Contains common data models exchanged between client/server'
+
+dependencies {
+    testImplementation project(':test-common')
+}

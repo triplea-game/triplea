@@ -12,10 +12,10 @@ import javax.swing.JButton;
 
 import org.junit.jupiter.api.Test;
 
-public class JButtonBuilderTest {
+class JButtonBuilderTest {
 
   @Test
-  public void title() {
+  void title() {
     final String value = "testing title";
     final JButton button = JButtonBuilder.builder()
         .title(value)
@@ -26,7 +26,7 @@ public class JButtonBuilderTest {
   }
 
   @Test
-  public void checkActionListener() {
+  void checkActionListener() {
     // button action will be to add one to our integer, we'll fire the button action and verify we get the +1
     final AtomicInteger integer = new AtomicInteger(0);
     final JButton button = JButtonBuilder.builder()
@@ -43,12 +43,12 @@ public class JButtonBuilderTest {
   }
 
   @Test
-  public void titleCannotBeEmpty() {
+  void titleCannotBeEmpty() {
     assertThrows(IllegalArgumentException.class, () -> JButtonBuilder.builder().title(""));
   }
 
   @Test
-  public void titleIsRequired() {
+  void titleIsRequired() {
     assertThrows(NullPointerException.class, () -> JButtonBuilder.builder()
         .actionListener(() -> {
         })
@@ -56,12 +56,12 @@ public class JButtonBuilderTest {
   }
 
   @Test
-  public void actionListenerIsRequired() {
+  void actionListenerIsRequired() {
     assertThrows(NullPointerException.class, () -> JButtonBuilder.builder().actionListener(null));
   }
 
   @Test
-  public void toolTipCanNotBeEmptyIfSpecified() {
+  void toolTipCanNotBeEmptyIfSpecified() {
     assertThrows(IllegalArgumentException.class, () -> JButtonBuilder.builder().toolTip(""));
   }
 }

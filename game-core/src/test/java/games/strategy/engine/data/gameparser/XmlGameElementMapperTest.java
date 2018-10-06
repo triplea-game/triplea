@@ -3,6 +3,8 @@ package games.strategy.engine.data.gameparser;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.triplea.test.common.assertions.Optionals.isMissing;
+import static org.triplea.test.common.assertions.Optionals.isPresent;
 
 import java.util.Optional;
 
@@ -32,14 +34,14 @@ class XmlGameElementMapperTest {
   @Test
   void getDelegateReturnsEmptyIfDelegateNameDoesNotExist() {
     final Optional<IDelegate> resultObject = testObj.getDelegate(NAME_THAT_DOES_NOT_EXIST);
-    assertThat(resultObject.isPresent(), is(false));
+    assertThat(resultObject, isMissing());
   }
 
 
   @Test
   void getDelegateHappyCase() {
     final Optional<IDelegate> resultObject = testObj.getDelegate("games.strategy.triplea.delegate.BattleDelegate");
-    assertThat(resultObject.isPresent(), is(true));
+    assertThat(resultObject, isPresent());
     assertThat(resultObject.get(), instanceOf(BattleDelegate.class));
   }
 
@@ -47,14 +49,14 @@ class XmlGameElementMapperTest {
   @Test
   void getAttachmentReturnsEmptyIfAttachmentNameDoesNotExist() {
     final Optional<IAttachment> resultObject = testObj.getAttachment(NAME_THAT_DOES_NOT_EXIST, "", null, null);
-    assertThat(resultObject.isPresent(), is(false));
+    assertThat(resultObject, isMissing());
   }
 
 
   @Test
   void getAttachmentHappyCase() {
     final Optional<IAttachment> resultObject = testObj.getAttachment("CanalAttachment", "", null, null);
-    assertThat(resultObject.isPresent(), is(true));
+    assertThat(resultObject, isPresent());
     assertThat(resultObject.get(), instanceOf(CanalAttachment.class));
   }
 
@@ -62,13 +64,13 @@ class XmlGameElementMapperTest {
   void testFullClassNames() {
     final Optional<IAttachment> result1 =
         testObj.getAttachment("games.strategy.engine.xml.TestAttachment", "", null, null);
-    assertThat(result1.isPresent(), is(true));
+    assertThat(result1, isPresent());
     assertThat(result1.get(), is(instanceOf(TestAttachment.class)));
 
 
     final Optional<IAttachment> result2 =
         testObj.getAttachment("games.strategy.triplea.attachments.CanalAttachment", "", null, null);
-    assertThat(result2.isPresent(), is(true));
+    assertThat(result2, isPresent());
     assertThat(result2.get(), is(instanceOf(CanalAttachment.class)));
   }
 }
