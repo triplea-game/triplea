@@ -53,13 +53,20 @@ final class SelectionComponentFactory {
       final JTextField portText = new JTextField(proxyPortClientSetting.value(), 6);
       final JPanel radioPanel = JPanelBuilder.builder()
           .verticalBoxLayout()
-          .add(noneButton)
-          .add(systemButton)
-          .add(userButton)
-          .add(new JLabel("Proxy Host: "))
-          .add(hostText)
-          .add(new JLabel("Proxy Port: "))
-          .add(portText)
+          .addLeftJustified(noneButton)
+          .addLeftJustified(systemButton)
+          .addLeftJustified(userButton)
+          .addLeftJustified(JPanelBuilder.builder()
+              .horizontalBoxLayout()
+              .addHorizontalStrut(getRadioButtonLabelHorizontalOffset())
+              .add(JPanelBuilder.builder()
+                  .verticalBoxLayout()
+                  .addLeftJustified(new JLabel("Proxy Host:"))
+                  .addLeftJustified(hostText)
+                  .addLeftJustified(new JLabel("Proxy Port:"))
+                  .addLeftJustified(portText)
+                  .build())
+              .build())
           .build();
       final ActionListener enableUserSettings = e -> {
         if (userButton.isSelected()) {
@@ -158,6 +165,11 @@ final class SelectionComponentFactory {
         setProxyChoice(proxyChoiceClientSetting.value());
       }
     };
+  }
+
+  private static int getRadioButtonLabelHorizontalOffset() {
+    final JRadioButton radioButton = new JRadioButton("\u200B"); // zero-width space
+    return radioButton.getPreferredSize().width - radioButton.getInsets().right;
   }
 
   /**

@@ -301,6 +301,17 @@ public class JPanelBuilder {
     return this;
   }
 
+  /**
+   * Adds {@code component} to the panel and ensures it will be left-justified in the final layout. Primarily for use
+   * with vertical box layouts.
+   */
+  public JPanelBuilder addLeftJustified(final Component component) {
+    final Box box = Box.createHorizontalBox();
+    box.add(component);
+    box.add(Box.createHorizontalGlue());
+    return add(box);
+  }
+
   public JPanelBuilder add(final Component component) {
     components.add(new Pair<>(component, new PanelProperties(BorderLayoutPosition.DEFAULT)));
     return this;
