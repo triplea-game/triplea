@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import com.github.npathai.hamcrestopt.OptionalMatchers;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
