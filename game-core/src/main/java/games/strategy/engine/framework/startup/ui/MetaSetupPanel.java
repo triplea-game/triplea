@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import games.strategy.debug.error.reporting.ReportWindowController;
 import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -39,6 +40,7 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton enginePreferences;
   private JButton ruleBook;
   private JButton helpButton;
+  private JButton errorReportDemo;
 
   private final SetupPanelModel model;
 
@@ -77,6 +79,7 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     ruleBook = new JButton("Rule Book");
     helpButton = new JButton("Help");
+    errorReportDemo = new JButton("Error report window (WIP)");
     ruleBook.setToolTipText("<html>Download a manual of how to play <br>"
         + "(it is also included in the directory TripleA was installed to).</html>");
   }
@@ -112,6 +115,11 @@ public class MetaSetupPanel extends SetupPanel {
     add(helpButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
 
+    if (ClientSetting.showBetaFeatures.isSet()) {
+      add(errorReportDemo, new GridBagConstraints(0, 11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+          new Insets(10, 0, 0, 0), 0, 0));
+    }
+    
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
@@ -126,6 +134,7 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
     helpButton.addActionListener(e -> helpPage());
+    errorReportDemo.addActionListener(e -> ReportWindowController.showWindow(errorReportDemo));
   }
 
   private static void ruleBook() {

@@ -57,7 +57,7 @@ class JButtonBuilderTest {
 
   @Test
   void actionListenerIsRequired() {
-    assertThrows(NullPointerException.class, () -> JButtonBuilder.builder().actionListener(null));
+    assertThrows(NullPointerException.class, () -> JButtonBuilder.builder().actionListener((Runnable) null));
   }
 
   @Test
