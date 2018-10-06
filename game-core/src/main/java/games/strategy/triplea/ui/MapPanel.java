@@ -14,8 +14,6 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -86,6 +84,7 @@ public class MapPanel extends ImageScrollerLargeView {
   @Getter(AccessLevel.PACKAGE)
   private @Nullable Territory currentTerritory;
   private @Nullable Territory highlightedTerritory;
+  private final TerritoryHighlighter territoryHighlighter = new TerritoryHighlighter();
   private final MapPanelSmallView smallView;
   // units the mouse is currently over
   private Tuple<Territory, List<Unit>> currentUnits;
@@ -300,13 +299,16 @@ public class MapPanel extends ImageScrollerLargeView {
     return true;
   }
 
-  void centerOnAndHighlight(final Territory territory) {
-    checkNotNull(territory);
-
+  void highlightTerritory(final Territory territory) {
     if (centerOn(territory)) {
       highlightedTerritory = territory;
-      new TerritoryBorderAnimator(territory).run();
+      territoryHighlighter.highlight(territory);
     }
+  }
+
+  void clearHighlightedTerritory() {
+    highlightedTerritory = null;
+    territoryHighlighter.clear();
   }
 
   public void setRoute(final Route route) {
@@ -848,33 +850,45 @@ public class MapPanel extends ImageScrollerLargeView {
     return uiContext.getMapData().getWarningImage();
   }
 
-  private final class TerritoryBorderAnimator implements ActionListener {
-    private static final int FRAME_DELAY_IN_MS = 500;
-    private static final int TOTAL_FRAMES = 10;
+  private final class TerritoryHighlighter {
+    private boolean overlayEnabled;
+    private @Nullable Territory territory;
+    private final Timer timer = new Timer(500, e -> animateNextFrame());
 
-    private int frame;
-    private final Territory territory;
+    void highlight(final Territory territory) {
+      stopAnimation();
+      startAnimation(territory);
+    }
 
-    TerritoryBorderAnimator(final Territory territory) {
+    private void stopAnimation() {
+      timer.stop();
+
+      if (territory != null) {
+        clearTerritoryOverlay(territory);
+        paintImmediately(getBounds());
+      }
+      territory = null;
+    }
+
+    private void startAnimation(final Territory territory) {
       this.territory = territory;
+      overlayEnabled = true;
+
+      timer.start();
     }
 
-    void run() {
-      new Timer(FRAME_DELAY_IN_MS, this).start();
+    void clear() {
+      stopAnimation();
     }
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if ((frame % 2) == 0) {
+    private void animateNextFrame() {
+      if (overlayEnabled) {
         setTerritoryOverlayForBorder(territory, Color.WHITE);
       } else {
         clearTerritoryOverlay(territory);
       }
       paintImmediately(getBounds());
-
-      if (++frame >= TOTAL_FRAMES) {
-        ((Timer) e.getSource()).stop();
-      }
+      overlayEnabled = !overlayEnabled;
     }
   }
 }

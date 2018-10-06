@@ -1,17 +1,14 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Frame;
+import java.awt.Point;
 import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-
-import com.google.common.annotations.VisibleForTesting;
+import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.ui.SwingComponents;
@@ -19,24 +16,32 @@ import swinglib.JButtonBuilder;
 import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;
 
-final class SelectTerritoryDialog extends JDialog {
+final class FindTerritoryDialog extends JDialog {
   private static final long serialVersionUID = -1601616824595826610L;
 
+  private final MapPanel mapPanel;
+  private final Point originalMapPanelOffset;
   private Result result = Result.CANCEL;
   private final JComboBox<Territory> territoryComboBox;
 
-  SelectTerritoryDialog(
-      final Frame owner,
-      final String title,
-      final Collection<Territory> territories,
-      final @Nullable Territory initialSelectedTerritory) {
-    super(owner, title, true);
+  FindTerritoryDialog(final TripleAFrame owner) {
+    super(owner, "Find Territory", true);
 
+    mapPanel = owner.getMapPanel();
+    originalMapPanelOffset = new Point(mapPanel.getXOffset(), mapPanel.getYOffset());
+
+    final Collection<Territory> territories = owner.getGame().getData().getMap().getTerritories();
+    final @Nullable Territory initialSelectedTerritory = mapPanel.getCurrentTerritory();
     territoryComboBox = JComboBoxBuilder.builder(Territory.class)
         .items(territories.stream().sorted().collect(Collectors.toList()))
         .nullableSelectedItem(initialSelectedTerritory)
         .enableAutoComplete()
+        .itemSelectedAction(mapPanel::highlightTerritory)
         .build();
+    if (initialSelectedTerritory != null) {
+      mapPanel.highlightTerritory(initialSelectedTerritory);
+    }
+
     final JButton okButton = JButtonBuilder.builder()
         .okTitle()
         .actionListener(() -> close(Result.OK))
@@ -60,25 +65,24 @@ final class SelectTerritoryDialog extends JDialog {
             .build())
         .build());
     pack();
-    setLocationRelativeTo(owner);
+    setLocation(getInitialLocation());
 
     SwingComponents.addEscapeKeyListener(this, () -> close(Result.CANCEL));
   }
 
-  Optional<Territory> open() {
-    setVisible(true);
-    return getSelectedTerritory(result, territoryComboBox::getSelectedItem);
+  private Point getInitialLocation() {
+    final Point point = mapPanel.getLocation();
+    SwingUtilities.convertPointToScreen(point, mapPanel);
+    point.translate(20, 20);
+    return point;
   }
 
-  @VisibleForTesting
-  static Optional<Territory> getSelectedTerritory(final Result result, final Supplier<Object> selectedItemSupplier) {
-    switch (result) {
-      case OK:
-        return Optional.of((Territory) selectedItemSupplier.get());
-      case CANCEL:
-        return Optional.empty();
-      default:
-        throw new AssertionError("unknown result: " + result);
+  void open() {
+    setVisible(true);
+
+    mapPanel.clearHighlightedTerritory();
+    if (Result.CANCEL.equals(result)) {
+      mapPanel.setTopLeft(originalMapPanelOffset.x, originalMapPanelOffset.y);
     }
   }
 
@@ -88,8 +92,7 @@ final class SelectTerritoryDialog extends JDialog {
     this.result = result;
   }
 
-  @VisibleForTesting
-  enum Result {
+  private enum Result {
     OK, CANCEL
   }
 }
