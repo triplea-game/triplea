@@ -22,8 +22,7 @@ dependencies {
 
     implementation project(':game-core')
 
-    runtimeOnly 'com.github.kirill-grouchnikov:substance:5d33cea' // v8.0.02 + Jitpack build fix
-    runtimeOnly 'com.github.kirill-grouchnikov:trident:v1.5.00'
+    runtimeOnly 'org.pushing-pixels:radiance-substance:1.0.0'
 
     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
         testCompileOnly remoteLib(javaFxRuntimeUrl)

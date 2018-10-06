@@ -1,5 +1,6 @@
 package org.triplea.http.data.error.report;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -16,7 +17,7 @@ class ErrorReportResponseTest {
 
   @Test
   public void verifyErrorReportIdBehavior() {
-    assertThat(ErrorReportResponse.builder().build().getSavedReportId().isPresent(), is(false));
+    assertThat(ErrorReportResponse.builder().build().getSavedReportId(), isEmpty());
     assertThat(
         ErrorReportResponse.builder()
             .savedReportId("")

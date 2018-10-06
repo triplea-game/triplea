@@ -1,8 +1,9 @@
 package games.strategy.util;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UrlStreamsTest {
+class UrlStreamsTest {
 
   private UrlStreams testObj;
 
@@ -42,7 +43,7 @@ public class UrlStreamsTest {
    * Check that we turned off caching on a mocked UrlConnection.
    */
   @Test
-  public void cacheIsOff() throws Exception {
+  void cacheIsOff() throws Exception {
     when(mockUrlConnection.getInputStream()).thenReturn(mockInputStream);
 
     final Optional<InputStream> connection = testObj.newStream(fakeUrl);
@@ -55,23 +56,23 @@ public class UrlStreamsTest {
 
 
   @Test
-  public void testErrorSuppressionWhenThereIsNoError() throws Exception {
+  void testErrorSuppressionWhenThereIsNoError() throws Exception {
     when(mockUrlConnection.getInputStream()).thenReturn(mockInputStream);
 
     final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
-    assertThat("No issues connecting, we should have an inpuct stream back.",
-        stream.isPresent(), is(true));
+    assertThat("No issues connecting, we should have an input stream back.",
+        stream, isPresent());
   }
 
   @Test
-  public void testErrorSuppression() throws Exception {
+  void testErrorSuppression() throws Exception {
     when(mockUrlConnection.getInputStream()).thenThrow(new IOException("simulating an IOException being thrown"));
 
     final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
     assertThat("No exceptions expected, but a failure to connect should return an empty object.",
-        stream.isPresent(), is(false));
+        stream, isEmpty());
   }
 
 }

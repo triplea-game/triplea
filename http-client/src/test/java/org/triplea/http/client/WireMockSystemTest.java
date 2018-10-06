@@ -1,5 +1,7 @@
 package org.triplea.http.client;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -9,10 +11,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.text.IsEmptyString.emptyOrNullString;
 
 import java.net.URI;
@@ -23,10 +23,8 @@ import java.util.logging.LogRecord;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.triplea.http.data.error.report.ErrorReport;
 import org.triplea.http.data.error.report.ErrorReportDetails;
 import org.triplea.http.data.error.report.ErrorReportResponse;
@@ -74,8 +72,8 @@ class WireMockSystemTest {
         .withRequestBody(containing(logRecord.getLevel().toString()))
         .withHeader(HttpHeaders.CONTENT_TYPE, matching(CONTENT_TYPE_JSON)));
 
-    assertThat(response.getThrown().isPresent(), is(false));
-    assertThat(response.getPayload().isPresent(), is(true));
+    assertThat(response.getPayload(), isPresent());
+    assertThat(response.getThrown(), isEmpty());
   }
 
   private static void givenHttpServerSuccessResponse(final WireMockServer wireMockServer) {
@@ -127,8 +125,8 @@ class WireMockSystemTest {
 
     final ServiceCallResult<ErrorReportResponse> response = doServiceCall(wireMockServer);
 
-    assertThat(response.getPayload().isPresent(), is(false));
-    assertThat(response.getThrown().isPresent(), is(true));
+    assertThat(response.getPayload(), isEmpty());
+    assertThat(response.getThrown(), isPresent());
     assertThat(response.getErrorDetails(), not(emptyOrNullString()));
   }
 
@@ -150,8 +148,8 @@ class WireMockSystemTest {
 
     final ServiceCallResult<ErrorReportResponse> response = doServiceCall(wireMockServer);
 
-    assertThat(response.getPayload().isPresent(), is(false));
-    assertThat(response.getThrown().isPresent(), is(true));
+    assertThat(response.getPayload(), isEmpty());
+    assertThat(response.getThrown(), isPresent());
     assertThat(response.getErrorDetails(), not(emptyOrNullString()));
   }
 
@@ -182,7 +180,7 @@ class WireMockSystemTest {
 
     final ServiceCallResult<ErrorReportResponse> response = doServiceCall(wireMockServer, SHORT_TIMEOUT_MILLIS);
 
-    assertThat(response.getPayload().isPresent(), is(false));
-    assertThat(response.getThrown().isPresent(), is(true));
+    assertThat(response.getPayload(), isEmpty());
+    assertThat(response.getThrown(), isPresent());
   }
 }

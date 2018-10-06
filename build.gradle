@@ -58,9 +58,6 @@ subprojects {
 
     repositories {
         jcenter()
-        maven {
-            url 'https://jitpack.io'
-        }
     }
 
     dependencies {
@@ -70,6 +67,7 @@ subprojects {
 
         testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.0'
         testImplementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
+        testImplementation "com.github.npathai:hamcrest-optional:2.0.0"
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
         testImplementation 'org.junit-pioneer:junit-pioneer:0.1.2'
         testImplementation "org.mockito:mockito-core:$mockitoVersion"

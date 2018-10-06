@@ -132,6 +132,7 @@ import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
+import games.strategy.triplea.delegate.AirBattle;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BaseEditDelegate;
 import games.strategy.triplea.delegate.BattleDelegate;
@@ -1434,7 +1435,7 @@ public final class TripleAFrame extends JFrame {
       whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
       panelChooser.add(whereFrom);
       panelChooser.add(new JLabel(" "));
-      final int maxAllowed = possible.size();
+      final int maxAllowed = Math.min(AirBattle.getMaxInterceptionCount(current, possible), possible.size());
       final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
       chooser.setMaxAndShowMaxButton(maxAllowed);
       panelChooser.add(chooser);

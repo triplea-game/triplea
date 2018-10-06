@@ -30,7 +30,8 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
   private final UiContext uiContext;
   private final JButton showOdds = new JButton("Battle Calculator (Ctrl-B)");
-  private Territory currentTerritory;
+  private final JButton findTerritoryButton;
+  private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
 
   TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UiContext uiContext,
@@ -44,6 +45,10 @@ class TerritoryDetailPanel extends AbstractStatPanel {
         territoryChanged(territory);
       }
     });
+
+    findTerritoryButton = new JButton(new FindTerritoryAction(frame));
+    findTerritoryButton.setText(findTerritoryButton.getText() + " (Ctrl-F)");
+
     initLayout();
   }
 
@@ -69,6 +74,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       return;
     }
     add(showOdds);
+    add(findTerritoryButton);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;
     if (ta == null) {

@@ -47,7 +47,7 @@ public class DiceImageFactory {
   private Map<Integer, Image> generateDice(final Color color) {
     final ImageFactory imageFactory = new ImageFactory();
     imageFactory.setResourceLoader(resourceLoader);
-    return IntStream.rangeClosed(1, diceSides)
+    return IntStream.rangeClosed(0, diceSides)
         .parallel()
         .boxed()
         .collect(Collectors.toMap(Function.identity(),

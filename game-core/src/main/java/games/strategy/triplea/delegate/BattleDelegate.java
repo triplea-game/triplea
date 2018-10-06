@@ -679,8 +679,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     if (scrambleTerrs.isEmpty()) {
       return;
     }
-    final Map<Tuple<Territory, PlayerID>, Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
-        new HashMap<>();
+    final Map<Tuple<Territory, PlayerID>,
+        Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer =
+            new HashMap<>();
     for (final Territory to : scrambleTerrs.keySet()) {
       // find who we should ask
       PlayerID defender = null;

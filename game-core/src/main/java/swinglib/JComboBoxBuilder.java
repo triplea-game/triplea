@@ -35,6 +35,7 @@ public final class JComboBoxBuilder<E> {
   private @Nullable Consumer<E> itemSelectedAction;
   private @Nullable String toolTip;
   private boolean autoCompleteEnabled;
+  private @Nullable E selectedItem;
 
   private JComboBoxBuilder(final Class<E> itemType) {
     this.itemType = itemType;
@@ -49,6 +50,10 @@ public final class JComboBoxBuilder<E> {
     @SuppressWarnings("unchecked")
     final E[] array = (E[]) Array.newInstance(itemType, items.size());
     final JComboBox<E> comboBox = new JComboBox<>(items.toArray(array));
+
+    if (selectedItem != null) {
+      comboBox.setSelectedItem(selectedItem);
+    }
 
     final @Nullable Consumer<E> myAction = this.itemSelectedAction;
     if (myAction != null) {
@@ -112,5 +117,15 @@ public final class JComboBoxBuilder<E> {
   public JComboBoxBuilder<E> enableAutoComplete() {
     autoCompleteEnabled = true;
     return this;
+  }
+
+  public JComboBoxBuilder<E> selectedItem(final E selectedItem) {
+    Preconditions.checkNotNull(selectedItem);
+    this.selectedItem = selectedItem;
+    return this;
+  }
+
+  public JComboBoxBuilder<E> nullableSelectedItem(final @Nullable E selectedItem) {
+    return (selectedItem != null) ? selectedItem(selectedItem) : this;
   }
 }
