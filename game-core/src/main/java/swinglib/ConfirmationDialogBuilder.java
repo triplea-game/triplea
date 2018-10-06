@@ -4,6 +4,8 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -11,6 +13,12 @@ import lombok.RequiredArgsConstructor;
  * yes/no confirmation dialog will be shown to the user, if yes is clicked the confirm action will be executed.
  */
 public class ConfirmationDialogBuilder {
+  private static boolean headlessMode;
+
+  @VisibleForTesting
+  public static void suppressDialog() {
+    headlessMode = true;
+  }
 
   public static TitleBuilder builder() {
     return new TitleBuilder();
@@ -61,8 +69,7 @@ public class ConfirmationDialogBuilder {
   }
 
   /**
-   * Type safe builder that allows for additional behavior to be attached or for the confirmation dialog runnable
-   * to be created.
+   * Type safe builder, this is the final builder can construct the dialog or first add an optional properties.
    */
   @RequiredArgsConstructor
   public static class DialogOptionalsBuilder {
@@ -76,7 +83,7 @@ public class ConfirmationDialogBuilder {
     }
 
     public Runnable build() {
-      return TestConstant.isSet()
+      return headlessMode
           ? confirmActionBuilder.confirmAction
           : this::showConfirmDialog;
     }

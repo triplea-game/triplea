@@ -37,8 +37,6 @@ class SwingComponentWrapperTest {
     panel.add(innerPanel);
     panel.add(new JButton("not text type"));
 
-    final JFrame frame = new JFrame();
-    frame.add(panel);
-    return SwingComponentWrapper.of(frame);
+    return SwingComponentWrapper.of(panel);
   }
 }

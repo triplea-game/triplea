@@ -1,9 +1,11 @@
 package games.strategy.debug.error.reporting;
 
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.awt.GraphicsEnvironment;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -13,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import swinglib.TestConstant;
+import swinglib.ConfirmationDialogBuilder;
 
 /**
  * Ensure components are wired to the expected action handlers.
@@ -22,6 +24,18 @@ import swinglib.TestConstant;
 class ErrorReportComponentsTest {
 
   private ErrorReportComponents errorReportComponents = new ErrorReportComponents();
+
+
+  @BeforeAll
+  static void suppressUiComponents() {
+    ConfirmationDialogBuilder.suppressDialog();
+  }
+
+
+  @BeforeAll
+  static void skipIfHeadless() {
+    assumeFalse(GraphicsEnvironment.isHeadless());
+  }
 
   @Mock
   private Consumer<UserErrorReport> errorReportHandler;
@@ -34,11 +48,6 @@ class ErrorReportComponentsTest {
 
   @Mock
   private Runnable runnable;
-
-  @BeforeAll
-  static void disableSwingPopups() {
-    TestConstant.setTestConstant();
-  }
 
   @Test
   void submitButtonSendsAnErrorReport() {
@@ -73,9 +82,9 @@ class ErrorReportComponentsTest {
 
     errorReportComponents.createPreviewButton(
         ErrorReportComponents.FormHandler.builder()
-          .guiReader(guiReader)
-          .guiDataHandler(errorReportHandler)
-          .build())
+            .guiReader(guiReader)
+            .guiDataHandler(errorReportHandler)
+            .build())
         .doClick();
 
     verify(errorReportHandler, times(1))

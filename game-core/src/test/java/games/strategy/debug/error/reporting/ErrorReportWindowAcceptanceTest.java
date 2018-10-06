@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.test.common.swing.SwingComponentWrapper;
 
-import swinglib.TestConstant;
+import swinglib.ConfirmationDialogBuilder;
 
 
 /**
@@ -32,9 +32,8 @@ class ErrorReportWindowAcceptanceTest {
 
   @BeforeAll
   static void disableSwingPopups() {
-    TestConstant.setTestConstant();
+    ConfirmationDialogBuilder.suppressDialog();
   }
-
 
   @Mock
   private Consumer<UserErrorReport> reportHandler;

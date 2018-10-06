@@ -4,13 +4,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.swing.SwingComponentWrapper;
 
@@ -20,8 +23,14 @@ class JFrameBuilderTest {
   private static final int WIDTH = 100;
   private static final int HEIGHT = 1000;
 
+  @BeforeAll
+  static void skipIfHeadless() {
+    assumeFalse(GraphicsEnvironment.isHeadless());
+  }
+
   @Test
   void title() {
+
     final JFrame frame = JFrameBuilder.builder()
         .title(TITLE)
         .build();

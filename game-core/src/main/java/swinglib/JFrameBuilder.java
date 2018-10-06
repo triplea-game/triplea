@@ -11,8 +11,6 @@ import javax.swing.JFrame;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.SwingComponents;
 
-// TODO: check if we can add 'visible' as a property or if that will interfere with headless unit tests.
-
 /**
  * Provides a builder API for creating a JFrame that will include project specific defaults when constructed.
  * Defaults provided:
