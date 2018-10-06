@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Level;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -25,7 +24,6 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
-import lombok.extern.java.Log;
 import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
 
@@ -34,16 +32,15 @@ import swinglib.JPanelBuilder;
  * For example, if we have a setting that needs a number, we could create an integer text field with this
  * class. This class takes care of the UI code to ensure we render the proper swing component with validation.
  */
-@Log
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
   static SelectionComponent<JComponent> proxySettings(
-      final ClientSetting proxyChoiceClientSetting,
+      final HttpProxyChoiceClientSetting proxyChoiceClientSetting,
       final ClientSetting proxyHostClientSetting,
       final ClientSetting proxyPortClientSetting) {
     return new SelectionComponent<JComponent>() {
-      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(proxyChoiceClientSetting.value());
+      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.proxyChoiceValue();
       final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
           new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
@@ -77,15 +74,6 @@ final class SelectionComponentFactory {
           portText.setEnabled(false);
         }
       };
-
-      private HttpProxy.ProxyChoice parseProxyChoice(final String encodedProxyChoice) {
-        try {
-          return HttpProxy.ProxyChoice.valueOf(encodedProxyChoice);
-        } catch (final IllegalArgumentException e) {
-          log.log(Level.WARNING, "Illegal proxy choice: '" + encodedProxyChoice + "'", e);
-          return HttpProxy.ProxyChoice.NONE;
-        }
-      }
 
       @Override
       public JComponent getUiComponent() {
@@ -146,11 +134,10 @@ final class SelectionComponentFactory {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.defaultValue);
         portText.setText(proxyPortClientSetting.defaultValue);
-        setProxyChoice(proxyChoiceClientSetting.defaultValue);
+        setProxyChoice(proxyChoiceClientSetting.defaultProxyChoiceValue());
       }
 
-      private void setProxyChoice(final String encodedProxyChoice) {
-        final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(encodedProxyChoice);
+      private void setProxyChoice(final HttpProxy.ProxyChoice proxyChoice) {
         noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
         systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
         userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
@@ -162,7 +149,7 @@ final class SelectionComponentFactory {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.value());
         portText.setText(proxyPortClientSetting.value());
-        setProxyChoice(proxyChoiceClientSetting.value());
+        setProxyChoice(proxyChoiceClientSetting.proxyChoiceValue());
       }
     };
   }

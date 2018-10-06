@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
+import games.strategy.triplea.settings.HttpProxyChoiceClientSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
@@ -26,9 +26,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import lombok.extern.java.Log;
 
-@Log
 final class JavaFxSelectionComponentFactory {
 
   private JavaFxSelectionComponentFactory() {}
@@ -191,7 +189,7 @@ final class JavaFxSelectionComponentFactory {
   }
 
   static SelectionComponent<Region> proxySettings(
-      final ClientSetting proxyChoiceClientSetting,
+      final HttpProxyChoiceClientSetting proxyChoiceClientSetting,
       final ClientSetting proxyHostClientSetting,
       final ClientSetting proxyPortClientSetting) {
     return new ProxySetting(proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
@@ -325,7 +323,7 @@ final class JavaFxSelectionComponentFactory {
   }
 
   private static final class ProxySetting extends Region implements SelectionComponent<Region> {
-    private final ClientSetting proxyChoiceClientSetting;
+    private final HttpProxyChoiceClientSetting proxyChoiceClientSetting;
     private final ClientSetting proxyHostClientSetting;
     private final ClientSetting proxyPortClientSetting;
     private final RadioButton noneButton;
@@ -335,14 +333,14 @@ final class JavaFxSelectionComponentFactory {
     private final TextField portText;
 
     ProxySetting(
-        final ClientSetting proxyChoiceClientSetting,
+        final HttpProxyChoiceClientSetting proxyChoiceClientSetting,
         final ClientSetting proxyHostClientSetting,
         final ClientSetting proxyPortClientSetting) {
       this.proxyChoiceClientSetting = proxyChoiceClientSetting;
       this.proxyHostClientSetting = proxyHostClientSetting;
       this.proxyPortClientSetting = proxyPortClientSetting;
 
-      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(proxyChoiceClientSetting.value());
+      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.proxyChoiceValue();
       noneButton = new RadioButton("None");
       noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
       systemButton = new RadioButton("Use System Settings");
@@ -370,15 +368,6 @@ final class JavaFxSelectionComponentFactory {
       getChildren().add(radioPanel);
     }
 
-    private static HttpProxy.ProxyChoice parseProxyChoice(final String encodedProxyChoice) {
-      try {
-        return HttpProxy.ProxyChoice.valueOf(encodedProxyChoice);
-      } catch (final IllegalArgumentException e) {
-        log.log(Level.WARNING, "Illegal proxy choice: '" + encodedProxyChoice + "'", e);
-        return HttpProxy.ProxyChoice.NONE;
-      }
-    }
-
     @Override
     public Map<GameSetting, String> readValues() {
       final Map<GameSetting, String> values = new HashMap<>();
@@ -400,11 +389,10 @@ final class JavaFxSelectionComponentFactory {
       ClientSetting.flush();
       hostText.setText(proxyHostClientSetting.defaultValue);
       portText.setText(proxyPortClientSetting.defaultValue);
-      setProxyChoice(proxyChoiceClientSetting.defaultValue);
+      setProxyChoice(proxyChoiceClientSetting.defaultProxyChoiceValue());
     }
 
-    private void setProxyChoice(final String encodedProxyChoice) {
-      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(encodedProxyChoice);
+    private void setProxyChoice(final HttpProxy.ProxyChoice proxyChoice) {
       noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
       systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
       userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
@@ -415,7 +403,7 @@ final class JavaFxSelectionComponentFactory {
       ClientSetting.flush();
       hostText.setText(proxyHostClientSetting.value());
       portText.setText(proxyPortClientSetting.value());
-      setProxyChoice(proxyChoiceClientSetting.value());
+      setProxyChoice(proxyChoiceClientSetting.proxyChoiceValue());
     }
 
     private boolean isHostTextValid() {

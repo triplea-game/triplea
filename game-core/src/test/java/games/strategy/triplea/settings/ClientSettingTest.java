@@ -30,7 +30,7 @@ final class ClientSettingTest {
 
     @Mock
     private Consumer<String> mockSaveListener;
-    private final ClientSetting clientSetting = new ClientSetting("TEST_SETTING");
+    private final ClientSetting clientSetting = new DefaultClientSetting("TEST_SETTING");
 
     @Test
     void saveActionListenerIsCalled() {
