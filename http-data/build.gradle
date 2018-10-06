@@ -1,5 +1,1 @@
 description = 'Contains common data models exchanged between client/server'
-
-dependencies {
-    testImplementation "com.github.npathai:hamcrest-optional:2.0.0"
-}
