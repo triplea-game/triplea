@@ -3,14 +3,18 @@ package games.strategy.debug.error.reporting;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.test.common.swing.SwingComponentWrapper;
+
+import java.awt.GraphicsEnvironment;
 
 @ExtendWith(MockitoExtension.class)
 class PreviewWindowTest {
@@ -22,6 +26,11 @@ class PreviewWindowTest {
       .additionalInfo(ADDITIONAL_INFO)
       .description(DESCRIPTION)
       .build();
+
+  @BeforeAll
+  static void skipIfHeadless() {
+    assumeFalse(GraphicsEnvironment.isHeadless()):
+  }
 
   /**
    * Just check that we have rendered at least the user supplied info to the window in a text

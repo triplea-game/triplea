@@ -1,8 +1,10 @@
 package games.strategy.debug.error.reporting;
 
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.awt.GraphicsEnvironment;
 import java.util.function.Consumer;
 
 import javax.swing.JButton;
@@ -35,6 +37,11 @@ class ErrorReportWindowAcceptanceTest {
     ConfirmationDialogBuilder.suppressDialog();
   }
 
+  @BeforeAll
+  static void skipIfHeadless() {
+    assumeFalse(GraphicsEnvironment.isHeadless()):
+  }
+  
   @Mock
   private Consumer<UserErrorReport> reportHandler;
 
