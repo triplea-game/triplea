@@ -1,11 +1,11 @@
 package games.strategy.util;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.triplea.test.common.assertions.Optionals.isMissing;
-import static org.triplea.test.common.assertions.Optionals.isPresent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +72,7 @@ class UrlStreamsTest {
     final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
     assertThat("No exceptions expected, but a failure to connect should return an empty object.",
-        stream, isMissing());
+        stream, isEmpty());
   }
 
 }

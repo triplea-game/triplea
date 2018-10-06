@@ -8,4 +8,5 @@ dependencies {
     testImplementation project(':test-common')
     testImplementation 'com.github.tomakehurst:wiremock:2.18.0'
     testImplementation 'ru.lanwen.wiremock:wiremock-junit5:1.2.0'
+    testImplementation "com.github.npathai:hamcrest-optional:2.0.0"
 }

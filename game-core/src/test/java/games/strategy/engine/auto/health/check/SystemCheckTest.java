@@ -1,9 +1,9 @@
 package games.strategy.engine.auto.health.check;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.triplea.test.common.assertions.Optionals.isMissing;
-import static org.triplea.test.common.assertions.Optionals.isPresent;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ public class SystemCheckTest {
 
     assertThat(check.wasSuccess(), is(true));
     assertThat(check.getResultMessage(), is("msg: true"));
-    assertThat(check.getException(), isMissing());
+    assertThat(check.getException(), isEmpty());
   }
 
   @Test

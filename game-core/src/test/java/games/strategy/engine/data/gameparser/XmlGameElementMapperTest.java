@@ -1,10 +1,10 @@
 package games.strategy.engine.data.gameparser;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.triplea.test.common.assertions.Optionals.isMissing;
-import static org.triplea.test.common.assertions.Optionals.isPresent;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ class XmlGameElementMapperTest {
   @Test
   void getDelegateReturnsEmptyIfDelegateNameDoesNotExist() {
     final Optional<IDelegate> resultObject = testObj.getDelegate(NAME_THAT_DOES_NOT_EXIST);
-    assertThat(resultObject, isMissing());
+    assertThat(resultObject, isEmpty());
   }
 
 
@@ -49,7 +49,7 @@ class XmlGameElementMapperTest {
   @Test
   void getAttachmentReturnsEmptyIfAttachmentNameDoesNotExist() {
     final Optional<IAttachment> resultObject = testObj.getAttachment(NAME_THAT_DOES_NOT_EXIST, "", null, null);
-    assertThat(resultObject, isMissing());
+    assertThat(resultObject, isEmpty());
   }
 
 

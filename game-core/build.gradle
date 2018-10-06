@@ -21,6 +21,7 @@ dependencies {
 
     testImplementation project(':test-common')
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation "com.github.npathai:hamcrest-optional:2.0.0"
 }
 
 checkstyleMain {
