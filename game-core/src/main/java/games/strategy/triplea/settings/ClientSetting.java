@@ -205,7 +205,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   @Override
   public final void save(final @Nullable T newValue) {
-    saveString((newValue != null) ? formatValue(newValue) : null);
+    saveString(Optional.ofNullable(newValue).map(this::formatValue).orElse(null));
   }
 
   /**
