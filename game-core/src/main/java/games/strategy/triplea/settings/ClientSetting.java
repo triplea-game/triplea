@@ -230,16 +230,24 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   @Override
   public final T value() {
-    return parseValue(stringValue());
+    final String encodedValue = stringValue();
+    try {
+      return parseValue(encodedValue);
+    } catch (final IllegalArgumentException e) {
+      log.log(Level.WARNING, "Illegal client setting encoded value: '" + encodedValue + "'", e);
+      return defaultValue();
+    }
   }
 
   /**
-   * Subclasses must implement to parse an encoded string value into an equivalent typed value. If the encoded value is
-   * illegal, an implementation should not throw an exception but rather log the error and return the default value.
+   * Subclasses must implement to parse an encoded string value into an equivalent typed value.
+   *
+   * @throws IllegalArgumentException If the encoded string value is malformed.
    */
   protected abstract T parseValue(String encodedValue);
 
   public final T defaultValue() {
+    // allow exceptions to propagate; default value should always be parseable
     return parseValue(encodedDefaultValue);
   }
 

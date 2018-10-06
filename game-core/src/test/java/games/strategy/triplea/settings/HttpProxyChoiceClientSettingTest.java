@@ -2,6 +2,7 @@ package games.strategy.triplea.settings;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -34,8 +35,8 @@ final class HttpProxyChoiceClientSettingTest {
     }
 
     @Test
-    void shouldReturnNoneWhenEncodedValueIsIllegal() {
-      assertThat(clientSetting.parseValue("__unknown__"), is(HttpProxy.ProxyChoice.NONE));
+    void shouldThrowExceptionWhenEncodedValueIsIllegal() {
+      assertThrows(IllegalArgumentException.class, () -> clientSetting.parseValue("__unknown__"));
     }
   }
 }
