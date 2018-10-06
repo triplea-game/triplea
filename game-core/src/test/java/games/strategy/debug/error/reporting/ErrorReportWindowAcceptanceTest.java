@@ -39,7 +39,7 @@ class ErrorReportWindowAcceptanceTest {
 
   @BeforeAll
   static void skipIfHeadless() {
-    assumeFalse(GraphicsEnvironment.isHeadless()):
+    assumeFalse(GraphicsEnvironment.isHeadless());
   }
   
   @Mock

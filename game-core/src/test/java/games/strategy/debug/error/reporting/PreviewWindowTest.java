@@ -29,7 +29,7 @@ class PreviewWindowTest {
 
   @BeforeAll
   static void skipIfHeadless() {
-    assumeFalse(GraphicsEnvironment.isHeadless()):
+    assumeFalse(GraphicsEnvironment.isHeadless());
   }
 
   /**
