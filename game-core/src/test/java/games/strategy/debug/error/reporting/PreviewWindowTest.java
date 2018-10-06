@@ -5,6 +5,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+import java.awt.GraphicsEnvironment;
+
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
@@ -13,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.test.common.swing.SwingComponentWrapper;
-
-import java.awt.GraphicsEnvironment;
 
 @ExtendWith(MockitoExtension.class)
 class PreviewWindowTest {
