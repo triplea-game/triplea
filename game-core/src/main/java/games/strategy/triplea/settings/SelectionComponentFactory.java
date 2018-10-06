@@ -36,11 +36,11 @@ final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
   static SelectionComponent<JComponent> proxySettings(
-      final HttpProxyChoiceClientSetting proxyChoiceClientSetting,
-      final ClientSetting proxyHostClientSetting,
-      final ClientSetting proxyPortClientSetting) {
+      final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
+      final ClientSetting<String> proxyHostClientSetting,
+      final ClientSetting<String> proxyPortClientSetting) {
     return new SelectionComponent<JComponent>() {
-      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.proxyChoiceValue();
+      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.value();
       final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
           new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
@@ -114,8 +114,8 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
-        final Map<GameSetting, String> values = new HashMap<>();
+      public Map<GameSetting<?>, String> readValues() {
+        final Map<GameSetting<?>, String> values = new HashMap<>();
         if (noneButton.isSelected()) {
           values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE.toString());
         } else if (systemButton.isSelected()) {
@@ -132,9 +132,9 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         ClientSetting.flush();
-        hostText.setText(proxyHostClientSetting.defaultValue);
-        portText.setText(proxyPortClientSetting.defaultValue);
-        setProxyChoice(proxyChoiceClientSetting.defaultProxyChoiceValue());
+        hostText.setText(proxyHostClientSetting.defaultValue());
+        portText.setText(proxyPortClientSetting.defaultValue());
+        setProxyChoice(proxyChoiceClientSetting.defaultValue());
       }
 
       private void setProxyChoice(final HttpProxy.ProxyChoice proxyChoice) {
@@ -149,7 +149,7 @@ final class SelectionComponentFactory {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.value());
         portText.setText(proxyPortClientSetting.value());
-        setProxyChoice(proxyChoiceClientSetting.proxyChoiceValue());
+        setProxyChoice(proxyChoiceClientSetting.value());
       }
     };
   }
@@ -162,14 +162,17 @@ final class SelectionComponentFactory {
   /**
    * Text field that only accepts numbers between a certain range.
    */
-  static SelectionComponent<JComponent> intValueRange(final ClientSetting clientSetting, final int lo, final int hi) {
+  static SelectionComponent<JComponent> intValueRange(
+      final ClientSetting<String> clientSetting,
+      final int lo,
+      final int hi) {
     return intValueRange(clientSetting, lo, hi, false);
   }
 
   /**
    * Text field that only accepts numbers between a certain range.
    */
-  static SelectionComponent<JComponent> intValueRange(final ClientSetting clientSetting, final int lo,
+  static SelectionComponent<JComponent> intValueRange(final ClientSetting<String> clientSetting, final int lo,
       final int hi, final boolean allowUnset) {
     return new SelectionComponent<JComponent>() {
       private final JSpinner component = new JSpinner(new SpinnerNumberModel(
@@ -199,13 +202,13 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
+      public Map<GameSetting<?>, String> readValues() {
         return Collections.singletonMap(clientSetting, toValidStringValue((int) component.getValue()));
       }
 
       @Override
       public void resetToDefault() {
-        component.setValue(toValidIntValue(clientSetting.defaultValue));
+        component.setValue(toValidIntValue(clientSetting.defaultValue()));
       }
 
       @Override
@@ -218,7 +221,7 @@ final class SelectionComponentFactory {
   /**
    * yes/no radio buttons.
    */
-  static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting clientSetting) {
+  static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting<String> clientSetting) {
     return new AlwaysValidInputSelectionComponent() {
       final boolean initialSelection = clientSetting.booleanValue();
       final JRadioButton yesButton = new JRadioButton("True");
@@ -238,17 +241,17 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
+      public Map<GameSetting<?>, String> readValues() {
         final String value = yesButton.isSelected() ? String.valueOf(true) : String.valueOf(false);
-        final Map<GameSetting, String> settingMap = new HashMap<>();
+        final Map<GameSetting<?>, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
         return settingMap;
       }
 
       @Override
       public void resetToDefault() {
-        yesButton.setSelected(Boolean.valueOf(clientSetting.defaultValue));
-        noButton.setSelected(!Boolean.valueOf(clientSetting.defaultValue));
+        yesButton.setSelected(Boolean.valueOf(clientSetting.defaultValue()));
+        noButton.setSelected(!Boolean.valueOf(clientSetting.defaultValue()));
       }
 
       @Override
@@ -262,12 +265,12 @@ final class SelectionComponentFactory {
   /**
    * File selection prompt.
    */
-  static SelectionComponent<JComponent> filePath(final ClientSetting clientSetting) {
+  static SelectionComponent<JComponent> filePath(final ClientSetting<String> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
   }
 
   private static SelectionComponent<JComponent> selectFile(
-      final ClientSetting clientSetting,
+      final ClientSetting<String> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
     return new AlwaysValidInputSelectionComponent() {
       final int expectedLength = 20;
@@ -292,16 +295,16 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
+      public Map<GameSetting<?>, String> readValues() {
         final String value = field.getText();
-        final Map<GameSetting, String> settingMap = new HashMap<>();
+        final Map<GameSetting<?>, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
         return settingMap;
       }
 
       @Override
       public void resetToDefault() {
-        field.setText(clientSetting.defaultValue);
+        field.setText(clientSetting.defaultValue());
       }
 
       @Override
@@ -314,12 +317,12 @@ final class SelectionComponentFactory {
   /**
    * Folder selection prompt.
    */
-  static SelectionComponent<JComponent> folderPath(final ClientSetting clientSetting) {
+  static SelectionComponent<JComponent> folderPath(final ClientSetting<String> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 
   static <T> SelectionComponent<JComponent> selectionBox(
-      final ClientSetting clientSetting,
+      final ClientSetting<String> clientSetting,
       final List<T> availableOptions,
       final T selectedOption,
       final Function<T, ?> renderFunction) {
@@ -352,16 +355,16 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
+      public Map<GameSetting<?>, String> readValues() {
         final String value = String.valueOf(comboBox.getSelectedItem());
-        final Map<GameSetting, String> settingMap = new HashMap<>();
+        final Map<GameSetting<?>, String> settingMap = new HashMap<>();
         settingMap.put(clientSetting, value);
         return settingMap;
       }
 
       @Override
       public void resetToDefault() {
-        comboBox.setSelectedItem(clientSetting.defaultValue);
+        comboBox.setSelectedItem(clientSetting.defaultValue());
       }
 
       @Override
@@ -371,7 +374,7 @@ final class SelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<JComponent> textField(final ClientSetting clientSetting) {
+  static SelectionComponent<JComponent> textField(final ClientSetting<String> clientSetting) {
     return new AlwaysValidInputSelectionComponent() {
       final JTextField textField = new JTextField(clientSetting.value(), 20);
 
@@ -381,8 +384,8 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
-        final Map<GameSetting, String> map = new HashMap<>();
+      public Map<GameSetting<?>, String> readValues() {
+        final Map<GameSetting<?>, String> map = new HashMap<>();
         map.put(clientSetting, textField.getText());
         return map;
       }
@@ -394,7 +397,7 @@ final class SelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        textField.setText(clientSetting.defaultValue);
+        textField.setText(clientSetting.defaultValue());
       }
     };
   }

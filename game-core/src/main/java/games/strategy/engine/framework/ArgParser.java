@@ -18,7 +18,7 @@ public final class ArgParser {
    * Move command line arguments to system properties or client settings.
    */
   public static void handleCommandLineArgs(final String... args) {
-    ClientSetting.mapFolderOverride.save(ClientSetting.mapFolderOverride.defaultValue);
+    ClientSetting.mapFolderOverride.save(ClientSetting.mapFolderOverride.defaultValue());
 
     if ((args.length == 1) && args[0].startsWith(TRIPLEA_PROTOCOL)) {
       handleMapDownloadArg(args[0]);

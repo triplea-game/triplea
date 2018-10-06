@@ -27,9 +27,9 @@ final class EngineVersionCheckTest {
   final class IsEngineUpdateCheckRequiredTest {
     private final LocalDate now = LocalDate.of(2008, 6, 1);
     @Mock
-    private GameSetting firstRunSetting;
+    private GameSetting<String> firstRunSetting;
     @Mock
-    private GameSetting updateCheckDateSetting;
+    private GameSetting<String> updateCheckDateSetting;
     @Mock
     private Runnable flushSetting;
 

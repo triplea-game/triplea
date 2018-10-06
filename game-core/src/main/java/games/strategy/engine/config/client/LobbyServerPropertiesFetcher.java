@@ -63,8 +63,8 @@ public final class LobbyServerPropertiesFetcher {
 
   @VisibleForTesting
   static Optional<LobbyServerProperties> getTestOverrideProperties(
-      final GameSetting testLobbyHostSetting,
-      final GameSetting testLobbyPortSetting) {
+      final GameSetting<String> testLobbyHostSetting,
+      final GameSetting<String> testLobbyPortSetting) {
     if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet()) {
       return Optional.of(new LobbyServerProperties(testLobbyHostSetting.value(), testLobbyPortSetting.intValue()));
     }

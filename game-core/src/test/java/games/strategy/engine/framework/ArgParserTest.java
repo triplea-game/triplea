@@ -84,7 +84,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
     ArgParser.handleCommandLineArgs();
 
-    assertThat(ClientSetting.mapFolderOverride.value(), is(ClientSetting.mapFolderOverride.defaultValue));
+    assertThat(ClientSetting.mapFolderOverride.value(), is(ClientSetting.mapFolderOverride.defaultValue()));
   }
 
   private interface TestData {

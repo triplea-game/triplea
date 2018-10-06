@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import static games.strategy.triplea.settings.HttpProxyChoiceClientSetting.parseEncodedValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -12,18 +11,31 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.framework.system.HttpProxy;
 
 final class HttpProxyChoiceClientSettingTest {
+  private final HttpProxyChoiceClientSetting clientSetting =
+      new HttpProxyChoiceClientSetting("name", HttpProxy.ProxyChoice.NONE);
+
   @Nested
-  final class ParseEncodedValueTest {
+  final class FormatValueTest {
+    @Test
+    void shouldReturnEnumConstantName() {
+      Arrays.stream(HttpProxy.ProxyChoice.values()).forEach(value -> {
+        assertThat(clientSetting.formatValue(value), is(value.toString()));
+      });
+    }
+  }
+
+  @Nested
+  final class ParseValueTest {
     @Test
     void shouldReturnAssociatedEnumConstantWhenEncodedValueIsLegal() {
       Arrays.stream(HttpProxy.ProxyChoice.values()).forEach(value -> {
-        assertThat(parseEncodedValue(value.toString()), is(value));
+        assertThat(clientSetting.parseValue(value.toString()), is(value));
       });
     }
 
     @Test
     void shouldReturnNoneWhenEncodedValueIsIllegal() {
-      assertThat(parseEncodedValue("__unknown__"), is(HttpProxy.ProxyChoice.NONE));
+      assertThat(clientSetting.parseValue("__unknown__"), is(HttpProxy.ProxyChoice.NONE));
     }
   }
 }

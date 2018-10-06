@@ -27,7 +27,7 @@ final class UpdatedMapsCheckTest {
   final class IsMapUpdateCheckRequiredTest {
     private final LocalDate now = LocalDate.of(2008, 6, 1);
     @Mock
-    private GameSetting updateCheckDateSetting;
+    private GameSetting<String> updateCheckDateSetting;
     @Mock
     private Runnable flushSetting;
 

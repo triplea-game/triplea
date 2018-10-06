@@ -22,7 +22,7 @@ public interface SelectionComponent<T> {
    * Reads values stored in the UI components, returns a map of preference keys and the value represented in
    * the corresponding UI component.
    */
-  Map<GameSetting, String> readValues();
+  Map<GameSetting<?>, String> readValues();
 
   void resetToDefault();
 

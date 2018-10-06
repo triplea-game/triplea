@@ -71,10 +71,10 @@ public final class ClientFileSystemHelperTest {
   @Nested
   public final class GetUserMapsFolderPathTest {
     @Mock
-    private GameSetting currentSetting;
+    private GameSetting<String> currentSetting;
 
     @Mock
-    private GameSetting overrideSetting;
+    private GameSetting<String> overrideSetting;
 
     private String getUserMapsFolderPath() {
       return ClientFileSystemHelper.getUserMapsFolderPath(currentSetting, overrideSetting);
