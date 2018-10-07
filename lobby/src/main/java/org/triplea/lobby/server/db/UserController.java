@@ -43,8 +43,8 @@ public final class UserController extends AbstractController implements UserDao 
         }
         return null;
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error getting password for user: " + username, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error getting password for user: " + username, e);
     }
   }
 
@@ -57,8 +57,8 @@ public final class UserController extends AbstractController implements UserDao 
       try (ResultSet rs = ps.executeQuery()) {
         return rs.next();
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error testing for existence of user:" + username, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error testing for existence of user: " + username, e);
     }
   }
 
@@ -82,7 +82,7 @@ public final class UserController extends AbstractController implements UserDao 
       }
       con.commit();
     } catch (final SQLException e) {
-      throw new IllegalStateException(String.format("Error updating name: %s email: %s pwd: %s",
+      throw newDatabaseException(String.format("Error updating name: %s, email: %s, (masked) pwd: %s",
           user.getName(), user.getEmail(), hashedPassword.mask()), e);
     }
   }
@@ -111,7 +111,7 @@ public final class UserController extends AbstractController implements UserDao 
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new IllegalStateException(String.format("Error while trying to make %s an admin", user.getName()), e);
+      throw newDatabaseException(String.format("Error while trying to make %s an admin", user.getName()), e);
     }
   }
 
@@ -130,7 +130,7 @@ public final class UserController extends AbstractController implements UserDao 
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new RuntimeException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
+      throw newDatabaseException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
           user.getName(), user.getEmail(), hashedPassword.mask()), e);
     }
   }
@@ -167,9 +167,9 @@ public final class UserController extends AbstractController implements UserDao 
         con.commit();
         return true;
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException(
-          String.format("Error validating password name: %s pwd: %s", username, hashedPassword.mask()), sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException(
+          String.format("Error validating password name: %s, (masked) pwd: %s", username, hashedPassword.mask()), e);
     }
   }
 
@@ -188,8 +188,8 @@ public final class UserController extends AbstractController implements UserDao 
             new DBUser.UserEmail(rs.getString("email")),
             rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error getting user: " + username, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error getting user: " + username, e);
     }
   }
 }

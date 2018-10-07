@@ -55,7 +55,7 @@ public class BannedMacController extends TimedController implements BannedMacDao
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new IllegalStateException("Error inserting banned mac: " + bannedUser.getHashedMacAddress(), e);
+      throw newDatabaseException("Error inserting banned mac: " + bannedUser.getHashedMacAddress(), e);
     }
   }
 
@@ -65,8 +65,8 @@ public class BannedMacController extends TimedController implements BannedMacDao
       ps.setString(1, mac);
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error deleting banned mac:" + mac, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error deleting banned mac: " + mac, e);
     }
   }
 
@@ -92,8 +92,8 @@ public class BannedMacController extends TimedController implements BannedMacDao
         }
         return Tuple.of(false, null);
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error for testing banned mac existence:" + mac, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error for testing banned mac existence: " + mac, e);
     }
   }
 }

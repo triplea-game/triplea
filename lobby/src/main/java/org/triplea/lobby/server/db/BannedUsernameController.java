@@ -55,7 +55,7 @@ public class BannedUsernameController extends TimedController implements BannedU
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new IllegalStateException("Error inserting banned username: " + bannedUser.getUsername(), e);
+      throw newDatabaseException("Error inserting banned username: " + bannedUser.getUsername(), e);
     }
   }
 
@@ -65,8 +65,8 @@ public class BannedUsernameController extends TimedController implements BannedU
       ps.setString(1, username);
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error deleting banned username:" + username, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error deleting banned username: " + username, e);
     }
   }
 
@@ -91,8 +91,8 @@ public class BannedUsernameController extends TimedController implements BannedU
         }
         return Tuple.of(false, null);
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error for testing banned username existence:" + username, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error for testing banned username existence: " + username, e);
     }
   }
 }

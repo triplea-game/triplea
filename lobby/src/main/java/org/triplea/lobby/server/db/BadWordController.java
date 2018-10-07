@@ -23,8 +23,8 @@ public final class BadWordController extends AbstractController implements BadWo
       ps.setString(1, word);
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error inserting banned word:" + word, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error inserting banned word: " + word, e);
     }
   }
 
@@ -40,8 +40,8 @@ public final class BadWordController extends AbstractController implements BadWo
         badWords.add(rs.getString(1));
       }
       return badWords;
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error reading bad words", sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error reading bad words", e);
     }
   }
 }

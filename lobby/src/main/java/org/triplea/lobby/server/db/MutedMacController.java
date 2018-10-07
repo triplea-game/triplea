@@ -66,7 +66,7 @@ public class MutedMacController extends TimedController {
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new IllegalStateException("Error inserting muted mac: " + mutedUser.getHashedMacAddress(), e);
+      throw newDatabaseException("Error inserting muted mac: " + mutedUser.getHashedMacAddress(), e);
     }
   }
 
@@ -76,8 +76,8 @@ public class MutedMacController extends TimedController {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error deleting muted mac:" + mac, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error deleting muted mac: " + mac, e);
     }
   }
 
@@ -116,8 +116,8 @@ public class MutedMacController extends TimedController {
         }
         return Optional.empty();
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error for testing muted mac existence:" + mac, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error for testing muted mac existence: " + mac, e);
     }
   }
 }
