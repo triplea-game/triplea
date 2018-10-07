@@ -1,4 +1,4 @@
-package org.triplea.http.data.error.report;
+package org.triplea.http.client.error.report.json.message;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;

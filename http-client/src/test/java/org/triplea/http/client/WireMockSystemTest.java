@@ -25,9 +25,11 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportDetails;
-import org.triplea.http.data.error.report.ErrorReportResponse;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReportDetails;
+import org.triplea.http.client.error.report.json.message.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorReportingClient;
+import org.triplea.http.client.error.report.ErrorReportingHttpClient;
 import org.triplea.test.common.Integration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;

@@ -1,4 +1,4 @@
-package org.triplea.http.data.error.report;
+package org.triplea.http.client.error.report.json.message;
 
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -12,6 +12,8 @@ import lombok.ToString;
  */
 @Getter
 @ToString
+// TODO: rename to ErrorReportRequest
+// TODO: merge 'ErrorReportDetails' into this class
 public class ErrorReport {
 
   private final String messageFromUser;

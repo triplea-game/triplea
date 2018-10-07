@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.triplea.http.data.error.report.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
 
 import com.google.common.annotations.VisibleForTesting;
 

@@ -1,9 +1,6 @@
-package org.triplea.http.client;
+package org.triplea.http.client.error.report;
 
 import java.net.URI;
-
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportResponse;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -14,6 +11,8 @@ import feign.Request;
 import feign.RequestLine;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReportResponse;
 
 @SuppressWarnings("InterfaceNeverImplemented")
 interface ErrorReportingHttpClient {

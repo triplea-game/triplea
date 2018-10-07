@@ -2,7 +2,7 @@ package org.triplea.http.client.throttle.size;
 
 import java.util.function.Consumer;
 
-import org.triplea.http.data.error.report.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
