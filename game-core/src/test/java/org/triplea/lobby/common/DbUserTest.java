@@ -93,7 +93,7 @@ public class DbUserTest {
         "",
         "a",
         "ab", // still too short
-        Strings.repeat("a", 41), // one character too long
+        Strings.repeat("a", DBUser.UserName.MAX_LENGTH + 1),
         "ab*", // no special characters other than '-' and '_'
         "ab$",
         ".ab",
@@ -127,7 +127,7 @@ public class DbUserTest {
   public void userNameValidationWithValidNames() {
     Arrays.asList(
         "abc",
-        Strings.repeat("a", 40), // maximum length
+        Strings.repeat("a", DBUser.UserName.MAX_LENGTH),
         "123",
         "---")
         .forEach(validName -> {

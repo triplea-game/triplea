@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.triplea.lobby.common.LobbyConstants;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.util.Util;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -32,7 +34,8 @@ public final class DBUser implements Serializable {
   /** User name value object with validation methods. */
   public static class UserName {
     private static final int MIN_LENGTH = 3;
-    private static final int MAX_LENGTH = 40;
+    @VisibleForTesting
+    public static final int MAX_LENGTH = 40;
 
     public final String userName;
 
