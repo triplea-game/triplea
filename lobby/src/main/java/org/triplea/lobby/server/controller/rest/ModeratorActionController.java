@@ -8,11 +8,16 @@ import static spark.Spark.post;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.triplea.lobby.server.controller.rest.exception.BadAuthenticationException;
+import org.triplea.lobby.server.controller.rest.exception.InsufficientRightsException;
+import org.triplea.lobby.server.controller.rest.exception.InvalidParameterException;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserController;
 
+import com.github.openjson.JSONObject;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import spark.Request;
@@ -46,24 +51,22 @@ class ModeratorActionController {
       final String username = bodyParams.get("username");
       final String password = bodyParams.get("password");
       if (username == null || password == null) {
-        halt(401, "{ code: \"Error\", reason: \"Missing parameter\"}");
-        return;
+        throw new BadAuthenticationException("Missing parameter");
       }
       final DBUser user = controller.getUserByName(username);
       if (user == null) {
-        halt(401, "{ code: \"Error\", reason: \"Invalid Username\"}");
-        return;
+        throw new BadAuthenticationException("Invalid Username");
       }
       if (!user.isAdmin()) {
-        halt(401, "{ code: \"Error\", reason: \"Not a moderator\"}");
-        return;
+        throw new InsufficientRightsException("Not a moderator");
       }
       if (!controller.login(username, new HashedPassword(password))) {
-        halt(401, "{ code: \"Error\", reason: \"Invalid Password\"}");
-        return;
+        throw new BadAuthenticationException("Invalid Password");
       }
       return;
     }
+    // Authentication credentials should not get passed as POST body parameters
+    // but rather encoded in the header or something
     halt(405, "{ code: \"Error\", reason: \"Request must be a POST Request\"}");
   }
 
@@ -74,11 +77,11 @@ class ModeratorActionController {
         final DBUser.Role rank = DBUser.Role.valueOf(req.params(":rank"));
         controller.makeAdmin(new DBUser(new DBUser.UserName(user.getName()),
             new DBUser.UserEmail(user.getEmail()), rank));
-        return "{ code: \"Success\" }";
+        return new JSONObject(ImmutableMap.of("status", "Success")).toString();
       } catch (final IllegalArgumentException e) {
-        return "{ code: \"Error\", reason: \"Rank does not exist\"}";
+        throw new InvalidParameterException("Rank does not exist");
       }
     }
-    return "{ code: \"Error\", reason: \"User does not exist\"}";
+    throw new InvalidParameterException("User does not exist");
   }
 }

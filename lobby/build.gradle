@@ -11,6 +11,7 @@ dependencies {
     implementation project(':game-core')
     implementation 'org.mindrot:jbcrypt:0.4'
     implementation 'com.sparkjava:spark-core:2.8.0'
+    implementation 'com.github.openjson:openjson:1.0.10'
 
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.21'
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
