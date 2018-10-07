@@ -12,6 +12,6 @@ public class ControllerHub {
 
   public static void initializeControllers(final LobbyConfiguration configuration) {
     final Database database = new Database(configuration);
-    path("/api/v0", new ModeratorActionController(database)::initializeRoutes);
+    path("/api", new ModeratorActionController(database)::initializeRoutes);
   }
 }
