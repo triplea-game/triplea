@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.triplea.lobby.common.LobbyConstants;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.util.Util;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -31,6 +33,10 @@ public final class DBUser implements Serializable {
 
   /** User name value object with validation methods. */
   public static class UserName {
+    private static final int MIN_LENGTH = 3;
+    @VisibleForTesting
+    public static final int MAX_LENGTH = 40;
+
     public final String userName;
 
     public UserName(final String userName) {
@@ -38,13 +44,15 @@ public final class DBUser implements Serializable {
     }
 
     String validate() {
-      if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2) {
-        return "Names must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
-      }
-      if (userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())) {
+      if ((userName == null) || (userName.length() < MIN_LENGTH)) {
+        return "Name is too short (minimum " + MIN_LENGTH + " characters)";
+      } else if (userName.length() > MAX_LENGTH) {
+        return "Name is too long (maximum " + MAX_LENGTH + " characters)";
+      } else if (!userName.matches("[0-9a-zA-Z_-]+")) {
+        return "Name can only contain alphanumeric characters, hyphens (-), and underscores (_)";
+      } else if (userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())) {
         return LobbyConstants.LOBBY_WATCHER_NAME + " cannot be part of a name";
-      }
-      if (userName.toLowerCase().contains(LobbyConstants.ADMIN_USERNAME.toLowerCase())) {
+      } else if (userName.toLowerCase().contains(LobbyConstants.ADMIN_USERNAME.toLowerCase())) {
         return "Name can't contain the word " + LobbyConstants.ADMIN_USERNAME;
       }
       return null;

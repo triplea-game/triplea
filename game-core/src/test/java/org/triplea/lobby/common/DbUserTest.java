@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.base.Strings;
+
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -91,6 +93,7 @@ public class DbUserTest {
         "",
         "a",
         "ab", // still too short
+        Strings.repeat("a", DBUser.UserName.MAX_LENGTH + 1),
         "ab*", // no special characters other than '-' and '_'
         "ab$",
         ".ab",
@@ -124,10 +127,9 @@ public class DbUserTest {
   public void userNameValidationWithValidNames() {
     Arrays.asList(
         "abc",
+        Strings.repeat("a", DBUser.UserName.MAX_LENGTH),
         "123",
-        "---",
-        // TODO: should we add a max length rule to user name validation?
-        "test_case_with_something_that_is_a_bit_longer_and_perhaps_even_should_be_considered_invalid")
+        "---")
         .forEach(validName -> {
           assertThat(
               "Expected name to be marked as valid: " + validName,
