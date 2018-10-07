@@ -41,18 +41,15 @@ public final class DBUser implements Serializable {
     }
 
     String validate() {
-      if ((userName == null)
-          || !userName.matches("[0-9a-zA-Z_-]+")
-          || (userName.length() < MIN_LENGTH)
-          || (userName.length() > MAX_LENGTH)) {
-        return String.format(
-            "Names must be between %d and %d characters long and can only contain alphanumeric characters, -, and _",
-            MIN_LENGTH, MAX_LENGTH);
-      }
-      if (userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())) {
+      if ((userName == null) || (userName.length() < MIN_LENGTH)) {
+        return "Name is too short (minimum " + MIN_LENGTH + " characters)";
+      } else if (userName.length() > MAX_LENGTH) {
+        return "Name is too long (maximum " + MAX_LENGTH + " characters)";
+      } else if (!userName.matches("[0-9a-zA-Z_-]+")) {
+        return "Name can only contain alphanumeric characters, hyphens (-), and underscores (_)";
+      } else if (userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())) {
         return LobbyConstants.LOBBY_WATCHER_NAME + " cannot be part of a name";
-      }
-      if (userName.toLowerCase().contains(LobbyConstants.ADMIN_USERNAME.toLowerCase())) {
+      } else if (userName.toLowerCase().contains(LobbyConstants.ADMIN_USERNAME.toLowerCase())) {
         return "Name can't contain the word " + LobbyConstants.ADMIN_USERNAME;
       }
       return null;
