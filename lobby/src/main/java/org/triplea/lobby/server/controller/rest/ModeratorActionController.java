@@ -39,9 +39,9 @@ class ModeratorActionController {
   }
 
   static Map<String, String> parseBodyToMap(final String body) {
-    return Splitter.on('&').splitToList(body)
+    return Splitter.on('&').omitEmptyStrings().splitToList(body)
         .stream()
-        .map(Splitter.on('=')::splitToList)
+        .map(Splitter.on('=').omitEmptyStrings()::splitToList)
         .collect(Collectors.toMap(list -> list.get(0), list -> list.get(1)));
   }
 
