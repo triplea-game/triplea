@@ -6,11 +6,11 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.Runnables;
 
 public class LocalSystemCheckerTest {
 
-  private static final SystemCheck PASSING_CHECK = new SystemCheck("no op", () -> {
-  });
+  private static final SystemCheck PASSING_CHECK = new SystemCheck("no op", Runnables.doNothing());
   private static final SystemCheck FAILING_CHECK =
       new SystemCheck("throws exception", () -> {
         throw new RuntimeException(new Exception("test"));

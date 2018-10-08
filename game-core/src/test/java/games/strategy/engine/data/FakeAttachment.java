@@ -9,6 +9,7 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.Runnables;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 
@@ -77,8 +78,7 @@ public final class FakeAttachment implements IAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("name", MutableProperty.ofString(this::setName, this::getName, () -> {
-        }))
+        .put("name", MutableProperty.ofString(this::setName, this::getName, Runnables.doNothing()))
         .build();
   }
 }

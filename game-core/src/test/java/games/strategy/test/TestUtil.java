@@ -1,5 +1,7 @@
 package games.strategy.test;
 
+import com.google.common.util.concurrent.Runnables;
+
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 
@@ -19,7 +21,6 @@ public final class TestUtil {
    */
   public static void waitForSwingThreads() {
     // add a no-op action to the end of the swing event queue, and then wait for it
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-    }));
+    Interruptibles.await(() -> SwingAction.invokeAndWait(Runnables.doNothing()));
   }
 }

@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.google.common.util.concurrent.Runnables;
+
 import games.strategy.util.function.ThrowingRunnable;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,8 +115,7 @@ public final class InterruptiblesTest {
   public final class JoinTest {
     @Test
     public void shouldWaitUntilThreadIsDead() {
-      final Thread thread = new Thread(() -> {
-      });
+      final Thread thread = new Thread(Runnables.doNothing());
       thread.start();
 
       assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {

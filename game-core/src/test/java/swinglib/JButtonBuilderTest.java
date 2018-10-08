@@ -12,6 +12,8 @@ import javax.swing.JButton;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.util.concurrent.Runnables;
+
 class JButtonBuilderTest {
 
   @Test
@@ -19,8 +21,7 @@ class JButtonBuilderTest {
     final String value = "testing title";
     final JButton button = JButtonBuilder.builder()
         .title(value)
-        .actionListener(() -> {
-        })
+        .actionListener(Runnables.doNothing())
         .build();
     assertThat(button.getText(), is(value));
   }
@@ -50,8 +51,7 @@ class JButtonBuilderTest {
   @Test
   void titleIsRequired() {
     assertThrows(NullPointerException.class, () -> JButtonBuilder.builder()
-        .actionListener(() -> {
-        })
+        .actionListener(Runnables.doNothing())
         .build());
   }
 
