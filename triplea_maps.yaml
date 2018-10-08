@@ -1486,7 +1486,7 @@
 - mapName: Battle for Arda
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/battle_for_arda/archive/master.zip
-  version: 1
+  version: 2
   img: https://user-images.githubusercontent.com/15109713/44813046-1f871700-abd9-11e8-9b33-cf70308a1302.png
   description: |
     <br>Important!!! Requires TripleA pre-release above 1.9.0.0.11000 to function properly!
@@ -1499,7 +1499,7 @@
     <br>
     <br>Game design by alkexr. Visual style by Hepps. Contributions by Frostion and redrum. Thanks for the members of the TripleA community for their feedback and ideas, who enabled turning this into a truly great map.
     <br>This map is the continuation of the (deprecated) Large Middle Earth map. Currently in balance testing period.
-    <br>Version 2.0.6, last update 2018.08.29. for engine 1.9.0.0.11000+
+    <br>Version 2.0.7, last update 2018.10.08. for engine 1.9.0.0.11000+
 - mapName: Alagaesia
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/alagaesia/archive/master.zip
