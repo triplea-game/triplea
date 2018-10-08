@@ -29,7 +29,7 @@ public class SaveFunctionTest {
   private SelectionComponent<JComponent> mockSelectionComponent2;
 
   @Mock
-  private GameSetting mockSetting;
+  private GameSetting<String> mockSetting;
 
   @Test
   public void messageOnValidIsInformation() {
@@ -94,7 +94,7 @@ public class SaveFunctionTest {
         + "which should only happen when settings were successfully saved.",
         callCount.get(), is(1));
 
-    Mockito.verify(mockSetting, Mockito.times(1)).save(TestData.fakeValue);
+    Mockito.verify(mockSetting, Mockito.times(1)).saveString(TestData.fakeValue);
   }
 
   @Test

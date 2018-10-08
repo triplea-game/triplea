@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -43,88 +43,85 @@ import lombok.extern.java.Log;
  * ClientSetting.aiPauseDuration.save(500);
  * ClientSetting.flush();
  * </pre></code>
+ *
+ * @param <T> The type of the setting value.
  */
 @Log
-public final class ClientSetting implements GameSetting {
-  public static final ClientSetting aiPauseDuration = new ClientSetting("AI_PAUSE_DURATION", 400);
-  public static final ClientSetting arrowKeyScrollSpeed = new ClientSetting("ARROW_KEY_SCROLL_SPEED", 70);
-  public static final ClientSetting battleCalcSimulationCountDice =
-      new ClientSetting("BATTLE_CALC_SIMULATION_COUNT_DICE", 200);
-  public static final ClientSetting battleCalcSimulationCountLowLuck =
-      new ClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
-  public static final ClientSetting confirmDefensiveRolls = new ClientSetting("CONFIRM_DEFENSIVE_ROLLS", false);
-  public static final ClientSetting confirmEnemyCasualties = new ClientSetting("CONFIRM_ENEMY_CASUALTIES", false);
-  public static final ClientSetting defaultGameName = new ClientSetting("DEFAULT_GAME_NAME_PREF", "Big World : 1942");
-  public static final ClientSetting defaultGameUri = new ClientSetting("DEFAULT_GAME_URI_PREF");
-  public static final ClientSetting fasterArrowKeyScrollMultiplier =
-      new ClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
-  public static final ClientSetting spaceBarConfirmsCasualties =
-      new ClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
-  public static final ClientSetting lobbyLastUsedHost = new ClientSetting("LOBBY_LAST_USED_HOST");
-  public static final ClientSetting lobbyLastUsedPort = new ClientSetting("LOBBY_LAST_USED_PORT");
-  public static final ClientSetting lookAndFeel =
-      new ClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
-  public static final ClientSetting mapEdgeScrollSpeed = new ClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
-  public static final ClientSetting mapEdgeScrollZoneSize = new ClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
-  public static final ClientSetting mapFolderOverride = new ClientSetting("MAP_FOLDER_OVERRIDE");
-  public static final ClientSetting mapListOverride = new ClientSetting("MAP_LIST_OVERRIDE");
-  public static final ClientSetting proxyChoice =
-      new ClientSetting("PROXY_CHOICE", HttpProxy.ProxyChoice.NONE.toString());
-  public static final ClientSetting proxyHost = new ClientSetting("PROXY_HOST");
-  public static final ClientSetting proxyPort = new ClientSetting("PROXY_PORT");
-  public static final ClientSetting saveGamesFolderPath =
-      new ClientSetting("SAVE_GAMES_FOLDER_PATH", new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames"));
-  public static final ClientSetting serverObserverJoinWaitTime =
-      new ClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
-  public static final ClientSetting serverStartGameSyncWaitTime =
-      new ClientSetting("SERVER_START_GAME_SYNC_WAIT_TIME", 180);
-  public static final ClientSetting showBattlesWhenObserving =
-      new ClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
-  public static final ClientSetting showBetaFeatures = new ClientSetting("SHOW_BETA_FEATURES", false);
-  public static final ClientSetting showConsole = new ClientSetting("SHOW_CONSOLE", false);
-  public static final ClientSetting testLobbyHost = new ClientSetting("TEST_LOBBY_HOST");
-  public static final ClientSetting testLobbyPort = new ClientSetting("TEST_LOBBY_PORT");
-  public static final ClientSetting firstTimeThisVersion =
-      new ClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
-  public static final ClientSetting lastCheckForEngineUpdate =
-      new ClientSetting("TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE");
-  public static final ClientSetting lastCheckForMapUpdates = new ClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES");
-  public static final ClientSetting promptToDownloadTutorialMap =
-      new ClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
-  public static final ClientSetting userMapsFolderPath = new ClientSetting(
+public abstract class ClientSetting<T> implements GameSetting<T> {
+  public static final ClientSetting<String> aiPauseDuration = new StringClientSetting("AI_PAUSE_DURATION", 400);
+  public static final ClientSetting<String> arrowKeyScrollSpeed = new StringClientSetting("ARROW_KEY_SCROLL_SPEED", 70);
+  public static final ClientSetting<String> battleCalcSimulationCountDice =
+      new StringClientSetting("BATTLE_CALC_SIMULATION_COUNT_DICE", 200);
+  public static final ClientSetting<String> battleCalcSimulationCountLowLuck =
+      new StringClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
+  public static final ClientSetting<String> confirmDefensiveRolls =
+      new StringClientSetting("CONFIRM_DEFENSIVE_ROLLS", false);
+  public static final ClientSetting<String> confirmEnemyCasualties =
+      new StringClientSetting("CONFIRM_ENEMY_CASUALTIES", false);
+  public static final ClientSetting<String> defaultGameName =
+      new StringClientSetting("DEFAULT_GAME_NAME_PREF", "Big World : 1942");
+  public static final ClientSetting<String> defaultGameUri = new StringClientSetting("DEFAULT_GAME_URI_PREF");
+  public static final ClientSetting<String> fasterArrowKeyScrollMultiplier =
+      new StringClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
+  public static final ClientSetting<String> spaceBarConfirmsCasualties =
+      new StringClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
+  public static final ClientSetting<String> lobbyLastUsedHost = new StringClientSetting("LOBBY_LAST_USED_HOST");
+  public static final ClientSetting<String> lobbyLastUsedPort = new StringClientSetting("LOBBY_LAST_USED_PORT");
+  public static final ClientSetting<String> lookAndFeel =
+      new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
+  public static final ClientSetting<String> mapEdgeScrollSpeed = new StringClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
+  public static final ClientSetting<String> mapEdgeScrollZoneSize =
+      new StringClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
+  public static final ClientSetting<String> mapFolderOverride = new StringClientSetting("MAP_FOLDER_OVERRIDE");
+  public static final ClientSetting<String> mapListOverride = new StringClientSetting("MAP_LIST_OVERRIDE");
+  public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =
+      new HttpProxyChoiceClientSetting("PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
+  public static final ClientSetting<String> proxyHost = new StringClientSetting("PROXY_HOST");
+  public static final ClientSetting<String> proxyPort = new StringClientSetting("PROXY_PORT");
+  public static final ClientSetting<String> saveGamesFolderPath = new StringClientSetting(
+      "SAVE_GAMES_FOLDER_PATH",
+      new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames"));
+  public static final ClientSetting<String> serverObserverJoinWaitTime =
+      new StringClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
+  public static final ClientSetting<String> serverStartGameSyncWaitTime =
+      new StringClientSetting("SERVER_START_GAME_SYNC_WAIT_TIME", 180);
+  public static final ClientSetting<String> showBattlesWhenObserving =
+      new StringClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
+  public static final ClientSetting<String> showBetaFeatures = new StringClientSetting("SHOW_BETA_FEATURES", false);
+  public static final ClientSetting<String> showConsole = new StringClientSetting("SHOW_CONSOLE", false);
+  public static final ClientSetting<String> testLobbyHost = new StringClientSetting("TEST_LOBBY_HOST");
+  public static final ClientSetting<String> testLobbyPort = new StringClientSetting("TEST_LOBBY_PORT");
+  public static final ClientSetting<String> firstTimeThisVersion =
+      new StringClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
+  public static final ClientSetting<String> lastCheckForEngineUpdate =
+      new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE");
+  public static final ClientSetting<String> lastCheckForMapUpdates =
+      new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES");
+  public static final ClientSetting<String> promptToDownloadTutorialMap =
+      new StringClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
+  public static final ClientSetting<String> userMapsFolderPath = new StringClientSetting(
       "USER_MAPS_FOLDER_PATH",
       new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps"));
-  public static final ClientSetting wheelScrollAmount = new ClientSetting("WHEEL_SCROLL_AMOUNT", 60);
-  public static final ClientSetting playerName = new ClientSetting("PLAYER_NAME", SystemProperties.getUserName());
-  public static final ClientSetting useExperimentalJavaFxUi = new ClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
-  public static final ClientSetting loggingVerbosity = new ClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
+  public static final ClientSetting<String> wheelScrollAmount = new StringClientSetting("WHEEL_SCROLL_AMOUNT", 60);
+  public static final ClientSetting<String> playerName =
+      new StringClientSetting("PLAYER_NAME", SystemProperties.getUserName());
+  public static final ClientSetting<String> useExperimentalJavaFxUi =
+      new StringClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
+  public static final ClientSetting<String> loggingVerbosity =
+      new StringClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
   private final String name;
-  public final String defaultValue;
+  private final String encodedDefaultValue;
   private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
 
-  private ClientSetting(final String name, final String defaultValue) {
+  protected ClientSetting(final String name, final T defaultValue) {
+    Preconditions.checkNotNull(name);
+    Preconditions.checkNotNull(defaultValue);
+
     this.name = name;
-    this.defaultValue = defaultValue;
-  }
-
-  @VisibleForTesting
-  ClientSetting(final String name) {
-    this(name, "");
-  }
-
-  private ClientSetting(final String name, final File file) {
-    this(name, file.getAbsolutePath());
-  }
-
-  private ClientSetting(final String name, final int defaultValue) {
-    this(name, String.valueOf(defaultValue));
-  }
-
-  private ClientSetting(final String name, final boolean defaultValue) {
-    this(name, String.valueOf(defaultValue));
+    this.encodedDefaultValue = formatValue(defaultValue);
   }
 
   /**
@@ -148,13 +145,13 @@ public final class ClientSetting implements GameSetting {
   }
 
   @Override
-  public void addSaveListener(final Consumer<String> saveListener) {
+  public final void addSaveListener(final Consumer<String> saveListener) {
     Preconditions.checkNotNull(saveListener);
     onSaveActions.add(saveListener);
   }
 
   @Override
-  public void removeSaveListener(final Consumer<String> saveListener) {
+  public final void removeSaveListener(final Consumer<String> saveListener) {
     onSaveActions.remove(saveListener);
   }
 
@@ -191,12 +188,12 @@ public final class ClientSetting implements GameSetting {
   }
 
   @Override
-  public boolean isSet() {
-    return !value().trim().isEmpty();
+  public final boolean isSet() {
+    return !stringValue().trim().isEmpty();
   }
 
   @Override
-  public void save(final String newValue) {
+  public final void saveString(final @Nullable String newValue) {
     onSaveActions.forEach(saveAction -> saveAction.accept(Strings.nullToEmpty(newValue)));
 
     if (newValue == null) {
@@ -206,19 +203,17 @@ public final class ClientSetting implements GameSetting {
     }
   }
 
-  public static void save(final String key, final String value) {
-    getPreferences().put(key, value);
+  @Override
+  public final void save(final @Nullable T newValue) {
+    saveString(Optional.ofNullable(newValue).map(this::formatValue).orElse(null));
   }
 
-  public static String load(final String key) {
-    return getPreferences().get(key, "");
-  }
+  /**
+   * Subclasses must implement to format a typed value as an equivalent encoded string value.
+   */
+  protected abstract String formatValue(T value);
 
-  public void saveAndFlush(final boolean newValue) {
-    saveAndFlush(String.valueOf(newValue));
-  }
-
-  public void saveAndFlush(final String newValue) {
+  public final void saveAndFlush(final @Nullable T newValue) {
     save(newValue);
 
     // do the flush on a new thread to guarantee we do not block EDT.
@@ -229,35 +224,57 @@ public final class ClientSetting implements GameSetting {
   }
 
   @Override
-  @Nonnull
-  public String value() {
-    return Strings.nullToEmpty(getPreferences().get(name, defaultValue));
+  public final String stringValue() {
+    return Strings.nullToEmpty(getPreferences().get(name, encodedDefaultValue));
   }
 
   @Override
-  public void resetAndFlush() {
-    saveAndFlush(defaultValue);
+  public final T value() {
+    final String encodedValue = stringValue();
+    try {
+      return parseValue(encodedValue);
+    } catch (final IllegalArgumentException e) {
+      log.log(Level.WARNING, "Illegal client setting encoded value: '" + encodedValue + "'", e);
+      return defaultValue();
+    }
+  }
+
+  /**
+   * Subclasses must implement to parse an encoded string value into an equivalent typed value.
+   *
+   * @throws IllegalArgumentException If the encoded string value is malformed.
+   */
+  protected abstract T parseValue(String encodedValue);
+
+  public final T defaultValue() {
+    // allow exceptions to propagate; default value should always be parseable
+    return parseValue(encodedDefaultValue);
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public final void resetAndFlush() {
+    saveAndFlush(defaultValue());
+  }
+
+  @Override
+  public final boolean equals(final Object obj) {
     if (obj == this) {
       return true;
     } else if (!(obj instanceof ClientSetting)) {
       return false;
     }
 
-    final ClientSetting other = (ClientSetting) obj;
+    final ClientSetting<?> other = (ClientSetting<?>) obj;
     return name.equals(other.name);
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return name.hashCode();
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return name;
   }
 }

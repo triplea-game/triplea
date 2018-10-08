@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 
 import com.google.common.base.Strings;
 
@@ -26,22 +25,20 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import lombok.extern.java.Log;
 
-@Log
 final class JavaFxSelectionComponentFactory {
 
   private JavaFxSelectionComponentFactory() {}
 
   static SelectionComponent<Region> intValueRange(
-      final ClientSetting clientSetting,
+      final ClientSetting<String> clientSetting,
       final int minValue,
       final int maxValue) {
     return intValueRange(clientSetting, minValue, maxValue, false);
   }
 
   static SelectionComponent<Region> intValueRange(
-      final ClientSetting clientSetting,
+      final ClientSetting<String> clientSetting,
       final int minValue,
       final int maxValue,
       final boolean allowUnset) {
@@ -80,7 +77,7 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
+      public Map<GameSetting<?>, String> readValues() {
         final Integer value = spinner.getValue();
         final String stringValue = allowUnset && value == minValue - 1 ? "" : value.toString();
         return Collections.singletonMap(clientSetting, stringValue);
@@ -88,7 +85,7 @@ final class JavaFxSelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultValue));
+        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultValue()));
       }
 
       @Override
@@ -98,7 +95,7 @@ final class JavaFxSelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<Region> toggleButton(final ClientSetting clientSetting) {
+  static SelectionComponent<Region> toggleButton(final ClientSetting<String> clientSetting) {
     return new SelectionComponent<Region>() {
       final CheckBox checkBox = getCheckBox();
 
@@ -124,13 +121,13 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
+      public Map<GameSetting<?>, String> readValues() {
         return Collections.singletonMap(clientSetting, String.valueOf(checkBox.selectedProperty().get()));
       }
 
       @Override
       public void resetToDefault() {
-        checkBox.selectedProperty().set(Boolean.parseBoolean(clientSetting.defaultValue));
+        checkBox.selectedProperty().set(Boolean.parseBoolean(clientSetting.defaultValue()));
       }
 
       @Override
@@ -140,7 +137,7 @@ final class JavaFxSelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<Region> textField(final ClientSetting clientSetting) {
+  static SelectionComponent<Region> textField(final ClientSetting<String> clientSetting) {
     return new SelectionComponent<Region>() {
       final TextField textField = newTextField();
 
@@ -166,13 +163,13 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting, String> readValues() {
+      public Map<GameSetting<?>, String> readValues() {
         return Collections.singletonMap(clientSetting, textField.getText());
       }
 
       @Override
       public void resetToDefault() {
-        textField.setText(clientSetting.defaultValue);
+        textField.setText(clientSetting.defaultValue());
       }
 
       @Override
@@ -182,27 +179,27 @@ final class JavaFxSelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<Region> folderPath(final ClientSetting clientSetting) {
+  static SelectionComponent<Region> folderPath(final ClientSetting<String> clientSetting) {
     return new FolderSelector(clientSetting);
   }
 
-  static SelectionComponent<Region> filePath(final ClientSetting clientSetting) {
+  static SelectionComponent<Region> filePath(final ClientSetting<String> clientSetting) {
     return new FileSelector(clientSetting);
   }
 
   static SelectionComponent<Region> proxySettings(
-      final ClientSetting proxyChoiceClientSetting,
-      final ClientSetting proxyHostClientSetting,
-      final ClientSetting proxyPortClientSetting) {
+      final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
+      final ClientSetting<String> proxyHostClientSetting,
+      final ClientSetting<String> proxyPortClientSetting) {
     return new ProxySetting(proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
   }
 
   private static final class FolderSelector extends Region implements SelectionComponent<Region> {
-    private final ClientSetting clientSetting;
+    private final ClientSetting<String> clientSetting;
     private final TextField textField;
     private File selectedFile;
 
-    FolderSelector(final ClientSetting clientSetting) {
+    FolderSelector(final ClientSetting<String> clientSetting) {
       this.clientSetting = clientSetting;
       final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
@@ -228,14 +225,14 @@ final class JavaFxSelectionComponentFactory {
     }
 
     @Override
-    public Map<GameSetting, String> readValues() {
+    public Map<GameSetting<?>, String> readValues() {
       return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
     }
 
     @Override
     public void resetToDefault() {
-      textField.setText(clientSetting.defaultValue);
-      selectedFile = new File(clientSetting.defaultValue);
+      textField.setText(clientSetting.defaultValue());
+      selectedFile = new File(clientSetting.defaultValue());
     }
 
     @Override
@@ -261,11 +258,11 @@ final class JavaFxSelectionComponentFactory {
   }
 
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
-    private final ClientSetting clientSetting;
+    private final ClientSetting<String> clientSetting;
     private final TextField textField;
     private File selectedFile;
 
-    FileSelector(final ClientSetting clientSetting) {
+    FileSelector(final ClientSetting<String> clientSetting) {
       this.clientSetting = clientSetting;
       final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
       final HBox wrapper = new HBox();
@@ -292,14 +289,14 @@ final class JavaFxSelectionComponentFactory {
     }
 
     @Override
-    public Map<GameSetting, String> readValues() {
+    public Map<GameSetting<?>, String> readValues() {
       return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
     }
 
     @Override
     public void resetToDefault() {
-      textField.setText(clientSetting.defaultValue);
-      selectedFile = new File(clientSetting.defaultValue);
+      textField.setText(clientSetting.defaultValue());
+      selectedFile = new File(clientSetting.defaultValue());
     }
 
     @Override
@@ -325,9 +322,9 @@ final class JavaFxSelectionComponentFactory {
   }
 
   private static final class ProxySetting extends Region implements SelectionComponent<Region> {
-    private final ClientSetting proxyChoiceClientSetting;
-    private final ClientSetting proxyHostClientSetting;
-    private final ClientSetting proxyPortClientSetting;
+    private final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting;
+    private final ClientSetting<String> proxyHostClientSetting;
+    private final ClientSetting<String> proxyPortClientSetting;
     private final RadioButton noneButton;
     private final RadioButton systemButton;
     private final RadioButton userButton;
@@ -335,14 +332,14 @@ final class JavaFxSelectionComponentFactory {
     private final TextField portText;
 
     ProxySetting(
-        final ClientSetting proxyChoiceClientSetting,
-        final ClientSetting proxyHostClientSetting,
-        final ClientSetting proxyPortClientSetting) {
+        final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
+        final ClientSetting<String> proxyHostClientSetting,
+        final ClientSetting<String> proxyPortClientSetting) {
       this.proxyChoiceClientSetting = proxyChoiceClientSetting;
       this.proxyHostClientSetting = proxyHostClientSetting;
       this.proxyPortClientSetting = proxyPortClientSetting;
 
-      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(proxyChoiceClientSetting.value());
+      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.value();
       noneButton = new RadioButton("None");
       noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
       systemButton = new RadioButton("Use System Settings");
@@ -370,18 +367,9 @@ final class JavaFxSelectionComponentFactory {
       getChildren().add(radioPanel);
     }
 
-    private static HttpProxy.ProxyChoice parseProxyChoice(final String encodedProxyChoice) {
-      try {
-        return HttpProxy.ProxyChoice.valueOf(encodedProxyChoice);
-      } catch (final IllegalArgumentException e) {
-        log.log(Level.WARNING, "Illegal proxy choice: '" + encodedProxyChoice + "'", e);
-        return HttpProxy.ProxyChoice.NONE;
-      }
-    }
-
     @Override
-    public Map<GameSetting, String> readValues() {
-      final Map<GameSetting, String> values = new HashMap<>();
+    public Map<GameSetting<?>, String> readValues() {
+      final Map<GameSetting<?>, String> values = new HashMap<>();
       if (noneButton.isSelected()) {
         values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE.toString());
       } else if (systemButton.isSelected()) {
@@ -398,13 +386,12 @@ final class JavaFxSelectionComponentFactory {
     @Override
     public void resetToDefault() {
       ClientSetting.flush();
-      hostText.setText(proxyHostClientSetting.defaultValue);
-      portText.setText(proxyPortClientSetting.defaultValue);
-      setProxyChoice(proxyChoiceClientSetting.defaultValue);
+      hostText.setText(proxyHostClientSetting.defaultValue());
+      portText.setText(proxyPortClientSetting.defaultValue());
+      setProxyChoice(proxyChoiceClientSetting.defaultValue());
     }
 
-    private void setProxyChoice(final String encodedProxyChoice) {
-      final HttpProxy.ProxyChoice proxyChoice = parseProxyChoice(encodedProxyChoice);
+    private void setProxyChoice(final HttpProxy.ProxyChoice proxyChoice) {
       noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
       systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
       userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);

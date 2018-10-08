@@ -72,10 +72,10 @@ public class LobbyServerPropertiesFetcherTest {
   @Nested
   public final class GetTestOverridePropertiesTest {
     @Mock
-    private GameSetting testLobbyHostSetting;
+    private GameSetting<String> testLobbyHostSetting;
 
     @Mock
-    private GameSetting testLobbyPortSetting;
+    private GameSetting<String> testLobbyPortSetting;
 
     private Optional<LobbyServerProperties> result;
 

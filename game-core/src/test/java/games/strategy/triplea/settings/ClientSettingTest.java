@@ -1,5 +1,8 @@
 package games.strategy.triplea.settings;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Nested;
@@ -23,6 +26,32 @@ final class ClientSettingTest {
     }
   }
 
+  @Nested
+  final class ValueTest extends AbstractClientSettingTestCase {
+    @Test
+    void shouldReturnDefaultValueWhenParseValueThrowsException() {
+      final String defaultValue = "defaultValue";
+      final ClientSetting<String> clientSetting = new ClientSetting<String>("name", defaultValue) {
+        @Override
+        protected String formatValue(final String value) {
+          return value;
+        }
+
+        @Override
+        protected String parseValue(final String encodedValue) {
+          if (defaultValue.equals(encodedValue)) {
+            return defaultValue;
+          }
+
+          throw new IllegalArgumentException();
+        }
+      };
+      clientSetting.save("otherValue");
+
+      assertThat(clientSetting.value(), is(defaultValue));
+    }
+  }
+
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class SaveActionTest extends AbstractClientSettingTestCase {
@@ -30,7 +59,7 @@ final class ClientSettingTest {
 
     @Mock
     private Consumer<String> mockSaveListener;
-    private final ClientSetting clientSetting = new ClientSetting("TEST_SETTING");
+    private final ClientSetting<String> clientSetting = new StringClientSetting("TEST_SETTING");
 
     @Test
     void saveActionListenerIsCalled() {

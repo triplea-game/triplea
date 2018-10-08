@@ -22,7 +22,7 @@ final class UpdatedMapsCheck {
   @VisibleForTesting
   static boolean isMapUpdateCheckRequired(
       final LocalDate now,
-      final GameSetting updateCheckDateSetting,
+      final GameSetting<String> updateCheckDateSetting,
       final Runnable flushSetting) {
     // check at most once per month
     final String encodedUpdateCheckDate = updateCheckDateSetting.value();

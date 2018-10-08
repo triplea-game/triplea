@@ -249,7 +249,7 @@ public class GameSelectorModel extends Observable {
   }
 
   private static void resetToFactoryDefault() {
-    ClientSetting.defaultGameUri.save(ClientSetting.defaultGameUri.defaultValue);
+    ClientSetting.defaultGameUri.save(ClientSetting.defaultGameUri.defaultValue());
     ClientSetting.flush();
   }
 

@@ -56,7 +56,7 @@ public final class Console {
       }
     });
 
-    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.saveAndFlush(false));
+    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.saveAndFlush(String.valueOf(false)));
     LookAndFeelSwingFrameListener.register(frame);
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     frame.getContentPane().setLayout(new BorderLayout());

@@ -122,8 +122,8 @@ public final class ClientFileSystemHelper {
 
   @VisibleForTesting
   static String getUserMapsFolderPath(
-      final GameSetting currentUserMapsFolderPathSetting,
-      final GameSetting overrideUserMapsFolderPathSetting) {
+      final GameSetting<String> currentUserMapsFolderPathSetting,
+      final GameSetting<String> overrideUserMapsFolderPathSetting) {
     return overrideUserMapsFolderPathSetting.isSet()
         ? overrideUserMapsFolderPathSetting.value()
         : currentUserMapsFolderPathSetting.value();

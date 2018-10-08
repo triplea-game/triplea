@@ -33,11 +33,11 @@ interface SaveFunction {
             .stream()
             .filter(entry -> !entry.getKey().value().equals(entry.getValue()))
             .forEach(entry -> {
-              entry.getKey().save(entry.getValue());
+              entry.getKey().saveString(entry.getValue());
               successMsg.append(String.format("%s was updated to: %s\n", entry.getKey(), entry.getValue()));
             });
       } else {
-        final Map<GameSetting, String> values = selectionComponent.readValues();
+        final Map<GameSetting<?>, String> values = selectionComponent.readValues();
         values.forEach((key, value) -> failMsg.append(String.format("Could not set %s to %s, %s\n",
             key, value, selectionComponent.validValueDescription())));
       }
