@@ -159,8 +159,8 @@ class MainMenuPane extends BorderPane {
   }
 
   @FXML
-  private void startHover(final MouseEvent e) {}
+  private void startHover(@SuppressWarnings("unused") final MouseEvent e) {}
 
   @FXML
-  private void endHover(final MouseEvent e) {}
+  private void endHover(@SuppressWarnings("unused") final MouseEvent e) {}
 }
