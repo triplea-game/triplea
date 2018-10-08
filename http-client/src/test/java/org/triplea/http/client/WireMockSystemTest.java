@@ -57,10 +57,7 @@ class WireMockSystemTest {
   private static final int SHORT_TIMEOUT_MILLIS = 5;
 
   @Test
-  void sendErrorReportSuccessCase(
-      @WiremockResolver.Wiremock final WireMockServer server,
-      @WiremockUriResolver.WiremockUri final String uri) {
-
+  void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
     givenHttpServerSuccessResponse(server);
 
     final ServiceCallResult<ErrorReportResponse> response = doServiceCall(server);
@@ -108,10 +105,7 @@ class WireMockSystemTest {
   }
 
   @Test
-  void communicationFaultCases(
-      @WiremockResolver.Wiremock final WireMockServer wireMockServer,
-      @WiremockUriResolver.WiremockUri final String uri) {
-
+  void communicationFaultCases(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     Arrays.asList(
         // caution, one of the wiremock faults is known to cause a hang in windows, so to aviod that
         // problem do not use the full available list of of wiremock faults
@@ -141,9 +135,7 @@ class WireMockSystemTest {
   }
 
   @Test
-  void server500(
-      @WiremockResolver.Wiremock final WireMockServer wireMockServer,
-      @WiremockUriResolver.WiremockUri final String uri) {
+  void server500(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     givenServer500(wireMockServer);
 
     final ServiceCallResult<ErrorReportResponse> response = doServiceCall(wireMockServer);
@@ -163,9 +155,7 @@ class WireMockSystemTest {
   }
 
   @Test
-  void timeoutCase(
-      @WiremockResolver.Wiremock final WireMockServer wireMockServer,
-      @WiremockUriResolver.WiremockUri final String uri) {
+  void timeoutCase(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     WireMock.configureFor("localhost", wireMockServer.port());
 
     final int delayGreaterThanTheTimeout = SHORT_TIMEOUT_MILLIS + 5;
