@@ -24,6 +24,7 @@ import games.strategy.util.function.ThrowingRunnable;
 @ExtendWith(MockitoExtension.class)
 public final class InterruptiblesTest {
   @AfterEach
+  @SuppressWarnings("static-method")
   public void resetTestThreadInterruptionStatusSoItDoesNotCrossTestBoundaries() {
     Thread.interrupted();
   }

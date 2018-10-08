@@ -57,7 +57,7 @@ class ErrorReportComponents {
         .build();
   }
 
-  private Runnable createSendConfirmationDialog(
+  private static Runnable createSendConfirmationDialog(
       final Component parent,
       final Runnable confirmAction) {
 

@@ -85,7 +85,9 @@ public class TripleA extends Application {
     showErrorMessage("Desktop API not supported", "Could not open '" + path + "' automatically!");
   }
 
-  public void showErrorMessage(final String title, final String message) {
+  public void showErrorMessage(
+      @SuppressWarnings("unused") final String title,
+      @SuppressWarnings("unused") final String message) {
     // TODO
   }
 
@@ -100,6 +102,7 @@ public class TripleA extends Application {
   }
 
   @FXML
+  @SuppressWarnings("static-method")
   private void exit() {
     Platform.exit();
   }

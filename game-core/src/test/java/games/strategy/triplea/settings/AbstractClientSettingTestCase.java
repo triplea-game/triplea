@@ -16,11 +16,13 @@ public abstract class AbstractClientSettingTestCase {
   protected AbstractClientSettingTestCase() {}
 
   @BeforeEach
+  @SuppressWarnings("static-method")
   public final void initializeClientSettingPreferences() {
     ClientSetting.setPreferences(new MemoryPreferences());
   }
 
   @AfterEach
+  @SuppressWarnings("static-method")
   public final void uninitializeClientSettingPreferences() {
     ClientSetting.resetPreferences();
   }
