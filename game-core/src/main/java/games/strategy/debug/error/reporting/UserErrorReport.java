@@ -5,41 +5,31 @@ import java.util.logging.LogRecord;
 import org.triplea.http.data.error.report.ErrorReport;
 import org.triplea.http.data.error.report.ErrorReportDetails;
 
-import com.google.common.base.Strings;
-
 import games.strategy.engine.ClientContext;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Represents the data a user has entered into a swing GUI.
  */
 @Builder
 @EqualsAndHashCode
+@ToString
+@Getter(AccessLevel.PACKAGE)
 class UserErrorReport {
+  private final String title;
   private final String description;
-  private final String additionalInfo;
   private final LogRecord logRecord;
 
-  public ErrorReport toErrorReport() {
+  ErrorReport toErrorReport() {
     return new ErrorReport(ErrorReportDetails.builder()
         .gameVersion(ClientContext.engineVersion().getExactVersion())
         .logRecord(logRecord)
-        .messageFromUser(formatUserMessage())
+        .title(title)
+        .description(description)
         .build());
-  }
-
-  private String formatUserMessage() {
-    if ((Strings.emptyToNull(description) == null) && (Strings.emptyToNull(additionalInfo) == null)) {
-      return "";
-    }
-
-    if (description == null) {
-      return additionalInfo;
-    } else if (additionalInfo == null) {
-      return description;
-    }
-
-    return description + " : " + additionalInfo;
   }
 }

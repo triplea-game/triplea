@@ -6,8 +6,6 @@ import java.util.logging.LogRecord;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Strings;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,13 +19,11 @@ public final class ErrorReportDetails {
   @Nonnull
   private final String gameVersion;
   @Nullable
-  private final String messageFromUser;
+  private final String title;
+  @Nullable
+  private final String description;
   @Nullable
   private final LogRecord logRecord;
-
-  String getMessageFromUser() {
-    return Strings.nullToEmpty(messageFromUser);
-  }
 
   Optional<LogRecord> getLogRecord() {
     return Optional.ofNullable(logRecord);

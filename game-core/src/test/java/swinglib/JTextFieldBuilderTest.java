@@ -8,11 +8,11 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 
-public class JTextFieldBuilderTest {
+class JTextFieldBuilderTest {
 
 
   @Test
-  public void defaultValues() {
+  void defaultValues() {
     final JTextField field = JTextFieldBuilder.builder()
         .build();
 
@@ -26,7 +26,7 @@ public class JTextFieldBuilderTest {
   }
 
   @Test
-  public void text() {
+  void text() {
     final String testValue = "test value";
     MatcherAssert.assertThat(
         JTextFieldBuilder.builder()
@@ -37,7 +37,7 @@ public class JTextFieldBuilderTest {
   }
 
   @Test
-  public void textWithIntegerValue() {
+  void textWithIntegerValue() {
     MatcherAssert.assertThat(
         JTextFieldBuilder.builder()
             .text(2)
@@ -47,7 +47,7 @@ public class JTextFieldBuilderTest {
   }
 
   @Test
-  public void columns() {
+  void columns() {
     MatcherAssert.assertThat(
         JTextFieldBuilder.builder()
             .columns(3)
@@ -57,7 +57,7 @@ public class JTextFieldBuilderTest {
   }
 
   @Test
-  public void actionListener() {
+  void actionListener() {
     // we will know we fired an action event if this value is incremented to 1
     final AtomicInteger value = new AtomicInteger(0);
 
@@ -72,24 +72,27 @@ public class JTextFieldBuilderTest {
   }
 
   @Test
-  public void enabled() {
+  void enabled() {
     MatcherAssert.assertThat(
         JTextFieldBuilder.builder()
-            .enabled(true)
             .build()
             .isEnabled(),
         Is.is(true));
+  }
 
+
+  @Test
+  void readyOnly() {
     MatcherAssert.assertThat(
         JTextFieldBuilder.builder()
-            .enabled(false)
+            .readOnly()
             .build()
-            .isEnabled(),
+            .isEditable(),
         Is.is(false));
   }
 
   @Test
-  public void disabled() {
+  void disabled() {
     MatcherAssert.assertThat(
         JTextFieldBuilder.builder()
             .disabled()

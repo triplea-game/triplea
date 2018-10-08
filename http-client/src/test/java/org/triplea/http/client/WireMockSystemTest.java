@@ -50,7 +50,7 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
 @Integration
 class WireMockSystemTest {
   private static final String CONTENT_TYPE_JSON = "application/json";
-  private static final String MESSAGE_FROM_USER = "msg";
+  private static final String DESCRIPTION = "msg";
   private static final String GAME_VERSION = "version";
   private static final LogRecord logRecord = new LogRecord(Level.SEVERE, "record");
   private static final int TIMEOUT_MILLIS = 200;
@@ -63,7 +63,7 @@ class WireMockSystemTest {
     final ServiceCallResult<ErrorReportResponse> response = doServiceCall(server);
 
     verify(postRequestedFor(urlMatching(ErrorReportingHttpClient.ERROR_REPORT_PATH))
-        .withRequestBody(containing(MESSAGE_FROM_USER))
+        .withRequestBody(containing(DESCRIPTION))
         .withRequestBody(containing(GAME_VERSION))
         .withRequestBody(containing(logRecord.getMessage()))
         .withRequestBody(containing(logRecord.getLevel().toString()))
@@ -98,7 +98,7 @@ class WireMockSystemTest {
         ErrorReport::new,
         Collections.emptyList())
             .sendErrorReport(ErrorReportDetails.builder()
-                .messageFromUser(MESSAGE_FROM_USER)
+                .description(DESCRIPTION)
                 .gameVersion(GAME_VERSION)
                 .logRecord(logRecord)
                 .build());

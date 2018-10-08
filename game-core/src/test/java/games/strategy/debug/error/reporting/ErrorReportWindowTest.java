@@ -25,7 +25,7 @@ class ErrorReportWindowTest {
    */
   @Test
   void errorReportWindowContainsExpectedComponents() {
-    final ErrorReportWindow errorReportWindow = new ErrorReportWindow(data -> {
+    final ErrorReportWindow errorReportWindow = new ErrorReportWindow((frame, data) -> {
     });
     final SwingComponentWrapper helper = SwingComponentWrapper.of(errorReportWindow.buildWindow());
 

@@ -1,19 +1,21 @@
 package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import swinglib.JFrameBuilder;
+import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
 
 /**
@@ -22,7 +24,7 @@ import swinglib.JPanelBuilder;
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class ErrorReportWindow {
-  private final Consumer<UserErrorReport> reportHandler;
+  private final BiConsumer<JFrame, UserErrorReport> reportHandler;
   private final ErrorReportComponents errorReportComponents = new ErrorReportComponents();
 
 
@@ -33,43 +35,51 @@ class ErrorReportWindow {
 
   JFrame buildWindow(@Nullable final Component parent, @Nullable final LogRecord logRecord) {
 
+    final JTextField titleField = errorReportComponents.titleField();
     final JTextArea description = errorReportComponents.descriptionArea();
-    final JTextArea additionalInfo = errorReportComponents.additionalInfo();
 
     final Supplier<UserErrorReport> guiReader = () -> UserErrorReport.builder()
         .logRecord(logRecord)
+        .title(titleField.getText())
         .description(description.getText())
-        .additionalInfo(additionalInfo.getText())
         .build();
 
     final JFrame frame = JFrameBuilder.builder()
-        .title("Bug Report Upload")
+        .title("Contact TripleA Support")
         .locateRelativeTo(parent)
         .minSize(500, 400)
         .build();
     frame.add(JPanelBuilder.builder()
         .borderEmpty(10)
         .borderLayout()
+        .addNorth(JPanelBuilder.builder()
+            .borderEmpty(3)
+            .borderLayout()
+            .addWest(JPanelBuilder.builder()
+                .borderEmpty(3)
+                .addLabel("Subject:")
+                .build())
+            .addCenter(titleField)
+            .build())
         .addCenter(JPanelBuilder.builder()
-            .verticalBoxLayout()
-            .addLabel("Please describe the problem you encountered:", JPanelBuilder.TextAlignment.LEFT)
-            .add(description)
-            .addHtmlLabel(
-                "Is there any additional information that would be useful to know:",
-                JPanelBuilder.TextAlignment.LEFT)
-            .add(additionalInfo)
+            .borderLayout()
+            .addNorth(JLabelBuilder.builder()
+                .html("Please describe the problem and the events leading up to it:")
+                .border(5)
+                .build())
+            .addCenter(description)
             .build())
         .addSouth(JPanelBuilder.builder()
             .horizontalBoxLayout()
             .borderEmpty(3)
             .addHorizontalStrut(30)
-            .add(errorReportComponents.createSubmitButton(ErrorReportComponents.FormHandler.builder()
+            .add(errorReportComponents.createSubmitButton(frame, ErrorReportComponents.FormHandler.builder()
                 .guiDataHandler(reportHandler)
                 .guiReader(guiReader)
                 .build()))
             .addHorizontalStrut(20)
-            .add(errorReportComponents.createPreviewButton(ErrorReportComponents.FormHandler.builder()
-                .guiDataHandler(data -> new PreviewWindow().build(frame, data).setVisible(true))
+            .add(errorReportComponents.createPreviewButton(frame, ErrorReportComponents.FormHandler.builder()
+                .guiDataHandler((jframe, data) -> new PreviewWindow().build(jframe, data).setVisible(true))
                 .guiReader(guiReader)
                 .build()))
             .addHorizontalStrut(100)
