@@ -86,11 +86,11 @@ class WireMockSystemTest {
 
   }
 
-  private ServiceCallResult<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
+  private static ServiceCallResult<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
     return doServiceCall(wireMockServer, TIMEOUT_MILLIS);
   }
 
-  private ServiceCallResult<ErrorReportResponse> doServiceCall(
+  private static ServiceCallResult<ErrorReportResponse> doServiceCall(
       final WireMockServer wireMockServer,
       final int timeoutMillis) {
 
@@ -120,7 +120,7 @@ class WireMockSystemTest {
         .forEach(fault -> testFaultHandling(wireMockServer, fault));
   }
 
-  private void testFaultHandling(final WireMockServer wireMockServer, final Fault fault) {
+  private static void testFaultHandling(final WireMockServer wireMockServer, final Fault fault) {
     givenFaultyConnection(wireMockServer, fault);
 
     final ServiceCallResult<ErrorReportResponse> response = doServiceCall(wireMockServer);
