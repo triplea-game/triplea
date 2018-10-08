@@ -66,7 +66,7 @@ public class MutedUsernameController extends TimedController {
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new IllegalStateException("Error inserting muted username: " + mutedUser.getUsername(), e);
+      throw newDatabaseException("Error inserting muted username: " + mutedUser.getUsername(), e);
     }
   }
 
@@ -76,8 +76,8 @@ public class MutedUsernameController extends TimedController {
       ps.setString(1, username);
       ps.execute();
       con.commit();
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error deleting muted username:" + username, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error deleting muted username: " + username, e);
     }
   }
 
@@ -116,8 +116,8 @@ public class MutedUsernameController extends TimedController {
         }
         return Optional.empty();
       }
-    } catch (final SQLException sqle) {
-      throw new IllegalStateException("Error for testing muted username existence:" + username, sqle);
+    } catch (final SQLException e) {
+      throw newDatabaseException("Error for testing muted username existence: " + username, e);
     }
   }
 }
