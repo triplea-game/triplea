@@ -10,40 +10,53 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.security.TestSecurityUtils;
 
-public final class RsaAuthenticatorTest {
-  private RsaAuthenticator rsaAuthenticator;
+final class RsaAuthenticatorTest {
+  @Nested
+  final class CanProcessChallengeTest {
+    @Test
+    void shouldReturnTrueWhenChallengeContainsAllRequiredProperties() {
+      assertTrue(RsaAuthenticator.canProcessChallenge(singletonMap(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY, "")));
+    }
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    rsaAuthenticator = new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair());
+    @Test
+    void shouldReturnFalseWhenChallengeDoesNotContainAllRequiredProperties() {
+      assertFalse(RsaAuthenticator.canProcessChallenge(singletonMap("someOtherChallengeKey", "")));
+    }
   }
 
-  @Test
-  public void testCanProcess() {
-    assertTrue(RsaAuthenticator.canProcessChallenge(singletonMap(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY, "")));
-    assertTrue(RsaAuthenticator.canProcessResponse(singletonMap(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD, "")));
+  @Nested
+  final class CanProcessResponseTest {
+    @Test
+    void shouldReturnTrueWhenResponseContainsAllRequiredProperties() {
+      assertTrue(RsaAuthenticator.canProcessResponse(singletonMap(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD, "")));
+    }
 
-    // Adding a completely unrelated key shouldn't change the outcome
-    assertFalse(RsaAuthenticator.canProcessResponse(singletonMap("someOtherResponseKey", "")));
-    assertFalse(RsaAuthenticator.canProcessChallenge(singletonMap("someOtherChallengeKey", "")));
+    @Test
+    void shouldReturnFalseWhenResponseDoesNotContainAllRequiredProperties() {
+      assertFalse(RsaAuthenticator.canProcessResponse(singletonMap("someOtherResponseKey", "")));
+    }
   }
 
-  @Test
-  public void testRoundTripPassword() {
-    final String password = "password";
-    final Map<String, String> challenge = new HashMap<>();
-    final Map<String, String> response = new HashMap<>();
-    @SuppressWarnings("unchecked")
-    final Function<String, String> action = mock(Function.class);
+  @Nested
+  final class ChallengeResponseTest {
+    @Test
+    void shouldBeAbleToDecryptHashedAndSaltedPassword() throws Exception {
+      final RsaAuthenticator rsaAuthenticator = new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair());
+      final String password = "password";
+      final Map<String, String> challenge = new HashMap<>();
+      final Map<String, String> response = new HashMap<>();
+      @SuppressWarnings("unchecked")
+      final Function<String, String> action = mock(Function.class);
 
-    challenge.putAll(rsaAuthenticator.newChallenge());
-    response.putAll(RsaAuthenticator.newResponse(challenge, password));
-    rsaAuthenticator.decryptPasswordForAction(response, action);
+      challenge.putAll(rsaAuthenticator.newChallenge());
+      response.putAll(RsaAuthenticator.newResponse(challenge, password));
+      rsaAuthenticator.decryptPasswordForAction(response, action);
 
-    verify(action).apply(RsaAuthenticator.hashPasswordWithSalt(password));
+      verify(action).apply(RsaAuthenticator.hashPasswordWithSalt(password));
+    }
   }
 }

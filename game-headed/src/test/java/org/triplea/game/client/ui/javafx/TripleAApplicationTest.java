@@ -5,6 +5,7 @@ import static org.testfx.matcher.base.NodeMatchers.hasChildren;
 import static org.testfx.matcher.base.NodeMatchers.isInvisible;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -33,11 +34,22 @@ final class TripleAApplicationTest extends ApplicationTest {
     new TripleA().start(stage);
   }
 
-  @Test
-  public void testDisplay() {
-    verifyThat("#mainOptions", isVisible());
-    verifyThat("#gameOptions", isInvisible());
-    verifyThat("#aboutSection", isInvisible());
-    verifyThat("#mainOptions", hasChildren(5, ".button:visible"));
+  @Nested
+  final class DisplayTest {
+    @Test
+    void shouldInitiallyShowCertainElements() {
+      verifyThat("#mainOptions", isVisible());
+    }
+
+    @Test
+    void shouldInitiallyHideCertainElements() {
+      verifyThat("#gameOptions", isInvisible());
+      verifyThat("#aboutSection", isInvisible());
+    }
+
+    @Test
+    void shouldShowFiveButtonsInMainOptions() {
+      verifyThat("#mainOptions", hasChildren(5, ".button:visible"));
+    }
   }
 }
