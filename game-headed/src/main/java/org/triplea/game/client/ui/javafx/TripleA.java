@@ -102,6 +102,7 @@ public class TripleA extends Application {
   }
 
   @FXML
+  @SuppressWarnings("static-method")
   private void exit() {
     Platform.exit();
   }
