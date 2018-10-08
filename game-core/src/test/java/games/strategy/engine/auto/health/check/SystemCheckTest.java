@@ -7,14 +7,15 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.util.concurrent.Runnables;
+
 public class SystemCheckTest {
 
   private final Exception testException = new Exception("Testing");
 
   @Test
   public void testPassingSystemCheck() {
-    final SystemCheck check = new SystemCheck("msg", () -> {
-    });
+    final SystemCheck check = new SystemCheck("msg", Runnables.doNothing());
 
     assertThat(check.wasSuccess(), is(true));
     assertThat(check.getResultMessage(), is("msg: true"));

@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.Runnables;
 
 @ExtendWith(MockitoExtension.class)
 public class SaveFunctionTest {
@@ -34,8 +35,7 @@ public class SaveFunctionTest {
   public void messageOnValidIsInformation() {
     givenValidationResults(true, true);
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), () -> {
-        });
+        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
     MatcherAssert.assertThat("There will always be a message back to the user",
         result.message.isEmpty(), is(false));
@@ -58,8 +58,7 @@ public class SaveFunctionTest {
     givenValidationResults(false, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), () -> {
-        });
+        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
     MatcherAssert.assertThat(result.message.isEmpty(), is(false));
     MatcherAssert.assertThat(result.dialogType, is(JOptionPane.WARNING_MESSAGE));
@@ -70,8 +69,7 @@ public class SaveFunctionTest {
     givenValidationResults(true, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), () -> {
-        });
+        Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
     MatcherAssert.assertThat(result.message.isEmpty(), is(false));
     MatcherAssert.assertThat("At least one value was not updated, should be warning message type",
