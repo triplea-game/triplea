@@ -1,15 +1,14 @@
 package games.strategy.debug.error.reporting;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.hamcrest.text.IsEmptyString.emptyString;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import org.hamcrest.text.IsEmptyString;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -71,6 +70,6 @@ class UserErrorReportTest {
             .build()
             .toErrorReport()
             .getGameVersion(),
-        not(IsEmptyString.isEmptyString()));
+        is(not(emptyString())));
   }
 }
