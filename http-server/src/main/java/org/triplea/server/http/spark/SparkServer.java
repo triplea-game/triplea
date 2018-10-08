@@ -13,7 +13,6 @@ import com.google.common.annotations.VisibleForTesting;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.extern.java.Log;
 import spark.Request;
 
 /**
@@ -21,7 +20,6 @@ import spark.Request;
  * binding URL endpoints to behavior objects/methods, and secondly marshalling request
  * data into objects which can then be passed along and processed.
  */
-@Log
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SparkServer {
