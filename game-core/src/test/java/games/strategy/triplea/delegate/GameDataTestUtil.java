@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
+import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
 
@@ -407,6 +409,14 @@ public final class GameDataTestUtil {
 
   static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {
     return when(delegateBridge.getRandom(anyInt(), anyInt(), any(), any(), anyString()));
+  }
+
+  static Answer<int[]> withValues(final int... values) {
+    return invocation -> {
+      final int count = invocation.getArgument(1);
+      assertEquals(values.length, count, "count of requested random values does not match");
+      return values;
+    };
   }
 
   static void thenGetRandomShouldHaveBeenCalled(

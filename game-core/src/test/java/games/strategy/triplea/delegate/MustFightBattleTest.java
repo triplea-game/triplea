@@ -6,6 +6,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 
@@ -39,7 +40,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(sz40, false, null);
 
     // Set first roll to hit (mine AA) and check that both units are killed
-    whenGetRandom(bridge).thenReturn(new int[] {0});
+    whenGetRandom(bridge).thenAnswer(withValues(0));
     battle.fight(bridge);
     assertEquals(0, sz40.getUnits().size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));

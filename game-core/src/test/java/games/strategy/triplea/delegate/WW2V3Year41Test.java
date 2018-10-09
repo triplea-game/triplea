@@ -39,6 +39,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -190,8 +191,8 @@ public class WW2V3Year41Test {
     // 1 roll, a hit
     // then a dice to select the casualty
     whenGetRandom(bridge)
-        .thenReturn(new int[] {0})
-        .thenReturn(new int[] {1});
+        .thenAnswer(withValues(0))
+        .thenAnswer(withValues(1));
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
         defendingAa, bridge, territory("Germany", gameData), true);
@@ -221,9 +222,9 @@ public class WW2V3Year41Test {
     // 1 roll, a miss
     // then a dice to select the casualty
     whenGetRandom(bridge)
-        .thenReturn(new int[] {5})
-        .thenReturn(new int[] {0})
-        .thenReturn(new int[] {0, 0});
+        .thenAnswer(withValues(5))
+        .thenAnswer(withValues(0))
+        .thenAnswer(withValues(0, 0));
     final DiceRoll roll = DiceRoll.rollAa(
         CollectionUtils.getMatches(planes,
             Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
@@ -302,15 +303,16 @@ public class WW2V3Year41Test {
     // Check to make sure it was successful
     final int initTokens = germans.getResources().getQuantity("techTokens");
     assertEquals(1, initTokens);
+    whenGetRandom(delegateBridge)
+        .thenAnswer(withValues(3)) // Fail the roll
+        .thenAnswer(withValues(5)); // Make a Successful roll
     // Fail the roll
-    whenGetRandom(delegateBridge).thenReturn(new int[] {3});
     final TechResults roll = techDelegate.rollTech(1, mech, 0, null);
     // Check to make sure it failed
     assertEquals(0, roll.getHits());
     final int midTokens = germans.getResources().getQuantity("techTokens");
     assertEquals(1, midTokens);
     // Make a Successful roll
-    whenGetRandom(delegateBridge).thenReturn(new int[] {5});
     final TechResults roll2 = techDelegate.rollTech(1, mech, 0, null);
     // Check to make sure it succeeded and all tokens were removed
     assertEquals(1, roll2.getHits());
@@ -363,7 +365,7 @@ public class WW2V3Year41Test {
     // load the transport
     load(uk.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(uk, sz7));
     moveDelegate(gameData).end();
-    whenGetRandom(bridge).thenReturn(new int[] {0, 1});
+    whenGetRandom(bridge).thenAnswer(withValues(0, 1));
     bridge.setStepName("britishBattle");
     final BattleDelegate battleDelegate = battleDelegate(gameData);
     battleDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -579,14 +581,15 @@ public class WW2V3Year41Test {
       gameData.getSequence().next();
     }
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(eastPoland);
-    // With JET_POWER attacking fighter hits on 4 (0 base)
     final List<Unit> germanFighter = (List<Unit>) poland.getUnits().getUnits(fighterType, 1);
-    whenGetRandom(delegateBridge).thenReturn(new int[] {3});
+    whenGetRandom(delegateBridge)
+        .thenAnswer(withValues(3)) // With JET_POWER attacking fighter hits on 4 (0 base)
+        .thenAnswer(withValues(4)); // With JET_POWER defending fighter misses on 5 (0 base)
+    // Attacking fighter
     final DiceRoll roll1 = DiceRoll.rollDice(germanFighter, false, germans, delegateBridge, mock(IBattle.class),
         "", territoryEffects, null);
     assertEquals(1, roll1.getHits());
-    // With JET_POWER defending fighter misses on 5 (0 base)
-    whenGetRandom(delegateBridge).thenReturn(new int[] {4});
+    // Defending fighter
     final DiceRoll roll2 = DiceRoll.rollDice(germanFighter, true, germans, delegateBridge, mock(IBattle.class),
         "", territoryEffects, null);
     assertEquals(0, roll2.getHits());
@@ -847,8 +850,8 @@ public class WW2V3Year41Test {
     // fight, each sub should fire
     // and hit
     whenGetRandom(bridge)
-        .thenReturn(new int[] {0})
-        .thenReturn(new int[] {0});
+        .thenAnswer(withValues(0))
+        .thenAnswer(withValues(0));
     battle.fight(bridge);
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
     assertTrue(attacked.getUnits().isEmpty());
@@ -881,7 +884,7 @@ public class WW2V3Year41Test {
         steps.toString());
     // defending subs sneak attack and hit
     // no chance to return fire
-    whenGetRandom(bridge).thenReturn(new int[] {0});
+    whenGetRandom(bridge).thenAnswer(withValues(0));
     battle.fight(bridge);
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(british(gameData))).isEmpty());
@@ -915,7 +918,7 @@ public class WW2V3Year41Test {
         steps.toString());
     // attacking subs sneak attack and hit
     // no chance to return fire
-    whenGetRandom(bridge).thenReturn(new int[] {0});
+    whenGetRandom(bridge).thenAnswer(withValues(0));
     battle.fight(bridge);
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     assertTrue(attacked.getUnits().getMatches(Matches.unitIsOwnedBy(germans(gameData))).isEmpty());
@@ -955,10 +958,10 @@ public class WW2V3Year41Test {
     // attacking subs sneak attack and hit
     // no chance to return fire
     whenGetRandom(bridge)
-        .thenReturn(new int[] {0})
-        .thenReturn(new int[] {0})
-        .thenReturn(new int[] {0})
-        .thenReturn(new int[] {0});
+        .thenAnswer(withValues(0))
+        .thenAnswer(withValues(0))
+        .thenAnswer(withValues(0))
+        .thenAnswer(withValues(0));
     battle.fight(bridge);
     thenGetRandomShouldHaveBeenCalled(bridge, times(4));
     assertEquals(0, attacked.getUnits().size());
@@ -1004,8 +1007,8 @@ public class WW2V3Year41Test {
     // Note- the 3 & 2 hits below show default behavior of bombarding at attack strength
     // 2= Battleship hitting a 3, 2=Cruiser hitting a 3, 15=British infantry hitting once
     whenGetRandom(bridge)
-        .thenReturn(new int[] {2, 2})
-        .thenReturn(new int[] {1, 5});
+        .thenAnswer(withValues(2, 2))
+        .thenAnswer(withValues(1, 5));
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(gameData).start();
     // end result should be 2 italian infantry.
@@ -1065,9 +1068,9 @@ public class WW2V3Year41Test {
     // landing inf miss
     // defending inf hit
     whenGetRandom(bridge)
-        .thenReturn(new int[] {3, 2})
-        .thenReturn(new int[] {6, 6})
-        .thenReturn(new int[] {1, 1});
+        .thenAnswer(withValues(3, 2))
+        .thenAnswer(withValues(6, 6))
+        .thenAnswer(withValues(1, 1));
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     battleDelegate(gameData).addBombardmentSources();
@@ -1417,8 +1420,8 @@ public class WW2V3Year41Test {
     // cook the dice so that 1 british fighters hits, and nothing else
     // this will leave 1 transport alone in the sea zone
     whenGetRandom(bridge)
-        .thenReturn(new int[] {1, 5, 5})
-        .thenReturn(new int[] {5});
+        .thenAnswer(withValues(1, 5, 5))
+        .thenAnswer(withValues(5));
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     battleDelegate(gameData).start();
     // make sure the transports died

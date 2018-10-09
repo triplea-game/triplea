@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -498,7 +499,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> attackTrns = transport.create(1, russians);
     final List<Unit> attackList = bomber.create(2, russians);
     attackList.addAll(attackTrns);
-    whenGetRandom(bridge).thenReturn(new int[] {1, 1});
+    whenGetRandom(bridge).thenAnswer(withValues(1, 1));
     final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(2, roll.getHits());
@@ -981,7 +982,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
     // fire the defending transport then the submarine (both miss)
-    whenGetRandom(bridge).thenReturn(new int[] {1, 2});
+    whenGetRandom(bridge).thenAnswer(withValues(1, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
@@ -1043,7 +1044,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
     // fire the defending transport then the submarine (One hit)
-    whenGetRandom(bridge).thenReturn(new int[] {0, 2});
+    whenGetRandom(bridge).thenAnswer(withValues(0, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
@@ -1099,7 +1100,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
     // fire the defending transport then the submarine (both miss)
-    whenGetRandom(bridge).thenReturn(new int[] {1, 2});
+    whenGetRandom(bridge).thenAnswer(withValues(1, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
@@ -1155,7 +1156,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> defendSub = submarine.create(1, germans);
     defendList.addAll(defendSub);
     // fire the defending transport then the submarine (One hit)
-    whenGetRandom(bridge).thenReturn(new int[] {0, 2});
+    whenGetRandom(bridge).thenAnswer(withValues(0, 2));
     // Execute the battle and verify no hits
     final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);

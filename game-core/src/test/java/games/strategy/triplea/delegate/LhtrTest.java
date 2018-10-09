@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -155,8 +156,8 @@ public class LhtrTest {
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
     whenGetRandom(bridge)
-        .thenReturn(new int[] {2})
-        .thenReturn(new int[] {2, 3});
+        .thenAnswer(withValues(2))
+        .thenAnswer(withValues(2, 3));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
@@ -186,8 +187,8 @@ public class LhtrTest {
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
     whenGetRandom(bridge)
-        .thenReturn(new int[] {3, 3})
-        .thenReturn(new int[] {2, 3, 0, 1});
+        .thenAnswer(withValues(3, 3))
+        .thenAnswer(withValues(2, 3, 0, 1));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
     final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
