@@ -80,6 +80,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -153,7 +154,7 @@ public class WW2V3Year41Test {
   public void testAaCasualtiesLowLuckMixedRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
     givePlayerRadar(germans(gameData));
@@ -179,7 +180,7 @@ public class WW2V3Year41Test {
   public void testAaCasualtiesLowLuckMixedWithRollingRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
     givePlayerRadar(germans(gameData));
@@ -210,7 +211,7 @@ public class WW2V3Year41Test {
   public void testAaCasualtiesLowLuckMixedWithRollingMissRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerID british = GameDataTestUtil.british(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     makeGameLowLuck(gameData);
     // setSelectAACasualties(data, false);
     givePlayerRadar(germans(gameData));
@@ -1495,7 +1496,7 @@ public class WW2V3Year41Test {
      * INCREASED_FACTORY_PRODUCTION repairs
      */
     // Set up INCREASED_FACTORY_PRODUCTION
-    final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(gameData));
+    final IDelegateBridge delegateBridge = getDelegateBridge(germans(gameData));
     TechTracker.addAdvance(germans, delegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, gameData, germans));
     // damage a factory

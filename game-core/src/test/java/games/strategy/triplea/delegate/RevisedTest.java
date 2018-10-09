@@ -68,6 +68,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -154,7 +155,7 @@ public class RevisedTest {
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     TechTracker.addAdvance(japanese, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData, japanese));
     // after tech advance, this is now 3
@@ -853,7 +854,7 @@ public class RevisedTest {
     addTo(germany, bombers);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     // aa guns rolls 0 and hits
     whenGetRandom(bridge).thenAnswer(withValues(0));
     final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
@@ -877,7 +878,7 @@ public class RevisedTest {
     addTo(germany, bombers);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of
     // the AA gun, because
     // the casualty selection roll would not happen in LL
@@ -909,7 +910,7 @@ public class RevisedTest {
     addTo(germany, bombers);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
     // surviving bombers
     whenGetRandom(bridge)
@@ -936,7 +937,7 @@ public class RevisedTest {
         uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
     addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3

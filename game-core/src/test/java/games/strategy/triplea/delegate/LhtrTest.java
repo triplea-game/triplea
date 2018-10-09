@@ -24,6 +24,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -127,7 +128,7 @@ public class LhtrTest {
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     TechTracker.addAdvance(japanese, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData, japanese));
     // after tech advance, this is now 3
@@ -151,7 +152,7 @@ public class LhtrTest {
         uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
     addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
@@ -182,7 +183,7 @@ public class LhtrTest {
         uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
     addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2

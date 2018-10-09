@@ -17,6 +17,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.xml.TestMapGameData;
 
@@ -52,7 +53,7 @@ public class AirThatCantLandUtilTest {
   public void testSimple() {
     final PlayerID player = americansPlayer;
     // everything can land
-    final ITestDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = getDelegateBridge(player);
     final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
     assertTrue(util.getTerritoriesWhereAirCantLand(player).isEmpty());
   }
@@ -60,7 +61,7 @@ public class AirThatCantLandUtilTest {
   @Test
   public void testCantLandEnemyTerritory() {
     final PlayerID player = americansPlayer;
-    final ITestDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = getDelegateBridge(player);
     final Territory balkans = gameData.getMap().getTerritory("Balkans");
     final Change addAir = ChangeFactory.addUnits(balkans, fighterType.create(2, player));
     gameData.performChange(addAir);
@@ -76,7 +77,7 @@ public class AirThatCantLandUtilTest {
   @Test
   public void testCantLandWater() {
     final PlayerID player = americansPlayer;
-    final ITestDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
@@ -91,7 +92,7 @@ public class AirThatCantLandUtilTest {
   @Test
   public void testSpareNextToFactory() {
     final PlayerID player = americansPlayer;
-    final ITestDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
@@ -104,7 +105,7 @@ public class AirThatCantLandUtilTest {
   public void testCantLandCarrier() {
     // 1 carrier in the region, but three fighters, make sure we cant land
     final PlayerID player = americansPlayer;
-    final ITestDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = getDelegateBridge(player);
     final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz52, fighterType.create(2, player));
     gameData.performChange(addAir);
