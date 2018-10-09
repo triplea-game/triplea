@@ -13,8 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportDetails;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReportDetails;
 
 @ExtendWith(MockitoExtension.class)
 class RateLimitingThrottleTest {

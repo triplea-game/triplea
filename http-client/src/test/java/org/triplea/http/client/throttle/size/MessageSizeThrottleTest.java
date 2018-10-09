@@ -6,8 +6,8 @@ import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import org.junit.jupiter.api.Test;
 
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportDetails;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReportDetails;
 
 class MessageSizeThrottleTest {
 

@@ -1,4 +1,4 @@
-package org.triplea.http.client;
+package org.triplea.http.client.error.report;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.triplea.http.client.ServiceCallResult;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReportDetails;
+import org.triplea.http.client.error.report.json.message.ErrorReportResponse;
 import org.triplea.http.client.throttle.rate.RateLimitingThrottle;
 import org.triplea.http.client.throttle.size.MessageSizeThrottle;
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportDetails;
-import org.triplea.http.data.error.report.ErrorReportResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

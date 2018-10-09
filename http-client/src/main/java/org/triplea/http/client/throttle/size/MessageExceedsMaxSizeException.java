@@ -1,7 +1,7 @@
 package org.triplea.http.client.throttle.size;
 
 import org.triplea.http.client.throttle.MessageNotSentException;
-import org.triplea.http.data.error.report.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
 
 /**
  * An exception that indicates there were too many characters in the outgoing payload message.

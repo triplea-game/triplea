@@ -1,4 +1,4 @@
-package org.triplea.http.client;
+package org.triplea.http.client.error.report;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.times;
@@ -14,8 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportDetails;
+import org.triplea.http.client.error.report.json.message.ErrorReport;
+import org.triplea.http.client.error.report.json.message.ErrorReportDetails;
+import org.triplea.http.client.error.report.ErrorReportingClient;
+import org.triplea.http.client.error.report.ErrorReportingHttpClient;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportingClientTest {
