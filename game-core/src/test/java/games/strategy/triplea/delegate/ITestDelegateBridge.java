@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.random.IRandomSource;
 import games.strategy.triplea.player.ITripleAPlayer;
 
 /**
@@ -10,8 +9,6 @@ import games.strategy.triplea.player.ITripleAPlayer;
  */
 interface ITestDelegateBridge extends IDelegateBridge {
   void setStepName(String name);
-
-  void setRandomSource(IRandomSource randomSource);
 
   /**
    * Returns the remote for the current player.

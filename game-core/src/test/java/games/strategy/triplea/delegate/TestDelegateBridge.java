@@ -18,7 +18,6 @@ import games.strategy.engine.history.HistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
@@ -40,7 +39,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
   private String stepName = "no name specified";
   private final IDisplay dummyDisplay = mock(ITripleADisplay.class);
   private final ISound soundChannel = mock(ISound.class);
-  private IRandomSource randomSource;
   private final IDelegateHistoryWriter delegateHistoryWriter;
   private final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
 
@@ -62,18 +60,15 @@ class TestDelegateBridge implements ITestDelegateBridge {
     delegateHistoryWriter = new DelegateHistoryWriter(channelMessenger);
   }
 
-  /**
-   * Delegates should not use random data that comes from any other source.
-   */
   @Override
   public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
-    return randomSource.getRandom(max, annotation);
+    return 0;
   }
 
   @Override
   public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
       final String annotation) {
-    return randomSource.getRandom(max, count, annotation);
+    return null;
   }
 
   @Override
@@ -145,11 +140,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void enterDelegateExecution() {}
-
-  @Override
-  public void setRandomSource(final IRandomSource randomSource) {
-    this.randomSource = randomSource;
-  }
 
   @Override
   public void stopGameSequence() {}
