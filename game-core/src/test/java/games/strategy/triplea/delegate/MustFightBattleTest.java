@@ -4,7 +4,10 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
+import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +15,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
-import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class MustFightBattleTest extends AbstractDelegateTestCase {
@@ -37,10 +39,9 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(sz40, false, null);
 
     // Set first roll to hit (mine AA) and check that both units are killed
-    final ScriptedRandomSource randomSource = new ScriptedRandomSource(0, ScriptedRandomSource.ERROR);
-    bridge.setRandomSource(randomSource);
+    whenGetRandom(bridge).thenReturn(new int[] {0});
     battle.fight(bridge);
-    assertEquals(1, randomSource.getTotalRolled());
     assertEquals(0, sz40.getUnits().size());
+    thenGetRandomShouldHaveBeenCalled(bridge, times(1));
   }
 }

@@ -1,12 +1,20 @@
 package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
+import org.mockito.stubbing.OngoingStubbing;
+import org.mockito.verification.VerificationMode;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -18,6 +26,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.IntegerMap;
@@ -26,7 +35,9 @@ import junit.framework.AssertionFailedError;
 /**
  * A utility class for GameData test classes.
  */
-public class GameDataTestUtil {
+public final class GameDataTestUtil {
+  private GameDataTestUtil() {}
+
   /**
    * Get the german PlayerID for the given GameData object.
    *
@@ -386,10 +397,22 @@ public class GameDataTestUtil {
   }
 
   /**
-   * Returns a TestDelegateBridge for the given GameData + PlayerID objects.
+   * Returns a delegate bridge suitable for testing the given player and game data.
+   *
+   * @return A mock that can be configured using standard Mockito idioms.
    */
-  public static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
-    return new TestDelegateBridge(data, player);
+  static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
+    return spy(new TestDelegateBridge(data, player));
+  }
+
+  static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {
+    return when(delegateBridge.getRandom(anyInt(), anyInt(), any(), any(), anyString()));
+  }
+
+  static void thenGetRandomShouldHaveBeenCalled(
+      final IDelegateBridge delegateBridge,
+      final VerificationMode verificationMode) {
+    verify(delegateBridge, verificationMode).getRandom(anyInt(), anyInt(), any(), any(), anyString());
   }
 
   static void load(final Collection<Unit> units, final Route route) {

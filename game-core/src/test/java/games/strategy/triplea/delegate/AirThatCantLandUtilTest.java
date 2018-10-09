@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,7 +16,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.test.ScriptedRandomSource;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.xml.TestMapGameData;
 
@@ -151,7 +151,7 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0));
+    whenGetRandom(bridge).thenReturn(new int[] {0, 0, 0});
     battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
@@ -198,7 +198,7 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0));
+    whenGetRandom(bridge).thenReturn(new int[] {0, 0, 0});
     battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
@@ -246,7 +246,7 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    bridge.setRandomSource(new ScriptedRandomSource(0));
+    whenGetRandom(bridge).thenReturn(new int[] {0});
     battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
@@ -297,7 +297,7 @@ public class AirThatCantLandUtilTest {
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
-    bridge.setRandomSource(new ScriptedRandomSource(0, 0, 0));
+    whenGetRandom(bridge).thenReturn(new int[] {0, 0, 0});
     fight(battle, sz9, false);
     battle.end();
     // Get the total number of units that should be left after the planes retreat
