@@ -1,10 +1,9 @@
 package games.strategy.debug.error.reporting;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.text.IsEmptyString.isEmptyString;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -17,40 +16,6 @@ import org.junit.jupiter.api.Test;
 class UserErrorReportTest {
 
   private static final String DESCRIPTION = "Lanista, absolutio, et demissio.";
-  private static final String ADDITIONAL = "Sunt aususes imitari azureus, grandis hilotaees.";
-
-
-  @Test
-  void justDescriptionCase() {
-    assertThat(
-        UserErrorReport.builder()
-            .description(DESCRIPTION)
-            .build()
-            .toErrorReport()
-            .getMessageFromUser(),
-        containsString(DESCRIPTION));
-  }
-
-  @Test
-  void justAdditionalInfo() {
-    assertThat(
-        UserErrorReport.builder()
-            .additionalInfo(ADDITIONAL)
-            .build()
-            .toErrorReport()
-            .getMessageFromUser(),
-        containsString(ADDITIONAL));
-  }
-
-  @Test
-  void noExtraInfo() {
-    assertThat(
-        UserErrorReport.builder()
-            .build()
-            .toErrorReport()
-            .getMessageFromUser(),
-        emptyString());
-  }
 
   @Test
   void withLogRecord() {
@@ -70,6 +35,6 @@ class UserErrorReportTest {
             .build()
             .toErrorReport()
             .getGameVersion(),
-        is(not(emptyString())));
+        not(isEmptyString()));
   }
 }

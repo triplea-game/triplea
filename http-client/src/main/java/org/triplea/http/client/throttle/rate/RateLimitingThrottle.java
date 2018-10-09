@@ -5,8 +5,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.triplea.http.data.error.report.ErrorReport;
-
 import com.google.common.annotations.VisibleForTesting;
 
 
@@ -14,8 +12,10 @@ import com.google.common.annotations.VisibleForTesting;
  * A simple rate limit throttle that remembers the time of last request
  * and rejects new requests if not enough time has elapsed since
  * the previous request.
+ * 
+ * @param <T> Request data type.
  */
-public class RateLimitingThrottle implements Consumer<ErrorReport> {
+public class RateLimitingThrottle<T> implements Consumer<T> {
 
   private static final int MIN_MILLIS_BETWEEN_REQUESTS = 15_000;
   private final int minMillisBetweenRequests;
@@ -33,7 +33,7 @@ public class RateLimitingThrottle implements Consumer<ErrorReport> {
   }
 
   @Override
-  public void accept(final ErrorReport errorReport) {
+  public void accept(final T errorReport) {
     final Instant nextInstant = instantSupplier.get();
     final long millisSinceLast = lastInstant.until(nextInstant, ChronoUnit.MILLIS);
     lastInstant = nextInstant;

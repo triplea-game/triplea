@@ -19,11 +19,11 @@ import org.triplea.test.common.swing.SwingComponentWrapper;
 @ExtendWith(MockitoExtension.class)
 class PreviewWindowTest {
 
-  private static final String ADDITIONAL_INFO = "Lixas velum in antenna!";
+  private static final String TITLE = "Lixas velum in antenna!";
   private static final String DESCRIPTION = "Barbatus mons superbe talems gluten est.";
 
-  private UserErrorReport userErrorReport = UserErrorReport.builder()
-      .additionalInfo(ADDITIONAL_INFO)
+  private static final UserErrorReport USER_ERROR_REPORT = UserErrorReport.builder()
+      .title(TITLE)
       .description(DESCRIPTION)
       .build();
 
@@ -39,13 +39,13 @@ class PreviewWindowTest {
   @Test
   void previewWindowContainsReportingData() {
     final PreviewWindow window = new PreviewWindow();
-    final JFrame frame = window.build(null, userErrorReport);
+    final JFrame frame = window.build(null, USER_ERROR_REPORT);
 
     final JTextArea textArea = SwingComponentWrapper.of(frame)
         .findChildByName(PreviewWindow.ComponentNames.PREVIEW_AREA.toString(), JTextArea.class);
 
     assertThat(textArea.isEditable(), is(false));
     assertThat(textArea.getText(), containsString(DESCRIPTION));
-    assertThat(textArea.getText(), containsString(ADDITIONAL_INFO));
+    assertThat(textArea.getText(), containsString(TITLE));
   }
 }

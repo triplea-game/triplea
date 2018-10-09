@@ -2,10 +2,8 @@ package games.strategy.debug.error.reporting;
 
 import java.util.logging.LogRecord;
 
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportDetails;
-
-import com.google.common.base.Strings;
+import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.create.ErrorReportDetails;
 
 import games.strategy.engine.ClientContext;
 import lombok.Builder;
@@ -17,29 +15,16 @@ import lombok.EqualsAndHashCode;
 @Builder
 @EqualsAndHashCode
 class UserErrorReport {
+  private final String title;
   private final String description;
-  private final String additionalInfo;
   private final LogRecord logRecord;
 
   public ErrorReport toErrorReport() {
     return new ErrorReport(ErrorReportDetails.builder()
         .gameVersion(ClientContext.engineVersion().getExactVersion())
         .logRecord(logRecord)
-        .messageFromUser(formatUserMessage())
+        .title(title)
+        .problemDescription(description)
         .build());
-  }
-
-  private String formatUserMessage() {
-    if ((Strings.emptyToNull(description) == null) && (Strings.emptyToNull(additionalInfo) == null)) {
-      return "";
-    }
-
-    if (description == null) {
-      return additionalInfo;
-    } else if (additionalInfo == null) {
-      return description;
-    }
-
-    return description + " : " + additionalInfo;
   }
 }

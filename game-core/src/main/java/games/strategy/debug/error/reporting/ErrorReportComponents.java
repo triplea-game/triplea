@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -13,13 +14,14 @@ import lombok.Builder;
 import swinglib.ConfirmationDialogBuilder;
 import swinglib.JButtonBuilder;
 import swinglib.JTextAreaBuilder;
+import swinglib.JTextFieldBuilder;
 
 
 class ErrorReportComponents {
 
   @VisibleForTesting
   enum Names {
-    ERROR_DESCRIPTION, ADDITIONAL_INFO_NAME, UPLOAD_BUTTON, PREVIEW_BUTTON
+    ERROR_DESCRIPTION, TITLE, UPLOAD_BUTTON, PREVIEW_BUTTON
   }
 
   @Builder
@@ -36,11 +38,10 @@ class ErrorReportComponents {
         .build();
   }
 
-  JTextArea additionalInfo() {
-    return JTextAreaBuilder.builder()
-        .componentName(Names.ADDITIONAL_INFO_NAME.toString())
-        .columns(10)
-        .rows(2)
+  JTextField titleField() {
+    return JTextFieldBuilder.builder()
+        .componentName(Names.TITLE.toString())
+        .columns(15)
         .build();
   }
 

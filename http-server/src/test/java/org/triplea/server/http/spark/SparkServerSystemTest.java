@@ -1,51 +1,88 @@
 package org.triplea.server.http.spark;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.reset;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
+import java.net.URI;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.http.client.SendResult;
+import org.triplea.http.client.ServiceClient;
+import org.triplea.http.client.ServiceResponse;
+import org.triplea.http.client.error.report.ErrorReportClientFactory;
+import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.create.ErrorReportDetails;
+import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.server.ServerConfiguration;
+import org.triplea.server.reporting.error.upload.ErrorUploadStrategy;
 import org.triplea.test.common.Integration;
 
 import spark.Spark;
 
 
 @Integration
+@ExtendWith(MockitoExtension.class)
 class SparkServerSystemTest {
 
   private static final int SPARK_PORT = 5000;
 
-  @Test
-  void startServerAndStopIt() throws Exception {
+  private static final URI LOCAL_HOST = URI.create("http://localhost:" + SPARK_PORT);
+
+  private static final ErrorUploadStrategy errorUploadStrategy = Mockito.mock(ErrorUploadStrategy.class);
+
+  @BeforeAll
+  static void startServer() {
     Spark.port(SPARK_PORT);
-    SparkServer.main(new String[] {});
+    SparkServer.start(ServerConfiguration.builder()
+        .errorUploader(errorUploadStrategy)
+        .build());
     Spark.awaitInitialization();
+  }
 
-    MatcherAssert.assertThat(sendRequest(), Is.is("SUCCESS"));
+  @AfterEach
+  void resetMock() {
+    reset(errorUploadStrategy);
+  }
 
+  @AfterAll
+  static void stopServer() {
     Spark.stop();
   }
 
-  private static String sendRequest() throws Exception {
-    final URL url = new URL("http://localhost:" + SPARK_PORT + SparkServer.ERROR_REPORT_PATH);
-    final HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("POST");
+  private static final ErrorReport ERROR_REPORT = new ErrorReport(ErrorReportDetails.builder()
+      .title("Amicitia pius mensa est.")
+      .problemDescription("Est brevis silva, cesaris.")
+      .gameVersion("test-version")
+      .build());
 
-    try (
-        final InputStreamReader reader = new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8);
-        final BufferedReader in = new BufferedReader(reader)) {
-      String inputLine;
-      final StringBuilder content = new StringBuilder();
-      while ((inputLine = in.readLine()) != null) {
-        content.append(inputLine);
-      }
-      return content.toString();
-    }
+  private static final String LINK = "http://fictitious-link";
+
+  @Test
+  void errorReportEndpont() {
+    final ServiceClient<ErrorReport, ErrorReportResponse> client =
+        new ErrorReportClientFactory().newErrorUploader();
+
+    Mockito.when(errorUploadStrategy.apply(ERROR_REPORT))
+        .thenReturn(ErrorReportResponse.builder()
+            .githubIssueLink(LINK)
+            .build());
+
+    final ServiceResponse<ErrorReportResponse> response =
+        client.apply(LOCAL_HOST, ERROR_REPORT);
+
+    assertThat(response.getSendResult(), is(SendResult.SENT));
+    assertThat(response.getPayload(), isPresent());
+    assertThat(
+        response.getPayload().get().getGithubIssueLink(),
+        isPresentAndIs(URI.create(LINK)));
   }
 }

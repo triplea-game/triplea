@@ -2,6 +2,7 @@ package swinglib;
 
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.swing.JTextField;
@@ -34,6 +35,7 @@ public class JTextFieldBuilder {
 
   private Consumer<String> textEnteredAction;
   private boolean enabled = true;
+  private String componentName;
 
 
   private JTextFieldBuilder() {
@@ -81,6 +83,8 @@ public class JTextFieldBuilder {
     }
 
     textField.setEnabled(enabled);
+    Optional.ofNullable(componentName)
+        .ifPresent(textField::setName);
     return textField;
   }
 
@@ -127,6 +131,11 @@ public class JTextFieldBuilder {
    */
   public JTextFieldBuilder disabled() {
     this.enabled = false;
+    return this;
+  }
+
+  public JTextFieldBuilder componentName(final String componentName) {
+    this.componentName = componentName;
     return this;
   }
 
