@@ -48,14 +48,14 @@ class ErrorReportComponents {
   }
 
 
-  JButton createSubmitButton(final JFrame jframe, final FormHandler config) {
+  JButton createSubmitButton(final JFrame frame, final FormHandler config) {
     return JButtonBuilder.builder()
         .title("Upload")
         .toolTip("Upload error report to TripleA server")
         .componentName(Names.UPLOAD_BUTTON.toString())
         .actionListener(button -> createSendConfirmationDialog(
             button,
-            () -> config.guiDataHandler.accept(jframe, config.guiReader.get())))
+            () -> config.guiDataHandler.accept(frame, config.guiReader.get())))
         .biggerFont()
         .build();
   }
