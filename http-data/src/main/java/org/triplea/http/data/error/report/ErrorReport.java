@@ -14,7 +14,8 @@ import lombok.ToString;
 @ToString
 public class ErrorReport {
 
-  private final String messageFromUser;
+  private final String title;
+  private final String description;
   private final String gameVersion;
   private final String operatingSystem;
   private final String javaVersion;
@@ -27,11 +28,9 @@ public class ErrorReport {
   private final String methodName;
 
   public ErrorReport(final ErrorReportDetails details) {
-    final String messageFromUser = details.getMessageFromUser();
-    final String gameVersion = details.getGameVersion();
-
-    this.messageFromUser = messageFromUser;
-    this.gameVersion = gameVersion;
+    title = details.getTitle();
+    description = details.getDescription();
+    gameVersion = details.getGameVersion();
     operatingSystem = System.getProperty("os.name");
     javaVersion = System.getProperty("java.version");
     logLevel = details.getLogRecord()

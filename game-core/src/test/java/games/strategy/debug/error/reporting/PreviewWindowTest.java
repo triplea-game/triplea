@@ -19,11 +19,11 @@ import org.triplea.test.common.swing.SwingComponentWrapper;
 @ExtendWith(MockitoExtension.class)
 class PreviewWindowTest {
 
-  private static final String ADDITIONAL_INFO = "Lixas velum in antenna!";
+  private static final String TITLE = "Lixas velum in antenna!";
   private static final String DESCRIPTION = "Barbatus mons superbe talems gluten est.";
 
   private UserErrorReport userErrorReport = UserErrorReport.builder()
-      .additionalInfo(ADDITIONAL_INFO)
+      .title(TITLE)
       .description(DESCRIPTION)
       .build();
 
@@ -46,6 +46,6 @@ class PreviewWindowTest {
 
     assertThat(textArea.isEditable(), is(false));
     assertThat(textArea.getText(), containsString(DESCRIPTION));
-    assertThat(textArea.getText(), containsString(ADDITIONAL_INFO));
+    assertThat(textArea.getText(), containsString(TITLE));
   }
 }

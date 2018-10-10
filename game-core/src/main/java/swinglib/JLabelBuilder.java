@@ -1,6 +1,7 @@
 package swinglib;
 
 import java.awt.Dimension;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 import javax.swing.Icon;
@@ -8,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 import com.google.common.base.Ascii;
 import com.google.common.base.Preconditions;
@@ -33,6 +35,7 @@ public class JLabelBuilder {
   private int maxTextLength = Integer.MAX_VALUE;
   private String tooltip;
   private Border border;
+  private Integer borderSize;
 
   private JLabelBuilder() {}
 
@@ -57,33 +60,34 @@ public class JLabelBuilder {
 
     final JLabel label = new JLabel(truncated);
 
-    if (icon != null) {
-      label.setIcon(icon);
-    }
+    Optional.ofNullable(icon)
+        .ifPresent(label::setIcon);
 
-    if (iconTextGap != null) {
-      label.setIconTextGap(iconTextGap);
-    }
+    Optional.ofNullable(iconTextGap)
+        .ifPresent(label::setIconTextGap);
 
-    if (alignment != null) {
-      switch (alignment) {
-        case LEFT:
-        default:
-          label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-          break;
-      }
-    }
+    Optional.ofNullable(alignment)
+        .ifPresent(align -> {
+          switch (align) {
+            case LEFT:
+              label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+              break;
+            default:
+              break;
+          }
+        });
 
-    if (tooltip != null) {
-      label.setToolTipText(tooltip);
-    }
-    if (maxSize != null) {
-      label.setMaximumSize(maxSize);
-    }
+    Optional.ofNullable(tooltip)
+        .ifPresent(label::setToolTipText);
 
-    if (border != null) {
-      label.setBorder(border);
-    }
+    Optional.ofNullable(maxSize)
+        .ifPresent(label::setMaximumSize);
+
+    Optional.ofNullable(border)
+        .ifPresent(label::setBorder);
+
+    Optional.ofNullable(borderSize)
+        .ifPresent(size -> label.setBorder(new EmptyBorder(size, size, size, size)));
 
     return label;
   }
@@ -108,10 +112,20 @@ public class JLabelBuilder {
     return this;
   }
 
+  public JLabelBuilder html(final String text) {
+    return text("<html>" + text + "</html>");
+  }
+
   public JLabelBuilder maximumSize(final int width, final int height) {
     maxSize = new Dimension(width, height);
     return this;
   }
+
+  public JLabelBuilder border(final int borderSize) {
+    this.borderSize = borderSize;
+    return this;
+  }
+
 
   public JLabelBuilder border(final Border border) {
     this.border = border;

@@ -1,15 +1,18 @@
 package games.strategy.debug.error.reporting;
 
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.awt.GraphicsEnvironment;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.test.common.swing.SwingComponentWrapper;
 
-import swinglib.ConfirmationDialogBuilder;
+import swinglib.DialogBuilder;
 
 
 /**
@@ -28,43 +31,43 @@ import swinglib.ConfirmationDialogBuilder;
 @ExtendWith(MockitoExtension.class)
 class ErrorReportWindowAcceptanceTest {
 
-  private static final String ADDITIONAL_INFO = "addis informacio";
+  private static final String TITLE = "addis informacio";
 
-  private static final String ERROR_DESCRIPTION = "errus descriptus";
+  private static final String DESCRIPTION = "errus descriptus";
 
   @BeforeAll
   static void disableSwingPopups() {
-    ConfirmationDialogBuilder.suppressDialog();
+    DialogBuilder.suppressDialog();
   }
 
   @BeforeAll
   static void skipIfHeadless() {
     assumeFalse(GraphicsEnvironment.isHeadless());
   }
-  
+
   @Mock
-  private Consumer<UserErrorReport> reportHandler;
+  private BiConsumer<JFrame, UserErrorReport> reportHandler;
 
   @Test
   void fillInErrorDetailsAndSendThem() {
     final JFrame frame = new ErrorReportWindow(reportHandler).buildWindow();
 
     SwingComponentWrapper.of(frame)
-        .findChildByName(ErrorReportComponents.Names.ERROR_DESCRIPTION.toString(), JTextArea.class)
-        .setText(ERROR_DESCRIPTION);
+        .findChildByName(ErrorReportComponents.Names.TITLE.toString(), JTextField.class)
+        .setText(TITLE);
 
     SwingComponentWrapper.of(frame)
-        .findChildByName(ErrorReportComponents.Names.ADDITIONAL_INFO_NAME.toString(), JTextArea.class)
-        .setText(ADDITIONAL_INFO);
+        .findChildByName(ErrorReportComponents.Names.DESCRIPTION.toString(), JTextArea.class)
+        .setText(DESCRIPTION);
 
     SwingComponentWrapper.of(frame)
         .findChildByName(ErrorReportComponents.Names.UPLOAD_BUTTON.toString(), JButton.class)
         .doClick();
 
     verify(reportHandler, times(1))
-        .accept(UserErrorReport.builder()
-            .description(ERROR_DESCRIPTION)
-            .additionalInfo(ADDITIONAL_INFO)
-            .build());
+        .accept(any(), eq(UserErrorReport.builder()
+            .title(TITLE)
+            .description(DESCRIPTION)
+            .build()));
   }
 }

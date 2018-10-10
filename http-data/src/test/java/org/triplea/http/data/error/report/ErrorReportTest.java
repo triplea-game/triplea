@@ -14,13 +14,14 @@ import org.junit.jupiter.api.Test;
 class ErrorReportTest {
   private static final String MESSAGE_TO_USER = "msg";
   private static final String EXCEPTION_MESSAGE = "exception msg";
-  private static final String CLASS = "class";
-  private static final String METHOD = "class";
+  private static final String CLASS = "ventus";
+  private static final String METHOD = "sala";
 
   private static final Level LEVEL = Level.SEVERE;
 
-  private static final String GAME_VERSION = "version";
-  private static final String MESSAGE_FROM_USER = "message from user";
+  private static final String GAME_VERSION = "virundum";
+  private static final String TITLE = "Nunquam tractare navis.";
+  private static final String DESCRIPTION = "cur humani generis crescere?";
 
   private static final Exception exception = new Exception(EXCEPTION_MESSAGE);
 
@@ -34,12 +35,14 @@ class ErrorReportTest {
     final ErrorReport errorReport = new ErrorReport(ErrorReportDetails.builder()
         .logRecord(record)
         .gameVersion(GAME_VERSION)
-        .messageFromUser(MESSAGE_FROM_USER)
+        .title(TITLE)
+        .description(DESCRIPTION)
         .build());
 
     assertThat(errorReport.getOperatingSystem(), notNullValue());
     assertThat(errorReport.getGameVersion(), is(GAME_VERSION));
-    assertThat(errorReport.getMessageFromUser(), is(MESSAGE_FROM_USER));
+    assertThat(errorReport.getTitle(), is(TITLE));
+    assertThat(errorReport.getDescription(), is(DESCRIPTION));
     assertThat(errorReport.getLogLevel(), is(LEVEL.toString()));
     assertThat(errorReport.getErrorMessageToUser(), is(MESSAGE_TO_USER));
     assertThat(errorReport.getExceptionMessage(), is(EXCEPTION_MESSAGE));
@@ -55,7 +58,8 @@ class ErrorReportTest {
     final ErrorReport errorReport = new ErrorReport(ErrorReportDetails.builder()
         .logRecord(record)
         .gameVersion(GAME_VERSION)
-        .messageFromUser(MESSAGE_FROM_USER)
+        .title(TITLE)
+        .description(DESCRIPTION)
         .build());
 
     assertThat(errorReport.getExceptionMessage(), emptyString());

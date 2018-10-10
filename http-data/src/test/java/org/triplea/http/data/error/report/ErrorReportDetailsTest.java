@@ -2,7 +2,6 @@ package org.triplea.http.data.error.report;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.IsEmptyString.emptyString;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -19,14 +18,6 @@ class ErrorReportDetailsTest {
   void setup() {
     minMessage = ErrorReportDetails.builder()
         .gameVersion("game version");
-  }
-
-  @Test
-  void messageFromUserIsNeverNull() {
-    assertThat(
-        minMessage.build()
-            .getMessageFromUser(),
-        emptyString());
   }
 
   @Test

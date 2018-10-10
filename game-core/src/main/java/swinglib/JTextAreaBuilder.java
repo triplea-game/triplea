@@ -1,6 +1,12 @@
 package swinglib;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -23,6 +29,8 @@ public final class JTextAreaBuilder {
   private int rows = 3;
   private int columns = 15;
   private boolean readOnly = false;
+  private int border = 3;
+  private boolean selectAllOnFocus = false;
 
   private JTextAreaBuilder() {}
 
@@ -46,8 +54,29 @@ public final class JTextAreaBuilder {
     if (readOnly) {
       textArea.setEditable(false);
     }
+    textArea.setBorder(new EmptyBorder(border, border, border, border));
 
+    if (selectAllOnFocus) {
+      textArea.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusGained(final FocusEvent e) {
+          selectAll(textArea);
+        }
+      });
+
+      textArea.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+          selectAll(textArea);
+        }
+      });
+    }
     return textArea;
+  }
+
+  private static void selectAll(final JTextArea textArea) {
+    textArea.setSelectionEnd(0);
+    textArea.setSelectionEnd(textArea.getText().length());
   }
 
   public JTextAreaBuilder readOnly() {
@@ -88,6 +117,17 @@ public final class JTextAreaBuilder {
 
   public JTextAreaBuilder componentName(final String componentName) {
     this.componentName = componentName;
+    return this;
+  }
+
+  public JTextAreaBuilder border(final int borderWidth) {
+    Preconditions.checkArgument(borderWidth >= 0);
+    this.border = borderWidth;
+    return this;
+  }
+
+  public JTextAreaBuilder selectAllTextOnFocus() {
+    selectAllOnFocus = true;
     return this;
   }
 }
