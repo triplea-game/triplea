@@ -1,9 +1,10 @@
-package org.triplea.http.data.error.report;
+package org.triplea.http.client.error.report.create;
 
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -12,6 +13,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString
+@EqualsAndHashCode
 public class ErrorReport {
 
   private final String title;

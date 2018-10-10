@@ -5,6 +5,7 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
 
@@ -60,7 +61,7 @@ class SparkServerSystemTest {
 
   private static final ErrorReport ERROR_REPORT = new ErrorReport(ErrorReportDetails.builder()
       .title("Amicitia pius mensa est.")
-      .problemDescription("Est brevis silva, cesaris.")
+      .description("Est brevis silva, cesaris.")
       .gameVersion("test-version")
       .build());
 
@@ -71,7 +72,7 @@ class SparkServerSystemTest {
     final ServiceClient<ErrorReport, ErrorReportResponse> client =
         new ErrorReportClientFactory().newErrorUploader();
 
-    Mockito.when(errorUploadStrategy.apply(ERROR_REPORT))
+    when(errorUploadStrategy.apply(ERROR_REPORT))
         .thenReturn(ErrorReportResponse.builder()
             .githubIssueLink(LINK)
             .build());

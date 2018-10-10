@@ -1,4 +1,4 @@
-package org.triplea.http.data.error.report;
+package org.triplea.http.client.error.report.create;
 
 import java.util.Optional;
 import java.util.logging.LogRecord;

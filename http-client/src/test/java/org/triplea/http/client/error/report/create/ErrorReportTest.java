@@ -1,4 +1,4 @@
-package org.triplea.http.data.error.report;
+package org.triplea.http.client.error.report.create;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -10,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.create.ErrorReportDetails;
 
 class ErrorReportTest {
   private static final String MESSAGE_TO_USER = "msg";

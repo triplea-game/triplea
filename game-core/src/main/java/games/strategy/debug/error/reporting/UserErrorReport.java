@@ -2,8 +2,8 @@ package games.strategy.debug.error.reporting;
 
 import java.util.logging.LogRecord;
 
-import org.triplea.http.data.error.report.ErrorReport;
-import org.triplea.http.data.error.report.ErrorReportDetails;
+import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.create.ErrorReportDetails;
 
 import games.strategy.engine.ClientContext;
 import lombok.AccessLevel;

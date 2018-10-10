@@ -14,7 +14,7 @@ class ErrorReportRequestAdapterTest {
 
   private static final ErrorReport errorReport = new ErrorReport(ErrorReportDetails.builder()
       .title("Fraticinida de rusticus abnoba, reperire adelphis!")
-      .problemDescription("Velox valebats ducunt ad tata.")
+      .description("Velox valebats ducunt ad tata.")
       .gameVersion("version")
       .build());
 
@@ -26,7 +26,7 @@ class ErrorReportRequestAdapterTest {
 
     asList(
         errorReport.getJavaVersion(),
-        errorReport.getProblemDescription())
+        errorReport.getDescription())
             .forEach(expectedValue -> assertThat(
                 result.getBody(),
                 containsString(expectedValue)));
