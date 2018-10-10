@@ -173,7 +173,7 @@ public class PoliticsPanel extends ActionPanel {
           GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
       final JButton button = getMap().getUiContext().getResourceImageFactory().getResourcesButton(
           new ResourceCollection(getData(), paa.getCostResources()),
-          UserActionText.getInstance().getButtonText(paa.getText()));
+          PoliticsText.getInstance().getButtonText(paa.getText()));
       button.addActionListener(ae -> {
         selectPoliticalActionButton.setEnabled(false);
         doneButton.setEnabled(false);
