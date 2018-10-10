@@ -16,7 +16,7 @@ import spark.Request;
  * Spark http controller that binds the error upload endpoint with the error report upload handler.
  */
 @AllArgsConstructor
-public class ErrorReportController implements SparkController {
+public class ErrorReportController implements Runnable {
 
   public static final String ERROR_REPORT_PATH = "/error-report";
 

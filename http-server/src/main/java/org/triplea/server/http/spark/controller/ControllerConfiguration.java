@@ -14,7 +14,7 @@ public class ControllerConfiguration {
 
   private final ServerConfiguration serverConfiguration;
 
-  public Iterable<SparkController> getControllers() {
+  public Iterable<Runnable> getControllers() {
     return Collections.singletonList(
         new ErrorReportController(serverConfiguration.getErrorUploader()));
   }

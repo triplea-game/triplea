@@ -2,7 +2,6 @@ package org.triplea.server.http.spark;
 
 import org.triplea.server.ServerConfiguration;
 import org.triplea.server.http.spark.controller.ControllerConfiguration;
-import org.triplea.server.http.spark.controller.SparkController;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -20,9 +19,9 @@ public final class SparkServer {
   }
 
   @VisibleForTesting
-  static void start(final ServerConfiguration environmentConfiguration) {
-    new ControllerConfiguration(environmentConfiguration)
+  static void start(final ServerConfiguration serverConfiguration) {
+    new ControllerConfiguration(serverConfiguration)
         .getControllers()
-        .forEach(SparkController::run);
+        .forEach(Runnable::run);
   }
 }
