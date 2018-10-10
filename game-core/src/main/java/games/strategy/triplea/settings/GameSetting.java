@@ -40,10 +40,6 @@ public interface GameSetting<T> {
    */
   void save(@Nullable T newValue);
 
-  default void save(final int newValue) {
-    saveString(String.valueOf(newValue));
-  }
-
   /**
    * Returns the current persisted string value of the setting.
    */
@@ -53,10 +49,6 @@ public interface GameSetting<T> {
    * Returns the current persisted typed value of the setting.
    */
   T value();
-
-  default int intValue() {
-    return Integer.valueOf(stringValue());
-  }
 
   void resetAndFlush();
 

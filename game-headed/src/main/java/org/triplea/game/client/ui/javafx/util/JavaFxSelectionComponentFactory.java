@@ -31,14 +31,14 @@ final class JavaFxSelectionComponentFactory {
   private JavaFxSelectionComponentFactory() {}
 
   static SelectionComponent<Region> intValueRange(
-      final ClientSetting<String> clientSetting,
+      final ClientSetting<Integer> clientSetting,
       final int minValue,
       final int maxValue) {
     return intValueRange(clientSetting, minValue, maxValue, false);
   }
 
   static SelectionComponent<Region> intValueRange(
-      final ClientSetting<String> clientSetting,
+      final ClientSetting<Integer> clientSetting,
       final int minValue,
       final int maxValue,
       final boolean allowUnset) {
@@ -50,7 +50,7 @@ final class JavaFxSelectionComponentFactory {
         final Spinner<Integer> spinner = new Spinner<>(
             minValue - (allowUnset ? 1 : 0),
             maxValue,
-            getIntegerFromString(clientSetting.value()));
+            getIntegerFromString(clientSetting.stringValue()));
         spinner.setEditable(true);
         return spinner;
       }
@@ -85,12 +85,12 @@ final class JavaFxSelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultValue()));
+        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultStringValue()));
       }
 
       @Override
       public void reset() {
-        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.value()));
+        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.stringValue()));
       }
     };
   }
@@ -190,7 +190,7 @@ final class JavaFxSelectionComponentFactory {
   static SelectionComponent<Region> proxySettings(
       final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
       final ClientSetting<String> proxyHostClientSetting,
-      final ClientSetting<String> proxyPortClientSetting) {
+      final ClientSetting<Integer> proxyPortClientSetting) {
     return new ProxySetting(proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
   }
 
@@ -324,7 +324,7 @@ final class JavaFxSelectionComponentFactory {
   private static final class ProxySetting extends Region implements SelectionComponent<Region> {
     private final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting;
     private final ClientSetting<String> proxyHostClientSetting;
-    private final ClientSetting<String> proxyPortClientSetting;
+    private final ClientSetting<Integer> proxyPortClientSetting;
     private final RadioButton noneButton;
     private final RadioButton systemButton;
     private final RadioButton userButton;
@@ -334,7 +334,7 @@ final class JavaFxSelectionComponentFactory {
     ProxySetting(
         final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
         final ClientSetting<String> proxyHostClientSetting,
-        final ClientSetting<String> proxyPortClientSetting) {
+        final ClientSetting<Integer> proxyPortClientSetting) {
       this.proxyChoiceClientSetting = proxyChoiceClientSetting;
       this.proxyHostClientSetting = proxyHostClientSetting;
       this.proxyPortClientSetting = proxyPortClientSetting;
@@ -347,7 +347,7 @@ final class JavaFxSelectionComponentFactory {
       userButton = new RadioButton("Use These Settings:");
       userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       hostText = new TextField(proxyHostClientSetting.value());
-      portText = new TextField(proxyPortClientSetting.value());
+      portText = new TextField(proxyPortClientSetting.stringValue());
       final VBox radioPanel = new VBox();
       radioPanel.getChildren().addAll(
           noneButton,
@@ -387,7 +387,7 @@ final class JavaFxSelectionComponentFactory {
     public void resetToDefault() {
       ClientSetting.flush();
       hostText.setText(proxyHostClientSetting.defaultValue());
-      portText.setText(proxyPortClientSetting.defaultValue());
+      portText.setText(proxyPortClientSetting.defaultStringValue());
       setProxyChoice(proxyChoiceClientSetting.defaultValue());
     }
 
@@ -401,7 +401,7 @@ final class JavaFxSelectionComponentFactory {
     public void reset() {
       ClientSetting.flush();
       hostText.setText(proxyHostClientSetting.value());
-      portText.setText(proxyPortClientSetting.value());
+      portText.setText(proxyPortClientSetting.stringValue());
       setProxyChoice(proxyChoiceClientSetting.value());
     }
 

@@ -48,12 +48,13 @@ import lombok.extern.java.Log;
  */
 @Log
 public abstract class ClientSetting<T> implements GameSetting<T> {
-  public static final ClientSetting<String> aiPauseDuration = new StringClientSetting("AI_PAUSE_DURATION", 400);
-  public static final ClientSetting<String> arrowKeyScrollSpeed = new StringClientSetting("ARROW_KEY_SCROLL_SPEED", 70);
-  public static final ClientSetting<String> battleCalcSimulationCountDice =
-      new StringClientSetting("BATTLE_CALC_SIMULATION_COUNT_DICE", 200);
-  public static final ClientSetting<String> battleCalcSimulationCountLowLuck =
-      new StringClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
+  public static final ClientSetting<Integer> aiPauseDuration = new IntegerClientSetting("AI_PAUSE_DURATION", 400);
+  public static final ClientSetting<Integer> arrowKeyScrollSpeed =
+      new IntegerClientSetting("ARROW_KEY_SCROLL_SPEED", 70);
+  public static final ClientSetting<Integer> battleCalcSimulationCountDice =
+      new IntegerClientSetting("BATTLE_CALC_SIMULATION_COUNT_DICE", 200);
+  public static final ClientSetting<Integer> battleCalcSimulationCountLowLuck =
+      new IntegerClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
   public static final ClientSetting<Boolean> confirmDefensiveRolls =
       new BooleanClientSetting("CONFIRM_DEFENSIVE_ROLLS", false);
   public static final ClientSetting<Boolean> confirmEnemyCasualties =
@@ -61,36 +62,36 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<String> defaultGameName =
       new StringClientSetting("DEFAULT_GAME_NAME_PREF", "Big World : 1942");
   public static final ClientSetting<String> defaultGameUri = new StringClientSetting("DEFAULT_GAME_URI_PREF");
-  public static final ClientSetting<String> fasterArrowKeyScrollMultiplier =
-      new StringClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
+  public static final ClientSetting<Integer> fasterArrowKeyScrollMultiplier =
+      new IntegerClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
   public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
   public static final ClientSetting<String> lobbyLastUsedHost = new StringClientSetting("LOBBY_LAST_USED_HOST");
-  public static final ClientSetting<String> lobbyLastUsedPort = new StringClientSetting("LOBBY_LAST_USED_PORT");
+  public static final ClientSetting<Integer> lobbyLastUsedPort = new IntegerClientSetting("LOBBY_LAST_USED_PORT");
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
-  public static final ClientSetting<String> mapEdgeScrollSpeed = new StringClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
-  public static final ClientSetting<String> mapEdgeScrollZoneSize =
-      new StringClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
+  public static final ClientSetting<Integer> mapEdgeScrollSpeed = new IntegerClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
+  public static final ClientSetting<Integer> mapEdgeScrollZoneSize =
+      new IntegerClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
   public static final ClientSetting<String> mapFolderOverride = new StringClientSetting("MAP_FOLDER_OVERRIDE");
   public static final ClientSetting<String> mapListOverride = new StringClientSetting("MAP_LIST_OVERRIDE");
   public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =
       new HttpProxyChoiceClientSetting("PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
   public static final ClientSetting<String> proxyHost = new StringClientSetting("PROXY_HOST");
-  public static final ClientSetting<String> proxyPort = new StringClientSetting("PROXY_PORT");
+  public static final ClientSetting<Integer> proxyPort = new IntegerClientSetting("PROXY_PORT");
   public static final ClientSetting<String> saveGamesFolderPath = new StringClientSetting(
       "SAVE_GAMES_FOLDER_PATH",
       new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames"));
-  public static final ClientSetting<String> serverObserverJoinWaitTime =
-      new StringClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
-  public static final ClientSetting<String> serverStartGameSyncWaitTime =
-      new StringClientSetting("SERVER_START_GAME_SYNC_WAIT_TIME", 180);
+  public static final ClientSetting<Integer> serverObserverJoinWaitTime =
+      new IntegerClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
+  public static final ClientSetting<Integer> serverStartGameSyncWaitTime =
+      new IntegerClientSetting("SERVER_START_GAME_SYNC_WAIT_TIME", 180);
   public static final ClientSetting<Boolean> showBattlesWhenObserving =
       new BooleanClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
   public static final ClientSetting<Boolean> showBetaFeatures = new BooleanClientSetting("SHOW_BETA_FEATURES", false);
   public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE", false);
   public static final ClientSetting<String> testLobbyHost = new StringClientSetting("TEST_LOBBY_HOST");
-  public static final ClientSetting<String> testLobbyPort = new StringClientSetting("TEST_LOBBY_PORT");
+  public static final ClientSetting<Integer> testLobbyPort = new IntegerClientSetting("TEST_LOBBY_PORT");
   public static final ClientSetting<Boolean> firstTimeThisVersion =
       new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
   public static final ClientSetting<String> lastCheckForEngineUpdate =
@@ -102,7 +103,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<String> userMapsFolderPath = new StringClientSetting(
       "USER_MAPS_FOLDER_PATH",
       new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps"));
-  public static final ClientSetting<String> wheelScrollAmount = new StringClientSetting("WHEEL_SCROLL_AMOUNT", 60);
+  public static final ClientSetting<Integer> wheelScrollAmount = new IntegerClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =
       new StringClientSetting("PLAYER_NAME", SystemProperties.getUserName());
   public static final ClientSetting<Boolean> useExperimentalJavaFxUi =
@@ -115,6 +116,13 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   private final String name;
   private final String encodedDefaultValue;
   private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
+
+  protected ClientSetting(final String name) {
+    Preconditions.checkNotNull(name);
+
+    this.name = name;
+    this.encodedDefaultValue = "";
+  }
 
   protected ClientSetting(final String name, final T defaultValue) {
     Preconditions.checkNotNull(name);
@@ -245,6 +253,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    * @throws IllegalArgumentException If the encoded string value is malformed.
    */
   protected abstract T parseValue(String encodedValue);
+
+  public final String defaultStringValue() {
+    return encodedDefaultValue;
+  }
 
   public final T defaultValue() {
     // allow exceptions to propagate; default value should always be parseable

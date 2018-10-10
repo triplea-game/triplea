@@ -1758,8 +1758,8 @@ public final class TripleAFrame extends JFrame {
 
   private int computeScrollSpeed() {
     return isCtrlPressed
-        ? ClientSetting.arrowKeyScrollSpeed.intValue() * ClientSetting.fasterArrowKeyScrollMultiplier.intValue()
-        : ClientSetting.arrowKeyScrollSpeed.intValue();
+        ? ClientSetting.arrowKeyScrollSpeed.value() * ClientSetting.fasterArrowKeyScrollMultiplier.value()
+        : ClientSetting.arrowKeyScrollSpeed.value();
   }
 
   private void showEditMode() {
