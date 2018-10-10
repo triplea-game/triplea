@@ -84,6 +84,7 @@ subprojects {
             '-Xep:CatchAndPrintStackTrace:ERROR',
             '-Xep:ClassCanBeStatic:ERROR',
             '-Xep:DefaultCharset:ERROR',
+            '-Xep:EqualsIncompatibleType:ERROR',
             '-Xep:FutureReturnValueIgnored:ERROR',
             '-Xep:ImmutableEnumChecker:ERROR',
             '-Xep:InconsistentCapitalization:ERROR',
