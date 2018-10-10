@@ -44,10 +44,6 @@ public interface GameSetting<T> {
     saveString(String.valueOf(newValue));
   }
 
-  default void save(final boolean newValue) {
-    saveString(String.valueOf(newValue));
-  }
-
   /**
    * Returns the current persisted string value of the setting.
    */
@@ -60,10 +56,6 @@ public interface GameSetting<T> {
 
   default int intValue() {
     return Integer.valueOf(stringValue());
-  }
-
-  default boolean booleanValue() {
-    return Boolean.valueOf(stringValue());
   }
 
   void resetAndFlush();

@@ -221,9 +221,9 @@ final class SelectionComponentFactory {
   /**
    * yes/no radio buttons.
    */
-  static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting<String> clientSetting) {
+  static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting<Boolean> clientSetting) {
     return new AlwaysValidInputSelectionComponent() {
-      final boolean initialSelection = clientSetting.booleanValue();
+      final boolean initialSelection = clientSetting.value();
       final JRadioButton yesButton = new JRadioButton("True");
       final JRadioButton noButton = new JRadioButton("False");
       final JPanel buttonPanel = JPanelBuilder.builder()
@@ -256,8 +256,8 @@ final class SelectionComponentFactory {
 
       @Override
       public void reset() {
-        yesButton.setSelected(clientSetting.booleanValue());
-        noButton.setSelected(!clientSetting.booleanValue());
+        yesButton.setSelected(clientSetting.value());
+        noButton.setSelected(!clientSetting.value());
       }
     };
   }

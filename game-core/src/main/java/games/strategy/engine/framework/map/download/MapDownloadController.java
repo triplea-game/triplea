@@ -139,7 +139,7 @@ public class MapDownloadController {
 
       @Override
       public boolean canPromptToDownload() {
-        return ClientSetting.promptToDownloadTutorialMap.booleanValue();
+        return ClientSetting.promptToDownloadTutorialMap.value();
       }
     };
   }

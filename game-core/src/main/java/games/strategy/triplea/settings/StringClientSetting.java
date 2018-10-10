@@ -15,10 +15,6 @@ final class StringClientSetting extends ClientSetting<String> {
     super(name, String.valueOf(defaultValue));
   }
 
-  StringClientSetting(final String name, final boolean defaultValue) {
-    super(name, String.valueOf(defaultValue));
-  }
-
   StringClientSetting(final String name, final File defaultValue) {
     super(name, defaultValue.getAbsolutePath());
   }

@@ -74,7 +74,7 @@ public enum ErrorMessage {
                 .toolTip("Shows the error console window with full error details.")
                 .actionListener(() -> {
                   hide();
-                  ClientSetting.showConsole.saveAndFlush("true");
+                  ClientSetting.showConsole.saveAndFlush(true);
                 })
                 .build())
             .addHorizontalGlue()

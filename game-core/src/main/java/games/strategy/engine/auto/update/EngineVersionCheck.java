@@ -51,11 +51,11 @@ final class EngineVersionCheck {
   @VisibleForTesting
   static boolean isEngineUpdateCheckRequired(
       final LocalDate now,
-      final GameSetting<String> firstRunSetting,
+      final GameSetting<Boolean> firstRunSetting,
       final GameSetting<String> updateCheckDateSetting,
       final Runnable flushSetting) {
     // check at most once per 2 days (but still allow a 'first run message' for a new version of TripleA)
-    final boolean firstRun = firstRunSetting.booleanValue();
+    final boolean firstRun = firstRunSetting.value();
     final String encodedUpdateCheckDate = updateCheckDateSetting.value();
     if (!firstRun && !encodedUpdateCheckDate.trim().isEmpty()) {
       final LocalDate updateCheckDate = parseUpdateCheckDate(encodedUpdateCheckDate);

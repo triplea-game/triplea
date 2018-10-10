@@ -56,7 +56,7 @@ public final class Console {
       }
     });
 
-    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.saveAndFlush(String.valueOf(false)));
+    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.saveAndFlush(false));
     LookAndFeelSwingFrameListener.register(frame);
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     frame.getContentPane().setLayout(new BorderLayout());
@@ -80,7 +80,7 @@ public final class Console {
     actions.add(newLogLevelButton());
     SwingUtilities.invokeLater(frame::pack);
 
-    if (ClientSetting.showConsole.booleanValue()) {
+    if (ClientSetting.showConsole.value()) {
       SwingUtilities.invokeLater(() -> setVisible(true));
     }
   }
