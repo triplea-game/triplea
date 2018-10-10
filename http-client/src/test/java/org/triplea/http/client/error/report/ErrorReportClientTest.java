@@ -93,12 +93,12 @@ class ErrorReportClientTest {
 
     WireMock.configureFor("localhost", wireMockServer.port());
     final URI hostUri = URI.create(wireMockServer.url(""));
-
-    return new ErrorReportClientFactory().newErrorUploader()
-        .apply(
-            hostUri,
-            new ErrorReport(ErrorReportDetails.builder()
-                .problemDescription(MESSAGE_FROM_USER)
+    return new ErrorReportingClient(
+        ErrorReportingHttpClient.newClient(hostUri, timeoutMillis, timeoutMillis),
+        ErrorReport::new,
+        Collections.emptyList())
+            .sendErrorReport(ErrorReportDetails.builder()
+                .messageFromUser(MESSAGE_FROM_USER)
                 .gameVersion(GAME_VERSION)
                 .logRecord(logRecord)
                 .build()));

@@ -1,4 +1,4 @@
-package org.triplea.http.client.error.report.create;
+package org.triplea.http.data.error.report;
 
 import java.util.Optional;
 import java.util.logging.LogRecord;
@@ -16,12 +16,12 @@ import lombok.Getter;
 @Builder
 @Getter(AccessLevel.PACKAGE)
 public final class ErrorReportDetails {
+  @Nonnull
+  private final String gameVersion;
   @Nullable
   private final String title;
   @Nullable
-  private final String problemDescription;
-  @Nonnull
-  private final String gameVersion;
+  private final String description;
   @Nullable
   private final LogRecord logRecord;
 

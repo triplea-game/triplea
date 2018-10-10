@@ -1,7 +1,7 @@
 package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 
@@ -15,6 +15,7 @@ import com.google.common.annotations.VisibleForTesting;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import swinglib.JFrameBuilder;
+import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
 
 /**
@@ -23,7 +24,7 @@ import swinglib.JPanelBuilder;
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 class ErrorReportWindow {
-  private final Consumer<UserErrorReport> reportHandler;
+  private final BiConsumer<JFrame, UserErrorReport> reportHandler;
   private final ErrorReportComponents errorReportComponents = new ErrorReportComponents();
 
 
@@ -44,7 +45,7 @@ class ErrorReportWindow {
         .build();
 
     final JFrame frame = JFrameBuilder.builder()
-        .title("Bug Report Upload")
+        .title("Contact TripleA Support")
         .locateRelativeTo(parent)
         .minSize(500, 400)
         .build();
@@ -61,21 +62,24 @@ class ErrorReportWindow {
             .addCenter(titleField)
             .build())
         .addCenter(JPanelBuilder.builder()
-            .verticalBoxLayout()
-            .addLabel("Please describe the problem you encountered:", JPanelBuilder.TextAlignment.LEFT)
-            .add(description)
+            .borderLayout()
+            .addNorth(JLabelBuilder.builder()
+                .html("Please describe the problem and the events leading up to it:")
+                .border(5)
+                .build())
+            .addCenter(description)
             .build())
         .addSouth(JPanelBuilder.builder()
             .horizontalBoxLayout()
             .borderEmpty(3)
             .addHorizontalStrut(30)
-            .add(errorReportComponents.createSubmitButton(ErrorReportComponents.FormHandler.builder()
+            .add(errorReportComponents.createSubmitButton(frame, ErrorReportComponents.FormHandler.builder()
                 .guiDataHandler(reportHandler)
                 .guiReader(guiReader)
                 .build()))
             .addHorizontalStrut(20)
-            .add(errorReportComponents.createPreviewButton(ErrorReportComponents.FormHandler.builder()
-                .guiDataHandler(data -> new PreviewWindow().build(frame, data).setVisible(true))
+            .add(errorReportComponents.createPreviewButton(frame, ErrorReportComponents.FormHandler.builder()
+                .guiDataHandler((jframe, data) -> new PreviewWindow().build(jframe, data).setVisible(true))
                 .guiReader(guiReader)
                 .build()))
             .addHorizontalStrut(100)

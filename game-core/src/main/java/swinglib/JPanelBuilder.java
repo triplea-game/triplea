@@ -7,9 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,12 +17,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 
 import org.apache.commons.math3.util.Pair;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import lombok.AllArgsConstructor;
 import swinglib.GridBagHelper.Anchor;
@@ -203,25 +199,6 @@ public class JPanelBuilder {
   }
 
   /**
-   * Adds a center component with padding.
-   */
-  public JPanelBuilder addCenter(final JComponent child, final Padding padding) {
-    return addCenter(
-        JPanelBuilder.builder()
-            .verticalBoxLayout()
-            .addVerticalStrut(padding.value)
-            .add(JPanelBuilder.builder()
-                .flowLayout()
-                .addHorizontalStrut(padding.value)
-                .add(child)
-                .addHorizontalStrut(padding.value)
-                .build())
-            .addVerticalStrut(padding.value)
-            .build());
-  }
-
-
-  /**
    * Specify a grid layout with a given number of rows and columns.
    *
    * @param rows First parameter for 'new GridLayout'
@@ -250,15 +227,6 @@ public class JPanelBuilder {
     return this;
   }
 
-  /**
-   * Adds a 'titled' border to the current panel.
-   */
-  public JPanelBuilder borderTitled(final String title) {
-    Preconditions.checkArgument(!Strings.nullToEmpty(title).isEmpty());
-    border = new TitledBorder(title);
-    return this;
-  }
-
   public JPanelBuilder horizontalAlignmentCenter() {
     this.horizontalAlignment = JComponent.CENTER_ALIGNMENT;
     return this;
@@ -270,26 +238,6 @@ public class JPanelBuilder {
 
   public JPanelBuilder flowLayout(final FlowLayoutJustification flowLayoutDirection) {
     layout = flowLayoutDirection.newFlowLayout();
-    return this;
-  }
-
-  public JPanelBuilder addEach(final Iterable<? extends Component> components) {
-    components.forEach(this::add);
-    return this;
-  }
-
-  /**
-   * For each component supplied as a parameter, adds each one.
-   */
-  public JPanelBuilder addEach(final Component... component) {
-    Preconditions.checkArgument(component.length > 0);
-    Arrays.asList(component).forEach(this::add);
-    return this;
-  }
-
-  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  public JPanelBuilder addIf(final Optional<Component> component) {
-    component.ifPresent(this::add);
     return this;
   }
 
@@ -335,51 +283,7 @@ public class JPanelBuilder {
   }
 
   public JPanelBuilder addLabel(final String text) {
-    return addLabel(text, TextAlignment.CENTER);
-  }
-
-
-  /**
-   * Adds a text label with provided alignment. By default labels are center-aligned within their parent components.
-   * 
-   * @param text The text label value (should be plain text @see #addHtmlLabel)
-   * @param textAlignment Alignment value of the text, this is relative to the panel we are building.
-   */
-  public JPanelBuilder addLabel(final String text, final TextAlignment textAlignment) {
-    if (textAlignment == TextAlignment.CENTER) {
-      add(new JLabel(text));
-    } else {
-      final JPanel panel = JPanelBuilder.builder()
-          .flowLayout((textAlignment == TextAlignment.LEFT)
-              ? FlowLayoutJustification.LEFT
-              : FlowLayoutJustification.RIGHT)
-          .build();
-      panel.add(new JLabel(text));
-      add(panel);
-    }
-
-    return this;
-  }
-
-  public JPanelBuilder addHtmlLabel(final String s) {
-    return addLabel(wrapHtml(s));
-  }
-
-  public JPanelBuilder addHtmlLabel(final String s, final TextAlignment textAlignment) {
-    return addLabel(wrapHtml(s), textAlignment);
-  }
-
-  private static String wrapHtml(final String input) {
-    return "<html>" + input + "</html>";
-  }
-
-  /**
-   * Use this to fill up extra vertical space to avoid components stetching to fill up that space.
-   */
-  public JPanelBuilder addVerticalGlue() {
-    add(JPanelBuilder.builder()
-        .add(Box.createVerticalGlue())
-        .build());
+    add(new JLabel(text));
     return this;
   }
 
@@ -476,31 +380,5 @@ public class JPanelBuilder {
       this.anchor = anchor;
       this.fill = fill;
     }
-  }
-
-  /**
-   * Class that represents simple top/bottom + left/right padding.
-   */
-  public static class Padding {
-    private final int value;
-
-    private Padding(final int value) {
-      this.value = value;
-    }
-
-    public static Padding of(final int value) {
-      return new Padding(value);
-    }
-  }
-
-  /**
-   * Can be used to shift text to left hand or right hand edge of component. Center is often a default.
-   */
-  public enum TextAlignment {
-    LEFT,
-    
-    CENTER,
-    
-    RIGHT
   }
 }

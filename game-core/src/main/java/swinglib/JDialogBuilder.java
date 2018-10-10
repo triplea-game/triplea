@@ -29,7 +29,9 @@ import games.strategy.ui.SwingAction;
  *   // making the dialog visible will block until it is closed
  *   dialog.dispose();
  * </pre></code>
+ * @deprecated Use DialogBuilder instead.
  */
+@Deprecated
 public final class JDialogBuilder {
 
   private JFrame parentFrame;

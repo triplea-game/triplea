@@ -1,12 +1,9 @@
-package org.triplea.http.client.error.report.create;
+package org.triplea.http.data.error.report;
 
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import javax.annotation.Nullable;
-
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -15,12 +12,10 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-@EqualsAndHashCode
 public class ErrorReport {
 
   private final String title;
-  @Nullable
-  private final String problemDescription;
+  private final String description;
   private final String gameVersion;
   private final String operatingSystem;
   private final String javaVersion;
@@ -33,10 +28,9 @@ public class ErrorReport {
   private final String methodName;
 
   public ErrorReport(final ErrorReportDetails details) {
-    this.title = details.getTitle();
-    this.problemDescription = details.getProblemDescription();
-    this.gameVersion = details.getGameVersion();
-
+    title = details.getTitle();
+    description = details.getDescription();
+    gameVersion = details.getGameVersion();
     operatingSystem = System.getProperty("os.name");
     javaVersion = System.getProperty("java.version");
     logLevel = details.getLogRecord()

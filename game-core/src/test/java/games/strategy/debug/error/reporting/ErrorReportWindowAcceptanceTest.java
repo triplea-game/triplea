@@ -1,11 +1,13 @@
 package games.strategy.debug.error.reporting;
 
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.awt.GraphicsEnvironment;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.test.common.swing.SwingComponentWrapper;
 
-import swinglib.ConfirmationDialogBuilder;
+import swinglib.DialogBuilder;
 
 
 /**
@@ -35,16 +37,16 @@ class ErrorReportWindowAcceptanceTest {
 
   @BeforeAll
   static void disableSwingPopups() {
-    ConfirmationDialogBuilder.suppressDialog();
+    DialogBuilder.suppressDialog();
   }
 
   @BeforeAll
   static void skipIfHeadless() {
     assumeFalse(GraphicsEnvironment.isHeadless());
   }
-  
+
   @Mock
-  private Consumer<UserErrorReport> reportHandler;
+  private BiConsumer<JFrame, UserErrorReport> reportHandler;
 
   @Test
   void fillInErrorDetailsAndSendThem() {
@@ -55,7 +57,7 @@ class ErrorReportWindowAcceptanceTest {
         .setText(TITLE);
 
     SwingComponentWrapper.of(frame)
-        .findChildByName(ErrorReportComponents.Names.ERROR_DESCRIPTION.toString(), JTextArea.class)
+        .findChildByName(ErrorReportComponents.Names.DESCRIPTION.toString(), JTextArea.class)
         .setText(DESCRIPTION);
 
     SwingComponentWrapper.of(frame)
@@ -63,9 +65,9 @@ class ErrorReportWindowAcceptanceTest {
         .doClick();
 
     verify(reportHandler, times(1))
-        .accept(UserErrorReport.builder()
+        .accept(any(), eq(UserErrorReport.builder()
             .title(TITLE)
             .description(DESCRIPTION)
-            .build());
+            .build()));
   }
 }

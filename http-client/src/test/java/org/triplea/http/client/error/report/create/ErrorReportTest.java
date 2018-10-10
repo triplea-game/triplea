@@ -1,4 +1,4 @@
-package org.triplea.http.client.error.report.create;
+package org.triplea.http.data.error.report;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -12,16 +12,16 @@ import java.util.logging.LogRecord;
 import org.junit.jupiter.api.Test;
 
 class ErrorReportTest {
-  private static final String MESSAGE_TO_USER = "devatio";
-  private static final String EXCEPTION_MESSAGE = "urias crescere!";
-  private static final String CLASS = "fortis ";
-  private static final String METHOD = "cubiculum ";
+  private static final String MESSAGE_TO_USER = "msg";
+  private static final String EXCEPTION_MESSAGE = "exception msg";
+  private static final String CLASS = "ventus";
+  private static final String METHOD = "sala";
 
   private static final Level LEVEL = Level.SEVERE;
 
-  private static final String GAME_VERSION = "version";
-  private static final String DESCRIPTION = "nunquam anhelare animalis.";
-  private static final String TITLE = "Cur brodium peregrinatione?";
+  private static final String GAME_VERSION = "virundum";
+  private static final String TITLE = "Nunquam tractare navis.";
+  private static final String DESCRIPTION = "cur humani generis crescere?";
 
   private static final Exception exception = new Exception(EXCEPTION_MESSAGE);
 
@@ -36,13 +36,13 @@ class ErrorReportTest {
         .logRecord(record)
         .gameVersion(GAME_VERSION)
         .title(TITLE)
-        .problemDescription(DESCRIPTION)
+        .description(DESCRIPTION)
         .build());
 
     assertThat(errorReport.getOperatingSystem(), notNullValue());
     assertThat(errorReport.getGameVersion(), is(GAME_VERSION));
     assertThat(errorReport.getTitle(), is(TITLE));
-    assertThat(errorReport.getProblemDescription(), is(DESCRIPTION));
+    assertThat(errorReport.getDescription(), is(DESCRIPTION));
     assertThat(errorReport.getLogLevel(), is(LEVEL.toString()));
     assertThat(errorReport.getErrorMessageToUser(), is(MESSAGE_TO_USER));
     assertThat(errorReport.getExceptionMessage(), is(EXCEPTION_MESSAGE));
@@ -58,8 +58,8 @@ class ErrorReportTest {
     final ErrorReport errorReport = new ErrorReport(ErrorReportDetails.builder()
         .logRecord(record)
         .gameVersion(GAME_VERSION)
-        .problemDescription(DESCRIPTION)
         .title(TITLE)
+        .description(DESCRIPTION)
         .build());
 
     assertThat(errorReport.getExceptionMessage(), emptyString());

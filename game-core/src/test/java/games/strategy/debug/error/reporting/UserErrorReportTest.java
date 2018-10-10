@@ -1,9 +1,9 @@
 package games.strategy.debug.error.reporting;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.IsEmptyString.isEmptyString;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  */
 class UserErrorReportTest {
 
-  private static final String DESCRIPTION = "Lanista, absolutio, et demissio.";
+  private static final String DESCRIPTION = "Sunt aususes imitari azureus, grandis hilotaees.";
 
   @Test
   void withLogRecord() {
@@ -35,6 +35,6 @@ class UserErrorReportTest {
             .build()
             .toErrorReport()
             .getGameVersion(),
-        not(isEmptyString()));
+        is(not(emptyString())));
   }
 }

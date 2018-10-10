@@ -6,7 +6,7 @@ import java.awt.Insets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +30,6 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
-
-import org.triplea.common.util.concurrent.CompletableFutureUtils;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -98,10 +96,8 @@ class CommentPanel extends JPanel {
     save.setMargin(inset);
     save.setFocusable(false);
     for (final PlayerID playerId : data.getPlayerList().getPlayers()) {
-      final CompletableFuture<?> future = CompletableFuture
-          .supplyAsync(() -> frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId))
-          .thenAccept(image -> SwingUtilities.invokeLater(() -> iconMap.put(playerId, new ImageIcon(image))));
-      CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to load small flag icon for " + playerId);
+      Optional.ofNullable(frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId))
+          .ifPresent(image -> iconMap.put(playerId, new ImageIcon(image)));
     }
   }
 
