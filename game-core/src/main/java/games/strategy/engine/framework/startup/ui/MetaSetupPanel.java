@@ -115,11 +115,11 @@ public class MetaSetupPanel extends SetupPanel {
     add(helpButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
 
-    if (ClientSetting.showBetaFeatures.isSet()) {
+    if (ClientSetting.showBetaFeatures.value()) {
       add(errorReportDemo, new GridBagConstraints(0, 11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
     }
-    
+
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
