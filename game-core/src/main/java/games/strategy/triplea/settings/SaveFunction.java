@@ -31,7 +31,7 @@ interface SaveFunction {
         selectionComponent.readValues()
             .entrySet()
             .stream()
-            .filter(entry -> !entry.getKey().value().equals(entry.getValue()))
+            .filter(entry -> !entry.getKey().stringValue().equals(entry.getValue()))
             .forEach(entry -> {
               entry.getKey().saveString(entry.getValue());
               successMsg.append(String.format("%s was updated to: %s\n", entry.getKey(), entry.getValue()));

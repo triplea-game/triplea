@@ -95,13 +95,13 @@ final class JavaFxSelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<Region> toggleButton(final ClientSetting<String> clientSetting) {
+  static SelectionComponent<Region> toggleButton(final ClientSetting<Boolean> clientSetting) {
     return new SelectionComponent<Region>() {
       final CheckBox checkBox = getCheckBox();
 
       private CheckBox getCheckBox() {
         final CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(Boolean.parseBoolean(clientSetting.value()));
+        checkBox.setSelected(clientSetting.value());
         return checkBox;
       }
 
@@ -127,12 +127,12 @@ final class JavaFxSelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        checkBox.selectedProperty().set(Boolean.parseBoolean(clientSetting.defaultValue()));
+        checkBox.selectedProperty().set(clientSetting.defaultValue());
       }
 
       @Override
       public void reset() {
-        checkBox.selectedProperty().set(Boolean.parseBoolean(clientSetting.value()));
+        checkBox.selectedProperty().set(clientSetting.value());
       }
     };
   }

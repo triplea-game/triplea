@@ -54,17 +54,17 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new StringClientSetting("BATTLE_CALC_SIMULATION_COUNT_DICE", 200);
   public static final ClientSetting<String> battleCalcSimulationCountLowLuck =
       new StringClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
-  public static final ClientSetting<String> confirmDefensiveRolls =
-      new StringClientSetting("CONFIRM_DEFENSIVE_ROLLS", false);
-  public static final ClientSetting<String> confirmEnemyCasualties =
-      new StringClientSetting("CONFIRM_ENEMY_CASUALTIES", false);
+  public static final ClientSetting<Boolean> confirmDefensiveRolls =
+      new BooleanClientSetting("CONFIRM_DEFENSIVE_ROLLS", false);
+  public static final ClientSetting<Boolean> confirmEnemyCasualties =
+      new BooleanClientSetting("CONFIRM_ENEMY_CASUALTIES", false);
   public static final ClientSetting<String> defaultGameName =
       new StringClientSetting("DEFAULT_GAME_NAME_PREF", "Big World : 1942");
   public static final ClientSetting<String> defaultGameUri = new StringClientSetting("DEFAULT_GAME_URI_PREF");
   public static final ClientSetting<String> fasterArrowKeyScrollMultiplier =
       new StringClientSetting("FASTER_ARROW_KEY_SCROLL_MULTIPLIER", 2);
-  public static final ClientSetting<String> spaceBarConfirmsCasualties =
-      new StringClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
+  public static final ClientSetting<Boolean> spaceBarConfirmsCasualties =
+      new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
   public static final ClientSetting<String> lobbyLastUsedHost = new StringClientSetting("LOBBY_LAST_USED_HOST");
   public static final ClientSetting<String> lobbyLastUsedPort = new StringClientSetting("LOBBY_LAST_USED_PORT");
   public static final ClientSetting<String> lookAndFeel =
@@ -85,28 +85,28 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new StringClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
   public static final ClientSetting<String> serverStartGameSyncWaitTime =
       new StringClientSetting("SERVER_START_GAME_SYNC_WAIT_TIME", 180);
-  public static final ClientSetting<String> showBattlesWhenObserving =
-      new StringClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
-  public static final ClientSetting<String> showBetaFeatures = new StringClientSetting("SHOW_BETA_FEATURES", false);
-  public static final ClientSetting<String> showConsole = new StringClientSetting("SHOW_CONSOLE", false);
+  public static final ClientSetting<Boolean> showBattlesWhenObserving =
+      new BooleanClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
+  public static final ClientSetting<Boolean> showBetaFeatures = new BooleanClientSetting("SHOW_BETA_FEATURES", false);
+  public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE", false);
   public static final ClientSetting<String> testLobbyHost = new StringClientSetting("TEST_LOBBY_HOST");
   public static final ClientSetting<String> testLobbyPort = new StringClientSetting("TEST_LOBBY_PORT");
-  public static final ClientSetting<String> firstTimeThisVersion =
-      new StringClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
+  public static final ClientSetting<Boolean> firstTimeThisVersion =
+      new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
   public static final ClientSetting<String> lastCheckForEngineUpdate =
       new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_ENGINE_UPDATE");
   public static final ClientSetting<String> lastCheckForMapUpdates =
       new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES");
-  public static final ClientSetting<String> promptToDownloadTutorialMap =
-      new StringClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
+  public static final ClientSetting<Boolean> promptToDownloadTutorialMap =
+      new BooleanClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
   public static final ClientSetting<String> userMapsFolderPath = new StringClientSetting(
       "USER_MAPS_FOLDER_PATH",
       new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps"));
   public static final ClientSetting<String> wheelScrollAmount = new StringClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =
       new StringClientSetting("PLAYER_NAME", SystemProperties.getUserName());
-  public static final ClientSetting<String> useExperimentalJavaFxUi =
-      new StringClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
+  public static final ClientSetting<Boolean> useExperimentalJavaFxUi =
+      new BooleanClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
   public static final ClientSetting<String> loggingVerbosity =
       new StringClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
 
