@@ -7,14 +7,16 @@ import com.google.common.base.Preconditions;
 import feign.Feign;
 import feign.Logger;
 import feign.Request;
+import feign.codec.Decoder;
+import feign.codec.Encoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import lombok.extern.java.Log;
 
 @Log
 final class FeignFactory {
-  private static GsonEncoder gsonEncoder = new GsonEncoder();
-  private static GsonDecoder gsonDecoder = new GsonDecoder();
+  private static final Encoder gsonEncoder = new GsonEncoder();
+  private static final Decoder gsonDecoder = new GsonDecoder();
 
   private FeignFactory() {
 
