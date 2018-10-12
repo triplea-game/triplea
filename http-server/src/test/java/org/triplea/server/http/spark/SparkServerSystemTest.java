@@ -31,7 +31,6 @@ import spark.Spark;
 
 
 @Integration
-@ExtendWith(MockitoExtension.class)
 class SparkServerSystemTest {
 
   private static final int SPARK_PORT = 5000;
