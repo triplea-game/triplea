@@ -7,5 +7,4 @@ import games.strategy.engine.delegate.IDelegateBridge;
  * random and implements changes immediately.
  */
 interface ITestDelegateBridge extends IDelegateBridge {
-  void setStepName(String name);
 }

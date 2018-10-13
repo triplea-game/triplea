@@ -29,6 +29,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.load;
 import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
+import static games.strategy.triplea.delegate.GameDataTestUtil.moveToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.placeDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.purchaseDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
@@ -250,7 +251,7 @@ public class WW2V3Year41Test {
     final PlayerID british = GameDataTestUtil.british(gameData);
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Route sz12To13 = new Route();
@@ -293,7 +294,7 @@ public class WW2V3Year41Test {
     // Set up the test
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
-    delegateBridge.setStepName("germanTech");
+    moveToStep(delegateBridge, "germanTech");
     final TechnologyDelegate techDelegate = techDelegate(gameData);
     techDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     techDelegate.start();
@@ -330,7 +331,7 @@ public class WW2V3Year41Test {
     addTo(gibraltar, infantry(gameData).create(1, british));
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    bridge.setStepName("britishCombatMove");
+    moveToStep(bridge, "britishCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Territory sz9 = territory("9 Sea Zone", gameData);
@@ -341,7 +342,7 @@ public class WW2V3Year41Test {
     // load the transport
     load(gibraltar.getUnits().getUnits(), new Route(gibraltar, sz13));
     moveDelegate.end();
-    bridge.setStepName("britishBattle");
+    moveToStep(bridge, "britishBattle");
     final BattleDelegate battleDelegate = battleDelegate(gameData);
     battleDelegate.setDelegateBridgeAndPlayer(bridge);
     battleDelegate.start();
@@ -353,7 +354,7 @@ public class WW2V3Year41Test {
     final PlayerID british = british(gameData);
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    bridge.setStepName("britishCombatMove");
+    moveToStep(bridge, "britishCombatMove");
     givenRemotePlayerWillSelectAttackSubs(bridge);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -368,7 +369,7 @@ public class WW2V3Year41Test {
     load(uk.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(uk, sz7));
     moveDelegate(gameData).end();
     whenGetRandom(bridge).thenAnswer(withValues(0, 1));
-    bridge.setStepName("britishBattle");
+    moveToStep(bridge, "britishBattle");
     final BattleDelegate battleDelegate = battleDelegate(gameData);
     battleDelegate.setDelegateBridgeAndPlayer(bridge);
     assertEquals(2, TransportTracker.transporting(transports.get(0)).size());
@@ -387,7 +388,7 @@ public class WW2V3Year41Test {
     removeFrom(eastPoland, eastPoland.getUnits().getUnits());
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(gameData));
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     final Territory bulgaria = territory("Bulgaria Romania", gameData);
@@ -411,7 +412,7 @@ public class WW2V3Year41Test {
     removeFrom(eastPoland, eastPoland.getUnits().getUnits());
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(gameData));
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     final Territory bulgaria = territory("Bulgaria Romania", gameData);
@@ -438,7 +439,7 @@ public class WW2V3Year41Test {
     addTo(eastPoland, factory(gameData).create(1, russians(gameData)));
     MoveDelegate moveDelegate = moveDelegate(gameData);
     ITestDelegateBridge delegateBridge = getDelegateBridge(germans(gameData));
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // add a blitz attack
@@ -454,7 +455,7 @@ public class WW2V3Year41Test {
     addTo(eastPoland, aaGun(gameData).create(1, russians(gameData)));
     moveDelegate = moveDelegate(gameData);
     delegateBridge = getDelegateBridge(germans(gameData));
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // add a blitz attack
@@ -472,7 +473,7 @@ public class WW2V3Year41Test {
     addTo(poland, aaGun(gameData).create(1, germans(gameData)));
     MoveDelegate moveDelegate = moveDelegate(gameData);
     ITestDelegateBridge delegateBridge = getDelegateBridge(germans(gameData));
-    delegateBridge.setStepName("NonCombatMove");
+    moveToStep(delegateBridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     final int preCount = germany.getUnits().getUnitCount();
@@ -491,7 +492,7 @@ public class WW2V3Year41Test {
     addTo(finland, aaGun(gameData).create(1, germans(gameData)));
     moveDelegate = moveDelegate(gameData);
     delegateBridge = getDelegateBridge(germans(gameData));
-    delegateBridge.setStepName("NonCombatMove");
+    moveToStep(delegateBridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // load the trn
@@ -512,7 +513,7 @@ public class WW2V3Year41Test {
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     delegateBridge = getDelegateBridge(germans);
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
-    delegateBridge.setStepName("Place");
+    moveToStep(delegateBridge, "Place");
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     addTo(germans, aaGun(gameData).create(1, germans), gameData);
@@ -531,7 +532,7 @@ public class WW2V3Year41Test {
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, gameData, germans));
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // Set up the territories
@@ -578,7 +579,7 @@ public class WW2V3Year41Test {
     final Territory eastPoland = territory("East Poland", gameData);
     // Set up the unit types
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
-    delegateBridge.setStepName("germanBattle");
+    moveToStep(delegateBridge, "germanBattle");
     while (!gameData.getSequence().getStep().getName().equals("germanBattle")) {
       gameData.getSequence().next();
     }
@@ -600,7 +601,7 @@ public class WW2V3Year41Test {
   @Test
   public void testBidPlace() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("BidPlace");
+    moveToStep(bridge, "BidPlace");
     bidPlaceDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     bidPlaceDelegate(gameData).start();
     // create 20 british infantry
@@ -625,7 +626,7 @@ public class WW2V3Year41Test {
     final UnitType factoryType = GameDataTestUtil.factory(gameData);
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
-    delegateBridge.setStepName("Place");
+    moveToStep(delegateBridge, "Place");
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the factory
@@ -651,7 +652,7 @@ public class WW2V3Year41Test {
     // Set up game
     final PlayerID chinese = GameDataTestUtil.chinese(gameData);
     final ITestDelegateBridge delegateBridge = getDelegateBridge(chinese);
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
@@ -671,7 +672,7 @@ public class WW2V3Year41Test {
      * Place units in just captured territory
      */
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
-    delegateBridge.setStepName("Place");
+    moveToStep(delegateBridge, "Place");
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the infantry
@@ -728,7 +729,7 @@ public class WW2V3Year41Test {
     final UnitType transportType = GameDataTestUtil.transport(gameData);
     // Set up the move delegate
     final PlaceDelegate placeDelegate = placeDelegate(gameData);
-    delegateBridge.setStepName("Place");
+    moveToStep(delegateBridge, "Place");
     placeDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     placeDelegate.start();
     // Add the transport
@@ -743,7 +744,7 @@ public class WW2V3Year41Test {
   @Test
   public void testMoveUnitsThroughSubs() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("britishNonCombatMove");
+    moveToStep(bridge, "britishNonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Territory sz6 = territory("6 Sea Zone", gameData);
@@ -755,7 +756,7 @@ public class WW2V3Year41Test {
   @Test
   public void testMoveUnitsThroughTransports() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("britishCombatMove");
+    moveToStep(bridge, "britishCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Territory sz12 = territory("12 Sea Zone", gameData);
@@ -767,7 +768,7 @@ public class WW2V3Year41Test {
   @Test
   public void testMoveUnitsThroughTransports2() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("britishNonCombatMove");
+    moveToStep(bridge, "britishNonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Territory sz12 = territory("12 Sea Zone", gameData);
@@ -781,7 +782,7 @@ public class WW2V3Year41Test {
   @Test
   public void testLoadThroughSubs() {
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("britishNonCombatMove");
+    moveToStep(bridge, "britishNonCombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -804,7 +805,7 @@ public class WW2V3Year41Test {
   public void testAttackUndoAndAttackAgain() {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
     final Territory sz14 = territory("14 Sea Zone", gameData);
@@ -836,7 +837,7 @@ public class WW2V3Year41Test {
     addTo(from, submarine(gameData).create(1, british(gameData)));
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
@@ -871,7 +872,7 @@ public class WW2V3Year41Test {
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
     addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
@@ -905,7 +906,7 @@ public class WW2V3Year41Test {
     addTo(from, destroyer(gameData).create(1, british(gameData)));
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
@@ -940,7 +941,7 @@ public class WW2V3Year41Test {
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
     addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     move(from.getUnits().getUnits(), new Route(from, attacked));
@@ -974,7 +975,7 @@ public class WW2V3Year41Test {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
     final Territory sz14 = territory("14 Sea Zone", gameData);
@@ -1022,7 +1023,7 @@ public class WW2V3Year41Test {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
     final Territory sz14 = territory("14 Sea Zone", gameData);
@@ -1086,7 +1087,7 @@ public class WW2V3Year41Test {
     final MoveDelegate move = moveDelegate(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
     final Territory sz14 = territory("14 Sea Zone", gameData);
@@ -1125,7 +1126,7 @@ public class WW2V3Year41Test {
     addTo(sz8, fighter(gameData).create(1, americans(gameData)));
     final Route route = new Route(sz8, sz1);
     final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     move(sz8.getUnits().getUnits(), route);
@@ -1150,7 +1151,7 @@ public class WW2V3Year41Test {
     addTo(madagascar, fighter(gameData).create(2, germans));
     final Route route = gameData.getMap().getRoute(madagascar, sz40);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // don't allow kamikaze
@@ -1166,7 +1167,7 @@ public class WW2V3Year41Test {
     final Territory poland = territory("Poland", gameData);
     TechAttachment.get(germans).setMechanizedInfantry("true");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Route r = new Route(france, germany, poland);
@@ -1184,7 +1185,7 @@ public class WW2V3Year41Test {
     final Territory germany = territory("Germany", gameData);
     TechAttachment.get(germans).setMechanizedInfantry("true");
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // get rid of the infantry in france
@@ -1252,7 +1253,7 @@ public class WW2V3Year41Test {
     final Territory germany = territory("Germany", gameData);
     final Territory nwe = territory("Northwestern Europe", gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
@@ -1273,7 +1274,7 @@ public class WW2V3Year41Test {
     final Territory poland = territory("Poland", gameData);
     final Territory eastPoland = territory("East Poland", gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
@@ -1295,7 +1296,7 @@ public class WW2V3Year41Test {
     final Territory poland = territory("Poland", gameData);
     final Territory ukraine = territory("Ukraine", gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
@@ -1319,7 +1320,7 @@ public class WW2V3Year41Test {
     final Territory poland = territory("Poland", gameData);
     final Territory eastPoland = territory("East Poland", gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
@@ -1343,7 +1344,7 @@ public class WW2V3Year41Test {
     final Territory eastPoland = territory("East Poland", gameData);
     final Territory beloRussia = territory("Belorussia", gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
@@ -1380,7 +1381,7 @@ public class WW2V3Year41Test {
     removeFrom(eastPoland, eastPoland.getUnits().getUnits());
     // Set up test
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
@@ -1407,7 +1408,7 @@ public class WW2V3Year41Test {
   public void testDefencelessTransportsDie() {
     final PlayerID british = british(gameData);
     final ITestDelegateBridge bridge = getDelegateBridge(british);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Territory uk = territory("United Kingdom", gameData);
@@ -1418,7 +1419,7 @@ public class WW2V3Year41Test {
     move(uk.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(uk, sz5));
     // move units for amphib assault
     moveDelegate(gameData).end();
-    bridge.setStepName("Combat");
+    moveToStep(bridge, "Combat");
     // cook the dice so that 1 british fighters hits, and nothing else
     // this will leave 1 transport alone in the sea zone
     whenGetRandom(bridge)
@@ -1438,7 +1439,7 @@ public class WW2V3Year41Test {
     addTo(germans, carrier(gameData).create(1, germans), gameData);
     // start the move phase
     final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // the fighter should be able to move and hover in the sea zone
@@ -1454,7 +1455,7 @@ public class WW2V3Year41Test {
   public void testFighterCantHoverWithNoCarrierToPlace() {
     // start the move phase
     final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
-    bridge.setStepName("CombatMove");
+    moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // the fighter should not be able to move and hover in the sea zone
@@ -1549,7 +1550,7 @@ public class WW2V3Year41Test {
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate(gameData).start();
     // Set up the territories
@@ -1582,7 +1583,7 @@ public class WW2V3Year41Test {
     final ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate(gameData).start();
     // Set up the territories
@@ -1625,7 +1626,7 @@ public class WW2V3Year41Test {
     removeFrom(libya, libya.getUnits().getUnits());
     // Set up the move delegate
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    delegateBridge.setStepName("CombatMove");
+    moveToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
     moveDelegate.start();
     // blitz in two steps

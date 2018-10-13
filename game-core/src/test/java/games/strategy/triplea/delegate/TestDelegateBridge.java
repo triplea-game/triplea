@@ -41,25 +41,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
   public void addChange(final Change change) {}
 
   @Override
-  public void setStepName(final String name) {
-    final GameData gameData = getData();
-    gameData.acquireWriteLock();
-    try {
-      final int length = gameData.getSequence().size();
-      int i = 0;
-      while (i < length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
-        gameData.getSequence().next();
-        i++;
-      }
-      if (i > +length && gameData.getSequence().getStep().getName().indexOf(name) == -1) {
-        throw new IllegalStateException("Step not found: " + name);
-      }
-    } finally {
-      gameData.releaseWriteLock();
-    }
-  }
-
-  @Override
   public String getStepName() {
     return null;
   }

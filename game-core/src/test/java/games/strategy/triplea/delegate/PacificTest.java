@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.moveToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -92,7 +93,7 @@ public class PacificTest extends AbstractDelegateTestCase {
     sz25 = gameData.getMap().getTerritory("25 Sea Zone");
     sz27 = gameData.getMap().getTerritory("27 Sea Zone");
     bridge = getDelegateBridge(americans);
-    bridge.setStepName("japaneseCombatMove");
+    moveToStep(bridge, "japaneseCombatMove");
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -107,8 +108,8 @@ public class PacificTest extends AbstractDelegateTestCase {
   @Test
   public void testNonJapanAttack() {
     // this will get us to round 2
-    bridge.setStepName("japaneseEndTurn");
-    bridge.setStepName("japaneseBattle");
+    moveToStep(bridge, "japaneseEndTurn");
+    moveToStep(bridge, "japaneseBattle");
     final List<Unit> infantryUs = infantry.create(1, americans);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
     whenGetRandom(bridge)
@@ -132,7 +133,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testJapanAttackFirstRound() {
-    bridge.setStepName("japaneseBattle");
+    moveToStep(bridge, "japaneseBattle");
     while (!gameData.getSequence().getStep().getName().equals("japaneseBattle")) {
       gameData.getSequence().next();
     }
@@ -173,7 +174,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanLand2Airfields() {
-    bridge.setStepName("americanCombatMove");
+    moveToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
     route.add(sz5);
@@ -190,7 +191,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanLand1AirfieldStart() {
-    bridge.setStepName("americanCombatMove");
+    moveToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
     route.add(sz5);
@@ -207,7 +208,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanLand1AirfieldEnd() {
-    bridge.setStepName("americanCombatMove");
+    moveToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
     route.add(sz5);
@@ -223,7 +224,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanMoveNavalBase() {
-    bridge.setStepName("americanNonCombatMove");
+    moveToStep(bridge, "americanNonCombatMove");
     final Route route = new Route();
     route.setStart(sz5);
     route.add(sz7);
@@ -241,7 +242,7 @@ public class PacificTest extends AbstractDelegateTestCase {
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
-    bridge.setStepName("japaneseNonCombatMove");
+    moveToStep(bridge, "japaneseNonCombatMove");
     delegate.start();
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
