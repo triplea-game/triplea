@@ -407,8 +407,9 @@ public final class GameDataTestUtil {
    *
    * @return A mock that can be configured using standard Mockito idioms.
    */
-  static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
-    final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge(data, player));
+  static ITestDelegateBridge getDelegateBridge(final PlayerID playerId, final GameData gameData) {
+    final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge(gameData));
+    when(delegateBridge.getPlayerId()).thenReturn(playerId);
     final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);

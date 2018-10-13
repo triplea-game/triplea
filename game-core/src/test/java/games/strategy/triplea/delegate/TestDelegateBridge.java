@@ -34,13 +34,11 @@ import games.strategy.triplea.player.ITripleAPlayer;
 @Deprecated
 class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData gameData;
-  private final PlayerID playerId;
   private String stepName = "no name specified";
   private final IDelegateHistoryWriter delegateHistoryWriter;
 
-  TestDelegateBridge(final GameData data, final PlayerID playerId) {
+  TestDelegateBridge(final GameData data) {
     gameData = data;
-    this.playerId = playerId;
     final History history = new History(gameData);
     final HistoryWriter historyWriter = new HistoryWriter(history);
     historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
@@ -69,7 +67,7 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public PlayerID getPlayerId() {
-    return playerId;
+    return null;
   }
 
   @Override
