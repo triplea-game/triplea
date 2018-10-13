@@ -21,8 +21,6 @@ import games.strategy.triplea.player.ITripleAPlayer;
  */
 @Deprecated
 class TestDelegateBridge implements ITestDelegateBridge {
-  private String stepName = "no name specified";
-
   @Override
   public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
     return 0;
@@ -44,7 +42,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public void setStepName(final String name) {
-    stepName = name;
     final GameData gameData = getData();
     gameData.acquireWriteLock();
     try {
@@ -64,7 +61,7 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public String getStepName() {
-    return stepName;
+    return null;
   }
 
   @Override
