@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,8 +30,10 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.sound.ISound;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
 import junit.framework.AssertionFailedError;
 
@@ -404,7 +407,10 @@ public final class GameDataTestUtil {
    * @return A mock that can be configured using standard Mockito idioms.
    */
   static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
-    return spy(new TestDelegateBridge(data, player));
+    final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge(data, player));
+    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
+    when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
+    return delegateBridge;
   }
 
   static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {

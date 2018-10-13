@@ -23,7 +23,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Node;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 
 /**
  * Not for actual use, suitable for testing. Never returns messages, but can get
@@ -37,8 +36,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData gameData;
   private final PlayerID playerId;
   private String stepName = "no name specified";
-  private final IDisplay dummyDisplay = mock(ITripleADisplay.class);
-  private final ISound soundChannel = mock(ISound.class);
   private final IDelegateHistoryWriter delegateHistoryWriter;
   private final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
 
@@ -122,12 +119,12 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
-    return dummyDisplay;
+    return null;
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    return soundChannel;
+    return null;
   }
 
   @Override
