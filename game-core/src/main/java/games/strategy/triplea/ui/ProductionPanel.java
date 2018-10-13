@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,11 +20,13 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -43,7 +46,6 @@ import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
-import swinglib.JDialogBuilder;
 
 class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
@@ -84,13 +86,12 @@ class ProductionPanel extends JPanel {
    */
   IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
-    final JDialogBuilder dialogBuilder = JDialogBuilder.builder()
-        .contents(this)
-        .title("Produce");
-    if (parent != null) {
-      dialogBuilder.parentFrame(parent);
-    }
-    dialog = dialogBuilder.build();
+    dialog = new JDialog(parent, "Produce", true);
+    dialog.getContentPane().add(this);
+    final String key = "dialog.close";
+    dialog.getRootPane().getActionMap().put(key, SwingAction.of("", e -> dialog.setVisible(false)));
+    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
 
     this.bid = bid;
     this.data = data;
