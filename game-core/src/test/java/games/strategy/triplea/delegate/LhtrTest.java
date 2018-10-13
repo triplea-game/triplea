@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withRemotePlayer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,9 +35,9 @@ public class LhtrTest {
   private GameData gameData;
 
   private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final ITestDelegateBridge delegateBridge) {
-    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveHariKari();
-    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveInFaceOfAa(any());
-    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveKamikaze();
+    verify(withRemotePlayer(delegateBridge), never()).confirmMoveHariKari();
+    verify(withRemotePlayer(delegateBridge), never()).confirmMoveInFaceOfAa(any());
+    verify(withRemotePlayer(delegateBridge), never()).confirmMoveKamikaze();
   }
 
   @BeforeEach

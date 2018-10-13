@@ -39,6 +39,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withRemotePlayer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -100,13 +101,13 @@ public class WW2V3Year41Test {
   private GameData gameData;
 
   private static void givenRemotePlayerWillSelectAttackSubs(final ITestDelegateBridge delegateBridge) {
-    when(delegateBridge.getRemotePlayer().selectAttackSubs(any())).thenReturn(true);
+    when(withRemotePlayer(delegateBridge).selectAttackSubs(any())).thenReturn(true);
   }
 
   private static void givenRemotePlayerWillSelectCasualtiesPer(
       final ITestDelegateBridge delegateBridge,
       final Answer<?> answer) {
-    when(delegateBridge.getRemotePlayer().selectCasualties(
+    when(withRemotePlayer(delegateBridge).selectCasualties(
         any(),
         any(),
         anyInt(),
@@ -125,11 +126,11 @@ public class WW2V3Year41Test {
   }
 
   private static void givenRemotePlayerWillSelectShoreBombard(final ITestDelegateBridge delegateBridge) {
-    when(delegateBridge.getRemotePlayer().selectShoreBombard(any())).thenReturn(true);
+    when(withRemotePlayer(delegateBridge).selectShoreBombard(any())).thenReturn(true);
   }
 
   private static void thenRemotePlayerShouldNotBeAskedToRetreat(final ITestDelegateBridge delegateBridge) {
-    verify(delegateBridge.getRemotePlayer(), never()).retreatQuery(any(), anyBoolean(), any(), any(), any());
+    verify(withRemotePlayer(delegateBridge), never()).retreatQuery(any(), anyBoolean(), any(), any(), any());
   }
 
   @BeforeEach

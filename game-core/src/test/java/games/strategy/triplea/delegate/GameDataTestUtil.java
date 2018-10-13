@@ -33,6 +33,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
+import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.util.IntegerMap;
 import junit.framework.AssertionFailedError;
@@ -408,6 +409,9 @@ public final class GameDataTestUtil {
    */
   static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data) {
     final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge(data, player));
+    final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
+    when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
+    when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
     return delegateBridge;
@@ -429,6 +433,10 @@ public final class GameDataTestUtil {
       final IDelegateBridge delegateBridge,
       final VerificationMode verificationMode) {
     verify(delegateBridge, verificationMode).getRandom(anyInt(), anyInt(), any(), any(), anyString());
+  }
+
+  static ITripleAPlayer withRemotePlayer(final IDelegateBridge delegateBridge) {
+    return (ITripleAPlayer) delegateBridge.getRemotePlayer();
   }
 
   static void load(final Collection<Unit> units, final Route route) {

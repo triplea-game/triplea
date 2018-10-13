@@ -37,7 +37,6 @@ class TestDelegateBridge implements ITestDelegateBridge {
   private final PlayerID playerId;
   private String stepName = "no name specified";
   private final IDelegateHistoryWriter delegateHistoryWriter;
-  private final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
 
   TestDelegateBridge(final GameData data, final PlayerID playerId) {
     gameData = data;
@@ -109,12 +108,12 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public ITripleAPlayer getRemotePlayer() {
-    return remotePlayer;
+    return null;
   }
 
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerID id) {
-    return remotePlayer;
+    return null;
   }
 
   @Override

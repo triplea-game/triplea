@@ -36,6 +36,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.GameDataTestUtil.transport;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withRemotePlayer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -93,7 +94,7 @@ public class RevisedTest {
   private static void givenRemotePlayerWillSelectCasualtiesPer(
       final ITestDelegateBridge delegateBridge,
       final Answer<?> answer) {
-    when(delegateBridge.getRemotePlayer().selectCasualties(
+    when(withRemotePlayer(delegateBridge).selectCasualties(
         any(),
         any(),
         anyInt(),
@@ -112,7 +113,7 @@ public class RevisedTest {
   }
 
   private static void givenRemotePlayerWillConfirmMoveInFaceOfAa(final ITestDelegateBridge delegateBridge) {
-    when(delegateBridge.getRemotePlayer().confirmMoveInFaceOfAa(any())).thenReturn(true);
+    when(withRemotePlayer(delegateBridge).confirmMoveInFaceOfAa(any())).thenReturn(true);
   }
 
   @BeforeEach
