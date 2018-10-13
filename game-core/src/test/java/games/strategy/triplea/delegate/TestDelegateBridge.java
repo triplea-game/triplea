@@ -129,7 +129,7 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public Properties getStepProperties() {
-    return new Properties();
+    return null;
   }
 
   @Override
