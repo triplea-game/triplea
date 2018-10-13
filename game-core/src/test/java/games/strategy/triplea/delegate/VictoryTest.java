@@ -15,6 +15,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
@@ -28,7 +29,7 @@ public class VictoryTest {
   private GameData gameData;
   private PlayerID italians;
   private PlayerID germans;
-  private ITestDelegateBridge testBridge;
+  private IDelegateBridge testBridge;
 
   private IntegerMap<Resource> italianResources;
   private PurchaseDelegate purchaseDelegate;

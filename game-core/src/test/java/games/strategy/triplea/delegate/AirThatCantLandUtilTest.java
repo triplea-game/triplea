@@ -34,7 +34,7 @@ public class AirThatCantLandUtilTest {
     fighterType = GameDataTestUtil.fighter(gameData);
   }
 
-  private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
@@ -123,7 +123,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborCarrier() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -172,7 +172,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandMultiNeighborCarriers() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -224,7 +224,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborLandV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -269,7 +269,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborLandWithRetreatedBattleV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
     final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");

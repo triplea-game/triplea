@@ -18,6 +18,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
@@ -50,7 +51,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   Territory sz24;
   Territory sz25;
   Territory sz27;
-  ITestDelegateBridge bridge;
+  IDelegateBridge bridge;
   MoveDelegate delegate;
 
   @BeforeEach
@@ -101,7 +102,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Override
-  protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  protected IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 

@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -419,8 +418,8 @@ public final class GameDataTestUtil {
    *
    * @return A mock that can be configured using standard Mockito idioms.
    */
-  static ITestDelegateBridge getDelegateBridge(final PlayerID playerId, final GameData gameData) {
-    final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge());
+  static IDelegateBridge getDelegateBridge(final PlayerID playerId, final GameData gameData) {
+    final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     doAnswer(invocation -> {
       final Change change = invocation.getArgument(0);
       gameData.performChange(change);

@@ -85,7 +85,7 @@ import games.strategy.util.CollectionUtils;
 public class RevisedTest {
   private GameData gameData;
 
-  private static void givenRemotePlayerWillSelectDefaultCasualties(final ITestDelegateBridge delegateBridge) {
+  private static void givenRemotePlayerWillSelectDefaultCasualties(final IDelegateBridge delegateBridge) {
     givenRemotePlayerWillSelectCasualtiesPer(delegateBridge, invocation -> {
       final CasualtyList defaultCasualties = invocation.getArgument(11);
       return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
@@ -93,7 +93,7 @@ public class RevisedTest {
   }
 
   private static void givenRemotePlayerWillSelectCasualtiesPer(
-      final ITestDelegateBridge delegateBridge,
+      final IDelegateBridge delegateBridge,
       final Answer<?> answer) {
     when(withRemotePlayer(delegateBridge).selectCasualties(
         any(),
@@ -113,7 +113,7 @@ public class RevisedTest {
         anyBoolean())).thenAnswer(answer);
   }
 
-  private static void givenRemotePlayerWillConfirmMoveInFaceOfAa(final ITestDelegateBridge delegateBridge) {
+  private static void givenRemotePlayerWillConfirmMoveInFaceOfAa(final IDelegateBridge delegateBridge) {
     when(withRemotePlayer(delegateBridge).confirmMoveInFaceOfAa(any())).thenReturn(true);
   }
 
@@ -122,7 +122,7 @@ public class RevisedTest {
     gameData = TestMapGameData.REVISED.getGameData();
   }
 
-  private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
@@ -132,7 +132,7 @@ public class RevisedTest {
     final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
     final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
     final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     moveToStep(bridge, "NonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -175,7 +175,7 @@ public class RevisedTest {
     sub.setSubmerged(true);
     // now move to attack it
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     moveToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -193,7 +193,7 @@ public class RevisedTest {
   public void testRetreatBug() {
     final PlayerID russians = GameDataTestUtil.russians(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(russians);
+    final IDelegateBridge bridge = getDelegateBridge(russians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -246,7 +246,7 @@ public class RevisedTest {
   public void testContinuedBattles() {
     final PlayerID russians = GameDataTestUtil.russians(gameData);
     final PlayerID germans = germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -292,7 +292,7 @@ public class RevisedTest {
     final PlayerID british = british(gameData);
     final PlayerID americans = americans(gameData);
     final Territory uk = territory("United Kingdom", gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -308,7 +308,7 @@ public class RevisedTest {
 
   @Test
   public void testBidPlace() {
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "BidPlace");
     bidPlaceDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     bidPlaceDelegate(gameData).start();
@@ -327,7 +327,7 @@ public class RevisedTest {
   public void testOverFlyBombersDies() {
     final PlayerID british = british(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -348,7 +348,7 @@ public class RevisedTest {
   public void testMultipleOverFlyBombersDies() {
     final PlayerID british = british(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -377,7 +377,7 @@ public class RevisedTest {
     // it should not appear in the battle
     final PlayerID british = british(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -400,7 +400,7 @@ public class RevisedTest {
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -420,7 +420,7 @@ public class RevisedTest {
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -453,7 +453,7 @@ public class RevisedTest {
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -499,7 +499,7 @@ public class RevisedTest {
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -538,7 +538,7 @@ public class RevisedTest {
     gameData.performChange(change);
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -568,7 +568,7 @@ public class RevisedTest {
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -621,7 +621,7 @@ public class RevisedTest {
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -665,7 +665,7 @@ public class RevisedTest {
     // german sub tries to attack a transport in non combat
     // should be an error
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -681,7 +681,7 @@ public class RevisedTest {
     // german sub tries to attack a transport in non combat
     // should be an error
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -697,7 +697,7 @@ public class RevisedTest {
     // german sub tries to attack a transport in non combat
     // should be an error
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = getDelegateBridge(british);
     moveToStep(bridge, "NonCombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -717,7 +717,7 @@ public class RevisedTest {
     gameData.performChange(c);
     // new move delegate
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -775,7 +775,7 @@ public class RevisedTest {
     final String preOwner = fic.getOwner().getName();
     assertEquals(Constants.PLAYER_NAME_JAPANESE, preOwner);
     // Set up the move delegate
-    ITestDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
+    IDelegateBridge delegateBridge = getDelegateBridge(british(gameData));
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveToStep(delegateBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(delegateBridge);
@@ -958,7 +958,7 @@ public class RevisedTest {
     final String attacker = "British";
     final Territory attacked = territory("Libya", gameData);
     final Territory from = territory("Anglo Egypt", gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -980,7 +980,7 @@ public class RevisedTest {
     // 1 destroyer attacks 1 destroyer
     addTo(from, destroyer(gameData).create(1, british(gameData)));
     addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -1002,7 +1002,7 @@ public class RevisedTest {
     // 1 sub attacks 1 sub
     addTo(from, submarine(gameData).create(1, british(gameData)));
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -1040,7 +1040,7 @@ public class RevisedTest {
     addTo(from, submarine(gameData).create(2, british(gameData)));
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
     addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -1099,7 +1099,7 @@ public class RevisedTest {
     addTo(from, battleship(gameData).create(1, british(gameData)));
     addTo(attacked, submarine(gameData).create(3, germans(gameData)));
     addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -1160,7 +1160,7 @@ public class RevisedTest {
     addTo(from, submarine(gameData).create(1, british(gameData)));
     addTo(from, destroyer(gameData).create(1, british(gameData)));
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -1200,7 +1200,7 @@ public class RevisedTest {
     addTo(from, destroyer(gameData).create(1, british(gameData)));
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
     addTo(attacked, battleship(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -1262,7 +1262,7 @@ public class RevisedTest {
     addTo(from, destroyer(gameData).create(1, british(gameData)));
     addTo(attacked, submarine(gameData).create(1, germans(gameData)));
     addTo(attacked, destroyer(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -1307,7 +1307,7 @@ public class RevisedTest {
   @Test
   public void testRocketsDontFireInConquered() {
     final MoveDelegate move = moveDelegate(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
     moveToStep(bridge, "CombatMove");
     move.setDelegateBridgeAndPlayer(bridge);
     move.start();
@@ -1326,7 +1326,7 @@ public class RevisedTest {
   public void testTechRolls() {
     // Set up the test
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge delegateBridge = getDelegateBridge(germans);
+    final IDelegateBridge delegateBridge = getDelegateBridge(germans);
     moveToStep(delegateBridge, "germanTech");
     final TechnologyDelegate techDelegate = techDelegate(gameData);
     techDelegate.setDelegateBridgeAndPlayer(delegateBridge);
@@ -1382,7 +1382,7 @@ public class RevisedTest {
     addTo(sz6, destroyer(gameData).create(2, british));
     addTo(sz5, transport(gameData).create(3, germans));
     addTo(germany, armour(gameData).create(3, germans));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
     moveToStep(bridge, "CombatMove");
     givenRemotePlayerWillSelectDefaultCasualties(bridge);
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1419,7 +1419,7 @@ public class RevisedTest {
   public void testCanalMovePass() {
     final Territory sz15 = territory("15 Sea Zone", gameData);
     final Territory sz34 = territory("34 Sea Zone", gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(british(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(british(gameData));
     moveToStep(bridge, "CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
@@ -1435,7 +1435,7 @@ public class RevisedTest {
     final Territory sz34 = territory("34 Sea Zone", gameData);
     // clear the british in sz 15
     removeFrom(sz15, sz15.getUnits().getUnits());
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
     moveToStep(bridge, "CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);

@@ -21,12 +21,13 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public final class UnitComparatorTest {
   private static void startCombatMoveFor(final PlayerID playerId, final GameData gameData) {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(playerId, gameData);
+    final IDelegateBridge bridge = getDelegateBridge(playerId, gameData);
     moveToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();

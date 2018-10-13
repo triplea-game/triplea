@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class MustFightBattleTest extends AbstractDelegateTestCase {
@@ -31,7 +32,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     addTo(sz33, GameDataTestUtil.americanCruiser(twwGameData).create(1, usa));
     final Territory sz40 = territory("40 Sea Zone", twwGameData);
     addTo(sz40, GameDataTestUtil.germanMine(twwGameData).create(1, germany));
-    final ITestDelegateBridge bridge = GameDataTestUtil.getDelegateBridge(usa, twwGameData);
+    final IDelegateBridge bridge = GameDataTestUtil.getDelegateBridge(usa, twwGameData);
     moveToStep(bridge, "CombatMove");
     moveDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(twwGameData).start();

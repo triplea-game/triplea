@@ -35,7 +35,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class LhtrTest {
   private GameData gameData;
 
-  private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final ITestDelegateBridge delegateBridge) {
+  private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final IDelegateBridge delegateBridge) {
     verify(withRemotePlayer(delegateBridge), never()).confirmMoveHariKari();
     verify(withRemotePlayer(delegateBridge), never()).confirmMoveInFaceOfAa(any());
     verify(withRemotePlayer(delegateBridge), never()).confirmMoveKamikaze();
@@ -46,7 +46,7 @@ public class LhtrTest {
     gameData = TestMapGameData.LHTR.getGameData();
   }
 
-  private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
@@ -55,7 +55,7 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
@@ -83,7 +83,7 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
@@ -107,7 +107,7 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = getDelegateBridge(germans);
     moveToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();

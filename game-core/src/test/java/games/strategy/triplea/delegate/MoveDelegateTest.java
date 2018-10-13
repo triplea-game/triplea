@@ -24,13 +24,14 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 public class MoveDelegateTest extends AbstractDelegateTestCase {
   MoveDelegate delegate;
-  ITestDelegateBridge bridge;
+  IDelegateBridge bridge;
 
   @BeforeEach
   public void setupMoveDelegate() {
