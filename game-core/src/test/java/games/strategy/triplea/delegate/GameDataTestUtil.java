@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -21,6 +22,7 @@ import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -418,7 +420,13 @@ public final class GameDataTestUtil {
    * @return A mock that can be configured using standard Mockito idioms.
    */
   static ITestDelegateBridge getDelegateBridge(final PlayerID playerId, final GameData gameData) {
-    final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge(gameData));
+    final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge());
+    doAnswer(invocation -> {
+      final Change change = invocation.getArgument(0);
+      gameData.performChange(change);
+      return null;
+    }).when(delegateBridge).addChange(any());
+    when(delegateBridge.getData()).thenReturn(gameData);
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
     final IDelegateHistoryWriter delegateHistoryWriter = newFakeDelegateHistoryWriter(gameData);
     when(delegateBridge.getHistoryWriter()).thenReturn(delegateHistoryWriter);
