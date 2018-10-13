@@ -79,7 +79,7 @@ class ErrorReportWindow {
                 .build()))
             .addHorizontalStrut(20)
             .add(errorReportComponents.createPreviewButton(frame, ErrorReportComponents.FormHandler.builder()
-                .guiDataHandler((jframe, data) -> new PreviewWindow().build(jframe, data).setVisible(true))
+                .guiDataHandler((parentFrame, data) -> new PreviewWindow().build(parentFrame, data).setVisible(true))
                 .guiReader(guiReader)
                 .build()))
             .addHorizontalStrut(100)
