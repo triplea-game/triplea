@@ -10,6 +10,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,14 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.History;
+import games.strategy.engine.history.HistoryWriter;
+import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.engine.message.ChannelMessenger;
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.Node;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -409,13 +419,28 @@ public final class GameDataTestUtil {
    */
   static ITestDelegateBridge getDelegateBridge(final PlayerID playerId, final GameData gameData) {
     final ITestDelegateBridge delegateBridge = spy(new TestDelegateBridge(gameData));
+    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
+    final IDelegateHistoryWriter delegateHistoryWriter = newFakeDelegateHistoryWriter(gameData);
+    when(delegateBridge.getHistoryWriter()).thenReturn(delegateHistoryWriter);
     when(delegateBridge.getPlayerId()).thenReturn(playerId);
     final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
-    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
     return delegateBridge;
+  }
+
+  private static IDelegateHistoryWriter newFakeDelegateHistoryWriter(final GameData gameData) {
+    final HistoryWriter historyWriter = new HistoryWriter(new History(gameData));
+    historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
+    final IServerMessenger serverMessenger = mock(IServerMessenger.class);
+    try {
+      when(serverMessenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
+    } catch (final UnknownHostException e) {
+      throw new IllegalStateException("test cannot run without network interface", e);
+    }
+    when(serverMessenger.isServer()).thenReturn(true);
+    return new DelegateHistoryWriter(new ChannelMessenger(new UnifiedMessenger(serverMessenger)));
   }
 
   static OngoingStubbing<int[]> whenGetRandom(final IDelegateBridge delegateBridge) {

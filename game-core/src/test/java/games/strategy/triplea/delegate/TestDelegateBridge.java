@@ -1,10 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import games.strategy.engine.data.Change;
@@ -12,15 +7,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
-import games.strategy.engine.history.DelegateHistoryWriter;
-import games.strategy.engine.history.History;
-import games.strategy.engine.history.HistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.net.IServerMessenger;
-import games.strategy.net.Node;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.player.ITripleAPlayer;
 
@@ -35,23 +23,9 @@ import games.strategy.triplea.player.ITripleAPlayer;
 class TestDelegateBridge implements ITestDelegateBridge {
   private final GameData gameData;
   private String stepName = "no name specified";
-  private final IDelegateHistoryWriter delegateHistoryWriter;
 
-  TestDelegateBridge(final GameData data) {
-    gameData = data;
-    final History history = new History(gameData);
-    final HistoryWriter historyWriter = new HistoryWriter(history);
-    historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
-    final IServerMessenger messenger = mock(IServerMessenger.class);
-    try {
-      when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
-    } catch (final UnknownHostException e) {
-      throw new IllegalStateException("test cannot run without network interface", e);
-    }
-    when(messenger.isServer()).thenReturn(true);
-    final ChannelMessenger channelMessenger =
-        new ChannelMessenger(new UnifiedMessenger(messenger));
-    delegateHistoryWriter = new DelegateHistoryWriter(channelMessenger);
+  TestDelegateBridge(final GameData gameData) {
+    this.gameData = gameData;
   }
 
   @Override
@@ -101,7 +75,7 @@ class TestDelegateBridge implements ITestDelegateBridge {
 
   @Override
   public IDelegateHistoryWriter getHistoryWriter() {
-    return delegateHistoryWriter;
+    return null;
   }
 
   @Override
