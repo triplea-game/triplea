@@ -1,9 +1,9 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
-import static games.strategy.triplea.delegate.GameDataTestUtil.moveToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
@@ -33,7 +33,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     final Territory sz40 = territory("40 Sea Zone", twwGameData);
     addTo(sz40, GameDataTestUtil.germanMine(twwGameData).create(1, germany));
     final IDelegateBridge bridge = GameDataTestUtil.getDelegateBridge(usa, twwGameData);
-    moveToStep(bridge, "CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(twwGameData).start();
     move(sz33.getUnits().getUnits(), new Route(sz33, sz40));

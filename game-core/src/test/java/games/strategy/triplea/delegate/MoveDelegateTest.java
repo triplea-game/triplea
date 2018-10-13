@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.moveToStep;
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
@@ -36,7 +36,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @BeforeEach
   public void setupMoveDelegate() {
     bridge = super.getDelegateBridge(british);
-    moveToStep(bridge, "britishCombatMove");
+    advanceToStep(bridge, "britishCombatMove");
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
@@ -495,7 +495,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testTransportCantLoadUnloadAfterBattle() {
     bridge = super.getDelegateBridge(russians);
-    moveToStep(bridge, "russianCombatMove");
+    advanceToStep(bridge, "russianCombatMove");
     westEurope.setOwner(russians);
     // Attacking force
     final List<Unit> attackTrns = transport.create(1, russians);
@@ -505,7 +505,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, bridge, mock(IBattle.class), "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(2, roll.getHits());
-    moveToStep(bridge, "russianNonCombatMove");
+    advanceToStep(bridge, "russianNonCombatMove");
     // Test the move
     final Collection<Unit> moveInf = infantry.create(2, russians);
     final Route route = new Route();
@@ -520,7 +520,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testLoadUnloadLoadMoveTransports() {
     bridge = super.getDelegateBridge(japanese);
-    moveToStep(bridge, "japaneseCombatMove");
+    advanceToStep(bridge, "japaneseCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     // Set up the test
@@ -940,7 +940,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testReloadTransportAfterRetreatAmphibious() {
     bridge = super.getDelegateBridge(british);
-    moveToStep(bridge, "britishCombatMove");
+    advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
@@ -1002,7 +1002,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testReloadTransportAfterDyingAmphibious() {
     bridge = super.getDelegateBridge(british);
-    moveToStep(bridge, "britishCombatMove");
+    advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
@@ -1064,7 +1064,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testReloadTransportAfterRetreatAllied() {
     bridge = super.getDelegateBridge(british);
-    moveToStep(bridge, "britishCombatMove");
+    advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
@@ -1120,7 +1120,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testReloadTransportAfterDyingAllied() {
     bridge = super.getDelegateBridge(british);
-    moveToStep(bridge, "britishCombatMove");
+    advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
     route.setStart(northSea);
     route.add(balticSeaZone);
@@ -1187,7 +1187,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   public void testNonCombatAttack() {
-    moveToStep(bridge, "britishNonCombatMove");
+    advanceToStep(bridge, "britishNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     final Route route = new Route();
@@ -1201,7 +1201,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   public void testNonCombatAttackNeutral() {
-    moveToStep(bridge, "britishNonCombatMove");
+    advanceToStep(bridge, "britishNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     final Route route = new Route();
@@ -1224,7 +1224,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // go to non combat
-    moveToStep(bridge, "britishNonCombatMove");
+    advanceToStep(bridge, "britishNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     // move more into libya
@@ -1240,7 +1240,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testAaCantMoveToConquered() {
     bridge = super.getDelegateBridge(japanese);
-    moveToStep(bridge, "japaneseCombatMove");
+    advanceToStep(bridge, "japaneseCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     final Route route = new Route();

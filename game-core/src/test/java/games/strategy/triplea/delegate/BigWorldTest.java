@@ -1,10 +1,10 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
-import static games.strategy.triplea.delegate.GameDataTestUtil.moveToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ public class BigWorldTest {
     final Territory sz27 = territory("SZ 27 Aegean Sea", gameData);
     final Territory sz29 = territory("SZ 29 Black Sea", gameData);
     final IDelegateBridge bridge = getDelegateBridge(british(gameData), gameData);
-    moveToStep(bridge, "CombatMove");
+    advanceToStep(bridge, "CombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();

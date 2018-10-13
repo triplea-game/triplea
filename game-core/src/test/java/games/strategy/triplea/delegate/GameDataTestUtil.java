@@ -472,7 +472,7 @@ public final class GameDataTestUtil {
     return (ITripleAPlayer) delegateBridge.getRemotePlayer();
   }
 
-  static void moveToStep(final IDelegateBridge delegateBridge, final String stepName) {
+  static void advanceToStep(final IDelegateBridge delegateBridge, final String stepName) {
     final GameData gameData = delegateBridge.getData();
     gameData.acquireWriteLock();
     try {

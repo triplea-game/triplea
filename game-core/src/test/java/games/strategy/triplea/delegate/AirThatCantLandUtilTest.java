@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.moveToStep;
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -146,7 +146,7 @@ public class AirThatCantLandUtilTest {
     final int preCountAirSz44 = sz44.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    moveToStep(bridge, "CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits().getUnits(), gameData.getMap().getRoute(sz45, sz44));
@@ -197,7 +197,7 @@ public class AirThatCantLandUtilTest {
     final int preCountSz43 = sz43.getUnits().size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    moveToStep(bridge, "CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits().getUnits(), gameData.getMap().getRoute(sz45, sz44));
@@ -247,7 +247,7 @@ public class AirThatCantLandUtilTest {
     final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    moveToStep(bridge, "CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz11.getUnits().getUnits(), gameData.getMap().getRoute(sz11, sz9));
@@ -296,7 +296,7 @@ public class AirThatCantLandUtilTest {
     final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    moveToStep(bridge, "CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz11.getUnits().getUnits(), gameData.getMap().getRoute(sz11, sz9));
