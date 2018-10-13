@@ -7,9 +7,12 @@ description = 'TripleA Http Server'
 mainClassName = 'org.triplea.server.http.spark.SparkServerMain'
 
 dependencies {
+    implementation project(':http-client')
     implementation 'com.sparkjava:spark-core:2.3'
-
+    implementation 'com.google.code.gson:gson:2.7'
+    
     testImplementation project(':test-common')
+    testImplementation 'uk.co.datumedge:hamcrest-json:0.1'
 }
 
 jar {

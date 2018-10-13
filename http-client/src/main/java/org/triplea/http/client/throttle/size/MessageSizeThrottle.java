@@ -2,16 +2,16 @@ package org.triplea.http.client.throttle.size;
 
 import java.util.function.Consumer;
 
-import org.triplea.http.data.error.report.ErrorReport;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 /**
  * Checks size of a single message and if too large throws an exception.
+ * 
+ * @param <T> Request data type.
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class MessageSizeThrottle implements Consumer<ErrorReport> {
+public class MessageSizeThrottle<T> implements Consumer<T> {
 
   /**
    * An upper bound where we will no longer send a message if it is too long.
@@ -29,9 +29,9 @@ public class MessageSizeThrottle implements Consumer<ErrorReport> {
   }
 
   @Override
-  public void accept(final ErrorReport errorReport) {
-    if (errorReport.toString().length() > characterLimit) {
-      throw new MessageExceedsMaxSizeException(errorReport);
+  public void accept(final T message) {
+    if (message.toString().length() > characterLimit) {
+      throw new MessageExceedsMaxSizeException(message.toString());
     }
   }
 }

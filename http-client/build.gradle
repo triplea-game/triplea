@@ -1,7 +1,6 @@
 description = 'Http client library for http-server, provides an API for client-server interactions'
 
 dependencies {
-    implementation project(':http-data')
     implementation 'com.netflix.feign:feign-core:8.18.0'
     implementation 'com.netflix.feign:feign-gson:8.18.0'
 
