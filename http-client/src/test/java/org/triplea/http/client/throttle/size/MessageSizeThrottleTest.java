@@ -1,11 +1,9 @@
 package org.triplea.http.client.throttle.size;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import org.junit.jupiter.api.Test;
-
 import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportDetails;
 

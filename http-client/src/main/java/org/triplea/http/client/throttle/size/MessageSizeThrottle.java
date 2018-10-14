@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * Checks size of a single message and if too large throws an exception.
- * 
+ *
  * @param <T> Request data type.
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

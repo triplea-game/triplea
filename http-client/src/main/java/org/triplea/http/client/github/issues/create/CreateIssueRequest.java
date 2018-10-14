@@ -11,6 +11,6 @@ import lombok.Getter;
 @EqualsAndHashCode
 @Getter
 public class CreateIssueRequest {
-  private String title;
-  private String body;
+  private final String title;
+  private final String body;
 }

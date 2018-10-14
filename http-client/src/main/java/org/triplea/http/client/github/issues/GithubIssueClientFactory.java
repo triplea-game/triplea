@@ -12,7 +12,7 @@ public class GithubIssueClientFactory {
 
   /**
    * Creates an http client that can post a new github issue.
-   * 
+   *
    * @param authToken Github Personal access token with repo permissions
    * @param githubOrg The name of the github org, used as part of URL.
    * @param githubRepo The name of the github repo, used as part of URL

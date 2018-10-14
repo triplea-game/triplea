@@ -18,13 +18,13 @@ public class ErrorReportResponse {
   /**
    * A link to the github issue created (empty if there were problems creating the link).
    */
-  private String githubIssueLink;
+  private final String githubIssueLink;
 
   /**
    * Any errors from server while creating the error report.
    */
   @Getter
-  private String error;
+  private final String error;
 
 
   /**

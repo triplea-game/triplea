@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  * Wrapper around feign clients to do provide universal http send/receive functionality.
  * Notably this class provides a unified interface for throttling, for interpretting errors/exceptions
  * or status code 500's.
- * 
+ *
  * @param <ClientTypeT> The feign client interface, should be an interface type that has feign annotations on it.
  * @param <RequestT> The data type we are sending to the server, will be converted to a JSON.
  * @param <ResponseT> Data type coming back from server.
