@@ -35,7 +35,7 @@ class RateLimitingThrottleTest {
   @Test
   void throttleNumberOfRequestPer() {
     final Consumer<ErrorReport> throttle =
-        new RateLimitingThrottle(MIN_MILLIS_BETWEEN_REQUSETS, instantSupplier);
+        new RateLimitingThrottle<>(MIN_MILLIS_BETWEEN_REQUSETS, instantSupplier);
 
     Mockito.when(instantSupplier.get())
         .thenReturn(

@@ -20,7 +20,7 @@ class MessageSizeThrottleTest {
     final int characterLimit = ERROR_REPORT.toString().length() - 1;
 
     assertThrows(MessageExceedsMaxSizeException.class,
-        () -> new MessageSizeThrottle(characterLimit)
+        () -> new MessageSizeThrottle<>(characterLimit)
             .accept(ERROR_REPORT));
   }
 
@@ -29,7 +29,7 @@ class MessageSizeThrottleTest {
   void messageSizeUnderLimitIsAllowed() {
     final int characterLimit = ERROR_REPORT.toString().length() + 1;
 
-    assertNotThrows(() -> new MessageSizeThrottle(characterLimit)
+    assertNotThrows(() -> new MessageSizeThrottle<>(characterLimit)
         .accept(ERROR_REPORT));
   }
 }
