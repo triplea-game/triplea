@@ -79,11 +79,11 @@ class ErrorReportComponents {
         .build();
   }
 
-  JButton createPreviewButton(final JFrame jframe, final FormHandler config) {
+  JButton createPreviewButton(final JFrame frame, final FormHandler config) {
     return JButtonBuilder.builder()
         .title("Preview")
         .toolTip("Preview the full error report that will be uploaded")
-        .actionListener(() -> config.guiDataHandler.accept(jframe, config.guiReader.get()))
+        .actionListener(() -> config.guiDataHandler.accept(frame, config.guiReader.get()))
         .componentName(Names.PREVIEW_BUTTON.toString())
         .build();
   }
