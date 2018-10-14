@@ -86,7 +86,7 @@ class ErrorReportClientTest {
                 "", LINK))));
   }
 
-  private ServiceResponse<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
+  private static ServiceResponse<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
     WireMock.configureFor("localhost", wireMockServer.port());
     final URI hostUri = URI.create(wireMockServer.url(""));
     return new ErrorReportClientFactory().newErrorUploader()
@@ -107,7 +107,7 @@ class ErrorReportClientTest {
         .forEach(fault -> testFaultHandling(wireMockServer, fault));
   }
 
-  private void testFaultHandling(final WireMockServer wireMockServer, final Fault fault) {
+  private static void testFaultHandling(final WireMockServer wireMockServer, final Fault fault) {
     givenFaultyConnection(wireMockServer, fault);
 
     final ServiceResponse<ErrorReportResponse> response = doServiceCall(wireMockServer);
