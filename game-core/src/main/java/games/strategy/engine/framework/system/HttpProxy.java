@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
+
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -40,16 +42,14 @@ public class HttpProxy {
    */
   public static void updateSystemProxy() {
     final Optional<InetSocketAddress> address = getSystemProxy();
-
-    final String host;
-    final String port;
-
+    final @Nullable String host;
+    final @Nullable Integer port;
     if (!address.isPresent()) {
-      host = "";
-      port = "";
+      host = null;
+      port = null;
     } else {
       host = Strings.nullToEmpty(address.get().getHostName()).trim();
-      port = host.isEmpty() ? "" : String.valueOf(address.get().getPort());
+      port = host.isEmpty() ? null : address.get().getPort();
     }
 
     ClientSetting.proxyHost.save(host);
@@ -85,15 +85,11 @@ public class HttpProxy {
    * Attaches proxy host and port values, if any, to the http request parameter.
    */
   public static void addProxy(final HttpRequestBase request) {
-    final String host = ClientSetting.proxyHost.value();
-    final String port = ClientSetting.proxyPort.value();
-
-    if (Strings.emptyToNull(host) != null && Strings.emptyToNull(port) != null) {
+    if (ClientSetting.proxyHost.isSet() && ClientSetting.proxyPort.isSet()) {
       request.setConfig(RequestConfig
           .copy(request.getConfig())
-          .setProxy(new HttpHost(host, Integer.parseInt(port)))
+          .setProxy(new HttpHost(ClientSetting.proxyHost.value(), ClientSetting.proxyPort.value()))
           .build());
     }
   }
-
 }

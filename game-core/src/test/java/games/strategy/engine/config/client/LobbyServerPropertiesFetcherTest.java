@@ -75,7 +75,7 @@ public class LobbyServerPropertiesFetcherTest {
     private GameSetting<String> testLobbyHostSetting;
 
     @Mock
-    private GameSetting<String> testLobbyPortSetting;
+    private GameSetting<Integer> testLobbyPortSetting;
 
     private Optional<LobbyServerProperties> result;
 
@@ -98,7 +98,7 @@ public class LobbyServerPropertiesFetcherTest {
 
     private void givenTestLobbyPortIsSetTo(final int port) {
       when(testLobbyPortSetting.isSet()).thenReturn(true);
-      when(testLobbyPortSetting.intValue()).thenReturn(port);
+      when(testLobbyPortSetting.value()).thenReturn(port);
     }
 
     private void whenGetTestOverrideProperties() {

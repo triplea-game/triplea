@@ -4,15 +4,11 @@ import java.io.File;
 
 final class StringClientSetting extends ClientSetting<String> {
   StringClientSetting(final String name) {
-    this(name, "");
+    super(name);
   }
 
   StringClientSetting(final String name, final String defaultValue) {
     super(name, defaultValue);
-  }
-
-  StringClientSetting(final String name, final int defaultValue) {
-    super(name, String.valueOf(defaultValue));
   }
 
   StringClientSetting(final String name, final File defaultValue) {

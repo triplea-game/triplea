@@ -38,7 +38,7 @@ final class SelectionComponentFactory {
   static SelectionComponent<JComponent> proxySettings(
       final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
       final ClientSetting<String> proxyHostClientSetting,
-      final ClientSetting<String> proxyPortClientSetting) {
+      final ClientSetting<Integer> proxyPortClientSetting) {
     return new SelectionComponent<JComponent>() {
       final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.value();
       final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
@@ -47,7 +47,7 @@ final class SelectionComponentFactory {
       final JRadioButton userButton =
           new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       final JTextField hostText = new JTextField(proxyHostClientSetting.value(), 20);
-      final JTextField portText = new JTextField(proxyPortClientSetting.value(), 6);
+      final JTextField portText = new JTextField(proxyPortClientSetting.stringValue(), 6);
       final JPanel radioPanel = JPanelBuilder.builder()
           .verticalBoxLayout()
           .addLeftJustified(noneButton)
@@ -133,7 +133,7 @@ final class SelectionComponentFactory {
       public void resetToDefault() {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.defaultValue());
-        portText.setText(proxyPortClientSetting.defaultValue());
+        portText.setText(proxyPortClientSetting.defaultStringValue());
         setProxyChoice(proxyChoiceClientSetting.defaultValue());
       }
 
@@ -148,7 +148,7 @@ final class SelectionComponentFactory {
       public void reset() {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.value());
-        portText.setText(proxyPortClientSetting.value());
+        portText.setText(proxyPortClientSetting.stringValue());
         setProxyChoice(proxyChoiceClientSetting.value());
       }
     };
@@ -163,7 +163,7 @@ final class SelectionComponentFactory {
    * Text field that only accepts numbers between a certain range.
    */
   static SelectionComponent<JComponent> intValueRange(
-      final ClientSetting<String> clientSetting,
+      final ClientSetting<Integer> clientSetting,
       final int lo,
       final int hi) {
     return intValueRange(clientSetting, lo, hi, false);
@@ -172,11 +172,14 @@ final class SelectionComponentFactory {
   /**
    * Text field that only accepts numbers between a certain range.
    */
-  static SelectionComponent<JComponent> intValueRange(final ClientSetting<String> clientSetting, final int lo,
-      final int hi, final boolean allowUnset) {
+  static SelectionComponent<JComponent> intValueRange(
+      final ClientSetting<Integer> clientSetting,
+      final int lo,
+      final int hi,
+      final boolean allowUnset) {
     return new SelectionComponent<JComponent>() {
       private final JSpinner component = new JSpinner(new SpinnerNumberModel(
-          toValidIntValue(clientSetting.value()), lo - (allowUnset ? 1 : 0), hi, 1));
+          toValidIntValue(clientSetting.stringValue()), lo - (allowUnset ? 1 : 0), hi, 1));
 
       @Override
       public JComponent getUiComponent() {
@@ -208,12 +211,12 @@ final class SelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        component.setValue(toValidIntValue(clientSetting.defaultValue()));
+        component.setValue(toValidIntValue(clientSetting.defaultStringValue()));
       }
 
       @Override
       public void reset() {
-        component.setValue(toValidIntValue(clientSetting.value()));
+        component.setValue(toValidIntValue(clientSetting.stringValue()));
       }
     };
   }

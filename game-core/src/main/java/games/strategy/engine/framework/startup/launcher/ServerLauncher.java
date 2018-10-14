@@ -154,7 +154,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (abortLaunch) {
         serverReady.countDownAll();
       }
-      if (!serverReady.await(ClientSetting.serverStartGameSyncWaitTime.intValue(), TimeUnit.SECONDS)) {
+      if (!serverReady.await(ClientSetting.serverStartGameSyncWaitTime.value(), TimeUnit.SECONDS)) {
         log.warning("Aborting launch - waiting for clients to be ready timed out!");
         abortLaunch = true;
       }
@@ -184,7 +184,7 @@ public class ServerLauncher extends AbstractLauncher {
           // wait for the connection handler to notice, and shut us down
           Interruptibles.await(() -> {
             if (!abortLaunch
-                && !errorLatch.await(ClientSetting.serverObserverJoinWaitTime.intValue(), TimeUnit.SECONDS)) {
+                && !errorLatch.await(ClientSetting.serverObserverJoinWaitTime.value(), TimeUnit.SECONDS)) {
               log.warning("Waiting on error latch timed out!");
             }
           });

@@ -64,9 +64,9 @@ public final class LobbyServerPropertiesFetcher {
   @VisibleForTesting
   static Optional<LobbyServerProperties> getTestOverrideProperties(
       final GameSetting<String> testLobbyHostSetting,
-      final GameSetting<String> testLobbyPortSetting) {
+      final GameSetting<Integer> testLobbyPortSetting) {
     if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet()) {
-      return Optional.of(new LobbyServerProperties(testLobbyHostSetting.value(), testLobbyPortSetting.intValue()));
+      return Optional.of(new LobbyServerProperties(testLobbyHostSetting.value(), testLobbyPortSetting.value()));
     }
 
     return Optional.empty();
@@ -101,7 +101,7 @@ public final class LobbyServerPropertiesFetcher {
       // graceful recovery case, use the last lobby address we knew about
       return new LobbyServerProperties(
           ClientSetting.lobbyLastUsedHost.value(),
-          ClientSetting.lobbyLastUsedPort.intValue());
+          ClientSetting.lobbyLastUsedPort.value());
     }
   }
 
