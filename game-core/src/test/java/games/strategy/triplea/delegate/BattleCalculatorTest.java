@@ -10,6 +10,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.setSelectAaCasual
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withRemotePlayer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -35,10 +37,10 @@ import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CollectionUtils;
 
 public class BattleCalculatorTest {
-  private ITestDelegateBridge bridge;
+  private IDelegateBridge bridge;
 
   private void givenRemotePlayerWillSelectStrategicBombersForCasualties() {
-    when(bridge.getRemotePlayer().selectCasualties(
+    when(withRemotePlayer(bridge).selectCasualties(
         any(),
         any(),
         anyInt(),

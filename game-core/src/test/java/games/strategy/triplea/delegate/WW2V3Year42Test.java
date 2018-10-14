@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
@@ -12,6 +13,7 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withRemotePlayer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,6 +29,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public class WW2V3Year42Test {
@@ -37,7 +40,7 @@ public class WW2V3Year42Test {
     gameData = TestMapGameData.WW2V3_1942.getGameData();
   }
 
-  private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
@@ -47,8 +50,8 @@ public class WW2V3Year42Test {
     final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
     final PlayerID germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans);
+    advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Route sz13To12 = new Route();
@@ -68,11 +71,11 @@ public class WW2V3Year42Test {
     final Territory germany = territory("Germany", gameData);
     final PlayerID germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("CombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans);
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    when(bridge.getRemotePlayer().shouldBomberBomb(any())).thenReturn(true);
+    when(withRemotePlayer(bridge).shouldBomberBomb(any())).thenReturn(true);
     // remove the russian units
     removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.unitCanBeDamaged().negate()));
     // move the bomber to attack
@@ -94,8 +97,8 @@ public class WW2V3Year42Test {
     final Territory sz7 = territory("7 Sea Zone", gameData);
     // add a russian battlship
     addTo(sz5, battleship(gameData).create(1, russians(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
-    bridge.setStepName("CombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // attack with a german sub
@@ -120,8 +123,8 @@ public class WW2V3Year42Test {
     // add an allied carrier and a fighter
     addTo(sz5, carrier(gameData).create(1, italians(gameData)));
     addTo(sz5, fighter(gameData).create(1, germans(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
-    bridge.setStepName("CombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // attack with a german sub
@@ -144,8 +147,8 @@ public class WW2V3Year42Test {
     final Territory sz7 = territory("7 Sea Zone", gameData);
     // add a russian battlship
     addTo(sz5, battleship(gameData).create(1, russians(gameData)));
-    final ITestDelegateBridge bridge = getDelegateBridge(germans(gameData));
-    bridge.setStepName("CombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     // attack with a german sub

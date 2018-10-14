@@ -1,7 +1,9 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
+import static games.strategy.triplea.delegate.GameDataTestUtil.withRemotePlayer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,10 +35,10 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class LhtrTest {
   private GameData gameData;
 
-  private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final ITestDelegateBridge delegateBridge) {
-    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveHariKari();
-    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveInFaceOfAa(any());
-    verify(delegateBridge.getRemotePlayer(), never()).confirmMoveKamikaze();
+  private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final IDelegateBridge delegateBridge) {
+    verify(withRemotePlayer(delegateBridge), never()).confirmMoveHariKari();
+    verify(withRemotePlayer(delegateBridge), never()).confirmMoveInFaceOfAa(any());
+    verify(withRemotePlayer(delegateBridge), never()).confirmMoveKamikaze();
   }
 
   @BeforeEach
@@ -44,7 +46,7 @@ public class LhtrTest {
     gameData = TestMapGameData.LHTR.getGameData();
   }
 
-  private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
@@ -53,8 +55,8 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("germanNonCombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans);
+    advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     final Territory baltic = gameData.getMap().getTerritory("5 Sea Zone");
@@ -81,8 +83,8 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("germanNonCombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans);
+    advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     final Territory baltic = gameData.getMap().getTerritory("5 Sea Zone");
@@ -105,8 +107,8 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(germans);
-    bridge.setStepName("germanNonCombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(germans);
+    advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     // move 1 fighter over the aa gun in caucus

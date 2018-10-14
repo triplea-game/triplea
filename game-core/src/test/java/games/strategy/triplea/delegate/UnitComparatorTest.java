@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
@@ -20,13 +21,14 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public final class UnitComparatorTest {
   private static void startCombatMoveFor(final PlayerID playerId, final GameData gameData) {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(playerId, gameData);
-    bridge.setStepName("CombatMove");
+    final IDelegateBridge bridge = getDelegateBridge(playerId, gameData);
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
   }

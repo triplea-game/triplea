@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +34,7 @@ public class AirThatCantLandUtilTest {
     fighterType = GameDataTestUtil.fighter(gameData);
   }
 
-  private ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
@@ -122,7 +123,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborCarrier() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -145,7 +146,7 @@ public class AirThatCantLandUtilTest {
     final int preCountAirSz44 = sz44.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    bridge.setStepName("CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits().getUnits(), gameData.getMap().getRoute(sz45, sz44));
@@ -171,7 +172,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandMultiNeighborCarriers() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -196,7 +197,7 @@ public class AirThatCantLandUtilTest {
     final int preCountSz43 = sz43.getUnits().size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    bridge.setStepName("CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits().getUnits(), gameData.getMap().getRoute(sz45, sz44));
@@ -223,7 +224,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborLandV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -246,7 +247,7 @@ public class AirThatCantLandUtilTest {
     final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    bridge.setStepName("CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz11.getUnits().getUnits(), gameData.getMap().getRoute(sz11, sz9));
@@ -268,7 +269,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborLandWithRetreatedBattleV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final ITestDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = getDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
     final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
@@ -295,7 +296,7 @@ public class AirThatCantLandUtilTest {
     final int preCountAirSz9 = sz9.getUnits().getMatches(Matches.unitIsAir()).size();
     // now move to attack
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    bridge.setStepName("CombatMove");
+    advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz11.getUnits().getUnits(), gameData.getMap().getRoute(sz11, sz9));

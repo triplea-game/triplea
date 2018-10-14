@@ -10,6 +10,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -169,7 +170,7 @@ public abstract class AbstractDelegateTestCase {
     assertNotNull(string, string);
   }
 
-  protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  protected IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 }

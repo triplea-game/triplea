@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,6 +18,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
@@ -49,7 +51,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   Territory sz24;
   Territory sz25;
   Territory sz27;
-  ITestDelegateBridge bridge;
+  IDelegateBridge bridge;
   MoveDelegate delegate;
 
   @BeforeEach
@@ -92,7 +94,7 @@ public class PacificTest extends AbstractDelegateTestCase {
     sz25 = gameData.getMap().getTerritory("25 Sea Zone");
     sz27 = gameData.getMap().getTerritory("27 Sea Zone");
     bridge = getDelegateBridge(americans);
-    bridge.setStepName("japaneseCombatMove");
+    advanceToStep(bridge, "japaneseCombatMove");
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -100,15 +102,15 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Override
-  protected ITestDelegateBridge getDelegateBridge(final PlayerID player) {
+  protected IDelegateBridge getDelegateBridge(final PlayerID player) {
     return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   @Test
   public void testNonJapanAttack() {
     // this will get us to round 2
-    bridge.setStepName("japaneseEndTurn");
-    bridge.setStepName("japaneseBattle");
+    advanceToStep(bridge, "japaneseEndTurn");
+    advanceToStep(bridge, "japaneseBattle");
     final List<Unit> infantryUs = infantry.create(1, americans);
     final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
     whenGetRandom(bridge)
@@ -132,7 +134,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testJapanAttackFirstRound() {
-    bridge.setStepName("japaneseBattle");
+    advanceToStep(bridge, "japaneseBattle");
     while (!gameData.getSequence().getStep().getName().equals("japaneseBattle")) {
       gameData.getSequence().next();
     }
@@ -173,7 +175,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanLand2Airfields() {
-    bridge.setStepName("americanCombatMove");
+    advanceToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
     route.add(sz5);
@@ -190,7 +192,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanLand1AirfieldStart() {
-    bridge.setStepName("americanCombatMove");
+    advanceToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
     route.add(sz5);
@@ -207,7 +209,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanLand1AirfieldEnd() {
-    bridge.setStepName("americanCombatMove");
+    advanceToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
     route.add(sz5);
@@ -223,7 +225,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testCanMoveNavalBase() {
-    bridge.setStepName("americanNonCombatMove");
+    advanceToStep(bridge, "americanNonCombatMove");
     final Route route = new Route();
     route.setStart(sz5);
     route.add(sz7);
@@ -241,7 +243,7 @@ public class PacificTest extends AbstractDelegateTestCase {
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
-    bridge.setStepName("japaneseNonCombatMove");
+    advanceToStep(bridge, "japaneseNonCombatMove");
     delegate.start();
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
