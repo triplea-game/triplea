@@ -56,10 +56,7 @@ class ErrorReportClientTest {
   private static final LogRecord logRecord = new LogRecord(Level.SEVERE, "record");
 
   @Test
-  void sendErrorReportSuccessCase(
-      @WiremockResolver.Wiremock final WireMockServer server,
-      @WiremockUriResolver.WiremockUri final String uri) {
-
+  void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
     givenHttpServerSuccessResponse(server);
 
     final ServiceResponse<ErrorReportResponse> response = doServiceCall(server);
@@ -101,10 +98,7 @@ class ErrorReportClientTest {
   }
 
   @Test
-  void communicationFaultCases(
-      @WiremockResolver.Wiremock final WireMockServer wireMockServer,
-      @WiremockUriResolver.WiremockUri final String uri) {
-
+  void communicationFaultCases(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     Arrays.asList(
         // caution, one of the wiremock faults is known to cause a hang in windows, so to aviod that
         // problem do not use the full available list of of wiremock faults
@@ -134,9 +128,7 @@ class ErrorReportClientTest {
   }
 
   @Test
-  void server500(
-      @WiremockResolver.Wiremock final WireMockServer wireMockServer,
-      @WiremockUriResolver.WiremockUri final String uri) {
+  void server500(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     givenServer500(wireMockServer);
 
     final ServiceResponse<ErrorReportResponse> response = doServiceCall(wireMockServer);
