@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Represents an http client connected to a single endpoint where you can send a request and get a response.
- * 
+ *
  * @param <RequestT> The type sent to server.
  * @param <ResponseT> The type received from server.
  */

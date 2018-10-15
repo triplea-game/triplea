@@ -148,7 +148,7 @@ public class JButtonBuilder {
    * the 'parent' component on screen. We could easily have a button that opens a window
    * that should be located above the button. Since we do not have a button reference yet while
    * constructing the button, this method can be used in that situation.
-   * 
+   *
    * @param clickAction The action listener to invoke when the button is clicked, this listener will be evaluated
    *        and attached to the button when the button is constructed (ie: {@code #build}.
    */

@@ -12,7 +12,7 @@ import com.google.common.annotations.VisibleForTesting;
  * A simple rate limit throttle that remembers the time of last request
  * and rejects new requests if not enough time has elapsed since
  * the previous request.
- * 
+ *
  * @param <T> Request data type.
  */
 public class RateLimitingThrottle<T> implements Consumer<T> {

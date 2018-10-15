@@ -122,7 +122,7 @@ public class JTextFieldBuilder {
 
   /**
    * Sets a max of how many characters can be entered into the text field.
-   * 
+   *
    * @param maxChars Character limit of the text field.
    */
   public JTextFieldBuilder maxLength(final int maxChars) {

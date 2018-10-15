@@ -10,8 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportDetails;
 
 class ErrorReportTest {
   private static final String MESSAGE_TO_USER = "msg";
