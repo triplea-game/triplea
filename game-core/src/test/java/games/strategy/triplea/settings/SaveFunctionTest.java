@@ -4,6 +4,7 @@ import static org.hamcrest.core.Is.is;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JComponent;
@@ -47,7 +48,7 @@ public class SaveFunctionTest {
     Mockito.when(mockSelectionComponent.isValid()).thenReturn(first);
     Mockito.when(mockSelectionComponent.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
     if (first) {
-      Mockito.when(mockSetting.stringValue()).thenReturn("");
+      Mockito.when(mockSetting.getValue()).thenReturn(Optional.empty());
     }
     Mockito.when(mockSelectionComponent2.isValid()).thenReturn(second);
     Mockito.when(mockSelectionComponent2.readValues()).thenReturn(ImmutableMap.of(mockSetting, "abc"));
@@ -82,7 +83,7 @@ public class SaveFunctionTest {
 
     Mockito.when(mockSelectionComponent.isValid()).thenReturn(true);
     Mockito.when(mockSelectionComponent.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
-    Mockito.when(mockSetting.stringValue()).thenReturn("");
+    Mockito.when(mockSetting.getValue()).thenReturn(Optional.empty());
 
     Mockito.when(mockSelectionComponent2.isValid()).thenReturn(false);
 
@@ -94,7 +95,7 @@ public class SaveFunctionTest {
         + "which should only happen when settings were successfully saved.",
         callCount.get(), is(1));
 
-    Mockito.verify(mockSetting, Mockito.times(1)).saveString(TestData.fakeValue);
+    Mockito.verify(mockSetting).saveObject(TestData.fakeValue);
   }
 
   @Test

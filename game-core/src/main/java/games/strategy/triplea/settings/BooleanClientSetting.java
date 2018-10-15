@@ -2,7 +2,7 @@ package games.strategy.triplea.settings;
 
 final class BooleanClientSetting extends ClientSetting<Boolean> {
   BooleanClientSetting(final String name, final boolean defaultValue) {
-    super(name, defaultValue);
+    super(Boolean.class, name, defaultValue);
   }
 
   @Override

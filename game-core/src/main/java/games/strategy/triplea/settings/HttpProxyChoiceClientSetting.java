@@ -4,7 +4,7 @@ import games.strategy.engine.framework.system.HttpProxy;
 
 final class HttpProxyChoiceClientSetting extends ClientSetting<HttpProxy.ProxyChoice> {
   HttpProxyChoiceClientSetting(final String name, final HttpProxy.ProxyChoice defaultValue) {
-    super(name, defaultValue);
+    super(HttpProxy.ProxyChoice.class, name, defaultValue);
   }
 
   @Override

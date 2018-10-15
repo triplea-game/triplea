@@ -20,9 +20,10 @@ public interface SelectionComponent<T> {
 
   /**
    * Reads values stored in the UI components, returns a map of preference keys and the value represented in
-   * the corresponding UI component.
+   * the corresponding UI component. A {@code null} value in the map indicates the value should be reset to its default
+   * value.
    */
-  Map<GameSetting<?>, String> readValues();
+  Map<GameSetting<?>, /* @Nullable */ Object> readValues();
 
   void resetToDefault();
 

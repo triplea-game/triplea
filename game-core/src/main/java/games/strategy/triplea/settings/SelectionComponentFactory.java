@@ -6,8 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -46,8 +49,8 @@ final class SelectionComponentFactory {
           new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
       final JRadioButton userButton =
           new JRadioButton("Use These Settings:", proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-      final JTextField hostText = new JTextField(proxyHostClientSetting.value(), 20);
-      final JTextField portText = new JTextField(proxyPortClientSetting.stringValue(), 6);
+      final JTextField hostText = new JTextField(proxyHostClientSetting.getValue().orElse(""), 20);
+      final JTextField portText = new JTextField(proxyPortClientSetting.getValue().map(Object::toString).orElse(""), 6);
       final JPanel radioPanel = JPanelBuilder.builder()
           .verticalBoxLayout()
           .addLeftJustified(noneButton)
@@ -114,27 +117,33 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        final Map<GameSetting<?>, String> values = new HashMap<>();
+      public Map<GameSetting<?>, Object> readValues() {
+        final Map<GameSetting<?>, Object> values = new HashMap<>();
+
         if (noneButton.isSelected()) {
-          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE.toString());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
         } else if (systemButton.isSelected()) {
-          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
           HttpProxy.updateSystemProxy();
         } else {
-          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
-          values.put(proxyHostClientSetting, hostText.getText().trim());
-          values.put(proxyPortClientSetting, portText.getText().trim());
+          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
         }
+
+        final String host = hostText.getText().trim();
+        values.put(proxyHostClientSetting, host.isEmpty() ? null : host);
+
+        final String encodedPort = portText.getText().trim();
+        values.put(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
+
         return values;
       }
 
       @Override
       public void resetToDefault() {
         ClientSetting.flush();
-        hostText.setText(proxyHostClientSetting.defaultValue());
-        portText.setText(proxyPortClientSetting.defaultStringValue());
-        setProxyChoice(proxyChoiceClientSetting.defaultValue());
+        hostText.setText(proxyHostClientSetting.getDefaultValue().orElse(""));
+        portText.setText(proxyPortClientSetting.getDefaultValue().map(Object::toString).orElse(""));
+        setProxyChoice(proxyChoiceClientSetting.getDefaultValue().orElse(HttpProxy.ProxyChoice.NONE));
       }
 
       private void setProxyChoice(final HttpProxy.ProxyChoice proxyChoice) {
@@ -147,8 +156,8 @@ final class SelectionComponentFactory {
       @Override
       public void reset() {
         ClientSetting.flush();
-        hostText.setText(proxyHostClientSetting.value());
-        portText.setText(proxyPortClientSetting.stringValue());
+        hostText.setText(proxyHostClientSetting.getValue().orElse(""));
+        portText.setText(proxyPortClientSetting.getValue().map(Object::toString).orElse(""));
         setProxyChoice(proxyChoiceClientSetting.value());
       }
     };
@@ -179,19 +188,19 @@ final class SelectionComponentFactory {
       final boolean allowUnset) {
     return new SelectionComponent<JComponent>() {
       private final JSpinner component = new JSpinner(new SpinnerNumberModel(
-          toValidIntValue(clientSetting.stringValue()), lo - (allowUnset ? 1 : 0), hi, 1));
+          toValidIntValue(clientSetting.getValue()), lo - (allowUnset ? 1 : 0), hi, 1));
 
       @Override
       public JComponent getUiComponent() {
         return component;
       }
 
-      private int toValidIntValue(final String value) {
-        return value.isEmpty() && allowUnset ? lo - 1 : Integer.parseInt(value);
+      private int toValidIntValue(final Optional<Integer> value) {
+        return value.orElseGet(this::unsetValue);
       }
 
-      private String toValidStringValue(final int value) {
-        return allowUnset && value == lo - 1 ? "" : String.valueOf(value);
+      private int unsetValue() {
+        return lo - 1;
       }
 
       @Override
@@ -205,18 +214,23 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        return Collections.singletonMap(clientSetting, toValidStringValue((int) component.getValue()));
+      public Map<GameSetting<?>, Object> readValues() {
+        return Collections.singletonMap(clientSetting, getComponentValue());
+      }
+
+      private @Nullable Integer getComponentValue() {
+        final int value = (int) component.getValue();
+        return (allowUnset && (value == unsetValue())) ? null : value;
       }
 
       @Override
       public void resetToDefault() {
-        component.setValue(toValidIntValue(clientSetting.defaultStringValue()));
+        component.setValue(toValidIntValue(clientSetting.getDefaultValue()));
       }
 
       @Override
       public void reset() {
-        component.setValue(toValidIntValue(clientSetting.stringValue()));
+        component.setValue(toValidIntValue(clientSetting.getValue()));
       }
     };
   }
@@ -244,23 +258,22 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        final String value = yesButton.isSelected() ? String.valueOf(true) : String.valueOf(false);
-        final Map<GameSetting<?>, String> settingMap = new HashMap<>();
-        settingMap.put(clientSetting, value);
-        return settingMap;
+      public Map<GameSetting<?>, Object> readValues() {
+        return Collections.singletonMap(clientSetting, yesButton.isSelected());
       }
 
       @Override
       public void resetToDefault() {
-        yesButton.setSelected(Boolean.valueOf(clientSetting.defaultValue()));
-        noButton.setSelected(!Boolean.valueOf(clientSetting.defaultValue()));
+        final boolean value = clientSetting.getDefaultValue().orElse(false);
+        yesButton.setSelected(value);
+        noButton.setSelected(!value);
       }
 
       @Override
       public void reset() {
-        yesButton.setSelected(clientSetting.value());
-        noButton.setSelected(!clientSetting.value());
+        final boolean value = clientSetting.value();
+        yesButton.setSelected(value);
+        noButton.setSelected(!value);
       }
     };
   }
@@ -277,7 +290,7 @@ final class SelectionComponentFactory {
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
     return new AlwaysValidInputSelectionComponent() {
       final int expectedLength = 20;
-      final JTextField field = new JTextField(clientSetting.value(), expectedLength);
+      final JTextField field = new JTextField(clientSetting.getValue().orElse(""), expectedLength);
       final JButton button = JButtonBuilder.builder()
           .title("Select")
           .actionListener(
@@ -298,21 +311,19 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
+      public Map<GameSetting<?>, Object> readValues() {
         final String value = field.getText();
-        final Map<GameSetting<?>, String> settingMap = new HashMap<>();
-        settingMap.put(clientSetting, value);
-        return settingMap;
+        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : value);
       }
 
       @Override
       public void resetToDefault() {
-        field.setText(clientSetting.defaultValue());
+        field.setText(clientSetting.getDefaultValue().orElse(""));
       }
 
       @Override
       public void reset() {
-        field.setText(clientSetting.value());
+        field.setText(clientSetting.getValue().orElse(""));
       }
     };
   }
@@ -353,33 +364,30 @@ final class SelectionComponentFactory {
 
       @Override
       public JComponent getUiComponent() {
-        comboBox.setSelectedItem(clientSetting.value());
+        comboBox.setSelectedItem(clientSetting.getValue().orElse(null));
         return comboBox;
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        final String value = String.valueOf(comboBox.getSelectedItem());
-        final Map<GameSetting<?>, String> settingMap = new HashMap<>();
-        settingMap.put(clientSetting, value);
-        return settingMap;
+      public Map<GameSetting<?>, Object> readValues() {
+        return Collections.singletonMap(clientSetting, Objects.toString(comboBox.getSelectedItem(), null));
       }
 
       @Override
       public void resetToDefault() {
-        comboBox.setSelectedItem(clientSetting.defaultValue());
+        comboBox.setSelectedItem(clientSetting.getDefaultValue().orElse(null));
       }
 
       @Override
       public void reset() {
-        comboBox.setSelectedItem(clientSetting.value());
+        comboBox.setSelectedItem(clientSetting.getValue().orElse(null));
       }
     };
   }
 
   static SelectionComponent<JComponent> textField(final ClientSetting<String> clientSetting) {
     return new AlwaysValidInputSelectionComponent() {
-      final JTextField textField = new JTextField(clientSetting.value(), 20);
+      final JTextField textField = new JTextField(clientSetting.getValue().orElse(""), 20);
 
       @Override
       public JComponent getUiComponent() {
@@ -387,20 +395,19 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        final Map<GameSetting<?>, String> map = new HashMap<>();
-        map.put(clientSetting, textField.getText());
-        return map;
+      public Map<GameSetting<?>, Object> readValues() {
+        final String value = textField.getText();
+        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : value);
       }
 
       @Override
       public void reset() {
-        textField.setText(clientSetting.value());
+        textField.setText(clientSetting.getValue().orElse(""));
       }
 
       @Override
       public void resetToDefault() {
-        textField.setText(clientSetting.defaultValue());
+        textField.setText(clientSetting.getDefaultValue().orElse(""));
       }
     };
   }

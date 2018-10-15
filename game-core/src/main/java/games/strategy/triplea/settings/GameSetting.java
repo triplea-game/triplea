@@ -1,5 +1,6 @@
 package games.strategy.triplea.settings;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
@@ -9,48 +10,58 @@ import javax.annotation.Nullable;
  * course of the game, either directly or indirectly. For example, default window size may saved here,
  * which could be set from a UI control or it could be based on the last window size used.
  *
- * <p>
- * All settings are typed but have an underlying string representation. Thus, implementations must provide methods for
- * converting a setting value between its typed form and its string form. While clients may use the
- * {@link #stringValue()} and {@link #saveString(String)} methods to load and save a setting value, respectively, one
- * should prefer the typed {@link #value()} and {@link #save(Object)} methods whenever possible to ensure type safety.
- * </p>
- *
  * @param <T> The type of the setting value.
  */
 public interface GameSetting<T> {
   /**
-   * Return true if the setting has been specified by the user or updated from default.
+   * Returns {@code true} if the setting has a value (either user-defined or the default).
    */
   boolean isSet();
 
   /**
-   * Queues a new string value for the setting, may not persist right away.
+   * Sets the current value of the setting using an untyped value.
    *
    * @param newValue The new setting value or {@code null} to clear the setting value. Clearing the setting value will
-   *        result in the default value being returned on future reads of the setting value.
+   *        result in the default value being returned on future reads of the setting value. If no default value is
+   *        defined for the setting, future reads will return an empty result.
+   *
+   * @throws ClassCastException If the type of of {@code newValue} is incompatible with the setting value type.
    */
-  void saveString(@Nullable String newValue);
+  void saveObject(@Nullable Object newValue);
 
   /**
-   * Queues a new typed value for the setting, may not persist right away.
+   * Sets the current value of the setting.
    *
    * @param newValue The new setting value or {@code null} to clear the setting value. Clearing the setting value will
-   *        result in the default value being returned on future reads of the setting value.
+   *        result in the default value being returned on future reads of the setting value. If no default value is
+   *        defined for the setting, future reads will return an empty result.
    */
   void save(@Nullable T newValue);
 
   /**
-   * Returns the current persisted string value of the setting.
+   * Returns the current value of the setting or the default value if the setting has no current value.
+   *
+   * @throws java.util.NoSuchElementException If the setting has no current or default value.
    */
-  String stringValue();
+  default T value() {
+    return getValue().get();
+  }
 
   /**
-   * Returns the current persisted typed value of the setting.
+   * Returns the default value of the setting or empty if the setting has no default value.
    */
-  T value();
+  Optional<T> getDefaultValue();
 
-  void resetAndFlush();
+  /**
+   * Returns the current value of the setting, the default value if the setting has no current value, or empty if the
+   * setting has no current or default value.
+   */
+  Optional<T> getValue();
+
+  /**
+   * Resets the setting to its default value or empty if it has no default value.
+   */
+  void resetValue();
 
   void addSaveListener(Consumer<String> listener);
 

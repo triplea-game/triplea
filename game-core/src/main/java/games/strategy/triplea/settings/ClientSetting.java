@@ -113,23 +113,30 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
+  private final Class<T> type;
   private final String name;
-  private final String encodedDefaultValue;
+  private final @Nullable T defaultValue;
   private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
 
-  protected ClientSetting(final String name) {
-    Preconditions.checkNotNull(name);
-
-    this.name = name;
-    this.encodedDefaultValue = "";
+  /**
+   * Initializes a new instance of {@code ClientSetting} with no default value.
+   */
+  protected ClientSetting(final Class<T> type, final String name) {
+    this(type, name, null);
   }
 
-  protected ClientSetting(final String name, final T defaultValue) {
+  /**
+   * Initializes a new instance of {@code ClientSetting} with the specified default value.
+   *
+   * @param defaultValue The default value or {@code null} if no default value.
+   */
+  protected ClientSetting(final Class<T> type, final String name, final @Nullable T defaultValue) {
+    Preconditions.checkNotNull(type);
     Preconditions.checkNotNull(name);
-    Preconditions.checkNotNull(defaultValue);
 
+    this.type = type;
     this.name = name;
-    this.encodedDefaultValue = formatValue(defaultValue);
+    this.defaultValue = defaultValue;
   }
 
   /**
@@ -197,23 +204,28 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   @Override
   public final boolean isSet() {
-    return !stringValue().trim().isEmpty();
+    return getValue().isPresent();
   }
 
   @Override
-  public final void saveString(final @Nullable String newValue) {
-    onSaveActions.forEach(saveAction -> saveAction.accept(Strings.nullToEmpty(newValue)));
-
-    if (newValue == null) {
-      getPreferences().remove(name);
-    } else {
-      getPreferences().put(name, newValue);
-    }
+  public final void saveObject(final @Nullable Object newValue) {
+    save(type.cast(newValue));
   }
 
   @Override
   public final void save(final @Nullable T newValue) {
     saveString(Optional.ofNullable(newValue).map(this::formatValue).orElse(null));
+  }
+
+  private void saveString(final @Nullable String newValue) {
+    final String value = Strings.nullToEmpty(newValue);
+    onSaveActions.forEach(saveAction -> saveAction.accept(value));
+
+    if (value.isEmpty()) {
+      getPreferences().remove(name);
+    } else {
+      getPreferences().put(name, newValue);
+    }
   }
 
   /**
@@ -232,18 +244,26 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public final String stringValue() {
-    return Strings.nullToEmpty(getPreferences().get(name, encodedDefaultValue));
+  public final Optional<T> getDefaultValue() {
+    return Optional.ofNullable(defaultValue);
   }
 
   @Override
-  public final T value() {
-    final String encodedValue = stringValue();
+  public final Optional<T> getValue() {
+    final Optional<String> encodedCurrentValue = getEncodedCurrentValue();
+    return encodedCurrentValue.isPresent() ? encodedCurrentValue.map(this::parseValueOrElseDefault) : getDefaultValue();
+  }
+
+  private Optional<String> getEncodedCurrentValue() {
+    return Optional.ofNullable(getPreferences().get(name, null));
+  }
+
+  private @Nullable T parseValueOrElseDefault(final String encodedValue) {
     try {
       return parseValue(encodedValue);
     } catch (final IllegalArgumentException e) {
       log.log(Level.WARNING, "Illegal client setting encoded value: '" + encodedValue + "'", e);
-      return defaultValue();
+      return getDefaultValue().orElse(null);
     }
   }
 
@@ -254,18 +274,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    */
   protected abstract T parseValue(String encodedValue);
 
-  public final String defaultStringValue() {
-    return encodedDefaultValue;
-  }
-
-  public final T defaultValue() {
-    // allow exceptions to propagate; default value should always be parseable
-    return parseValue(encodedDefaultValue);
-  }
-
   @Override
-  public final void resetAndFlush() {
-    saveAndFlush(defaultValue());
+  public final void resetValue() {
+    saveAndFlush(null);
   }
 
   @Override
