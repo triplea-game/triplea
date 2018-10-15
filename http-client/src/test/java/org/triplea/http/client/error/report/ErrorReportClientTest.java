@@ -56,10 +56,7 @@ class ErrorReportClientTest {
   private static final LogRecord logRecord = new LogRecord(Level.SEVERE, "record");
 
   @Test
-  void sendErrorReportSuccessCase(
-      @WiremockResolver.Wiremock final WireMockServer server,
-      @WiremockUriResolver.WiremockUri final String uri) {
-
+  void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
     givenHttpServerSuccessResponse(server);
 
     final ServiceResponse<ErrorReportResponse> response = doServiceCall(server);
@@ -89,7 +86,7 @@ class ErrorReportClientTest {
                 "", LINK))));
   }
 
-  private ServiceResponse<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
+  private static ServiceResponse<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
     WireMock.configureFor("localhost", wireMockServer.port());
     final URI hostUri = URI.create(wireMockServer.url(""));
     return new ErrorReportClientFactory().newErrorUploader()
@@ -101,10 +98,7 @@ class ErrorReportClientTest {
   }
 
   @Test
-  void communicationFaultCases(
-      @WiremockResolver.Wiremock final WireMockServer wireMockServer,
-      @WiremockUriResolver.WiremockUri final String uri) {
-
+  void communicationFaultCases(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     Arrays.asList(
         // caution, one of the wiremock faults is known to cause a hang in windows, so to aviod that
         // problem do not use the full available list of of wiremock faults
@@ -113,7 +107,7 @@ class ErrorReportClientTest {
         .forEach(fault -> testFaultHandling(wireMockServer, fault));
   }
 
-  private void testFaultHandling(final WireMockServer wireMockServer, final Fault fault) {
+  private static void testFaultHandling(final WireMockServer wireMockServer, final Fault fault) {
     givenFaultyConnection(wireMockServer, fault);
 
     final ServiceResponse<ErrorReportResponse> response = doServiceCall(wireMockServer);
@@ -134,9 +128,7 @@ class ErrorReportClientTest {
   }
 
   @Test
-  void server500(
-      @WiremockResolver.Wiremock final WireMockServer wireMockServer,
-      @WiremockUriResolver.WiremockUri final String uri) {
+  void server500(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     givenServer500(wireMockServer);
 
     final ServiceResponse<ErrorReportResponse> response = doServiceCall(wireMockServer);

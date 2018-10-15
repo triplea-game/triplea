@@ -33,7 +33,7 @@ public class ErrorReportController implements Runnable {
     return new Gson().toJson(result);
   }
 
-  private ErrorReport readErrorReport(final Request request) {
+  private static ErrorReport readErrorReport(final Request request) {
     return new Gson().fromJson(request.body(), ErrorReport.class);
   }
 }

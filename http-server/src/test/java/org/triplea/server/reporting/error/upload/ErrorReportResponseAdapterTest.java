@@ -3,8 +3,8 @@ package org.triplea.server.reporting.error.upload;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.IsEmptyString.isEmptyString;
 
 import java.net.URI;
 
@@ -49,7 +49,7 @@ class ErrorReportResponseAdapterTest {
     assertThat(
         errorReportResponse.getGithubIssueLink(),
         isPresentAndIs(URI.create(CREATE_ISSUE_RESPONSE.getHtmlUrl())));
-    assertThat(errorReportResponse.getError(), isEmptyString());
+    assertThat(errorReportResponse.getError(), is(emptyString()));
 
   }
 
