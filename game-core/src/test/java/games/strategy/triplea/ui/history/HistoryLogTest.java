@@ -13,23 +13,39 @@ final class HistoryLogTest {
     @Test
     void shouldReturnPlayerNameAndRegularDiceTypeWhenMessageContainsRegularDiceRoll() {
       assertThat(
+          "player name with only word characters",
           parseHitDifferentialKeyFromDiceRollMessage("Russians roll dice for 1 fighter in Karelia S.S.R., round 3 :"),
           is("Russians regular"));
+      assertThat(
+          "player name with spaces",
+          parseHitDifferentialKeyFromDiceRollMessage("West Germans roll dice for 1 fighter in Germany, round 2 :"),
+          is("West Germans regular"));
     }
 
     @Test
     void shouldReturnPlayerNameAndAaDiceTypeWhenMessageContainsAaDiceRoll() {
       assertThat(
+          "player name and dice type with only word characters",
           parseHitDifferentialKeyFromDiceRollMessage("Russians roll AA dice in Karelia S.S.R. :"),
           is("Russians AA"));
+      assertThat(
+          "player name with spaces",
+          parseHitDifferentialKeyFromDiceRollMessage("West Germans roll AA dice in Germany :"),
+          is("West Germans AA"));
+      assertThat(
+          "dice type with non-word characters",
+          parseHitDifferentialKeyFromDiceRollMessage("West Germans roll A.A. dice in Germany :"),
+          is("West Germans A.A."));
     }
 
     @Test
     void shouldReturnMessageWithoutTrailingColonWhenMessageDoesNotContainDiceRoll() {
       assertThat(
+          "message without trailing colon",
           parseHitDifferentialKeyFromDiceRollMessage("AA fire in Karelia S.S.R."),
           is("AA fire in Karelia S.S.R."));
       assertThat(
+          "message with trailing colon",
           parseHitDifferentialKeyFromDiceRollMessage("AA fire in Karelia S.S.R. :"),
           is("AA fire in Karelia S.S.R."));
     }

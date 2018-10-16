@@ -400,7 +400,7 @@ public class HistoryLog extends JFrame {
 
   @VisibleForTesting
   static String parseHitDifferentialKeyFromDiceRollMessage(final String message) {
-    final Pattern diceRollPattern = Pattern.compile("^(\\w+) roll(?: (\\w+))? dice");
+    final Pattern diceRollPattern = Pattern.compile("^(.+) roll(?: (.+))? dice");
     final Matcher matcher = diceRollPattern.matcher(message);
     if (matcher.find()) {
       return matcher.group(1) + " " + Optional.ofNullable(matcher.group(2)).orElse("regular");
