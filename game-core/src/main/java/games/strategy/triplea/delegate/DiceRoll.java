@@ -163,7 +163,8 @@ public class DiceRoll implements Externalizable {
     }
     final double expectedHits = ((double) totalPower) / chosenDiceSizeForAll;
     final DiceRoll roll = new DiceRoll(sortedDice, hits, expectedHits);
-    final String annotation = typeAa + " fire in " + location + " : " + MyFormatter.asDice(roll);
+    final String annotation = defendingAa.get(0).getOwner().getName() + " roll " + typeAa + " dice in " + location
+        + " : " + MyFormatter.asDice(roll);
     bridge.getHistoryWriter().addChildToEvent(annotation, roll);
     return roll;
   }

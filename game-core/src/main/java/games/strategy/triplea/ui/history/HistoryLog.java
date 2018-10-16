@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -236,7 +237,7 @@ public class HistoryLog extends JFrame {
             } else {
               // dice roll
               logWriter.print(indent + moreIndent + diceMsg1);
-              final String player = parsePlayerNameFromDiceRollMessage(diceMsg1);
+              final String hitDifferentialKey = parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
               final DiceRoll diceRoll = (DiceRoll) details;
               final int hits = diceRoll.getHits();
               int rolls = 0;
@@ -247,11 +248,7 @@ public class HistoryLog extends JFrame {
               logWriter.println(" " + hits + "/" + rolls + " hits, "
                   + String.format("%.2f", expectedHits) + " expected hits");
               final double hitDifferential = hits - expectedHits;
-              if (hitDifferentialMap.containsKey(player)) {
-                hitDifferentialMap.put(player, hitDifferentialMap.get(player) + hitDifferential);
-              } else {
-                hitDifferentialMap.put(player, hitDifferential);
-              }
+              hitDifferentialMap.merge(hitDifferentialKey, hitDifferential, Double::sum);
             }
           } else if (details instanceof MoveDescription) {
             // movement
@@ -402,8 +399,15 @@ public class HistoryLog extends JFrame {
   }
 
   @VisibleForTesting
-  static String parsePlayerNameFromDiceRollMessage(final String message) {
-    return message.contains(" roll ") ? message.substring(0, message.indexOf(" roll ")) : message;
+  static String parseHitDifferentialKeyFromDiceRollMessage(final String message) {
+    final Pattern diceRollPattern = Pattern.compile("^(.+) roll(?: (.+))? dice");
+    final Matcher matcher = diceRollPattern.matcher(message);
+    if (matcher.find()) {
+      return matcher.group(1) + " " + Optional.ofNullable(matcher.group(2)).orElse("regular");
+    }
+
+    final int lastColonIndex = message.lastIndexOf(" :");
+    return (lastColonIndex != -1) ? message.substring(0, lastColonIndex) : message;
   }
 
   /**
