@@ -288,21 +288,35 @@ public class MapPanel extends ImageScrollerLargeView {
     return highlightedUnits;
   }
 
-  public boolean centerOn(final @Nullable Territory territory) {
+  public void centerOn(final @Nullable Territory territory) {
     if (territory == null || uiContext.getLockMap()) {
-      return false;
+      return;
     }
     final Point p = uiContext.getMapData().getCenter(territory);
     // when centering don't want the map to wrap around,
     // eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
-    return true;
   }
 
   void highlightTerritory(final Territory territory) {
-    if (centerOn(territory)) {
+    withMapUnlocked(() -> {
+      centerOn(territory);
       highlightedTerritory = territory;
       territoryHighlighter.highlight(territory);
+    });
+  }
+
+  private void withMapUnlocked(final Runnable runnable) {
+    final boolean lockMap = uiContext.getLockMap();
+    if (lockMap) {
+      uiContext.setLockMap(false);
+    }
+    try {
+      runnable.run();
+    } finally {
+      if (lockMap) {
+        uiContext.setLockMap(true);
+      }
     }
   }
 
