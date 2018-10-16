@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -11,8 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -126,7 +123,9 @@ public class BattlePanel extends ActionPanel {
     final JPanel innerPanel = new JPanel();
     innerPanel.setLayout(new BorderLayout());
     innerPanel.add(new JButton(new FightBattleAction(territory, bomb, battleType)), BorderLayout.CENTER);
-    innerPanel.add(new JButton(new CenterBattleAction(territory)), BorderLayout.EAST);
+    innerPanel.add(
+        new JButton(SwingAction.of("Center", e -> getMap().highlightTerritory(territory, 4))),
+        BorderLayout.EAST);
     panel.add(innerPanel);
   }
 
@@ -410,66 +409,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  Territory oldCenteredTerritory = null;
-  Timer centerBattleActionTimer = null;
-
-  class CenterBattleAction extends AbstractAction {
-    private static final long serialVersionUID = -5071133874755970334L;
-    final Territory battleSite;
-
-    CenterBattleAction(final Territory battleSite) {
-      super("Center");
-      this.battleSite = battleSite;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (centerBattleActionTimer != null) {
-        centerBattleActionTimer.cancel();
-      }
-      if (oldCenteredTerritory != null) {
-        getMap().clearTerritoryOverlay(oldCenteredTerritory);
-      }
-      getMap().centerOn(battleSite);
-      centerBattleActionTimer = new Timer();
-      centerBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(battleSite, centerBattleActionTimer), 150, 150);
-      oldCenteredTerritory = battleSite;
-    }
-
-    class MyTimerTask extends TimerTask {
-      private final Territory territory;
-      private final Timer stopTimer;
-      private int count = 0;
-
-      MyTimerTask(final Territory battleSite, final Timer stopTimer) {
-        territory = battleSite;
-        this.stopTimer = stopTimer;
-      }
-
-      @Override
-      public void run() {
-        if (count == 5) {
-          stopTimer.cancel();
-        }
-        if ((count % 3) == 0) {
-          getMap().setTerritoryOverlayForBorder(territory, Color.white);
-          getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(battleSite)); what kind of additional transformation
-          // needed here?
-          // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
-        } else {
-          getMap().clearTerritoryOverlay(territory);
-          getMap().paintImmediately(getMap().getBounds());
-          // TODO: getUIContext().getMapData().getBoundingRect(battleSite)); what kind of additional transformation
-          // needed here?
-          // TODO: setTerritoryOverlayForBorder is causing invalid ordered lock acquire atempt, why?
-        }
-        count++;
-      }
-    }
-  }
-
-  class FightBattleAction extends AbstractAction {
+  private final class FightBattleAction extends AbstractAction {
     private static final long serialVersionUID = 5510976406003707776L;
     final Territory territory;
     final boolean bomb;
@@ -484,9 +424,7 @@ public class BattlePanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
-      if (oldCenteredTerritory != null) {
-        getMap().clearTerritoryOverlay(oldCenteredTerritory);
-      }
+      getMap().clearHighlightedTerritory();
       fightBattleMessage = FightBattleDetails.builder()
           .where(territory)
           .bombingRaid(bomb)
