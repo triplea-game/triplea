@@ -299,10 +299,14 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   void highlightTerritory(final Territory territory) {
+    highlightTerritory(territory, Integer.MAX_VALUE);
+  }
+
+  void highlightTerritory(final Territory territory, final int totalFrames) {
     withMapUnlocked(() -> {
       centerOn(territory);
       highlightedTerritory = territory;
-      territoryHighlighter.highlight(territory);
+      territoryHighlighter.highlight(territory, totalFrames);
     });
   }
 
@@ -865,13 +869,14 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   private final class TerritoryHighlighter {
-    private boolean overlayEnabled;
+    private int frame;
+    private int totalFrames;
     private @Nullable Territory territory;
     private final Timer timer = new Timer(500, e -> animateNextFrame());
 
-    void highlight(final Territory territory) {
+    void highlight(final Territory territory, final int totalFrames) {
       stopAnimation();
-      startAnimation(territory);
+      startAnimation(territory, totalFrames);
     }
 
     private void stopAnimation() {
@@ -884,9 +889,10 @@ public class MapPanel extends ImageScrollerLargeView {
       territory = null;
     }
 
-    private void startAnimation(final Territory territory) {
+    private void startAnimation(final Territory territory, final int totalFrames) {
       this.territory = territory;
-      overlayEnabled = true;
+      this.totalFrames = totalFrames;
+      frame = 0;
 
       timer.start();
     }
@@ -896,13 +902,16 @@ public class MapPanel extends ImageScrollerLargeView {
     }
 
     private void animateNextFrame() {
-      if (overlayEnabled) {
+      if ((frame % 2) == 0) {
         setTerritoryOverlayForBorder(territory, Color.WHITE);
       } else {
         clearTerritoryOverlay(territory);
       }
       paintImmediately(getBounds());
-      overlayEnabled = !overlayEnabled;
+
+      if (++frame >= totalFrames) {
+        stopAnimation();
+      }
     }
   }
 }
