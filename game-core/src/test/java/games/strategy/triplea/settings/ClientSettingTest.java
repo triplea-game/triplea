@@ -1,5 +1,6 @@
 package games.strategy.triplea.settings;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -27,16 +28,11 @@ final class ClientSettingTest {
   }
 
   @Nested
-  final class ValueTest extends AbstractClientSettingTestCase {
+  final class GetValueTest extends AbstractClientSettingTestCase {
     @Test
     void shouldReturnDefaultValueWhenParseValueThrowsException() {
       final String defaultValue = "defaultValue";
-      final ClientSetting<String> clientSetting = new ClientSetting<String>("name", defaultValue) {
-        @Override
-        protected String formatValue(final String value) {
-          return value;
-        }
-
+      final ClientSetting<String> clientSetting = new FakeClientSetting("name", defaultValue) {
         @Override
         protected String parseValue(final String encodedValue) {
           if (defaultValue.equals(encodedValue)) {
@@ -48,7 +44,7 @@ final class ClientSettingTest {
       };
       clientSetting.save("otherValue");
 
-      assertThat(clientSetting.value(), is(defaultValue));
+      assertThat(clientSetting.getValue(), isPresentAndIs(defaultValue));
     }
   }
 
@@ -59,7 +55,7 @@ final class ClientSettingTest {
 
     @Mock
     private Consumer<String> mockSaveListener;
-    private final ClientSetting<String> clientSetting = new StringClientSetting("TEST_SETTING");
+    private final ClientSetting<String> clientSetting = new FakeClientSetting("TEST_SETTING");
 
     @Test
     void saveActionListenerIsCalled() {
@@ -80,6 +76,37 @@ final class ClientSettingTest {
 
       Mockito.verify(mockSaveListener, Mockito.never())
           .accept(TEST_VALUE);
+    }
+  }
+
+  @Nested
+  final class ToStringTest {
+    @Test
+    void shouldReturnName() {
+      final String name = "name";
+      final ClientSetting<String> clientSetting = new FakeClientSetting(name);
+
+      assertThat(clientSetting.toString(), is(name));
+    }
+  }
+
+  private static class FakeClientSetting extends ClientSetting<String> {
+    FakeClientSetting(final String name) {
+      super(String.class, name);
+    }
+
+    FakeClientSetting(final String name, final String defaultValue) {
+      super(String.class, name, defaultValue);
+    }
+
+    @Override
+    protected String formatValue(final String value) {
+      return value;
+    }
+
+    @Override
+    protected String parseValue(final String encodedValue) {
+      return encodedValue;
     }
   }
 }

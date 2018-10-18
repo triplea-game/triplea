@@ -1,9 +1,11 @@
 package games.strategy.triplea.settings;
 
-import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+
+import lombok.AllArgsConstructor;
 
 /**
  * Executes a 'save' action.
@@ -13,7 +15,8 @@ import javax.swing.JOptionPane;
  * Side effects: value of each setting is read from UI, validated, and valid values are persisted to system settings
  * </p>
  */
-interface SaveFunction {
+final class SaveFunction {
+  private SaveFunction() {}
 
   /**
    * Returns a result message after persisting settings.
@@ -31,15 +34,14 @@ interface SaveFunction {
         selectionComponent.readValues()
             .entrySet()
             .stream()
-            .filter(entry -> !entry.getKey().stringValue().equals(entry.getValue()))
+            .filter(entry -> !entry.getKey().getValue().equals(Optional.ofNullable(entry.getValue())))
             .forEach(entry -> {
-              entry.getKey().saveString(entry.getValue());
+              entry.getKey().saveObject(entry.getValue());
               successMsg.append(String.format("%s was updated to: %s\n", entry.getKey(), entry.getValue()));
             });
       } else {
-        final Map<GameSetting<?>, String> values = selectionComponent.readValues();
-        values.forEach((key, value) -> failMsg.append(String.format("Could not set %s to %s, %s\n",
-            key, value, selectionComponent.validValueDescription())));
+        selectionComponent.readValues().forEach((key, value) -> failMsg.append(
+            String.format("Could not set %s to %s, %s\n", key, value, selectionComponent.validValueDescription())));
       }
     });
 
@@ -49,7 +51,6 @@ interface SaveFunction {
     }
 
     final String fail = failMsg.toString();
-
 
     if (success.isEmpty() && fail.isEmpty()) {
       return new SaveResult("No changes saved", JOptionPane.WARNING_MESSAGE);
@@ -65,14 +66,9 @@ interface SaveFunction {
     return new SaveResult(success, JOptionPane.INFORMATION_MESSAGE);
   }
 
-
-  class SaveResult {
+  @AllArgsConstructor
+  static final class SaveResult {
     final String message;
     final int dialogType;
-
-    private SaveResult(final String message, final int dialogType) {
-      this.message = message;
-      this.dialogType = dialogType;
-    }
   }
 }

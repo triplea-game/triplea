@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
@@ -43,14 +46,13 @@ final class JavaFxSelectionComponentFactory {
       final int maxValue,
       final boolean allowUnset) {
     return new SelectionComponent<Region>() {
-
       final Spinner<Integer> spinner = createSpinner();
 
       private Spinner<Integer> createSpinner() {
         final Spinner<Integer> spinner = new Spinner<>(
             minValue - (allowUnset ? 1 : 0),
             maxValue,
-            getIntegerFromString(clientSetting.stringValue()));
+            getIntegerFromOptional(clientSetting.getValue()));
         spinner.setEditable(true);
         return spinner;
       }
@@ -60,10 +62,12 @@ final class JavaFxSelectionComponentFactory {
         return spinner;
       }
 
-      private Integer getIntegerFromString(final String string) {
-        return string.isEmpty() && allowUnset
-            ? minValue - 1
-            : Integer.valueOf(string);
+      private Integer getIntegerFromOptional(final Optional<Integer> value) {
+        return value.orElseGet(this::unsetValue);
+      }
+
+      private Integer unsetValue() {
+        return minValue - 1;
       }
 
       @Override
@@ -77,20 +81,20 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        final Integer value = spinner.getValue();
-        final String stringValue = allowUnset && value == minValue - 1 ? "" : value.toString();
-        return Collections.singletonMap(clientSetting, stringValue);
+      public Map<GameSetting<?>, Object> readValues() {
+        final Integer spinnerValue = spinner.getValue();
+        final @Nullable Integer value = (allowUnset && spinnerValue.equals(unsetValue())) ? null : spinnerValue;
+        return Collections.singletonMap(clientSetting, value);
       }
 
       @Override
       public void resetToDefault() {
-        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.defaultStringValue()));
+        spinner.getValueFactory().setValue(getIntegerFromOptional(clientSetting.getDefaultValue()));
       }
 
       @Override
       public void reset() {
-        spinner.getValueFactory().setValue(getIntegerFromString(clientSetting.stringValue()));
+        spinner.getValueFactory().setValue(getIntegerFromOptional(clientSetting.getValue()));
       }
     };
   }
@@ -121,13 +125,13 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        return Collections.singletonMap(clientSetting, String.valueOf(checkBox.selectedProperty().get()));
+      public Map<GameSetting<?>, Object> readValues() {
+        return Collections.singletonMap(clientSetting, checkBox.selectedProperty().get());
       }
 
       @Override
       public void resetToDefault() {
-        checkBox.selectedProperty().set(clientSetting.defaultValue());
+        checkBox.selectedProperty().set(clientSetting.getDefaultValue().orElse(false));
       }
 
       @Override
@@ -143,7 +147,7 @@ final class JavaFxSelectionComponentFactory {
 
       private TextField newTextField() {
         final TextField textField = new TextField();
-        textField.setText(clientSetting.value());
+        textField.setText(clientSetting.getValue().orElse(""));
         return textField;
       }
 
@@ -163,18 +167,19 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, String> readValues() {
-        return Collections.singletonMap(clientSetting, textField.getText());
+      public Map<GameSetting<?>, Object> readValues() {
+        final String value = textField.getText();
+        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : value);
       }
 
       @Override
       public void resetToDefault() {
-        textField.setText(clientSetting.defaultValue());
+        textField.setText(clientSetting.getDefaultValue().orElse(""));
       }
 
       @Override
       public void reset() {
-        textField.setText(clientSetting.value());
+        textField.setText(clientSetting.getValue().orElse(""));
       }
     };
   }
@@ -197,13 +202,13 @@ final class JavaFxSelectionComponentFactory {
   private static final class FolderSelector extends Region implements SelectionComponent<Region> {
     private final ClientSetting<String> clientSetting;
     private final TextField textField;
-    private File selectedFile;
+    private @Nullable File selectedFile;
 
     FolderSelector(final ClientSetting<String> clientSetting) {
       this.clientSetting = clientSetting;
-      final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
+      final @Nullable File initialValue = clientSetting.getValue().map(File::new).orElse(null);
       final HBox wrapper = new HBox();
-      textField = new TextField(clientSetting.value());
+      textField = new TextField(clientSetting.getValue().orElse(""));
       textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setDisable(true);
@@ -214,7 +219,7 @@ final class JavaFxSelectionComponentFactory {
         if (selectedFile != null) {
           fileChooser.setInitialDirectory(selectedFile);
         }
-        final File file = fileChooser.showDialog(chooseFileButton.getScene().getWindow());
+        final @Nullable File file = fileChooser.showDialog(chooseFileButton.getScene().getWindow());
         if (file != null) {
           selectedFile = file;
           textField.setText(file.toString());
@@ -225,20 +230,20 @@ final class JavaFxSelectionComponentFactory {
     }
 
     @Override
-    public Map<GameSetting<?>, String> readValues() {
-      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
+    public Map<GameSetting<?>, Object> readValues() {
+      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, null));
     }
 
     @Override
     public void resetToDefault() {
-      textField.setText(clientSetting.defaultValue());
-      selectedFile = new File(clientSetting.defaultValue());
+      textField.setText(clientSetting.getDefaultValue().orElse(""));
+      selectedFile = clientSetting.getDefaultValue().map(File::new).orElse(null);
     }
 
     @Override
     public void reset() {
-      textField.setText(clientSetting.value());
-      selectedFile = new File(clientSetting.value());
+      textField.setText(clientSetting.getValue().orElse(""));
+      selectedFile = clientSetting.getValue().map(File::new).orElse(null);
     }
 
     @Override
@@ -260,13 +265,13 @@ final class JavaFxSelectionComponentFactory {
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
     private final ClientSetting<String> clientSetting;
     private final TextField textField;
-    private File selectedFile;
+    private @Nullable File selectedFile;
 
     FileSelector(final ClientSetting<String> clientSetting) {
       this.clientSetting = clientSetting;
-      final File initialValue = clientSetting.value().isEmpty() ? null : new File(clientSetting.value());
+      final @Nullable File initialValue = clientSetting.getValue().map(File::new).orElse(null);
       final HBox wrapper = new HBox();
-      textField = new TextField(clientSetting.value());
+      textField = new TextField(clientSetting.getValue().orElse(""));
       textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setMinWidth(100);
@@ -276,9 +281,9 @@ final class JavaFxSelectionComponentFactory {
       chooseFileButton.setOnAction(e -> {
         final FileChooser fileChooser = new FileChooser();
         if (selectedFile != null) {
-          fileChooser.setInitialDirectory(selectedFile);
+          fileChooser.setInitialDirectory(selectedFile.getParentFile());
         }
-        final File file = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
+        final @Nullable File file = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
         if (file != null) {
           selectedFile = file;
           textField.setText(file.toString());
@@ -289,20 +294,20 @@ final class JavaFxSelectionComponentFactory {
     }
 
     @Override
-    public Map<GameSetting<?>, String> readValues() {
-      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, ""));
+    public Map<GameSetting<?>, Object> readValues() {
+      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, null));
     }
 
     @Override
     public void resetToDefault() {
-      textField.setText(clientSetting.defaultValue());
-      selectedFile = new File(clientSetting.defaultValue());
+      textField.setText(clientSetting.getDefaultValue().orElse(""));
+      selectedFile = clientSetting.getDefaultValue().map(File::new).orElse(null);
     }
 
     @Override
     public void reset() {
-      textField.setText(clientSetting.value());
-      selectedFile = new File(clientSetting.value());
+      textField.setText(clientSetting.getValue().orElse(""));
+      selectedFile = clientSetting.getValue().map(File::new).orElse(null);
     }
 
     @Override
@@ -346,8 +351,8 @@ final class JavaFxSelectionComponentFactory {
       systemButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
       userButton = new RadioButton("Use These Settings:");
       userButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-      hostText = new TextField(proxyHostClientSetting.value());
-      portText = new TextField(proxyPortClientSetting.stringValue());
+      hostText = new TextField(proxyHostClientSetting.getValue().orElse(""));
+      portText = new TextField(proxyPortClientSetting.getValue().map(Object::toString).orElse(""));
       final VBox radioPanel = new VBox();
       radioPanel.getChildren().addAll(
           noneButton,
@@ -368,27 +373,33 @@ final class JavaFxSelectionComponentFactory {
     }
 
     @Override
-    public Map<GameSetting<?>, String> readValues() {
-      final Map<GameSetting<?>, String> values = new HashMap<>();
+    public Map<GameSetting<?>, Object> readValues() {
+      final Map<GameSetting<?>, Object> values = new HashMap<>();
+
       if (noneButton.isSelected()) {
-        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE.toString());
+        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
       } else if (systemButton.isSelected()) {
-        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS.toString());
+        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
         HttpProxy.updateSystemProxy();
       } else {
-        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES.toString());
-        values.put(proxyHostClientSetting, hostText.getText().trim());
-        values.put(proxyPortClientSetting, portText.getText().trim());
+        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       }
+
+      final String host = hostText.getText().trim();
+      values.put(proxyHostClientSetting, host.isEmpty() ? null : host);
+
+      final String encodedPort = portText.getText().trim();
+      values.put(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
+
       return values;
     }
 
     @Override
     public void resetToDefault() {
       ClientSetting.flush();
-      hostText.setText(proxyHostClientSetting.defaultValue());
-      portText.setText(proxyPortClientSetting.defaultStringValue());
-      setProxyChoice(proxyChoiceClientSetting.defaultValue());
+      hostText.setText(proxyHostClientSetting.getDefaultValue().orElse(""));
+      portText.setText(proxyPortClientSetting.getDefaultValue().map(Object::toString).orElse(""));
+      setProxyChoice(proxyChoiceClientSetting.getDefaultValue().orElse(HttpProxy.ProxyChoice.NONE));
     }
 
     private void setProxyChoice(final HttpProxy.ProxyChoice proxyChoice) {
@@ -400,8 +411,8 @@ final class JavaFxSelectionComponentFactory {
     @Override
     public void reset() {
       ClientSetting.flush();
-      hostText.setText(proxyHostClientSetting.value());
-      portText.setText(proxyPortClientSetting.stringValue());
+      hostText.setText(proxyHostClientSetting.getValue().orElse(""));
+      portText.setText(proxyPortClientSetting.getValue().map(Object::toString).orElse(""));
       setProxyChoice(proxyChoiceClientSetting.value());
     }
 

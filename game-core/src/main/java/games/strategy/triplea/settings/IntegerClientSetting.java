@@ -2,11 +2,11 @@ package games.strategy.triplea.settings;
 
 final class IntegerClientSetting extends ClientSetting<Integer> {
   IntegerClientSetting(final String name) {
-    super(name);
+    super(Integer.class, name);
   }
 
   IntegerClientSetting(final String name, final int defaultValue) {
-    super(name, defaultValue);
+    super(Integer.class, name, defaultValue);
   }
 
   @Override
