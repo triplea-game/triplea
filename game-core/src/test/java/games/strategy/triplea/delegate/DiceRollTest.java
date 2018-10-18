@@ -2,9 +2,9 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
-import static games.strategy.triplea.delegate.GameDataTestUtil.thenGetRandomShouldHaveBeenCalled;
-import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
-import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
+import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
+import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
+import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -42,7 +42,7 @@ public class DiceRollTest {
   }
 
   private IDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, gameData);
+    return MockDelegateBridge.newInstance(gameData, player);
   }
 
   @Test

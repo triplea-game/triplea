@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
-import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
-import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
+import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
+import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -99,11 +99,6 @@ public class PacificTest extends AbstractDelegateTestCase {
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
-  }
-
-  @Override
-  protected IDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   @Test

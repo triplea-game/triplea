@@ -27,7 +27,7 @@ public class PactOfSteel2Test {
   }
 
   private IDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, gameData);
+    return MockDelegateBridge.newInstance(gameData, player);
   }
 
   @Test
