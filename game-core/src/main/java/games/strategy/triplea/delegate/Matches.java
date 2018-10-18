@@ -705,10 +705,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsLandTransportable() {
-    return obj -> {
-      final UnitAttachment ua = UnitAttachment.get(obj.getType());
-      return ua.getIsLandTransportable() || ua.getIsInfantry();
-    };
+    return unit -> UnitAttachment.get(unit.getType()).getIsLandTransportable();
   }
 
   public static Predicate<Unit> unitIsNotLandTransportable() {

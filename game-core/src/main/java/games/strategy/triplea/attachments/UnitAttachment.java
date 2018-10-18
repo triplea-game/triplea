@@ -1110,32 +1110,12 @@ public class UnitAttachment extends DefaultAttachment {
     m_isMarine = 0;
   }
 
-  @Deprecated
-  private void setIsInfantry(final String s) {
-    m_isInfantry = getBool(s);
-  }
-
-  @Deprecated
-  private void setIsInfantry(final Boolean s) {
-    m_isInfantry = s;
-  }
-
-  @Deprecated
-  public boolean getIsInfantry() {
-    return m_isInfantry;
-  }
-
-  @Deprecated
-  private void resetIsInfantry() {
-    m_isInfantry = false;
-  }
-
   private void setIsLandTransportable(final String s) {
-    m_isLandTransportable = getBool(s);
+    m_isLandTransportable = m_isInfantry = getBool(s);
   }
 
   private void setIsLandTransportable(final Boolean s) {
-    m_isLandTransportable = s;
+    m_isLandTransportable = m_isInfantry = s;
   }
 
   public boolean getIsLandTransportable() {
@@ -1143,7 +1123,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void resetIsLandTransportable() {
-    m_isLandTransportable = false;
+    m_isLandTransportable = m_isInfantry = false;
   }
 
   private void setIsLandTransport(final String s) {
@@ -2956,7 +2936,7 @@ public class UnitAttachment extends DefaultAttachment {
       tuples.add(Tuple.of("Is Kamikaze", "Can use all Movement to Attack Target"));
     }
 
-    if ((getIsInfantry() || getIsLandTransportable()) && playerHasMechInf(player)) {
+    if (getIsLandTransportable() && playerHasMechInf(player)) {
       tuples.add(Tuple.of("Can be Land Transported", ""));
     }
     if (getIsLandTransport() && playerHasMechInf(player)) {
@@ -3401,12 +3381,12 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsAirTransportable,
                 this::getIsAirTransportable,
                 this::resetIsAirTransportable))
-        .put("isInfantry",
+        .put("isInfantry", // kept for map compatibility; remove upon next map-incompatible release
             MutableProperty.of(
-                this::setIsInfantry,
-                this::setIsInfantry,
-                this::getIsInfantry,
-                this::resetIsInfantry))
+                this::setIsLandTransportable,
+                this::setIsLandTransportable,
+                this::getIsLandTransportable,
+                this::resetIsLandTransportable))
         .put("isLandTransport",
             MutableProperty.of(
                 this::setIsLandTransport,
