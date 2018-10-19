@@ -1,12 +1,11 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
-import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
 import static games.strategy.triplea.delegate.GameDataTestUtil.load;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
+import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -27,7 +26,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public final class UnitComparatorTest {
   private static void startCombatMoveFor(final PlayerID playerId, final GameData gameData) {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(playerId, gameData);
+    final IDelegateBridge bridge = MockDelegateBridge.newInstance(gameData, playerId);
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();

@@ -26,8 +26,8 @@ public class PactOfSteel2Test {
     gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
   }
 
-  private IDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, gameData);
+  private IDelegateBridge newDelegateBridge(final PlayerID player) {
+    return MockDelegateBridge.newInstance(gameData, player);
   }
 
   @Test
@@ -40,7 +40,7 @@ public class PactOfSteel2Test {
     final PlayerID british = GameDataTestUtil.british(gameData);
     final PlayerID germans = GameDataTestUtil.germans(gameData);
     final PlayerID russians = GameDataTestUtil.russians(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(russians);
+    final IDelegateBridge bridge = newDelegateBridge(russians);
     // this National Objective russia has to own at least 3 of the 5 territories by itself
     final RulesAttachment russianEasternEurope =
         RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");

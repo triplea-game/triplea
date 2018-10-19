@@ -1,8 +1,8 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
-import static games.strategy.triplea.delegate.GameDataTestUtil.whenGetRandom;
-import static games.strategy.triplea.delegate.GameDataTestUtil.withValues;
+import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
+import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -93,17 +93,12 @@ public class PacificTest extends AbstractDelegateTestCase {
     sz24 = gameData.getMap().getTerritory("24 Sea Zone");
     sz25 = gameData.getMap().getTerritory("25 Sea Zone");
     sz27 = gameData.getMap().getTerritory("27 Sea Zone");
-    bridge = getDelegateBridge(americans);
+    bridge = newDelegateBridge(americans);
     advanceToStep(bridge, "japaneseCombatMove");
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
-  }
-
-  @Override
-  protected IDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, gameData);
   }
 
   @Test
@@ -239,7 +234,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testJapaneseDestroyerTransport() {
-    bridge = getDelegateBridge(japanese);
+    bridge = newDelegateBridge(japanese);
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);

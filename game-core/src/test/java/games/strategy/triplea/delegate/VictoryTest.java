@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,7 +52,7 @@ public class VictoryTest {
     gameData = TestMapGameData.VICTORY_TEST.getGameData();
     italians = GameDataTestUtil.italians(gameData);
     germans = GameDataTestUtil.germans(gameData);
-    testBridge = GameDataTestUtil.getDelegateBridge(italians, gameData);
+    testBridge = MockDelegateBridge.newInstance(gameData, italians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");

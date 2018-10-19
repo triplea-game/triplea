@@ -170,7 +170,7 @@ public abstract class AbstractDelegateTestCase {
     assertNotNull(string, string);
   }
 
-  protected IDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, gameData);
+  protected final IDelegateBridge newDelegateBridge(final PlayerID player) {
+    return MockDelegateBridge.newInstance(gameData, player);
   }
 }

@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
-import static games.strategy.triplea.delegate.GameDataTestUtil.advanceToStep;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
@@ -13,7 +12,8 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
-import static games.strategy.triplea.delegate.GameDataTestUtil.withRemotePlayer;
+import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
+import static games.strategy.triplea.delegate.MockDelegateBridge.withRemotePlayer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,8 +40,8 @@ public class WW2V3Year42Test {
     gameData = TestMapGameData.WW2V3_1942.getGameData();
   }
 
-  private IDelegateBridge getDelegateBridge(final PlayerID player) {
-    return GameDataTestUtil.getDelegateBridge(player, gameData);
+  private IDelegateBridge newDelegateBridge(final PlayerID player) {
+    return MockDelegateBridge.newInstance(gameData, player);
   }
 
   @Test
@@ -50,7 +50,7 @@ public class WW2V3Year42Test {
     final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
     final PlayerID germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final IDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -71,7 +71,7 @@ public class WW2V3Year42Test {
     final Territory germany = territory("Germany", gameData);
     final PlayerID germans = germans(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
-    final IDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -97,7 +97,7 @@ public class WW2V3Year42Test {
     final Territory sz7 = territory("7 Sea Zone", gameData);
     // add a russian battlship
     addTo(sz5, battleship(gameData).create(1, russians(gameData)));
-    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -123,7 +123,7 @@ public class WW2V3Year42Test {
     // add an allied carrier and a fighter
     addTo(sz5, carrier(gameData).create(1, italians(gameData)));
     addTo(sz5, fighter(gameData).create(1, germans(gameData)));
-    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
@@ -147,7 +147,7 @@ public class WW2V3Year42Test {
     final Territory sz7 = territory("7 Sea Zone", gameData);
     // add a russian battlship
     addTo(sz5, battleship(gameData).create(1, russians(gameData)));
-    final IDelegateBridge bridge = getDelegateBridge(germans(gameData));
+    final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();

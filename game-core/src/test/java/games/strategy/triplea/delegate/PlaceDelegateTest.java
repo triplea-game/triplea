@@ -30,7 +30,7 @@ public class PlaceDelegateTest extends AbstractDelegateTestCase {
 
   @BeforeEach
   public void setupPlaceDelegate() {
-    bridge = super.getDelegateBridge(british);
+    bridge = newDelegateBridge(british);
     delegate = new PlaceDelegate();
     delegate.initialize("place");
     delegate.setDelegateBridgeAndPlayer(bridge);
