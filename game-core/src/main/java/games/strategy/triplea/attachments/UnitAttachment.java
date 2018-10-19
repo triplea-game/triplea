@@ -112,8 +112,6 @@ public class UnitAttachment extends DefaultAttachment {
   private int m_carrierCost = -1;
   private boolean m_isAirTransport = false;
   private boolean m_isAirTransportable = false;
-  // isInfantry is DEPRECATED, use isLandTransportable
-  private boolean m_isInfantry = false;
   private boolean m_isLandTransport = false;
   private boolean m_isLandTransportable = false;
   // aa related
@@ -1111,11 +1109,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setIsLandTransportable(final String s) {
-    m_isLandTransportable = m_isInfantry = getBool(s);
+    m_isLandTransportable = getBool(s);
   }
 
   private void setIsLandTransportable(final Boolean s) {
-    m_isLandTransportable = m_isInfantry = s;
+    m_isLandTransportable = s;
   }
 
   public boolean getIsLandTransportable() {
@@ -1123,7 +1121,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void resetIsLandTransportable() {
-    m_isLandTransportable = m_isInfantry = false;
+    m_isLandTransportable = false;
   }
 
   private void setIsLandTransport(final String s) {
@@ -2439,13 +2437,13 @@ public class UnitAttachment extends DefaultAttachment {
   public void validate(final GameData data) throws GameParseException {
     if (m_isAir) {
       if (m_isSea /* || m_isFactory */ || m_isSub || m_transportCost != -1 || m_carrierCapacity != -1 || m_canBlitz
-          || m_canBombard || m_isMarine != 0 || m_isInfantry || m_isLandTransportable || m_isLandTransport
+          || m_canBombard || m_isMarine != 0 || m_isLandTransportable || m_isLandTransport
           || m_isAirTransportable || m_isCombatTransport) {
         throw new GameParseException("air units cannot have certain properties, " + thisErrorMsg());
       }
     } else if (m_isSea) {
       if (m_canBlitz || m_isAir /* || m_isFactory */ || m_isStrategicBomber || m_carrierCost != -1
-          || m_transportCost != -1 || m_isMarine != 0 || m_isInfantry || m_isLandTransportable || m_isLandTransport
+          || m_transportCost != -1 || m_isMarine != 0 || m_isLandTransportable || m_isLandTransport
           || m_isAirTransportable || m_isAirTransport || m_isKamikaze) {
         throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
       }
@@ -2621,7 +2619,6 @@ public class UnitAttachment extends DefaultAttachment {
         + "  defenseRolls:" + m_defenseRolls
         + "  chooseBestRoll:" + m_chooseBestRoll
         + "  isMarine:" + m_isMarine
-        + "  isInfantry:" + m_isInfantry
         + "  isLandTransportable:" + m_isLandTransportable
         + "  isLandTransport:" + m_isLandTransport
         + "  isAirTransportable:" + m_isAirTransportable
