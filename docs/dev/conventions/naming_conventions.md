@@ -1,12 +1,11 @@
 Casing Types:
 - [Kebab-case](https://en.wikipedia.org/wiki/Kebab_case)
 
+## Java
 
-## java
+- In general, use the naming conventions from the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html#s5-naming).
+- Use a `new` prefix for factory methods (e.g. `newFoo()` instead of `createFoo()`).
 
-- Use [google java naming guide](https://google.github.io/styleguide/javaguide.html#s5-naming)
-
-
-## urls
+## URLs
 
 - kebab-case
