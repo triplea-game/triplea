@@ -34,7 +34,7 @@ public class AirThatCantLandUtilTest {
     fighterType = GameDataTestUtil.fighter(gameData);
   }
 
-  private IDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge newDelegateBridge(final PlayerID player) {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
@@ -54,7 +54,7 @@ public class AirThatCantLandUtilTest {
   public void testSimple() {
     final PlayerID player = americansPlayer;
     // everything can land
-    final IDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = newDelegateBridge(player);
     final AirThatCantLandUtil util = new AirThatCantLandUtil(bridge);
     assertTrue(util.getTerritoriesWhereAirCantLand(player).isEmpty());
   }
@@ -62,7 +62,7 @@ public class AirThatCantLandUtilTest {
   @Test
   public void testCantLandEnemyTerritory() {
     final PlayerID player = americansPlayer;
-    final IDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = newDelegateBridge(player);
     final Territory balkans = gameData.getMap().getTerritory("Balkans");
     final Change addAir = ChangeFactory.addUnits(balkans, fighterType.create(2, player));
     gameData.performChange(addAir);
@@ -78,7 +78,7 @@ public class AirThatCantLandUtilTest {
   @Test
   public void testCantLandWater() {
     final PlayerID player = americansPlayer;
-    final IDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = newDelegateBridge(player);
     final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
@@ -93,7 +93,7 @@ public class AirThatCantLandUtilTest {
   @Test
   public void testSpareNextToFactory() {
     final PlayerID player = americansPlayer;
-    final IDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = newDelegateBridge(player);
     final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
@@ -106,7 +106,7 @@ public class AirThatCantLandUtilTest {
   public void testCantLandCarrier() {
     // 1 carrier in the region, but three fighters, make sure we cant land
     final PlayerID player = americansPlayer;
-    final IDelegateBridge bridge = getDelegateBridge(player);
+    final IDelegateBridge bridge = newDelegateBridge(player);
     final Territory sz52 = gameData.getMap().getTerritory("52 Sea Zone");
     final Change addAir = ChangeFactory.addUnits(sz52, fighterType.create(2, player));
     gameData.performChange(addAir);
@@ -123,7 +123,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborCarrier() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = newDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -172,7 +172,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandMultiNeighborCarriers() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = newDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -224,7 +224,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborLandV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = newDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
         (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
@@ -269,7 +269,7 @@ public class AirThatCantLandUtilTest {
   public void testCanLandNeighborLandWithRetreatedBattleV2() {
     final PlayerID japanese = GameDataTestUtil.japanese(gameData);
     final PlayerID americans = GameDataTestUtil.americans(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = newDelegateBridge(japanese);
     // Get necessary sea zones and unit types for this test
     final Territory sz9 = gameData.getMap().getTerritory("9 Sea Zone");
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");

@@ -46,7 +46,7 @@ public class LhtrTest {
     gameData = TestMapGameData.LHTR.getGameData();
   }
 
-  private IDelegateBridge getDelegateBridge(final PlayerID player) {
+  private IDelegateBridge newDelegateBridge(final PlayerID player) {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
@@ -55,7 +55,7 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
@@ -83,7 +83,7 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
@@ -107,7 +107,7 @@ public class LhtrTest {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final IDelegateBridge bridge = getDelegateBridge(germans);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
@@ -130,7 +130,7 @@ public class LhtrTest {
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
-    final IDelegateBridge bridge = getDelegateBridge(japanese);
+    final IDelegateBridge bridge = newDelegateBridge(japanese);
     TechTracker.addAdvance(japanese, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData, japanese));
     // after tech advance, this is now 3
@@ -154,7 +154,7 @@ public class LhtrTest {
         uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
     addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final IDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = newDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
@@ -185,7 +185,7 @@ public class LhtrTest {
         uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
     addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
-    final IDelegateBridge bridge = getDelegateBridge(british);
+    final IDelegateBridge bridge = newDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2

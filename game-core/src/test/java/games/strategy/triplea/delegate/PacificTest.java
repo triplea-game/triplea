@@ -93,7 +93,7 @@ public class PacificTest extends AbstractDelegateTestCase {
     sz24 = gameData.getMap().getTerritory("24 Sea Zone");
     sz25 = gameData.getMap().getTerritory("25 Sea Zone");
     sz27 = gameData.getMap().getTerritory("27 Sea Zone");
-    bridge = getDelegateBridge(americans);
+    bridge = newDelegateBridge(americans);
     advanceToStep(bridge, "japaneseCombatMove");
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
@@ -234,7 +234,7 @@ public class PacificTest extends AbstractDelegateTestCase {
 
   @Test
   public void testJapaneseDestroyerTransport() {
-    bridge = getDelegateBridge(japanese);
+    bridge = newDelegateBridge(japanese);
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");
     delegate.setDelegateBridgeAndPlayer(bridge);
