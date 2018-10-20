@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -42,11 +43,12 @@ final class EngineVersionCheckTest {
     }
 
     private void givenEngineUpdateCheckNeverRun() {
-      when(updateCheckDateSetting.value()).thenReturn("");
+      when(updateCheckDateSetting.getValue()).thenReturn(Optional.empty());
     }
 
     private void givenEngineUpdateCheckLastRunRelativeToNow(final long amountToAdd, final TemporalUnit unit) {
-      when(updateCheckDateSetting.value()).thenReturn(formatUpdateCheckDate(now.plus(amountToAdd, unit)));
+      when(updateCheckDateSetting.getValue())
+          .thenReturn(Optional.of(formatUpdateCheckDate(now.plus(amountToAdd, unit))));
     }
 
     private boolean whenIsEngineUpdateCheckRequired() {
