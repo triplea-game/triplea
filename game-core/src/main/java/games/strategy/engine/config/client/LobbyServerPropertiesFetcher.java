@@ -85,8 +85,7 @@ public final class LobbyServerPropertiesFetcher {
       ClientSetting.flush();
       return downloadedProps;
     } catch (final IOException e) {
-
-      if (!ClientSetting.lobbyLastUsedHost.isSet()) {
+      if (!ClientSetting.lobbyLastUsedHost.isSet() || !ClientSetting.lobbyLastUsedPort.isSet()) {
         log.log(Level.SEVERE,
             String.format("Failed to download lobby server property file from %s; "
                 + "Please verify your internet connection and try again.",
@@ -94,11 +93,11 @@ public final class LobbyServerPropertiesFetcher {
             e);
         throw new RuntimeException(e);
       }
+
+      // graceful recovery case, use the last lobby address we knew about
       log.log(Level.SEVERE, "Encountered an error while downloading lobby property file: " + lobbyPropsUrl
           + ", will attempt to connect to the lobby at its last known address. If this problem keeps happening, "
           + "you may be seeing network troubles, or the lobby may not be available.", e);
-
-      // graceful recovery case, use the last lobby address we knew about
       return new LobbyServerProperties(
           ClientSetting.lobbyLastUsedHost.value(),
           ClientSetting.lobbyLastUsedPort.value());

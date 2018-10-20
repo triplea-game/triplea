@@ -25,17 +25,15 @@ final class UpdatedMapsCheck {
       final GameSetting<String> updateCheckDateSetting,
       final Runnable flushSetting) {
     // check at most once per month
-    final String encodedUpdateCheckDate = updateCheckDateSetting.value();
-    if (!encodedUpdateCheckDate.trim().isEmpty()) {
-      final LocalDate updateCheckDate = parseUpdateCheckDate(encodedUpdateCheckDate);
-      if (updateCheckDate.isAfter(now.minusMonths(1))) {
-        return false;
-      }
+    final boolean updateCheckRequired = updateCheckDateSetting.getValue()
+        .map(encodedUpdateCheckDate -> !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusMonths(1)))
+        .orElse(true);
+    if (!updateCheckRequired) {
+      return false;
     }
 
     updateCheckDateSetting.save(formatUpdateCheckDate(now));
     flushSetting.run();
-
     return true;
   }
 

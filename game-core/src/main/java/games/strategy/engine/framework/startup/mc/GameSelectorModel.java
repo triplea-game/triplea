@@ -209,7 +209,7 @@ public class GameSelectorModel extends Observable {
    * on startup.
    */
   public void loadDefaultGameSameThread() {
-    final String userPreferredDefaultGameUri = ClientSetting.defaultGameUri.value();
+    final String userPreferredDefaultGameUri = ClientSetting.defaultGameUri.getValue().orElse("");
 
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
     // version of triplea
