@@ -80,8 +80,7 @@ public class MetaSetupPanel extends SetupPanel {
     ruleBook = new JButton("Rule Book");
     helpButton = new JButton("Help");
     errorReportDemo = new JButton("Error report window (WIP)");
-    ruleBook.setToolTipText("<html>Download a manual of how to play <br>"
-        + "(it is also included in the directory TripleA was installed to).</html>");
+    ruleBook.setToolTipText("Download a manual of how to play");
   }
 
   private void layoutComponents() {
