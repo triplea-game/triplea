@@ -35,11 +35,11 @@ final class EngineVersionCheckTest {
     private Runnable flushSetting;
 
     private void givenFirstRun() {
-      when(firstRunSetting.value()).thenReturn(true);
+      when(firstRunSetting.getValueOrThrow()).thenReturn(true);
     }
 
     private void givenNotFirstRun() {
-      when(firstRunSetting.value()).thenReturn(false);
+      when(firstRunSetting.getValueOrThrow()).thenReturn(false);
     }
 
     private void givenEngineUpdateCheckNeverRun() {

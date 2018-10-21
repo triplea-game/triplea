@@ -75,7 +75,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
     ArgParser.handleCommandLineArgs("-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolderPath);
 
-    assertThat(ClientSetting.mapFolderOverride.value(), is(mapFolderPath));
+    assertThat(ClientSetting.mapFolderOverride.getValueOrThrow(), is(mapFolderPath));
   }
 
   @Test

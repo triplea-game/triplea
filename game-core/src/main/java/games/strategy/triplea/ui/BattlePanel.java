@@ -232,7 +232,7 @@ public class BattlePanel extends ActionPanel {
             break;
           }
         }
-        if (ClientSetting.showBattlesWhenObserving.value() || foundHumanInBattle) {
+        if (ClientSetting.showBattlesWhenObserving.getValueOrThrow() || foundHumanInBattle) {
           battleFrame.setVisible(true);
           battleFrame.validate();
           battleFrame.invalidate();

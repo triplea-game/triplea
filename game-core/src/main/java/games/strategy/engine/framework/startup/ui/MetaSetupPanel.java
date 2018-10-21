@@ -115,7 +115,7 @@ public class MetaSetupPanel extends SetupPanel {
     add(helpButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
 
-    if (ClientSetting.showBetaFeatures.value()) {
+    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
       add(errorReportDemo, new GridBagConstraints(0, 11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
           new Insets(10, 0, 0, 0), 0, 0));
     }

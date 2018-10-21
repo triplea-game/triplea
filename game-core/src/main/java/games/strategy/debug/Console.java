@@ -80,13 +80,13 @@ public final class Console {
     actions.add(newLogLevelButton());
     SwingUtilities.invokeLater(frame::pack);
 
-    if (ClientSetting.showConsole.value()) {
+    if (ClientSetting.showConsole.getValueOrThrow()) {
       SwingUtilities.invokeLater(() -> setVisible(true));
     }
   }
 
   private static Level getDefaultLogLevel() {
-    final String logLevelName = ClientSetting.loggingVerbosity.value();
+    final String logLevelName = ClientSetting.loggingVerbosity.getValueOrThrow();
     try {
       return Level.parse(logLevelName);
     } catch (final IllegalArgumentException e) {

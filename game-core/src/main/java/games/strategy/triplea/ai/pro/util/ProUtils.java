@@ -259,6 +259,6 @@ public class ProUtils {
    * Pause the game to allow the human player to see what is going on.
    */
   public static void pause() {
-    Interruptibles.sleep(ClientSetting.aiPauseDuration.value());
+    Interruptibles.sleep(ClientSetting.aiPauseDuration.getValueOrThrow());
   }
 }

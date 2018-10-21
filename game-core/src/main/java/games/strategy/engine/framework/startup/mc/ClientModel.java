@@ -173,7 +173,7 @@ public class ClientModel implements IMessengerErrorListener {
       return props;
     }
     // load in the saved name!
-    final String playername = ClientSetting.playerName.value();
+    final String playername = ClientSetting.playerName.getValueOrThrow();
     final Interruptibles.Result<ClientProps> result = Interruptibles.awaitResult(() -> SwingAction
         .invokeAndWaitResult(() -> {
           final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");

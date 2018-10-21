@@ -84,7 +84,7 @@ public final class ClientFileSystemHelperTest {
     public void shouldReturnCurrentPathWhenOverridePathNotSet() {
       when(overrideSetting.isSet()).thenReturn(false);
       final String currentPath = "/path/to/current";
-      when(currentSetting.value()).thenReturn(currentPath);
+      when(currentSetting.getValueOrThrow()).thenReturn(currentPath);
 
       assertThat(getUserMapsFolderPath(), is(currentPath));
     }
@@ -93,7 +93,7 @@ public final class ClientFileSystemHelperTest {
     public void shouldReturnOverridePathWhenOverridePathSet() {
       when(overrideSetting.isSet()).thenReturn(true);
       final String overridePath = "/path/to/override";
-      when(overrideSetting.value()).thenReturn(overridePath);
+      when(overrideSetting.getValueOrThrow()).thenReturn(overridePath);
 
       assertThat(getUserMapsFolderPath(), is(overridePath));
     }

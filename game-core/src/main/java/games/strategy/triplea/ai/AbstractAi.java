@@ -630,6 +630,6 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * Pause the game to allow the human player to see what is going on.
    */
   protected static void pause() {
-    Interruptibles.sleep(ClientSetting.aiPauseDuration.value());
+    Interruptibles.sleep(ClientSetting.aiPauseDuration.getValueOrThrow());
   }
 }

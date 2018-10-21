@@ -69,6 +69,29 @@ public abstract class AbstractGameSettingTestCase {
   }
 
   @Nested
+  final class GetValueOrThrowTest {
+    @Test
+    void shouldReturnValueWhenValuePresentAndDefaultValuePresent() {
+      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).getValueOrThrow(), is(VALUE));
+    }
+
+    @Test
+    void shouldReturnValueWhenValuePresentAndDefaultValueAbsent() {
+      assertThat(newGameSetting(VALUE, NO_VALUE).getValueOrThrow(), is(VALUE));
+    }
+
+    @Test
+    void shouldReturnDefaultValueWhenValueAbsentAndDefaultValuePresent() {
+      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).getValueOrThrow(), is(DEFAULT_VALUE));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenValueAbsentAndDefaultValueAbsent() {
+      assertThrows(NoSuchElementException.class, () -> newGameSetting(NO_VALUE, NO_VALUE).getValueOrThrow());
+    }
+  }
+
+  @Nested
   final class IsSetTest {
     @Test
     void shouldReturnTrueWhenValuePresentAndDefaultValuePresent() {
@@ -137,29 +160,6 @@ public abstract class AbstractGameSettingTestCase {
       final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);
 
       assertThrows(ClassCastException.class, () -> gameSetting.saveObject("2112"));
-    }
-  }
-
-  @Nested
-  final class ValueTest {
-    @Test
-    void shouldReturnValueWhenValuePresentAndDefaultValuePresent() {
-      assertThat(newGameSetting(VALUE, DEFAULT_VALUE).value(), is(VALUE));
-    }
-
-    @Test
-    void shouldReturnValueWhenValuePresentAndDefaultValueAbsent() {
-      assertThat(newGameSetting(VALUE, NO_VALUE).value(), is(VALUE));
-    }
-
-    @Test
-    void shouldReturnDefaultValueWhenValueAbsentAndDefaultValuePresent() {
-      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).value(), is(DEFAULT_VALUE));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenValueAbsentAndDefaultValueAbsent() {
-      assertThrows(NoSuchElementException.class, () -> newGameSetting(NO_VALUE, NO_VALUE).value());
     }
   }
 }

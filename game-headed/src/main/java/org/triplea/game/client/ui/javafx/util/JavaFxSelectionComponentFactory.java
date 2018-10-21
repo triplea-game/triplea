@@ -105,7 +105,7 @@ final class JavaFxSelectionComponentFactory {
 
       private CheckBox getCheckBox() {
         final CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(clientSetting.value());
+        checkBox.setSelected(clientSetting.getValueOrThrow());
         return checkBox;
       }
 
@@ -136,7 +136,7 @@ final class JavaFxSelectionComponentFactory {
 
       @Override
       public void reset() {
-        checkBox.selectedProperty().set(clientSetting.value());
+        checkBox.selectedProperty().set(clientSetting.getValueOrThrow());
       }
     };
   }
@@ -344,7 +344,7 @@ final class JavaFxSelectionComponentFactory {
       this.proxyHostClientSetting = proxyHostClientSetting;
       this.proxyPortClientSetting = proxyPortClientSetting;
 
-      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.value();
+      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.getValueOrThrow();
       noneButton = new RadioButton("None");
       noneButton.setSelected(proxyChoice == HttpProxy.ProxyChoice.NONE);
       systemButton = new RadioButton("Use System Settings");
@@ -413,7 +413,7 @@ final class JavaFxSelectionComponentFactory {
       ClientSetting.flush();
       hostText.setText(proxyHostClientSetting.getValue().orElse(""));
       portText.setText(proxyPortClientSetting.getValue().map(Object::toString).orElse(""));
-      setProxyChoice(proxyChoiceClientSetting.value());
+      setProxyChoice(proxyChoiceClientSetting.getValueOrThrow());
     }
 
     private boolean isHostTextValid() {

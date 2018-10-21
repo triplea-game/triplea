@@ -111,7 +111,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       return selectionBox(
           ClientSetting.lookAndFeel,
           LookAndFeel.getLookAndFeelAvailableList(),
-          ClientSetting.lookAndFeel.value(),
+          ClientSetting.lookAndFeel.getValueOrThrow(),
           s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", ""));
     }
   },
