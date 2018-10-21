@@ -182,7 +182,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           .password(System.getProperty(SERVER_PASSWORD))
           .build());
     }
-    final String playername = ClientSetting.playerName.value();
+    final String playername = ClientSetting.playerName.getValueOrThrow();
     final Interruptibles.Result<ServerOptions> optionsResult = Interruptibles
         .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
           final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);

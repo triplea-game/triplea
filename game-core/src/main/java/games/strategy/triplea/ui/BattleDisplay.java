@@ -261,7 +261,7 @@ public class BattleDisplay extends JPanel {
     mapPanel.getUiContext().addShutdownLatch(continueLatch);
 
     // Set a auto-wait expiration if the option is set.
-    if (!ClientSetting.confirmDefensiveRolls.value()) {
+    if (!ClientSetting.confirmDefensiveRolls.getValueOrThrow()) {
       final int maxWaitTime = 1500;
       final Timer t = new Timer();
       t.schedule(new TimerTask() {
@@ -480,7 +480,7 @@ public class BattleDisplay extends JPanel {
                 Math.min(availHeight, size.height)));
           }
           final String[] options = {"Ok", "Cancel"};
-          final String focus = ClientSetting.spaceBarConfirmsCasualties.value() ? options[0] : null;
+          final String focus = ClientSetting.spaceBarConfirmsCasualties.getValueOrThrow() ? options[0] : null;
           final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane,
               hit.getName() + " select casualties", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
               focus);

@@ -34,7 +34,7 @@ public class HttpProxy {
   }
 
   public static boolean isUsingSystemProxy() {
-    return ClientSetting.proxyChoice.value().equals(ProxyChoice.USE_SYSTEM_SETTINGS);
+    return ClientSetting.proxyChoice.getValueOrThrow().equals(ProxyChoice.USE_SYSTEM_SETTINGS);
   }
 
   /**
@@ -88,7 +88,7 @@ public class HttpProxy {
     if (ClientSetting.proxyHost.isSet() && ClientSetting.proxyPort.isSet()) {
       request.setConfig(RequestConfig
           .copy(request.getConfig())
-          .setProxy(new HttpHost(ClientSetting.proxyHost.value(), ClientSetting.proxyPort.value()))
+          .setProxy(new HttpHost(ClientSetting.proxyHost.getValueOrThrow(), ClientSetting.proxyPort.getValueOrThrow()))
           .build());
     }
   }

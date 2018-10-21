@@ -39,15 +39,6 @@ public interface GameSetting<T> {
   void save(@Nullable T newValue);
 
   /**
-   * Returns the current value of the setting or the default value if the setting has no current value.
-   *
-   * @throws java.util.NoSuchElementException If the setting has no current or default value.
-   */
-  default T value() {
-    return getValue().get();
-  }
-
-  /**
    * Returns the default value of the setting or empty if the setting has no default value.
    */
   Optional<T> getDefaultValue();
@@ -57,6 +48,14 @@ public interface GameSetting<T> {
    * setting has no current or default value.
    */
   Optional<T> getValue();
+
+  /**
+   * Returns the current value of the setting, the default value if the setting has no current value, or throws
+   * {@link java.util.NoSuchElementException} if the setting has no current or default value.
+   */
+  default T getValueOrThrow() {
+    return getValue().get();
+  }
 
   /**
    * Resets the setting to its default value or empty if it has no default value.

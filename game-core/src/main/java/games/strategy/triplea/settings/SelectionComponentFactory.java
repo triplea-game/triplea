@@ -43,7 +43,7 @@ final class SelectionComponentFactory {
       final ClientSetting<String> proxyHostClientSetting,
       final ClientSetting<Integer> proxyPortClientSetting) {
     return new SelectionComponent<JComponent>() {
-      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.value();
+      final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.getValueOrThrow();
       final JRadioButton noneButton = new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
       final JRadioButton systemButton =
           new JRadioButton("Use System Settings", proxyChoice == HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
@@ -158,7 +158,7 @@ final class SelectionComponentFactory {
         ClientSetting.flush();
         hostText.setText(proxyHostClientSetting.getValue().orElse(""));
         portText.setText(proxyPortClientSetting.getValue().map(Object::toString).orElse(""));
-        setProxyChoice(proxyChoiceClientSetting.value());
+        setProxyChoice(proxyChoiceClientSetting.getValueOrThrow());
       }
     };
   }
@@ -240,7 +240,7 @@ final class SelectionComponentFactory {
    */
   static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting<Boolean> clientSetting) {
     return new AlwaysValidInputSelectionComponent() {
-      final boolean initialSelection = clientSetting.value();
+      final boolean initialSelection = clientSetting.getValueOrThrow();
       final JRadioButton yesButton = new JRadioButton("True");
       final JRadioButton noButton = new JRadioButton("False");
       final JPanel buttonPanel = JPanelBuilder.builder()
@@ -271,7 +271,7 @@ final class SelectionComponentFactory {
 
       @Override
       public void reset() {
-        final boolean value = clientSetting.value();
+        final boolean value = clientSetting.getValueOrThrow();
         yesButton.setSelected(value);
         noButton.setSelected(!value);
       }

@@ -49,7 +49,7 @@ public final class LookAndFeel {
           "Close TripleA and Restart",
           JOptionPane.WARNING_MESSAGE);
     });
-    setupLookAndFeel(ClientSetting.lookAndFeel.value());
+    setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
   }
 
   /**

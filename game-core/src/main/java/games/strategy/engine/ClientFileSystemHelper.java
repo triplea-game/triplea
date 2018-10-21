@@ -125,8 +125,8 @@ public final class ClientFileSystemHelper {
       final GameSetting<String> currentUserMapsFolderPathSetting,
       final GameSetting<String> overrideUserMapsFolderPathSetting) {
     return overrideUserMapsFolderPathSetting.isSet()
-        ? overrideUserMapsFolderPathSetting.value()
-        : currentUserMapsFolderPathSetting.value();
+        ? overrideUserMapsFolderPathSetting.getValueOrThrow()
+        : currentUserMapsFolderPathSetting.getValueOrThrow();
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked. */

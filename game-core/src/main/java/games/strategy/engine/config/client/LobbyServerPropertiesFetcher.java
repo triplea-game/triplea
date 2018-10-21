@@ -66,7 +66,9 @@ public final class LobbyServerPropertiesFetcher {
       final GameSetting<String> testLobbyHostSetting,
       final GameSetting<Integer> testLobbyPortSetting) {
     if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet()) {
-      return Optional.of(new LobbyServerProperties(testLobbyHostSetting.value(), testLobbyPortSetting.value()));
+      return Optional.of(new LobbyServerProperties(
+          testLobbyHostSetting.getValueOrThrow(),
+          testLobbyPortSetting.getValueOrThrow()));
     }
 
     return Optional.empty();
@@ -99,8 +101,8 @@ public final class LobbyServerPropertiesFetcher {
           + ", will attempt to connect to the lobby at its last known address. If this problem keeps happening, "
           + "you may be seeing network troubles, or the lobby may not be available.", e);
       return new LobbyServerProperties(
-          ClientSetting.lobbyLastUsedHost.value(),
-          ClientSetting.lobbyLastUsedPort.value());
+          ClientSetting.lobbyLastUsedHost.getValueOrThrow(),
+          ClientSetting.lobbyLastUsedPort.getValueOrThrow());
     }
   }
 
