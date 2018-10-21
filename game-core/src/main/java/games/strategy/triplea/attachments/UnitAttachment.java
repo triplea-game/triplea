@@ -153,7 +153,6 @@ public class UnitAttachment extends DefaultAttachment {
   private Set<UnitType> bombingTargets = null;
   // production related
   // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
-  // private boolean m_isFactory = false;
   private boolean canProduceUnits = false;
   // -1 means either it can't produce any, or it produces at the value of the territory it is located in
   private int canProduceXUnits = -1;
@@ -792,7 +791,7 @@ public class UnitAttachment extends DefaultAttachment {
     unitPlacementRestrictions = null;
   }
 
-  // no m_ variable for this, since it is the inverse of unitPlacementRestrictions
+  // no field for this, since it is the inverse of unitPlacementRestrictions
   // we might as well just use unitPlacementRestrictions
   private void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
     final Collection<Territory> allowedTerritories = getListedTerritories(splitOnColon(value));
@@ -2436,13 +2435,13 @@ public class UnitAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {
     if (isAir) {
-      if (isSea /* || m_isFactory */ || isSub || transportCost != -1 || carrierCapacity != -1 || canBlitz
+      if (isSea || isSub || transportCost != -1 || carrierCapacity != -1 || canBlitz
           || canBombard || isMarine != 0 || isLandTransportable || isLandTransport
           || isAirTransportable || isCombatTransport) {
         throw new GameParseException("air units cannot have certain properties, " + thisErrorMsg());
       }
     } else if (isSea) {
-      if (canBlitz || isAir /* || m_isFactory */ || isStrategicBomber || carrierCost != -1
+      if (canBlitz || isAir || isStrategicBomber || carrierCost != -1
           || transportCost != -1 || isMarine != 0 || isLandTransportable || isLandTransport
           || isAirTransportable || isAirTransport || isKamikaze) {
         throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
