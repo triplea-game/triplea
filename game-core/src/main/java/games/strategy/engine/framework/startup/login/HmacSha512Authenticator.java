@@ -26,18 +26,6 @@ import com.google.common.collect.Maps;
  * </p>
  */
 final class HmacSha512Authenticator {
-  /**
-   * Indicates the specified challenge can be processed by this authenticator.
-   *
-   * @param challenge The challenge sent to the client node; must not be {@code null}.
-   *
-   * @return {@code true} if the specified challenge can be processed by this authenticator; otherwise {@code false}.
-   */
-  static boolean canProcessChallenge(final Map<String, String> challenge) {
-    return challenge.containsKey(ChallengePropertyNames.NONCE)
-        && challenge.containsKey(ChallengePropertyNames.SALT);
-  }
-
   @VisibleForTesting
   interface ChallengePropertyNames {
     String NONCE = "authenticator/hmac-sha512/nonce";
@@ -83,17 +71,6 @@ final class HmacSha512Authenticator {
     final byte[] bytes = new byte[length];
     secureRandom.nextBytes(bytes);
     return bytes;
-  }
-
-  /**
-   * Indicates the specified response can be processed by this authenticator.
-   *
-   * @param response The response received from the client node; must not be {@code null}.
-   *
-   * @return {@code true} if the specified response can be processed by this authenticator; otherwise {@code false}.
-   */
-  static boolean canProcessResponse(final Map<String, String> response) {
-    return response.containsKey(ResponsePropertyNames.DIGEST);
   }
 
   @VisibleForTesting

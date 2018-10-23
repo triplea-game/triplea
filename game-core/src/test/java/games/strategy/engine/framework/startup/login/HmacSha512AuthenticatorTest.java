@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import games.strategy.engine.framework.startup.login.HmacSha512Authenticator.ChallengePropertyNames;
 import games.strategy.engine.framework.startup.login.HmacSha512Authenticator.ResponsePropertyNames;
@@ -28,57 +27,10 @@ import games.strategy.engine.framework.startup.login.HmacSha512Authenticator.Res
 final class HmacSha512AuthenticatorTest {
   private static final String PASSWORD = "←PASSWORD↑WITH→UNICODE↓CHARS";
 
-  private static Map<String, String> newChallengeWithAllProperties() {
-    return Maps.newHashMap(ImmutableMap.of(
-        ChallengePropertyNames.NONCE, newBase64String(),
-        ChallengePropertyNames.SALT, newBase64String()));
-  }
-
   private static String newBase64String() {
     final byte[] bytes = new byte[8];
     Arrays.fill(bytes, (byte) 1);
     return Base64.getEncoder().encodeToString(bytes);
-  }
-
-  private static Map<String, String> newChallengeWithAllPropertiesExcept(final String name) {
-    final Map<String, String> challenge = newChallengeWithAllProperties();
-    challenge.remove(name);
-    return challenge;
-  }
-
-  private static Map<String, String> newResponseWithAllProperties() {
-    return Maps.newHashMap(ImmutableMap.of(
-        ResponsePropertyNames.DIGEST, newBase64String()));
-  }
-
-  private static Map<String, String> newResponseWithAllPropertiesExcept(final String name) {
-    final Map<String, String> response = newResponseWithAllProperties();
-    response.remove(name);
-    return response;
-  }
-
-  @Nested
-  final class CanProcessChallengeTest {
-    @Test
-    void shouldReturnTrueWhenAllPropertiesPresent() {
-      final Map<String, String> challenge = newChallengeWithAllProperties();
-
-      assertThat(HmacSha512Authenticator.canProcessChallenge(challenge), is(true));
-    }
-
-    @Test
-    void shouldReturnFalseWhenNonceAbsent() {
-      final Map<String, String> challenge = newChallengeWithAllPropertiesExcept(ChallengePropertyNames.NONCE);
-
-      assertThat(HmacSha512Authenticator.canProcessChallenge(challenge), is(false));
-    }
-
-    @Test
-    void shouldReturnFalseWhenSaltAbsent() {
-      final Map<String, String> challenge = newChallengeWithAllPropertiesExcept(ChallengePropertyNames.SALT);
-
-      assertThat(HmacSha512Authenticator.canProcessChallenge(challenge), is(false));
-    }
   }
 
   @Nested
@@ -89,23 +41,6 @@ final class HmacSha512AuthenticatorTest {
 
       assertThat(challenge, hasEntry(is(ChallengePropertyNames.NONCE), is(not(emptyString()))));
       assertThat(challenge, hasEntry(is(ChallengePropertyNames.SALT), is(not(emptyString()))));
-    }
-  }
-
-  @Nested
-  final class CanProcessResponseTest {
-    @Test
-    void shouldReturnTrueWhenAllPropertiesPresent() {
-      final Map<String, String> response = newResponseWithAllProperties();
-
-      assertThat(HmacSha512Authenticator.canProcessResponse(response), is(true));
-    }
-
-    @Test
-    void shouldReturnFalseWhenDigestAbsent() {
-      final Map<String, String> response = newResponseWithAllPropertiesExcept(ResponsePropertyNames.DIGEST);
-
-      assertThat(HmacSha512Authenticator.canProcessResponse(response), is(false));
     }
   }
 

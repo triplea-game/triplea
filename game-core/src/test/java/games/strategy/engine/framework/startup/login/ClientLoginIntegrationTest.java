@@ -3,10 +3,9 @@ package games.strategy.engine.framework.startup.login;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.triplea.test.common.Assertions.assertNotThrows;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
 
@@ -21,7 +20,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.TestServerMessenger;
 
 @Integration
-public final class ClientLoginIntegrationTest {
+final class ClientLoginIntegrationTest {
   private static final String PASSWORD = "password";
   private static final String OTHER_PASSWORD = "otherPassword";
 
@@ -29,7 +28,7 @@ public final class ClientLoginIntegrationTest {
   private int serverPort;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     serverMessenger = newServerMessenger();
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
   }
@@ -48,20 +47,8 @@ public final class ClientLoginIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     serverMessenger.shutDown();
-  }
-
-  @Test
-  public void login_ShouldSucceedUsingMd5CryptAuthenticatorWhenPasswordMatches() {
-    final IConnectionLogin connectionLogin = new TestConnectionLogin() {
-      @Override
-      public Map<String, String> getProperties(final Map<String, String> challenge) {
-        return filterMd5CryptAuthenticatorResponseProperties(super.getProperties(challenge));
-      }
-    };
-
-    assertNotThrows(() -> newClientMessenger(connectionLogin).shutDown());
   }
 
   private static class TestConnectionLogin extends ClientLogin {
@@ -81,11 +68,6 @@ public final class ClientLoginIntegrationTest {
     protected String promptForPassword() {
       return password;
     }
-
-    static Map<String, String> filterMd5CryptAuthenticatorResponseProperties(final Map<String, String> response) {
-      response.remove(HmacSha512Authenticator.ResponsePropertyNames.DIGEST);
-      return response;
-    }
   }
 
   private IClientMessenger newClientMessenger(final IConnectionLogin connectionLogin) throws Exception {
@@ -98,29 +80,20 @@ public final class ClientLoginIntegrationTest {
         connectionLogin);
   }
 
-  @Test
-  public void login_ShouldFailUsingMd5CryptAuthenticatorWhenPasswordDoesNotMatch() {
-    final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD) {
-      @Override
-      public Map<String, String> getProperties(final Map<String, String> challenge) {
-        return filterMd5CryptAuthenticatorResponseProperties(super.getProperties(challenge));
-      }
-    };
+  @Nested
+  final class LoginTest {
+    @Test
+    void shouldSucceedWhenPasswordMatches() {
+      final IConnectionLogin connectionLogin = new TestConnectionLogin();
 
-    assertThrows(CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
-  }
+      assertNotThrows(() -> newClientMessenger(connectionLogin).shutDown());
+    }
 
-  @Test
-  public void login_ShouldSucceedUsingHmacSha512AuthenticatorWhenPasswordMatches() {
-    final IConnectionLogin connectionLogin = new TestConnectionLogin();
+    @Test
+    void shouldFailWhenPasswordDoesNotMatch() {
+      final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD);
 
-    assertNotThrows(() -> newClientMessenger(connectionLogin).shutDown());
-  }
-
-  @Test
-  public void login_ShouldFailUsingHmacSha512AuthenticatorWhenPasswordDoesNotMatch() {
-    final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD);
-
-    assertThrows(CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
+      assertThrows(CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
+    }
   }
 }
