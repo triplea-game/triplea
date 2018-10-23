@@ -40,7 +40,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   protected int eachMultiple = 1;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to
-  // determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
+  // determine the number of territories needed to be valid (ex: alliedOwnershipTerritories)
   protected int territoryCount = -1;
   // A list of players that can be used with
   // directOwnershipTerritories, directExclusionTerritories,
