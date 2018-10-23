@@ -128,6 +128,16 @@ public class GameSelectorPanel extends JPanel implements Observer {
               SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
               SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_END_TURN));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_BEFORE_BATTLE));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_AFTER_BATTLE));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_AFTER_COMBAT_MOVE));
+          menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
+              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_AFTER_NON_COMBAT_MOVE));
           menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
           final Point point = loadSavedGame.getLocation();
           menu.show(GameSelectorPanel.this, point.x + loadSavedGame.getWidth(), point.y);
