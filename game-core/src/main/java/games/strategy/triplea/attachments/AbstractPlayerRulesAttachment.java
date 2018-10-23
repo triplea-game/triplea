@@ -22,7 +22,7 @@ import lombok.extern.java.Log;
  * In other words, things like placementAnyTerritory (allows placing in any territory without need of a factory),
  * or movementRestrictionTerritories (restricts movement to certain territories), would go in This class.
  * While things like m_alliedOwnershipTerritories (a conditions for testing ownership of territories,
- * or m_objectiveValue (the money given if the condition is true), would NOT go in This class. <br>
+ * or objectiveValue (the money given if the condition is true), would NOT go in This class. <br>
  * Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
  */
 @Log
