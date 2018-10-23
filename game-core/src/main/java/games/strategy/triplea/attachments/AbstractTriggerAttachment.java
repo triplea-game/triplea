@@ -251,7 +251,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   @Override
   public void validate(final GameData data) throws GameParseException {
-    if (m_conditions == null) {
+    if (conditions == null) {
       throw new GameParseException("must contain at least one condition: " + thisErrorMsg());
     }
   }

@@ -612,11 +612,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<PlayerID> players = getPlayers();
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
-    if (m_conditions.size() > 0) {
+    if (conditions.size() > 0) {
       final Map<ICondition, Boolean> actualTestedConditions = Optional.ofNullable(testedConditions)
           .orElseGet(() -> testAllConditionsRecursive(
-              getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, delegateBridge));
-      objectiveMet = areConditionsMet(new ArrayList<>(m_conditions), actualTestedConditions, m_conditionType);
+              getAllConditionsRecursive(new HashSet<>(conditions), null), null, delegateBridge));
+      objectiveMet = areConditionsMet(new ArrayList<>(conditions), actualTestedConditions, conditionType);
     }
     // check switch (on/off)
     if (objectiveMet) {
@@ -851,7 +851,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             .reportMessage(notificationMessage, notificationMessage);
       }
     }
-    return objectiveMet != m_invert;
+    return objectiveMet != invert;
   }
 
   /**

@@ -43,31 +43,31 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
 
   // list of conditions that this condition can
-  protected List<RulesAttachment> m_conditions = new ArrayList<>();
+  protected List<RulesAttachment> conditions = new ArrayList<>();
   // contain
-  // m_conditionType modifies the relationship of m_conditions
-  protected String m_conditionType = AND;
+  // conditionType modifies the relationship of conditions
+  protected String conditionType = AND;
   // will logically negate the entire condition, including contained conditions
-  protected boolean m_invert = false;
+  protected boolean invert = false;
   // chance (x out of y) that this action is successful when attempted, default = 1:1 = always
-  protected String m_chance = DEFAULT_CHANCE;
+  protected String chance = DEFAULT_CHANCE;
   // successful
   // if chance fails, we should increment the chance by x
-  protected int m_chanceIncrementOnFailure = 0;
+  protected int chanceIncrementOnFailure = 0;
   // if chance succeeds, we should decrement the chance by x
-  protected int m_chanceDecrementOnSuccess = 0;
+  protected int chanceDecrementOnSuccess = 0;
 
   protected AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
   protected void setConditions(final String conditions) throws GameParseException {
-    if (m_conditions == null) {
-      m_conditions = new ArrayList<>();
+    if (this.conditions == null) {
+      this.conditions = new ArrayList<>();
     }
     final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
-      m_conditions.add(playerIDs.stream()
+      this.conditions.add(playerIDs.stream()
           .map(p -> p.getAttachment(subString))
           .map(RulesAttachment.class::cast)
           .filter(Objects::nonNull)
@@ -77,24 +77,24 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   private void setConditions(final List<RulesAttachment> value) {
-    m_conditions = value;
+    conditions = value;
   }
 
   @Override
   public List<RulesAttachment> getConditions() {
-    return m_conditions;
+    return conditions;
   }
 
   protected void resetConditions() {
-    m_conditions = new ArrayList<>();
+    conditions = new ArrayList<>();
   }
 
   private void setInvert(final boolean s) {
-    m_invert = s;
+    invert = s;
   }
 
   private boolean getInvert() {
-    return m_invert;
+    return invert;
   }
 
   @VisibleForTesting
@@ -103,7 +103,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (uppercaseValue.matches("AND|X?OR|\\d+(?:-\\d+)?")) {
       final String[] split = splitOnHyphen(uppercaseValue);
       if (split.length != 2 || Integer.parseInt(split[1]) > Integer.parseInt(split[0])) {
-        m_conditionType = uppercaseValue;
+        conditionType = uppercaseValue;
         return;
       }
     }
@@ -118,11 +118,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   private String getConditionType() {
-    return m_conditionType;
+    return conditionType;
   }
 
   private void resetConditionType() {
-    m_conditionType = AND;
+    conditionType = AND;
   }
 
   /**
@@ -262,18 +262,18 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       throw new GameParseException(
           "Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance" + thisErrorMsg());
     }
-    m_chance = chance;
+    this.chance = chance;
   }
 
   /**
    * Returns the number you need to roll to get the action to succeed format "1:10" for 10% chance.
    */
   private String getChance() {
-    return m_chance;
+    return chance;
   }
 
   private void resetChance() {
-    m_chance = DEFAULT_CHANCE;
+    chance = DEFAULT_CHANCE;
   }
 
   public int getChanceToHit() {
@@ -285,31 +285,31 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   }
 
   private void setChanceIncrementOnFailure(final int value) {
-    m_chanceIncrementOnFailure = value;
+    chanceIncrementOnFailure = value;
   }
 
   public int getChanceIncrementOnFailure() {
-    return m_chanceIncrementOnFailure;
+    return chanceIncrementOnFailure;
   }
 
   private void setChanceDecrementOnSuccess(final int value) {
-    m_chanceDecrementOnSuccess = value;
+    chanceDecrementOnSuccess = value;
   }
 
   public int getChanceDecrementOnSuccess() {
-    return m_chanceDecrementOnSuccess;
+    return chanceDecrementOnSuccess;
   }
 
   public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge delegateBridge,
       final boolean success,
       final boolean historyChild) {
     if (success) {
-      if (m_chanceDecrementOnSuccess == 0) {
+      if (chanceDecrementOnSuccess == 0) {
         return;
       }
       final int oldToHit = getChanceToHit();
       final int diceSides = getChanceDiceSides();
-      final int newToHit = Math.max(0, Math.min(diceSides, (oldToHit - m_chanceDecrementOnSuccess)));
+      final int newToHit = Math.max(0, Math.min(diceSides, (oldToHit - chanceDecrementOnSuccess)));
       if (newToHit == oldToHit) {
         return;
       }
@@ -318,12 +318,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
           .startEvent("Success changes chance for " + MyFormatter.attachmentNameToText(getName()) + " to " + newChance);
       delegateBridge.addChange(ChangeFactory.attachmentPropertyChange(this, newChance, CHANCE));
     } else {
-      if (m_chanceIncrementOnFailure == 0) {
+      if (chanceIncrementOnFailure == 0) {
         return;
       }
       final int oldToHit = getChanceToHit();
       final int diceSides = getChanceDiceSides();
-      final int newToHit = Math.max(0, Math.min(diceSides, (oldToHit + m_chanceIncrementOnFailure)));
+      final int newToHit = Math.max(0, Math.min(diceSides, (oldToHit + chanceIncrementOnFailure)));
       if (newToHit == oldToHit) {
         return;
       }

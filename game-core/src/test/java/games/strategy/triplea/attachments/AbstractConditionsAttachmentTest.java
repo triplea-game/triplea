@@ -25,31 +25,31 @@ public class AbstractConditionsAttachmentTest {
   @Test
   public void testSetConditionType_validValues() throws Exception {
     instance.setConditionType("OR");
-    assertEquals("OR", instance.m_conditionType);
+    assertEquals("OR", instance.conditionType);
     instance.setConditionType("AND");
-    assertEquals("AND", instance.m_conditionType);
+    assertEquals("AND", instance.conditionType);
     instance.setConditionType("XOR");
-    assertEquals("XOR", instance.m_conditionType);
+    assertEquals("XOR", instance.conditionType);
     instance.setConditionType("00000012345656");
-    assertEquals("00000012345656", instance.m_conditionType);
+    assertEquals("00000012345656", instance.conditionType);
     instance.setConditionType("0-9");
-    assertEquals("0-9", instance.m_conditionType);
+    assertEquals("0-9", instance.conditionType);
     instance.setConditionType("0987654321-1234567890");
-    assertEquals("0987654321-1234567890", instance.m_conditionType);
+    assertEquals("0987654321-1234567890", instance.conditionType);
   }
 
   @Test
   public void testSetConditionType_validLowercase() throws Exception {
     instance.setConditionType("or");
-    assertEquals("OR", instance.m_conditionType);
+    assertEquals("OR", instance.conditionType);
     instance.setConditionType("and");
-    assertEquals("AND", instance.m_conditionType);
+    assertEquals("AND", instance.conditionType);
     instance.setConditionType("xor");
-    assertEquals("XOR", instance.m_conditionType);
+    assertEquals("XOR", instance.conditionType);
     instance.setConditionType("123");
-    assertEquals("123", instance.m_conditionType);
+    assertEquals("123", instance.conditionType);
     instance.setConditionType("123-456");
-    assertEquals("123-456", instance.m_conditionType);
+    assertEquals("123-456", instance.conditionType);
   }
 
   @Test
