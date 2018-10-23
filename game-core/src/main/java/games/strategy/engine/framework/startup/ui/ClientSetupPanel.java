@@ -254,6 +254,10 @@ public class ClientSetupPanel extends SetupPanel {
     actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE));
     actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_ODD));
     actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_END_TURN));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_BEFORE_BATTLE));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_AFTER_COMBAT_MOVE));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_AFTER_NON_COMBAT_MOVE));
     actions.add(clientModel.getHostBotGetGameSaveClientAction(this));
     return actions;
   }
