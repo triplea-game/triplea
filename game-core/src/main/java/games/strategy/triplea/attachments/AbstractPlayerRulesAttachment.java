@@ -19,8 +19,8 @@ import lombok.extern.java.Log;
 /**
  * The purpose of this class is to separate the Rules Attachment variables and methods that affect Players,
  * from the Rules Attachment things that are part of conditions and national objectives. <br>
- * In other words, things like m_placementAnyTerritory (allows placing in any territory without need of a factory),
- * or m_movementRestrictionTerritories (restricts movement to certain territories), would go in This class.
+ * In other words, things like placementAnyTerritory (allows placing in any territory without need of a factory),
+ * or movementRestrictionTerritories (restricts movement to certain territories), would go in This class.
  * While things like m_alliedOwnershipTerritories (a conditions for testing ownership of territories,
  * or m_objectiveValue (the money given if the condition is true), would NOT go in This class. <br>
  * Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
@@ -32,30 +32,30 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // These variables are related to a "rulesAttachment" that changes certain rules for the attached player. They are
   // not related to
   // conditions at all.
-  protected String m_movementRestrictionType = null;
-  protected String[] m_movementRestrictionTerritories = null;
+  protected String movementRestrictionType = null;
+  protected String[] movementRestrictionTerritories = null;
   // allows placing units in any owned land
-  protected boolean m_placementAnyTerritory = false;
+  protected boolean placementAnyTerritory = false;
   // allows placing units in any sea by owned land
-  protected boolean m_placementAnySeaZone = false;
+  protected boolean placementAnySeaZone = false;
   // allows placing units in a captured territory
-  protected boolean m_placementCapturedTerritory = false;
+  protected boolean placementCapturedTerritory = false;
   // turns of the warning to the player when they produce more than they can place
-  protected boolean m_unlimitedProduction = false;
+  protected boolean unlimitedProduction = false;
   // can only place units in the capital
-  protected boolean m_placementInCapitalRestricted = false;
+  protected boolean placementInCapitalRestricted = false;
   // enemy units will defend at 1
-  protected boolean m_dominatingFirstRoundAttack = false;
-  // negates m_dominatingFirstRoundAttack
-  protected boolean m_negateDominatingFirstRoundAttack = false;
+  protected boolean dominatingFirstRoundAttack = false;
+  // negates dominatingFirstRoundAttack
+  protected boolean negateDominatingFirstRoundAttack = false;
   // automatically produces 1 unit of a certain
-  protected IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<>();
+  protected IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<>();
   // type per every X territories owned
   // stops the user from placing units in any territory that already contains more than this
-  protected int m_placementPerTerritory = -1;
+  protected int placementPerTerritory = -1;
   // number of owned units
   // maximum number of units that can be placed in each territory.
-  protected int m_maxPlacePerTerritory = -1;
+  protected int maxPlacePerTerritory = -1;
 
   // It would wreck most map xmls to move the rulesAttachment's to another class, so don't move them out of here
   // please!
@@ -108,42 +108,42 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 
   private void setMovementRestrictionTerritories(final String value) {
     if (value == null) {
-      m_movementRestrictionTerritories = null;
+      movementRestrictionTerritories = null;
       return;
     }
-    m_movementRestrictionTerritories = splitOnColon(value);
-    validateNames(m_movementRestrictionTerritories);
+    movementRestrictionTerritories = splitOnColon(value);
+    validateNames(movementRestrictionTerritories);
   }
 
   private void setMovementRestrictionTerritories(final String[] value) {
-    m_movementRestrictionTerritories = value;
+    movementRestrictionTerritories = value;
   }
 
   public String[] getMovementRestrictionTerritories() {
-    return m_movementRestrictionTerritories;
+    return movementRestrictionTerritories;
   }
 
   private void resetMovementRestrictionTerritories() {
-    m_movementRestrictionTerritories = null;
+    movementRestrictionTerritories = null;
   }
 
   private void setMovementRestrictionType(final String value) throws GameParseException {
     if (value == null) {
-      m_movementRestrictionType = null;
+      movementRestrictionType = null;
       return;
     }
     if (!(value.equals("disallowed") || value.equals("allowed"))) {
       throw new GameParseException("movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
     }
-    m_movementRestrictionType = value;
+    movementRestrictionType = value;
   }
 
   public String getMovementRestrictionType() {
-    return m_movementRestrictionType;
+    return movementRestrictionType;
   }
 
   private void resetMovementRestrictionType() {
-    m_movementRestrictionType = null;
+    movementRestrictionType = null;
   }
 
   private void setProductionPerXTerritories(final String value) throws GameParseException {
@@ -167,168 +167,168 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     if (n <= 0) {
       throw new GameParseException("productionPerXTerritories must be a positive integer" + thisErrorMsg());
     }
-    m_productionPerXTerritories.put(ut, n);
+    productionPerXTerritories.put(ut, n);
   }
 
   private void setProductionPerXTerritories(final IntegerMap<UnitType> value) {
-    m_productionPerXTerritories = value;
+    productionPerXTerritories = value;
   }
 
   public IntegerMap<UnitType> getProductionPerXTerritories() {
-    return m_productionPerXTerritories;
+    return productionPerXTerritories;
   }
 
   private void resetProductionPerXTerritories() {
-    m_productionPerXTerritories = new IntegerMap<>();
+    productionPerXTerritories = new IntegerMap<>();
   }
 
   private void setPlacementPerTerritory(final String value) {
-    m_placementPerTerritory = getInt(value);
+    placementPerTerritory = getInt(value);
   }
 
   private void setPlacementPerTerritory(final Integer value) {
-    m_placementPerTerritory = value;
+    placementPerTerritory = value;
   }
 
   public int getPlacementPerTerritory() {
-    return m_placementPerTerritory;
+    return placementPerTerritory;
   }
 
   private void resetPlacementPerTerritory() {
-    m_placementPerTerritory = -1;
+    placementPerTerritory = -1;
   }
 
   private void setMaxPlacePerTerritory(final String value) {
-    m_maxPlacePerTerritory = getInt(value);
+    maxPlacePerTerritory = getInt(value);
   }
 
   private void setMaxPlacePerTerritory(final Integer value) {
-    m_maxPlacePerTerritory = value;
+    maxPlacePerTerritory = value;
   }
 
   public int getMaxPlacePerTerritory() {
-    return m_maxPlacePerTerritory;
+    return maxPlacePerTerritory;
   }
 
   private void resetMaxPlacePerTerritory() {
-    m_maxPlacePerTerritory = -1;
+    maxPlacePerTerritory = -1;
   }
 
   private void setPlacementAnyTerritory(final String value) {
-    m_placementAnyTerritory = getBool(value);
+    placementAnyTerritory = getBool(value);
   }
 
   private void setPlacementAnyTerritory(final Boolean value) {
-    m_placementAnyTerritory = value;
+    placementAnyTerritory = value;
   }
 
   public boolean getPlacementAnyTerritory() {
-    return m_placementAnyTerritory;
+    return placementAnyTerritory;
   }
 
   private void resetPlacementAnyTerritory() {
-    m_placementAnyTerritory = false;
+    placementAnyTerritory = false;
   }
 
   private void setPlacementAnySeaZone(final String value) {
-    m_placementAnySeaZone = getBool(value);
+    placementAnySeaZone = getBool(value);
   }
 
   private void setPlacementAnySeaZone(final Boolean value) {
-    m_placementAnySeaZone = value;
+    placementAnySeaZone = value;
   }
 
   public boolean getPlacementAnySeaZone() {
-    return m_placementAnySeaZone;
+    return placementAnySeaZone;
   }
 
   private void resetPlacementAnySeaZone() {
-    m_placementAnySeaZone = false;
+    placementAnySeaZone = false;
   }
 
   private void setPlacementCapturedTerritory(final String value) {
-    m_placementCapturedTerritory = getBool(value);
+    placementCapturedTerritory = getBool(value);
   }
 
   private void setPlacementCapturedTerritory(final Boolean value) {
-    m_placementCapturedTerritory = value;
+    placementCapturedTerritory = value;
   }
 
   public boolean getPlacementCapturedTerritory() {
-    return m_placementCapturedTerritory;
+    return placementCapturedTerritory;
   }
 
   private void resetPlacementCapturedTerritory() {
-    m_placementCapturedTerritory = false;
+    placementCapturedTerritory = false;
   }
 
   private void setPlacementInCapitalRestricted(final String value) {
-    m_placementInCapitalRestricted = getBool(value);
+    placementInCapitalRestricted = getBool(value);
   }
 
   private void setPlacementInCapitalRestricted(final Boolean value) {
-    m_placementInCapitalRestricted = value;
+    placementInCapitalRestricted = value;
   }
 
   public boolean getPlacementInCapitalRestricted() {
-    return m_placementInCapitalRestricted;
+    return placementInCapitalRestricted;
   }
 
   private void resetPlacementInCapitalRestricted() {
-    m_placementInCapitalRestricted = false;
+    placementInCapitalRestricted = false;
   }
 
   private void setUnlimitedProduction(final String value) {
-    m_unlimitedProduction = getBool(value);
+    unlimitedProduction = getBool(value);
   }
 
   private void setUnlimitedProduction(final Boolean value) {
-    m_unlimitedProduction = value;
+    unlimitedProduction = value;
   }
 
   public boolean getUnlimitedProduction() {
-    return m_unlimitedProduction;
+    return unlimitedProduction;
   }
 
   private void resetUnlimitedProduction() {
-    m_unlimitedProduction = false;
+    unlimitedProduction = false;
   }
 
   private void setDominatingFirstRoundAttack(final String value) {
-    m_dominatingFirstRoundAttack = getBool(value);
+    dominatingFirstRoundAttack = getBool(value);
   }
 
   private void setDominatingFirstRoundAttack(final Boolean value) {
-    m_dominatingFirstRoundAttack = value;
+    dominatingFirstRoundAttack = value;
   }
 
   public boolean getDominatingFirstRoundAttack() {
-    return m_dominatingFirstRoundAttack;
+    return dominatingFirstRoundAttack;
   }
 
   private void resetDominatingFirstRoundAttack() {
-    m_dominatingFirstRoundAttack = false;
+    dominatingFirstRoundAttack = false;
   }
 
   private void setNegateDominatingFirstRoundAttack(final String value) {
-    m_negateDominatingFirstRoundAttack = getBool(value);
+    negateDominatingFirstRoundAttack = getBool(value);
   }
 
   private void setNegateDominatingFirstRoundAttack(final Boolean value) {
-    m_negateDominatingFirstRoundAttack = value;
+    negateDominatingFirstRoundAttack = value;
   }
 
   public boolean getNegateDominatingFirstRoundAttack() {
-    return m_negateDominatingFirstRoundAttack;
+    return negateDominatingFirstRoundAttack;
   }
 
   private void resetNegateDominatingFirstRoundAttack() {
-    m_negateDominatingFirstRoundAttack = false;
+    negateDominatingFirstRoundAttack = false;
   }
 
   @Override
   public void validate(final GameData data) {
-    validateNames(m_movementRestrictionTerritories);
+    validateNames(movementRestrictionTerritories);
   }
 
   @Override
