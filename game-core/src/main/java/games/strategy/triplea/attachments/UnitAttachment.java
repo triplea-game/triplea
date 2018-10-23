@@ -3148,22 +3148,6 @@ public class UnitAttachment extends DefaultAttachment {
         .collect(Collectors.joining(" or "));
   }
 
-  /**
-   * Parses the specified value and sets whether or not the unit is a paratroop.
-   *
-   * @deprecated does nothing, kept to avoid breaking maps, do not remove.
-   */
-  @Deprecated
-  private void setIsParatroop(@SuppressWarnings("unused") final String s) {}
-
-  /**
-   * Parses the specified value and sets whether or not the unit is mechanized.
-   *
-   * @deprecated does nothing, used to keep compatibility with older xml files, do not remove.
-   */
-  @Deprecated
-  private void setIsMechanized(@SuppressWarnings("unused") final String s) {}
-
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
@@ -3173,12 +3157,14 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsAir,
                 this::getIsAir,
                 this::resetIsAir))
-        .put("isMechanized",
+        .put("isMechanized", // kept for map compatibility; remove upon next map-incompatible release
             MutableProperty.ofWriteOnlyString(
-                this::setIsMechanized))
-        .put("isParatroop",
+                s -> {
+                }))
+        .put("isParatroop", // kept for map compatibility; remove upon next map-incompatible release
             MutableProperty.ofWriteOnlyString(
-                this::setIsParatroop))
+                s -> {
+                }))
         .put("isSea",
             MutableProperty.of(
                 this::setIsSea,
