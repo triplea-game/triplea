@@ -145,7 +145,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   public Set<PlayerID> getOtherPlayers() {
     final HashSet<PlayerID> otherPlayers = new HashSet<>();
     otherPlayers.add((PlayerID) this.getAttachedTo());
-    otherPlayers.addAll(m_actionAccept);
+    otherPlayers.addAll(actionAccept);
     return otherPlayers;
   }
 
