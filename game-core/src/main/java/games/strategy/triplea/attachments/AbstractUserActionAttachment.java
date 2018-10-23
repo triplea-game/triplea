@@ -27,29 +27,29 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
-  protected String m_text = "";
+  protected String text = "";
   /**
    * The cost in PUs to attempt this action.
    *
    * @deprecated Replaced by costResources.
    */
   @Deprecated
-  protected int m_costPU = 0;
+  protected int costPu = 0;
   // cost in any resources to attempt this action
-  protected IntegerMap<Resource> m_costResources = new IntegerMap<>();
+  protected IntegerMap<Resource> costResources = new IntegerMap<>();
   // how many times can you perform this action each round?
-  protected int m_attemptsPerTurn = 1;
+  protected int attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
-  protected int m_attemptsLeftThisTurn = 1;
+  protected int attemptsLeftThisTurn = 1;
   // which players should accept this action? this could be the player who is the target of this action in the case of
   // proposing a treaty or
   // the players in your 'alliance' in case you want to declare war...
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
   // well. it is good to
   // set "actionAccept" to "UK" so UK can accept this action to go through.
-  protected List<PlayerID> m_actionAccept = new ArrayList<>();
+  protected List<PlayerID> actionAccept = new ArrayList<>();
 
   protected AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -59,22 +59,22 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * Indicates there is no condition to this action or if the condition is satisfied.
    */
   public boolean canPerform(final HashMap<ICondition, Boolean> testedConditions) {
-    return m_conditions == null || isSatisfied(testedConditions);
+    return conditions == null || isSatisfied(testedConditions);
   }
 
   private void setText(final String text) {
-    m_text = text;
+    this.text = text;
   }
 
   /**
    * Returns the Key that is used in politicstext.properties or other .properties for all the texts.
    */
   public String getText() {
-    return m_text;
+    return text;
   }
 
   private void resetText() {
-    m_text = "";
+    text = "";
   }
 
   @Deprecated
@@ -85,17 +85,17 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   @Deprecated
   public void setCostPu(final Integer s) {
     final Resource r = getData().getResourceList().getResource(Constants.PUS);
-    m_costResources.put(r, s);
+    costResources.put(r, s);
   }
 
   @Deprecated
   public int getCostPu() {
-    return m_costPU;
+    return costPu;
   }
 
   @Deprecated
   private void resetCostPu() {
-    m_costPU = 0;
+    costPu = 0;
   }
 
   private void setCostResources(final String value) throws GameParseException {
@@ -110,19 +110,19 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
       throw new GameParseException("costResources: No resource called: " + resourceToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
-    m_costResources.put(r, n);
+    costResources.put(r, n);
   }
 
   public void setCostResources(final IntegerMap<Resource> value) {
-    m_costResources = value;
+    costResources = value;
   }
 
   public IntegerMap<Resource> getCostResources() {
-    return m_costResources;
+    return costResources;
   }
 
   private void resetCostResources() {
-    m_costResources = new IntegerMap<>();
+    costResources = new IntegerMap<>();
   }
 
   private void setActionAccept(final String value) throws GameParseException {
@@ -130,7 +130,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
-        m_actionAccept.add(tempPlayer);
+        actionAccept.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -138,18 +138,18 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   private void setActionAccept(final List<PlayerID> value) {
-    m_actionAccept = value;
+    actionAccept = value;
   }
 
   /**
    * Returns a list of players that must accept this action before it takes effect.
    */
   public List<PlayerID> getActionAccept() {
-    return m_actionAccept;
+    return actionAccept;
   }
 
   private void resetActionAccept() {
-    m_actionAccept = new ArrayList<>();
+    actionAccept = new ArrayList<>();
   }
 
   /**
@@ -158,28 +158,28 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
    * @param s the amount of times you can try this Action per Round.
    */
   private void setAttemptsPerTurn(final String s) {
-    m_attemptsPerTurn = getInt(s);
-    setAttemptsLeftThisTurn(m_attemptsPerTurn);
+    attemptsPerTurn = getInt(s);
+    setAttemptsLeftThisTurn(attemptsPerTurn);
   }
 
   private void setAttemptsPerTurn(final Integer s) {
-    m_attemptsPerTurn = s;
-    setAttemptsLeftThisTurn(m_attemptsPerTurn);
+    attemptsPerTurn = s;
+    setAttemptsLeftThisTurn(attemptsPerTurn);
   }
 
   /**
    * Returns the amount of times you can try this Action per Round.
    */
   private int getAttemptsPerTurn() {
-    return m_attemptsPerTurn;
+    return attemptsPerTurn;
   }
 
   private void resetAttemptsPerTurn() {
-    m_attemptsPerTurn = 1;
+    attemptsPerTurn = 1;
   }
 
   private void setAttemptsLeftThisTurn(final int attempts) {
-    m_attemptsLeftThisTurn = attempts;
+    attemptsLeftThisTurn = attempts;
   }
 
   private void setAttemptsLeftThisTurn(final String attempts) {
@@ -187,31 +187,31 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   }
 
   private int getAttemptsLeftThisTurn() {
-    return m_attemptsLeftThisTurn;
+    return attemptsLeftThisTurn;
   }
 
   private void resetAttemptsLeftThisTurn() {
-    m_attemptsLeftThisTurn = 1;
+    attemptsLeftThisTurn = 1;
   }
 
   public void resetAttempts(final IDelegateBridge bridge) {
-    if (m_attemptsLeftThisTurn != m_attemptsPerTurn) {
-      bridge.addChange(ChangeFactory.attachmentPropertyChange(this, m_attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
+    if (attemptsLeftThisTurn != attemptsPerTurn) {
+      bridge.addChange(ChangeFactory.attachmentPropertyChange(this, attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
     }
   }
 
   public void useAttempt(final IDelegateBridge bridge) {
     bridge
-        .addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
+        .addChange(ChangeFactory.attachmentPropertyChange(this, (attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
   }
 
   public boolean hasAttemptsLeft() {
-    return m_attemptsLeftThisTurn > 0;
+    return attemptsLeftThisTurn > 0;
   }
 
   @Override
   public void validate(final GameData data) throws GameParseException {
-    if (m_text.trim().length() <= 0) {
+    if (text.trim().length() <= 0) {
       throw new GameParseException("value: text can't be empty" + thisErrorMsg());
     }
   }

@@ -63,7 +63,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   // the prices the defender pays for the units]
   private String m_destroyedTUV = null;
   // condition for having had a battle in some territory, attacker or defender, win
-  // or lost, etc. these next 9 variables use m_territoryCount for determining the number needed.
+  // or lost, etc. these next 9 variables use territoryCount for determining the number needed.
   private List<Tuple<String, List<Territory>>> m_battle = new ArrayList<>();
   // ownership related
   private String[] m_alliedOwnershipTerritories = null;
@@ -612,22 +612,22 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final List<PlayerID> players = getPlayers();
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
-    if (m_conditions.size() > 0) {
+    if (conditions.size() > 0) {
       final Map<ICondition, Boolean> actualTestedConditions = Optional.ofNullable(testedConditions)
           .orElseGet(() -> testAllConditionsRecursive(
-              getAllConditionsRecursive(new HashSet<>(m_conditions), null), null, delegateBridge));
-      objectiveMet = areConditionsMet(new ArrayList<>(m_conditions), actualTestedConditions, m_conditionType);
+              getAllConditionsRecursive(new HashSet<>(conditions), null), null, delegateBridge));
+      objectiveMet = areConditionsMet(new ArrayList<>(conditions), actualTestedConditions, conditionType);
     }
     // check switch (on/off)
     if (objectiveMet) {
-      objectiveMet = m_switch;
+      objectiveMet = switched;
     }
     // check turn limits
-    if (objectiveMet && m_turns != null) {
+    if (objectiveMet && turns != null) {
       objectiveMet = checkTurns(data);
     }
     // check custom game property options
-    if (objectiveMet && m_gameProperty != null) {
+    if (objectiveMet && gameProperty != null) {
       objectiveMet = this.getGamePropertyState(data);
     }
     // Check for unit presence (Veqryn)
@@ -789,7 +789,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           objectiveMet = false;
         }
         if (getCountEach()) {
-          m_eachMultiple = destroyedTuvForThisRoundSoFar;
+          eachMultiple = destroyedTuvForThisRoundSoFar;
         }
       }
     }
@@ -851,7 +851,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             .reportMessage(notificationMessage, notificationMessage);
       }
     }
-    return objectiveMet != m_invert;
+    return objectiveMet != invert;
   }
 
   /**
@@ -957,7 +957,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     if (getCountEach()) {
-      m_eachMultiple = numberMet;
+      eachMultiple = numberMet;
     }
     return satisfied;
   }
@@ -1036,7 +1036,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     if (getCountEach()) {
-      m_eachMultiple = numberMet;
+      eachMultiple = numberMet;
     }
     return satisfied;
   }
@@ -1065,7 +1065,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     if (getCountEach()) {
-      m_eachMultiple = numberMet;
+      eachMultiple = numberMet;
     }
     return satisfied;
   }
@@ -1090,7 +1090,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     if (getCountEach()) {
-      m_eachMultiple = numberMet;
+      eachMultiple = numberMet;
     }
     return satisfied;
   }
@@ -1106,7 +1106,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       return found == 0;
     }
     if (getCountEach()) {
-      m_eachMultiple = found;
+      eachMultiple = found;
     }
     return found >= count;
   }
@@ -1122,7 +1122,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       return m_techCount == found;
     }
     if (getCountEach()) {
-      m_eachMultiple = found;
+      eachMultiple = found;
     }
     return found >= m_techCount;
   }

@@ -32,30 +32,30 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
-  // purposes of m_objectiveValue
-  protected boolean m_countEach = false;
+  // purposes of objectiveValue
+  protected boolean countEach = false;
   @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment). The multiple that will be applied to m_objectiveValue
-  // if m_countEach is true
-  protected int m_eachMultiple = 1;
+  // Do Not Export (do not include in IAttachment). The multiple that will be applied to objectiveValue
+  // if countEach is true
+  protected int eachMultiple = 1;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to
-  // determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
-  protected int m_territoryCount = -1;
+  // determine the number of territories needed to be valid (ex: alliedOwnershipTerritories)
+  protected int territoryCount = -1;
   // A list of players that can be used with
   // directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
-  protected List<PlayerID> m_players = new ArrayList<>();
-  protected int m_objectiveValue = 0;
+  protected List<PlayerID> players = new ArrayList<>();
+  protected int objectiveValue = 0;
   // only matters for objectiveValue, does not affect the condition
-  protected int m_uses = -1;
+  protected int uses = -1;
   // condition for what turn it is
-  protected Map<Integer, Integer> m_turns = null;
+  protected Map<Integer, Integer> turns = null;
   // for on/off conditions
-  protected boolean m_switch = true;
+  protected boolean switched = true;
   // allows custom GameProperties
-  protected String m_gameProperty = null;
+  protected String gameProperty = null;
 
   protected AbstractRulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -68,20 +68,20 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + p + thisErrorMsg());
       }
-      m_players.add(player);
+      players.add(player);
     }
   }
 
   private void setPlayers(final List<PlayerID> value) {
-    m_players = value;
+    players = value;
   }
 
   protected List<PlayerID> getPlayers() {
-    return m_players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : m_players;
+    return players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : players;
   }
 
   private void resetPlayers() {
-    m_players = new ArrayList<>();
+    players = new ArrayList<>();
   }
 
   @Override
@@ -92,19 +92,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setObjectiveValue(final String value) {
-    m_objectiveValue = getInt(value);
+    objectiveValue = getInt(value);
   }
 
   private void setObjectiveValue(final int value) {
-    m_objectiveValue = value;
+    objectiveValue = value;
   }
 
   public int getObjectiveValue() {
-    return m_objectiveValue;
+    return objectiveValue;
   }
 
   private void resetObjectiveValue() {
-    m_objectiveValue = 0;
+    objectiveValue = 0;
   }
 
   /**
@@ -117,15 +117,15 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @InternalDoNotExport
   protected void setTerritoryCount(final String value) {
     if (value.equals("each")) {
-      m_territoryCount = 1;
-      m_countEach = true;
+      territoryCount = 1;
+      countEach = true;
     } else {
-      m_territoryCount = getInt(value);
+      territoryCount = getInt(value);
     }
   }
 
   public int getTerritoryCount() {
-    return m_territoryCount;
+    return territoryCount;
   }
 
   /**
@@ -137,19 +137,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     if (!getCountEach()) {
       return 1;
     }
-    return m_eachMultiple;
+    return eachMultiple;
   }
 
   protected boolean getCountEach() {
-    return m_countEach;
+    return countEach;
   }
 
   private void setUses(final String s) {
-    m_uses = getInt(s);
+    uses = getInt(s);
   }
 
   private void setUses(final int u) {
-    m_uses = u;
+    uses = u;
   }
 
   /**
@@ -158,51 +158,51 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * be tested for in isSatisfied.
    */
   public int getUses() {
-    return m_uses;
+    return uses;
   }
 
   private void resetUses() {
-    m_uses = -1;
+    uses = -1;
   }
 
   private void setSwitch(final String value) {
-    m_switch = getBool(value);
+    switched = getBool(value);
   }
 
   private void setSwitch(final Boolean value) {
-    m_switch = value;
+    switched = value;
   }
 
   private boolean getSwitch() {
-    return m_switch;
+    return switched;
   }
 
   private void resetSwitch() {
-    m_switch = true;
+    switched = true;
   }
 
   private void setGameProperty(final String value) {
-    m_gameProperty = value;
+    gameProperty = value;
   }
 
   private String getGameProperty() {
-    return m_gameProperty;
+    return gameProperty;
   }
 
   boolean getGamePropertyState(final GameData data) {
-    return m_gameProperty != null && data.getProperties().get(m_gameProperty, false);
+    return gameProperty != null && data.getProperties().get(gameProperty, false);
   }
 
   private void resetGameProperty() {
-    m_gameProperty = null;
+    gameProperty = null;
   }
 
   private void setRounds(final String rounds) throws GameParseException {
     if (rounds == null) {
-      m_turns = null;
+      turns = null;
       return;
     }
-    m_turns = new HashMap<>();
+    turns = new HashMap<>();
     final String[] s = splitOnColon(rounds);
     if (s.length < 1) {
       throw new GameParseException("Empty turn list" + thisErrorMsg());
@@ -225,7 +225,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
           end = getInt(s2[1]);
         }
       }
-      m_turns.put(start, end);
+      turns.put(start, end);
     }
   }
 
@@ -234,21 +234,21 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   }
 
   private void setTurns(final Map<Integer, Integer> value) {
-    m_turns = value;
+    turns = value;
   }
 
   private Map<Integer, Integer> getTurns() {
-    return m_turns;
+    return turns;
   }
 
   private void resetTurns() {
-    m_turns = null;
+    turns = null;
   }
 
   protected boolean checkTurns(final GameData data) {
     final int turn = data.getSequence().getRound();
-    for (final int t : m_turns.keySet()) {
-      if (turn >= t && turn <= m_turns.get(t)) {
+    for (final int t : turns.keySet()) {
+      if (turn >= t && turn <= turns.get(t)) {
         return true;
       }
     }
@@ -390,7 +390,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         }
       }
       if (name.equals("each")) {
-        m_countEach = true;
+        countEach = true;
         if (mustSetTerritoryCount) {
           haveSetCount = true;
           setTerritoryCount(String.valueOf(1));

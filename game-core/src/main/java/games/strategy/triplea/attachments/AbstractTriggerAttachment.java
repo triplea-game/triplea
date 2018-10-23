@@ -33,12 +33,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for
   // backwards
   // compatibility.
-  private int m_uses = -1;
+  private int uses = -1;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
-  private boolean m_usedThisRound = false;
-  private String m_notification = null;
-  private List<Tuple<String, String>> m_when = new ArrayList<>();
+  private boolean usedThisRound = false;
+  private String notification = null;
+  private List<Tuple<String, String>> when = new ArrayList<>();
 
   protected AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -89,27 +89,27 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   public void setUses(final int u) {
-    m_uses = u;
+    uses = u;
   }
 
   private void setUsedThisRound(final String s) {
-    m_usedThisRound = getBool(s);
+    usedThisRound = getBool(s);
   }
 
   public void setUsedThisRound(final boolean usedThisRound) {
-    m_usedThisRound = usedThisRound;
+    this.usedThisRound = usedThisRound;
   }
 
   protected boolean getUsedThisRound() {
-    return m_usedThisRound;
+    return usedThisRound;
   }
 
   private void resetUsedThisRound() {
-    m_usedThisRound = false;
+    usedThisRound = false;
   }
 
   public int getUses() {
-    return m_uses;
+    return uses;
   }
 
   private void setWhen(final String when) throws GameParseException {
@@ -120,44 +120,44 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     if (!(s[0].equals(AFTER) || s[0].equals(BEFORE))) {
       throw new GameParseException("when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
     }
-    m_when.add(Tuple.of(s[0], s[1]));
+    this.when.add(Tuple.of(s[0], s[1]));
   }
 
   private void setWhen(final List<Tuple<String, String>> value) {
-    m_when = value;
+    when = value;
   }
 
   protected List<Tuple<String, String>> getWhen() {
-    return m_when;
+    return when;
   }
 
   private void resetWhen() {
-    m_when = new ArrayList<>();
+    when = new ArrayList<>();
   }
 
   private void setNotification(final String notification) {
     if (notification == null) {
-      m_notification = null;
+      this.notification = null;
       return;
     }
-    m_notification = notification;
+    this.notification = notification;
   }
 
   protected String getNotification() {
-    return m_notification;
+    return notification;
   }
 
   private void resetNotification() {
-    m_notification = null;
+    notification = null;
   }
 
   protected void use(final IDelegateBridge bridge) {
     // instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this
     // round
     // this is in order to let a trigger that contains multiple actions, fire all of them in a single use
-    // we only do this for things that do not have m_when set. triggers with m_when set have their uses modified
+    // we only do this for things that do not have when set. triggers with when set have their uses modified
     // elsewhere.
-    if (!m_usedThisRound && m_uses > 0 && m_when.isEmpty()) {
+    if (!usedThisRound && uses > 0 && when.isEmpty()) {
       bridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
     }
   }
@@ -251,7 +251,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 
   @Override
   public void validate(final GameData data) throws GameParseException {
-    if (m_conditions == null) {
+    if (conditions == null) {
       throw new GameParseException("must contain at least one condition: " + thisErrorMsg());
     }
   }
