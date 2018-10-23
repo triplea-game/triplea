@@ -103,7 +103,7 @@ final class SaveGameFileChooserTest extends AbstractClientSettingTestCase {
   final class GetBeforeStepAutoSaveFileTest {
     @Test
     void shouldReturnFileNameWithCapitalizedStepName() {
-      assertThat(getBeforeStepAutoSaveFile("step").getName(), is("autosaveBeforeStep.tsvg"));
+      assertThat(getBeforeStepAutoSaveFile("step", false).getName(), is("autosaveBeforeStep.tsvg"));
     }
   }
 
@@ -111,7 +111,7 @@ final class SaveGameFileChooserTest extends AbstractClientSettingTestCase {
   final class GetAfterStepAutoSaveFileTest {
     @Test
     void shouldReturnFileNameWithCapitalizedStepName() {
-      assertThat(getAfterStepAutoSaveFile("step").getName(), is("autosaveAfterStep.tsvg"));
+      assertThat(getAfterStepAutoSaveFile("step", false).getName(), is("autosaveAfterStep.tsvg"));
     }
   }
 }
