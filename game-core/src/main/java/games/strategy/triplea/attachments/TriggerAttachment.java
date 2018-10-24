@@ -63,41 +63,39 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final String PREFIX_CLEAR = "-clear-";
   private static final String PREFIX_RESET = "-reset-";
 
-  private ProductionFrontier m_frontier = null;
-  private List<String> m_productionRule = null;
-  private List<TechAdvance> m_tech = new ArrayList<>();
-  private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
-  private Map<Territory, IntegerMap<UnitType>> m_placement = null;
-  private Map<Territory, IntegerMap<UnitType>> m_removeUnits = null;
-  private IntegerMap<UnitType> m_purchase = null;
-  private String m_resource = null;
-  private int m_resourceCount = 0;
+  private ProductionFrontier frontier = null;
+  private List<String> productionRule = null;
+  private List<TechAdvance> tech = new ArrayList<>();
+  private Map<String, Map<TechAdvance, Boolean>> availableTech = null;
+  private Map<Territory, IntegerMap<UnitType>> placement = null;
+  private Map<Territory, IntegerMap<UnitType>> removeUnits = null;
+  private IntegerMap<UnitType> purchase = null;
+  private String resource = null;
+  private int resourceCount = 0;
   // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
-  private Map<String, Boolean> m_support = null;
+  private Map<String, Boolean> support = null;
   // List of relationshipChanges that should be executed when this trigger hits.
-  private List<String> m_relationshipChange = new ArrayList<>();
-  private String m_victory = null;
-  private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
-  private List<String> m_changeOwnership = new ArrayList<>();
+  private List<String> relationshipChange = new ArrayList<>();
+  private String victory = null;
+  private List<Tuple<String, String>> activateTrigger = new ArrayList<>();
+  private List<String> changeOwnership = new ArrayList<>();
   // raw property changes below:
-  //
-  // really m_unitTypes, but we are not going to rename because it will break all existing maps
-  private List<UnitType> m_unitType = new ArrayList<>();
-  private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
-  private List<Tuple<String, String>> m_unitProperty = null;
-  private List<Territory> m_territories = new ArrayList<>();
-  private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
-  private List<Tuple<String, String>> m_territoryProperty = null;
-  private List<PlayerID> m_players = new ArrayList<>();
+  private List<UnitType> unitTypes = new ArrayList<>();
+  private Tuple<String, String> unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
+  private List<Tuple<String, String>> unitProperty = null;
+  private List<Territory> territories = new ArrayList<>();
+  private Tuple<String, String> territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
+  private List<Tuple<String, String>> territoryProperty = null;
+  private List<PlayerID> players = new ArrayList<>();
   // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, UserActionAttachment
-  private Tuple<String, String> m_playerAttachmentName = null;
-  private List<Tuple<String, String>> m_playerProperty = null;
-  private List<RelationshipType> m_relationshipTypes = new ArrayList<>();
-  private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
-  private List<Tuple<String, String>> m_relationshipTypeProperty = null;
-  private List<TerritoryEffect> m_territoryEffects = new ArrayList<>();
-  private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
-  private List<Tuple<String, String>> m_territoryEffectProperty = null;
+  private Tuple<String, String> playerAttachmentName = null;
+  private List<Tuple<String, String>> playerProperty = null;
+  private List<RelationshipType> relationshipTypes = new ArrayList<>();
+  private Tuple<String, String> relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
+  private List<Tuple<String, String>> relationshipTypeProperty = null;
+  private List<TerritoryEffect> territoryEffects = new ArrayList<>();
+  private Tuple<String, String> territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
+  private List<Tuple<String, String>> territoryEffectProperty = null;
 
   public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -320,56 +318,56 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     getBool(s[3]);
     getBool(s[4]);
     getBool(s[5]);
-    m_activateTrigger.add(Tuple.of(s[0], options));
+    activateTrigger.add(Tuple.of(s[0], options));
   }
 
   private void setActivateTrigger(final List<Tuple<String, String>> value) {
-    m_activateTrigger = value;
+    activateTrigger = value;
   }
 
   private List<Tuple<String, String>> getActivateTrigger() {
-    return m_activateTrigger;
+    return activateTrigger;
   }
 
   private void resetActivateTrigger() {
-    m_activateTrigger = new ArrayList<>();
+    activateTrigger = new ArrayList<>();
   }
 
   private void setFrontier(final String s) throws GameParseException {
     if (s == null) {
-      m_frontier = null;
+      frontier = null;
       return;
     }
     final ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
     if (front == null) {
       throw new GameParseException("Could not find frontier. name:" + s + thisErrorMsg());
     }
-    m_frontier = front;
+    frontier = front;
   }
 
   private void setFrontier(final ProductionFrontier value) {
-    m_frontier = value;
+    frontier = value;
   }
 
   private ProductionFrontier getFrontier() {
-    return m_frontier;
+    return frontier;
   }
 
   private void resetFrontier() {
-    m_frontier = null;
+    frontier = null;
   }
 
   private void setProductionRule(final String prop) throws GameParseException {
     if (prop == null) {
-      m_productionRule = null;
+      productionRule = null;
       return;
     }
     final String[] s = splitOnColon(prop);
     if (s.length != 2) {
       throw new GameParseException("Invalid productionRule declaration: " + prop + thisErrorMsg());
     }
-    if (m_productionRule == null) {
-      m_productionRule = new ArrayList<>();
+    if (productionRule == null) {
+      productionRule = new ArrayList<>();
     }
     if (getData().getProductionFrontierList().getProductionFrontier(s[0]) == null) {
       throw new GameParseException("Could not find frontier. name:" + s[0] + thisErrorMsg());
@@ -381,51 +379,51 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (getData().getProductionRuleList().getProductionRule(rule) == null) {
       throw new GameParseException("Could not find production rule. name:" + rule + thisErrorMsg());
     }
-    m_productionRule.add(prop);
+    productionRule.add(prop);
   }
 
   private void setProductionRule(final List<String> value) {
-    m_productionRule = value;
+    productionRule = value;
   }
 
   List<String> getProductionRule() {
-    return m_productionRule;
+    return productionRule;
   }
 
   private void resetProductionRule() {
-    m_productionRule = null;
+    productionRule = null;
   }
 
   private void setResourceCount(final String s) {
-    m_resourceCount = getInt(s);
+    resourceCount = getInt(s);
   }
 
   private void setResourceCount(final Integer s) {
-    m_resourceCount = s;
+    resourceCount = s;
   }
 
   private int getResourceCount() {
-    return m_resourceCount;
+    return resourceCount;
   }
 
   private void resetResourceCount() {
-    m_resourceCount = 0;
+    resourceCount = 0;
   }
 
   private void setVictory(final String s) {
     if (s == null) {
-      m_victory = null;
+      victory = null;
       return;
     }
-    m_victory = s;
+    victory = s;
   }
 
   private String getVictory() {
-    return m_victory;
+    return victory;
   }
 
   private void resetVictory() {
-    m_victory = null;
+    victory = null;
   }
 
   private void setTech(final String techs) throws GameParseException {
@@ -437,25 +435,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (ta == null) {
         throw new GameParseException("Technology not found :" + subString + thisErrorMsg());
       }
-      m_tech.add(ta);
+      tech.add(ta);
     }
   }
 
   private void setTech(final List<TechAdvance> value) {
-    m_tech = value;
+    tech = value;
   }
 
   private List<TechAdvance> getTech() {
-    return m_tech;
+    return tech;
   }
 
   private void resetTech() {
-    m_tech = new ArrayList<>();
+    tech = new ArrayList<>();
   }
 
   private void setAvailableTech(final String techs) throws GameParseException {
     if (techs == null) {
-      m_availableTech = null;
+      availableTech = null;
       return;
     }
     final String[] s = splitOnColon(techs);
@@ -480,30 +478,30 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       tlist.put(ta, add);
     }
-    if (m_availableTech == null) {
-      m_availableTech = new HashMap<>();
+    if (availableTech == null) {
+      availableTech = new HashMap<>();
     }
-    if (m_availableTech.containsKey(cat)) {
-      tlist.putAll(m_availableTech.get(cat));
+    if (availableTech.containsKey(cat)) {
+      tlist.putAll(availableTech.get(cat));
     }
-    m_availableTech.put(cat, tlist);
+    availableTech.put(cat, tlist);
   }
 
   private void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value) {
-    m_availableTech = value;
+    availableTech = value;
   }
 
   private Map<String, Map<TechAdvance, Boolean>> getAvailableTech() {
-    return m_availableTech;
+    return availableTech;
   }
 
   private void resetAvailableTech() {
-    m_availableTech = null;
+    availableTech = null;
   }
 
   private void setSupport(final String sup) throws GameParseException {
     if (sup == null) {
-      m_support = null;
+      support = null;
       return;
     }
     final String[] s = splitOnColon(sup);
@@ -517,10 +515,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       for (final UnitSupportAttachment support : UnitSupportAttachment.get(getData())) {
         if (support.getName().equals(s[i])) {
           found = true;
-          if (m_support == null) {
-            m_support = new LinkedHashMap<>();
+          if (this.support == null) {
+            this.support = new LinkedHashMap<>();
           }
-          m_support.put(s[i], add);
+          this.support.put(s[i], add);
           break;
         }
       }
@@ -531,35 +529,35 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   private void setSupport(final Map<String, Boolean> value) {
-    m_support = value;
+    support = value;
   }
 
   private Map<String, Boolean> getSupport() {
-    return m_support;
+    return support;
   }
 
   private void resetSupport() {
-    m_support = null;
+    support = null;
   }
 
   private void setResource(final String s) throws GameParseException {
     if (s == null) {
-      m_resource = null;
+      resource = null;
       return;
     }
     final Resource r = getData().getResourceList().getResource(s);
     if (r == null) {
       throw new GameParseException("Invalid resource: " + s + thisErrorMsg());
     }
-    m_resource = s;
+    resource = s;
   }
 
   private String getResource() {
-    return m_resource;
+    return resource;
   }
 
   private void resetResource() {
-    m_resource = null;
+    resource = null;
   }
 
   private void setRelationshipChange(final String relChange) throws GameParseException {
@@ -587,19 +585,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[3] + " unknown " + thisErrorMsg());
     }
-    m_relationshipChange.add(relChange);
+    relationshipChange.add(relChange);
   }
 
   private void setRelationshipChange(final List<String> value) {
-    m_relationshipChange = value;
+    relationshipChange = value;
   }
 
   private List<String> getRelationshipChange() {
-    return m_relationshipChange;
+    return relationshipChange;
   }
 
   private void resetRelationshipChange() {
-    m_relationshipChange = new ArrayList<>();
+    relationshipChange = new ArrayList<>();
   }
 
   private void setUnitType(final String names) throws GameParseException {
@@ -609,25 +607,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (type == null) {
         throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
       }
-      m_unitType.add(type);
+      unitTypes.add(type);
     }
   }
 
   private void setUnitType(final List<UnitType> value) {
-    m_unitType = value;
+    unitTypes = value;
   }
 
   private List<UnitType> getUnitType() {
-    return m_unitType;
+    return unitTypes;
   }
 
   private void resetUnitType() {
-    m_unitType = new ArrayList<>();
+    unitTypes = new ArrayList<>();
   }
 
   private void setUnitAttachmentName(final String name) throws GameParseException {
     if (name == null) {
-      m_unitAttachmentName = null;
+      unitAttachmentName = null;
       return;
     }
     final String[] s = splitOnColon(name);
@@ -651,48 +649,48 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s[1].equals("UnitSupportAttachment") && !s[0].startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_unitAttachmentName = Tuple.of(s[1], s[0]);
+    unitAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   private void setUnitAttachmentName(final Tuple<String, String> value) {
-    m_unitAttachmentName = value;
+    unitAttachmentName = value;
   }
 
   private Tuple<String, String> getUnitAttachmentName() {
-    if (m_unitAttachmentName == null) {
+    if (unitAttachmentName == null) {
       return Tuple.of("UnitAttachment", Constants.UNIT_ATTACHMENT_NAME);
     }
-    return m_unitAttachmentName;
+    return unitAttachmentName;
   }
 
   private void resetUnitAttachmentName() {
-    m_unitAttachmentName = null;
+    unitAttachmentName = null;
   }
 
   private void setUnitProperty(final String prop) {
     if (prop == null) {
-      m_unitProperty = null;
+      unitProperty = null;
       return;
     }
     final String[] s = splitOnColon(prop);
-    if (m_unitProperty == null) {
-      m_unitProperty = new ArrayList<>();
+    if (unitProperty == null) {
+      unitProperty = new ArrayList<>();
     }
     // the last one is the property we are changing, while the rest is the string we are changing it to
     final String property = s[s.length - 1];
-    m_unitProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+    unitProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   private void setUnitProperty(final List<Tuple<String, String>> value) {
-    m_unitProperty = value;
+    unitProperty = value;
   }
 
   private List<Tuple<String, String>> getUnitProperty() {
-    return m_unitProperty;
+    return unitProperty;
   }
 
   private void resetUnitProperty() {
-    m_unitProperty = null;
+    unitProperty = null;
   }
 
   private void setTerritories(final String names) throws GameParseException {
@@ -702,25 +700,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (terr == null) {
         throw new GameParseException("Could not find territory. name:" + element + thisErrorMsg());
       }
-      m_territories.add(terr);
+      territories.add(terr);
     }
   }
 
   private void setTerritories(final List<Territory> value) {
-    m_territories = value;
+    territories = value;
   }
 
   private List<Territory> getTerritories() {
-    return m_territories;
+    return territories;
   }
 
   private void resetTerritories() {
-    m_territories = new ArrayList<>();
+    territories = new ArrayList<>();
   }
 
   private void setTerritoryAttachmentName(final String name) throws GameParseException {
     if (name == null) {
-      m_territoryAttachmentName = null;
+      territoryAttachmentName = null;
       return;
     }
     final String[] s = splitOnColon(name);
@@ -744,48 +742,48 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s[1].equals("CanalAttachment") && !s[0].startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_territoryAttachmentName = Tuple.of(s[1], s[0]);
+    territoryAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   private void setTerritoryAttachmentName(final Tuple<String, String> value) {
-    m_territoryAttachmentName = value;
+    territoryAttachmentName = value;
   }
 
   private Tuple<String, String> getTerritoryAttachmentName() {
-    if (m_territoryAttachmentName == null) {
+    if (territoryAttachmentName == null) {
       return Tuple.of("TerritoryAttachment", Constants.TERRITORY_ATTACHMENT_NAME);
     }
-    return m_territoryAttachmentName;
+    return territoryAttachmentName;
   }
 
   private void resetTerritoryAttachmentName() {
-    m_territoryAttachmentName = null;
+    territoryAttachmentName = null;
   }
 
   private void setTerritoryProperty(final String prop) {
     if (prop == null) {
-      m_territoryProperty = null;
+      territoryProperty = null;
       return;
     }
     final String[] s = splitOnColon(prop);
-    if (m_territoryProperty == null) {
-      m_territoryProperty = new ArrayList<>();
+    if (territoryProperty == null) {
+      territoryProperty = new ArrayList<>();
     }
     // the last one is the property we are changing, while the rest is the string we are changing it to
     final String property = s[s.length - 1];
-    m_territoryProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+    territoryProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   private void setTerritoryProperty(final List<Tuple<String, String>> value) {
-    m_territoryProperty = value;
+    territoryProperty = value;
   }
 
   private List<Tuple<String, String>> getTerritoryProperty() {
-    return m_territoryProperty;
+    return territoryProperty;
   }
 
   private void resetTerritoryProperty() {
-    m_territoryProperty = null;
+    territoryProperty = null;
   }
 
   private void setPlayers(final String names) throws GameParseException {
@@ -795,25 +793,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       }
-      m_players.add(player);
+      players.add(player);
     }
   }
 
   private void setPlayers(final List<PlayerID> value) {
-    m_players = value;
+    players = value;
   }
 
   private List<PlayerID> getPlayers() {
-    return m_players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : m_players;
+    return players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerID) getAttachedTo())) : players;
   }
 
   private void resetPlayers() {
-    m_players = new ArrayList<>();
+    players = new ArrayList<>();
   }
 
   private void setPlayerAttachmentName(final String name) throws GameParseException {
     if (name == null) {
-      m_playerAttachmentName = null;
+      playerAttachmentName = null;
       return;
     }
     final String[] s = splitOnColon(name);
@@ -853,48 +851,48 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s[1].equals("UserActionAttachment") && !s[0].startsWith(Constants.USERACTION_ATTACHMENT_PREFIX)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_playerAttachmentName = Tuple.of(s[1], s[0]);
+    playerAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   private void setPlayerAttachmentName(final Tuple<String, String> value) {
-    m_playerAttachmentName = value;
+    playerAttachmentName = value;
   }
 
   private Tuple<String, String> getPlayerAttachmentName() {
-    if (m_playerAttachmentName == null) {
+    if (playerAttachmentName == null) {
       return Tuple.of("PlayerAttachment", Constants.PLAYER_ATTACHMENT_NAME);
     }
-    return m_playerAttachmentName;
+    return playerAttachmentName;
   }
 
   private void resetPlayerAttachmentName() {
-    m_playerAttachmentName = null;
+    playerAttachmentName = null;
   }
 
   private void setPlayerProperty(final String prop) {
     if (prop == null) {
-      m_playerProperty = null;
+      playerProperty = null;
       return;
     }
     final String[] s = splitOnColon(prop);
-    if (m_playerProperty == null) {
-      m_playerProperty = new ArrayList<>();
+    if (playerProperty == null) {
+      playerProperty = new ArrayList<>();
     }
     // the last one is the property we are changing, while the rest is the string we are changing it to
     final String property = s[s.length - 1];
-    m_playerProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+    playerProperty.add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   private void setPlayerProperty(final List<Tuple<String, String>> value) {
-    m_playerProperty = value;
+    playerProperty = value;
   }
 
   private List<Tuple<String, String>> getPlayerProperty() {
-    return m_playerProperty;
+    return playerProperty;
   }
 
   private void resetPlayerProperty() {
-    m_playerProperty = null;
+    playerProperty = null;
   }
 
   private void setRelationshipTypes(final String names) throws GameParseException {
@@ -904,25 +902,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (relation == null) {
         throw new GameParseException("Could not find relationshipType. name:" + element + thisErrorMsg());
       }
-      m_relationshipTypes.add(relation);
+      relationshipTypes.add(relation);
     }
   }
 
   private void setRelationshipTypes(final List<RelationshipType> value) {
-    m_relationshipTypes = value;
+    relationshipTypes = value;
   }
 
   private List<RelationshipType> getRelationshipTypes() {
-    return m_relationshipTypes;
+    return relationshipTypes;
   }
 
   private void resetRelationshipTypes() {
-    m_relationshipTypes = new ArrayList<>();
+    relationshipTypes = new ArrayList<>();
   }
 
   private void setRelationshipTypeAttachmentName(final String name) throws GameParseException {
     if (name == null) {
-      m_relationshipTypeAttachmentName = null;
+      relationshipTypeAttachmentName = null;
       return;
     }
     final String[] s = splitOnColon(name);
@@ -944,49 +942,49 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s[1].equals("RelationshipTypeAttachment") && !s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_relationshipTypeAttachmentName = Tuple.of(s[1], s[0]);
+    relationshipTypeAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   private void setRelationshipTypeAttachmentName(final Tuple<String, String> value) {
-    m_relationshipTypeAttachmentName = value;
+    relationshipTypeAttachmentName = value;
   }
 
   private Tuple<String, String> getRelationshipTypeAttachmentName() {
-    if (m_relationshipTypeAttachmentName == null) {
+    if (relationshipTypeAttachmentName == null) {
       return Tuple.of("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
     }
-    return m_relationshipTypeAttachmentName;
+    return relationshipTypeAttachmentName;
   }
 
   private void resetRelationshipTypeAttachmentName() {
-    m_relationshipTypeAttachmentName = null;
+    relationshipTypeAttachmentName = null;
   }
 
   private void setRelationshipTypeProperty(final String prop) {
     if (prop == null) {
-      m_relationshipTypeProperty = null;
+      relationshipTypeProperty = null;
       return;
     }
     final String[] s = splitOnColon(prop);
-    if (m_relationshipTypeProperty == null) {
-      m_relationshipTypeProperty = new ArrayList<>();
+    if (relationshipTypeProperty == null) {
+      relationshipTypeProperty = new ArrayList<>();
     }
     // the last one is the property we are changing, while the rest is the string we are changing it to
     final String property = s[s.length - 1];
-    m_relationshipTypeProperty
+    relationshipTypeProperty
         .add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   private void setRelationshipTypeProperty(final List<Tuple<String, String>> value) {
-    m_relationshipTypeProperty = value;
+    relationshipTypeProperty = value;
   }
 
   private List<Tuple<String, String>> getRelationshipTypeProperty() {
-    return m_relationshipTypeProperty;
+    return relationshipTypeProperty;
   }
 
   private void resetRelationshipTypeProperty() {
-    m_relationshipTypeProperty = null;
+    relationshipTypeProperty = null;
   }
 
   private void setTerritoryEffects(final String names) throws GameParseException {
@@ -996,25 +994,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (effect == null) {
         throw new GameParseException("Could not find territoryEffect. name:" + element + thisErrorMsg());
       }
-      m_territoryEffects.add(effect);
+      territoryEffects.add(effect);
     }
   }
 
   private void setTerritoryEffects(final List<TerritoryEffect> value) {
-    m_territoryEffects = value;
+    territoryEffects = value;
   }
 
   private List<TerritoryEffect> getTerritoryEffects() {
-    return m_territoryEffects;
+    return territoryEffects;
   }
 
   private void resetTerritoryEffects() {
-    m_territoryEffects = new ArrayList<>();
+    territoryEffects = new ArrayList<>();
   }
 
   private void setTerritoryEffectAttachmentName(final String name) throws GameParseException {
     if (name == null) {
-      m_territoryEffectAttachmentName = null;
+      territoryEffectAttachmentName = null;
       return;
     }
     final String[] s = splitOnColon(name);
@@ -1036,49 +1034,49 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (s[1].equals("TerritoryEffectAttachment") && !s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
-    m_territoryEffectAttachmentName = Tuple.of(s[1], s[0]);
+    territoryEffectAttachmentName = Tuple.of(s[1], s[0]);
   }
 
   private void setTerritoryEffectAttachmentName(final Tuple<String, String> value) {
-    m_territoryEffectAttachmentName = value;
+    territoryEffectAttachmentName = value;
   }
 
   private Tuple<String, String> getTerritoryEffectAttachmentName() {
-    if (m_territoryEffectAttachmentName == null) {
+    if (territoryEffectAttachmentName == null) {
       return Tuple.of("TerritoryEffectAttachment", Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
     }
-    return m_territoryEffectAttachmentName;
+    return territoryEffectAttachmentName;
   }
 
   private void resetTerritoryEffectAttachmentName() {
-    m_territoryEffectAttachmentName = null;
+    territoryEffectAttachmentName = null;
   }
 
   private void setTerritoryEffectProperty(final String prop) {
     if (prop == null) {
-      m_territoryEffectProperty = null;
+      territoryEffectProperty = null;
       return;
     }
     final String[] s = splitOnColon(prop);
-    if (m_territoryEffectProperty == null) {
-      m_territoryEffectProperty = new ArrayList<>();
+    if (territoryEffectProperty == null) {
+      territoryEffectProperty = new ArrayList<>();
     }
     // the last one is the property we are changing, while the rest is the string we are changing it to
     final String property = s[s.length - 1];
-    m_territoryEffectProperty
+    territoryEffectProperty
         .add(Tuple.of(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
   }
 
   private void setTerritoryEffectProperty(final List<Tuple<String, String>> value) {
-    m_territoryEffectProperty = value;
+    territoryEffectProperty = value;
   }
 
   private List<Tuple<String, String>> getTerritoryEffectProperty() {
-    return m_territoryEffectProperty;
+    return territoryEffectProperty;
   }
 
   private void resetTerritoryEffectProperty() {
-    m_territoryEffectProperty = null;
+    territoryEffectProperty = null;
   }
 
   /**
@@ -1086,7 +1084,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    */
   private void setPlacement(final String place) throws GameParseException {
     if (place == null) {
-      m_placement = null;
+      placement = null;
       return;
     }
     final String[] s = splitOnColon(place);
@@ -1118,34 +1116,34 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       map.add(type, count);
     }
-    if (m_placement == null) {
-      m_placement = new HashMap<>();
+    if (placement == null) {
+      placement = new HashMap<>();
     }
-    if (m_placement.containsKey(territory)) {
-      map.add(m_placement.get(territory));
+    if (placement.containsKey(territory)) {
+      map.add(placement.get(territory));
     }
-    m_placement.put(territory, map);
+    placement.put(territory, map);
   }
 
   private void setPlacement(final Map<Territory, IntegerMap<UnitType>> value) {
-    m_placement = value;
+    placement = value;
   }
 
   private Map<Territory, IntegerMap<UnitType>> getPlacement() {
-    return m_placement;
+    return placement;
   }
 
   private void resetPlacement() {
-    m_placement = null;
+    placement = null;
   }
 
   private void setRemoveUnits(final String value) throws GameParseException {
     if (value == null) {
-      m_removeUnits = null;
+      removeUnits = null;
       return;
     }
-    if (m_removeUnits == null) {
-      m_removeUnits = new HashMap<>();
+    if (removeUnits == null) {
+      removeUnits = new HashMap<>();
     }
     final String[] s = splitOnColon(value);
     if (s.length < 1) {
@@ -1192,28 +1190,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
     }
     for (final Territory t : territories) {
-      if (m_removeUnits.containsKey(t)) {
-        map.add(m_removeUnits.get(t));
+      if (removeUnits.containsKey(t)) {
+        map.add(removeUnits.get(t));
       }
-      m_removeUnits.put(t, map);
+      removeUnits.put(t, map);
     }
   }
 
   private void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value) {
-    m_removeUnits = value;
+    removeUnits = value;
   }
 
   private Map<Territory, IntegerMap<UnitType>> getRemoveUnits() {
-    return m_removeUnits;
+    return removeUnits;
   }
 
   private void resetRemoveUnits() {
-    m_removeUnits = null;
+    removeUnits = null;
   }
 
   private void setPurchase(final String place) throws GameParseException {
     if (place == null) {
-      m_purchase = null;
+      purchase = null;
       return;
     }
     final String[] s = splitOnColon(place);
@@ -1232,28 +1230,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException("Empty purchase list" + thisErrorMsg());
     }
 
-    if (m_purchase == null) {
-      m_purchase = new IntegerMap<>();
+    if (purchase == null) {
+      purchase = new IntegerMap<>();
     }
     for (; i < s.length; i++) {
       final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
       if (type == null) {
         throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
       }
-      m_purchase.add(type, count);
+      purchase.add(type, count);
     }
   }
 
   private void setPurchase(final IntegerMap<UnitType> value) {
-    m_purchase = value;
+    purchase = value;
   }
 
   private IntegerMap<UnitType> getPurchase() {
-    return m_purchase;
+    return purchase;
   }
 
   private void resetPurchase() {
-    m_purchase = null;
+    purchase = null;
   }
 
   private void setChangeOwnership(final String value) throws GameParseException {
@@ -1281,19 +1279,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException("No such player: " + s[2] + thisErrorMsg());
     }
     getBool(s[3]);
-    m_changeOwnership.add(value);
+    changeOwnership.add(value);
   }
 
   private void setChangeOwnership(final List<String> value) {
-    m_changeOwnership = value;
+    changeOwnership = value;
   }
 
   private List<String> getChangeOwnership() {
-    return m_changeOwnership;
+    return changeOwnership;
   }
 
   private void resetChangeOwnership() {
-    m_changeOwnership = new ArrayList<>();
+    changeOwnership = new ArrayList<>();
   }
 
   private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> utMap,
