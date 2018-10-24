@@ -50,7 +50,17 @@ public final class SaveGameFileChooser extends JFileChooser {
 
     AUTOSAVE_ODD(getOddRoundAutoSaveFile(true)),
 
-    AUTOSAVE_EVEN(getEvenRoundAutoSaveFile(true));
+    AUTOSAVE_EVEN(getEvenRoundAutoSaveFile(true)),
+
+    AUTOSAVE_END_TURN(getBeforeStepAutoSaveFile("EndTurn", true)),
+
+    AUTOSAVE_BEFORE_BATTLE(getBeforeStepAutoSaveFile("Battle", true)),
+
+    AUTOSAVE_AFTER_BATTLE(getAfterStepAutoSaveFile("Battle", true)),
+
+    AUTOSAVE_AFTER_COMBAT_MOVE(getAfterStepAutoSaveFile("CombatMove", true)),
+
+    AUTOSAVE_AFTER_NON_COMBAT_MOVE(getAfterStepAutoSaveFile("NonCombatMove", true));
 
     private final Path path;
 
@@ -102,16 +112,16 @@ public final class SaveGameFileChooser extends JFileChooser {
         addExtension("connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(localDateTime)));
   }
 
-  public static File getBeforeStepAutoSaveFile(final String stepName) {
+  public static File getBeforeStepAutoSaveFile(final String stepName, final boolean headless) {
     checkNotNull(stepName);
 
-    return getAutoSaveFile(addExtension("autosaveBefore" + capitalize(stepName)));
+    return getAutoSaveFile(addExtension("autosaveBefore" + capitalize(stepName)), headless);
   }
 
-  public static File getAfterStepAutoSaveFile(final String stepName) {
+  public static File getAfterStepAutoSaveFile(final String stepName, final boolean headless) {
     checkNotNull(stepName);
 
-    return getAutoSaveFile(addExtension("autosaveAfter" + capitalize(stepName)));
+    return getAutoSaveFile(addExtension("autosaveAfter" + capitalize(stepName)), headless);
   }
 
   public static SaveGameFileChooser getInstance() {

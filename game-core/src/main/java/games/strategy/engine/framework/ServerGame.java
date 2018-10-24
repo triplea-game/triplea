@@ -352,7 +352,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveBefore(final IDelegate delegate) {
-    saveGame(SaveGameFileChooser.getBeforeStepAutoSaveFile(delegate.getName()));
+    saveGame(SaveGameFileChooser.getBeforeStepAutoSaveFile(delegate.getName(), HeadlessGameServer.headless()));
   }
 
   @Override
@@ -428,8 +428,13 @@ public class ServerGame extends AbstractGame {
     // otherwise, the delegate will execute again.
     final boolean autoSaveThisDelegate = currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
         && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
+    final boolean headless = HeadlessGameServer.headless();
     if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
-      autoSaveAfter(currentStep);
+      final String stepName = currentStep.getName();
+      // If we are headless we don't want to include the nation in the save game because that would make it too
+      // difficult to load later.
+      autoSaveAfter(
+          headless ? (stepName.endsWith("NonCombatMove") ? "NonCombatMove" : "CombatMove") : stepName, headless);
     }
     endStep();
     if (isGameOver) {
@@ -438,22 +443,22 @@ public class ServerGame extends AbstractGame {
     if (gameData.getSequence().next()) {
       gameData.getHistory().getHistoryWriter().startNextRound(gameData.getSequence().getRound());
       saveGame(gameData.getSequence().getRound() % 2 == 0
-          ? SaveGameFileChooser.getEvenRoundAutoSaveFile(HeadlessGameServer.headless())
-          : SaveGameFileChooser.getOddRoundAutoSaveFile(HeadlessGameServer.headless()));
+          ? SaveGameFileChooser.getEvenRoundAutoSaveFile(headless)
+          : SaveGameFileChooser.getOddRoundAutoSaveFile(headless));
     }
     if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
-      autoSaveAfter(currentDelegate);
+      autoSaveAfter(currentDelegate, headless);
     }
   }
 
-  private void autoSaveAfter(final GameStep gameStep) {
-    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(gameStep.getName()));
+  private void autoSaveAfter(final String stepName, final boolean headless) {
+    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName, headless));
   }
 
-  private void autoSaveAfter(final IDelegate delegate) {
+  private void autoSaveAfter(final IDelegate delegate, final boolean headless) {
     final String typeName = delegate.getClass().getTypeName();
     final String stepName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
-    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName));
+    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName, headless));
   }
 
   private void endStep() {
