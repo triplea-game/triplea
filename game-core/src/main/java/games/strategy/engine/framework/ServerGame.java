@@ -430,7 +430,11 @@ public class ServerGame extends AbstractGame {
         && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
     final boolean headless = HeadlessGameServer.headless();
     if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
-      autoSaveAfter(currentStep.getName(), headless);
+      final String stepName = currentStep.getName();
+      // If we are headless we don't want to include the nation in the save game because that would make it too
+      // difficult to load later.
+      autoSaveAfter(
+          headless ? (stepName.endsWith("NonCombatMove") ? "NonCombatMove" : "CombatMove") : stepName, headless);
     }
     endStep();
     if (isGameOver) {
@@ -448,14 +452,12 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveAfter(final String stepName, final boolean headless) {
-    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(
-        headless ? (stepName.endsWith("NonCombatMove") ? "NonCombatMove" : "CombatMove") : stepName, headless));
+    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName, headless));
   }
 
   private void autoSaveAfter(final IDelegate delegate, final boolean headless) {
     final String typeName = delegate.getClass().getTypeName();
     final String stepName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
-    // can only get here for a headed process
     saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName, headless));
   }
 

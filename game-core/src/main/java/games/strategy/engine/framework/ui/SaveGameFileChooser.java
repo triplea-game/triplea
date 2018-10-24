@@ -52,15 +52,15 @@ public final class SaveGameFileChooser extends JFileChooser {
 
     AUTOSAVE_EVEN(getEvenRoundAutoSaveFile(true)),
 
-    AUTOSAVE_END_TURN(getAutoSaveFile(addExtension("autosaveBeforeEndTurn"), true)),
+    AUTOSAVE_END_TURN(getBeforeStepAutoSaveFile("EndTurn", true)),
 
-    AUTOSAVE_BEFORE_BATTLE(getAutoSaveFile(addExtension("autosaveBeforeBattle"), true)),
+    AUTOSAVE_BEFORE_BATTLE(getBeforeStepAutoSaveFile("Battle", true)),
 
-    AUTOSAVE_AFTER_BATTLE(getAutoSaveFile(addExtension("autosaveAfterBattle"), true)),
+    AUTOSAVE_AFTER_BATTLE(getBeforeStepAutoSaveFile("Battle", true)),
 
-    AUTOSAVE_AFTER_COMBAT_MOVE(getAutoSaveFile(addExtension("autosaveAfterCombatMove"), true)),
+    AUTOSAVE_AFTER_COMBAT_MOVE(getAfterStepAutoSaveFile("CombatMove", true)),
 
-    AUTOSAVE_AFTER_NON_COMBAT_MOVE(getAutoSaveFile(addExtension("autosaveAfterNonCombatMove"), true));
+    AUTOSAVE_AFTER_NON_COMBAT_MOVE(getAfterStepAutoSaveFile("NonCombatMove", true));
 
     private final Path path;
 
