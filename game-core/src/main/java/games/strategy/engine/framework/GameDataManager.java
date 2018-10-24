@@ -27,6 +27,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.ui.SwingAction;
+import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
@@ -93,24 +95,11 @@ public final class GameDataManager {
       } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion())) {
         // we can still load it because our engine is compatible, however this save was made by a
         // newer engine, so prompt the user to upgrade
-        final String messageString =
-            "Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
-                + "\nHowever, because the first 3 version numbers are the same as your current version, we can "
-                + "still open the savegame."
-                + "\n\nThis TripleA engine is version "
-                + ClientContext.engineVersion().toStringFull()
-                + " and you are trying to open a savegame made with version " + readVersion.toStringFull()
-                + "\n\nTo download the latest version of TripleA, Please visit "
-                + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
-                + "\n\nIt is recommended that you upgrade to the latest version of TripleA before playing this "
-                + "savegame."
-                + "\n\nDo you wish to continue and open this save with your current 'old' version?";
-        final int answer =
-            JOptionPane.showConfirmDialog(null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
-        if (answer != JOptionPane.YES_OPTION) {
+        if (!promptToLoadNewerSaveGame(readVersion)) {
           return null;
         }
       }
+
       final GameData data = (GameData) input.readObject();
       loadDelegates(input, data);
       data.postDeSerialize();
@@ -118,6 +107,23 @@ public final class GameDataManager {
     } catch (final ClassNotFoundException cnfe) {
       throw new IOException(cnfe.getMessage());
     }
+  }
+
+  private static boolean promptToLoadNewerSaveGame(final Version saveGameVersion) {
+    final int answer = Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
+      final String message = "Your TripleA engine is OUT OF DATE. "
+          + "This save was made by a newer version of TripleA.\n\n"
+          + "However, because the first 3 version numbers are the same as your current version, we can still open the "
+          + "save.\n\n"
+          + "This TripleA engine is version " + ClientContext.engineVersion().toStringFull() + " and you are trying "
+          + "to open a save made with version " + saveGameVersion.toStringFull() + "\n\n"
+          + "To download the latest version of TripleA, please visit "
+          + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE + ".\n\n"
+          + "It is recommended that you upgrade to the latest version of TripleA before playing this save.\n\n"
+          + "Do you wish to continue and open this save with your current 'old' version?";
+      return JOptionPane.showConfirmDialog(null, message, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
+    })).result.orElse(JOptionPane.NO_OPTION);
+    return answer == JOptionPane.YES_OPTION;
   }
 
   private static void loadDelegates(final ObjectInputStream input, final GameData data)
