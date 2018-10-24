@@ -58,7 +58,7 @@ public class TechAttachment extends DefaultAttachment {
   private boolean increasedFactoryProduction = false;
   private boolean warBonds = false;
   private boolean mechanizedInfantry = false;
-  private boolean aARadar = false;
+  private boolean aaRadar = false;
   private boolean shipyards = false;
   // do not export at this point. currently map xml cannot
   // define a player having a custom tech at start of game
@@ -248,15 +248,15 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   public void setAaRadar(final String s) {
-    aARadar = getBool(s);
+    aaRadar = getBool(s);
   }
 
   private void setAaRadar(final Boolean s) {
-    aARadar = s;
+    aaRadar = s;
   }
 
   private void resetAaRadar() {
-    aARadar = false;
+    aaRadar = false;
   }
 
   private void setShipyards(final String s) {
@@ -325,7 +325,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   public boolean getAaRadar() {
-    return aARadar;
+    return aaRadar;
   }
 
   public boolean getShipyards() {
