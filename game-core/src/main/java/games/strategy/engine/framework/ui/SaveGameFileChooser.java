@@ -56,7 +56,7 @@ public final class SaveGameFileChooser extends JFileChooser {
 
     AUTOSAVE_BEFORE_BATTLE(getBeforeStepAutoSaveFile("Battle", true)),
 
-    AUTOSAVE_AFTER_BATTLE(getBeforeStepAutoSaveFile("Battle", true)),
+    AUTOSAVE_AFTER_BATTLE(getAfterStepAutoSaveFile("Battle", true)),
 
     AUTOSAVE_AFTER_COMBAT_MOVE(getAfterStepAutoSaveFile("CombatMove", true)),
 
