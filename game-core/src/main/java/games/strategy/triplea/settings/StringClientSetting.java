@@ -1,7 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.io.File;
-
 final class StringClientSetting extends ClientSetting<String> {
   StringClientSetting(final String name) {
     super(String.class, name);
@@ -9,10 +7,6 @@ final class StringClientSetting extends ClientSetting<String> {
 
   StringClientSetting(final String name, final String defaultValue) {
     super(String.class, name, defaultValue);
-  }
-
-  StringClientSetting(final String name, final File defaultValue) {
-    super(String.class, name, defaultValue.getAbsolutePath());
   }
 
   @Override

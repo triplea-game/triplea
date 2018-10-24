@@ -2,6 +2,7 @@ package games.strategy.triplea.settings;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -281,22 +282,26 @@ final class SelectionComponentFactory {
   /**
    * File selection prompt.
    */
-  static SelectionComponent<JComponent> filePath(final ClientSetting<String> clientSetting) {
+  static SelectionComponent<JComponent> filePath(final ClientSetting<File> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
   }
 
   private static SelectionComponent<JComponent> selectFile(
-      final ClientSetting<String> clientSetting,
+      final ClientSetting<File> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
     return new AlwaysValidInputSelectionComponent() {
       final int expectedLength = 20;
-      final JTextField field = new JTextField(clientSetting.getValue().orElse(""), expectedLength);
+      final JTextField field = new JTextField(toString(clientSetting.getValue()), expectedLength);
       final JButton button = JButtonBuilder.builder()
           .title("Select")
           .actionListener(
               () -> SwingComponents.showJFileChooser(folderSelectionMode)
                   .ifPresent(file -> field.setText(file.getAbsolutePath())))
           .build();
+
+      private String toString(final Optional<File> file) {
+        return file.map(File::getAbsolutePath).orElse("");
+      }
 
       @Override
       public JComponent getUiComponent() {
@@ -313,17 +318,17 @@ final class SelectionComponentFactory {
       @Override
       public Map<GameSetting<?>, Object> readValues() {
         final String value = field.getText();
-        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : value);
+        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : new File(value));
       }
 
       @Override
       public void resetToDefault() {
-        field.setText(clientSetting.getDefaultValue().orElse(""));
+        field.setText(toString(clientSetting.getDefaultValue()));
       }
 
       @Override
       public void reset() {
-        field.setText(clientSetting.getValue().orElse(""));
+        field.setText(toString(clientSetting.getValue()));
       }
     };
   }
@@ -331,7 +336,7 @@ final class SelectionComponentFactory {
   /**
    * Folder selection prompt.
    */
-  static SelectionComponent<JComponent> folderPath(final ClientSetting<String> clientSetting) {
+  static SelectionComponent<JComponent> folderPath(final ClientSetting<File> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 

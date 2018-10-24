@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -184,11 +183,11 @@ final class JavaFxSelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<Region> folderPath(final ClientSetting<String> clientSetting) {
+  static SelectionComponent<Region> folderPath(final ClientSetting<File> clientSetting) {
     return new FolderSelector(clientSetting);
   }
 
-  static SelectionComponent<Region> filePath(final ClientSetting<String> clientSetting) {
+  static SelectionComponent<Region> filePath(final ClientSetting<File> clientSetting) {
     return new FileSelector(clientSetting);
   }
 
@@ -200,15 +199,15 @@ final class JavaFxSelectionComponentFactory {
   }
 
   private static final class FolderSelector extends Region implements SelectionComponent<Region> {
-    private final ClientSetting<String> clientSetting;
+    private final ClientSetting<File> clientSetting;
     private final TextField textField;
     private @Nullable File selectedFile;
 
-    FolderSelector(final ClientSetting<String> clientSetting) {
+    FolderSelector(final ClientSetting<File> clientSetting) {
       this.clientSetting = clientSetting;
-      final @Nullable File initialValue = clientSetting.getValue().map(File::new).orElse(null);
+      final @Nullable File initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
-      textField = new TextField(clientSetting.getValue().orElse(""));
+      textField = new TextField(toString(clientSetting.getValue()));
       textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setDisable(true);
@@ -229,21 +228,28 @@ final class JavaFxSelectionComponentFactory {
       getChildren().add(wrapper);
     }
 
+    private static String toString(final Optional<File> file) {
+      return file.map(File::getAbsolutePath).orElse("");
+    }
+
     @Override
     public Map<GameSetting<?>, Object> readValues() {
-      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, null));
+      return Collections.singletonMap(clientSetting, selectedFile);
     }
 
     @Override
     public void resetToDefault() {
-      textField.setText(clientSetting.getDefaultValue().orElse(""));
-      selectedFile = clientSetting.getDefaultValue().map(File::new).orElse(null);
+      reset(clientSetting.getDefaultValue());
     }
 
     @Override
     public void reset() {
-      textField.setText(clientSetting.getValue().orElse(""));
-      selectedFile = clientSetting.getValue().map(File::new).orElse(null);
+      reset(clientSetting.getValue());
+    }
+
+    private void reset(final Optional<File> file) {
+      textField.setText(toString(file));
+      selectedFile = file.orElse(null);
     }
 
     @Override
@@ -263,15 +269,15 @@ final class JavaFxSelectionComponentFactory {
   }
 
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
-    private final ClientSetting<String> clientSetting;
+    private final ClientSetting<File> clientSetting;
     private final TextField textField;
     private @Nullable File selectedFile;
 
-    FileSelector(final ClientSetting<String> clientSetting) {
+    FileSelector(final ClientSetting<File> clientSetting) {
       this.clientSetting = clientSetting;
-      final @Nullable File initialValue = clientSetting.getValue().map(File::new).orElse(null);
+      final @Nullable File initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
-      textField = new TextField(clientSetting.getValue().orElse(""));
+      textField = new TextField(toString(clientSetting.getValue()));
       textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setMinWidth(100);
@@ -293,21 +299,28 @@ final class JavaFxSelectionComponentFactory {
       getChildren().add(wrapper);
     }
 
+    private static String toString(final Optional<File> file) {
+      return file.map(File::getAbsolutePath).orElse("");
+    }
+
     @Override
     public Map<GameSetting<?>, Object> readValues() {
-      return Collections.singletonMap(clientSetting, Objects.toString(selectedFile, null));
+      return Collections.singletonMap(clientSetting, selectedFile);
     }
 
     @Override
     public void resetToDefault() {
-      textField.setText(clientSetting.getDefaultValue().orElse(""));
-      selectedFile = clientSetting.getDefaultValue().map(File::new).orElse(null);
+      reset(clientSetting.getDefaultValue());
     }
 
     @Override
     public void reset() {
-      textField.setText(clientSetting.getValue().orElse(""));
-      selectedFile = clientSetting.getValue().map(File::new).orElse(null);
+      reset(clientSetting.getValue());
+    }
+
+    private void reset(final Optional<File> file) {
+      textField.setText(toString(file));
+      selectedFile = file.orElse(null);
     }
 
     @Override

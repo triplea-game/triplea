@@ -70,7 +70,7 @@ public final class TripleAMenuBar extends JMenuBar {
     if (SystemProperties.isMac()) {
       final FileDialog fileDialog = new FileDialog(frame);
       fileDialog.setMode(FileDialog.SAVE);
-      fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow());
+      fileDialog.setDirectory(ClientSetting.saveGamesFolderPath.getValueOrThrow().getAbsolutePath());
       fileDialog.setFilenameFilter((dir, name) -> GameDataFileUtils.isCandidateFileName(name));
       fileDialog.setVisible(true);
 
