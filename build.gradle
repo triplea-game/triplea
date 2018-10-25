@@ -50,6 +50,7 @@ subprojects {
 
     ext {
         hamcrestVersion = '2.0.0.0'
+        jbcryptVersion = '0.4'
         junitJupiterVersion = '5.3.1'
         mockitoVersion = '2.22.0'
         postgresqlVersion = '42.2.2'
@@ -65,9 +66,9 @@ subprojects {
 
         implementation 'com.google.guava:guava:24.1-jre'
 
+        testImplementation 'com.github.npathai:hamcrest-optional:2.0.0'
         testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.0'
         testImplementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
-        testImplementation "com.github.npathai:hamcrest-optional:2.0.0"
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
         testImplementation 'org.junit-pioneer:junit-pioneer:0.1.2'
         testImplementation "org.mockito:mockito-core:$mockitoVersion"
