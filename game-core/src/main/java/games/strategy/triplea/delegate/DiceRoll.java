@@ -35,7 +35,6 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 
@@ -430,30 +429,28 @@ public class DiceRoll implements Externalizable {
     // get all supports, friendly and enemy
     final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<>();
     final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendly =
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
         new HashMap<>();
     getSupport(unitsGettingPowerFor, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
         data, defending, true);
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<>();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<>();
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemy =
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy =
         new HashMap<>();
     getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data,
         !defending, false);
     // copy for rolls
-    final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls =
-        new IntegerMap<>(supportLeftFriendly);
-    final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls =
-        new IntegerMap<>(supportLeftEnemy);
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
+    final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<>(supportLeftFriendly);
+    final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<>(supportLeftEnemy);
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
         new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftFriendly.keySet()) {
-      supportUnitsLeftFriendlyRolls.put(usa, new LinkedIntegerMap<>(supportUnitsLeftFriendly.get(usa)));
+      supportUnitsLeftFriendlyRolls.put(usa, new IntegerMap<>(supportUnitsLeftFriendly.get(usa)));
     }
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeftEnemyRolls =
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemyRolls =
         new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet()) {
-      supportUnitsLeftEnemyRolls.put(usa, new LinkedIntegerMap<>(supportUnitsLeftEnemy.get(usa)));
+      supportUnitsLeftEnemyRolls.put(usa, new IntegerMap<>(supportUnitsLeftEnemy.get(usa)));
     }
     final int diceSides = data.getDiceSides();
     for (final Unit current : unitsGettingPowerFor) {
@@ -616,7 +613,7 @@ public class DiceRoll implements Externalizable {
    */
   public static void getSupport(final List<Unit> unitsGivingTheSupport,
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeft, final GameData data,
+      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft, final GameData data,
       final boolean defence, final boolean allies) {
     if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty()) {
       return;
@@ -645,8 +642,10 @@ public class DiceRoll implements Externalizable {
       }
       numSupport += impArtTechUnits.size();
       supportLeft.put(rule, numSupport * rule.getNumber());
-      supportUnitsLeft.put(rule, new LinkedIntegerMap<>(supporters, rule.getNumber()));
-      supportUnitsLeft.get(rule).addAll(impArtTechUnits, rule.getNumber());
+      final IntegerMap<Unit> unitsForRule = new IntegerMap<>();
+      supporters.forEach(unit -> unitsForRule.put(unit, rule.getNumber()));
+      impArtTechUnits.forEach(unit -> unitsForRule.put(unit, rule.getNumber()));
+      supportUnitsLeft.put(rule, unitsForRule);
       final Iterator<List<UnitSupportAttachment>> iter2 = supportsAvailable.iterator();
       List<UnitSupportAttachment> ruleType = null;
       boolean found = false;
@@ -674,7 +673,7 @@ public class DiceRoll implements Externalizable {
    */
   public static int getSupport(final Unit unit, final Set<List<UnitSupportAttachment>> supportsAvailable,
       final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> supportUnitsLeft,
+      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
       final Map<Unit, IntegerMap<Unit>> unitSupportMap, final boolean strength, final boolean rolls) {
     int givenSupport = 0;
     for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {
@@ -686,7 +685,7 @@ public class DiceRoll implements Externalizable {
         if (types != null && types.contains(unit.getType()) && supportLeft.getInt(rule) > 0) {
           givenSupport += rule.getBonus();
           supportLeft.add(rule, -1);
-          final LinkedIntegerMap<Unit> supportersLeft = supportUnitsLeft.get(rule);
+          final IntegerMap<Unit> supportersLeft = supportUnitsLeft.get(rule);
           if (supportersLeft != null) {
             final Set<Unit> supporters = supportersLeft.keySet();
             if (!supporters.isEmpty()) {

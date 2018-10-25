@@ -37,14 +37,13 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.LinkedIntegerMap;
 import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**
- * Utiltity class for determing casualties and selecting casualties. The code
- * was being dduplicated all over the place.
+ * Utility class for determining casualties and selecting casualties.
+ * The code was being duplicated all over the place.
  */
 @Log
 public class BattleCalculator {
@@ -938,7 +937,7 @@ public class BattleCalculator {
     } else {
       rolls = unitAttachment.getAttackRolls(id);
     }
-    final Map<UnitSupportAttachment, LinkedIntegerMap<Unit>> dummyEmptyMap =
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> dummyEmptyMap =
         new HashMap<>();
     rolls += DiceRoll.getSupport(unit, supportRulesFriendly, supportLeftFriendlyCopy, dummyEmptyMap, null, false, true);
     rolls += DiceRoll.getSupport(unit, supportRulesEnemy, supportLeftEnemyCopy, dummyEmptyMap, null, false, true);
