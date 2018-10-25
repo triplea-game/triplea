@@ -27,30 +27,30 @@ import games.strategy.triplea.MapSupport;
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
 
-  private Set<UnitType> m_unitType = null;
+  private Set<UnitType> unitType = null;
   @InternalDoNotExport
-  private boolean m_offence = false;
+  private boolean offence = false;
   @InternalDoNotExport
-  private boolean m_defence = false;
+  private boolean defence = false;
   @InternalDoNotExport
-  private boolean m_roll = false;
+  private boolean roll = false;
   @InternalDoNotExport
-  private boolean m_strength = false;
-  private int m_bonus = 0;
-  private int m_number = 0;
+  private boolean strength = false;
+  private int bonus = 0;
+  private int number = 0;
   @InternalDoNotExport
-  private boolean m_allied = false;
+  private boolean allied = false;
   @InternalDoNotExport
-  private boolean m_enemy = false;
-  private String m_bonusType = null;
-  private List<PlayerID> m_players = new ArrayList<>();
-  private boolean m_impArtTech = false;
+  private boolean enemy = false;
+  private String bonusType = null;
+  private List<PlayerID> players = new ArrayList<>();
+  private boolean impArtTech = false;
   // strings
   // roll or strength
-  private String m_dice;
+  private String dice;
   // offence or defence
-  private String m_side;
-  private String m_faction;
+  private String side;
+  private String faction;
 
   public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -81,40 +81,40 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   private void setUnitType(final String names) throws GameParseException {
     if (names == null) {
-      m_unitType = null;
+      unitType = null;
       return;
     }
-    m_unitType = new HashSet<>();
+    unitType = new HashSet<>();
     for (final String element : splitOnColon(names)) {
       final UnitType type = getData().getUnitTypeList().getUnitType(element);
       if (type == null) {
         throw new GameParseException("Could not find unitType. name:" + element + thisErrorMsg());
       }
-      m_unitType.add(type);
+      unitType.add(type);
     }
   }
 
   private void setUnitType(final Set<UnitType> value) {
-    m_unitType = value;
+    unitType = value;
   }
 
   private void resetUnitType() {
-    m_unitType = null;
+    unitType = null;
   }
 
   private void setFaction(final String faction) throws GameParseException {
-    m_faction = faction;
+    this.faction = faction;
     if (faction == null) {
       resetFaction();
       return;
     }
-    m_allied = false;
-    m_enemy = false;
+    allied = false;
+    enemy = false;
     for (final String element : splitOnColon(faction)) {
       if (element.equalsIgnoreCase("allied")) {
-        m_allied = true;
+        allied = true;
       } else if (element.equalsIgnoreCase("enemy")) {
-        m_enemy = true;
+        enemy = true;
       } else {
         throw new GameParseException(faction + " faction must be allied, or enemy" + thisErrorMsg());
       }
@@ -122,12 +122,12 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private String getFaction() {
-    return m_faction;
+    return faction;
   }
 
   private void resetFaction() {
-    m_allied = false;
-    m_enemy = false;
+    allied = false;
+    enemy = false;
   }
 
   private void setSide(final String side) throws GameParseException {
@@ -135,28 +135,28 @@ public class UnitSupportAttachment extends DefaultAttachment {
       resetSide();
       return;
     }
-    m_defence = false;
-    m_offence = false;
+    defence = false;
+    offence = false;
     for (final String element : splitOnColon(side)) {
       if (element.equalsIgnoreCase("defence")) {
-        m_defence = true;
+        defence = true;
       } else if (element.equalsIgnoreCase("offence")) {
-        m_offence = true;
+        offence = true;
       } else {
         throw new GameParseException(side + " side must be defence or offence" + thisErrorMsg());
       }
     }
-    m_side = side;
+    this.side = side;
   }
 
   private String getSide() {
-    return m_side;
+    return side;
   }
 
   private void resetSide() {
-    m_side = null;
-    m_offence = false;
-    m_defence = false;
+    side = null;
+    offence = false;
+    defence = false;
   }
 
   private void setDice(final String dice) throws GameParseException {
@@ -164,60 +164,60 @@ public class UnitSupportAttachment extends DefaultAttachment {
       resetDice();
       return;
     }
-    m_roll = false;
-    m_strength = false;
+    roll = false;
+    strength = false;
     for (final String element : splitOnColon(dice)) {
       if (element.equalsIgnoreCase("roll")) {
-        m_roll = true;
+        roll = true;
       } else if (element.equalsIgnoreCase("strength")) {
-        m_strength = true;
+        strength = true;
       } else {
         throw new GameParseException(dice + " dice must be roll or strength" + thisErrorMsg());
       }
     }
-    m_dice = dice;
+    this.dice = dice;
   }
 
   private String getDice() {
-    return m_dice;
+    return dice;
   }
 
   private void resetDice() {
-    m_dice = null;
-    m_roll = false;
-    m_strength = false;
+    dice = null;
+    roll = false;
+    strength = false;
   }
 
   private void setBonus(final String bonus) {
-    m_bonus = getInt(bonus);
+    this.bonus = getInt(bonus);
   }
 
   private void setBonus(final int bonus) {
-    m_bonus = bonus;
+    this.bonus = bonus;
   }
 
   private void resetBonus() {
-    m_bonus = 0;
+    bonus = 0;
   }
 
   private void setNumber(final String number) {
-    m_number = getInt(number);
+    this.number = getInt(number);
   }
 
   private void setNumber(final int number) {
-    m_number = number;
+    this.number = number;
   }
 
   private void resetNumber() {
-    m_number = 0;
+    number = 0;
   }
 
   private void setBonusType(final String type) {
-    m_bonusType = type;
+    bonusType = type;
   }
 
   private void resetBonusType() {
-    m_bonusType = null;
+    bonusType = null;
   }
 
   private void setPlayers(final String names) throws GameParseException {
@@ -227,76 +227,76 @@ public class UnitSupportAttachment extends DefaultAttachment {
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       }
-      m_players.add(player);
+      players.add(player);
     }
   }
 
   private void setPlayers(final List<PlayerID> value) {
-    m_players = value;
+    players = value;
   }
 
   public List<PlayerID> getPlayers() {
-    return m_players;
+    return players;
   }
 
   private void resetPlayers() {
-    m_players = new ArrayList<>();
+    players = new ArrayList<>();
   }
 
   private void setImpArtTech(final String tech) {
-    m_impArtTech = getBool(tech);
+    impArtTech = getBool(tech);
   }
 
   private void setImpArtTech(final boolean tech) {
-    m_impArtTech = tech;
+    impArtTech = tech;
   }
 
   private void resetImpArtTech() {
-    m_impArtTech = false;
+    impArtTech = false;
   }
 
   public Set<UnitType> getUnitType() {
-    return m_unitType;
+    return unitType;
   }
 
   public int getNumber() {
-    return m_number;
+    return number;
   }
 
   public int getBonus() {
-    return m_bonus;
+    return bonus;
   }
 
   public boolean getAllied() {
-    return m_allied;
+    return allied;
   }
 
   public boolean getEnemy() {
-    return m_enemy;
+    return enemy;
   }
 
   public boolean getRoll() {
-    return m_roll;
+    return roll;
   }
 
   public boolean getStrength() {
-    return m_strength;
+    return strength;
   }
 
   public boolean getDefence() {
-    return m_defence;
+    return defence;
   }
 
   public boolean getOffence() {
-    return m_offence;
+    return offence;
   }
 
   public String getBonusType() {
-    return m_bonusType;
+    return bonusType;
   }
 
   public boolean getImpArtTech() {
-    return m_impArtTech;
+    return impArtTech;
   }
 
   /*
@@ -345,10 +345,10 @@ public class UnitSupportAttachment extends DefaultAttachment {
     if (types == null) {
       return;
     }
-    if (m_unitType == null) {
-      m_unitType = new HashSet<>();
+    if (unitType == null) {
+      unitType = new HashSet<>();
     }
-    m_unitType.addAll(types);
+    unitType.addAll(types);
   }
 
   @InternalDoNotExport

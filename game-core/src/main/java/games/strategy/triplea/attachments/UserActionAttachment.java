@@ -33,8 +33,7 @@ import games.strategy.util.Tuple;
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
 
-  private List<Tuple<String, String>> m_activateTrigger = new ArrayList<>();
-
+  private List<Tuple<String, String>> activateTrigger = new ArrayList<>();
 
   public UserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -86,19 +85,19 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     getBool(s[3]);
     getBool(s[4]);
     getBool(s[5]);
-    m_activateTrigger.add(Tuple.of(s[0], options));
+    activateTrigger.add(Tuple.of(s[0], options));
   }
 
   private void setActivateTrigger(final List<Tuple<String, String>> value) {
-    m_activateTrigger = value;
+    activateTrigger = value;
   }
 
   private List<Tuple<String, String>> getActivateTrigger() {
-    return m_activateTrigger;
+    return activateTrigger;
   }
 
   private void resetActivateTrigger() {
-    m_activateTrigger = new ArrayList<>();
+    activateTrigger = new ArrayList<>();
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,
