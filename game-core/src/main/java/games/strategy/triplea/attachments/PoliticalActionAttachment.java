@@ -37,7 +37,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
 
   // list of relationship changes to be performed if this action is performed sucessfully
-  private List<String> m_relationshipChange = new ArrayList<>();
+  private List<String> relationshipChange = new ArrayList<>();
 
   public PoliticalActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -98,23 +98,23 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
           + s[2] + " unknown in: " + getName() + thisErrorMsg());
     }
-    m_relationshipChange.add(relChange);
+    relationshipChange.add(relChange);
   }
 
   private void setRelationshipChange(final List<String> value) {
-    m_relationshipChange = value;
+    relationshipChange = value;
   }
 
   private List<String> getRelationshipChange() {
-    return m_relationshipChange;
+    return relationshipChange;
   }
 
   private void resetRelationshipChange() {
-    m_relationshipChange = new ArrayList<>();
+    relationshipChange = new ArrayList<>();
   }
 
   public List<RelationshipChange> getRelationshipChanges() {
-    return m_relationshipChange.stream()
+    return relationshipChange.stream()
         .map(this::parseRelationshipChange)
         .collect(Collectors.toList());
   }
@@ -134,7 +134,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    */
   public Set<PlayerID> getOtherPlayers() {
     final Set<PlayerID> otherPlayers = new LinkedHashSet<>();
-    for (final String relationshipChange : m_relationshipChange) {
+    for (final String relationshipChange : this.relationshipChange) {
       final String[] s = splitOnColon(relationshipChange);
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[0]));
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[1]));
@@ -159,7 +159,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {
     super.validate(data);
-    if (m_relationshipChange.isEmpty()) {
+    if (relationshipChange.isEmpty()) {
       throw new GameParseException("value: relationshipChange can't be empty" + thisErrorMsg());
     }
   }
