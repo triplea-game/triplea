@@ -191,7 +191,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public int getProduction() {
-    return m_production;
+    return production;
   }
 
   /**
@@ -206,30 +206,30 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public int getUnitProduction() {
-    return m_unitProduction;
+    return unitProduction;
   }
 
-  private String m_capital = null;
-  private boolean m_originalFactory = false;
-  // "setProduction" will set both m_production and m_unitProduction.
-  // While "setProductionOnly" sets only m_production.
-  private int m_production = 0;
-  private int m_victoryCity = 0;
-  private boolean m_isImpassable = false;
-  private PlayerID m_originalOwner = null;
-  private boolean m_convoyRoute = false;
-  private HashSet<Territory> m_convoyAttached = new HashSet<>();
-  private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<>();
-  private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
-  private boolean m_navalBase = false;
-  private boolean m_airBase = false;
-  private boolean m_kamikazeZone = false;
-  private int m_unitProduction = 0;
-  private boolean m_blockadeZone = false;
-  private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<>();
+  private String capital = null;
+  private boolean originalFactory = false;
+  // "setProduction" will set both production and unitProduction.
+  // While "setProductionOnly" sets only production.
+  private int production = 0;
+  private int victoryCity = 0;
+  private boolean isImpassable = false;
+  private PlayerID originalOwner = null;
+  private boolean convoyRoute = false;
+  private HashSet<Territory> convoyAttached = new HashSet<>();
+  private ArrayList<PlayerID> changeUnitOwners = new ArrayList<>();
+  private ArrayList<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
+  private boolean navalBase = false;
+  private boolean airBase = false;
+  private boolean kamikazeZone = false;
+  private int unitProduction = 0;
+  private boolean blockadeZone = false;
+  private ArrayList<TerritoryEffect> territoryEffect = new ArrayList<>();
   // TODO: change to List<CaptureOwnershipChange> upon next incompatible release
-  private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<>();
-  private ResourceCollection m_resources = null;
+  private ArrayList<String> whenCapturedByGoesTo = new ArrayList<>();
+  private ResourceCollection resources = null;
 
   /** Creates new TerritoryAttachment. */
   public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -238,11 +238,11 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   private void setResources(final String value) throws GameParseException {
     if (value == null) {
-      m_resources = null;
+      resources = null;
       return;
     }
-    if (m_resources == null) {
-      m_resources = new ResourceCollection(getData());
+    if (resources == null) {
+      resources = new ResourceCollection(getData());
     }
     final String[] s = splitOnColon(value);
     final int amount = getInt(s[0]);
@@ -253,19 +253,19 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (resource == null) {
       throw new GameParseException("No resource named: " + s[1] + thisErrorMsg());
     }
-    m_resources.putResource(resource, amount);
+    resources.putResource(resource, amount);
   }
 
   private void setResources(final ResourceCollection value) {
-    m_resources = value;
+    resources = value;
   }
 
   public ResourceCollection getResources() {
-    return m_resources;
+    return resources;
   }
 
   private void resetResources() {
-    m_resources = null;
+    resources = null;
   }
 
   private void setIsImpassable(final String value) {
@@ -273,47 +273,47 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setIsImpassable(final boolean value) {
-    m_isImpassable = value;
+    isImpassable = value;
   }
 
   public boolean getIsImpassable() {
-    return m_isImpassable;
+    return isImpassable;
   }
 
   private void resetIsImpassable() {
-    m_isImpassable = false;
+    isImpassable = false;
   }
 
   public void setCapital(final String value) throws GameParseException {
     if (value == null) {
-      m_capital = null;
+      capital = null;
       return;
     }
     final PlayerID p = getData().getPlayerList().getPlayerId(value);
     if (p == null) {
       throw new GameParseException("No Player named: " + value + thisErrorMsg());
     }
-    m_capital = value;
+    capital = value;
   }
 
   public boolean isCapital() {
-    return m_capital != null;
+    return capital != null;
   }
 
   public String getCapital() {
-    return m_capital;
+    return capital;
   }
 
   private void resetCapital() {
-    m_capital = null;
+    capital = null;
   }
 
   private void setVictoryCity(final int value) {
-    m_victoryCity = value;
+    victoryCity = value;
   }
 
   public int getVictoryCity() {
-    return m_victoryCity;
+    return victoryCity;
   }
 
   private void setOriginalFactory(final String value) {
@@ -321,15 +321,15 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setOriginalFactory(final boolean value) {
-    m_originalFactory = value;
+    originalFactory = value;
   }
 
   public boolean getOriginalFactory() {
-    return m_originalFactory;
+    return originalFactory;
   }
 
   private void resetOriginalFactory() {
-    m_originalFactory = false;
+    originalFactory = false;
   }
 
   /**
@@ -338,9 +338,9 @@ public class TerritoryAttachment extends DefaultAttachment {
    * used when parsing game XML since it passes string values.
    */
   private void setProduction(final String value) {
-    m_production = getInt(value);
+    production = getInt(value);
     // do NOT remove. unitProduction should always default to production
-    m_unitProduction = m_production;
+    unitProduction = production;
   }
 
   /**
@@ -349,71 +349,71 @@ public class TerritoryAttachment extends DefaultAttachment {
    * used when working with game history since it passes Integer values.
    */
   private void setProduction(final Integer value) {
-    m_production = value;
+    production = value;
     // do NOT remove. unitProduction should always default to production
-    m_unitProduction = m_production;
+    unitProduction = production;
   }
 
   /**
    * Resets production and unitProduction (or just "production" in a map xml) of a territory to the default value.
    */
   private void resetProduction() {
-    m_production = 0;
+    production = 0;
     // do NOT remove. unitProduction should always default to production
-    m_unitProduction = m_production;
+    unitProduction = production;
   }
 
   /**
-   * Sets only m_production.
+   * Sets only production.
    */
   private void setProductionOnly(final String value) {
-    m_production = getInt(value);
+    production = getInt(value);
   }
 
   private void setUnitProduction(final int value) {
-    m_unitProduction = value;
+    unitProduction = value;
   }
 
   /**
    * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing.
    */
   public void setOriginalOwner(final PlayerID player) {
-    m_originalOwner = player;
+    originalOwner = player;
   }
 
   private void setOriginalOwner(final String player) throws GameParseException {
     if (player == null) {
-      m_originalOwner = null;
+      originalOwner = null;
     }
     final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(player);
     if (tempPlayer == null) {
       throw new GameParseException("No player named: " + player + thisErrorMsg());
     }
-    m_originalOwner = tempPlayer;
+    originalOwner = tempPlayer;
   }
 
   public PlayerID getOriginalOwner() {
-    return m_originalOwner;
+    return originalOwner;
   }
 
   private void resetOriginalOwner() {
-    m_originalOwner = null;
+    originalOwner = null;
   }
 
   private void setConvoyRoute(final String value) {
-    m_convoyRoute = getBool(value);
+    convoyRoute = getBool(value);
   }
 
   private void setConvoyRoute(final Boolean value) {
-    m_convoyRoute = value;
+    convoyRoute = value;
   }
 
   public boolean getConvoyRoute() {
-    return m_convoyRoute;
+    return convoyRoute;
   }
 
   private void resetConvoyRoute() {
-    m_convoyRoute = false;
+    convoyRoute = false;
   }
 
   private void setChangeUnitOwners(final String value) throws GameParseException {
@@ -421,9 +421,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
-        m_changeUnitOwners.add(tempPlayer);
+        changeUnitOwners.add(tempPlayer);
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
-        m_changeUnitOwners.clear();
+        changeUnitOwners.clear();
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -431,15 +431,15 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setChangeUnitOwners(final ArrayList<PlayerID> value) {
-    m_changeUnitOwners = value;
+    changeUnitOwners = value;
   }
 
   public ArrayList<PlayerID> getChangeUnitOwners() {
-    return m_changeUnitOwners;
+    return changeUnitOwners;
   }
 
   private void resetChangeUnitOwners() {
-    m_changeUnitOwners = new ArrayList<>();
+    changeUnitOwners = new ArrayList<>();
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -447,7 +447,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
-        m_captureUnitOnEnteringBy.add(tempPlayer);
+        captureUnitOnEnteringBy.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -455,15 +455,15 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value) {
-    m_captureUnitOnEnteringBy = value;
+    captureUnitOnEnteringBy = value;
   }
 
   public ArrayList<PlayerID> getCaptureUnitOnEnteringBy() {
-    return m_captureUnitOnEnteringBy;
+    return captureUnitOnEnteringBy;
   }
 
   private void resetCaptureUnitOnEnteringBy() {
-    m_captureUnitOnEnteringBy = new ArrayList<>();
+    captureUnitOnEnteringBy = new ArrayList<>();
   }
 
   @VisibleForTesting
@@ -479,23 +479,23 @@ public class TerritoryAttachment extends DefaultAttachment {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
     }
-    m_whenCapturedByGoesTo.add(value);
+    whenCapturedByGoesTo.add(value);
   }
 
   private void setWhenCapturedByGoesTo(final ArrayList<String> value) {
-    m_whenCapturedByGoesTo = value;
+    whenCapturedByGoesTo = value;
   }
 
   private ArrayList<String> getWhenCapturedByGoesTo() {
-    return m_whenCapturedByGoesTo;
+    return whenCapturedByGoesTo;
   }
 
   private void resetWhenCapturedByGoesTo() {
-    m_whenCapturedByGoesTo = new ArrayList<>();
+    whenCapturedByGoesTo = new ArrayList<>();
   }
 
   public Collection<CaptureOwnershipChange> getCaptureOwnershipChanges() {
-    return m_whenCapturedByGoesTo.stream()
+    return whenCapturedByGoesTo.stream()
         .map(this::parseCaptureOwnershipChange)
         .collect(Collectors.toList());
   }
@@ -514,7 +514,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     for (final String name : s) {
       final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
       if (effect != null) {
-        m_territoryEffect.add(effect);
+        territoryEffect.add(effect);
       } else {
         throw new GameParseException("No TerritoryEffect named: " + name + thisErrorMsg());
       }
@@ -522,15 +522,15 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   private void setTerritoryEffect(final ArrayList<TerritoryEffect> value) {
-    m_territoryEffect = value;
+    territoryEffect = value;
   }
 
   public ArrayList<TerritoryEffect> getTerritoryEffect() {
-    return m_territoryEffect;
+    return territoryEffect;
   }
 
   private void resetTerritoryEffect() {
-    m_territoryEffect = new ArrayList<>();
+    territoryEffect = new ArrayList<>();
   }
 
   private void setConvoyAttached(final String value) throws GameParseException {
@@ -542,84 +542,84 @@ public class TerritoryAttachment extends DefaultAttachment {
       if (territory == null) {
         throw new GameParseException("No territory called:" + subString + thisErrorMsg());
       }
-      m_convoyAttached.add(territory);
+      convoyAttached.add(territory);
     }
   }
 
   private void setConvoyAttached(final HashSet<Territory> value) {
-    m_convoyAttached = value;
+    convoyAttached = value;
   }
 
   public HashSet<Territory> getConvoyAttached() {
-    return m_convoyAttached;
+    return convoyAttached;
   }
 
   private void resetConvoyAttached() {
-    m_convoyAttached = new HashSet<>();
+    convoyAttached = new HashSet<>();
   }
 
   private void setNavalBase(final String value) {
-    m_navalBase = getBool(value);
+    navalBase = getBool(value);
   }
 
   private void setNavalBase(final Boolean value) {
-    m_navalBase = value;
+    navalBase = value;
   }
 
   public boolean getNavalBase() {
-    return m_navalBase;
+    return navalBase;
   }
 
   private void resetNavalBase() {
-    m_navalBase = false;
+    navalBase = false;
   }
 
   private void setAirBase(final String value) {
-    m_airBase = getBool(value);
+    airBase = getBool(value);
   }
 
   private void setAirBase(final Boolean value) {
-    m_airBase = value;
+    airBase = value;
   }
 
   public boolean getAirBase() {
-    return m_airBase;
+    return airBase;
   }
 
   private void resetAirBase() {
-    m_airBase = false;
+    airBase = false;
   }
 
   private void setKamikazeZone(final String value) {
-    m_kamikazeZone = getBool(value);
+    kamikazeZone = getBool(value);
   }
 
   private void setKamikazeZone(final Boolean value) {
-    m_kamikazeZone = value;
+    kamikazeZone = value;
   }
 
   public boolean getKamikazeZone() {
-    return m_kamikazeZone;
+    return kamikazeZone;
   }
 
   private void resetKamikazeZone() {
-    m_kamikazeZone = false;
+    kamikazeZone = false;
   }
 
   private void setBlockadeZone(final String value) {
-    m_blockadeZone = getBool(value);
+    blockadeZone = getBool(value);
   }
 
   private void setBlockadeZone(final Boolean value) {
-    m_blockadeZone = value;
+    blockadeZone = value;
   }
 
   public boolean getBlockadeZone() {
-    return m_blockadeZone;
+    return blockadeZone;
   }
 
   private void resetBlockadeZone() {
-    m_blockadeZone = false;
+    blockadeZone = false;
   }
 
   public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
@@ -667,89 +667,89 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append(br);
       }
     }
-    if (m_isImpassable) {
+    if (isImpassable) {
       sb.append("Is Impassable");
       sb.append(br);
     }
-    if (m_capital != null && m_capital.length() > 0) {
-      sb.append("A Capital of ").append(m_capital);
+    if (capital != null && capital.length() > 0) {
+      sb.append("A Capital of ").append(capital);
       sb.append(br);
     }
-    if (m_victoryCity != 0) {
+    if (victoryCity != 0) {
       sb.append("Is a Victory location");
       sb.append(br);
     }
-    if (m_kamikazeZone) {
+    if (kamikazeZone) {
       sb.append("Is Kamikaze Zone");
       sb.append(br);
     }
-    if (m_blockadeZone) {
+    if (blockadeZone) {
       sb.append("Is a Blockade Zone");
       sb.append(br);
     }
-    if (m_navalBase) {
+    if (navalBase) {
       sb.append("Is a Naval Base");
       sb.append(br);
     }
-    if (m_airBase) {
+    if (airBase) {
       sb.append("Is an Air Base");
       sb.append(br);
     }
-    if (m_convoyRoute) {
-      if (!m_convoyAttached.isEmpty()) {
-        sb.append("Needs: ").append(MyFormatter.defaultNamedToTextList(m_convoyAttached)).append(br);
+    if (convoyRoute) {
+      if (!convoyAttached.isEmpty()) {
+        sb.append("Needs: ").append(MyFormatter.defaultNamedToTextList(convoyAttached)).append(br);
       }
       final Set<Territory> requiredBy = getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
       if (!requiredBy.isEmpty()) {
         sb.append("Required By: ").append(MyFormatter.defaultNamedToTextList(requiredBy)).append(br);
       }
     }
-    if (m_changeUnitOwners != null && !m_changeUnitOwners.isEmpty()) {
+    if (changeUnitOwners != null && !changeUnitOwners.isEmpty()) {
       sb.append("Units May Change Ownership Here");
       sb.append(br);
     }
-    if (m_captureUnitOnEnteringBy != null && !m_captureUnitOnEnteringBy.isEmpty()) {
+    if (captureUnitOnEnteringBy != null && !captureUnitOnEnteringBy.isEmpty()) {
       sb.append("May Allow The Capture of Some Units");
       sb.append(br);
     }
-    if (m_whenCapturedByGoesTo != null && !m_whenCapturedByGoesTo.isEmpty()) {
+    if (whenCapturedByGoesTo != null && !whenCapturedByGoesTo.isEmpty()) {
       sb.append("Captured By -> Ownership Goes To");
       sb.append(br);
-      for (final String value : m_whenCapturedByGoesTo) {
+      for (final String value : whenCapturedByGoesTo) {
         final String[] s = splitOnColon(value);
         sb.append(s[0]).append(" -> ").append(s[1]);
         sb.append(br);
       }
     }
     sb.append(br);
-    if (!t.isWater() && m_unitProduction > 0
+    if (!t.isWater() && unitProduction > 0
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       sb.append("Base Unit Production: ");
-      sb.append(m_unitProduction);
+      sb.append(unitProduction);
       sb.append(br);
     }
-    if (m_production > 0 || (m_resources != null && m_resources.toString().length() > 0)) {
+    if (production > 0 || (resources != null && resources.toString().length() > 0)) {
       sb.append("Production: ");
       sb.append(br);
-      if (m_production > 0) {
-        sb.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(m_production).append(" PUs");
+      if (production > 0) {
+        sb.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(production).append(" PUs");
         sb.append(br);
       }
-      if (m_resources != null) {
+      if (resources != null) {
         if (useHtml) {
           sb.append("&nbsp;&nbsp;&nbsp;&nbsp;")
-              .append((m_resources.toStringForHtml()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
+              .append((resources.toStringForHtml()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {
-          sb.append(m_resources.toString());
+          sb.append(resources.toString());
         }
         sb.append(br);
       }
     }
-    if (!m_territoryEffect.isEmpty()) {
+    if (!territoryEffect.isEmpty()) {
       sb.append("Territory Effects: ");
       sb.append(br);
     }
-    sb.append(m_territoryEffect.stream()
+    sb.append(territoryEffect.stream()
         .map(TerritoryEffect::getName)
         .map(name -> "&nbsp;&nbsp;&nbsp;&nbsp;" + name + br)
         .collect(Collectors.joining()));
