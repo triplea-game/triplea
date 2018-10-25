@@ -26,19 +26,18 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
 
-  private String m_archeType = ARCHETYPE_WAR;
-  // private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
-  private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
-  private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
-  private String m_alliancesCanChainTogether = PROPERTY_DEFAULT;
-  private String m_isDefaultWarPosition = PROPERTY_DEFAULT;
-  private String m_upkeepCost = PROPERTY_DEFAULT;
-  private String m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
-  private String m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
-  private String m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
-  private String m_canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
-  private String m_canMoveThroughCanals = PROPERTY_DEFAULT;
-  private String m_rocketsCanFlyOver = PROPERTY_DEFAULT;
+  private String archeType = ARCHETYPE_WAR;
+  private String canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
+  private String canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
+  private String alliancesCanChainTogether = PROPERTY_DEFAULT;
+  private String isDefaultWarPosition = PROPERTY_DEFAULT;
+  private String upkeepCost = PROPERTY_DEFAULT;
+  private String canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
+  private String canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
+  private String givesBackOriginalTerritories = PROPERTY_DEFAULT;
+  private String canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
+  private String canMoveThroughCanals = PROPERTY_DEFAULT;
+  private String rocketsCanFlyOver = PROPERTY_DEFAULT;
 
   /**
    * Creates new RelationshipTypeAttachment.
@@ -82,7 +81,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       case ARCHETYPE_WAR:
       case ARCHETYPE_ALLIED:
       case ARCHETYPE_NEUTRAL:
-        m_archeType = lowerArcheType;
+        this.archeType = lowerArcheType;
         break;
       default:
         throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or "
@@ -95,11 +94,11 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * isNeutral, isAllied or isWar().
    */
   public String getArcheType() {
-    return m_archeType;
+    return archeType;
   }
 
   private void resetArcheType() {
-    m_archeType = ARCHETYPE_WAR;
+    archeType = ARCHETYPE_WAR;
   }
 
   /**
@@ -110,11 +109,11 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * @param canFlyOver should be "true", "false" or "default"
    */
   private void setCanMoveAirUnitsOverOwnedLand(final String canFlyOver) {
-    m_canMoveAirUnitsOverOwnedLand = canFlyOver;
+    canMoveAirUnitsOverOwnedLand = canFlyOver;
   }
 
   private String getCanMoveAirUnitsOverOwnedLand() {
-    return m_canMoveAirUnitsOverOwnedLand;
+    return canMoveAirUnitsOverOwnedLand;
   }
 
   /**
@@ -125,78 +124,78 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * @return whether in this relationshipType you can fly over other territories
    */
   public boolean canMoveAirUnitsOverOwnedLand() { // War: true, Allied: True, Neutral: false
-    if (m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_DEFAULT)) {
+    if (canMoveAirUnitsOverOwnedLand.equals(PROPERTY_DEFAULT)) {
       return isWar() || isAllied();
     }
-    return m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_TRUE);
+    return canMoveAirUnitsOverOwnedLand.equals(PROPERTY_TRUE);
   }
 
   private void resetCanMoveAirUnitsOverOwnedLand() {
-    m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
+    canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
   }
 
   private void setCanMoveLandUnitsOverOwnedLand(final String canFlyOver) {
-    m_canMoveLandUnitsOverOwnedLand = canFlyOver;
+    canMoveLandUnitsOverOwnedLand = canFlyOver;
   }
 
   private String getCanMoveLandUnitsOverOwnedLand() {
-    return m_canMoveLandUnitsOverOwnedLand;
+    return canMoveLandUnitsOverOwnedLand;
   }
 
   public boolean canMoveLandUnitsOverOwnedLand() { // War: true, Allied: True, Neutral: false
-    if (m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_DEFAULT)) {
+    if (canMoveLandUnitsOverOwnedLand.equals(PROPERTY_DEFAULT)) {
       return isWar() || isAllied();
     }
-    return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
+    return canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
   }
 
   private void resetCanMoveLandUnitsOverOwnedLand() {
-    m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
+    canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
   }
 
   private void setCanLandAirUnitsOnOwnedLand(final String canLandAir) {
-    m_canLandAirUnitsOnOwnedLand = canLandAir;
+    canLandAirUnitsOnOwnedLand = canLandAir;
   }
 
   private String getCanLandAirUnitsOnOwnedLand() {
-    return m_canLandAirUnitsOnOwnedLand;
+    return canLandAirUnitsOnOwnedLand;
   }
 
   public boolean canLandAirUnitsOnOwnedLand() {
     // War: false, Allied: true, Neutral: false
-    if (m_canLandAirUnitsOnOwnedLand.equals(PROPERTY_DEFAULT)) {
+    if (canLandAirUnitsOnOwnedLand.equals(PROPERTY_DEFAULT)) {
       return isAllied();
     }
-    return m_canLandAirUnitsOnOwnedLand.equals(PROPERTY_TRUE);
+    return canLandAirUnitsOnOwnedLand.equals(PROPERTY_TRUE);
   }
 
   private void resetCanLandAirUnitsOnOwnedLand() {
-    m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
+    canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
   }
 
   private void setCanTakeOverOwnedTerritory(final String canTakeOver) {
-    m_canTakeOverOwnedTerritory = canTakeOver;
+    canTakeOverOwnedTerritory = canTakeOver;
   }
 
   private String getCanTakeOverOwnedTerritory() {
-    return m_canTakeOverOwnedTerritory;
+    return canTakeOverOwnedTerritory;
   }
 
   public boolean canTakeOverOwnedTerritory() {
     // War: true, Allied: false, Neutral: false
-    if (m_canTakeOverOwnedTerritory.equals(PROPERTY_DEFAULT)) {
+    if (canTakeOverOwnedTerritory.equals(PROPERTY_DEFAULT)) {
       return isWar();
     }
-    return m_canTakeOverOwnedTerritory.equals(PROPERTY_TRUE);
+    return canTakeOverOwnedTerritory.equals(PROPERTY_TRUE);
   }
 
   private void resetCanTakeOverOwnedTerritory() {
-    m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
+    canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
   }
 
   private void setUpkeepCost(final String integerCost) throws GameParseException {
     if (integerCost.equals(PROPERTY_DEFAULT)) {
-      m_upkeepCost = PROPERTY_DEFAULT;
+      upkeepCost = PROPERTY_DEFAULT;
     } else {
       final String[] s = splitOnColon(integerCost);
       if (s.length < 1 || s.length > 2) {
@@ -218,19 +217,19 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
                 "upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
         }
       }
-      m_upkeepCost = integerCost;
+      upkeepCost = integerCost;
     }
   }
 
   public String getUpkeepCost() {
-    if (m_upkeepCost.equals(PROPERTY_DEFAULT)) {
+    if (upkeepCost.equals(PROPERTY_DEFAULT)) {
       return String.valueOf(0);
     }
-    return m_upkeepCost;
+    return upkeepCost;
   }
 
   private void resetUpkeepCost() {
-    m_upkeepCost = PROPERTY_DEFAULT;
+    upkeepCost = PROPERTY_DEFAULT;
   }
 
   private void setAlliancesCanChainTogether(final String value) throws GameParseException {
@@ -238,22 +237,22 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       throw new GameParseException("alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
-    m_alliancesCanChainTogether = value;
+    alliancesCanChainTogether = value;
   }
 
   private String getAlliancesCanChainTogether() {
-    return m_alliancesCanChainTogether;
+    return alliancesCanChainTogether;
   }
 
   public boolean canAlliancesChainTogether() {
-    return !m_alliancesCanChainTogether.equals(PROPERTY_DEFAULT)
+    return !alliancesCanChainTogether.equals(PROPERTY_DEFAULT)
         && !isWar()
         && !isNeutral()
-        && m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
+        && alliancesCanChainTogether.equals(PROPERTY_TRUE);
   }
 
   private void resetAlliancesCanChainTogether() {
-    m_alliancesCanChainTogether = PROPERTY_DEFAULT;
+    alliancesCanChainTogether = PROPERTY_DEFAULT;
   }
 
   private void setIsDefaultWarPosition(final String value) throws GameParseException {
@@ -261,22 +260,22 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       throw new GameParseException("isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE
           + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
-    m_isDefaultWarPosition = value;
+    isDefaultWarPosition = value;
   }
 
   private String getIsDefaultWarPosition() {
-    return m_isDefaultWarPosition;
+    return isDefaultWarPosition;
   }
 
   public boolean isDefaultWarPosition() {
-    return !m_isDefaultWarPosition.equals(PROPERTY_DEFAULT)
+    return !isDefaultWarPosition.equals(PROPERTY_DEFAULT)
         && !isAllied()
         && !isNeutral()
-        && m_isDefaultWarPosition.equals(PROPERTY_TRUE);
+        && isDefaultWarPosition.equals(PROPERTY_TRUE);
   }
 
   private void resetIsDefaultWarPosition() {
-    m_isDefaultWarPosition = PROPERTY_DEFAULT;
+    isDefaultWarPosition = PROPERTY_DEFAULT;
   }
 
   private void setGivesBackOriginalTerritories(final String value) throws GameParseException {
@@ -284,20 +283,20 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       throw new GameParseException("givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
-    m_givesBackOriginalTerritories = value;
+    givesBackOriginalTerritories = value;
   }
 
   private String getGivesBackOriginalTerritories() {
-    return m_givesBackOriginalTerritories;
+    return givesBackOriginalTerritories;
   }
 
   public boolean givesBackOriginalTerritories() {
-    return !m_givesBackOriginalTerritories.equals(PROPERTY_DEFAULT)
-        && m_givesBackOriginalTerritories.equals(PROPERTY_TRUE);
+    return !givesBackOriginalTerritories.equals(PROPERTY_DEFAULT)
+        && givesBackOriginalTerritories.equals(PROPERTY_TRUE);
   }
 
   private void resetGivesBackOriginalTerritories() {
-    m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
+    givesBackOriginalTerritories = PROPERTY_DEFAULT;
   }
 
   private void setCanMoveIntoDuringCombatMove(final String value) throws GameParseException {
@@ -305,21 +304,21 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
-    m_canMoveIntoDuringCombatMove = value;
+    canMoveIntoDuringCombatMove = value;
   }
 
   private String getCanMoveIntoDuringCombatMove() {
-    return m_canMoveIntoDuringCombatMove;
+    return canMoveIntoDuringCombatMove;
   }
 
   public boolean canMoveIntoDuringCombatMove() {
     // this property is not affected by any archetype.
-    return m_canMoveIntoDuringCombatMove.equals(PROPERTY_DEFAULT)
-        || m_canMoveIntoDuringCombatMove.equals(PROPERTY_TRUE);
+    return canMoveIntoDuringCombatMove.equals(PROPERTY_DEFAULT)
+        || canMoveIntoDuringCombatMove.equals(PROPERTY_TRUE);
   }
 
   private void resetCanMoveIntoDuringCombatMove() {
-    m_canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
+    canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
   }
 
   private void setCanMoveThroughCanals(final String value) throws GameParseException {
@@ -327,23 +326,23 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
-    m_canMoveThroughCanals = value;
+    canMoveThroughCanals = value;
   }
 
   private String getCanMoveThroughCanals() {
-    return m_canMoveThroughCanals;
+    return canMoveThroughCanals;
   }
 
   public boolean canMoveThroughCanals() {
     // only allied can move through canals normally
-    if (m_canMoveThroughCanals.equals(PROPERTY_DEFAULT)) {
+    if (canMoveThroughCanals.equals(PROPERTY_DEFAULT)) {
       return isAllied();
     }
-    return m_canMoveThroughCanals.equals(PROPERTY_TRUE);
+    return canMoveThroughCanals.equals(PROPERTY_TRUE);
   }
 
   private void resetCanMoveThroughCanals() {
-    m_canMoveThroughCanals = PROPERTY_DEFAULT;
+    canMoveThroughCanals = PROPERTY_DEFAULT;
   }
 
   private void setRocketsCanFlyOver(final String value) throws GameParseException {
@@ -351,41 +350,41 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
       throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or "
           + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
     }
-    m_rocketsCanFlyOver = value;
+    rocketsCanFlyOver = value;
   }
 
   private String getRocketsCanFlyOver() {
-    return m_rocketsCanFlyOver;
+    return rocketsCanFlyOver;
   }
 
   public boolean canRocketsFlyOver() {
     // rockets can normally fly over everyone.
-    return m_rocketsCanFlyOver.equals(PROPERTY_DEFAULT) || m_rocketsCanFlyOver.equals(PROPERTY_TRUE);
+    return rocketsCanFlyOver.equals(PROPERTY_DEFAULT) || rocketsCanFlyOver.equals(PROPERTY_TRUE);
   }
 
   private void resetRocketsCanFlyOver() {
-    m_rocketsCanFlyOver = PROPERTY_DEFAULT;
+    rocketsCanFlyOver = PROPERTY_DEFAULT;
   }
 
   /**
    * Indicates whether this relationship is based on the WAR_ARCHETYPE.
    */
   public boolean isWar() {
-    return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_WAR);
+    return archeType.equals(RelationshipTypeAttachment.ARCHETYPE_WAR);
   }
 
   /**
    * Indicates whether this relationship is based on the ALLIED_ARCHETYPE.
    */
   public boolean isAllied() {
-    return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_ALLIED);
+    return archeType.equals(RelationshipTypeAttachment.ARCHETYPE_ALLIED);
   }
 
   /**
    * Indicates whether this relationship is based on the NEUTRAL_ARCHETYPE.
    */
   public boolean isNeutral() {
-    return m_archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);
+    return archeType.equals(RelationshipTypeAttachment.ARCHETYPE_NEUTRAL);
   }
 
   @Override
