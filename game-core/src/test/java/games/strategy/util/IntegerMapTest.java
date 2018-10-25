@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -21,7 +24,7 @@ public class IntegerMapTest {
   private final Object k3 = new Object();
 
   @Test
-  public void shouldBeConstructableFromJavaMap() {
+  void shouldBeConstructableFromJavaMap() {
     final IntegerMap<Object> expected = new IntegerMap<>();
     expected.add(k1, 1);
     expected.add(k2, 2);
@@ -33,7 +36,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void shouldBeEquatableAndHashable() {
+  void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(IntegerMap.class)
         .suppress(Warning.NULL_FIELDS)
         .verify();
@@ -47,7 +50,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testAdd() {
+  void testAdd() {
     final IntegerMap<Object> map = new IntegerMap<>();
     map.add(k1, 5);
     assertEquals(5, map.getInt(k1));
@@ -60,7 +63,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testPositive() {
+  void testPositive() {
     IntegerMap<Object> map = new IntegerMap<>();
     map.add(k1, 5);
     map.add(k2, 3);
@@ -74,7 +77,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testAddMap() {
+  void testAddMap() {
     final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(k1, 5);
     map1.add(k2, 3);
@@ -89,7 +92,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testGreaterThanOrEqualTo() {
+  void testGreaterThanOrEqualTo() {
     final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(k1, 5);
     map1.add(k2, 3);
@@ -104,7 +107,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testGetInt() {
+  void testGetInt() {
     final IntegerMap<Object> map = new IntegerMap<>();
     map.add(k1, 0);
     map.add(k2, 5);
@@ -116,7 +119,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testMultiplyAllValuesBy() {
+  void testMultiplyAllValuesBy() {
     final IntegerMap<Object> map = new IntegerMap<>();
     map.add(k1, 5);
     map.add(k2, -3);
@@ -128,7 +131,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testAllValuesEquals() {
+  void testAllValuesEquals() {
     final IntegerMap<Object> map = new IntegerMap<>();
     assertTrue(map.allValuesEqual(0));
     assertTrue(map.allValuesEqual(-100));
@@ -147,7 +150,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testLowestKey() {
+  void testLowestKey() {
     final IntegerMap<Object> map = new IntegerMap<>();
     assertNull(map.lowestKey());
     map.put(k1, 0);
@@ -159,7 +162,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testTotalValues() {
+  void testTotalValues() {
     final IntegerMap<Object> map = new IntegerMap<>();
     assertEquals(0, map.totalValues());
     map.put(k1, 0);
@@ -171,7 +174,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testSubstractMap() {
+  void testSubstractMap() {
     final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(k1, 5);
     map1.add(k2, 3);
@@ -186,7 +189,7 @@ public class IntegerMapTest {
   }
 
   @Test
-  public void testAddMultiple() {
+  void testAddMultiple() {
     final IntegerMap<Object> map1 = new IntegerMap<>();
     map1.add(k1, 5);
     map1.add(k2, 3);
