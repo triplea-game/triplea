@@ -24,10 +24,10 @@ import games.strategy.util.IntegerMap;
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
 
-  private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<>();
-  private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<>();
-  private List<UnitType> m_noBlitz = new ArrayList<>();
-  private List<UnitType> m_unitsNotAllowed = new ArrayList<>();
+  private IntegerMap<UnitType> combatDefenseEffect = new IntegerMap<>();
+  private IntegerMap<UnitType> combatOffenseEffect = new IntegerMap<>();
+  private List<UnitType> noBlitz = new ArrayList<>();
+  private List<UnitType> unitsNotAllowed = new ArrayList<>();
 
   /**
    * Creates new TerritoryEffectAttachment.
@@ -52,15 +52,15 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   private void setCombatDefenseEffect(final IntegerMap<UnitType> value) {
-    m_combatDefenseEffect = value;
+    combatDefenseEffect = value;
   }
 
   private IntegerMap<UnitType> getCombatDefenseEffect() {
-    return new IntegerMap<>(m_combatDefenseEffect);
+    return new IntegerMap<>(combatDefenseEffect);
   }
 
   private void resetCombatDefenseEffect() {
-    m_combatDefenseEffect = new IntegerMap<>();
+    combatDefenseEffect = new IntegerMap<>();
   }
 
   private void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException {
@@ -68,15 +68,15 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   }
 
   private void setCombatOffenseEffect(final IntegerMap<UnitType> value) {
-    m_combatOffenseEffect = value;
+    combatOffenseEffect = value;
   }
 
   private IntegerMap<UnitType> getCombatOffenseEffect() {
-    return new IntegerMap<>(m_combatOffenseEffect);
+    return new IntegerMap<>(combatOffenseEffect);
   }
 
   private void resetCombatOffenseEffect() {
-    m_combatOffenseEffect = new IntegerMap<>();
+    combatOffenseEffect = new IntegerMap<>();
   }
 
   @InternalDoNotExport
@@ -95,15 +95,15 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
         throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
       }
       if (defending) {
-        m_combatDefenseEffect.put(ut, effect);
+        combatDefenseEffect.put(ut, effect);
       } else {
-        m_combatOffenseEffect.put(ut, effect);
+        combatOffenseEffect.put(ut, effect);
       }
     }
   }
 
   public int getCombatEffect(final UnitType type, final boolean defending) {
-    return defending ? m_combatDefenseEffect.getInt(type) : m_combatOffenseEffect.getInt(type);
+    return defending ? combatDefenseEffect.getInt(type) : combatOffenseEffect.getInt(type);
   }
 
   private void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
@@ -116,20 +116,20 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
       if (ut == null) {
         throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
       }
-      m_noBlitz.add(ut);
+      noBlitz.add(ut);
     }
   }
 
   private void setNoBlitz(final List<UnitType> value) {
-    m_noBlitz = value;
+    noBlitz = value;
   }
 
   public List<UnitType> getNoBlitz() {
-    return new ArrayList<>(m_noBlitz);
+    return new ArrayList<>(noBlitz);
   }
 
   private void resetNoBlitz() {
-    m_noBlitz = new ArrayList<>();
+    noBlitz = new ArrayList<>();
   }
 
   private void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {
@@ -142,20 +142,20 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
       if (ut == null) {
         throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
       }
-      m_unitsNotAllowed.add(ut);
+      unitsNotAllowed.add(ut);
     }
   }
 
   private void setUnitsNotAllowed(final List<UnitType> value) {
-    m_unitsNotAllowed = value;
+    unitsNotAllowed = value;
   }
 
   public List<UnitType> getUnitsNotAllowed() {
-    return new ArrayList<>(m_unitsNotAllowed);
+    return new ArrayList<>(unitsNotAllowed);
   }
 
   private void resetUnitsNotAllowed() {
-    m_unitsNotAllowed = new ArrayList<>();
+    unitsNotAllowed = new ArrayList<>();
   }
 
   @Override
