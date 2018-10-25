@@ -40,9 +40,8 @@ public class TerritoryAttachment extends DefaultAttachment {
 
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
-    final List<Territory> capitalsListOriginal = new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
-    final List<Territory> capitalsListOwned =
-        new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
+    final List<Territory> capitalsListOriginal = TerritoryAttachment.getAllCapitals(player, data);
+    final List<Territory> capitalsListOwned = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
     final PlayerAttachment pa = PlayerAttachment.get(player);
 
     if (pa == null) {
