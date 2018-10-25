@@ -38,6 +38,30 @@ import lombok.ToString;
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
+  private String capital = null;
+  private boolean originalFactory = false;
+  // "setProduction" will set both production and unitProduction.
+  // While "setProductionOnly" sets only production.
+  private int production = 0;
+  private int victoryCity = 0;
+  private boolean isImpassable = false;
+  private PlayerID originalOwner = null;
+  private boolean convoyRoute = false;
+  private Set<Territory> convoyAttached = new HashSet<>();
+  private List<PlayerID> changeUnitOwners = new ArrayList<>();
+  private List<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
+  private boolean navalBase = false;
+  private boolean airBase = false;
+  private boolean kamikazeZone = false;
+  private int unitProduction = 0;
+  private boolean blockadeZone = false;
+  private List<TerritoryEffect> territoryEffect = new ArrayList<>();
+  private List<String> whenCapturedByGoesTo = new ArrayList<>();
+  private ResourceCollection resources = null;
+
+  public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    super(name, attachable, gameData);
+  }
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
     final List<Territory> capitalsListOriginal = TerritoryAttachment.getAllCapitals(player, data);
@@ -206,32 +230,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public int getUnitProduction() {
     return unitProduction;
-  }
-
-  private String capital = null;
-  private boolean originalFactory = false;
-  // "setProduction" will set both production and unitProduction.
-  // While "setProductionOnly" sets only production.
-  private int production = 0;
-  private int victoryCity = 0;
-  private boolean isImpassable = false;
-  private PlayerID originalOwner = null;
-  private boolean convoyRoute = false;
-  private Set<Territory> convoyAttached = new HashSet<>();
-  private List<PlayerID> changeUnitOwners = new ArrayList<>();
-  private List<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
-  private boolean navalBase = false;
-  private boolean airBase = false;
-  private boolean kamikazeZone = false;
-  private int unitProduction = 0;
-  private boolean blockadeZone = false;
-  private List<TerritoryEffect> territoryEffect = new ArrayList<>();
-  private List<String> whenCapturedByGoesTo = new ArrayList<>();
-  private ResourceCollection resources = null;
-
-  /** Creates new TerritoryAttachment. */
-  public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
-    super(name, attachable, gameData);
   }
 
   private void setResources(final String value) throws GameParseException {
