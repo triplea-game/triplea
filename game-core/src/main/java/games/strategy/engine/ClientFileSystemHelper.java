@@ -109,8 +109,7 @@ public final class ClientFileSystemHelper {
    *         retained between engine installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    final String path = getUserMapsFolderPath(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride);
-    final File mapsFolder = new File(path);
+    final File mapsFolder = getUserMapsFolder(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride);
     if (!mapsFolder.exists()) {
       mapsFolder.mkdirs();
     }
@@ -121,12 +120,12 @@ public final class ClientFileSystemHelper {
   }
 
   @VisibleForTesting
-  static String getUserMapsFolderPath(
-      final GameSetting<String> currentUserMapsFolderPathSetting,
-      final GameSetting<String> overrideUserMapsFolderPathSetting) {
-    return overrideUserMapsFolderPathSetting.isSet()
-        ? overrideUserMapsFolderPathSetting.getValueOrThrow()
-        : currentUserMapsFolderPathSetting.getValueOrThrow();
+  static File getUserMapsFolder(
+      final GameSetting<File> currentUserMapsFolderSetting,
+      final GameSetting<File> overrideUserMapsFolderSetting) {
+    return overrideUserMapsFolderSetting.isSet()
+        ? overrideUserMapsFolderSetting.getValueOrThrow()
+        : currentUserMapsFolderSetting.getValueOrThrow();
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked. */

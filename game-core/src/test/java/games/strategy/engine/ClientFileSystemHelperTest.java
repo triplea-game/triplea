@@ -69,33 +69,32 @@ public final class ClientFileSystemHelperTest {
 
   @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class GetUserMapsFolderPathTest {
+  final class GetUserMapsFolderTest {
     @Mock
-    private GameSetting<String> currentSetting;
-
+    private GameSetting<File> currentSetting;
     @Mock
-    private GameSetting<String> overrideSetting;
+    private GameSetting<File> overrideSetting;
 
-    private String getUserMapsFolderPath() {
-      return ClientFileSystemHelper.getUserMapsFolderPath(currentSetting, overrideSetting);
+    private File getUserMapsFolder() {
+      return ClientFileSystemHelper.getUserMapsFolder(currentSetting, overrideSetting);
     }
 
     @Test
-    public void shouldReturnCurrentPathWhenOverridePathNotSet() {
+    void shouldReturnCurrentFolderWhenOverrideFolderNotSet() {
       when(overrideSetting.isSet()).thenReturn(false);
-      final String currentPath = "/path/to/current";
-      when(currentSetting.getValueOrThrow()).thenReturn(currentPath);
+      final File currentFolder = new File("/path/to/current");
+      when(currentSetting.getValueOrThrow()).thenReturn(currentFolder);
 
-      assertThat(getUserMapsFolderPath(), is(currentPath));
+      assertThat(getUserMapsFolder(), is(currentFolder));
     }
 
     @Test
-    public void shouldReturnOverridePathWhenOverridePathSet() {
+    void shouldReturnOverrideFolderWhenOverrideFolderSet() {
       when(overrideSetting.isSet()).thenReturn(true);
-      final String overridePath = "/path/to/override";
-      when(overrideSetting.getValueOrThrow()).thenReturn(overridePath);
+      final File overrideFolder = new File("/path/to/override");
+      when(overrideSetting.getValueOrThrow()).thenReturn(overrideFolder);
 
-      assertThat(getUserMapsFolderPath(), is(overridePath));
+      assertThat(getUserMapsFolder(), is(overrideFolder));
     }
   }
 }

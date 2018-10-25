@@ -1,5 +1,6 @@
 package games.strategy.engine.framework;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +43,7 @@ public final class ArgParser {
 
   private static void setSystemPropertyOrClientSetting(final String key, final String value) {
     if (CliProperties.MAP_FOLDER.equals(key)) {
-      ClientSetting.mapFolderOverride.saveAndFlush(value);
+      ClientSetting.mapFolderOverride.saveAndFlush(new File(value));
     } else {
       System.setProperty(key, value);
     }

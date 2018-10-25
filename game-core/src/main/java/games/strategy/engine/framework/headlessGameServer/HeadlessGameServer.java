@@ -591,7 +591,7 @@ public class HeadlessGameServer {
   private static void handleHeadlessGameServerArgs() {
     boolean printUsage = false;
 
-    final File mapFolder = new File(ClientSetting.mapFolderOverride.getValueOrThrow());
+    final File mapFolder = ClientSetting.mapFolderOverride.getValueOrThrow();
     if (!mapFolder.isDirectory()) {
       log.warning("Invalid '" + MAP_FOLDER + "' param, map folder must exist: '" + mapFolder + "'");
       printUsage = true;
