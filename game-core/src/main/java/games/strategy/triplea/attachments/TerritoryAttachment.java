@@ -38,11 +38,34 @@ import lombok.ToString;
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
+  private String capital = null;
+  private boolean originalFactory = false;
+  // "setProduction" will set both production and unitProduction.
+  // While "setProductionOnly" sets only production.
+  private int production = 0;
+  private int victoryCity = 0;
+  private boolean isImpassable = false;
+  private PlayerID originalOwner = null;
+  private boolean convoyRoute = false;
+  private Set<Territory> convoyAttached = new HashSet<>();
+  private List<PlayerID> changeUnitOwners = new ArrayList<>();
+  private List<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
+  private boolean navalBase = false;
+  private boolean airBase = false;
+  private boolean kamikazeZone = false;
+  private int unitProduction = 0;
+  private boolean blockadeZone = false;
+  private List<TerritoryEffect> territoryEffect = new ArrayList<>();
+  private List<String> whenCapturedByGoesTo = new ArrayList<>();
+  private ResourceCollection resources = null;
+
+  public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    super(name, attachable, gameData);
+  }
 
   public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
-    final List<Territory> capitalsListOriginal = new ArrayList<>(TerritoryAttachment.getAllCapitals(player, data));
-    final List<Territory> capitalsListOwned =
-        new ArrayList<>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
+    final List<Territory> capitalsListOriginal = TerritoryAttachment.getAllCapitals(player, data);
+    final List<Territory> capitalsListOwned = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
     final PlayerAttachment pa = PlayerAttachment.get(player);
 
     if (pa == null) {
@@ -207,33 +230,6 @@ public class TerritoryAttachment extends DefaultAttachment {
 
   public int getUnitProduction() {
     return unitProduction;
-  }
-
-  private String capital = null;
-  private boolean originalFactory = false;
-  // "setProduction" will set both production and unitProduction.
-  // While "setProductionOnly" sets only production.
-  private int production = 0;
-  private int victoryCity = 0;
-  private boolean isImpassable = false;
-  private PlayerID originalOwner = null;
-  private boolean convoyRoute = false;
-  private HashSet<Territory> convoyAttached = new HashSet<>();
-  private ArrayList<PlayerID> changeUnitOwners = new ArrayList<>();
-  private ArrayList<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
-  private boolean navalBase = false;
-  private boolean airBase = false;
-  private boolean kamikazeZone = false;
-  private int unitProduction = 0;
-  private boolean blockadeZone = false;
-  private ArrayList<TerritoryEffect> territoryEffect = new ArrayList<>();
-  // TODO: change to List<CaptureOwnershipChange> upon next incompatible release
-  private ArrayList<String> whenCapturedByGoesTo = new ArrayList<>();
-  private ResourceCollection resources = null;
-
-  /** Creates new TerritoryAttachment. */
-  public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
-    super(name, attachable, gameData);
   }
 
   private void setResources(final String value) throws GameParseException {
@@ -430,11 +426,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
   }
 
-  private void setChangeUnitOwners(final ArrayList<PlayerID> value) {
+  private void setChangeUnitOwners(final List<PlayerID> value) {
     changeUnitOwners = value;
   }
 
-  public ArrayList<PlayerID> getChangeUnitOwners() {
+  public List<PlayerID> getChangeUnitOwners() {
     return changeUnitOwners;
   }
 
@@ -454,11 +450,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value) {
+  private void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
     captureUnitOnEnteringBy = value;
   }
 
-  public ArrayList<PlayerID> getCaptureUnitOnEnteringBy() {
+  public List<PlayerID> getCaptureUnitOnEnteringBy() {
     return captureUnitOnEnteringBy;
   }
 
@@ -482,11 +478,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     whenCapturedByGoesTo.add(value);
   }
 
-  private void setWhenCapturedByGoesTo(final ArrayList<String> value) {
+  private void setWhenCapturedByGoesTo(final List<String> value) {
     whenCapturedByGoesTo = value;
   }
 
-  private ArrayList<String> getWhenCapturedByGoesTo() {
+  private List<String> getWhenCapturedByGoesTo() {
     return whenCapturedByGoesTo;
   }
 
@@ -521,11 +517,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
   }
 
-  private void setTerritoryEffect(final ArrayList<TerritoryEffect> value) {
+  private void setTerritoryEffect(final List<TerritoryEffect> value) {
     territoryEffect = value;
   }
 
-  public ArrayList<TerritoryEffect> getTerritoryEffect() {
+  public List<TerritoryEffect> getTerritoryEffect() {
     return territoryEffect;
   }
 
@@ -546,11 +542,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
   }
 
-  private void setConvoyAttached(final HashSet<Territory> value) {
+  private void setConvoyAttached(final Set<Territory> value) {
     convoyAttached = value;
   }
 
-  public HashSet<Territory> getConvoyAttached() {
+  public Set<Territory> getConvoyAttached() {
     return convoyAttached;
   }
 
