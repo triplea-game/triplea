@@ -199,4 +199,22 @@ public class IntegerMapTest {
     assertEquals(-939, map1.getInt(k2));
     assertEquals(314, map1.getInt(k3));
   }
+
+  @Test
+  void testInsertionOrderIsKept() {
+    final IntegerMap<Object> test = new IntegerMap<>();
+    test.add(k1, 2);
+    test.add(k2, 1);
+    test.add(k3, 0);
+    final Iterator<Map.Entry<Object, Integer>> iterator = test.entrySet().iterator();
+    final Map.Entry first = iterator.next();
+    assertEquals(first.getKey(), k1);
+    assertEquals(first.getValue(), 2);
+    final Map.Entry second = iterator.next();
+    assertEquals(second.getKey(), k2);
+    assertEquals(second.getValue(), 1);
+    final Map.Entry third = iterator.next();
+    assertEquals(third.getKey(), k3);
+    assertEquals(third.getValue(), 0);
+  }
 }
