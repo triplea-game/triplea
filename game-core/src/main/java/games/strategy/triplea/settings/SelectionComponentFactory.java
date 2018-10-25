@@ -290,18 +290,13 @@ final class SelectionComponentFactory {
       final ClientSetting<File> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
     return new AlwaysValidInputSelectionComponent() {
-      final int expectedLength = 20;
-      final JTextField field = new JTextField(toString(clientSetting.getValue()), expectedLength);
+      final JTextField field = new JTextField(SelectionComponentUiUtils.toString(clientSetting.getValue()), 20);
       final JButton button = JButtonBuilder.builder()
           .title("Select")
           .actionListener(
               () -> SwingComponents.showJFileChooser(folderSelectionMode)
                   .ifPresent(file -> field.setText(file.getAbsolutePath())))
           .build();
-
-      private String toString(final Optional<File> file) {
-        return file.map(File::getAbsolutePath).orElse("");
-      }
 
       @Override
       public JComponent getUiComponent() {
@@ -323,12 +318,12 @@ final class SelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        field.setText(toString(clientSetting.getDefaultValue()));
+        field.setText(SelectionComponentUiUtils.toString(clientSetting.getDefaultValue()));
       }
 
       @Override
       public void reset() {
-        field.setText(toString(clientSetting.getValue()));
+        field.setText(SelectionComponentUiUtils.toString(clientSetting.getValue()));
       }
     };
   }

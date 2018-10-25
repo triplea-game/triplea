@@ -14,6 +14,7 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
+import games.strategy.triplea.settings.SelectionComponentUiUtils;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -207,7 +208,7 @@ final class JavaFxSelectionComponentFactory {
       this.clientSetting = clientSetting;
       final @Nullable File initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
-      textField = new TextField(toString(clientSetting.getValue()));
+      textField = new TextField(SelectionComponentUiUtils.toString(clientSetting.getValue()));
       textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setDisable(true);
@@ -228,10 +229,6 @@ final class JavaFxSelectionComponentFactory {
       getChildren().add(wrapper);
     }
 
-    private static String toString(final Optional<File> file) {
-      return file.map(File::getAbsolutePath).orElse("");
-    }
-
     @Override
     public Map<GameSetting<?>, Object> readValues() {
       return Collections.singletonMap(clientSetting, selectedFile);
@@ -248,7 +245,7 @@ final class JavaFxSelectionComponentFactory {
     }
 
     private void reset(final Optional<File> file) {
-      textField.setText(toString(file));
+      textField.setText(SelectionComponentUiUtils.toString(file));
       selectedFile = file.orElse(null);
     }
 
@@ -277,7 +274,7 @@ final class JavaFxSelectionComponentFactory {
       this.clientSetting = clientSetting;
       final @Nullable File initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
-      textField = new TextField(toString(clientSetting.getValue()));
+      textField = new TextField(SelectionComponentUiUtils.toString(clientSetting.getValue()));
       textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setMinWidth(100);
@@ -299,10 +296,6 @@ final class JavaFxSelectionComponentFactory {
       getChildren().add(wrapper);
     }
 
-    private static String toString(final Optional<File> file) {
-      return file.map(File::getAbsolutePath).orElse("");
-    }
-
     @Override
     public Map<GameSetting<?>, Object> readValues() {
       return Collections.singletonMap(clientSetting, selectedFile);
@@ -319,7 +312,7 @@ final class JavaFxSelectionComponentFactory {
     }
 
     private void reset(final Optional<File> file) {
-      textField.setText(toString(file));
+      textField.setText(SelectionComponentUiUtils.toString(file));
       selectedFile = file.orElse(null);
     }
 
