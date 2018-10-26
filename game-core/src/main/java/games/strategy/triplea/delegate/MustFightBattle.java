@@ -1094,9 +1094,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // If attacker is all planes, just return collection of current territory
     if (m_headless || (!m_attackingUnits.isEmpty() && m_attackingUnits.stream().allMatch(Matches.unitIsAir()))
         || Properties.getRetreatingUnitsRemainInPlace(m_data)) {
-      final Collection<Territory> oneTerritory = new ArrayList<>(2);
-      oneTerritory.add(m_battleSite);
-      return oneTerritory;
+      return Collections.singleton(m_battleSite);
     }
     // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
     // or if we are moving out of a territory containing enemy units, we cannot retreat back there
@@ -1184,10 +1182,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void attackerRetreatPlanes(final IDelegateBridge bridge) {
     // planes retreat to the same square the battle is in, and then should move during non combat to their landing site,
     // or be scrapped if they can't find one.
-    final Collection<Territory> possible = new ArrayList<>(2);
-    possible.add(m_battleSite);
     if (m_attackingUnits.stream().anyMatch(Matches.unitIsAir())) {
-      queryRetreat(false, RetreatType.PLANES, bridge, possible);
+      queryRetreat(false, RetreatType.PLANES, bridge, Collections.singleton(m_battleSite));
     }
   }
 
