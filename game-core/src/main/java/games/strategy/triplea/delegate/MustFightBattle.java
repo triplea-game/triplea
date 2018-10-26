@@ -1143,8 +1143,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (m_isAmphibious) {
       return false;
     }
-    final Collection<Territory> options = getAttackerRetreatTerritories();
-    return options.size() != 0;
+    return !getAttackerRetreatTerritories().isEmpty();
   }
 
   private boolean onlyDefenselessDefendingTransportsLeft() {
