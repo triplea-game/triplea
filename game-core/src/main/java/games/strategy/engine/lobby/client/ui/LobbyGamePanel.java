@@ -22,6 +22,7 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
 
@@ -32,7 +33,6 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.Md5Crypt;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
@@ -324,7 +324,7 @@ class LobbyGamePanel extends JPanel {
   }
 
   private static String hashPassword(final String password, final String salt) {
-    return Md5Crypt.hashPassword(password, salt);
+    return BCrypt.hashpw(password, salt);
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {

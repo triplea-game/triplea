@@ -9,7 +9,7 @@ mainClassName = 'org.triplea.lobby.server.LobbyRunner'
 
 dependencies {
     implementation project(':game-core')
-    implementation 'org.mindrot:jbcrypt:0.4'
+    implementation "org.mindrot:jbcrypt:$jbcryptVersion"
 
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 

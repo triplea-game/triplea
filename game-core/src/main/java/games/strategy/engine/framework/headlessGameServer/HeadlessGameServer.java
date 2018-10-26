@@ -26,6 +26,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
@@ -48,7 +50,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
-import games.strategy.util.Md5Crypt;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
 
@@ -234,11 +235,11 @@ public class HeadlessGameServer {
   }
 
   public String getSalt() {
-    return Md5Crypt.newSalt();
+    return BCrypt.gensalt();
   }
 
   private static String hashPassword(final String password, final String salt) {
-    return Md5Crypt.hashPassword(password, salt);
+    return BCrypt.hashpw(password, salt);
   }
 
   public String remoteShutdown(final String hashedPassword, final String salt) {
