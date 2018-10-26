@@ -122,7 +122,7 @@ public class AiUtils {
     return -1;
   }
 
-  static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
+  static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units) {
     if (units.stream().noneMatch(Matches.unitIsCarrier())
         || units.stream().noneMatch(Matches.unitCanLandOnCarrier())) {
       return units;
@@ -132,7 +132,6 @@ public class AiUtils {
     Unit seekedCarrier = null;
     int indexToPlaceCarrierAt = -1;
     int spaceLeftOnSeekedCarrier = -1;
-    int processedPlaneCount = 0;
     final List<Unit> filledCarriers = new ArrayList<>();
     // Loop through all units, starting from the right, and rearrange units
     for (int i = result.size() - 1; i >= 0; i--) {
@@ -140,13 +139,6 @@ public class AiUtils {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       // If this is a plane
       if (ua.getCarrierCost() > 0) {
-        // If we haven't ignored enough trailing planes
-        if (processedPlaneCount < planesThatDontNeedToLand) {
-          // Increase number of trailing planes ignored
-          processedPlaneCount++;
-          // And skip any processing
-          continue;
-        }
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
