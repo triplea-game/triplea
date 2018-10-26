@@ -1,4 +1,4 @@
-package games.strategy.triplea.oddsCalculator.ta;
+package games.strategy.triplea.delegate;
 
 import java.util.List;
 
@@ -9,8 +9,6 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
-
-// TODO: Move to triplea.delegate or triplea.delegate.dataObjects package upon next incompatible release
 
 public class BattleResults extends GameDataComponent {
   private static final long serialVersionUID = 1381361441940258702L;

@@ -13,7 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.delegate.BattleResults;
 
 /**
  * The Purpose of this class is to record various information about combat,
