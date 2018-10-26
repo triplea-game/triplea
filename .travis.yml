@@ -51,7 +51,7 @@ deploy:
     repo: triplea-game/triplea
     branches:
       only:
-        - master
+        - release/1.9.0.0
 notifications:
   webhooks:
     urls:
