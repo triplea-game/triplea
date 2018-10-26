@@ -46,11 +46,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private static final long serialVersionUID = 8490171037606078890L;
   private static final String RAID = "Strategic bombing raid";
   // these would be the factories or other targets. does not include aa.
-  protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<>();
-  protected final ExecutionStack m_stack = new ExecutionStack();
-  protected List<String> m_steps;
-  protected List<Unit> m_defendingAA;
-  protected List<String> m_AAtypes;
+  private final HashMap<Unit, Set<Unit>> m_targets = new HashMap<>();
+  private final ExecutionStack m_stack = new ExecutionStack();
+  private List<String> m_steps;
+  private List<Unit> m_defendingAA;
+  private List<String> m_AAtypes;
   private int m_bombingRaidTotal;
   private final IntegerMap<Unit> m_bombingRaidDamage = new IntegerMap<>();
 
@@ -84,7 +84,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   protected void updateDefendingUnits() {
     // fill in defenders
-    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
+    final HashMap<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     final Predicate<Unit> defenders = Matches.enemyUnit(m_attacker, m_data)
         .and(Matches.unitCanBeDamaged()
@@ -115,7 +115,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     m_attackingUnits.removeAll(units);
     final Iterator<Unit> targetIter = m_targets.keySet().iterator();
     while (targetIter.hasNext()) {
-      final HashSet<Unit> currentAttackers = m_targets.get(targetIter.next());
+      final Set<Unit> currentAttackers = m_targets.get(targetIter.next());
       currentAttackers.removeAll(units);
       if (currentAttackers.isEmpty() && removeTarget) {
         targetIter.remove();
@@ -133,18 +133,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   @Override
   public Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, HashSet<Unit>> targets) {
+      final HashMap<Unit, Set<Unit>> targets) {
     m_attackingUnits.addAll(units);
     if (targets == null) {
       return ChangeFactory.EMPTY_CHANGE;
     }
     for (final Unit target : targets.keySet()) {
-      HashSet<Unit> currentAttackers = m_targets.get(target);
-      if (currentAttackers == null) {
-        currentAttackers = new HashSet<>();
-      }
+      final Set<Unit> currentAttackers = m_targets.computeIfAbsent(target, i -> new HashSet<>());
       currentAttackers.addAll(targets.get(target));
-      m_targets.put(target, currentAttackers);
     }
     return ChangeFactory.EMPTY_CHANGE;
   }
@@ -173,7 +169,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
     BattleCalculator.sortPreBattle(m_attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
-    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
+    final HashMap<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     m_defendingAA = m_battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));

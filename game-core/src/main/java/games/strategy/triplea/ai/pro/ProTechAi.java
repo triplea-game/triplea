@@ -166,7 +166,7 @@ final class ProTechAi {
         // allow units to be calculated that are in
         // territories we have already assaulted
         // this can be easily changed
-        final HashSet<Integer> ignore = new HashSet<>();
+        final Set<Integer> ignore = new HashSet<>();
         ignore.add(1);
         final List<Route> r = new ArrayList<>();
         final List<Unit> ships = findAttackers(location, 3, ignore, enemyPlayer, data, enemyShip,
@@ -356,7 +356,7 @@ final class ProTechAi {
    */
   private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
       final GameData data, final PlayerID enemyPlayer) {
-    final HashSet<Integer> ignore = new HashSet<>();
+    final Set<Integer> ignore = new HashSet<>();
     ignore.add(1);
     final Predicate<Unit> blitzUnit = Matches.unitIsOwnedBy(enemyPlayer)
         .and(Matches.unitCanBlitz())
@@ -375,7 +375,7 @@ final class ProTechAi {
   }
 
   private static List<Unit> findAttackers(final Territory start, final int maxDistance,
-      final HashSet<Integer> ignoreDistance, final PlayerID player, final GameData data,
+      final Set<Integer> ignoreDistance, final PlayerID player, final GameData data,
       final Predicate<Unit> unitCondition, final Predicate<Territory> routeCondition,
       final List<Route> routes, final boolean sea) {
 

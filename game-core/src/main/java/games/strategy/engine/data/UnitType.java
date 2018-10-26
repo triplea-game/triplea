@@ -82,7 +82,7 @@ public class UnitType extends NamedAttachable {
       for (final PlayerID p : data.getPlayerList().getPlayers()) {
         unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
       }
-      final HashSet<UnitType> unitsSoFar = new HashSet<>();
+      final Set<UnitType> unitsSoFar = new HashSet<>();
       for (final List<UnitType> l : unitTypes.values()) {
         unitsSoFar.addAll(l);
       }

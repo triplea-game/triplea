@@ -414,7 +414,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // now make sure to add any units that must move with these attacking units, so that they get included as
       // dependencies
       final Map<Unit, Collection<Unit>> transportMap = TransportTracker.transporting(territory.getUnits());
-      final HashSet<Unit> dependants = new HashSet<>();
+      final Set<Unit> dependants = new HashSet<>();
       for (final Entry<Unit, Collection<Unit>> entry : transportMap.entrySet()) {
         // only consider those transports that we are attacking with. allied and enemy transports are not added.
         if (attackingUnits.contains(entry.getKey())) {
@@ -1451,7 +1451,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     final boolean areNeutralsPassableByAir = (Properties.getNeutralFlyoverAllowed(data)
         && !Properties.getNeutralsImpassable(data));
-    final HashSet<Territory> canNotLand = new HashSet<>();
+    final Set<Territory> canNotLand = new HashSet<>();
     canNotLand.addAll(battleTracker.getPendingBattleSites(false));
     canNotLand.addAll(
         CollectionUtils.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer, data)));
@@ -1468,13 +1468,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
     }
     possibleTerrs.add(currentTerr);
-    final HashSet<Territory> availableLand = new HashSet<>(CollectionUtils.getMatches(possibleTerrs,
+    final Set<Territory> availableLand = new HashSet<>(CollectionUtils.getMatches(possibleTerrs,
         Matches.isTerritoryAllied(alliedPlayer, data).and(Matches.territoryIsLand())));
     availableLand.removeAll(canNotLand);
-    final HashSet<Territory> whereCanLand = new HashSet<>(availableLand);
+    final Set<Territory> whereCanLand = new HashSet<>(availableLand);
     // now for carrier-air-landing validation
     if (!strandedAir.isEmpty() && strandedAir.stream().allMatch(Matches.unitCanLandOnCarrier())) {
-      final HashSet<Territory> availableWater = new HashSet<>(CollectionUtils.getMatches(possibleTerrs,
+      final Set<Territory> availableWater = new HashSet<>(CollectionUtils.getMatches(possibleTerrs,
           Matches.territoryHasUnitsThatMatch(Matches.unitIsAlliedCarrier(alliedPlayer, data))
               .and(Matches.territoryIsWater())));
       availableWater.removeAll(battleTracker.getPendingBattleSites(false));

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -57,7 +58,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   private HashMap<ICondition, Boolean> getTestedConditions() {
-    final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
+    final Set<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
         new HashSet<>(UserActionAttachment.getUserActionAttachments(player)), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
   }

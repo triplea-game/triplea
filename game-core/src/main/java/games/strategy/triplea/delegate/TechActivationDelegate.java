@@ -63,7 +63,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
               .or(TriggerAttachment.techMatch())
               .or(TriggerAttachment.supportMatch()));
       // get all possible triggers based on this match.
-      final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+      final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(player)), techActivationDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.

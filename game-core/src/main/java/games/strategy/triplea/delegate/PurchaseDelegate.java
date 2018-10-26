@@ -67,7 +67,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
                 .or(TriggerAttachment.prodFrontierEditMatch())
                 .or(TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
-        final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+        final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(player)), purchaseDelegateTriggerMatch);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.

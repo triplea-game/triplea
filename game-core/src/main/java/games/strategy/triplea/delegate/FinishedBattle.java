@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -57,7 +58,7 @@ public class FinishedBattle extends AbstractBattle {
 
   @Override
   public Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, HashSet<Unit>> targets) {
+      final HashMap<Unit, Set<Unit>> targets) {
     final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
     for (final Unit unit : addedTransporting.keySet()) {
       if (m_dependentUnits.get(unit) != null) {

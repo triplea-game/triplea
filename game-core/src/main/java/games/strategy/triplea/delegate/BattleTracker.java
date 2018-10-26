@@ -65,7 +65,7 @@ public class BattleTracker implements Serializable {
   private final Set<IBattle> m_pendingBattles = new HashSet<>();
   // List of battle dependencies
   // maps blocked -> Collection of battles that must precede
-  private final Map<IBattle, HashSet<IBattle>> m_dependencies = new HashMap<>();
+  private final Map<IBattle, Set<IBattle>> m_dependencies = new HashMap<>();
   // enemy and neutral territories that have been conquered
   // blitzed is a subset of this
   private final Set<Territory> m_conquered = new HashSet<>();
@@ -256,7 +256,7 @@ public class BattleTracker implements Serializable {
   }
 
   private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker,
-      final GameData data, final HashMap<Unit, HashSet<Unit>> targets) {
+      final GameData data, final HashMap<Unit, Set<Unit>> targets) {
     IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
     if (battle == null) {
       battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, this);
@@ -287,7 +287,7 @@ public class BattleTracker implements Serializable {
 
   void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
-      final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, HashSet<Unit>> targets,
+      final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, Set<Unit>> targets,
       final boolean airBattleCompleted) {
     final GameData data = bridge.getData();
     if (bombing) {

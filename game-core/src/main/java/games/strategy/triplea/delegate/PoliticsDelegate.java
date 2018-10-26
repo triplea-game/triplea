@@ -56,7 +56,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
           .and(TriggerAttachment.whenOrDefaultMatch(null, null))
           .and(TriggerAttachment.relationshipChangeMatch());
       // get all possible triggers based on this match.
-      final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+      final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(player)), politicsDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
@@ -97,7 +97,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   }
 
   public HashMap<ICondition, Boolean> getTestedConditions() {
-    final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
+    final Set<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
         new HashSet<>(PoliticalActionAttachment.getPoliticalActionAttachments(player)), null);
     return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
   }
@@ -502,7 +502,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     // first do alliances. then, do war (since we don't want to declare war on a potential ally).
     final Collection<PlayerID> players = data.getPlayerList().getPlayers();
     for (final PlayerID p1 : players) {
-      final HashSet<PlayerID> p1NewAllies = new HashSet<>();
+      final Set<PlayerID> p1NewAllies = new HashSet<>();
       final Collection<PlayerID> p1AlliedWith =
           CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
       for (final PlayerID p2 : p1AlliedWith) {
@@ -525,7 +525,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       return;
     }
     for (final PlayerID p1 : players) {
-      final HashSet<PlayerID> p1NewWar = new HashSet<>();
+      final Set<PlayerID> p1NewWar = new HashSet<>();
       final Collection<PlayerID> p1WarWith = CollectionUtils.getMatches(players, Matches.isAtWar(p1, data));
       final Collection<PlayerID> p1AlliedWith =
           CollectionUtils.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));

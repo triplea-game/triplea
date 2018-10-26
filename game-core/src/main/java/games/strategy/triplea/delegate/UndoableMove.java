@@ -116,7 +116,7 @@ public class UndoableMove extends AbstractUndoableMove {
             bridge.addChange(change);
           }
         } else {
-          HashMap<Unit, HashSet<Unit>> targets = null;
+          HashMap<Unit, Set<Unit>> targets = null;
           Unit target = null;
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();

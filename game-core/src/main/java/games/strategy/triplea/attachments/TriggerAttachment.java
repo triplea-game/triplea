@@ -157,10 +157,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * and then it will gather all the conditions necessary, then test all the conditions,
    * and then it will fire all the conditions which are satisfied.
    */
-  public static void collectAndFireTriggers(final HashSet<PlayerID> players,
+  public static void collectAndFireTriggers(final Set<PlayerID> players,
       final Predicate<TriggerAttachment> triggerMatch, final IDelegateBridge bridge, final String beforeOrAfter,
       final String stepName) {
-    final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch);
+    final Set<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch);
     if (toFirePossible.isEmpty()) {
       return;
     }
@@ -174,24 +174,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         beforeOrAfter, stepName, true, true, true, true);
   }
 
-  public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players,
+  public static Set<TriggerAttachment> collectForAllTriggersMatching(final Set<PlayerID> players,
       final Predicate<TriggerAttachment> triggerMatch) {
-    final HashSet<TriggerAttachment> toFirePossible = new HashSet<>();
+    final Set<TriggerAttachment> toFirePossible = new HashSet<>();
     for (final PlayerID player : players) {
       toFirePossible.addAll(TriggerAttachment.getTriggers(player, triggerMatch));
     }
     return toFirePossible;
   }
 
-  public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible,
+  public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final Set<TriggerAttachment> toFirePossible,
       final IDelegateBridge bridge) {
     return collectTestsForAllTriggers(toFirePossible, bridge, null, null);
   }
 
-  static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible,
-      final IDelegateBridge bridge, final HashSet<ICondition> allConditionsNeededSoFar,
+  static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final Set<TriggerAttachment> toFirePossible,
+      final IDelegateBridge bridge, final Set<ICondition> allConditionsNeededSoFar,
       final HashMap<ICondition, Boolean> allConditionsTestedSoFar) {
-    final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment
+    final Set<ICondition> allConditionsNeeded = AbstractConditionsAttachment
         .getAllConditionsRecursive(new HashSet<>(toFirePossible), allConditionsNeededSoFar);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, allConditionsTestedSoFar,
         bridge);
@@ -204,14 +204,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * To see if they are satisfied, first create the list of triggers using Matches + TriggerAttachment.getTriggers.
    * Then test the triggers using RulesAttachment.getAllConditionsRecursive, and RulesAttachment.testAllConditions
    */
-  public static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired,
+  public static void fireTriggers(final Set<TriggerAttachment> triggersToBeFired,
       final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     // all triggers at this point have their conditions satisfied
     // so we now test chance (because we test chance last), and remove any conditions that do not succeed in their dice
     // rolls
-    final HashSet<TriggerAttachment> triggersToFire = new HashSet<>();
+    final Set<TriggerAttachment> triggersToFire = new HashSet<>();
     for (final TriggerAttachment t : triggersToBeFired) {
       if (testChance && !t.testChance(bridge)) {
         continue;
@@ -259,7 +259,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
-  protected static void setUsesForWhenTriggers(final HashSet<TriggerAttachment> triggersToBeFired,
+  protected static void setUsesForWhenTriggers(final Set<TriggerAttachment> triggersToBeFired,
       final IDelegateBridge bridge, final boolean useUses) {
     if (!useUses) {
       return;
@@ -1603,7 +1603,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = CollectionUtils.getMatches(trigs, availableUses);
     }
     final CompositeChange change = new CompositeChange();
-    final HashSet<Territory> territoriesNeedingReDraw = new HashSet<>();
+    final Set<Territory> territoriesNeedingReDraw = new HashSet<>();
     for (final TriggerAttachment t : trigs) {
       if (testChance && !t.testChance(bridge)) {
         continue;
@@ -2297,7 +2297,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             break;
           }
         }
-        final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
+        final Set<TriggerAttachment> toFireSet = new HashSet<>();
         toFireSet.add(toFire);
         final String[] options = splitOnColon(tuple.getSecond());
         final int numberOfTimesToFire = getInt(options[0]);

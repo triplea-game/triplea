@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
@@ -46,8 +47,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
     return m_relationships.get(new RelatedPlayers(p1, p2));
   }
 
-  public HashSet<Relationship> getRelationships(final PlayerID player1) {
-    final HashSet<Relationship> relationships = new HashSet<>();
+  public Set<Relationship> getRelationships(final PlayerID player1) {
+    final Set<Relationship> relationships = new HashSet<>();
     for (final PlayerID player2 : getData().getPlayerList().getPlayers()) {
       if (player2 == null || player2.equals(player1)) {
         continue;

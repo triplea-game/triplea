@@ -304,11 +304,11 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     public HashMap<ICondition, Boolean> getTestedConditions() {
-      final HashSet<ICondition> myConditions = new HashSet<>();
+      final Set<ICondition> myConditions = new HashSet<>();
       for (final Map<ICondition, String> map : statsObjective.values()) {
         myConditions.addAll(map.keySet());
       }
-      final HashSet<ICondition> allConditionsNeeded =
+      final Set<ICondition> allConditionsNeeded =
           AbstractConditionsAttachment.getAllConditionsRecursive(myConditions, null);
       return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, dummyDelegate);
     }

@@ -313,7 +313,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
       final List<RulesAttachment> objectives) {
 
     // First figure out all the conditions that will be tested, so we can test them all at the same time.
-    final HashSet<ICondition> allConditionsNeeded = new HashSet<>();
+    final Set<ICondition> allConditionsNeeded = new HashSet<>();
     final boolean useTriggers = Properties.getTriggers(data);
     if (useTriggers) {
 

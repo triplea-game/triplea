@@ -1013,7 +1013,7 @@ public class UnitAttachment extends DefaultAttachment {
       return new ArrayList<>();
     }
     final Collection<Unit> unitsCopy = new ArrayList<>(units);
-    final HashSet<Unit> whichReceiveNoDuplicates = new HashSet<>();
+    final Set<Unit> whichReceiveNoDuplicates = new HashSet<>();
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {

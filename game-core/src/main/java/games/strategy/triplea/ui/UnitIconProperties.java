@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -173,7 +174,7 @@ public final class UnitIconProperties extends PropertyFile {
   }
 
   private Map<ICondition, Boolean> getTestedConditions(final GameData data) {
-    final HashSet<ICondition> allConditionsNeeded =
+    final Set<ICondition> allConditionsNeeded =
         AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(conditionsStatus.keySet()), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null,
         new ObjectiveDummyDelegateBridge(data));

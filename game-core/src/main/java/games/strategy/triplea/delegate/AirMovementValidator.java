@@ -66,7 +66,7 @@ public class AirMovementValidator {
         .and(Matches.isUnitAllied(player, data))
         .and(Matches.unitIsAir())
         .and(Matches.unitCanLandOnCarrier());
-    final HashSet<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
+    final Set<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
     airThatMustLandOnCarriersHash.addAll(CollectionUtils.getMatches(routeEnd.getUnits().getUnits(), airAlliedNotOwned));
     airThatMustLandOnCarriersHash.addAll(CollectionUtils.getMatches(units, airAlliedNotOwned));
     // now we must see if we also need to account for units (allied cargo) that are moving with our carriers, if we have

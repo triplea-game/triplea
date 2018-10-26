@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -159,9 +160,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * conditions and contained
    * conditions to get the final list.
    */
-  public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions,
-      final HashSet<ICondition> initialAllConditionsNeededSoFar) {
-    final HashSet<ICondition> allConditionsNeededSoFar = Optional.ofNullable(initialAllConditionsNeededSoFar)
+  public static Set<ICondition> getAllConditionsRecursive(final Set<ICondition> startingListOfConditions,
+      final Set<ICondition> initialAllConditionsNeededSoFar) {
+    final Set<ICondition> allConditionsNeededSoFar = Optional.ofNullable(initialAllConditionsNeededSoFar)
         .orElseGet(HashSet::new);
     allConditionsNeededSoFar.addAll(startingListOfConditions);
     for (final ICondition condition : startingListOfConditions) {
@@ -180,7 +181,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * one to their boolean
    * value.
    */
-  public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules,
+  public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final Set<ICondition> rules,
       final HashMap<ICondition, Boolean> initialAllConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
     final HashMap<ICondition, Boolean> allConditionsTestedSoFar = Optional.ofNullable(initialAllConditionsTestedSoFar)
         .orElseGet(HashMap::new);

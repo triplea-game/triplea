@@ -86,7 +86,7 @@ class AAInMoveUtil implements Serializable {
       return;
     }
     final PlayerID movingPlayer = movingPlayer(units);
-    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
+    final HashMap<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, getData());
     final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
         airborneTechTargetsAllowed, movingPlayer, Matches.unitIsAaForFlyOverOnly(), 1, true, getData()));
@@ -194,7 +194,7 @@ class AAInMoveUtil implements Serializable {
     // can't rely on m_player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
     final PlayerID movingPlayer = movingPlayer(units);
-    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
+    final HashMap<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, data);
     // don't iterate over the end
     // that will be a battle

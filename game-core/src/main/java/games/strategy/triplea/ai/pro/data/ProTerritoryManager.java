@@ -314,10 +314,10 @@ public class ProTerritoryManager {
         .build();
 
     // Find potential territories to scramble from
-    final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<>();
+    final HashMap<Territory, Set<Territory>> scrambleTerrs = new HashMap<>();
     for (final Territory t : moveMap.keySet()) {
       if (t.isWater() || !toSeaOnly) {
-        final HashSet<Territory> canScrambleFrom = new HashSet<>(
+        final Set<Territory> canScrambleFrom = new HashSet<>(
             CollectionUtils.getMatches(data.getMap().getNeighbors(t, maxScrambleDistance), canScramble));
         if (!canScrambleFrom.isEmpty()) {
           scrambleTerrs.put(t, canScrambleFrom);
