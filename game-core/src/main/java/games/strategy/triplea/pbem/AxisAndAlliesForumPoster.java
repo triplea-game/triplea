@@ -79,8 +79,8 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     httpPost.addHeader("Cache-Control", "no-cache");
 
     final List<NameValuePair> parameters = ImmutableList.of(
-      new BasicNameValuePair("user", getUsername()),
-      new BasicNameValuePair("passwrd", getPassword())
+        new BasicNameValuePair("user", getUsername()),
+        new BasicNameValuePair("passwrd", getPassword())
     );
     httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {

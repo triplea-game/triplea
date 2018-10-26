@@ -127,14 +127,14 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
         HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
       final HttpPost httpPost = new HttpPost(m_props.getProperty("path"));
       final List<NameValuePair> params = ImmutableList.of(
-        new BasicNameValuePair("numdice", "" + numDice),
-        new BasicNameValuePair("numsides", "" + max),
-        new BasicNameValuePair("modroll", "No"),
-        new BasicNameValuePair("numroll", "" + 1),
-        new BasicNameValuePair("subject", message),
-        new BasicNameValuePair("roller", getToAddress()),
-        new BasicNameValuePair("gm", getCcAddress()),
-        new BasicNameValuePair("send", "true")
+          new BasicNameValuePair("numdice", "" + numDice),
+          new BasicNameValuePair("numsides", "" + max),
+          new BasicNameValuePair("modroll", "No"),
+          new BasicNameValuePair("numroll", "" + 1),
+          new BasicNameValuePair("subject", message),
+          new BasicNameValuePair("roller", getToAddress()),
+          new BasicNameValuePair("gm", getCcAddress()),
+          new BasicNameValuePair("send", "true")
       );
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
       httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
