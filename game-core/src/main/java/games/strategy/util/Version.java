@@ -21,7 +21,6 @@ public final class Version implements Serializable, Comparable<Version> {
   private final int m_major;
   private final int m_minor;
   private final int m_point;
-  private final int m_micro;
   private final String exactVersion;
 
   /**
@@ -35,17 +34,9 @@ public final class Version implements Serializable, Comparable<Version> {
    * Constructs a Version object without the micro version, defaults to 0.
    */
   public Version(final int major, final int minor, final int point) {
-    this(major, minor, point, 0);
-  }
-
-  /**
-   * Constructs a Version object with all version values set.
-   */
-  public Version(final int major, final int minor, final int point, final int micro) {
     this.m_major = major;
     this.m_minor = minor;
     this.m_point = point;
-    this.m_micro = micro;
     exactVersion = toString();
   }
 
@@ -56,17 +47,16 @@ public final class Version implements Serializable, Comparable<Version> {
   public Version(final String version) {
     exactVersion = version;
 
-    final Matcher matcher = Pattern.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.((?:\\d+|dev)[^.]*))?)?)?")
+    final Matcher matcher = Pattern.compile("^(\\d+)(?:\\.(\\d+)(?:\\.((?:\\d+|dev)[^.]*))?)?")
         .matcher(version);
 
     if (matcher.find()) {
       m_major = Integer.parseInt(matcher.group(1));
       m_minor = Optional.ofNullable(matcher.group(2)).map(Integer::valueOf).orElse(0);
-      m_point = Optional.ofNullable(matcher.group(3)).map(Integer::valueOf).orElse(0);
-      final String microString = matcher.group(4);
-      m_micro = "dev".equals(microString)
+      final String pointString = matcher.group(3);
+      m_point = "dev".equals(pointString)
           ? Integer.MAX_VALUE
-          : Optional.ofNullable(microString).map(Integer::valueOf).orElse(0);
+          : Optional.ofNullable(pointString).map(Integer::valueOf).orElse(0);
       return;
     }
     throw new IllegalArgumentException("Invalid version String: " + version);
@@ -76,8 +66,8 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns the exact and full version number.
    * For example, if we specify:
    * <code>
-   * new Version(1.2.3.4.5).getMicro == 4; // true
-   * new Version(1.2.3.4.5).toString().equals("1.2.3.4"); // true
+   * new Version(1.2.3).getPoint == 3; // true
+   * new Version(1.2.3.4.5).toString().equals("1.2.3"); // true
    * new Version(1.2.3.4.5).getExactVersion.equals("1.2.3.4.5"); // true
    * </code>
    */
@@ -107,13 +97,6 @@ public final class Version implements Serializable, Comparable<Version> {
     return m_point;
   }
 
-  /**
-   * Returns the micro version number.
-   */
-  public int getMicro() {
-    return m_micro;
-  }
-
   @Override
   public boolean equals(final @Nullable Object o) {
     return o instanceof Version && compareTo((Version) o) == 0;
@@ -121,7 +104,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_major, m_minor, m_point, m_micro);
+    return Objects.hash(m_major, m_minor, m_point);
   }
 
   @Override
@@ -131,7 +114,6 @@ public final class Version implements Serializable, Comparable<Version> {
     return Comparator.comparingInt(Version::getMajor)
         .thenComparingInt(Version::getMinor)
         .thenComparingInt(Version::getPoint)
-        .thenComparingInt(Version::getMicro)
         .compare(this, other);
   }
 
@@ -175,10 +157,10 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * Returns a new version with the major, minor, and point versions from this instance and the specified micro version.
+   * Returns a new version with the major and minor versions from this instance and the specified point version.
    */
-  public Version withMicro(final int micro) {
-    return new Version(m_major, m_minor, m_point, micro);
+  public Version withPoint(final int point) {
+    return new Version(m_major, m_minor, point);
   }
 
   /**
@@ -189,12 +171,11 @@ public final class Version implements Serializable, Comparable<Version> {
         ".",
         String.valueOf(m_major),
         String.valueOf(m_minor),
-        String.valueOf(m_point),
-        (m_micro == Integer.MAX_VALUE) ? "dev" : String.valueOf(m_micro));
+        (m_point == Integer.MAX_VALUE) ? "dev" : String.valueOf(m_point));
   }
 
   @Override
   public String toString() {
-    return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
+    return m_point != 0 ? toStringFull() : m_major + "." + m_minor;
   }
 }

@@ -29,33 +29,30 @@ public class VersionTest {
   @Test
   public void compareTo_ShouldReturnNegativeIntegerWhenFirstIsLessThanSecond() {
     Arrays.asList(
-        Tuple.of(new Version(1, 0, 0, 0), new Version(2, 0, 0, 0)),
-        Tuple.of(new Version(0, 1, 0, 0), new Version(0, 2, 0, 0)),
-        Tuple.of(new Version(0, 0, 1, 0), new Version(0, 0, 2, 0)),
-        Tuple.of(new Version(0, 0, 0, 1), new Version(0, 0, 0, 2)),
-        Tuple.of(new Version(0, 0, 0, 0), new Version("0.0.0.dev")))
+        Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
+        Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
+        Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)),
+        Tuple.of(new Version(0, 0, 0), new Version("0.0.dev")))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(lessThan(0))));
   }
 
   @Test
   public void compareTo_ShouldReturnZeroWhenFirstIsEqualToSecond() {
     Arrays.asList(
-        Tuple.of(new Version(1, 0, 0, 0), new Version(1, 0, 0, 0)),
-        Tuple.of(new Version(0, 1, 0, 0), new Version(0, 1, 0, 0)),
-        Tuple.of(new Version(0, 0, 1, 0), new Version(0, 0, 1, 0)),
-        Tuple.of(new Version(0, 0, 0, 1), new Version(0, 0, 0, 1)),
-        Tuple.of(new Version("0.0.0.dev"), new Version("0.0.0.dev")))
+        Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
+        Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
+        Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)),
+        Tuple.of(new Version("0.0.dev"), new Version("0.0.dev")))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(0)));
   }
 
   @Test
   public void compareTo_ShouldReturnPositiveIntegerWhenFirstIsGreaterThanSecond() {
     Arrays.asList(
-        Tuple.of(new Version(2, 0, 0, 0), new Version(1, 0, 0, 0)),
-        Tuple.of(new Version(0, 2, 0, 0), new Version(0, 1, 0, 0)),
-        Tuple.of(new Version(0, 0, 2, 0), new Version(0, 0, 1, 0)),
-        Tuple.of(new Version(0, 0, 0, 2), new Version(0, 0, 0, 1)),
-        Tuple.of(new Version("0.0.0.dev"), new Version(0, 0, 0, 0)))
+        Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
+        Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),
+        Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)),
+        Tuple.of(new Version("0.0.dev"), new Version(0, 0, 0)))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(greaterThan(0))));
   }
 
@@ -81,27 +78,22 @@ public class VersionTest {
   }
 
   @Test
-  public void testWithMicro() {
-    assertEquals(new Version(1, 2, 3, 999), new Version(1, 2, 3, 4).withMicro(999));
-  }
-
-  @Test
   public void testToString() {
     assertEquals("1.2.3", new Version("1.2.3").toString());
     assertEquals("1.2", new Version("1.2").toString());
     assertEquals("1.2", new Version("1.2.0").toString());
-    assertEquals("1.2.3.dev", new Version("1.2.3.dev").toString());
+    assertEquals("1.2.dev", new Version("1.2.dev").toString());
   }
 
   @Test
   public void testToStringFull() {
-    assertEquals("1.2.3.dev", new Version("1.2.3.dev").toStringFull());
+    assertEquals("1.2.dev", new Version("1.2.dev").toStringFull());
   }
 
   @Test
   public void testGetExactVersion() {
-    assertEquals("1.2.3.4", new Version(1, 2, 3, 4).getExactVersion());
-    assertEquals("1.2.3.4.5", new Version("1.2.3.4.5").getExactVersion());
+    assertEquals("1.2.3", new Version(1, 2, 3).getExactVersion());
+    assertEquals("1.2.3.4", new Version("1.2.3.4").getExactVersion());
     assertEquals("1.2.3.4.something weird", new Version("1.2.3.4.something weird").getExactVersion());
   }
 
@@ -115,6 +107,6 @@ public class VersionTest {
     assertThrows(IllegalArgumentException.class, () -> new Version("a.b.c.12.34"));
     assertThrows(IllegalArgumentException.class, () -> new Version("a:b:c.12.34.56"));
     assertThrows(IllegalArgumentException.class, () -> new Version("a;b;c.12.34.56.78"));
-    assertThrows(IllegalArgumentException.class, () -> new Version("1.2.3.4 wrong syntax"));
+    assertThrows(IllegalArgumentException.class, () -> new Version("1.2.3 wrong syntax"));
   }
 }
