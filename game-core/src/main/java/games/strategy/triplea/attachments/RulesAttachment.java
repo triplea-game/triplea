@@ -27,7 +27,6 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
@@ -49,15 +48,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   // condition for having techs
   private List<TechAdvance> techs = null;
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment).
   private int techCount = -1;
   // condition for having specific relationships
   private List<String> relationship = new ArrayList<>();
   // condition for being at war
   private Set<PlayerID> atWarPlayers = null;
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment).
   private int atWarCount = -1;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to
   // the prices the defender pays for the units]

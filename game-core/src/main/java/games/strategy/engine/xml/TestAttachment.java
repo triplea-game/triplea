@@ -8,7 +8,6 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 
 /**
  * Fake attachment used for testing.
@@ -32,7 +31,6 @@ public class TestAttachment extends DefaultAttachment {
     return null;
   }
 
-  @InternalDoNotExport
   @Override
   public void setAttachedTo(final Attachable unused) {}
 
@@ -41,7 +39,6 @@ public class TestAttachment extends DefaultAttachment {
     return null;
   }
 
-  @InternalDoNotExport
   @Override
   public void setName(final String name) {}
 

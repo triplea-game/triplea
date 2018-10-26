@@ -12,7 +12,6 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -39,8 +38,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // how many times can you perform this action each round?
   protected int attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment).
   protected int attemptsLeftThisTurn = 1;
   // which players should accept this action? this could be the player who is the target of this action in the case of
   // proposing a treaty or
