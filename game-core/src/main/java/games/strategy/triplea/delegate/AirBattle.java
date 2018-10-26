@@ -409,22 +409,18 @@ public class AirBattle extends AbstractBattle {
   private void attackerRetreat(final IDelegateBridge bridge) {
     // planes retreat to the same square the battle is in, and then should
     // move during non combat to their landing site, or be scrapped if they can't find one.
-    final Collection<Territory> possible = new ArrayList<>(2);
-    possible.add(m_battleSite);
     // retreat planes
     if (!m_attackingUnits.isEmpty()) {
-      queryRetreat(false, bridge, possible);
+      queryRetreat(false, bridge, Collections.singleton(m_battleSite));
     }
   }
 
   private void defenderRetreat(final IDelegateBridge bridge) {
     // planes retreat to the same square the battle is in, and then should
     // move during non combat to their landing site, or be scrapped if they can't find one.
-    final Collection<Territory> possible = new ArrayList<>(2);
-    possible.add(m_battleSite);
     // retreat planes
     if (!m_defendingUnits.isEmpty()) {
-      queryRetreat(true, bridge, possible);
+      queryRetreat(true, bridge, Collections.singleton(m_battleSite));
     }
   }
 
