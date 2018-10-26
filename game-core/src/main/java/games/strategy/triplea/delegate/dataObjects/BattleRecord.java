@@ -6,8 +6,8 @@ import java.util.Objects;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.SerializationProxySupport;
 import games.strategy.engine.data.Territory;
+import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 
 /**
  * The Purpose of this class is to record various information about combat,

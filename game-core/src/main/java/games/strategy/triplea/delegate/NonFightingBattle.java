@@ -19,7 +19,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CollectionUtils;
 
 /**
