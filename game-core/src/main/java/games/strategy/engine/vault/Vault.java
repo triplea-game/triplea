@@ -205,7 +205,7 @@ public class Vault {
   }
 
   public List<VaultID> knownIds() {
-    final ArrayList<VaultID> knownIds = new ArrayList<>(verifiedValues.keySet());
+    final List<VaultID> knownIds = new ArrayList<>(verifiedValues.keySet());
     knownIds.addAll(unverifiedValues.keySet());
     return knownIds;
   }

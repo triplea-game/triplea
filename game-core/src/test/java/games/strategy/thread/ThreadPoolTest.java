@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -74,7 +75,7 @@ public class ThreadPoolTest {
 
   private static void threadTestBlock() {
     final ThreadPool pool = new ThreadPool(2);
-    final ArrayList<BlockedTask> blockedTasks = new ArrayList<>();
+    final List<BlockedTask> blockedTasks = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       final BlockedTask task = new BlockedTask();
       blockedTasks.add(task);

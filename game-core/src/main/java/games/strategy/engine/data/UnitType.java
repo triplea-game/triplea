@@ -104,7 +104,7 @@ public class UnitType extends NamedAttachable {
 
   private static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
       final UiContext uiContext) {
-    final ArrayList<UnitType> unitTypes = new ArrayList<>();
+    final List<UnitType> unitTypes = new ArrayList<>();
     data.acquireReadLock();
     try {
       // add first based on current production ability

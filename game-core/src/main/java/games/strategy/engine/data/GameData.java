@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -102,10 +103,8 @@ public class GameData implements Serializable {
   private final TechnologyFrontier technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
-  private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
-      new ArrayList<>();
-  @SuppressWarnings("JdkObsolete") // change to HashMap upon next incompatible release
-  private final Map<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
+  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues = new ArrayList<>();
+  private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
   /** Creates new GameData. */
@@ -382,11 +381,11 @@ public class GameData implements Serializable {
   }
 
   public void addToAttachmentOrderAndValues(
-      final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
+      final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);
   }
 
-  public List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> getAttachmentOrderAndValues() {
+  public List<Tuple<IAttachment, List<Tuple<String, String>>>> getAttachmentOrderAndValues() {
     return attachmentOrderAndValues;
   }
 

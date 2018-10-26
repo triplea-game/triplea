@@ -238,7 +238,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   public List<Territory> getAllTerritories() {
-    final ArrayList<Territory> list = new ArrayList<>(m_steps);
+    final List<Territory> list = new ArrayList<>(m_steps);
     list.add(0, m_start);
     return list;
   }

@@ -74,7 +74,7 @@ public class ChangeFactory {
   }
 
   public static Change changeOwner(final Unit unit, final PlayerID owner, final Territory location) {
-    final ArrayList<Unit> list = new ArrayList<>(1);
+    final List<Unit> list = new ArrayList<>(1);
     list.add(unit);
     return new PlayerOwnerChange(list, owner, location);
   }

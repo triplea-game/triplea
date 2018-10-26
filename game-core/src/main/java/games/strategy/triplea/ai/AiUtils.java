@@ -128,7 +128,7 @@ public class AiUtils {
       return units;
     }
     // Clone the current list
-    final ArrayList<Unit> result = new ArrayList<>(units);
+    final List<Unit> result = new ArrayList<>(units);
     Unit seekedCarrier = null;
     int indexToPlaceCarrierAt = -1;
     int spaceLeftOnSeekedCarrier = -1;

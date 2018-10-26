@@ -203,7 +203,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         throw new GameParseException("round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
       }
     }
-    final ArrayList<Territory> terrs = new ArrayList<>();
+    final List<Territory> terrs = new ArrayList<>();
     final GameMap map = getData().getMap();
     // this loop starts on 4, so do not replace with an enhanced for loop
     for (int i = 4; i < s.length; i++) {

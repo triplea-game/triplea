@@ -1379,14 +1379,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @Override
   public List<Unit> getRemainingAttackingUnits() {
-    final ArrayList<Unit> remaining = new ArrayList<>(m_attackingUnits);
+    final List<Unit> remaining = new ArrayList<>(m_attackingUnits);
     remaining.addAll(m_attackingUnitsRetreated);
     return remaining;
   }
 
   @Override
   public List<Unit> getRemainingDefendingUnits() {
-    final ArrayList<Unit> remaining = new ArrayList<>(m_defendingUnits);
+    final List<Unit> remaining = new ArrayList<>(m_defendingUnits);
     remaining.addAll(m_defendingUnitsRetreated);
     return remaining;
   }
