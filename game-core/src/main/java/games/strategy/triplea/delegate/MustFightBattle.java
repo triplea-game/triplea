@@ -1254,8 +1254,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         subs && defender && Properties.getSubmarinesDefendingMaySubmergeOrRetreat(m_data);
     final boolean partialAmphib = retreatType == RetreatType.PARTIAL_AMPHIB;
     final boolean submerge = subs && canSubsSubmerge;
-    Collection<Territory> availableTerritories = initialAvailableTerritories;
-    if (availableTerritories.isEmpty() && !(submerge || canDefendingSubsSubmergeOrRetreat)) {
+    if (initialAvailableTerritories.isEmpty() && !(submerge || canDefendingSubsSubmergeOrRetreat)) {
       return;
     }
 
@@ -1273,9 +1272,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else if (partialAmphib) {
       units = CollectionUtils.getMatches(units, Matches.unitWasNotAmphibious());
     }
-    if (units.stream().anyMatch(Matches.unitIsSea())) {
-      availableTerritories = CollectionUtils.getMatches(availableTerritories, Matches.territoryIsWater());
-    }
+    final Collection<Territory> availableTerritories = units.stream().anyMatch(Matches.unitIsSea())
+        ? CollectionUtils.getMatches(initialAvailableTerritories, Matches.territoryIsWater())
+        : new ArrayList<>(initialAvailableTerritories);
     if (canDefendingSubsSubmergeOrRetreat) {
       availableTerritories.add(m_battleSite);
     } else if (submerge) {
