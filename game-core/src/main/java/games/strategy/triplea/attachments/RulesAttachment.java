@@ -48,38 +48,37 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
 
   // condition for having techs
-  private List<TechAdvance> m_techs = null;
+  private List<TechAdvance> techs = null;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
-  private int m_techCount = -1;
+  private int techCount = -1;
   // condition for having specific relationships
-  private List<String> m_relationship = new ArrayList<>();
+  private List<String> relationship = new ArrayList<>();
   // condition for being at war
-  private Set<PlayerID> m_atWarPlayers = null;
+  private Set<PlayerID> atWarPlayers = null;
   @InternalDoNotExport
   // Do Not Export (do not include in IAttachment).
-  private int m_atWarCount = -1;
+  private int atWarCount = -1;
   // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to
   // the prices the defender pays for the units]
-  private String m_destroyedTUV = null;
+  private String destroyedTuv = null;
   // condition for having had a battle in some territory, attacker or defender, win
   // or lost, etc. these next 9 variables use territoryCount for determining the number needed.
-  private List<Tuple<String, List<Territory>>> m_battle = new ArrayList<>();
+  private List<Tuple<String, List<Territory>>> battle = new ArrayList<>();
   // ownership related
-  private String[] m_alliedOwnershipTerritories = null;
-  private String[] m_directOwnershipTerritories = null;
+  private String[] alliedOwnershipTerritories = null;
+  private String[] directOwnershipTerritories = null;
   // exclusion of units
-  private String[] m_alliedExclusionTerritories = null;
-  private String[] m_directExclusionTerritories = null;
-  private String[] m_enemyExclusionTerritories = null;
-  private String[] m_enemySurfaceExclusionTerritories = null;
+  private String[] alliedExclusionTerritories = null;
+  private String[] directExclusionTerritories = null;
+  private String[] enemyExclusionTerritories = null;
+  private String[] enemySurfaceExclusionTerritories = null;
   // presence of units
-  private String[] m_directPresenceTerritories = null;
-  private String[] m_alliedPresenceTerritories = null;
-  private String[] m_enemyPresenceTerritories = null;
+  private String[] directPresenceTerritories = null;
+  private String[] alliedPresenceTerritories = null;
+  private String[] enemyPresenceTerritories = null;
   // used with above 3 to determine the type of unit that must be present
-  private IntegerMap<String> m_unitPresence = new IntegerMap<>();
-
+  private IntegerMap<String> unitPresence = new IntegerMap<>();
 
   /** Creates new RulesAttachment. */
   public RulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -152,7 +151,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
 
   private void setDestroyedTuv(final String value) throws GameParseException {
     if (value == null) {
-      m_destroyedTUV = null;
+      destroyedTuv = null;
       return;
     }
     final String[] s = splitOnColon(value);
@@ -168,15 +167,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (!(s[1].equals("currentRound") || s[1].equals("allRounds"))) {
       throw new GameParseException("destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
     }
-    m_destroyedTUV = value;
+    destroyedTuv = value;
   }
 
   private String getDestroyedTuv() {
-    return m_destroyedTUV;
+    return destroyedTuv;
   }
 
   private void resetDestroyedTuv() {
-    m_destroyedTUV = null;
+    destroyedTuv = null;
   }
 
   private void setBattle(final String value) throws GameParseException {
@@ -214,19 +213,19 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
       terrs.add(t);
     }
-    m_battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
+    battle.add(Tuple.of((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
   }
 
   private void setBattle(final List<Tuple<String, List<Territory>>> value) {
-    m_battle = value;
+    battle = value;
   }
 
   private List<Tuple<String, List<Territory>>> getBattle() {
-    return m_battle;
+    return battle;
   }
 
   private void resetBattle() {
-    m_battle = new ArrayList<>();
+    battle = new ArrayList<>();
   }
 
   /**
@@ -260,211 +259,211 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException("numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be "
           + "default value if you don't know what to put" + thisErrorMsg());
     }
-    m_relationship.add((s.length == 3) ? (value + ":-1") : value);
+    relationship.add((s.length == 3) ? (value + ":-1") : value);
   }
 
   private void setRelationship(final List<String> value) {
-    m_relationship = value;
+    relationship = value;
   }
 
   private List<String> getRelationship() {
-    return m_relationship;
+    return relationship;
   }
 
   private void resetRelationship() {
-    m_relationship = new ArrayList<>();
+    relationship = new ArrayList<>();
   }
 
   private void setAlliedOwnershipTerritories(final String value) {
     if (value == null) {
-      m_alliedOwnershipTerritories = null;
+      alliedOwnershipTerritories = null;
       return;
     }
-    m_alliedOwnershipTerritories = splitOnColon(value);
-    validateNames(m_alliedOwnershipTerritories);
+    alliedOwnershipTerritories = splitOnColon(value);
+    validateNames(alliedOwnershipTerritories);
   }
 
   private void setAlliedOwnershipTerritories(final String[] value) {
-    m_alliedOwnershipTerritories = value;
+    alliedOwnershipTerritories = value;
   }
 
   private String[] getAlliedOwnershipTerritories() {
-    return m_alliedOwnershipTerritories;
+    return alliedOwnershipTerritories;
   }
 
   private void resetAlliedOwnershipTerritories() {
-    m_alliedOwnershipTerritories = null;
+    alliedOwnershipTerritories = null;
   }
 
   // exclusion types = controlled, controlledNoWater, original, all, or list
   private void setAlliedExclusionTerritories(final String value) {
     if (value == null) {
-      m_alliedExclusionTerritories = null;
+      alliedExclusionTerritories = null;
       return;
     }
-    m_alliedExclusionTerritories = splitOnColon(value);
-    validateNames(m_alliedExclusionTerritories);
+    alliedExclusionTerritories = splitOnColon(value);
+    validateNames(alliedExclusionTerritories);
   }
 
   private void setAlliedExclusionTerritories(final String[] value) {
-    m_alliedExclusionTerritories = value;
+    alliedExclusionTerritories = value;
   }
 
   private String[] getAlliedExclusionTerritories() {
-    return m_alliedExclusionTerritories;
+    return alliedExclusionTerritories;
   }
 
   private void resetAlliedExclusionTerritories() {
-    m_alliedExclusionTerritories = null;
+    alliedExclusionTerritories = null;
   }
 
   private void setDirectExclusionTerritories(final String value) {
     if (value == null) {
-      m_directExclusionTerritories = null;
+      directExclusionTerritories = null;
       return;
     }
-    m_directExclusionTerritories = splitOnColon(value);
-    validateNames(m_directExclusionTerritories);
+    directExclusionTerritories = splitOnColon(value);
+    validateNames(directExclusionTerritories);
   }
 
   private void setDirectExclusionTerritories(final String[] value) {
-    m_directExclusionTerritories = value;
+    directExclusionTerritories = value;
   }
 
   private String[] getDirectExclusionTerritories() {
-    return m_directExclusionTerritories;
+    return directExclusionTerritories;
   }
 
   private void resetDirectExclusionTerritories() {
-    m_directExclusionTerritories = null;
+    directExclusionTerritories = null;
   }
 
   // exclusion types = original or list
   private void setEnemyExclusionTerritories(final String value) {
     if (value == null) {
-      m_enemyExclusionTerritories = null;
+      enemyExclusionTerritories = null;
       return;
     }
-    m_enemyExclusionTerritories = splitOnColon(value);
-    validateNames(m_enemyExclusionTerritories);
+    enemyExclusionTerritories = splitOnColon(value);
+    validateNames(enemyExclusionTerritories);
   }
 
   private void setEnemyExclusionTerritories(final String[] value) {
-    m_enemyExclusionTerritories = value;
+    enemyExclusionTerritories = value;
   }
 
   private String[] getEnemyExclusionTerritories() {
-    return m_enemyExclusionTerritories;
+    return enemyExclusionTerritories;
   }
 
   private void resetEnemyExclusionTerritories() {
-    m_enemyExclusionTerritories = null;
+    enemyExclusionTerritories = null;
   }
 
   private void setDirectPresenceTerritories(final String value) {
     if (value == null) {
-      m_directPresenceTerritories = null;
+      directPresenceTerritories = null;
       return;
     }
-    m_directPresenceTerritories = splitOnColon(value);
-    validateNames(m_directPresenceTerritories);
+    directPresenceTerritories = splitOnColon(value);
+    validateNames(directPresenceTerritories);
   }
 
   private void setDirectPresenceTerritories(final String[] value) {
-    m_directPresenceTerritories = value;
+    directPresenceTerritories = value;
   }
 
   private String[] getDirectPresenceTerritories() {
-    return m_directPresenceTerritories;
+    return directPresenceTerritories;
   }
 
   private void resetDirectPresenceTerritories() {
-    m_directPresenceTerritories = null;
+    directPresenceTerritories = null;
   }
 
   private void setAlliedPresenceTerritories(final String value) {
     if (value == null) {
-      m_alliedPresenceTerritories = null;
+      alliedPresenceTerritories = null;
       return;
     }
-    m_alliedPresenceTerritories = splitOnColon(value);
-    validateNames(m_alliedPresenceTerritories);
+    alliedPresenceTerritories = splitOnColon(value);
+    validateNames(alliedPresenceTerritories);
   }
 
   private void setAlliedPresenceTerritories(final String[] value) {
-    m_alliedPresenceTerritories = value;
+    alliedPresenceTerritories = value;
   }
 
   private String[] getAlliedPresenceTerritories() {
-    return m_alliedPresenceTerritories;
+    return alliedPresenceTerritories;
   }
 
   private void resetAlliedPresenceTerritories() {
-    m_alliedPresenceTerritories = null;
+    alliedPresenceTerritories = null;
   }
 
   private void setEnemyPresenceTerritories(final String value) {
     if (value == null) {
-      m_enemyPresenceTerritories = null;
+      enemyPresenceTerritories = null;
       return;
     }
-    m_enemyPresenceTerritories = splitOnColon(value);
-    validateNames(m_enemyPresenceTerritories);
+    enemyPresenceTerritories = splitOnColon(value);
+    validateNames(enemyPresenceTerritories);
   }
 
   private void setEnemyPresenceTerritories(final String[] value) {
-    m_enemyPresenceTerritories = value;
+    enemyPresenceTerritories = value;
   }
 
   private String[] getEnemyPresenceTerritories() {
-    return m_enemyPresenceTerritories;
+    return enemyPresenceTerritories;
   }
 
   private void resetEnemyPresenceTerritories() {
-    m_enemyPresenceTerritories = null;
+    enemyPresenceTerritories = null;
   }
 
   // exclusion types = original or list
   private void setEnemySurfaceExclusionTerritories(final String value) {
     if (value == null) {
-      m_enemySurfaceExclusionTerritories = null;
+      enemySurfaceExclusionTerritories = null;
       return;
     }
-    m_enemySurfaceExclusionTerritories = splitOnColon(value);
-    validateNames(m_enemySurfaceExclusionTerritories);
+    enemySurfaceExclusionTerritories = splitOnColon(value);
+    validateNames(enemySurfaceExclusionTerritories);
   }
 
   private void setEnemySurfaceExclusionTerritories(final String[] value) {
-    m_enemySurfaceExclusionTerritories = value;
+    enemySurfaceExclusionTerritories = value;
   }
 
   private String[] getEnemySurfaceExclusionTerritories() {
-    return m_enemySurfaceExclusionTerritories;
+    return enemySurfaceExclusionTerritories;
   }
 
   private void resetEnemySurfaceExclusionTerritories() {
-    m_enemySurfaceExclusionTerritories = null;
+    enemySurfaceExclusionTerritories = null;
   }
 
   private void setDirectOwnershipTerritories(final String value) {
     if (value == null) {
-      m_directOwnershipTerritories = null;
+      directOwnershipTerritories = null;
       return;
     }
-    m_directOwnershipTerritories = splitOnColon(value);
-    validateNames(m_directOwnershipTerritories);
+    directOwnershipTerritories = splitOnColon(value);
+    validateNames(directOwnershipTerritories);
   }
 
   private void setDirectOwnershipTerritories(final String[] value) {
-    m_directOwnershipTerritories = value;
+    directOwnershipTerritories = value;
   }
 
   private String[] getDirectOwnershipTerritories() {
-    return m_directOwnershipTerritories;
+    return directOwnershipTerritories;
   }
 
   private void resetDirectOwnershipTerritories() {
-    m_directOwnershipTerritories = null;
+    directOwnershipTerritories = null;
   }
 
   private void setUnitPresence(final String value) throws GameParseException {
@@ -485,32 +484,32 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
     }
-    m_unitPresence.put(value.replaceFirst(s[0] + ":", ""), n);
+    unitPresence.put(value.replaceFirst(s[0] + ":", ""), n);
   }
 
   private void setUnitPresence(final IntegerMap<String> value) {
-    m_unitPresence = value;
+    unitPresence = value;
   }
 
   private IntegerMap<String> getUnitPresence() {
-    return m_unitPresence;
+    return unitPresence;
   }
 
   private void resetUnitPresence() {
-    m_unitPresence = new IntegerMap<>();
+    unitPresence = new IntegerMap<>();
   }
 
   private int getAtWarCount() {
-    return m_atWarCount;
+    return atWarCount;
   }
 
   private int getTechCount() {
-    return m_techCount;
+    return techCount;
   }
 
   private void setAtWarPlayers(final String players) throws GameParseException {
     if (players == null) {
-      m_atWarPlayers = null;
+      atWarPlayers = null;
       return;
     }
     final String[] s = splitOnColon(players);
@@ -520,38 +519,38 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     int count = -1;
     try {
       count = getInt(s[0]);
-      m_atWarCount = count;
+      atWarCount = count;
     } catch (final Exception e) {
-      m_atWarCount = 0;
+      atWarCount = 0;
     }
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty enemy list" + thisErrorMsg());
     }
-    m_atWarPlayers = new HashSet<>();
+    atWarPlayers = new HashSet<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
       final PlayerID player = getData().getPlayerList().getPlayerId(s[i]);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
       }
-      m_atWarPlayers.add(player);
+      atWarPlayers.add(player);
     }
   }
 
   private void setAtWarPlayers(final Set<PlayerID> value) {
-    m_atWarPlayers = value;
+    atWarPlayers = value;
   }
 
   private Set<PlayerID> getAtWarPlayers() {
-    return m_atWarPlayers;
+    return atWarPlayers;
   }
 
   private void resetAtWarPlayers() {
-    m_atWarPlayers = null;
+    atWarPlayers = null;
   }
 
   private void setTechs(final String newTechs) throws GameParseException {
     if (newTechs == null) {
-      m_techs = null;
+      techs = null;
       return;
     }
     final String[] s = splitOnColon(newTechs);
@@ -561,14 +560,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     int count = -1;
     try {
       count = getInt(s[0]);
-      m_techCount = count;
+      techCount = count;
     } catch (final Exception e) {
-      m_techCount = 0;
+      techCount = 0;
     }
     if (s.length == 1 && count != -1) {
       throw new GameParseException("Empty tech list" + thisErrorMsg());
     }
-    m_techs = new ArrayList<>();
+    techs = new ArrayList<>();
     for (int i = count == -1 ? 0 : 1; i < s.length; i++) {
       TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
       if (ta == null) {
@@ -577,20 +576,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       if (ta == null) {
         throw new GameParseException("Technology not found :" + Arrays.toString(s) + thisErrorMsg());
       }
-      m_techs.add(ta);
+      techs.add(ta);
     }
   }
 
   private void setTechs(final List<TechAdvance> value) {
-    m_techs = value;
+    techs = value;
   }
 
   private List<TechAdvance> getTechs() {
-    return m_techs;
+    return techs;
   }
 
   private void resetTechs() {
-    m_techs = null;
+    techs = null;
   }
 
   @Override
@@ -770,16 +769,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getAtWarPlayers() != null) {
       objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);
     }
-    if (objectiveMet && m_techs != null) {
+    if (objectiveMet && techs != null) {
       objectiveMet = checkTechs(playerAttachedTo, data);
     }
     // check for relationships
-    if (objectiveMet && m_relationship.size() > 0) {
+    if (objectiveMet && relationship.size() > 0) {
       objectiveMet = checkRelationships();
     }
     // check for battle stats
-    if (objectiveMet && m_destroyedTUV != null) {
-      final String[] s = splitOnColon(m_destroyedTUV);
+    if (objectiveMet && destroyedTuv != null) {
+      final String[] s = splitOnColon(destroyedTuv);
       final int requiredDestroyedTuv = getInt(s[0]);
       if (requiredDestroyedTuv >= 0) {
         final boolean justCurrentRound = s[1].equals("currentRound");
@@ -794,10 +793,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       }
     }
     // check for battles
-    if (objectiveMet && !m_battle.isEmpty()) {
+    if (objectiveMet && !battle.isEmpty()) {
       final BattleRecordsList brl = data.getBattleRecordsList();
       final int round = data.getSequence().getRound();
-      for (final Tuple<String, List<Territory>> entry : m_battle) {
+      for (final Tuple<String, List<Territory>> entry : battle) {
         final String[] type = splitOnColon(entry.getFirst());
         // they could be "any", and if they are "any" then this would be null, which is good!
         final PlayerID attacker = data.getPlayerList().getPlayerId(type[0]);
@@ -860,7 +859,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
    * @return whether all relationships as are required are set correctly.
    */
   private boolean checkRelationships() {
-    for (final String encodedRelationCheck : m_relationship) {
+    for (final String encodedRelationCheck : relationship) {
       final String[] relationCheck = splitOnColon(encodedRelationCheck);
       final PlayerID p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
       final PlayerID p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
@@ -1114,30 +1113,30 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private boolean checkTechs(final PlayerID player, final GameData data) {
     int found = 0;
     for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, data)) {
-      if (m_techs.contains(a)) {
+      if (techs.contains(a)) {
         found++;
       }
     }
-    if (m_techCount == 0) {
-      return m_techCount == found;
+    if (techCount == 0) {
+      return techCount == found;
     }
     if (getCountEach()) {
       eachMultiple = found;
     }
-    return found >= m_techCount;
+    return found >= techCount;
   }
 
   @Override
   public void validate(final GameData data) {
-    validateNames(m_alliedOwnershipTerritories);
-    validateNames(m_enemyExclusionTerritories);
-    validateNames(m_enemySurfaceExclusionTerritories);
-    validateNames(m_alliedExclusionTerritories);
-    validateNames(m_directExclusionTerritories);
-    validateNames(m_directOwnershipTerritories);
-    validateNames(m_directPresenceTerritories);
-    validateNames(m_alliedPresenceTerritories);
-    validateNames(m_enemyPresenceTerritories);
+    validateNames(alliedOwnershipTerritories);
+    validateNames(enemyExclusionTerritories);
+    validateNames(enemySurfaceExclusionTerritories);
+    validateNames(alliedExclusionTerritories);
+    validateNames(directExclusionTerritories);
+    validateNames(directOwnershipTerritories);
+    validateNames(directPresenceTerritories);
+    validateNames(alliedPresenceTerritories);
+    validateNames(enemyPresenceTerritories);
   }
 
   @Override

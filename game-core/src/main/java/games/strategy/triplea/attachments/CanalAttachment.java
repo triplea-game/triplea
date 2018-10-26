@@ -24,9 +24,9 @@ import games.strategy.util.CollectionUtils;
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
 
-  private String m_canalName = null;
-  private Set<Territory> m_landTerritories = null;
-  private Set<UnitType> m_excludedUnits = null;
+  private String canalName = null;
+  private Set<Territory> landTerritories = null;
+  private Set<UnitType> excludedUnits = null;
 
   public CanalAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -70,23 +70,23 @@ public class CanalAttachment extends DefaultAttachment {
 
   private void setCanalName(final String name) {
     if (name == null) {
-      m_canalName = null;
+      canalName = null;
       return;
     }
-    m_canalName = name;
+    canalName = name;
   }
 
   public String getCanalName() {
-    return m_canalName;
+    return canalName;
   }
 
   private void resetCanalName() {
-    m_canalName = null;
+    canalName = null;
   }
 
   private void setLandTerritories(final String landTerritories) {
     if (landTerritories == null) {
-      m_landTerritories = null;
+      this.landTerritories = null;
       return;
     }
     final HashSet<Territory> terrs = new HashSet<>();
@@ -97,34 +97,34 @@ public class CanalAttachment extends DefaultAttachment {
       }
       terrs.add(territory);
     }
-    m_landTerritories = terrs;
+    this.landTerritories = terrs;
   }
 
   private void setLandTerritories(final Set<Territory> value) {
-    m_landTerritories = value;
+    landTerritories = value;
   }
 
   public Set<Territory> getLandTerritories() {
-    return m_landTerritories;
+    return landTerritories;
   }
 
   private void resetLandTerritories() {
-    m_landTerritories = null;
+    landTerritories = null;
   }
 
   private void setExcludedUnits(final String value) {
     if (value == null) {
-      m_excludedUnits = null;
+      excludedUnits = null;
       return;
     }
-    if (m_excludedUnits == null) {
-      m_excludedUnits = new HashSet<>();
+    if (excludedUnits == null) {
+      excludedUnits = new HashSet<>();
     }
     if (value.equalsIgnoreCase("NONE")) {
       return;
     }
     if (value.equalsIgnoreCase("ALL")) {
-      m_excludedUnits.addAll(getData().getUnitTypeList().getAllUnitTypes());
+      excludedUnits.addAll(getData().getUnitTypeList().getAllUnitTypes());
       return;
     }
     for (final String name : splitOnColon(value)) {
@@ -132,39 +132,39 @@ public class CanalAttachment extends DefaultAttachment {
       if (ut == null) {
         throw new IllegalStateException("Canals: No UnitType called: " + name + thisErrorMsg());
       }
-      m_excludedUnits.add(ut);
+      excludedUnits.add(ut);
     }
   }
 
   private void setExcludedUnits(final Set<UnitType> value) {
-    m_excludedUnits = value;
+    excludedUnits = value;
   }
 
   public Set<UnitType> getExcludedUnits() {
-    if (m_excludedUnits == null) {
+    if (excludedUnits == null) {
       return new HashSet<>(
           CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
-    return m_excludedUnits;
+    return excludedUnits;
   }
 
   private void resetExcludedUnits() {
-    m_excludedUnits = null;
+    excludedUnits = null;
   }
 
   @Override
   public void validate(final GameData data) throws GameParseException {
-    if (m_canalName == null) {
+    if (canalName == null) {
       throw new GameParseException("Canals must have a canalName set!" + thisErrorMsg());
     }
-    if (m_landTerritories == null || m_landTerritories.size() == 0) {
-      throw new GameParseException("Canal named " + m_canalName + " must have landTerritories set!" + thisErrorMsg());
+    if (landTerritories == null || landTerritories.size() == 0) {
+      throw new GameParseException("Canal named " + canalName + " must have landTerritories set!" + thisErrorMsg());
     }
     final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
       final Set<CanalAttachment> canalAttachments = get(t);
       for (final CanalAttachment canalAttachment : canalAttachments) {
-        if (canalAttachment.getCanalName().equals(m_canalName)) {
+        if (canalAttachment.getCanalName().equals(canalName)) {
           territories.add(t);
         }
       }

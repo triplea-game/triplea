@@ -45,36 +45,36 @@ public class PlayerAttachment extends DefaultAttachment {
     return playerAttachment;
   }
 
-  private int m_vps = 0;
+  private int vps = 0;
   // need to store some data during a turn
-  private int m_captureVps = 0;
+  private int captureVps = 0;
   // number of capitals needed before we lose all our money
-  private int m_retainCapitalNumber = 1;
+  private int retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
-  private int m_retainCapitalProduceNumber = 1;
-  private List<PlayerID> m_giveUnitControl = new ArrayList<>();
-  private List<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<>();
+  private int retainCapitalProduceNumber = 1;
+  private List<PlayerID> giveUnitControl = new ArrayList<>();
+  private List<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
   // gives any technology researched to this player automatically
-  private List<PlayerID> m_shareTechnology = new ArrayList<>();
+  private List<PlayerID> shareTechnology = new ArrayList<>();
   // allows these players to help pay for technology
-  private List<PlayerID> m_helpPayTechCost = new ArrayList<>();
+  private List<PlayerID> helpPayTechCost = new ArrayList<>();
   // do we lose our money and have it disappear or is that money captured?
-  private boolean m_destroysPUs = false;
+  private boolean destroysPus = false;
   // are we immune to being blockaded?
-  private boolean m_immuneToBlockade = false;
+  private boolean immuneToBlockade = false;
   // what resources can be used for suicide attacks, and
-  private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<>();
+  private IntegerMap<Resource> suicideAttackResources = new IntegerMap<>();
   // at what attack power
   // what can be hit by suicide attacks
-  private Set<UnitType> m_suicideAttackTargets = null;
+  private Set<UnitType> suicideAttackTargets = null;
   // placement limits on a flexible per player basis
-  private Set<Triple<Integer, String, Set<UnitType>>> m_placementLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> placementLimit = new HashSet<>();
 
   // movement limits on a flexible per player basis
-  private Set<Triple<Integer, String, Set<UnitType>>> m_movementLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> movementLimit = new HashSet<>();
 
   // attacking limits on a flexible per player basis
-  private Set<Triple<Integer, String, Set<UnitType>>> m_attackingLimit = new HashSet<>();
+  private Set<Triple<Integer, String, Set<UnitType>>> attackingLimit = new HashSet<>();
 
   /** Creates new PlayerAttachment. */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -105,19 +105,19 @@ public class PlayerAttachment extends DefaultAttachment {
         types.add(ut);
       }
     }
-    m_placementLimit.add(Triple.of(max, s[1], types));
+    placementLimit.add(Triple.of(max, s[1], types));
   }
 
   private void setPlacementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
-    m_placementLimit = value;
+    placementLimit = value;
   }
 
   private Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit() {
-    return m_placementLimit;
+    return placementLimit;
   }
 
   private void resetPlacementLimit() {
-    m_placementLimit = new HashSet<>();
+    placementLimit = new HashSet<>();
   }
 
   private void setMovementLimit(final String value) throws GameParseException {
@@ -144,19 +144,19 @@ public class PlayerAttachment extends DefaultAttachment {
         types.add(ut);
       }
     }
-    m_movementLimit.add(Triple.of(max, s[1], types));
+    movementLimit.add(Triple.of(max, s[1], types));
   }
 
   private void setMovementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
-    m_movementLimit = value;
+    movementLimit = value;
   }
 
   private Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit() {
-    return m_movementLimit;
+    return movementLimit;
   }
 
   private void resetMovementLimit() {
-    m_movementLimit = new HashSet<>();
+    movementLimit = new HashSet<>();
   }
 
   private void setAttackingLimit(final String value) throws GameParseException {
@@ -183,19 +183,19 @@ public class PlayerAttachment extends DefaultAttachment {
         types.add(ut);
       }
     }
-    m_attackingLimit.add(Triple.of(max, s[1], types));
+    attackingLimit.add(Triple.of(max, s[1], types));
   }
 
   private void setAttackingLimit(final Set<Triple<Integer, String, Set<UnitType>>> value) {
-    m_attackingLimit = value;
+    attackingLimit = value;
   }
 
   private Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit() {
-    return m_attackingLimit;
+    return attackingLimit;
   }
 
   private void resetAttackingLimit() {
-    m_attackingLimit = new HashSet<>();
+    attackingLimit = new HashSet<>();
   }
 
   public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType,
@@ -254,11 +254,11 @@ public class PlayerAttachment extends DefaultAttachment {
 
   private void setSuicideAttackTargets(final String value) throws GameParseException {
     if (value == null) {
-      m_suicideAttackTargets = null;
+      suicideAttackTargets = null;
       return;
     }
-    if (m_suicideAttackTargets == null) {
-      m_suicideAttackTargets = new HashSet<>();
+    if (suicideAttackTargets == null) {
+      suicideAttackTargets = new HashSet<>();
     }
     final String[] s = splitOnColon(value);
     for (final String u : s) {
@@ -266,20 +266,20 @@ public class PlayerAttachment extends DefaultAttachment {
       if (ut == null) {
         throw new GameParseException("suicideAttackTargets: no such unit called " + u + thisErrorMsg());
       }
-      m_suicideAttackTargets.add(ut);
+      suicideAttackTargets.add(ut);
     }
   }
 
   private void setSuicideAttackTargets(final Set<UnitType> value) {
-    m_suicideAttackTargets = value;
+    suicideAttackTargets = value;
   }
 
   public Set<UnitType> getSuicideAttackTargets() {
-    return m_suicideAttackTargets;
+    return suicideAttackTargets;
   }
 
   private void resetSuicideAttackTargets() {
-    m_suicideAttackTargets = null;
+    suicideAttackTargets = null;
   }
 
   private void setSuicideAttackResources(final String value) throws GameParseException {
@@ -295,75 +295,75 @@ public class PlayerAttachment extends DefaultAttachment {
     if (r == null) {
       throw new GameParseException("no such resource: " + s[1] + thisErrorMsg());
     }
-    m_suicideAttackResources.put(r, attackValue);
+    suicideAttackResources.put(r, attackValue);
   }
 
   private void setSuicideAttackResources(final IntegerMap<Resource> value) {
-    m_suicideAttackResources = value;
+    suicideAttackResources = value;
   }
 
   public IntegerMap<Resource> getSuicideAttackResources() {
-    return m_suicideAttackResources;
+    return suicideAttackResources;
   }
 
   private void resetSuicideAttackResources() {
-    m_suicideAttackResources = new IntegerMap<>();
+    suicideAttackResources = new IntegerMap<>();
   }
 
   private void setVps(final int value) {
-    m_vps = value;
+    vps = value;
   }
 
   public int getVps() {
-    return m_vps;
+    return vps;
   }
 
   private void setCaptureVps(final String value) {
-    m_captureVps = getInt(value);
+    captureVps = getInt(value);
   }
 
   private void setCaptureVps(final Integer value) {
-    m_captureVps = value;
+    captureVps = value;
   }
 
   public int getCaptureVps() {
-    return m_captureVps;
+    return captureVps;
   }
 
   private void resetCaptureVps() {
-    m_captureVps = 0;
+    captureVps = 0;
   }
 
   private void setRetainCapitalNumber(final String value) {
-    m_retainCapitalNumber = getInt(value);
+    retainCapitalNumber = getInt(value);
   }
 
   private void setRetainCapitalNumber(final Integer value) {
-    m_retainCapitalNumber = value;
+    retainCapitalNumber = value;
   }
 
   public int getRetainCapitalNumber() {
-    return m_retainCapitalNumber;
+    return retainCapitalNumber;
   }
 
   private void resetRetainCapitalNumber() {
-    m_retainCapitalNumber = 1;
+    retainCapitalNumber = 1;
   }
 
   private void setRetainCapitalProduceNumber(final String value) {
-    m_retainCapitalProduceNumber = getInt(value);
+    retainCapitalProduceNumber = getInt(value);
   }
 
   private void setRetainCapitalProduceNumber(final Integer value) {
-    m_retainCapitalProduceNumber = value;
+    retainCapitalProduceNumber = value;
   }
 
   int getRetainCapitalProduceNumber() {
-    return m_retainCapitalProduceNumber;
+    return retainCapitalProduceNumber;
   }
 
   private void resetRetainCapitalProduceNumber() {
-    m_retainCapitalProduceNumber = 1;
+    retainCapitalProduceNumber = 1;
   }
 
   private void setGiveUnitControl(final String value) throws GameParseException {
@@ -371,7 +371,7 @@ public class PlayerAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
-        m_giveUnitControl.add(tempPlayer);
+        giveUnitControl.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -379,15 +379,15 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setGiveUnitControl(final List<PlayerID> value) {
-    m_giveUnitControl = value;
+    giveUnitControl = value;
   }
 
   public List<PlayerID> getGiveUnitControl() {
-    return m_giveUnitControl;
+    return giveUnitControl;
   }
 
   private void resetGiveUnitControl() {
-    m_giveUnitControl = new ArrayList<>();
+    giveUnitControl = new ArrayList<>();
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -395,7 +395,7 @@ public class PlayerAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
-        m_captureUnitOnEnteringBy.add(tempPlayer);
+        captureUnitOnEnteringBy.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -403,15 +403,15 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
-    m_captureUnitOnEnteringBy = value;
+    captureUnitOnEnteringBy = value;
   }
 
   public List<PlayerID> getCaptureUnitOnEnteringBy() {
-    return m_captureUnitOnEnteringBy;
+    return captureUnitOnEnteringBy;
   }
 
   private void resetCaptureUnitOnEnteringBy() {
-    m_captureUnitOnEnteringBy = new ArrayList<>();
+    captureUnitOnEnteringBy = new ArrayList<>();
   }
 
   private void setShareTechnology(final String value) throws GameParseException {
@@ -419,7 +419,7 @@ public class PlayerAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
-        m_shareTechnology.add(tempPlayer);
+        shareTechnology.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -427,15 +427,15 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setShareTechnology(final List<PlayerID> value) {
-    m_shareTechnology = value;
+    shareTechnology = value;
   }
 
   public List<PlayerID> getShareTechnology() {
-    return m_shareTechnology;
+    return shareTechnology;
   }
 
   private void resetShareTechnology() {
-    m_shareTechnology = new ArrayList<>();
+    shareTechnology = new ArrayList<>();
   }
 
   private void setHelpPayTechCost(final String value) throws GameParseException {
@@ -443,7 +443,7 @@ public class PlayerAttachment extends DefaultAttachment {
     for (final String name : temp) {
       final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
-        m_helpPayTechCost.add(tempPlayer);
+        helpPayTechCost.add(tempPlayer);
       } else {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -451,47 +451,47 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   private void setHelpPayTechCost(final List<PlayerID> value) {
-    m_helpPayTechCost = value;
+    helpPayTechCost = value;
   }
 
   public List<PlayerID> getHelpPayTechCost() {
-    return m_helpPayTechCost;
+    return helpPayTechCost;
   }
 
   private void resetHelpPayTechCost() {
-    m_helpPayTechCost = new ArrayList<>();
+    helpPayTechCost = new ArrayList<>();
   }
 
   private void setDestroysPUs(final String value) {
-    m_destroysPUs = getBool(value);
+    destroysPus = getBool(value);
   }
 
   private void setDestroysPUs(final Boolean value) {
-    m_destroysPUs = value;
+    destroysPus = value;
   }
 
   public boolean getDestroysPUs() {
-    return m_destroysPUs;
+    return destroysPus;
   }
 
   private void resetDestroysPUs() {
-    m_destroysPUs = false;
+    destroysPus = false;
   }
 
   private void setImmuneToBlockade(final String value) {
-    m_immuneToBlockade = getBool(value);
+    immuneToBlockade = getBool(value);
   }
 
   private void setImmuneToBlockade(final Boolean value) {
-    m_immuneToBlockade = value;
+    immuneToBlockade = value;
   }
 
   public boolean getImmuneToBlockade() {
-    return m_immuneToBlockade;
+    return immuneToBlockade;
   }
 
   private void resetImmuneToBlockade() {
-    m_immuneToBlockade = false;
+    immuneToBlockade = false;
   }
 
   @Override
