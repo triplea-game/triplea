@@ -36,6 +36,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
@@ -125,15 +126,16 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     try (CloseableHttpClient httpClient =
         HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
       final HttpPost httpPost = new HttpPost(m_props.getProperty("path"));
-      final List<NameValuePair> params = new ArrayList<>(8);
-      params.add(new BasicNameValuePair("numdice", "" + numDice));
-      params.add(new BasicNameValuePair("numsides", "" + max));
-      params.add(new BasicNameValuePair("modroll", "No"));
-      params.add(new BasicNameValuePair("numroll", "" + 1));
-      params.add(new BasicNameValuePair("subject", message));
-      params.add(new BasicNameValuePair("roller", getToAddress()));
-      params.add(new BasicNameValuePair("gm", getCcAddress()));
-      params.add(new BasicNameValuePair("send", "true"));
+      final List<NameValuePair> params = ImmutableList.of(
+        new BasicNameValuePair("numdice", "" + numDice),
+        new BasicNameValuePair("numsides", "" + max),
+        new BasicNameValuePair("modroll", "No"),
+        new BasicNameValuePair("numroll", "" + 1),
+        new BasicNameValuePair("subject", message),
+        new BasicNameValuePair("roller", getToAddress()),
+        new BasicNameValuePair("gm", getCcAddress()),
+        new BasicNameValuePair("send", "true")
+      );
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
       httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
       // this is to allow a dice server to allow the user to request the emails for the game

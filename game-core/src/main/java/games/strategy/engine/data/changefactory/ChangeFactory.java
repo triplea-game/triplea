@@ -1,8 +1,8 @@
 package games.strategy.engine.data.changefactory;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 import games.strategy.engine.data.BombingUnitDamageChange;
 import games.strategy.engine.data.Change;
@@ -74,9 +74,7 @@ public class ChangeFactory {
   }
 
   public static Change changeOwner(final Unit unit, final PlayerID owner, final Territory location) {
-    final List<Unit> list = new ArrayList<>(1);
-    list.add(unit);
-    return new PlayerOwnerChange(list, owner, location);
+    return new PlayerOwnerChange(Collections.singleton(unit), owner, location);
   }
 
   public static Change addUnits(final Territory territory, final Collection<Unit> units) {
@@ -96,10 +94,7 @@ public class ChangeFactory {
   }
 
   public static Change moveUnits(final Territory start, final Territory end, final Collection<Unit> units) {
-    final List<Change> changes = new ArrayList<>(2);
-    changes.add(removeUnits(start, units));
-    changes.add(addUnits(end, units));
-    return new CompositeChange(changes);
+    return new CompositeChange(Arrays.asList(removeUnits(start, units), addUnits(end, units)));
   }
 
   public static Change changeProductionFrontier(final PlayerID player, final ProductionFrontier frontier) {
