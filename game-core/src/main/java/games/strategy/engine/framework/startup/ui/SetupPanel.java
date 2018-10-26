@@ -72,7 +72,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     }
 
     final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
-    final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
+    final Map<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
     final List<PlayerID> players = data.getPlayerList().getPlayers();
 

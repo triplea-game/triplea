@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -226,7 +227,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // Find and test all the conditions for triggers and national objectives
     final Set<TriggerAttachment> triggers = new HashSet<>();
     final List<RulesAttachment> objectives = new ArrayList<>();
-    final HashMap<ICondition, Boolean> testedConditions =
+    final Map<ICondition, Boolean> testedConditions =
         testNationalObjectivesAndTriggers(player, data, bridge, triggers, objectives);
 
     // Find triggers value
@@ -264,7 +265,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     // Find and test all the conditions for triggers and national objectives
     final Set<TriggerAttachment> triggers = new HashSet<>();
     final List<RulesAttachment> objectives = new ArrayList<>();
-    final HashMap<ICondition, Boolean> testedConditions =
+    final Map<ICondition, Boolean> testedConditions =
         testNationalObjectivesAndTriggers(player, data, bridge, triggers, objectives);
 
     // Execute triggers
@@ -308,7 +309,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return endTurnReport.toString();
   }
 
-  private static HashMap<ICondition, Boolean> testNationalObjectivesAndTriggers(final PlayerID player,
+  private static Map<ICondition, Boolean> testNationalObjectivesAndTriggers(final PlayerID player,
       final GameData data, final IDelegateBridge bridge, final Set<TriggerAttachment> triggers,
       final List<RulesAttachment> objectives) {
 

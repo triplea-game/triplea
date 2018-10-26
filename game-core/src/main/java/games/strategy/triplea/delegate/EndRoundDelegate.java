@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
@@ -106,7 +107,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
           new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
-        final HashMap<ICondition, Boolean> testedConditions =
+        final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(

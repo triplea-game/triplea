@@ -181,9 +181,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * one to their boolean
    * value.
    */
-  public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final Set<ICondition> rules,
-      final HashMap<ICondition, Boolean> initialAllConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
-    final HashMap<ICondition, Boolean> allConditionsTestedSoFar = Optional.ofNullable(initialAllConditionsTestedSoFar)
+  public static Map<ICondition, Boolean> testAllConditionsRecursive(final Set<ICondition> rules,
+      final Map<ICondition, Boolean> initialAllConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
+    final Map<ICondition, Boolean> allConditionsTestedSoFar = Optional.ofNullable(initialAllConditionsTestedSoFar)
         .orElseGet(HashMap::new);
     for (final ICondition c : rules) {
       if (!allConditionsTestedSoFar.containsKey(c)) {

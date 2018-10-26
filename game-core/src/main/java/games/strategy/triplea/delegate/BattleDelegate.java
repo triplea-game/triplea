@@ -1287,20 +1287,20 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // now let the enemy decide if they will do attacks
       final Collection<Territory> kamikazeZones = entry.getValue();
-      final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack = new HashMap<>();
+      final Map<Territory, Collection<Unit>> possibleUnitsToAttack = new HashMap<>();
       for (final Territory t : kamikazeZones) {
         final List<Unit> validTargets = t.getUnits().getMatches(canBeAttacked);
         if (!validTargets.isEmpty()) {
           possibleUnitsToAttack.put(t, validTargets);
         }
       }
-      final Map<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks =
+      final Map<Territory, Map<Unit, IntegerMap<Resource>>> attacks =
           getRemotePlayer(currentEnemy).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
       if (attacks == null || attacks.isEmpty()) {
         continue;
       }
       // now validate that we have the resources and those units are valid targets
-      for (final Entry<Territory, HashMap<Unit, IntegerMap<Resource>>> territoryEntry : attacks.entrySet()) {
+      for (final Entry<Territory, Map<Unit, IntegerMap<Resource>>> territoryEntry : attacks.entrySet()) {
         final Territory t = territoryEntry.getKey();
         final Collection<Unit> possibleUnits = possibleUnitsToAttack.get(t);
         if (possibleUnits == null || !possibleUnits.containsAll(territoryEntry.getValue().keySet())) {
@@ -1313,7 +1313,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (!attackTokens.isPositive()) {
         throw new IllegalStateException("Player has chosen illegal resource during Kamikaze Suicide Attacks");
       }
-      for (final Entry<Territory, HashMap<Unit, IntegerMap<Resource>>> territoryEntry : attacks.entrySet()) {
+      for (final Entry<Territory, Map<Unit, IntegerMap<Resource>>> territoryEntry : attacks.entrySet()) {
         final Territory location = territoryEntry.getKey();
         for (final Entry<Unit, IntegerMap<Resource>> unitEntry : territoryEntry.getValue().entrySet()) {
           final Unit unitUnderFire = unitEntry.getKey();

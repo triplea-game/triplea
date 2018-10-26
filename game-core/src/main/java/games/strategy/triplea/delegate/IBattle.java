@@ -2,8 +2,8 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
@@ -56,7 +56,7 @@ public interface IBattle extends Serializable {
    *        targeting them mapped to each defending unit.
    * @return attack change object
    */
-  Change addAttackChange(Route route, Collection<Unit> units, HashMap<Unit, Set<Unit>> targets);
+  Change addAttackChange(Route route, Collection<Unit> units, Map<Unit, Set<Unit>> targets);
 
   /**
    * There are two distinct super-types of battles: Bombing battles, and Fighting battles.

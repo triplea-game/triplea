@@ -666,9 +666,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneTargettedByAa;
   }
 
-  public static HashMap<String, Set<UnitType>> getAirborneTargettedByAa(final PlayerID player,
+  public static Map<String, Set<UnitType>> getAirborneTargettedByAa(final PlayerID player,
       final GameData data) {
-    final HashMap<String, Set<UnitType>> airborneTargettedByAa = new HashMap<>();
+    final Map<String, Set<UnitType>> airborneTargettedByAa = new HashMap<>();
     for (final TechAdvance ta : TechTracker.getCurrentTechAdvances(player, data)) {
       final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
       if (taa != null) {

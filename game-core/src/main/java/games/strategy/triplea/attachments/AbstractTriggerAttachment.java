@@ -191,7 +191,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return testChance;
   }
 
-  public static Predicate<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
+  public static Predicate<TriggerAttachment> isSatisfiedMatch(final Map<ICondition, Boolean> testedConditions) {
     return t -> t.isSatisfied(testedConditions);
   }
 

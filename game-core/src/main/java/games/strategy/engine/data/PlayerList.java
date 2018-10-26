@@ -61,8 +61,8 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
         .collect(Collectors.toSet());
   }
 
-  public HashMap<String, Boolean> getPlayersEnabledListing() {
-    final HashMap<String, Boolean> playersEnabledListing = new HashMap<>();
+  public Map<String, Boolean> getPlayersEnabledListing() {
+    final Map<String, Boolean> playersEnabledListing = new HashMap<>();
     for (final PlayerID p : m_players.values()) {
       playersEnabledListing.put(p.getName(), !p.getIsDisabled());
     }

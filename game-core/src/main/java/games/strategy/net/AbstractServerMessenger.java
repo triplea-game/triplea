@@ -255,7 +255,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     return Optional.empty();
   }
 
-  private final HashMap<String, String> playersThatLeftMacsLast10 = new HashMap<>();
+  private final Map<String, String> playersThatLeftMacsLast10 = new HashMap<>();
 
   private void notifyPlayerRemoval(final INode node) {
     synchronized (cachedListLock) {

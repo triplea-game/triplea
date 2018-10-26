@@ -43,7 +43,7 @@ import games.strategy.util.IntegerMap;
 @MapSupport
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate {
   private int techCost;
-  private HashMap<PlayerID, Collection<TechAdvance>> techs;
+  private Map<PlayerID, Collection<TechAdvance>> techs;
   private TechnologyFrontier techCategory;
   private boolean needToInitialize = true;
 
@@ -80,7 +80,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           new HashSet<>(Collections.singleton(player)), technologyDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
-        final HashMap<ICondition, Boolean> testedConditions =
+        final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final List<TriggerAttachment> toFireTestedAndSatisfied =

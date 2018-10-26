@@ -102,7 +102,7 @@ public class TuvUtils {
       data.releaseReadLock();
     }
     final IntegerMap<UnitType> costs = new IntegerMap<>();
-    final HashMap<UnitType, List<Integer>> differentCosts = new HashMap<>();
+    final Map<UnitType, List<Integer>> differentCosts = new HashMap<>();
     for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
       // only works for the first result, so we are assuming each purchase frontier only gives one type of unit
       final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
@@ -170,7 +170,7 @@ public class TuvUtils {
    */
   public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTuv(final GameData data,
       final boolean includeAverageForMissingUnits) {
-    final HashMap<PlayerID, Map<UnitType, ResourceCollection>> result = new LinkedHashMap<>();
+    final Map<PlayerID, Map<UnitType, ResourceCollection>> result = new LinkedHashMap<>();
     final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits
         ? TuvUtils.getResourceCostsForTuvForAllPlayersMergedAndAveraged(data)
         : new HashMap<>();

@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 public class RelationshipTracker extends RelationshipInterpreter {
   private static final long serialVersionUID = -4740671761925519069L;
   // map of "playername:playername" to RelationshipType that exists between those 2 players
-  private final HashMap<RelatedPlayers, Relationship> m_relationships = new HashMap<>();
+  private final Map<RelatedPlayers, Relationship> m_relationships = new HashMap<>();
 
   public RelationshipTracker(final GameData data) {
     super(data);

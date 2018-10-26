@@ -355,7 +355,7 @@ class EditPanel extends ActionPanel {
             TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
-        final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
+        final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
             new HashMap<>();
         for (final Unit u : units) {
           currentDamageMap.put(u, Triple.of(UnitAttachment.get(u.getType()).getHitPoints() - 1, 0, u.getHits()));
@@ -403,7 +403,7 @@ class EditPanel extends ActionPanel {
             TuvUtils.getCostsForTuv(player, getData()), null, getData(), true, false));
         Collections.reverse(units);
         // unit mapped to <max, min, current>
-        final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
+        final Map<Unit, Triple<Integer, Integer, Integer>> currentDamageMap =
             new HashMap<>();
         for (final Unit u : units) {
           currentDamageMap.put(u,

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -39,7 +40,7 @@ import games.strategy.util.IntegerMap;
  */
 @MapSupport
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate {
-  // protected HashMap<ICondition, Boolean> m_testedConditions = null;
+  // protected Map<ICondition, Boolean> m_testedConditions = null;
   // private final boolean m_needToInitialize = true;
   /** Creates new PoliticsDelegate. */
   public PoliticsDelegate() {}
@@ -60,7 +61,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
           new HashSet<>(Collections.singleton(player)), politicsDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
-        final HashMap<ICondition, Boolean> testedConditions =
+        final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
@@ -96,7 +97,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     return Properties.getUsePolitics(getData()) && !getValidActions().isEmpty();
   }
 
-  public HashMap<ICondition, Boolean> getTestedConditions() {
+  public Map<ICondition, Boolean> getTestedConditions() {
     final Set<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
         new HashSet<>(PoliticalActionAttachment.getPoliticalActionAttachments(player)), null);
     return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
@@ -106,7 +107,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
   public Collection<PoliticalActionAttachment> getValidActions() {
     final GameData data = bridge.getData();
     data.acquireReadLock();
-    final HashMap<ICondition, Boolean> testedConditions;
+    final Map<ICondition, Boolean> testedConditions;
     try {
       testedConditions = getTestedConditions();
     } finally {

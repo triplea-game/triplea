@@ -164,7 +164,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     if (toFirePossible.isEmpty()) {
       return;
     }
-    final HashMap<ICondition, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, bridge);
+    final Map<ICondition, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, bridge);
     final List<TriggerAttachment> toFireTestedAndSatisfied =
         CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
     if (toFireTestedAndSatisfied.isEmpty()) {
@@ -183,14 +183,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return toFirePossible;
   }
 
-  public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final Set<TriggerAttachment> toFirePossible,
+  public static Map<ICondition, Boolean> collectTestsForAllTriggers(final Set<TriggerAttachment> toFirePossible,
       final IDelegateBridge bridge) {
     return collectTestsForAllTriggers(toFirePossible, bridge, null, null);
   }
 
-  static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final Set<TriggerAttachment> toFirePossible,
+  static Map<ICondition, Boolean> collectTestsForAllTriggers(final Set<TriggerAttachment> toFirePossible,
       final IDelegateBridge bridge, final Set<ICondition> allConditionsNeededSoFar,
-      final HashMap<ICondition, Boolean> allConditionsTestedSoFar) {
+      final Map<ICondition, Boolean> allConditionsTestedSoFar) {
     final Set<ICondition> allConditionsNeeded = AbstractConditionsAttachment
         .getAllConditionsRecursive(new HashSet<>(toFirePossible), allConditionsNeededSoFar);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, allConditionsTestedSoFar,
@@ -205,7 +205,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Then test the triggers using RulesAttachment.getAllConditionsRecursive, and RulesAttachment.testAllConditions
    */
   public static void fireTriggers(final Set<TriggerAttachment> triggersToBeFired,
-      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge,
+      final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
     // all triggers at this point have their conditions satisfied
@@ -2263,7 +2263,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return resources;
   }
 
-  public static void triggerActivateTriggerOther(final HashMap<ICondition, Boolean> testedConditionsSoFar,
+  public static void triggerActivateTriggerOther(final Map<ICondition, Boolean> testedConditionsSoFar,
       final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge, final String beforeOrAfter,
       final String stepName, final boolean useUses, final boolean testUses, final boolean testChance,
       final boolean testWhen) {

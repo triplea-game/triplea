@@ -191,7 +191,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     }
 
     @Override
-    public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+    public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
         final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
       throw new UnsupportedOperationException();
     }

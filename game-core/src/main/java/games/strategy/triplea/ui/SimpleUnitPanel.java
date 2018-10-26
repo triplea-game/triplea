@@ -2,7 +2,7 @@ package games.strategy.triplea.ui;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -62,7 +62,7 @@ public class SimpleUnitPanel extends JPanel {
    * @param units a HashMap in the form RepairRule -> number of units
    *        assumes that each repair rule has 1 result, which is simply the number of units.
    */
-  public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
+  public void setUnitsFromRepairRuleMap(final Map<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
       final GameData data) {
     removeAll();
     final Set<Unit> entries = units.keySet();

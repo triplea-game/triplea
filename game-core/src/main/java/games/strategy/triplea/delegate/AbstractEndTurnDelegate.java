@@ -395,7 +395,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     int totalLoss = 0;
     final boolean rollDiceForBlockadeDamage = Properties.getConvoyBlockadesRollDiceForCost(data);
     final Collection<String> transcripts = new ArrayList<>();
-    final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone =
+    final Map<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone =
         new HashMap<>();
     boolean rolledDice = false;
     for (final Territory b : blockable) {

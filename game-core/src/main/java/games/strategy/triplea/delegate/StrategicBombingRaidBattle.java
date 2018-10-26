@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -46,7 +47,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private static final long serialVersionUID = 8490171037606078890L;
   private static final String RAID = "Strategic bombing raid";
   // these would be the factories or other targets. does not include aa.
-  private final HashMap<Unit, Set<Unit>> m_targets = new HashMap<>();
+  private final Map<Unit, Set<Unit>> m_targets = new HashMap<>();
   private final ExecutionStack m_stack = new ExecutionStack();
   private List<String> m_steps;
   private List<Unit> m_defendingAA;
@@ -84,7 +85,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   protected void updateDefendingUnits() {
     // fill in defenders
-    final HashMap<String, Set<UnitType>> airborneTechTargetsAllowed =
+    final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     final Predicate<Unit> defenders = Matches.enemyUnit(m_attacker, m_data)
         .and(Matches.unitCanBeDamaged()
@@ -133,7 +134,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   @Override
   public Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, Set<Unit>> targets) {
+      final Map<Unit, Set<Unit>> targets) {
     m_attackingUnits.addAll(units);
     if (targets == null) {
       return ChangeFactory.EMPTY_CHANGE;
@@ -169,7 +170,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
     BattleCalculator.sortPreBattle(m_attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
-    final HashMap<String, Set<UnitType>> airborneTechTargetsAllowed =
+    final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     m_defendingAA = m_battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
@@ -656,7 +657,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
 
     private void addToTargetDiceMap(final Unit attackerUnit, final Die roll,
-        final HashMap<Unit, List<Die>> targetToDiceMap) {
+        final Map<Unit, List<Die>> targetToDiceMap) {
       if (m_targets.isEmpty()) {
         return;
       }
@@ -680,7 +681,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       int index = 0;
       final boolean limitDamage = isWW2V2() || isLimitSbrDamageToProduction();
       final List<Die> dice = new ArrayList<>();
-      final HashMap<Unit, List<Die>> targetToDiceMap = new HashMap<>();
+      final Map<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage
       for (final Unit attacker : m_attackingUnits) {
         final UnitAttachment ua = UnitAttachment.get(attacker.getType());

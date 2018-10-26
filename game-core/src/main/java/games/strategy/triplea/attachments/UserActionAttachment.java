@@ -101,7 +101,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,
-      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
+      final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
@@ -152,7 +152,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
    * Returns the valid actions for this player.
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
-      final HashMap<ICondition, Boolean> testedConditions) {
+      final Map<ICondition, Boolean> testedConditions) {
     return CollectionUtils.getMatches(getUserActionAttachments(player),
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions));
   }

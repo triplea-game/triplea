@@ -244,7 +244,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     private synchronized void loadData() {
       gameData.acquireReadLock();
       try {
-        final HashMap<ICondition, String> conditions = getConditionComment(getTestedConditions());
+        final Map<ICondition, String> conditions = getConditionComment(getTestedConditions());
         collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
         int row = 0;
         for (final Entry<String, Map<ICondition, String>> mapEntry : statsObjective.entrySet()) {
@@ -264,8 +264,8 @@ public class ObjectivePanel extends AbstractStatPanel {
       }
     }
 
-    public HashMap<ICondition, String> getConditionComment(final HashMap<ICondition, Boolean> testedConditions) {
-      final HashMap<ICondition, String> conditionsComments = new HashMap<>(testedConditions.size());
+    public Map<ICondition, String> getConditionComment(final Map<ICondition, Boolean> testedConditions) {
+      final Map<ICondition, String> conditionsComments = new HashMap<>(testedConditions.size());
       for (final Entry<ICondition, Boolean> entry : testedConditions.entrySet()) {
         final boolean satisfied = entry.getValue();
         if (entry.getKey() instanceof TriggerAttachment) {
@@ -303,7 +303,7 @@ public class ObjectivePanel extends AbstractStatPanel {
       return conditionsComments;
     }
 
-    public HashMap<ICondition, Boolean> getTestedConditions() {
+    public Map<ICondition, Boolean> getTestedConditions() {
       final Set<ICondition> myConditions = new HashSet<>();
       for (final Map<ICondition, String> map : statsObjective.values()) {
         myConditions.addAll(map.keySet());

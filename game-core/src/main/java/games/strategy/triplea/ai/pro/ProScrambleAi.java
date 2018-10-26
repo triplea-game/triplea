@@ -37,7 +37,7 @@ class ProScrambleAi {
     calc = ai.getCalc();
   }
 
-  HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
 
     // Get battle data
@@ -121,7 +121,7 @@ class ProScrambleAi {
     }
 
     // Return units to scramble
-    final HashMap<Territory, Collection<Unit>> scrambleMap = new HashMap<>();
+    final Map<Territory, Collection<Unit>> scrambleMap = new HashMap<>();
     for (final Territory t : possibleScramblers.keySet()) {
       for (final Unit u : possibleScramblers.get(t).getSecond()) {
         if (unitsToScramble.contains(u)) {

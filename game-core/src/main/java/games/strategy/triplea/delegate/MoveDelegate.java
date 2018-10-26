@@ -73,7 +73,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // TODO create new delegate called "start of turn" and move them there.
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR. use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      HashMap<ICondition, Boolean> testedConditions = null;
+      Map<ICondition, Boolean> testedConditions = null;
       final Predicate<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
           AbstractTriggerAttachment.availableUses
               .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))

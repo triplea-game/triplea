@@ -147,7 +147,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    * Returns the valid actions for this player.
    */
   public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,
-      final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
+      final Map<ICondition, Boolean> testedConditions, final GameData data) {
     if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }

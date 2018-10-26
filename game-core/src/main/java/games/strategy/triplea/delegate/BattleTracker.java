@@ -75,7 +75,7 @@ public class BattleTracker implements Serializable {
   // TODO: fix typo in name, 'fough' -> 'fought'
   private final Set<Territory> m_foughBattles = new HashSet<>();
   // list of territory we have conquered in a FinishedBattle and where from and if amphibious
-  private final HashMap<Territory, Map<Territory, Collection<Unit>>> m_finishedBattlesUnitAttackFromMap =
+  private final Map<Territory, Map<Territory, Collection<Unit>>> m_finishedBattlesUnitAttackFromMap =
       new HashMap<>();
   // things like kamikaze suicide attacks disallow bombarding from that sea zone for that turn
   private final Set<Territory> m_noBombardAllowed = new HashSet<>();
@@ -135,7 +135,7 @@ public class BattleTracker implements Serializable {
     m_noBombardAllowed.add(t);
   }
 
-  public HashMap<Territory, Map<Territory, Collection<Unit>>> getFinishedBattlesUnitAttackFromMap() {
+  public Map<Territory, Map<Territory, Collection<Unit>>> getFinishedBattlesUnitAttackFromMap() {
     return m_finishedBattlesUnitAttackFromMap;
   }
 
@@ -256,7 +256,7 @@ public class BattleTracker implements Serializable {
   }
 
   private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker,
-      final GameData data, final HashMap<Unit, Set<Unit>> targets) {
+      final GameData data, final Map<Unit, Set<Unit>> targets) {
     IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
     if (battle == null) {
       battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, this);
@@ -287,7 +287,7 @@ public class BattleTracker implements Serializable {
 
   void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id,
       final IDelegateBridge bridge, final UndoableMove changeTracker,
-      final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, Set<Unit>> targets,
+      final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final Map<Unit, Set<Unit>> targets,
       final boolean airBattleCompleted) {
     final GameData data = bridge.getData();
     if (bombing) {

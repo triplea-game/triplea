@@ -58,7 +58,7 @@ public abstract class TechAdvance extends NamedAttachable {
       createPreDefinedTechnologyMap();
 
   private static Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
-    final HashMap<String, Class<? extends TechAdvance>> preDefinedTechMap =
+    final Map<String, Class<? extends TechAdvance>> preDefinedTechMap =
         new HashMap<>();
     preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class);

@@ -216,7 +216,7 @@ public class MovePerformer implements Serializable {
                 targetedAttack = false;
               } else {
                 targetedAttack = true;
-                final HashMap<Unit, Set<Unit>> targets = new HashMap<>();
+                final Map<Unit, Set<Unit>> targets = new HashMap<>();
                 targets.put(target, new HashSet<>(arrived));
                 // createdBattle = true;
                 getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, MovePerformer.this.bridge,

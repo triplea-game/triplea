@@ -58,7 +58,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   /**
    * Indicates there is no condition to this action or if the condition is satisfied.
    */
-  public boolean canPerform(final HashMap<ICondition, Boolean> testedConditions) {
+  public boolean canPerform(final Map<ICondition, Boolean> testedConditions) {
     return conditions == null || isSatisfied(testedConditions);
   }
 

@@ -344,7 +344,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     // placements of the producer that could be redone by other territories
     final List<UndoablePlacement> redoPlacements = new ArrayList<>();
     // territories the producer produced for (but not itself) and the amount of units it produced
-    final HashMap<Territory, Integer> redoPlacementsCount = new HashMap<>();
+    final Map<Territory, Integer> redoPlacementsCount = new HashMap<>();
     // find map place territory -> possible free space for producer
     for (final UndoablePlacement placement : placements) {
       // find placement move of producer that can be taken over

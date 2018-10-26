@@ -389,7 +389,7 @@ public class ProAi extends AbstractAi {
   }
 
   @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     initializeData();
 

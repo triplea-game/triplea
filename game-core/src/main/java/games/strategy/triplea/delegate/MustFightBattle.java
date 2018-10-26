@@ -178,7 +178,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @Override
   public Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, Set<Unit>> targets) {
+      final Map<Unit, Set<Unit>> targets) {
     final CompositeChange change = new CompositeChange();
     // Filter out allied units if WW2V2
     final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(m_attacker);
@@ -252,7 +252,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> canFire = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
     canFire.addAll(m_defendingUnits);
     canFire.addAll(m_defendingWaitingToDie);
-    final HashMap<String, Set<UnitType>> airborneTechTargetsAllowed =
+    final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     m_defendingAA = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForCombatOnly(), m_round, true, m_data));

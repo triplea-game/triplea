@@ -44,7 +44,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
   PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
       final Map<String, String> reloadSelections, final Collection<String> disableable,
-      final HashMap<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
+      final Map<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
       final SetupPanel parent, final GameProperties gameProperties) {
     this.disableable = disableable;
     this.parent = parent;

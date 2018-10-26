@@ -91,7 +91,7 @@ final class ProTechAi {
     @Nullable
     PlayerID enemyPlayer = null;
     final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
-    final HashMap<PlayerID, Float> enemyPlayerAttackMap = new HashMap<>();
+    final Map<PlayerID, Float> enemyPlayerAttackMap = new HashMap<>();
     final Iterator<PlayerID> playerIter = enemyPlayers.iterator();
     if (location == null) {
       return -1000.0F;

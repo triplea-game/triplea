@@ -186,7 +186,7 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no move was made.
    */
-  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+  public Map<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
     return repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }

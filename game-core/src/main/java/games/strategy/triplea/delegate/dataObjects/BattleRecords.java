@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import games.strategy.engine.data.PlayerID;
@@ -21,14 +22,14 @@ import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 public class BattleRecords implements Serializable {
   private static final long serialVersionUID = 1473664374777905497L;
 
-  private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records;
+  private final Map<PlayerID, Map<GUID, BattleRecord>> m_records;
 
 
   public BattleRecords() {
     this.m_records = new HashMap<>();
   }
 
-  public BattleRecords(final HashMap<PlayerID, HashMap<GUID, BattleRecord>> records) {
+  public BattleRecords(final Map<PlayerID, Map<GUID, BattleRecord>> records) {
     this.m_records = records;
   }
 
@@ -40,7 +41,7 @@ public class BattleRecords implements Serializable {
   @SerializationProxySupport
   private static class SerializationProxy implements Serializable {
     private static final long serialVersionUID = 3837818110273155404L;
-    private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> records;
+    private final Map<PlayerID, Map<GUID, BattleRecord>> records;
 
     public SerializationProxy(final BattleRecords battleRecords) {
       this.records = battleRecords.m_records;
@@ -55,10 +56,10 @@ public class BattleRecords implements Serializable {
   // Create copy
   public BattleRecords(final BattleRecords records) {
     m_records = new HashMap<>();
-    for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : records.m_records.entrySet()) {
+    for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : records.m_records.entrySet()) {
       final PlayerID p = entry.getKey();
-      final HashMap<GUID, BattleRecord> record = entry.getValue();
-      final HashMap<GUID, BattleRecord> map = new HashMap<>();
+      final Map<GUID, BattleRecord> record = entry.getValue();
+      final Map<GUID, BattleRecord> map = new HashMap<>();
       for (final Entry<GUID, BattleRecord> entry2 : record.entrySet()) {
         map.put(entry2.getKey(), new BattleRecord(entry2.getValue()));
       }
@@ -68,7 +69,7 @@ public class BattleRecords implements Serializable {
 
   public static Collection<BattleRecord> getAllRecords(final BattleRecords brs) {
     final Collection<BattleRecord> records = new ArrayList<>();
-    for (final HashMap<GUID, BattleRecord> playerMap : brs.m_records.values()) {
+    for (final Map<GUID, BattleRecord> playerMap : brs.m_records.values()) {
       records.addAll(playerMap.values());
     }
     return records;
@@ -127,12 +128,12 @@ public class BattleRecords implements Serializable {
   }
 
   public void removeBattle(final PlayerID currentPlayer, final GUID battleId) {
-    final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
+    final Map<GUID, BattleRecord> current = m_records.get(currentPlayer);
     // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
     // under a different
     // player.
     if (current == null || !current.containsKey(battleId)) {
-      for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : m_records.entrySet()) {
+      for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : m_records.entrySet()) {
         if (entry.getValue() != null && entry.getValue().containsKey(battleId)) {
           entry.getValue().remove(battleId);
           return;
@@ -145,12 +146,12 @@ public class BattleRecords implements Serializable {
 
   public void addRecord(final BattleRecords other) {
     for (final PlayerID p : other.m_records.keySet()) {
-      final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
+      final Map<GUID, BattleRecord> currentRecord = m_records.get(p);
       if (currentRecord != null) {
         // this only comes up if we use edit mode to create an attack for a player who's already had their turn and
         // therefore already has
         // their record.
-        final HashMap<GUID, BattleRecord> additionalRecords = other.m_records.get(p);
+        final Map<GUID, BattleRecord> additionalRecords = other.m_records.get(p);
         for (final Entry<GUID, BattleRecord> entry : additionalRecords.entrySet()) {
           final GUID guid = entry.getKey();
           final BattleRecord br = entry.getValue();
@@ -169,11 +170,11 @@ public class BattleRecords implements Serializable {
 
   public void removeRecord(final BattleRecords other) {
     for (final PlayerID p : other.m_records.keySet()) {
-      final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
+      final Map<GUID, BattleRecord> currentRecord = m_records.get(p);
       if (currentRecord == null) {
         throw new IllegalStateException("Trying to remove a player records but records do not exist");
       }
-      final HashMap<GUID, BattleRecord> toRemoveRecords = other.m_records.get(p);
+      final Map<GUID, BattleRecord> toRemoveRecords = other.m_records.get(p);
       for (final Entry<GUID, BattleRecord> entry : toRemoveRecords.entrySet()) {
         final GUID guid = entry.getKey();
         if (!currentRecord.containsKey(guid)) {
@@ -186,7 +187,7 @@ public class BattleRecords implements Serializable {
 
   public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleId, final Territory battleSite,
       final BattleType battleType) {
-    HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
+    Map<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
     if (current == null) {
       current = new HashMap<>();
     }
@@ -198,7 +199,7 @@ public class BattleRecords implements Serializable {
   public void addResultToBattle(final PlayerID currentPlayer, final GUID battleId, final PlayerID defender,
       final int attackerLostTuv, final int defenderLostTuv, final BattleResultDescription battleResultDescription,
       final BattleResults battleResults) {
-    final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
+    final Map<GUID, BattleRecord> current = m_records.get(currentPlayer);
     if (current == null) {
       throw new IllegalStateException("Trying to add info to battle records that do not exist");
     }
@@ -220,7 +221,7 @@ public class BattleRecords implements Serializable {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder("[");
-    for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : m_records.entrySet()) {
+    for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : m_records.entrySet()) {
       sb.append(", ");
       sb.append(entry.getKey().getName());
       sb.append("={");

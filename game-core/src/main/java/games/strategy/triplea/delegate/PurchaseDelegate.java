@@ -71,7 +71,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
             new HashSet<>(Collections.singleton(player)), purchaseDelegateTriggerMatch);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.
-          final HashMap<ICondition, Boolean> testedConditions =
+          final Map<ICondition, Boolean> testedConditions =
               TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
           // get all triggers that are satisfied based on the tested conditions.
           final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
