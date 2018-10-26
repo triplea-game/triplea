@@ -13,10 +13,10 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.framework.GameDataUtils;
+import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.MustFightBattle;
-import games.strategy.triplea.delegate.BattleResults;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private GameData gameData;
