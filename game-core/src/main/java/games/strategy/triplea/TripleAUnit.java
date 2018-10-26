@@ -56,42 +56,43 @@ public class TripleAUnit extends Unit {
   public static final String LAUNCHED = "launched";
   public static final String AIRBORNE = "airborne";
   public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
+
   // the transport that is currently transporting us
-  private TripleAUnit m_transportedBy = null;
+  private TripleAUnit transportedBy = null;
   // the units we have unloaded this turn
-  private List<Unit> m_unloaded = Collections.emptyList();
+  private List<Unit> unloaded = Collections.emptyList();
   // was this unit loaded this turn?
-  private boolean m_wasLoadedThisTurn = false;
+  private boolean wasLoadedThisTurn = false;
   // the territory this unit was unloaded to this turn
-  private Territory m_unloadedTo = null;
+  private Territory unloadedTo = null;
   // was this unit unloaded in combat phase this turn?
-  private boolean m_wasUnloadedInCombatPhase = false;
+  private boolean wasUnloadedInCombatPhase = false;
   // movement used this turn
-  private int m_alreadyMoved = 0;
+  private int alreadyMoved = 0;
   // movement used this turn
-  private int m_bonusMovement = 0;
+  private int bonusMovement = 0;
   // amount of damage unit has sustained
-  private int m_unitDamage = 0;
+  private int unitDamage = 0;
   // is this submarine submerged
-  private boolean m_submerged = false;
+  private boolean submerged = false;
   // original owner of this unit
-  private PlayerID m_originalOwner = null;
+  private PlayerID originalOwner = null;
   // Was this unit in combat
-  private boolean m_wasInCombat = false;
-  private boolean m_wasLoadedAfterCombat = false;
-  private boolean m_wasAmphibious = false;
+  private boolean wasInCombat = false;
+  private boolean wasLoadedAfterCombat = false;
+  private boolean wasAmphibious = false;
   // the territory this unit started in (for use with scrambling)
-  private Territory m_originatedFrom = null;
-  private boolean m_wasScrambled = false;
-  private int m_maxScrambleCount = -1;
-  private boolean m_wasInAirBattle = false;
-  private boolean m_disabled = false;
+  private Territory originatedFrom = null;
+  private boolean wasScrambled = false;
+  private int maxScrambleCount = -1;
+  private boolean wasInAirBattle = false;
+  private boolean disabled = false;
   // the number of airborne units launched by this unit this turn
-  private int m_launched = 0;
+  private int launched = 0;
   // was this unit airborne and launched this turn
-  private boolean m_airborne = false;
+  private boolean airborne = false;
   // was charged flat fuel cost already this turn
-  private boolean m_chargedFlatFuelCost = false;
+  private boolean chargedFlatFuelCost = false;
 
   public static TripleAUnit get(final Unit u) {
     return (TripleAUnit) u;
@@ -102,11 +103,11 @@ public class TripleAUnit extends Unit {
   }
 
   public TripleAUnit getTransportedBy() {
-    return m_transportedBy;
+    return transportedBy;
   }
 
   private void setTransportedBy(final TripleAUnit transportedBy) {
-    m_transportedBy = transportedBy;
+    this.transportedBy = transportedBy;
   }
 
   /**
@@ -131,74 +132,74 @@ public class TripleAUnit extends Unit {
   }
 
   public List<Unit> getUnloaded() {
-    return m_unloaded;
+    return unloaded;
   }
 
   private void setUnloaded(final List<Unit> unloaded) {
     if (unloaded == null || unloaded.isEmpty()) {
-      m_unloaded = Collections.emptyList();
+      this.unloaded = Collections.emptyList();
     } else {
-      m_unloaded = new ArrayList<>(unloaded);
+      this.unloaded = new ArrayList<>(unloaded);
     }
   }
 
   public boolean getWasLoadedThisTurn() {
-    return m_wasLoadedThisTurn;
+    return wasLoadedThisTurn;
   }
 
   private void setWasLoadedThisTurn(final boolean value) {
-    m_wasLoadedThisTurn = value;
+    wasLoadedThisTurn = value;
   }
 
   public Territory getUnloadedTo() {
-    return m_unloadedTo;
+    return unloadedTo;
   }
 
   private void setUnloadedTo(final Territory unloadedTo) {
-    m_unloadedTo = unloadedTo;
+    this.unloadedTo = unloadedTo;
   }
 
   public Territory getOriginatedFrom() {
-    return m_originatedFrom;
+    return originatedFrom;
   }
 
   private void setOriginatedFrom(final Territory t) {
-    m_originatedFrom = t;
+    originatedFrom = t;
   }
 
   public boolean getWasUnloadedInCombatPhase() {
-    return m_wasUnloadedInCombatPhase;
+    return wasUnloadedInCombatPhase;
   }
 
   private void setWasUnloadedInCombatPhase(final boolean value) {
-    m_wasUnloadedInCombatPhase = value;
+    wasUnloadedInCombatPhase = value;
   }
 
   public int getAlreadyMoved() {
-    return m_alreadyMoved;
+    return alreadyMoved;
   }
 
   public void setAlreadyMoved(final int alreadyMoved) {
-    m_alreadyMoved = alreadyMoved;
+    this.alreadyMoved = alreadyMoved;
   }
 
   private void setBonusMovement(final int bonusMovement) {
-    m_bonusMovement = bonusMovement;
+    this.bonusMovement = bonusMovement;
   }
 
   public int getBonusMovement() {
-    return m_bonusMovement;
+    return bonusMovement;
   }
 
   /**
    * Does not account for any movement already made. Generally equal to UnitType movement
    */
   public int getMaxMovementAllowed() {
-    return Math.max(0, m_bonusMovement + UnitAttachment.get(getType()).getMovement(getOwner()));
+    return Math.max(0, bonusMovement + UnitAttachment.get(getType()).getMovement(getOwner()));
   }
 
   public int getMovementLeft() {
-    return Math.max(0, UnitAttachment.get(getType()).getMovement(getOwner()) + m_bonusMovement - m_alreadyMoved);
+    return Math.max(0, UnitAttachment.get(getType()).getMovement(getOwner()) + bonusMovement - alreadyMoved);
   }
 
   public static Tuple<Integer, Integer> getMinAndMaxMovementLeft(final Collection<Unit> units) {
@@ -220,107 +221,107 @@ public class TripleAUnit extends Unit {
   }
 
   public int getUnitDamage() {
-    return m_unitDamage;
+    return unitDamage;
   }
 
   public void setUnitDamage(final int unitDamage) {
-    m_unitDamage = unitDamage;
+    this.unitDamage = unitDamage;
   }
 
   public boolean getSubmerged() {
-    return m_submerged;
+    return submerged;
   }
 
   public void setSubmerged(final boolean submerged) {
-    m_submerged = submerged;
+    this.submerged = submerged;
   }
 
   public PlayerID getOriginalOwner() {
-    return m_originalOwner;
+    return originalOwner;
   }
 
   private void setOriginalOwner(final PlayerID originalOwner) {
-    m_originalOwner = originalOwner;
+    this.originalOwner = originalOwner;
   }
 
   public boolean getWasInCombat() {
-    return m_wasInCombat;
+    return wasInCombat;
   }
 
   private void setWasInCombat(final boolean value) {
-    m_wasInCombat = value;
+    wasInCombat = value;
   }
 
   public boolean getWasScrambled() {
-    return m_wasScrambled;
+    return wasScrambled;
   }
 
   private void setWasScrambled(final boolean value) {
-    m_wasScrambled = value;
+    wasScrambled = value;
   }
 
   public int getMaxScrambleCount() {
-    return m_maxScrambleCount;
+    return maxScrambleCount;
   }
 
   private void setMaxScrambleCount(final int value) {
-    m_maxScrambleCount = value;
+    maxScrambleCount = value;
   }
 
   public int getLaunched() {
-    return m_launched;
+    return launched;
   }
 
   private void setLaunched(final int value) {
-    m_launched = value;
+    launched = value;
   }
 
   public boolean getAirborne() {
-    return m_airborne;
+    return airborne;
   }
 
   private void setAirborne(final boolean value) {
-    m_airborne = value;
+    airborne = value;
   }
 
   public boolean getChargedFlatFuelCost() {
-    return m_chargedFlatFuelCost;
+    return chargedFlatFuelCost;
   }
 
   private void setChargedFlatFuelCost(final boolean value) {
-    m_chargedFlatFuelCost = value;
+    chargedFlatFuelCost = value;
   }
 
   private void setWasInAirBattle(final boolean value) {
-    m_wasInAirBattle = value;
+    wasInAirBattle = value;
   }
 
   public boolean getWasInAirBattle() {
-    return m_wasInAirBattle;
+    return wasInAirBattle;
   }
 
   public boolean getWasLoadedAfterCombat() {
-    return m_wasLoadedAfterCombat;
+    return wasLoadedAfterCombat;
   }
 
   private void setWasLoadedAfterCombat(final boolean value) {
-    m_wasLoadedAfterCombat = value;
+    wasLoadedAfterCombat = value;
   }
 
   public boolean getWasAmphibious() {
-    return m_wasAmphibious;
+    return wasAmphibious;
   }
 
   private void setWasAmphibious(final boolean value) {
-    m_wasAmphibious = value;
+    wasAmphibious = value;
   }
 
   public boolean getDisabled() {
-    return m_disabled;
+    return disabled;
   }
 
   private void setDisabled(final boolean value) {
-    m_disabled = value;
+    disabled = value;
   }
 
   /**
@@ -473,7 +474,7 @@ public class TripleAUnit extends Unit {
   public static Change translateAttributesToOtherUnits(final Unit unitGivingAttributes,
       final Collection<Unit> unitsThatWillGetAttributes, final Territory t) {
     final CompositeChange changes = new CompositeChange();
-    // must look for m_hits, m_unitDamage,
+    // must look for hits, unitDamage,
     final TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
     final int combatDamage = taUnit.getHits();
     final IntegerMap<Unit> hits = new IntegerMap<>();
