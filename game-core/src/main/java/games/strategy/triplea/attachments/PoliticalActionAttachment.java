@@ -2,7 +2,6 @@ package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +146,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
    * Returns the valid actions for this player.
    */
   public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,
-      final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
+      final Map<ICondition, Boolean> testedConditions, final GameData data) {
     if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }

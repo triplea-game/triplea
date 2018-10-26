@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -191,7 +190,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     }
 
     @Override
-    public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+    public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
         final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
       throw new UnsupportedOperationException();
     }

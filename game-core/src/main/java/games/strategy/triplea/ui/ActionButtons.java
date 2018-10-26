@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.CardLayout;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -186,7 +185,7 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no move was made.
    */
-  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+  public Map<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
     return repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }

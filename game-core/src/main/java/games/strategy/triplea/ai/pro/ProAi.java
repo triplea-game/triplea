@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.pro;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -389,7 +388,7 @@ public class ProAi extends AbstractAi {
   }
 
   @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     initializeData();
 

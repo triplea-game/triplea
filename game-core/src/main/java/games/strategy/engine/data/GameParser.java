@@ -1216,7 +1216,7 @@ public final class GameParser {
           .orElseThrow(() -> newGameParseException("Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
 
-      final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
+      final List<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
       // keep a list of attachment references in the order they were added
       data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
     }
@@ -1244,9 +1244,9 @@ public final class GameParser {
     }
   }
 
-  private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
+  private List<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
-    final ArrayList<Tuple<String, String>> options = new ArrayList<>();
+    final List<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // decapitalize the property name for backwards compatibility
       final String name = decapitalize(current.getAttribute("name"));

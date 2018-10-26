@@ -790,7 +790,7 @@ public class WeakAi extends AbstractAi {
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       repairRules = player.getRepairFrontier().getRules();
       final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
-      final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
+      final Map<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
       final Map<Unit, Territory> unitsThatCanProduceNeedingRepair = new HashMap<>();
       final int minimumUnitPrice = 3;
       int diff;

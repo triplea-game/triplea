@@ -111,7 +111,7 @@ class ProPurchaseAi {
           if (diff > 0) {
             final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
             repairMap.add(rrule, diff);
-            final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
+            final Map<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
             repair.put(fixUnit, repairMap);
             pusRemaining -= diff;
             ProLogger.debug("Repairing factory=" + fixUnit + ", damage=" + diff + ", repairRule=" + rrule);

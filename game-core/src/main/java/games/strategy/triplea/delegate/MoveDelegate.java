@@ -73,7 +73,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // TODO create new delegate called "start of turn" and move them there.
       // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
       // OR. use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      HashMap<ICondition, Boolean> testedConditions = null;
+      Map<ICondition, Boolean> testedConditions = null;
       final Predicate<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch =
           AbstractTriggerAttachment.availableUses
               .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
@@ -91,14 +91,14 @@ public class MoveDelegate extends AbstractMoveDelegate {
       final Predicate<TriggerAttachment> moveCombatDelegateAllTriggerMatch = moveCombatDelegateBeforeBonusTriggerMatch
           .or(moveCombatDelegateAfterBonusTriggerMatch);
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
-        final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+        final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(player)), moveCombatDelegateAllTriggerMatch);
         if (!toFirePossible.isEmpty()) {
 
           // collect conditions and test them for ALL triggers, both those that we will fire before and those we will
           // fire after.
           testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
-          final HashSet<TriggerAttachment> toFireBeforeBonus =
+          final Set<TriggerAttachment> toFireBeforeBonus =
               TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(player)),
                   moveCombatDelegateBeforeBonusTriggerMatch);
           if (!toFireBeforeBonus.isEmpty()) {
@@ -143,7 +143,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
       // placing triggered units at beginning of combat move, but after bonuses and repairing, etc, have been done.
       if (GameStepPropertiesHelper.isCombatMove(data) && Properties.getTriggers(data)) {
-        final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(
+        final Set<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(player)), moveCombatDelegateAfterBonusTriggerMatch);
         if (!toFireAfterBonus.isEmpty()) {
 

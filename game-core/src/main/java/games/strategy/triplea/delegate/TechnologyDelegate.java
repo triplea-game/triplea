@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
@@ -42,7 +43,7 @@ import games.strategy.util.IntegerMap;
 @MapSupport
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate {
   private int techCost;
-  private HashMap<PlayerID, Collection<TechAdvance>> techs;
+  private Map<PlayerID, Collection<TechAdvance>> techs;
   private TechnologyFrontier techCategory;
   private boolean needToInitialize = true;
 
@@ -75,11 +76,11 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
           .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
           .and(TriggerAttachment.techAvailableMatch());
       // get all possible triggers based on this match.
-      final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+      final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(player)), technologyDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
-        final HashMap<ICondition, Boolean> testedConditions =
+        final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final List<TriggerAttachment> toFireTestedAndSatisfied =

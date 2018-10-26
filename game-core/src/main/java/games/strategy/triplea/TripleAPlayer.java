@@ -374,7 +374,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
           damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits().getUnits(), myDamaged));
         }
         if (damagedUnits.size() > 0) {
-          final HashMap<Unit, IntegerMap<RepairRule>> repair =
+          final Map<Unit, IntegerMap<RepairRule>> repair =
               ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
           if (repair != null) {
             final IPurchaseDelegate purchaseDel;
@@ -617,7 +617,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     return ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
@@ -651,8 +651,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
-      final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack) {
+  public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+      final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
     final PlayerID id = getPlayerId();
     final PlayerAttachment pa = PlayerAttachment.get(id);
     if (pa == null) {
@@ -673,7 +673,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
+    final Map<Territory, Map<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
     for (final Entry<Resource, Integer> entry : attackTokens.entrySet()) {
       final Resource resource = entry.getKey();
       final int max = entry.getValue();
@@ -681,7 +681,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
           ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, resource, max);
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
         final Territory territory = selectionEntry.getKey();
-        final HashMap<Unit, IntegerMap<Resource>> currentTerr =
+        final Map<Unit, IntegerMap<Resource>> currentTerr =
             kamikazeSuicideAttacks.getOrDefault(territory, new HashMap<>());
         for (final Entry<Unit, Integer> unitEntry : selectionEntry.getValue().entrySet()) {
           final Unit unit = unitEntry.getKey();

@@ -187,7 +187,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     return null;
   }
@@ -238,8 +238,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
-      final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack) {
+  public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+      final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
     final PlayerID id = getPlayerId();
     // we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
     final PlayerAttachment pa = PlayerAttachment.get(id);
@@ -261,7 +261,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
+    final Map<Territory, Map<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
     for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet()) {
       if (attackTokens.size() <= 0) {
         continue;
@@ -278,7 +278,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
         final int num = Math.min(attackTokens.getInt(resource),
             (UnitAttachment.get(u.getType()).getHitPoints() * (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
         resourceMap.put(resource, num);
-        final HashMap<Unit, IntegerMap<Resource>> attMap = kamikazeSuicideAttacks.getOrDefault(t, new HashMap<>());
+        final Map<Unit, IntegerMap<Resource>> attMap = kamikazeSuicideAttacks.getOrDefault(t, new HashMap<>());
         attMap.put(u, resourceMap);
         kamikazeSuicideAttacks.put(t, attMap);
         attackTokens.add(resource, -num);

@@ -2,7 +2,6 @@ package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +100,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,
-      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
+      final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
@@ -114,7 +113,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
         continue;
       }
       final TriggerAttachment toFire = optionalTrigger.get();
-      final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
+      final Set<TriggerAttachment> toFireSet = new HashSet<>();
       toFireSet.add(toFire);
       final String[] options = splitOnColon(tuple.getSecond());
       final int numberOfTimesToFire = getInt(options[0]);
@@ -142,7 +141,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public Set<PlayerID> getOtherPlayers() {
-    final HashSet<PlayerID> otherPlayers = new HashSet<>();
+    final Set<PlayerID> otherPlayers = new HashSet<>();
     otherPlayers.add((PlayerID) this.getAttachedTo());
     otherPlayers.addAll(actionAccept);
     return otherPlayers;
@@ -152,7 +151,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
    * Returns the valid actions for this player.
    */
   public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
-      final HashMap<ICondition, Boolean> testedConditions) {
+      final Map<ICondition, Boolean> testedConditions) {
     return CollectionUtils.getMatches(getUserActionAttachments(player),
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions));
   }

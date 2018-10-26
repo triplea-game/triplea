@@ -4,8 +4,6 @@ import static games.strategy.util.Util.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -574,7 +572,7 @@ public final class Matches {
   }
 
   private static Predicate<Unit> unitIsAaThatCanHitTheseUnits(final Collection<Unit> targets,
-      final Predicate<Unit> typeOfAa, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed) {
+      final Predicate<Unit> typeOfAa, final Map<String, Set<UnitType>> airborneTechTargetsAllowed) {
     return obj -> {
       if (!typeOfAa.test(obj)) {
         return false;
@@ -623,7 +621,7 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitIsAaThatCanFire(final Collection<Unit> unitsMovingOrAttacking,
-      final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed, final PlayerID playerMovingOrAttacking,
+      final Map<String, Set<UnitType>> airborneTechTargetsAllowed, final PlayerID playerMovingOrAttacking,
       final Predicate<Unit> typeOfAa, final int battleRoundNumber, final boolean defending, final GameData data) {
     return enemyUnit(playerMovingOrAttacking, data)
         .and(unitIsBeingTransported().negate())
@@ -1941,7 +1939,7 @@ public final class Matches {
   }
 
   public static <T extends AbstractUserActionAttachment> Predicate<T> abstractUserActionAttachmentCanBeAttempted(
-      final HashMap<ICondition, Boolean> testedConditions) {
+      final Map<ICondition, Boolean> testedConditions) {
     return uaa -> uaa.hasAttemptsLeft() && uaa.canPerform(testedConditions);
   }
 

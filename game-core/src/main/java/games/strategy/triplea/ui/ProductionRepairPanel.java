@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -54,14 +55,14 @@ class ProductionRepairPanel extends JPanel {
   private Collection<PlayerID> allowedPlayersToRepair;
   private GameData data;
 
-  static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
+  static Map<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final UiContext uiContext) {
+      final Map<Unit, IntegerMap<RepairRule>> initialPurchase, final UiContext uiContext) {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
   }
 
-  private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
-    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
+  private Map<Unit, IntegerMap<RepairRule>> getProduction() {
+    final Map<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
     for (final Rule rule : rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
@@ -77,9 +78,9 @@ class ProductionRepairPanel extends JPanel {
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
-  HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
+  Map<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
       final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
+      final Map<Unit, IntegerMap<RepairRule>> initialPurchase) {
     if (!(parent == owner)) {
       dialog = null;
     }
@@ -111,7 +112,7 @@ class ProductionRepairPanel extends JPanel {
   }
 
   private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
+      final Map<Unit, IntegerMap<RepairRule>> initialPurchase) {
     if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return;
     }

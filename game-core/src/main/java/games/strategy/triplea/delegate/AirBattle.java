@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -78,7 +80,7 @@ public class AirBattle extends AbstractBattle {
 
   @Override
   public Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, HashSet<Unit>> targets) {
+      final Map<Unit, Set<Unit>> targets) {
     m_attackingUnits.addAll(units);
     return ChangeFactory.EMPTY_CHANGE;
   }
@@ -308,7 +310,7 @@ public class AirBattle extends AbstractBattle {
     if (m_isBombingRun) {
       final Collection<Unit> bombers = CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsStrategicBomber());
       if (!bombers.isEmpty()) {
-        HashMap<Unit, HashSet<Unit>> targets = null;
+        Map<Unit, Set<Unit>> targets = null;
         final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits().getMatches(
             Matches.enemyUnit(bridge.getPlayerId(), m_data)
                 .and(Matches.unitCanBeDamaged())

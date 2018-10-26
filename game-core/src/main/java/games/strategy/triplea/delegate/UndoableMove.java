@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
@@ -116,7 +117,7 @@ public class UndoableMove extends AbstractUndoableMove {
             bridge.addChange(change);
           }
         } else {
-          HashMap<Unit, HashSet<Unit>> targets = null;
+          Map<Unit, Set<Unit>> targets = null;
           Unit target = null;
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();

@@ -210,7 +210,7 @@ public class RocketsFireHelper {
     if (damageFromBombingDoneToUnits) {
       // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
       // etc.
-      final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
+      final Set<UnitType> legalTargetsForTheseRockets = new HashSet<>();
       if (rockets == null) {
         legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
       } else {

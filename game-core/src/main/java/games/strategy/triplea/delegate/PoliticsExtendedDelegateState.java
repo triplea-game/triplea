@@ -6,5 +6,5 @@ class PoliticsExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = -3829812751864156598L;
   Serializable superState;
   // add other variables here:
-  // public HashMap<ICondition, Boolean> m_testedConditions = null;
+  // public Map<ICondition, Boolean> m_testedConditions = null;
 }

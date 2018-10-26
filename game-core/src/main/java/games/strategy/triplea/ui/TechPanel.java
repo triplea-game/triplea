@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.Action;
@@ -309,7 +310,7 @@ class TechPanel extends ActionPanel {
     final JLabel right = new JLabel();
     final JLabel totalCost = new JLabel();
     final ScrollableTextField textField;
-    HashMap<PlayerID, ScrollableTextField> whoPaysTextFields = null;
+    Map<PlayerID, ScrollableTextField> whoPaysTextFields = null;
 
     TechTokenPanel(final int pus, final int currTokens, final PlayerID player, final Collection<PlayerID> helpPay) {
       playerPus = pus;

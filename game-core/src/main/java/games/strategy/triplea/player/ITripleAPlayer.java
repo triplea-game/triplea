@@ -1,7 +1,6 @@
 package games.strategy.triplea.player;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -189,7 +188,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        from that location
    * @return a list of units to scramble mapped to where they are coming from
    */
-  HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo,
+  Map<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo,
       Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers);
 
   /**
@@ -216,8 +215,8 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Asks the player if they wish to perform any kamikaze suicide attacks.
    */
-  HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
-      HashMap<Territory, Collection<Unit>> possibleUnitsToAttack);
+  Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+      Map<Territory, Collection<Unit>> possibleUnitsToAttack);
 
   /**
    * Used during the RandomStartDelegate for assigning territories to players, and units to territories.

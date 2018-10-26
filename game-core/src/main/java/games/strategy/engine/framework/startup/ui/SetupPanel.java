@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -72,7 +71,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     }
 
     final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
-    final HashMap<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
+    final Map<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
     final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
     final List<PlayerID> players = data.getPlayerList().getPlayers();
 

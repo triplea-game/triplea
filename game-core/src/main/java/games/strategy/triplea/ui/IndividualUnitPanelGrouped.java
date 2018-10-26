@@ -154,7 +154,7 @@ public class IndividualUnitPanelGrouped extends JPanel {
   }
 
   Map<String, IntegerMap<Unit>> getSelected() {
-    final HashMap<String, IntegerMap<Unit>> selectedUnits = new HashMap<>();
+    final Map<String, IntegerMap<Unit>> selectedUnits = new HashMap<>();
     for (final Tuple<String, IndividualUnitPanel> entry : entries) {
       selectedUnits.put(entry.getFirst(), entry.getSecond().getSelected());
     }

@@ -178,7 +178,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @Override
   public Change addAttackChange(final Route route, final Collection<Unit> units,
-      final HashMap<Unit, HashSet<Unit>> targets) {
+      final Map<Unit, Set<Unit>> targets) {
     final CompositeChange change = new CompositeChange();
     // Filter out allied units if WW2V2
     final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(m_attacker);
@@ -252,7 +252,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> canFire = new ArrayList<>(m_defendingUnits.size() + m_defendingWaitingToDie.size());
     canFire.addAll(m_defendingUnits);
     canFire.addAll(m_defendingWaitingToDie);
-    final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed =
+    final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
     m_defendingAA = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(m_attackingUnits,
         airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForCombatOnly(), m_round, true, m_data));
@@ -1379,14 +1379,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @Override
   public List<Unit> getRemainingAttackingUnits() {
-    final ArrayList<Unit> remaining = new ArrayList<>(m_attackingUnits);
+    final List<Unit> remaining = new ArrayList<>(m_attackingUnits);
     remaining.addAll(m_attackingUnitsRetreated);
     return remaining;
   }
 
   @Override
   public List<Unit> getRemainingDefendingUnits() {
-    final ArrayList<Unit> remaining = new ArrayList<>(m_defendingUnits);
+    final List<Unit> remaining = new ArrayList<>(m_defendingUnits);
     remaining.addAll(m_defendingUnitsRetreated);
     return remaining;
   }

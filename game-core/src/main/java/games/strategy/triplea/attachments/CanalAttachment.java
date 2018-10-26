@@ -89,7 +89,7 @@ public class CanalAttachment extends DefaultAttachment {
       this.landTerritories = null;
       return;
     }
-    final HashSet<Territory> terrs = new HashSet<>();
+    final Set<Territory> terrs = new HashSet<>();
     for (final String name : splitOnColon(landTerritories)) {
       final Territory territory = getData().getMap().getTerritory(name);
       if (territory == null) {

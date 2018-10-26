@@ -82,7 +82,7 @@ public class UnitType extends NamedAttachable {
       for (final PlayerID p : data.getPlayerList().getPlayers()) {
         unitTypes.put(p, getPlayerUnitsWithImages(p, data, uiContext));
       }
-      final HashSet<UnitType> unitsSoFar = new HashSet<>();
+      final Set<UnitType> unitsSoFar = new HashSet<>();
       for (final List<UnitType> l : unitTypes.values()) {
         unitsSoFar.addAll(l);
       }
@@ -104,7 +104,7 @@ public class UnitType extends NamedAttachable {
 
   private static List<UnitType> getPlayerUnitsWithImages(final PlayerID player, final GameData data,
       final UiContext uiContext) {
-    final ArrayList<UnitType> unitTypes = new ArrayList<>();
+    final List<UnitType> unitTypes = new ArrayList<>();
     data.acquireReadLock();
     try {
       // add first based on current production ability

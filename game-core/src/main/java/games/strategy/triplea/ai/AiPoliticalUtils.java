@@ -2,8 +2,8 @@ package games.strategy.triplea.ai;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
@@ -24,7 +24,7 @@ import games.strategy.util.CollectionUtils;
  */
 public class AiPoliticalUtils {
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id,
-      final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
+      final Map<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id, testedConditions,
         data)) {
@@ -36,7 +36,7 @@ public class AiPoliticalUtils {
   }
 
   public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id,
-      final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
+      final Map<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
     final Collection<PoliticalActionAttachment> validActions =
         PoliticalActionAttachment.getValidActions(id, testedConditions, data);

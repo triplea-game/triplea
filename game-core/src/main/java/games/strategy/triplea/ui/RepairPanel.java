@@ -27,7 +27,7 @@ class RepairPanel extends ActionPanel {
   private static final String CHANGE = "Change...";
   private static final String BUY = "Repair...";
   private final JLabel actionLabel = new JLabel();
-  private HashMap<Unit, IntegerMap<RepairRule>> repair;
+  private Map<Unit, IntegerMap<RepairRule>> repair;
   private boolean bid;
   private Collection<PlayerID> allowedPlayersToRepair;
   private final SimpleUnitPanel unitsPanel;
@@ -68,7 +68,7 @@ class RepairPanel extends ActionPanel {
         () -> actionLabel.setText(getCurrentPlayer().getName() + " repair " + (bid ? " for bid" : "")));
   }
 
-  HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+  Map<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
     this.bid = bid;
     this.allowedPlayersToRepair = allowedPlayersToRepair;

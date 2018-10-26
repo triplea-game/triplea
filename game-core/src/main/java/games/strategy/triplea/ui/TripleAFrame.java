@@ -746,7 +746,7 @@ public final class TripleAFrame extends JFrame {
     return actionButtons.waitForPurchase(bid);
   }
 
-  public HashMap<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, final boolean bid,
+  public Map<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, final boolean bid,
       final Collection<PlayerID> allowedPlayersToRepair) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToRepair(player);
@@ -1196,7 +1196,7 @@ public final class TripleAFrame extends JFrame {
    *         attacking.
    */
   public Map<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(
-      final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack, final Resource attackResourceToken,
+      final Map<Territory, Collection<Unit>> possibleUnitsToAttack, final Resource attackResourceToken,
       final int maxNumberOfAttacksAllowed) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
@@ -1280,14 +1280,14 @@ public final class TripleAFrame extends JFrame {
    * @return A map of units that will participate in the scramble grouped by the territory from which they are
    *         scrambling.
    */
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     messageAndDialogThreadPool.waitForAll();
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Should not be called from dispatch thread");
     }
     final CountDownLatch continueLatch = new CountDownLatch(1);
-    final HashMap<Territory, Collection<Unit>> selection = new HashMap<>();
+    final Map<Territory, Collection<Unit>> selection = new HashMap<>();
     final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<>();
     SwingUtilities.invokeLater(() -> {
       mapPanel.centerOn(scrambleTo);

@@ -346,7 +346,7 @@ public class GameDataExporter {
   private void attachments(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <attachmentList>\n");
-    for (final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()) {
+    for (final Tuple<IAttachment, List<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()) {
       // TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now
       // (including changes to
       // the game data)
@@ -356,7 +356,7 @@ public class GameDataExporter {
   }
 
   private static String printAttachmentOptionsBasedOnOriginalXml(
-      final ArrayList<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
+      final List<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
     if (attachmentPlusValues.isEmpty()) {
       return "";
     }
@@ -380,7 +380,7 @@ public class GameDataExporter {
     return sb.toString();
   }
 
-  private void printAttachments(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentPlusValues) {
+  private void printAttachments(final Tuple<IAttachment, List<Tuple<String, String>>> attachmentPlusValues) {
     final IAttachment attachment = attachmentPlusValues.getFirst();
     try {
       // TODO: none of the attachment exporter classes have been updated since TripleA version 1.3.2.2

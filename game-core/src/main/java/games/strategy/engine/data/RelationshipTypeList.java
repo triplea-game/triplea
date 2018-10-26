@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -14,7 +15,7 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
  */
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
-  private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<>();
+  private final Map<String, RelationshipType> m_relationshipTypes = new HashMap<>();
 
   /**
    * Convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself).

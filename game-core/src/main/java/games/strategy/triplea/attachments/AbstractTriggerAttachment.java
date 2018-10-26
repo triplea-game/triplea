@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -191,7 +190,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return testChance;
   }
 
-  public static Predicate<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
+  public static Predicate<TriggerAttachment> isSatisfiedMatch(final Map<ICondition, Boolean> testedConditions) {
     return t -> t.isSatisfied(testedConditions);
   }
 
