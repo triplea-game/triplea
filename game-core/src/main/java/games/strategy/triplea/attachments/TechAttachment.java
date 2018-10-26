@@ -10,7 +10,6 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.GenericTechAdvance;
@@ -60,9 +59,6 @@ public class TechAttachment extends DefaultAttachment {
   private boolean mechanizedInfantry = false;
   private boolean aaRadar = false;
   private boolean shipyards = false;
-  // do not export at this point. currently map xml cannot
-  // define a player having a custom tech at start of game
-  @InternalDoNotExport
   private final Map<String, Boolean> genericTech = new HashMap<>();
 
   public TechAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -333,10 +329,7 @@ public class TechAttachment extends DefaultAttachment {
   }
 
   // custom techs
-  /**
-   * Internal use only, is not set by xml or property utils.
-   */
-  @InternalDoNotExport
+
   private void setGenericTechs() {
     for (final TechAdvance ta : getData().getTechnologyFrontier()) {
       if (ta instanceof GenericTechAdvance) {
@@ -351,10 +344,6 @@ public class TechAttachment extends DefaultAttachment {
     return genericTech.get(name);
   }
 
-  /**
-   * Internal use only, is not set by xml or {@code Change}.
-   */
-  @InternalDoNotExport
   public void setGenericTech(final String name, final boolean value) {
     genericTech.put(name, value);
   }

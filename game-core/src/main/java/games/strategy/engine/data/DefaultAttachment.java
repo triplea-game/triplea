@@ -8,7 +8,6 @@ import java.util.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 
 /**
@@ -28,9 +27,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   private static final long serialVersionUID = -1985116207387301730L;
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
-  @InternalDoNotExport
   private Attachable m_attachedTo;
-  @InternalDoNotExport
   private String m_name;
 
   protected DefaultAttachment(final String name, final Attachable attachable, final GameData gameData) {
@@ -113,7 +110,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   @Override
-  @InternalDoNotExport
   public void setAttachedTo(final Attachable attachable) {
     m_attachedTo = attachable;
   }
@@ -124,7 +120,6 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   @Override
-  @InternalDoNotExport
   public void setName(final String name) {
     m_name = name;
   }

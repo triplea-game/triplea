@@ -26,7 +26,6 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
@@ -760,7 +759,6 @@ public class TechAbilityAttachment extends DefaultAttachment {
    * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game
    * options/properties.
    */
-  @InternalDoNotExport
   public static void setDefaultTechnologyAttachments(final GameData data) throws GameParseException {
     // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its
     // "default" attachment. any

@@ -15,7 +15,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -34,8 +33,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // backwards
   // compatibility.
   private int uses = -1;
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment).
   private boolean usedThisRound = false;
   private String notification = null;
   private List<Tuple<String, String>> when = new ArrayList<>();

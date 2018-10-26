@@ -19,7 +19,6 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.util.CollectionUtils;
@@ -30,17 +29,12 @@ import games.strategy.util.CollectionUtils;
 public abstract class AbstractRulesAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = -6977650137928964759L;
 
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the
-  // purposes of objectiveValue
+  // Determines if we will be counting each for the purposes of objectiveValue
   protected boolean countEach = false;
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment). The multiple that will be applied to objectiveValue
-  // if countEach is true
+  // The multiple that will be applied to objectiveValue if countEach is true
   protected int eachMultiple = 1;
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to
-  // determine the number of territories needed to be valid (ex: alliedOwnershipTerritories)
+  // Used with the next Territory conditions to determine the number of territories needed to be valid
+  // (ex: alliedOwnershipTerritories)
   protected int territoryCount = -1;
   // A list of players that can be used with
   // directOwnershipTerritories, directExclusionTerritories,
@@ -114,7 +108,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * being done. So it is
    * just a temporary value.
    */
-  @InternalDoNotExport
   protected void setTerritoryCount(final String value) {
     if (value.equals("each")) {
       territoryCount = 1;

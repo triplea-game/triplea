@@ -11,8 +11,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Runnables;
 
-import games.strategy.engine.data.annotations.InternalDoNotExport;
-
 /**
  * Fake implementation of {@link IAttachment} useful for testing.
  */
@@ -59,13 +57,11 @@ public final class FakeAttachment implements IAttachment {
   }
 
   @Override
-  @InternalDoNotExport
   public void setAttachedTo(final Attachable attachable) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  @InternalDoNotExport
   public void setName(final String name) {
     throw new UnsupportedOperationException();
   }
