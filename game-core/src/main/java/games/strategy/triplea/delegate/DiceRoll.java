@@ -130,12 +130,12 @@ public class DiceRoll implements Externalizable {
         (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
     if (defendingAa.isEmpty()) {
-      return new DiceRoll(new ArrayList<>(0), 0, 0);
+      return new DiceRoll(Collections.emptyList(), 0, 0);
     }
     final GameData data = bridge.getData();
     final int totalAAattacksTotal = getTotalAAattacks(defendingAa, validAttackingUnitsForThisRoll);
     if (totalAAattacksTotal <= 0) {
-      return new DiceRoll(new ArrayList<>(0), 0, 0);
+      return new DiceRoll(Collections.emptyList(), 0, 0);
     }
     // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the
     // same typeAA)
@@ -575,7 +575,7 @@ public class DiceRoll implements Externalizable {
             data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
     final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
-      return new DiceRoll(new ArrayList<>(0), 0, 0);
+      return new DiceRoll(Collections.emptyList(), 0, 0);
     }
     int hitCount = power / data.getDiceSides();
     final List<Die> dice = new ArrayList<>();

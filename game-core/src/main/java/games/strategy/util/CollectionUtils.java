@@ -91,10 +91,10 @@ public final class CollectionUtils {
    * Always returns a new collection.
    */
   public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c1.size() == 0) {
+    if (c1 == null || c1.isEmpty()) {
       return new ArrayList<>(0);
     }
-    if (c2 == null || c2.size() == 0) {
+    if (c2 == null || c2.isEmpty()) {
       return new ArrayList<>(c1);
     }
     return c1.stream().filter(Util.not(c2::contains)).collect(Collectors.toList());

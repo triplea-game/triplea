@@ -403,10 +403,9 @@ public class BattleDisplay extends JPanel {
       imagePanel.add(retreatTerritory);
       imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
       this.add(imagePanel, BorderLayout.EAST);
-      final List<Territory> listElements = new ArrayList<>(possible);
-      list = new JList<>(SwingComponents.newListModel(listElements));
+      list = new JList<>(SwingComponents.newListModel(possible));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      if (listElements.size() >= 1) {
+      if (!possible.isEmpty()) {
         list.setSelectedIndex(0);
       }
       final JScrollPane scroll = new JScrollPane(list);

@@ -2,7 +2,6 @@ package games.strategy.triplea.pbem;
 
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +24,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+
+import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.AbstractForumPoster;
@@ -77,9 +78,10 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     httpPost.addHeader("Accept-Language", "en-us");
     httpPost.addHeader("Cache-Control", "no-cache");
 
-    final List<NameValuePair> parameters = new ArrayList<>(2);
-    parameters.add(new BasicNameValuePair("user", getUsername()));
-    parameters.add(new BasicNameValuePair("passwrd", getPassword()));
+    final List<NameValuePair> parameters = ImmutableList.of(
+        new BasicNameValuePair("user", getUsername()),
+        new BasicNameValuePair("passwrd", getPassword())
+    );
     httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
       final int status = response.getStatusLine().getStatusCode();
