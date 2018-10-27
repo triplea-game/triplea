@@ -35,23 +35,23 @@ public class FinishedBattle extends AbstractBattle {
       final boolean isBombingRun, final BattleType battleType, final GameData data,
       final BattleResultDescription battleResultDescription, final WhoWon whoWon) {
     super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
-    m_battleResultDescription = battleResultDescription;
-    m_whoWon = whoWon;
+    this.battleResultDescription = battleResultDescription;
+    this.whoWon = whoWon;
   }
 
   @Override
   public boolean isEmpty() {
-    return m_attackingUnits.isEmpty();
+    return attackingUnits.isEmpty();
   }
 
   @Override
   public void fight(final IDelegateBridge bridge) {
-    if (!m_headless) {
-      m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-          m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
+    if (!headless) {
+      battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv,
+          defenderLostTuv, battleResultDescription, new BattleResults(this, gameData));
     }
-    m_battleTracker.removeBattle(this, bridge.getData());
-    m_isOver = true;
+    battleTracker.removeBattle(this, bridge.getData());
+    isOver = true;
   }
 
   @Override
@@ -59,14 +59,14 @@ public class FinishedBattle extends AbstractBattle {
       final Map<Unit, Set<Unit>> targets) {
     final Map<Unit, Collection<Unit>> addedTransporting = TransportTracker.transporting(units);
     for (final Unit unit : addedTransporting.keySet()) {
-      if (m_dependentUnits.get(unit) != null) {
-        m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+      if (dependentUnits.get(unit) != null) {
+        dependentUnits.get(unit).addAll(addedTransporting.get(unit));
       } else {
-        m_dependentUnits.put(unit, addedTransporting.get(unit));
+        dependentUnits.put(unit, addedTransporting.get(unit));
       }
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    m_attackingUnits.addAll(units);
+    attackingUnits.addAll(units);
     m_attackingFromMap.putIfAbsent(attackingFrom, new ArrayList<>());
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
     attackingFromMapUnits.addAll(units);
@@ -74,15 +74,15 @@ public class FinishedBattle extends AbstractBattle {
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
         && units.stream().anyMatch(Matches.unitIsLand())) {
       m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
-      m_amphibiousLandAttackers.addAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
-      m_isAmphibious = true;
+      amphibiousLandAttackers.addAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
+      isAmphibious = true;
     }
     return ChangeFactory.EMPTY_CHANGE;
   }
 
   @Override
   public void removeAttack(final Route route, final Collection<Unit> units) {
-    m_attackingUnits.removeAll(units);
+    attackingUnits.removeAll(units);
     // the route could be null, in the case of a unit in a territory where a sub is submerged.
     if (route == null) {
       return;
@@ -97,17 +97,17 @@ public class FinishedBattle extends AbstractBattle {
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
       if (route.getEnd() != null && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
-        m_amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
+        amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       }
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
         m_amphibiousAttackFrom.remove(attackingFrom);
         // do we have any amphibious attacks left?
-        m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
+        isAmphibious = !m_amphibiousAttackFrom.isEmpty();
       }
     }
-    for (final Collection<Unit> dependent : m_dependentUnits.values()) {
+    for (final Collection<Unit> dependent : dependentUnits.values()) {
       dependent.removeAll(units);
     }
   }
@@ -116,30 +116,30 @@ public class FinishedBattle extends AbstractBattle {
   public void unitsLostInPrecedingBattle(final Collection<Unit> units,
       final IDelegateBridge bridge, final boolean withdrawn) {
     final Collection<Unit> lost = getDependentUnits(units);
-    lost.addAll(CollectionUtils.intersection(units, m_attackingUnits));
+    lost.addAll(CollectionUtils.intersection(units, attackingUnits));
     if (lost.size() != 0) {
-      m_attackingUnits.removeAll(lost);
+      attackingUnits.removeAll(lost);
       /*
        * TODO: these units are no longer in this territory, most probably. Plus they may have already been removed by
        * another "real" battle
        * class.
-       * final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
+       * final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + battleSite.getName();
        * bridge.getHistoryWriter().startEvent(transcriptText);
-       * final Change change = ChangeFactory.removeUnits(m_battleSite, lost);
+       * final Change change = ChangeFactory.removeUnits(battleSite, lost);
        * bridge.addChange(change);
        */
-      if (m_attackingUnits.isEmpty()) {
-        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
-        final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTuv(lost, m_attacker, costs, m_data));
-        m_attackerLostTUV += tuvLostAttacker;
+      if (attackingUnits.isEmpty()) {
+        final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+        final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTuv(lost, attacker, costs, gameData));
+        attackerLostTuv += tuvLostAttacker;
         // scripted?
-        m_whoWon = WhoWon.DEFENDER;
-        if (!m_headless) {
-          m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender,
-              m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
-              new BattleResults(this, m_data));
+        whoWon = WhoWon.DEFENDER;
+        if (!headless) {
+          battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender,
+              attackerLostTuv, defenderLostTuv, BattleRecord.BattleResultDescription.LOST,
+              new BattleResults(this, gameData));
         }
-        m_battleTracker.removeBattle(this, bridge.getData());
+        battleTracker.removeBattle(this, bridge.getData());
       }
     }
   }

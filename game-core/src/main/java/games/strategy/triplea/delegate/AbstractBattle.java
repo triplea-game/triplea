@@ -23,49 +23,50 @@ import games.strategy.util.IntegerMap;
 
 abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
-  final GUID m_battleID = new GUID();
+
+  final GUID battleId = new GUID();
   /**
    * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results
    * for an odds
    * calculator so we can skip some steps for efficiency.
    */
-  boolean m_headless = false;
-  final Territory m_battleSite;
-  final PlayerID m_attacker;
-  PlayerID m_defender;
-  final BattleTracker m_battleTracker;
-  int m_round = 1;
-  final boolean m_isBombingRun;
-  boolean m_isAmphibious = false;
-  final BattleType m_battleType;
-  boolean m_isOver = false;
+  boolean headless = false;
+  final Territory battleSite;
+  final PlayerID attacker;
+  PlayerID defender;
+  final BattleTracker battleTracker;
+  int round = 1;
+  final boolean isBombingRun;
+  boolean isAmphibious = false;
+  final BattleType battleType;
+  boolean isOver = false;
   /**
    * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on
    * then we lose the corresponding collection of units.
    */
-  final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<>();
-  List<Unit> m_attackingUnits = new ArrayList<>();
-  List<Unit> m_defendingUnits = new ArrayList<>();
-  List<Unit> m_amphibiousLandAttackers = new ArrayList<>();
-  List<Unit> m_bombardingUnits = new ArrayList<>();
-  Collection<TerritoryEffect> m_territoryEffects;
-  BattleResultDescription m_battleResultDescription;
-  WhoWon m_whoWon = WhoWon.NOTFINISHED;
-  int m_attackerLostTUV = 0;
-  int m_defenderLostTUV = 0;
+  final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+  List<Unit> attackingUnits = new ArrayList<>();
+  List<Unit> defendingUnits = new ArrayList<>();
+  List<Unit> amphibiousLandAttackers = new ArrayList<>();
+  List<Unit> bombardingUnits = new ArrayList<>();
+  Collection<TerritoryEffect> territoryEffects;
+  BattleResultDescription battleResultDescription;
+  WhoWon whoWon = WhoWon.NOTFINISHED;
+  int attackerLostTuv = 0;
+  int defenderLostTuv = 0;
 
-  protected final GameData m_data;
+  protected final GameData gameData;
 
   AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data) {
-    m_battleTracker = battleTracker;
-    m_attacker = attacker;
-    m_battleSite = battleSite;
-    m_territoryEffects = TerritoryEffectHelper.getEffects(battleSite);
-    m_isBombingRun = isBombingRun;
-    m_battleType = battleType;
-    m_data = data;
-    m_defender = findDefender(battleSite, attacker, data);
+    this.battleTracker = battleTracker;
+    this.attacker = attacker;
+    this.battleSite = battleSite;
+    territoryEffects = TerritoryEffectHelper.getEffects(battleSite);
+    this.isBombingRun = isBombingRun;
+    this.battleType = battleType;
+    gameData = data;
+    defender = findDefender(battleSite, attacker, data);
     // Make sure that if any of the incoming data is null, we are still OK
     // (tests and mockbattle use null for a lot of this stuff)
   }
@@ -74,7 +75,7 @@ abstract class AbstractBattle implements IBattle {
   public Collection<Unit> getDependentUnits(final Collection<Unit> units) {
     final Collection<Unit> dependentUnits = new ArrayList<>();
     for (final Unit unit : units) {
-      final Collection<Unit> dependent = m_dependentUnits.get(unit);
+      final Collection<Unit> dependent = this.dependentUnits.get(unit);
       if (dependent != null) {
         dependentUnits.addAll(dependent);
       }
@@ -83,58 +84,58 @@ abstract class AbstractBattle implements IBattle {
   }
 
   protected void removeUnitsThatNoLongerExist() {
-    if (m_headless) {
+    if (headless) {
       return;
     }
     // we were having a problem with units that had been killed previously were still part of
     // MFB's variables, so we double check that the stuff still exists here.
-    m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
-    m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
+    defendingUnits.retainAll(battleSite.getUnits().getUnits());
+    attackingUnits.retainAll(battleSite.getUnits().getUnits());
   }
 
   @Override
   public void addBombardingUnit(final Unit unit) {
-    m_bombardingUnits.add(unit);
+    bombardingUnits.add(unit);
   }
 
   @Override
   public Collection<Unit> getBombardingUnits() {
-    return new ArrayList<>(m_bombardingUnits);
+    return new ArrayList<>(bombardingUnits);
   }
 
   @Override
   public boolean isAmphibious() {
-    return m_isAmphibious;
+    return isAmphibious;
   }
 
   @Override
   public Collection<Unit> getAmphibiousLandAttackers() {
-    return new ArrayList<>(m_amphibiousLandAttackers);
+    return new ArrayList<>(amphibiousLandAttackers);
   }
 
   @Override
   public Collection<Unit> getAttackingUnits() {
-    return new ArrayList<>(m_attackingUnits);
+    return new ArrayList<>(attackingUnits);
   }
 
   @Override
   public Collection<Unit> getDefendingUnits() {
-    return new ArrayList<>(m_defendingUnits);
+    return new ArrayList<>(defendingUnits);
   }
 
   @Override
   public List<Unit> getRemainingAttackingUnits() {
-    return new ArrayList<>(m_attackingUnits);
+    return new ArrayList<>(attackingUnits);
   }
 
   @Override
   public List<Unit> getRemainingDefendingUnits() {
-    return new ArrayList<>(m_defendingUnits);
+    return new ArrayList<>(defendingUnits);
   }
 
   @Override
   public final boolean isOver() {
-    return m_isOver;
+    return isOver;
   }
 
   @Override
@@ -142,56 +143,56 @@ abstract class AbstractBattle implements IBattle {
 
   @Override
   public boolean isBombingRun() {
-    return m_isBombingRun;
+    return isBombingRun;
   }
 
   @Override
   public BattleType getBattleType() {
-    return m_battleType;
+    return battleType;
   }
 
   @Override
   public int getBattleRound() {
-    return m_round;
+    return round;
   }
 
   @Override
   public WhoWon getWhoWon() {
-    return m_whoWon;
+    return whoWon;
   }
 
   @Override
   public BattleResultDescription getBattleResultDescription() {
-    return m_battleResultDescription;
+    return battleResultDescription;
   }
 
   @Override
   public GUID getBattleId() {
-    return m_battleID;
+    return battleId;
   }
 
   @Override
   public final Territory getTerritory() {
-    return m_battleSite;
+    return battleSite;
   }
 
   @Override
   public PlayerID getAttacker() {
-    return m_attacker;
+    return attacker;
   }
 
   @Override
   public PlayerID getDefender() {
-    return m_defender;
+    return defender;
   }
 
   public void setHeadless(final boolean headless) {
-    m_headless = headless;
+    this.headless = headless;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(m_battleSite);
+    return Objects.hashCode(battleSite);
   }
 
   /**
@@ -208,14 +209,14 @@ abstract class AbstractBattle implements IBattle {
       return false;
     }
     final IBattle other = (IBattle) o;
-    return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun()
+    return other.getTerritory().equals(this.battleSite) && other.isBombingRun() == this.isBombingRun()
         && other.getBattleType() == this.getBattleType();
   }
 
   @Override
   public String toString() {
-    return "Battle in:" + m_battleSite + " battle type:" + m_battleType + " defender:" + m_defender.getName()
-        + " attacked by:" + m_attacker.getName() + " attacking with: " + m_attackingUnits;
+    return "Battle in:" + battleSite + " battle type:" + battleType + " defender:" + defender.getName()
+        + " attacked by:" + attacker.getName() + " attacking with: " + attackingUnits;
   }
 
   static PlayerID findDefender(final Territory battleSite, final PlayerID attacker, final GameData data) {

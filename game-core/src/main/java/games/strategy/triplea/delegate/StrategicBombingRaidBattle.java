@@ -65,45 +65,45 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
-    m_isAmphibious = false;
+    isAmphibious = false;
     updateDefendingUnits();
   }
 
   @Override
   protected void removeUnitsThatNoLongerExist() {
-    if (m_headless) {
+    if (headless) {
       return;
     }
     // we were having a problem with units that had been killed previously were still part of battle's variables, so we
     // double check that
     // the stuff still exists here.
-    m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
-    m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
-    m_targets.keySet().removeIf(unit -> !m_battleSite.getUnits().getUnits().contains(unit));
+    defendingUnits.retainAll(battleSite.getUnits().getUnits());
+    attackingUnits.retainAll(battleSite.getUnits().getUnits());
+    m_targets.keySet().removeIf(unit -> !battleSite.getUnits().getUnits().contains(unit));
   }
 
   protected void updateDefendingUnits() {
     // fill in defenders
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
-    final Predicate<Unit> defenders = Matches.enemyUnit(m_attacker, m_data)
+        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
+    final Predicate<Unit> defenders = Matches.enemyUnit(attacker, gameData)
         .and(Matches.unitCanBeDamaged()
-            .or(Matches.unitIsAaThatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker,
-                Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data)));
+            .or(Matches.unitIsAaThatCanFire(attackingUnits, airborneTechTargetsAllowed, attacker,
+                Matches.unitIsAaForBombingThisUnitOnly(), round, true, gameData)));
     if (m_targets.isEmpty()) {
-      m_defendingUnits = CollectionUtils.getMatches(m_battleSite.getUnits().getUnits(), defenders);
+      defendingUnits = CollectionUtils.getMatches(battleSite.getUnits().getUnits(), defenders);
     } else {
       final List<Unit> targets =
-          CollectionUtils.getMatches(m_battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(m_attackingUnits,
-              airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
+          CollectionUtils.getMatches(battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(attackingUnits,
+              airborneTechTargetsAllowed, attacker, Matches.unitIsAaForBombingThisUnitOnly(), round, true, gameData));
       targets.addAll(m_targets.keySet());
-      m_defendingUnits = targets;
+      defendingUnits = targets;
     }
   }
 
   @Override
   public boolean isEmpty() {
-    return m_attackingUnits.isEmpty();
+    return attackingUnits.isEmpty();
   }
 
   @Override
@@ -112,7 +112,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void removeAttackers(final Collection<Unit> units, final boolean removeTarget) {
-    m_attackingUnits.removeAll(units);
+    attackingUnits.removeAll(units);
     final Iterator<Unit> targetIter = m_targets.keySet().iterator();
     while (targetIter.hasNext()) {
       final Set<Unit> currentAttackers = m_targets.get(targetIter.next());
@@ -134,7 +134,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   @Override
   public Change addAttackChange(final Route route, final Collection<Unit> units,
       final Map<Unit, Set<Unit>> targets) {
-    m_attackingUnits.addAll(units);
+    attackingUnits.addAll(units);
     if (targets == null) {
       return ChangeFactory.EMPTY_CHANGE;
     }
@@ -161,18 +161,18 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // is empty. We need to
     // update right as battle begins to know we have the full list of targets.
     updateDefendingUnits();
-    bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite, m_battleSite);
-    if (m_attackingUnits.isEmpty() || (m_defendingUnits.isEmpty()
-        || m_defendingUnits.stream().noneMatch(Matches.unitCanBeDamaged()))) {
+    bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + battleSite, battleSite);
+    if (attackingUnits.isEmpty() || (defendingUnits.isEmpty()
+        || defendingUnits.stream().noneMatch(Matches.unitCanBeDamaged()))) {
       endBeforeRolling(bridge);
       return;
     }
-    BattleCalculator.sortPreBattle(m_attackingUnits);
+    BattleCalculator.sortPreBattle(attackingUnits);
     // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data);
-    m_defendingAA = m_battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(m_attackingUnits,
-        airborneTechTargetsAllowed, m_attacker, Matches.unitIsAaForBombingThisUnitOnly(), m_round, true, m_data));
+        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
+    m_defendingAA = battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(attackingUnits,
+        airborneTechTargetsAllowed, attacker, Matches.unitIsAaForBombingThisUnitOnly(), round, true, gameData));
     m_AAtypes = UnitAttachment.getAllOfTypeAas(m_defendingAA);
     // reverse since stacks are in reverse order
     Collections.reverse(m_AAtypes);
@@ -207,10 +207,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
+        getDisplay(bridge).gotoBattleStep(battleId, RAID);
         if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
           bridge.getHistoryWriter()
-              .addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes " + m_bombingRaidTotal
+              .addChildToEvent("Bombing raid in " + battleSite.getName() + " causes " + m_bombingRaidTotal
                   + " damage total. " + (m_bombingRaidDamage.size() > 1 ? (" Damaged units is as follows: "
                       + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false)) : ""));
         } else {
@@ -219,8 +219,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
         // TODO remove the reference to the constant.japanese- replace with a rule
         if (isPacificTheater() || isSbrVictoryPoints()) {
-          if (m_defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
-            final PlayerAttachment pa = PlayerAttachment.get(m_defender);
+          if (defender.getName().equals(Constants.PLAYER_NAME_JAPANESE)) {
+            final PlayerAttachment pa = PlayerAttachment.get(defender);
             if (pa != null) {
               final Change changeVp =
                   ChangeFactory.attachmentPropertyChange(pa, ((-(m_bombingRaidTotal / 10)) + pa.getVps()), "vps");
@@ -231,14 +231,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
         }
         // kill any suicide attackers (veqryn)
-        if (m_attackingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
-          final List<Unit> suicideUnits = CollectionUtils.getMatches(m_attackingUnits, Matches.unitIsSuicide());
-          m_attackingUnits.removeAll(suicideUnits);
-          final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
-          final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
-          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
-          final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, m_attacker, costs, m_data);
-          m_attackerLostTUV += tuvLostAttacker;
+        if (attackingUnits.stream().anyMatch(Matches.unitIsSuicide())) {
+          final List<Unit> suicideUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsSuicide());
+          attackingUnits.removeAll(suicideUnits);
+          final Change removeSuicide = ChangeFactory.removeUnits(battleSite, suicideUnits);
+          final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + battleSite.getName();
+          final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+          final int tuvLostAttacker = TuvUtils.getTuv(suicideUnits, attacker, costs, gameData);
+          attackerLostTuv += tuvLostAttacker;
           bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
           bridge.addChange(removeSuicide);
         }
@@ -247,14 +247,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           final List<Unit> unitsCanDie =
               CollectionUtils.getMatches(m_targets.keySet(), Matches.unitCanDieFromReachingMaxDamage());
           unitsCanDie.retainAll(
-              CollectionUtils.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite)));
+              CollectionUtils.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(battleSite)));
           if (!unitsCanDie.isEmpty()) {
             // m_targets.removeAll(unitsCanDie);
-            final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
-            final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
-            final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_defender, m_data);
-            final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, m_defender, costs, m_data);
-            m_defenderLostTUV += tuvLostDefender;
+            final Change removeDead = ChangeFactory.removeUnits(battleSite, unitsCanDie);
+            final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + battleSite.getName();
+            final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(defender, gameData);
+            final int tuvLostDefender = TuvUtils.getTuv(unitsCanDie, defender, costs, gameData);
+            defenderLostTuv += tuvLostDefender;
             bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
             bridge.addChange(removeDead);
           }
@@ -277,45 +277,45 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void endBeforeRolling(final IDelegateBridge bridge) {
-    getDisplay(bridge).battleEnd(m_battleID, "Bombing raid does no damage");
-    m_whoWon = WhoWon.DRAW;
-    m_battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
-    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
-    m_isOver = true;
-    m_battleTracker.removeBattle(StrategicBombingRaidBattle.this, m_data);
+    getDisplay(bridge).battleEnd(battleId, "Bombing raid does no damage");
+    whoWon = WhoWon.DRAW;
+    battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
+    battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv,
+        defenderLostTuv, battleResultDescription, new BattleResults(this, gameData));
+    isOver = true;
+    battleTracker.removeBattle(StrategicBombingRaidBattle.this, gameData);
   }
 
   private void end(final IDelegateBridge bridge) {
     if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
-      getDisplay(bridge).battleEnd(m_battleID,
+      getDisplay(bridge).battleEnd(battleId,
           "Raid causes " + m_bombingRaidTotal + " damage total."
               + (m_bombingRaidDamage.size() > 1
                   ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage, ", ", " = ", false))
                   : ""));
     } else {
-      getDisplay(bridge).battleEnd(m_battleID,
+      getDisplay(bridge).battleEnd(battleId,
           "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
     }
     if (m_bombingRaidTotal > 0) {
-      m_whoWon = WhoWon.ATTACKER;
-      m_battleResultDescription = BattleRecord.BattleResultDescription.BOMBED;
+      whoWon = WhoWon.ATTACKER;
+      battleResultDescription = BattleRecord.BattleResultDescription.BOMBED;
     } else {
-      m_whoWon = WhoWon.DEFENDER;
-      m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
+      whoWon = WhoWon.DEFENDER;
+      battleResultDescription = BattleRecord.BattleResultDescription.LOST;
     }
-    m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV,
-        m_defenderLostTUV, m_battleResultDescription, new BattleResults(this, m_data));
-    m_isOver = true;
-    m_battleTracker.removeBattle(this, m_data);
+    battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv,
+        defenderLostTuv, battleResultDescription, new BattleResults(this, gameData));
+    isOver = true;
+    battleTracker.removeBattle(this, gameData);
   }
 
   private void showBattle(final IDelegateBridge bridge) {
-    final String title = "Bombing raid in " + m_battleSite.getName();
-    getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits, null, null, null,
-        Collections.emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType(),
+    final String title = "Bombing raid in " + battleSite.getName();
+    getDisplay(bridge).showBattle(battleId, battleSite, title, attackingUnits, defendingUnits, null, null, null,
+        Collections.emptyMap(), attacker, defender, isAmphibious(), getBattleType(),
         Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
+    getDisplay(bridge).listBattleSteps(battleId, m_steps);
   }
 
   class FireAA implements IExecutable {
@@ -343,11 +343,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Collection<Unit> currentPossibleAa =
             CollectionUtils.getMatches(m_defendingAA, Matches.unitIsAaOfTypeAa(currentTypeAa));
         final Set<UnitType> targetUnitTypesForThisTypeAa =
-            UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAa(m_data);
+            UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAa(gameData);
         final Set<UnitType> airborneTypesTargettedToo =
-            TechAbilityAttachment.getAirborneTargettedByAa(m_attacker, m_data).get(currentTypeAa);
+            TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData).get(currentTypeAa);
         if (determineAttackers) {
-          validAttackingUnitsForThisRoll = CollectionUtils.getMatches(m_attackingUnits,
+          validAttackingUnitsForThisRoll = CollectionUtils.getMatches(attackingUnits,
               Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
                   .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
         }
@@ -359,22 +359,22 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             validAttackingUnitsForThisRoll.removeAll(m_casualtiesSoFar);
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              m_dice = DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, m_battleSite, true);
+              m_dice = DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, battleSite, true);
               if (currentTypeAa.equals("AA")) {
                 if (m_dice.getHits() > 0) {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, m_defender);
+                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, defender);
                 } else {
-                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, m_defender);
+                  bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, defender);
                 }
               } else {
                 if (m_dice.getHits() > 0) {
                   bridge.getSoundChannelBroadcaster().playSoundForAll(
                       SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                      m_defender);
+                      defender);
                 } else {
                   bridge.getSoundChannelBroadcaster().playSoundForAll(
                       SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                      m_defender);
+                      defender);
                 }
               }
             }
@@ -426,15 +426,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories() {
-    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
+    return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(gameData);
   }
 
   private boolean isWW2V2() {
-    return Properties.getWW2V2(m_data);
+    return Properties.getWW2V2(gameData);
   }
 
   private boolean isLimitSbrDamageToProduction() {
-    return Properties.getLimitRocketAndSbrDamageToProduction(m_data);
+    return Properties.getLimitRocketAndSbrDamageToProduction(gameData);
   }
 
   private static boolean isLimitSbrDamagePerTurn(final GameData data) {
@@ -446,31 +446,31 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private boolean isSbrVictoryPoints() {
-    return Properties.getSbrVictoryPoints(m_data);
+    return Properties.getSbrVictoryPoints(gameData);
   }
 
   private boolean isPacificTheater() {
-    return Properties.getPacificTheater(m_data);
+    return Properties.getPacificTheater(gameData);
   }
 
   private CasualtyDetails calculateCasualties(final Collection<Unit> validAttackingUnitsForThisRoll,
       final Collection<Unit> defendingAa, final IDelegateBridge bridge, final DiceRoll dice,
       final String currentTypeAa) {
     getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
-    final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
+    final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
     final boolean allowMultipleHitsPerUnit =
         !defendingAa.isEmpty()
             && defendingAa.stream().allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
-      return BattleCalculator.selectCasualties(RAID, m_attacker,
-          validAttackingUnitsForThisRoll, m_attackingUnits, m_defender, m_defendingUnits, m_isAmphibious,
-          m_amphibiousLandAttackers, m_battleSite, m_territoryEffects, bridge, text, /* dice */null,
-          /* defending */false, m_battleID, /* head-less */false, 0, allowMultipleHitsPerUnit);
+      return BattleCalculator.selectCasualties(RAID, attacker,
+          validAttackingUnitsForThisRoll, attackingUnits, defender, defendingUnits, isAmphibious,
+          amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, /* dice */null,
+          /* defending */false, battleId, /* head-less */false, 0, allowMultipleHitsPerUnit);
     }
     final CasualtyDetails casualties = BattleCalculator.getAaCasualties(false, validAttackingUnitsForThisRoll,
-        m_attackingUnits, defendingAa, m_defendingUnits, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite,
-        m_territoryEffects, m_isAmphibious, m_amphibiousLandAttackers);
+        attackingUnits, defendingAa, defendingUnits, dice, bridge, defender, attacker, battleId, battleSite,
+        territoryEffects, isAmphibious, amphibiousLandAttackers);
     final int totalExpectingHits =
         dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits();
     if (casualties.size() != totalExpectingHits) {
@@ -482,20 +482,20 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void notifyAaHits(final IDelegateBridge bridge, final DiceRoll dice, final CasualtyDetails casualties,
       final String currentTypeAa) {
-    getDisplay(bridge).casualtyNotification(m_battleID, REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX, dice,
-        m_attacker, new ArrayList<>(casualties.getKilled()), new ArrayList<>(casualties.getDamaged()),
+    getDisplay(bridge).casualtyNotification(battleId, REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX, dice,
+        attacker, new ArrayList<>(casualties.getKilled()), new ArrayList<>(casualties.getDamaged()),
         Collections.emptyMap());
     final Thread t = new Thread(() -> {
       try {
-        final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(m_defender);
-        defender.confirmEnemyCasualties(m_battleID, "Press space to continue", m_attacker);
+        final ITripleAPlayer defender = (ITripleAPlayer) bridge.getRemotePlayer(this.defender);
+        defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
       } catch (final Exception e) {
         // ignore
       }
     }, "click to continue waiter");
     t.start();
-    final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(m_attacker);
-    attacker.confirmOwnCasualties(m_battleID, "Press space to continue");
+    final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(this.attacker);
+    attacker.confirmOwnCasualties(battleId, "Press space to continue");
     bridge.leaveDelegateExecution();
     Interruptibles.join(t);
     bridge.enterDelegateExecution();
@@ -507,12 +507,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (!killed.isEmpty()) {
       bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(killed) + " killed by " + currentTypeAa,
           new ArrayList<>(killed));
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(m_attacker, m_data);
-      final int tuvLostAttacker = TuvUtils.getTuv(killed, m_attacker, costs, m_data);
-      m_attackerLostTUV += tuvLostAttacker;
-      // m_attackingUnits.removeAll(casualties);
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+      final int tuvLostAttacker = TuvUtils.getTuv(killed, attacker, costs, gameData);
+      attackerLostTuv += tuvLostAttacker;
+      // attackingUnits.removeAll(casualties);
       removeAttackers(killed, false);
-      final Change remove = ChangeFactory.removeUnits(m_battleSite, killed);
+      final Change remove = ChangeFactory.removeUnits(battleSite, killed);
       bridge.addChange(remove);
     }
   }
@@ -545,41 +545,42 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
 
     private void rollDice(final IDelegateBridge bridge) {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(m_attackingUnits);
-      if (m_attackingUnits.size() != duplicatesCheckSet1.size()) {
+      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(attackingUnits);
+      if (attackingUnits.size() != duplicatesCheckSet1.size()) {
         throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + m_attackingUnits + "  HashSet:" + duplicatesCheckSet1);
+            "Duplicate Units Detected: Original List:" + attackingUnits + "  HashSet:" + duplicatesCheckSet1);
       }
 
-      final int rollCount = BattleCalculator.getRolls(m_attackingUnits, m_attacker, false, true, m_territoryEffects);
+      final int rollCount = BattleCalculator.getRolls(attackingUnits, attacker, false, true, territoryEffects);
       if (rollCount == 0) {
         m_dice = null;
         return;
       }
       m_dice = new int[rollCount];
-      final boolean isEditMode = BaseEditDelegate.getEditMode(m_data);
+      final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
       if (isEditMode) {
         final String annotation =
-            m_attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against "
-                + m_defender.getName() + " in " + m_battleSite.getName();
-        final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(m_attacker);
+            attacker.getName() + " fixing dice to allocate cost of strategic bombing raid against "
+                + defender.getName() + " in " + battleSite.getName();
+        final ITripleAPlayer attacker =
+            (ITripleAPlayer) bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
-        m_dice = attacker.selectFixedDice(rollCount, 0, annotation, m_data.getDiceSides());
+        m_dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());
       } else {
         final boolean doNotUseBombingBonus =
-            !Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
-        final String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against "
-            + m_defender.getName() + " in " + m_battleSite.getName();
-        if (!Properties.getLowLuckDamageOnly(m_data)) {
+            !Properties.getUseBombingMaxDiceSidesAndBonus(gameData);
+        final String annotation = attacker.getName() + " rolling to allocate cost of strategic bombing raid against "
+            + defender.getName() + " in " + battleSite.getName();
+        if (!Properties.getLowLuckDamageOnly(gameData)) {
           if (doNotUseBombingBonus) {
             // no low luck, and no bonus, so just roll based on the map's dice sides
-            m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, m_attacker, DiceType.BOMBING, annotation);
+            m_dice = bridge.getRandom(gameData.getDiceSides(), rollCount, attacker, DiceType.BOMBING, annotation);
           } else {
             // we must use bombing bonus
             int i = 0;
-            final int diceSides = m_data.getDiceSides();
-            for (final Unit u : m_attackingUnits) {
-              final int rolls = BattleCalculator.getRolls(u, m_attacker, false, true, m_territoryEffects);
+            final int diceSides = gameData.getDiceSides();
+            for (final Unit u : attackingUnits) {
+              final int rolls = BattleCalculator.getRolls(u, attacker, false, true, territoryEffects);
               if (rolls < 1) {
                 continue;
               }
@@ -593,7 +594,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               }
               // now we roll, or don't if there is nothing to roll.
               if (maxDice > 0) {
-                final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
+                final int[] dicerolls = bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
                 for (final int die : dicerolls) {
                   // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1 based
                   m_dice[i] = Math.max(-1, die + bonus);
@@ -610,9 +611,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
         } else {
           int i = 0;
-          final int diceSides = m_data.getDiceSides();
-          for (final Unit u : m_attackingUnits) {
-            final int rolls = BattleCalculator.getRolls(u, m_attacker, false, true, m_territoryEffects);
+          final int diceSides = gameData.getDiceSides();
+          for (final Unit u : attackingUnits) {
+            final int rolls = BattleCalculator.getRolls(u, attacker, false, true, territoryEffects);
             if (rolls < 1) {
               continue;
             }
@@ -637,7 +638,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             }
             // now we roll, or don't if there is nothing to roll.
             if (maxDice > 0) {
-              final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
+              final int[] dicerolls = bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
               for (final int die : dicerolls) {
                 // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1 based
                 m_dice[i] = Math.max(-1, die + bonus);
@@ -671,20 +672,21 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
     private void findCost(final IDelegateBridge bridge) {
       // if no planes left after aa fires, this is possible
-      if (m_attackingUnits.isEmpty()) {
+      if (attackingUnits.isEmpty()) {
         return;
       }
-      int damageLimit = TerritoryAttachment.getProduction(m_battleSite);
+      int damageLimit = TerritoryAttachment.getProduction(battleSite);
       int cost = 0;
-      final boolean lhtrBombers = Properties.getLhtrHeavyBombers(m_data);
+      final boolean lhtrBombers = Properties.getLhtrHeavyBombers(gameData);
       int index = 0;
       final boolean limitDamage = isWW2V2() || isLimitSbrDamageToProduction();
       final List<Die> dice = new ArrayList<>();
       final Map<Unit, List<Die>> targetToDiceMap = new HashMap<>();
       // limit to maxDamage
-      for (final Unit attacker : m_attackingUnits) {
+      for (final Unit attacker : attackingUnits) {
         final UnitAttachment ua = UnitAttachment.get(attacker.getType());
-        final int rolls = BattleCalculator.getRolls(attacker, m_attacker, false, true, m_territoryEffects);
+        final int rolls = BattleCalculator.getRolls(attacker, StrategicBombingRaidBattle.this.attacker, false, true,
+            territoryEffects);
         int costThisUnit = 0;
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
           // LHTR means we select the best Dice roll for the unit
@@ -722,7 +724,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
         }
         costThisUnit = Math.max(0,
-            (costThisUnit + TechAbilityAttachment.getBombingBonus(attacker.getType(), attacker.getOwner(), m_data)));
+            (costThisUnit + TechAbilityAttachment.getBombingBonus(attacker.getType(), attacker.getOwner(), gameData)));
         if (limitDamage) {
           costThisUnit = Math.min(costThisUnit, damageLimit);
         }
@@ -732,8 +734,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         }
       }
       // Limit PUs lost if we would like to cap PUs lost at territory value
-      if (isPuCap(m_data) || isLimitSbrDamagePerTurn(m_data)) {
-        final int alreadyLost = DelegateFinder.moveDelegate(m_data).pusAlreadyLost(m_battleSite);
+      if (isPuCap(gameData) || isLimitSbrDamagePerTurn(gameData)) {
+        final int alreadyLost = DelegateFinder.moveDelegate(gameData).pusAlreadyLost(battleSite);
         final int limit = Math.max(0, damageLimit - alreadyLost);
         cost = Math.min(cost, limit);
         if (!m_targets.isEmpty()) {
@@ -755,7 +757,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           // determine the max allowed damage
           // UnitAttachment ua = UnitAttachment.get(current.getType());
           final TripleAUnit taUnit = (TripleAUnit) current;
-          damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(current, m_battleSite);
+          damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(current, battleSite);
           if (m_bombingRaidDamage.getInt(current) > damageLimit) {
             m_bombingRaidDamage.put(current, damageLimit);
             cost = (cost - currentUnitCost) + damageLimit;
@@ -763,41 +765,41 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = taUnit.getUnitDamage() + currentUnitCost;
           // display the results
-          getDisplay(bridge).bombingResults(m_battleID, dice, currentUnitCost);
+          getDisplay(bridge).bombingResults(battleId, dice, currentUnitCost);
           if (currentUnitCost > 0) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
+            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, attacker);
           }
           // Record production lost
-          DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, currentUnitCost);
+          DelegateFinder.moveDelegate(gameData).pusLost(battleSite, currentUnitCost);
           // apply the hits to the targets
           final IntegerMap<Unit> damageMap = new IntegerMap<>();
           damageMap.put(current, totalDamage);
           bridge.addChange(ChangeFactory.bombingUnitDamage(damageMap));
           bridge.getHistoryWriter()
-              .addChildToEvent("Bombing raid in " + m_battleSite.getName() + " rolls: "
+              .addChildToEvent("Bombing raid in " + battleSite.getName() + " rolls: "
                   + MyFormatter.asDice(targetToDiceMap.get(current)) + " and causes: " + currentUnitCost
                   + " damage to unit: " + current.getType().getName());
           getRemote(bridge).reportMessage(
-              "Bombing raid in " + m_battleSite.getName() + " rolls: "
+              "Bombing raid in " + battleSite.getName() + " rolls: "
                   + MyFormatter.asDice(targetToDiceMap.get(current)) + " and causes: " + currentUnitCost
                   + " damage to unit: " + current.getType().getName(),
               "Bombing raid causes " + currentUnitCost + " damage to " + current.getType().getName());
         }
       } else {
         // Record PUs lost
-        DelegateFinder.moveDelegate(m_data).pusLost(m_battleSite, cost);
-        cost *= Properties.getPuMultiplier(m_data);
-        getDisplay(bridge).bombingResults(m_battleID, dice, cost);
+        DelegateFinder.moveDelegate(gameData).pusLost(battleSite, cost);
+        cost *= Properties.getPuMultiplier(gameData);
+        getDisplay(bridge).bombingResults(battleId, dice, cost);
         if (cost > 0) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker);
+          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BOMBING_STRATEGIC, attacker);
         }
         // get resources
-        final Resource pus = m_data.getResourceList().getResource(Constants.PUS);
-        final int have = m_defender.getResources().getQuantity(pus);
+        final Resource pus = gameData.getResourceList().getResource(Constants.PUS);
+        final int have = defender.getResources().getQuantity(pus);
         final int toRemove = Math.min(cost, have);
-        final Change change = ChangeFactory.changeResourcesChange(m_defender, pus, -toRemove);
+        final Change change = ChangeFactory.changeResourcesChange(defender, pus, -toRemove);
         bridge.addChange(change);
-        bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " rolls: "
+        bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + battleSite.getName() + " rolls: "
             + MyFormatter.asDice(m_dice) + " and costs: " + cost + " " + MyFormatter.pluralize("PU", cost) + ".");
       }
       m_bombingRaidTotal = cost;
