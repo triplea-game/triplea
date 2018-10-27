@@ -116,7 +116,7 @@ public class MovePerformer implements Serializable {
         // need to remove any dependents here
         if (aaCasualties != null) {
           aaCasualtiesWithDependents.addAll(aaCasualties);
-          final Map<Unit, Collection<Unit>> dependencies = TransportTracker.transporting(units);
+          final Map<Unit, Collection<Unit>> dependencies = TransportTracker.transportingWithAllPossibleUnits(units);
           for (final Unit u : aaCasualties) {
             final Collection<Unit> dependents = dependencies.get(u);
             if (dependents != null) {
