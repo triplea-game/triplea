@@ -72,6 +72,26 @@ public class TransportTracker {
     return returnVal;
   }
 
+  /**
+   * Returns a map of transport -> collection of transported units.
+   * This method is identical to {@link #transporting(Collection)} except that it considers all elements in
+   * {@code units} as the possible units to transport (see {@link #transporting(Unit, Collection)}).
+   */
+  public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(final Collection<Unit> units) {
+    final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
+    for (final Unit transported : units) {
+      final Unit transport = transportedBy(transported);
+      Collection<Unit> transporting = null;
+      if (transport != null) {
+        transporting = transporting(transport, units);
+      }
+      if (transporting != null) {
+        returnVal.put(transport, transporting);
+      }
+    }
+    return returnVal;
+  }
+
   public static boolean isTransporting(final Unit transport) {
     return !((TripleAUnit) transport).getTransporting().isEmpty();
   }
