@@ -19,7 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
-import games.strategy.triplea.delegate.dataObjects.MoveDescription;
+import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;

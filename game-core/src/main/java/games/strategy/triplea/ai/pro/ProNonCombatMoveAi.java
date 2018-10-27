@@ -46,7 +46,7 @@ import games.strategy.triplea.delegate.AbstractMoveDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;

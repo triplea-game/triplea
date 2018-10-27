@@ -5,7 +5,7 @@ import java.util.Map;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.data.BattleRecords;
 
 class AddBattleRecordsChange extends Change {
   private static final long serialVersionUID = -6927678548172402611L;

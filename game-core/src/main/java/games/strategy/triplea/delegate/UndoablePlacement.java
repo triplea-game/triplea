@@ -9,7 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.dataObjects.PlacementDescription;
+import games.strategy.triplea.delegate.data.PlacementDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 
 /**

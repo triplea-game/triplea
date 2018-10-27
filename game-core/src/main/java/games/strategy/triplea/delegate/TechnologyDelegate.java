@@ -29,7 +29,7 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;

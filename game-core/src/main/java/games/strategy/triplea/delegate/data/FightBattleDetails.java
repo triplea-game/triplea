@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.dataObjects;
+package games.strategy.triplea.delegate.data;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.IBattle.BattleType;

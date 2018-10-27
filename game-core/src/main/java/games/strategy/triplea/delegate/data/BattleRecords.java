@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.dataObjects;
+package games.strategy.triplea.delegate.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
+import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 
 /**
  * The Purpose of this class is to record various information about combat,
@@ -22,15 +22,15 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDesc
 public class BattleRecords implements Serializable {
   private static final long serialVersionUID = 1473664374777905497L;
 
-  private final Map<PlayerID, Map<GUID, BattleRecord>> m_records;
+  private final Map<PlayerID, Map<GUID, BattleRecord>> records;
 
 
   public BattleRecords() {
-    this.m_records = new HashMap<>();
+    this.records = new HashMap<>();
   }
 
   public BattleRecords(final Map<PlayerID, Map<GUID, BattleRecord>> records) {
-    this.m_records = records;
+    this.records = records;
   }
 
   @SerializationProxySupport
@@ -44,7 +44,7 @@ public class BattleRecords implements Serializable {
     private final Map<PlayerID, Map<GUID, BattleRecord>> records;
 
     public SerializationProxy(final BattleRecords battleRecords) {
-      this.records = battleRecords.m_records;
+      this.records = battleRecords.records;
     }
 
     private Object readResolve() {
@@ -55,21 +55,21 @@ public class BattleRecords implements Serializable {
 
   // Create copy
   public BattleRecords(final BattleRecords records) {
-    m_records = new HashMap<>();
-    for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : records.m_records.entrySet()) {
+    this.records = new HashMap<>();
+    for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : records.records.entrySet()) {
       final PlayerID p = entry.getKey();
       final Map<GUID, BattleRecord> record = entry.getValue();
       final Map<GUID, BattleRecord> map = new HashMap<>();
       for (final Entry<GUID, BattleRecord> entry2 : record.entrySet()) {
         map.put(entry2.getKey(), new BattleRecord(entry2.getValue()));
       }
-      m_records.put(p, map);
+      this.records.put(p, map);
     }
   }
 
   public static Collection<BattleRecord> getAllRecords(final BattleRecords brs) {
     final Collection<BattleRecord> records = new ArrayList<>();
-    for (final Map<GUID, BattleRecord> playerMap : brs.m_records.values()) {
+    for (final Map<GUID, BattleRecord> playerMap : brs.records.values()) {
       records.addAll(playerMap.values());
     }
     return records;
@@ -77,10 +77,10 @@ public class BattleRecords implements Serializable {
 
   public static Collection<BattleRecord> getRecordsForPlayerId(final PlayerID player, final BattleRecords brs) {
     final Collection<BattleRecord> playerRecords = new ArrayList<>();
-    if (brs.m_records.get(player) == null) {
+    if (brs.records.get(player) == null) {
       return playerRecords;
     }
-    for (final Entry<GUID, BattleRecord> entry : brs.m_records.get(player).entrySet()) {
+    for (final Entry<GUID, BattleRecord> entry : brs.records.get(player).entrySet()) {
       playerRecords.add(entry.getValue());
     }
     return playerRecords;
@@ -128,12 +128,12 @@ public class BattleRecords implements Serializable {
   }
 
   public void removeBattle(final PlayerID currentPlayer, final GUID battleId) {
-    final Map<GUID, BattleRecord> current = m_records.get(currentPlayer);
+    final Map<GUID, BattleRecord> current = records.get(currentPlayer);
     // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
     // under a different
     // player.
     if (current == null || !current.containsKey(battleId)) {
-      for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : m_records.entrySet()) {
+      for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : records.entrySet()) {
         if (entry.getValue() != null && entry.getValue().containsKey(battleId)) {
           entry.getValue().remove(battleId);
           return;
@@ -145,13 +145,13 @@ public class BattleRecords implements Serializable {
   }
 
   public void addRecord(final BattleRecords other) {
-    for (final PlayerID p : other.m_records.keySet()) {
-      final Map<GUID, BattleRecord> currentRecord = m_records.get(p);
+    for (final PlayerID p : other.records.keySet()) {
+      final Map<GUID, BattleRecord> currentRecord = records.get(p);
       if (currentRecord != null) {
         // this only comes up if we use edit mode to create an attack for a player who's already had their turn and
         // therefore already has
         // their record.
-        final Map<GUID, BattleRecord> additionalRecords = other.m_records.get(p);
+        final Map<GUID, BattleRecord> additionalRecords = other.records.get(p);
         for (final Entry<GUID, BattleRecord> entry : additionalRecords.entrySet()) {
           final GUID guid = entry.getKey();
           final BattleRecord br = entry.getValue();
@@ -161,20 +161,20 @@ public class BattleRecords implements Serializable {
           }
           currentRecord.put(guid, br);
         }
-        m_records.put(p, currentRecord);
+        records.put(p, currentRecord);
       } else {
-        m_records.put(p, other.m_records.get(p));
+        records.put(p, other.records.get(p));
       }
     }
   }
 
   public void removeRecord(final BattleRecords other) {
-    for (final PlayerID p : other.m_records.keySet()) {
-      final Map<GUID, BattleRecord> currentRecord = m_records.get(p);
+    for (final PlayerID p : other.records.keySet()) {
+      final Map<GUID, BattleRecord> currentRecord = records.get(p);
       if (currentRecord == null) {
         throw new IllegalStateException("Trying to remove a player records but records do not exist");
       }
-      final Map<GUID, BattleRecord> toRemoveRecords = other.m_records.get(p);
+      final Map<GUID, BattleRecord> toRemoveRecords = other.records.get(p);
       for (final Entry<GUID, BattleRecord> entry : toRemoveRecords.entrySet()) {
         final GUID guid = entry.getKey();
         if (!currentRecord.containsKey(guid)) {
@@ -187,19 +187,19 @@ public class BattleRecords implements Serializable {
 
   public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleId, final Territory battleSite,
       final BattleType battleType) {
-    Map<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
+    Map<GUID, BattleRecord> current = records.get(currentPlayerAndAttacker);
     if (current == null) {
       current = new HashMap<>();
     }
     final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType);
     current.put(battleId, initial);
-    m_records.put(currentPlayerAndAttacker, current);
+    records.put(currentPlayerAndAttacker, current);
   }
 
   public void addResultToBattle(final PlayerID currentPlayer, final GUID battleId, final PlayerID defender,
       final int attackerLostTuv, final int defenderLostTuv, final BattleResultDescription battleResultDescription,
       final BattleResults battleResults) {
-    final Map<GUID, BattleRecord> current = m_records.get(currentPlayer);
+    final Map<GUID, BattleRecord> current = records.get(currentPlayer);
     if (current == null) {
       throw new IllegalStateException("Trying to add info to battle records that do not exist");
     }
@@ -211,17 +211,17 @@ public class BattleRecords implements Serializable {
   }
 
   public void clear() {
-    m_records.clear();
+    records.clear();
   }
 
   public boolean isEmpty() {
-    return m_records.isEmpty();
+    return records.isEmpty();
   }
 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder("[");
-    for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : m_records.entrySet()) {
+    for (final Entry<PlayerID, Map<GUID, BattleRecord>> entry : records.entrySet()) {
       sb.append(", ");
       sb.append(entry.getKey().getName());
       sb.append("={");

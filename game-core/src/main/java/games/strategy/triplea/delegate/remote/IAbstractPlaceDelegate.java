@@ -5,7 +5,7 @@ import java.util.Collection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.UndoablePlacement;
-import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.delegate.data.PlaceableUnits;
 
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePlacement> {
   /**

@@ -23,7 +23,7 @@ import games.strategy.engine.data.UnitHitsChange;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.data.BattleRecords;
 import games.strategy.util.IntegerMap;
 
 /**

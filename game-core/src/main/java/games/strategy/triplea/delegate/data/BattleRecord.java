@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.dataObjects;
+package games.strategy.triplea.delegate.data;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,7 +13,6 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
  * The Purpose of this class is to record various information about combat,
  * in order to use it for conditions and other things later.
  */
-@SuppressWarnings("InconsistentCapitalization") // Field names cannot be changed to maintain backwards compatibility
 public class BattleRecord implements Serializable {
 
   public enum BattleResultDescription {
@@ -63,8 +62,8 @@ public class BattleRecord implements Serializable {
   private Territory battleSite;
   private PlayerID attacker;
   private PlayerID defender;
-  private int attackerLostTUV = 0;
-  private int defenderLostTUV = 0;
+  private int attackerLostTuv = 0;
+  private int defenderLostTuv = 0;
   private BattleResultDescription battleResultDescription;
   private final BattleType battleType;
   private BattleResults battleResults;
@@ -78,8 +77,8 @@ public class BattleRecord implements Serializable {
     this.battleSite = battleSite;
     this.attacker = attacker;
     this.defender = defender;
-    this.attackerLostTUV = attackerLostTuv;
-    this.defenderLostTUV = defenderLostTuv;
+    this.attackerLostTuv = attackerLostTuv;
+    this.defenderLostTuv = defenderLostTuv;
     this.battleResultDescription = battleResultDescription;
     this.battleType = battleType;
     this.battleResults = battleResults;
@@ -95,8 +94,8 @@ public class BattleRecord implements Serializable {
     private final Territory battleSite;
     private final PlayerID attacker;
     private final PlayerID defender;
-    private final int attackerLostTUV;
-    private final int defenderLostTUV;
+    private final int attackerLostTuv;
+    private final int defenderLostTuv;
     private final BattleResultDescription battleResultDescription;
     private final BattleType battleType;
     private final BattleResults battleResults;
@@ -105,15 +104,15 @@ public class BattleRecord implements Serializable {
       battleSite = battleRecord.battleSite;
       attacker = battleRecord.attacker;
       defender = battleRecord.defender;
-      attackerLostTUV = battleRecord.attackerLostTUV;
-      defenderLostTUV = battleRecord.defenderLostTUV;
+      attackerLostTuv = battleRecord.attackerLostTuv;
+      defenderLostTuv = battleRecord.defenderLostTuv;
       battleResultDescription = battleRecord.battleResultDescription;
       battleType = battleRecord.battleType;
       battleResults = battleRecord.battleResults;
     }
 
     protected Object readResolve() {
-      return new BattleRecord(battleSite, attacker, defender, attackerLostTUV, defenderLostTUV, battleResultDescription,
+      return new BattleRecord(battleSite, attacker, defender, attackerLostTuv, defenderLostTuv, battleResultDescription,
           battleType, battleResults);
     }
   }
@@ -125,8 +124,8 @@ public class BattleRecord implements Serializable {
     battleSite = record.battleSite;
     attacker = record.attacker;
     defender = record.defender;
-    attackerLostTUV = record.attackerLostTUV;
-    defenderLostTUV = record.defenderLostTUV;
+    attackerLostTuv = record.attackerLostTuv;
+    defenderLostTuv = record.defenderLostTuv;
     battleResultDescription = record.battleResultDescription;
     battleType = record.battleType;
     battleResults = record.battleResults;
@@ -141,8 +140,8 @@ public class BattleRecord implements Serializable {
   protected void setResult(final PlayerID defender, final int attackerLostTuv, final int defenderLostTuv,
       final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
     this.defender = defender;
-    this.attackerLostTUV = attackerLostTuv;
-    this.defenderLostTUV = defenderLostTuv;
+    this.attackerLostTuv = attackerLostTuv;
+    this.defenderLostTuv = defenderLostTuv;
     this.battleResultDescription = battleResultDescription;
     this.battleResults = battleResults;
   }
@@ -172,11 +171,11 @@ public class BattleRecord implements Serializable {
   }
 
   int getAttackerLostTuv() {
-    return attackerLostTUV;
+    return attackerLostTuv;
   }
 
   int getDefenderLostTuv() {
-    return defenderLostTUV;
+    return defenderLostTuv;
   }
 
   protected BattleType getBattleType() {

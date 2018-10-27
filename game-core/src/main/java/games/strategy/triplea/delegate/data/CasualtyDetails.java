@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.dataObjects;
+package games.strategy.triplea.delegate.data;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import games.strategy.engine.data.Unit;
 
 public class CasualtyDetails extends CasualtyList {
   private static final long serialVersionUID = 2261683015991514918L;
-  private final boolean m_autoCalculated;
+  private final boolean autoCalculated;
 
   /**
    * Creates new SelectCasualtyMessage.
@@ -17,26 +17,26 @@ public class CasualtyDetails extends CasualtyList {
    */
   public CasualtyDetails(final List<Unit> killed, final List<Unit> damaged, final boolean autoCalculated) {
     super(killed, damaged);
-    m_autoCalculated = autoCalculated;
+    this.autoCalculated = autoCalculated;
   }
 
   public CasualtyDetails(final CasualtyList casualties, final boolean autoCalculated) {
     super((casualties == null ? null : casualties.getKilled()), (casualties == null ? null : casualties.getDamaged()));
-    m_autoCalculated = autoCalculated;
+    this.autoCalculated = autoCalculated;
   }
 
   public CasualtyDetails(final boolean autoCalculated) {
-    m_autoCalculated = autoCalculated;
+    this.autoCalculated = autoCalculated;
   }
 
   /**
    * Empty details, with autoCalculated as true.
    */
   public CasualtyDetails() {
-    m_autoCalculated = true;
+    autoCalculated = true;
   }
 
   public boolean getAutoCalculated() {
-    return m_autoCalculated;
+    return autoCalculated;
   }
 }

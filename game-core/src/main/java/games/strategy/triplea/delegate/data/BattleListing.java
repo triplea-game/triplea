@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.dataObjects;
+package games.strategy.triplea.delegate.data;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
  */
 public class BattleListing implements Serializable {
   private static final long serialVersionUID = 2700129486225793827L;
-  private final Map<BattleType, Collection<Territory>> m_battles;
+  private final Map<BattleType, Collection<Territory>> battles;
 
   /**
    * Creates new BattleListing.
@@ -24,16 +24,16 @@ public class BattleListing implements Serializable {
    * @param battles battles to list
    */
   public BattleListing(final Map<BattleType, Collection<Territory>> battles) {
-    m_battles = battles;
+    this.battles = battles;
   }
 
   public Map<BattleType, Collection<Territory>> getBattles() {
-    return m_battles;
+    return battles;
   }
 
   public Set<Territory> getNormalBattlesIncludingAirBattles() {
     final Set<Territory> territories = new HashSet<>();
-    for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
+    for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
       if (!entry.getKey().isBombingRun()) {
         territories.addAll(entry.getValue());
       }
@@ -43,7 +43,7 @@ public class BattleListing implements Serializable {
 
   public Set<Territory> getStrategicBombingRaidsIncludingAirBattles() {
     final Set<Territory> territories = new HashSet<>();
-    for (final Entry<BattleType, Collection<Territory>> entry : m_battles.entrySet()) {
+    for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
       if (entry.getKey().isBombingRun()) {
         territories.addAll(entry.getValue());
       }
@@ -52,6 +52,6 @@ public class BattleListing implements Serializable {
   }
 
   public boolean isEmpty() {
-    return m_battles.isEmpty();
+    return battles.isEmpty();
   }
 }
