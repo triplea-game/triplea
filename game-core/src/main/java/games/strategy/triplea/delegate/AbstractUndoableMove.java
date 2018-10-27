@@ -9,7 +9,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.dataObjects.AbstractMoveDescription;
+import games.strategy.triplea.delegate.data.AbstractMoveDescription;
 
 /**
  * Contains all the data to describe an abstract move (move or placement) and to undo it.

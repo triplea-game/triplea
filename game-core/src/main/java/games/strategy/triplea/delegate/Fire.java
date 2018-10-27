@@ -15,7 +15,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Interruptibles;
 

@@ -12,8 +12,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 

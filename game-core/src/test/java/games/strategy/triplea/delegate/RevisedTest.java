@@ -75,10 +75,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
-import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
-import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.delegate.data.PlaceableUnits;
+import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.CollectionUtils;
 

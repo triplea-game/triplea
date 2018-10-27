@@ -1,4 +1,4 @@
-package games.strategy.triplea.delegate.dataObjects;
+package games.strategy.triplea.delegate.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
+import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 
 /**
  * The Purpose of this class is to record various information about combat,

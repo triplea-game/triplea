@@ -25,7 +25,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 

@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.data.BattleRecords;
 
 /**
  * A holder for BattleRecords.
