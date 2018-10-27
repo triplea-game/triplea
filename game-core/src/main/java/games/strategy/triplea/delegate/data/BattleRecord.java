@@ -94,8 +94,8 @@ public class BattleRecord implements Serializable {
     private final Territory battleSite;
     private final PlayerID attacker;
     private final PlayerID defender;
-    private final int attackerLostTUV;
-    private final int defenderLostTUV;
+    private final int attackerLostTuv;
+    private final int defenderLostTuv;
     private final BattleResultDescription battleResultDescription;
     private final BattleType battleType;
     private final BattleResults battleResults;
@@ -104,15 +104,15 @@ public class BattleRecord implements Serializable {
       battleSite = battleRecord.battleSite;
       attacker = battleRecord.attacker;
       defender = battleRecord.defender;
-      attackerLostTUV = battleRecord.attackerLostTuv;
-      defenderLostTUV = battleRecord.defenderLostTuv;
+      attackerLostTuv = battleRecord.attackerLostTuv;
+      defenderLostTuv = battleRecord.defenderLostTuv;
       battleResultDescription = battleRecord.battleResultDescription;
       battleType = battleRecord.battleType;
       battleResults = battleRecord.battleResults;
     }
 
     protected Object readResolve() {
-      return new BattleRecord(battleSite, attacker, defender, attackerLostTUV, defenderLostTUV, battleResultDescription,
+      return new BattleRecord(battleSite, attacker, defender, attackerLostTuv, defenderLostTuv, battleResultDescription,
           battleType, battleResults);
     }
   }
