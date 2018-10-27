@@ -9,8 +9,8 @@ import games.strategy.engine.data.Unit;
 
 public class CasualtyList implements Serializable {
   private static final long serialVersionUID = 6501752134047891398L;
-  protected final List<Unit> m_killed;
-  protected final List<Unit> m_damaged;
+  private final List<Unit> killed;
+  private final List<Unit> damaged;
 
   /**
    * Creates a new CasualtyList.
@@ -24,8 +24,8 @@ public class CasualtyList implements Serializable {
     if (damaged == null) {
       throw new IllegalArgumentException("null damaged");
     }
-    m_killed = new ArrayList<>(killed);
-    m_damaged = new ArrayList<>(damaged);
+    this.killed = new ArrayList<>(killed);
+    this.damaged = new ArrayList<>(damaged);
   }
 
   /**
@@ -39,40 +39,40 @@ public class CasualtyList implements Serializable {
    * Returns the list of killed units.
    */
   public List<Unit> getKilled() {
-    return m_killed;
+    return killed;
   }
 
   /**
    * Can have multiple of the same unit, to show multiple hits to that unit.
    */
   public List<Unit> getDamaged() {
-    return m_damaged;
+    return damaged;
   }
 
   public void addToKilled(final Unit deadUnit) {
-    m_killed.add(deadUnit);
+    killed.add(deadUnit);
   }
 
   /**
    * Can have multiple of the same unit, to show multiple hits to that unit.
    */
   public void addToDamaged(final Unit damagedUnit) {
-    m_damaged.add(damagedUnit);
+    damaged.add(damagedUnit);
   }
 
   /**
    * Can have multiple of the same unit, to show multiple hits to that unit.
    */
   public void addToDamaged(final Collection<Unit> damagedUnits) {
-    m_damaged.addAll(damagedUnits);
+    damaged.addAll(damagedUnits);
   }
 
   public int size() {
-    return m_killed.size() + m_damaged.size();
+    return killed.size() + damaged.size();
   }
 
   @Override
   public String toString() {
-    return "Selected Casualties: Damaged: [" + m_damaged + "],  Killed: [" + m_killed + "]";
+    return "Selected Casualties: Damaged: [" + damaged + "],  Killed: [" + killed + "]";
   }
 }

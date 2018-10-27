@@ -10,110 +10,110 @@ import games.strategy.engine.data.Unit;
 
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult> {
   private static final long serialVersionUID = 6648363112533514955L;
-  private String m_error = null;
-  private final List<String> m_disallowedUnitWarnings;
-  private final List<Collection<Unit>> m_disallowedUnitsList;
-  private final List<String> m_unresolvedUnitWarnings;
-  private final List<Collection<Unit>> m_unresolvedUnitsList;
+  private String error = null;
+  private final List<String> disallowedUnitWarnings;
+  private final List<Collection<Unit>> disallowedUnitsList;
+  private final List<String> unresolvedUnitWarnings;
+  private final List<Collection<Unit>> unresolvedUnitsList;
 
   public MoveValidationResult() {
-    m_disallowedUnitWarnings = new ArrayList<>();
-    m_disallowedUnitsList = new ArrayList<>();
-    m_unresolvedUnitWarnings = new ArrayList<>();
-    m_unresolvedUnitsList = new ArrayList<>();
+    disallowedUnitWarnings = new ArrayList<>();
+    disallowedUnitsList = new ArrayList<>();
+    unresolvedUnitWarnings = new ArrayList<>();
+    unresolvedUnitsList = new ArrayList<>();
   }
 
   public void addDisallowedUnit(final String warning, final Unit unit) {
-    int index = m_disallowedUnitWarnings.indexOf(warning);
+    int index = disallowedUnitWarnings.indexOf(warning);
     if (index == -1) {
-      index = m_disallowedUnitWarnings.size();
-      m_disallowedUnitWarnings.add(warning);
-      m_disallowedUnitsList.add(new ArrayList<>());
+      index = disallowedUnitWarnings.size();
+      disallowedUnitWarnings.add(warning);
+      disallowedUnitsList.add(new ArrayList<>());
     }
-    final Collection<Unit> disallowedUnits = m_disallowedUnitsList.get(index);
+    final Collection<Unit> disallowedUnits = disallowedUnitsList.get(index);
     disallowedUnits.add(unit);
   }
 
   public void addUnresolvedUnit(final String warning, final Unit unit) {
-    int index = m_unresolvedUnitWarnings.indexOf(warning);
+    int index = unresolvedUnitWarnings.indexOf(warning);
     if (index == -1) {
-      index = m_unresolvedUnitWarnings.size();
-      m_unresolvedUnitWarnings.add(warning);
-      m_unresolvedUnitsList.add(new ArrayList<>());
+      index = unresolvedUnitWarnings.size();
+      unresolvedUnitWarnings.add(warning);
+      unresolvedUnitsList.add(new ArrayList<>());
     }
-    final Collection<Unit> unresolvedUnits = m_unresolvedUnitsList.get(index);
+    final Collection<Unit> unresolvedUnits = unresolvedUnitsList.get(index);
     unresolvedUnits.add(unit);
   }
 
   public boolean removeUnresolvedUnit(final String warning, final Unit unit) {
-    final int index = m_unresolvedUnitWarnings.indexOf(warning);
+    final int index = unresolvedUnitWarnings.indexOf(warning);
     if (index == -1) {
       return false;
     }
-    final Collection<Unit> unresolvedUnits = m_unresolvedUnitsList.get(index);
+    final Collection<Unit> unresolvedUnits = unresolvedUnitsList.get(index);
     if (!unresolvedUnits.remove(unit)) {
       return false;
     }
     if (unresolvedUnits.isEmpty()) {
-      m_unresolvedUnitsList.remove(unresolvedUnits);
-      m_unresolvedUnitWarnings.remove(warning);
+      unresolvedUnitsList.remove(unresolvedUnits);
+      unresolvedUnitWarnings.remove(warning);
     }
     return true;
   }
 
   public void setError(final String error) {
-    m_error = error;
+    this.error = error;
   }
 
   public MoveValidationResult setErrorReturnResult(final String error) {
-    m_error = error;
+    this.error = error;
     return this;
   }
 
   public String getError() {
-    return m_error;
+    return error;
   }
 
   public Collection<Unit> getUnresolvedUnits(final String warning) {
-    final int index = m_unresolvedUnitWarnings.indexOf(warning);
+    final int index = unresolvedUnitWarnings.indexOf(warning);
     if (index == -1) {
       return Collections.emptyList();
     }
-    return new ArrayList<>(m_unresolvedUnitsList.get(index));
+    return new ArrayList<>(unresolvedUnitsList.get(index));
   }
 
   public String getDisallowedUnitWarning(final int index) {
-    if (index < 0 || index >= m_disallowedUnitWarnings.size()) {
+    if (index < 0 || index >= disallowedUnitWarnings.size()) {
       return null;
     }
-    return m_disallowedUnitWarnings.get(index);
+    return disallowedUnitWarnings.get(index);
   }
 
   public String getUnresolvedUnitWarning(final int index) {
-    if (index < 0 || index >= m_unresolvedUnitWarnings.size()) {
+    if (index < 0 || index >= unresolvedUnitWarnings.size()) {
       return null;
     }
-    return m_unresolvedUnitWarnings.get(index);
+    return unresolvedUnitWarnings.get(index);
   }
 
   public boolean hasError() {
-    return m_error != null;
+    return error != null;
   }
 
   public boolean hasDisallowedUnits() {
-    return m_disallowedUnitWarnings.size() > 0;
+    return disallowedUnitWarnings.size() > 0;
   }
 
   public int getDisallowedUnitCount() {
-    return m_disallowedUnitWarnings.size();
+    return disallowedUnitWarnings.size();
   }
 
   public boolean hasUnresolvedUnits() {
-    return m_unresolvedUnitWarnings.size() > 0;
+    return unresolvedUnitWarnings.size() > 0;
   }
 
   public int getUnresolvedUnitCount() {
-    return m_unresolvedUnitWarnings.size();
+    return unresolvedUnitWarnings.size();
   }
 
   public boolean isMoveValid() {
@@ -121,7 +121,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   public int getTotalWarningCount() {
-    return m_unresolvedUnitWarnings.size() + m_disallowedUnitWarnings.size();
+    return unresolvedUnitWarnings.size() + disallowedUnitWarnings.size();
   }
 
   @Override
@@ -143,6 +143,6 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
 
   @Override
   public String toString() {
-    return "Move Validation Results, error:" + m_error + " isValid():" + isMoveValid();
+    return "Move Validation Results, error:" + error + " isValid():" + isMoveValid();
   }
 }

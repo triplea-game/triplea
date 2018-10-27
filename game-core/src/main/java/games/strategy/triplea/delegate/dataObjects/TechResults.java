@@ -5,18 +5,18 @@ import java.util.List;
 
 public class TechResults implements Serializable {
   private static final long serialVersionUID = 5574673305892105782L;
-  private final int[] m_rolls;
-  private final int m_hits;
-  private final int m_remainder;
-  private final List<String> m_advances;
-  private final String m_errorString;
+  private final int[] rolls;
+  private final int hits;
+  private final int remainder;
+  private final List<String> advances;
+  private final String errorString;
 
   public TechResults(final String errorString) {
-    m_errorString = errorString;
-    m_remainder = 0;
-    m_advances = null;
-    m_hits = 0;
-    m_rolls = null;
+    this.errorString = errorString;
+    remainder = 0;
+    advances = null;
+    hits = 0;
+    rolls = null;
   }
 
   /**
@@ -28,40 +28,40 @@ public class TechResults implements Serializable {
    * @param advances a List of Strings
    */
   public TechResults(final int[] rolls, final int remainder, final int hits, final List<String> advances) {
-    m_rolls = rolls;
-    m_remainder = remainder;
-    m_hits = hits;
-    m_advances = advances;
-    m_errorString = null;
+    this.rolls = rolls;
+    this.remainder = remainder;
+    this.hits = hits;
+    this.advances = advances;
+    errorString = null;
   }
 
   /**
    * Indicates whether there was an error.
    */
   public boolean isError() {
-    return m_errorString != null;
+    return errorString != null;
   }
 
   /**
    * Returns string error or null if no error occurred (use isError to see if there was an error).
    */
   public String getErrorString() {
-    return m_errorString;
+    return errorString;
   }
 
   public int getHits() {
-    return m_hits;
+    return hits;
   }
 
   public int getRemainder() {
-    return m_remainder;
+    return remainder;
   }
 
   public int[] getRolls() {
-    return m_rolls;
+    return rolls;
   }
 
   public List<String> getAdvances() {
-    return m_advances;
+    return advances;
   }
 }
