@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -58,12 +59,18 @@ public class TransportTracker {
    * Returns a map of transport -> collection of transported units.
    */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
+    return transporting(units, TransportTracker::transporting);
+  }
+
+  private static Map<Unit, Collection<Unit>> transporting(
+      final Collection<Unit> units,
+      final Function<Unit, Collection<Unit>> getUnitsTransportedByTransport) {
     final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
     for (final Unit transported : units) {
       final Unit transport = transportedBy(transported);
       Collection<Unit> transporting = null;
       if (transport != null) {
-        transporting = transporting(transport);
+        transporting = getUnitsTransportedByTransport.apply(transport);
       }
       if (transporting != null) {
         returnVal.put(transport, transporting);
@@ -78,18 +85,7 @@ public class TransportTracker {
    * {@code units} as the possible units to transport (see {@link #transporting(Unit, Collection)}).
    */
   public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(final Collection<Unit> units) {
-    final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
-    for (final Unit transported : units) {
-      final Unit transport = transportedBy(transported);
-      Collection<Unit> transporting = null;
-      if (transport != null) {
-        transporting = transporting(transport, units);
-      }
-      if (transporting != null) {
-        returnVal.put(transport, transporting);
-      }
-    }
-    return returnVal;
+    return transporting(units, transport -> transporting(transport, units));
   }
 
   public static boolean isTransporting(final Unit transport) {
