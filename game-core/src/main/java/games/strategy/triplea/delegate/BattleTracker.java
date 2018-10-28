@@ -1023,8 +1023,7 @@ public class BattleTracker implements Serializable {
   }
 
   public void addDependency(final IBattle blocked, final IBattle blocking) {
-    dependencies.putIfAbsent(blocked, new HashSet<>());
-    dependencies.get(blocked).add(blocking);
+    dependencies.computeIfAbsent(blocked, k -> new HashSet<>()).add(blocking);
   }
 
   private void removeDependency(final IBattle blocked, final IBattle blocking) {
