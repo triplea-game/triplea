@@ -105,9 +105,9 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   public Serializable saveState() {
     final BidPurchaseExtendedDelegateState state = new BidPurchaseExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_bid = bid;
-    state.m_hasBid = hasBid;
-    state.m_spent = this.spent;
+    state.bid = bid;
+    state.hasBid = hasBid;
+    state.spent = this.spent;
     return state;
   }
 
@@ -115,8 +115,8 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   public void loadState(final Serializable state) {
     final BidPurchaseExtendedDelegateState s = (BidPurchaseExtendedDelegateState) state;
     super.loadState(s.superState);
-    bid = s.m_bid;
-    spent = s.m_spent;
-    hasBid = s.m_hasBid;
+    bid = s.bid;
+    spent = s.spent;
+    hasBid = s.hasBid;
   }
 }
