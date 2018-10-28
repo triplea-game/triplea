@@ -118,7 +118,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
     }
     // allow user to cancel move if aa guns will fire
-    final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
+    final AaInMoveUtil aaInMoveUtil = new AaInMoveUtil();
     aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {

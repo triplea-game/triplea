@@ -39,8 +39,6 @@ import games.strategy.util.IntegerMap;
  */
 @MapSupport
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate {
-  // protected Map<ICondition, Boolean> m_testedConditions = null;
-  // private final boolean m_needToInitialize = true;
   /** Creates new PoliticsDelegate. */
   public PoliticsDelegate() {}
 
@@ -72,7 +70,6 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     }
     chainAlliancesTogether(bridge);
     givesBackOriginalTerritories(bridge);
-    // m_needToInitialize = true;
   }
 
   @Override

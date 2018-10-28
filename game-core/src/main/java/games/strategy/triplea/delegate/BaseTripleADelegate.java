@@ -60,16 +60,16 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   @Override
   public Serializable saveState() {
     final BaseDelegateState state = new BaseDelegateState();
-    state.m_startBaseStepsFinished = startBaseStepsFinished;
-    state.m_endBaseStepsFinished = endBaseStepsFinished;
+    state.startBaseStepsFinished = startBaseStepsFinished;
+    state.endBaseStepsFinished = endBaseStepsFinished;
     return state;
   }
 
   @Override
   public void loadState(final Serializable state) {
     final BaseDelegateState s = (BaseDelegateState) state;
-    startBaseStepsFinished = s.m_startBaseStepsFinished;
-    endBaseStepsFinished = s.m_endBaseStepsFinished;
+    startBaseStepsFinished = s.startBaseStepsFinished;
+    endBaseStepsFinished = s.endBaseStepsFinished;
   }
 
   private void triggerWhenTriggerAttachments(final String beforeOrAfter) {
