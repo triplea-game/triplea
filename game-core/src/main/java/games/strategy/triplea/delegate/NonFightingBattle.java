@@ -58,8 +58,8 @@ public class NonFightingBattle extends DependentBattle {
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     m_attackingFrom.add(attackingFrom);
     attackingUnits.addAll(units);
-    m_attackingFromMap.putIfAbsent(attackingFrom, new ArrayList<>());
-    final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+    final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.computeIfAbsent(attackingFrom,
+        k -> new ArrayList<>());
     attackingFromMapUnits.addAll(units);
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
@@ -160,14 +160,9 @@ public class NonFightingBattle extends DependentBattle {
   /**
    * Add dependent Units. Uninformative comment to suppress checkstyle warning.
    */
-  public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
-    for (final Unit holder : dependencies.keySet()) {
-      final Collection<Unit> transporting = dependencies.get(holder);
-      if (dependentUnits.get(holder) != null) {
-        dependentUnits.get(holder).addAll(transporting);
-      } else {
-        dependentUnits.put(holder, new LinkedHashSet<>(transporting));
-      }
+  void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
+    for (final Map.Entry<Unit, Collection<Unit>> entry : dependencies.entrySet()) {
+      dependentUnits.computeIfAbsent(entry.getKey(), k -> new LinkedHashSet<>()).addAll(entry.getValue());
     }
   }
 

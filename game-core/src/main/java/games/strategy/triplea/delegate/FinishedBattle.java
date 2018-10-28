@@ -67,8 +67,8 @@ public class FinishedBattle extends AbstractBattle {
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     attackingUnits.addAll(units);
-    m_attackingFromMap.putIfAbsent(attackingFrom, new ArrayList<>());
-    final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+    final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.computeIfAbsent(attackingFrom,
+        k -> new ArrayList<>());
     attackingFromMapUnits.addAll(units);
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
