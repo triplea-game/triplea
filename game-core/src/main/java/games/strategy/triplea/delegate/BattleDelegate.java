@@ -138,16 +138,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final BattleExtendedDelegateState state = new BattleExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_battleTracker = battleTracker;
-    state.m_needToInitialize = needToInitialize;
-    state.m_needToScramble = needToScramble;
-    state.m_needToKamikazeSuicideAttacks = needToKamikazeSuicideAttacks;
-    state.m_needToClearEmptyAirBattleAttacks = needToClearEmptyAirBattleAttacks;
-    state.m_needToAddBombardmentSources = needToAddBombardmentSources;
-    state.m_needToRecordBattleStatistics = needToRecordBattleStatistics;
-    state.m_needToCheckDefendingPlanesCanLand = needToCheckDefendingPlanesCanLand;
-    state.m_needToCleanup = needToCleanup;
-    state.m_currentBattle = currentBattle;
+    state.battleTracker = battleTracker;
+    state.needToInitialize = needToInitialize;
+    state.needToScramble = needToScramble;
+    state.needToKamikazeSuicideAttacks = needToKamikazeSuicideAttacks;
+    state.needToClearEmptyAirBattleAttacks = needToClearEmptyAirBattleAttacks;
+    state.needToAddBombardmentSources = needToAddBombardmentSources;
+    state.needToRecordBattleStatistics = needToRecordBattleStatistics;
+    state.needToCheckDefendingPlanesCanLand = needToCheckDefendingPlanesCanLand;
+    state.needToCleanup = needToCleanup;
+    state.currentBattle = currentBattle;
     return state;
   }
 
@@ -155,16 +155,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   public void loadState(final Serializable state) {
     final BattleExtendedDelegateState s = (BattleExtendedDelegateState) state;
     super.loadState(s.superState);
-    battleTracker = s.m_battleTracker;
-    needToInitialize = s.m_needToInitialize;
-    needToScramble = s.m_needToScramble;
-    needToKamikazeSuicideAttacks = s.m_needToKamikazeSuicideAttacks;
-    needToClearEmptyAirBattleAttacks = s.m_needToClearEmptyAirBattleAttacks;
-    needToAddBombardmentSources = s.m_needToAddBombardmentSources;
-    needToRecordBattleStatistics = s.m_needToRecordBattleStatistics;
-    needToCheckDefendingPlanesCanLand = s.m_needToCheckDefendingPlanesCanLand;
-    needToCleanup = s.m_needToCleanup;
-    currentBattle = s.m_currentBattle;
+    battleTracker = s.battleTracker;
+    needToInitialize = s.needToInitialize;
+    needToScramble = s.needToScramble;
+    needToKamikazeSuicideAttacks = s.needToKamikazeSuicideAttacks;
+    needToClearEmptyAirBattleAttacks = s.needToClearEmptyAirBattleAttacks;
+    needToAddBombardmentSources = s.needToAddBombardmentSources;
+    needToRecordBattleStatistics = s.needToRecordBattleStatistics;
+    needToCheckDefendingPlanesCanLand = s.needToCheckDefendingPlanesCanLand;
+    needToCleanup = s.needToCleanup;
+    currentBattle = s.currentBattle;
   }
 
   @Override
