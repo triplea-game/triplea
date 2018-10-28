@@ -50,20 +50,21 @@ public class AirBattle extends AbstractBattle {
   protected static final String DEFENDERS_FIRE = "Defenders Fire";
   protected static final String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
   protected static final String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
-  protected final ExecutionStack m_stack = new ExecutionStack();
-  protected List<String> m_steps;
-  protected final Collection<Unit> m_defendingWaitingToDie = new ArrayList<>();
-  protected final Collection<Unit> m_attackingWaitingToDie = new ArrayList<>();
-  protected boolean m_intercept = false;
+
+  protected final ExecutionStack stack = new ExecutionStack();
+  protected List<String> steps;
+  protected final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
+  protected final Collection<Unit> attackingWaitingToDie = new ArrayList<>();
+  protected boolean intercept = false;
   // -1 would mean forever until one side is eliminated. (default is 1 round)
-  protected final int m_maxRounds;
+  protected final int maxRounds;
 
   AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, bombingRaid, (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
         data);
     isAmphibious = false;
-    m_maxRounds = Properties.getAirBattleRounds(data);
+    maxRounds = Properties.getAirBattleRounds(data);
     updateDefendingUnits();
   }
 
@@ -95,19 +96,19 @@ public class AirBattle extends AbstractBattle {
     // rocket attack, etc)
     removeUnitsThatNoLongerExist();
     // we were interrupted
-    if (m_stack.isExecuting()) {
+    if (stack.isExecuting()) {
       showBattle(bridge);
-      m_stack.execute(bridge);
+      stack.execute(bridge);
       return;
     }
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Air Battle in " + battleSite, battleSite);
     BattleCalculator.sortPreBattle(attackingUnits);
     BattleCalculator.sortPreBattle(defendingUnits);
-    m_steps = determineStepStrings(true);
+    steps = determineStepStrings(true);
     showBattle(bridge);
     pushFightLoopOnStack(true);
-    m_stack.execute(bridge);
+    stack.execute(bridge);
   }
 
   private void pushFightLoopOnStack(final boolean firstRun) {
@@ -118,7 +119,7 @@ public class AirBattle extends AbstractBattle {
     // add in the reverse order we create them
     Collections.reverse(steps);
     for (final IExecutable step : steps) {
-      m_stack.push(step);
+      stack.push(step);
     }
   }
 
@@ -130,7 +131,7 @@ public class AirBattle extends AbstractBattle {
   }
 
   public boolean shouldEndBattleDueToMaxRounds() {
-    return m_maxRounds > 0 && m_maxRounds <= round;
+    return maxRounds > 0 && maxRounds <= round;
   }
 
   protected boolean canAttackerRetreat() {
@@ -156,21 +157,21 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!m_intercept) {
+          if (!intercept) {
             return;
           }
           final IntegerMap<UnitType> defenderCosts = TuvUtils.getCostsForTuv(defender, gameData);
           final IntegerMap<UnitType> attackerCosts = TuvUtils.getCostsForTuv(attacker, gameData);
-          attackingUnits.removeAll(m_attackingWaitingToDie);
-          remove(m_attackingWaitingToDie, bridge, battleSite);
-          defendingUnits.removeAll(m_defendingWaitingToDie);
-          remove(m_defendingWaitingToDie, bridge, battleSite);
-          int tuvLostAttacker = TuvUtils.getTuv(m_attackingWaitingToDie, attacker, attackerCosts, gameData);
+          attackingUnits.removeAll(attackingWaitingToDie);
+          remove(attackingWaitingToDie, bridge, battleSite);
+          defendingUnits.removeAll(defendingWaitingToDie);
+          remove(defendingWaitingToDie, bridge, battleSite);
+          int tuvLostAttacker = TuvUtils.getTuv(attackingWaitingToDie, attacker, attackerCosts, gameData);
           attackerLostTuv += tuvLostAttacker;
-          int tuvLostDefender = TuvUtils.getTuv(m_defendingWaitingToDie, defender, defenderCosts, gameData);
+          int tuvLostDefender = TuvUtils.getTuv(defendingWaitingToDie, defender, defenderCosts, gameData);
           defenderLostTuv += tuvLostDefender;
-          m_attackingWaitingToDie.clear();
-          m_defendingWaitingToDie.clear();
+          attackingWaitingToDie.clear();
+          defendingWaitingToDie.clear();
           // kill any suicide attackers (veqryn)
           final Predicate<Unit> attackerSuicide = PredicateBuilder
               .of(Matches.unitIsSuicide())
@@ -249,18 +250,18 @@ public class AirBattle extends AbstractBattle {
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         if (!isOver) {
-          m_steps = determineStepStrings(false);
+          AirBattle.this.steps = determineStepStrings(false);
           final ITripleADisplay display = getDisplay(bridge);
-          display.listBattleSteps(battleId, m_steps);
+          display.listBattleSteps(battleId, AirBattle.this.steps);
           round++;
           // continue fighting
           // the recursive step
           // this should always be the base of the stack
           // when we execute the loop, it will populate the stack with the battle steps
-          if (!m_stack.isEmpty()) {
-            throw new IllegalStateException("Stack not empty:" + m_stack);
+          if (!AirBattle.this.stack.isEmpty()) {
+            throw new IllegalStateException("Stack not empty:" + AirBattle.this.stack);
           }
-          m_stack.push(loop);
+          AirBattle.this.stack.push(loop);
         }
       }
     });
@@ -475,7 +476,7 @@ public class AirBattle extends AbstractBattle {
     getDisplay(bridge).showBattle(battleId, battleSite, title, attackingUnits, defendingUnits, null, null, null,
         Collections.emptyMap(), attacker, defender, isAmphibious(), getBattleType(),
         Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(battleId, m_steps);
+    getDisplay(bridge).listBattleSteps(battleId, steps);
   }
 
   /**
@@ -504,7 +505,7 @@ public class AirBattle extends AbstractBattle {
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
       getInterceptors(bridge);
       if (!defendingUnits.isEmpty()) {
-        m_intercept = true;
+        intercept = true;
         // play a sound
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, attacker);
       }
@@ -560,12 +561,13 @@ public class AirBattle extends AbstractBattle {
 
   class AttackersFire implements IExecutable {
     private static final long serialVersionUID = -5289634214875797408L;
-    DiceRoll m_dice;
-    CasualtyDetails m_details;
+
+    DiceRoll dice;
+    CasualtyDetails details;
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      if (!m_intercept) {
+      if (!intercept) {
         return;
       }
       final IExecutable roll = new IExecutable() {
@@ -573,7 +575,7 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          m_dice = DiceRoll.airBattle(attackingUnits, false, attacker, bridge, "Attackers Fire, ");
+          dice = DiceRoll.airBattle(attackingUnits, false, attacker, bridge, "Attackers Fire, ");
         }
       };
       final IExecutable calculateCasualties = new IExecutable() {
@@ -581,11 +583,11 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          m_details = BattleCalculator.selectCasualties(ATTACKERS_FIRE, defender, defendingUnits, defendingUnits,
+          details = BattleCalculator.selectCasualties(ATTACKERS_FIRE, defender, defendingUnits, defendingUnits,
               attacker, attackingUnits, false, new ArrayList<>(), battleSite, null, bridge, ATTACKERS_FIRE,
-              m_dice, true, battleId, false, m_dice.getHits(), true);
-          m_defendingWaitingToDie.addAll(m_details.getKilled());
-          markDamaged(m_details.getDamaged(), bridge);
+              dice, true, battleId, false, dice.getHits(), true);
+          defendingWaitingToDie.addAll(details.getKilled());
+          markDamaged(details.getDamaged(), bridge);
         }
       };
       final IExecutable notifyCasualties = new IExecutable() {
@@ -593,7 +595,7 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          notifyCasualties(battleId, bridge, ATTACKERS_FIRE, m_dice, defender, attacker, m_details);
+          notifyCasualties(battleId, bridge, ATTACKERS_FIRE, dice, defender, attacker, details);
         }
       };
       // push in reverse order of execution
@@ -605,12 +607,13 @@ public class AirBattle extends AbstractBattle {
 
   class DefendersFire implements IExecutable {
     private static final long serialVersionUID = -7277182945495744003L;
-    DiceRoll m_dice;
-    CasualtyDetails m_details;
+
+    DiceRoll dice;
+    CasualtyDetails details;
 
     @Override
     public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      if (!m_intercept) {
+      if (!intercept) {
         return;
       }
       final IExecutable roll = new IExecutable() {
@@ -618,7 +621,7 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          m_dice = DiceRoll.airBattle(defendingUnits, true, defender, bridge, "Defenders Fire, ");
+          dice = DiceRoll.airBattle(defendingUnits, true, defender, bridge, "Defenders Fire, ");
         }
       };
       final IExecutable calculateCasualties = new IExecutable() {
@@ -626,11 +629,11 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          m_details = BattleCalculator.selectCasualties(DEFENDERS_FIRE, attacker, attackingUnits, attackingUnits,
+          details = BattleCalculator.selectCasualties(DEFENDERS_FIRE, attacker, attackingUnits, attackingUnits,
               defender, defendingUnits, false, new ArrayList<>(), battleSite, null, bridge, DEFENDERS_FIRE,
-              m_dice, false, battleId, false, m_dice.getHits(), true);
-          m_attackingWaitingToDie.addAll(m_details.getKilled());
-          markDamaged(m_details.getDamaged(), bridge);
+              dice, false, battleId, false, dice.getHits(), true);
+          attackingWaitingToDie.addAll(details.getKilled());
+          markDamaged(details.getDamaged(), bridge);
         }
       };
       final IExecutable notifyCasualties = new IExecutable() {
@@ -638,7 +641,7 @@ public class AirBattle extends AbstractBattle {
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          notifyCasualties(battleId, bridge, DEFENDERS_FIRE, m_dice, attacker, defender, m_details);
+          notifyCasualties(battleId, bridge, DEFENDERS_FIRE, dice, attacker, defender, details);
         }
       };
       // push in reverse order of execution
@@ -741,7 +744,6 @@ public class AirBattle extends AbstractBattle {
     final Collection<Unit> dependent = getDependentUnits(killed);
     killed.addAll(dependent);
     final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
-    // m_killed.addAll(killed);
     final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
     bridge.addChange(killedChange);
