@@ -32,10 +32,11 @@ import games.strategy.util.CollectionUtils;
  */
 class AAInMoveUtil implements Serializable {
   private static final long serialVersionUID = 1787497998642717678L;
+
   private transient IDelegateBridge bridge;
   private transient PlayerID player;
-  private Collection<Unit> m_casualties = new ArrayList<>();
-  private final ExecutionStack m_executionStack = new ExecutionStack();
+  private Collection<Unit> casualties = new ArrayList<>();
+  private final ExecutionStack executionStack = new ExecutionStack();
 
   AAInMoveUtil() {}
 
@@ -70,11 +71,11 @@ class AAInMoveUtil implements Serializable {
    */
   Collection<Unit> fireAa(final Route route, final Collection<Unit> units, final Comparator<Unit> decreasingMovement,
       final UndoableMove currentMove) {
-    if (m_executionStack.isEmpty()) {
+    if (executionStack.isEmpty()) {
       populateExecutionStack(route, units, decreasingMovement, currentMove);
     }
-    m_executionStack.execute(bridge);
-    return m_casualties;
+    executionStack.execute(bridge);
+    return casualties;
   }
 
   /**
@@ -113,7 +114,7 @@ class AAInMoveUtil implements Serializable {
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
           // get rid of units already killed, so we don't target them twice
-          validTargetedUnitsForThisRoll.removeAll(m_casualties);
+          validTargetedUnitsForThisRoll.removeAll(casualties);
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
             dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, AAInMoveUtil.this.bridge,
                 territory, true);
@@ -154,8 +155,8 @@ class AAInMoveUtil implements Serializable {
         }
       };
       // push in reverse order of execution
-      m_executionStack.push(selectCasualties);
-      m_executionStack.push(rollDice);
+      executionStack.push(selectCasualties);
+      executionStack.push(rollDice);
     }
   }
 
@@ -176,7 +177,7 @@ class AAInMoveUtil implements Serializable {
       });
     }
     Collections.reverse(executables);
-    m_executionStack.push(executables);
+    executionStack.push(executables);
   }
 
   Collection<Territory> getTerritoriesWhereAaWillFire(final Route route, final Collection<Unit> units) {
@@ -190,7 +191,7 @@ class AAInMoveUtil implements Serializable {
     if (GameStepPropertiesHelper.isNonCombatMove(data, false) && !alwaysOnAa) {
       return Collections.emptyList();
     }
-    // can't rely on m_player being the unit owner in Edit Mode
+    // can't rely on player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
     final PlayerID movingPlayer = movingPlayer(units);
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
@@ -279,10 +280,10 @@ class AAInMoveUtil implements Serializable {
         MyFormatter.unitsToTextNoOwner(casualties.getKilled()) + " lost in " + territory.getName(),
         new ArrayList<>(casualties.getKilled()));
     allFriendlyUnits.removeAll(casualties.getKilled());
-    if (m_casualties == null) {
-      m_casualties = new ArrayList<>(casualties.getKilled());
+    if (this.casualties == null) {
+      this.casualties = new ArrayList<>(casualties.getKilled());
     } else {
-      m_casualties.addAll(casualties.getKilled());
+      this.casualties.addAll(casualties.getKilled());
     }
   }
 }
