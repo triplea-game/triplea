@@ -1,23 +1,24 @@
 package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
+import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Stack;
+import java.util.Deque;
 
 import games.strategy.engine.delegate.IDelegateBridge;
 
 /**
- * Utilility for tracking a sequence of executables.
+ * Utility for tracking a sequence of executables.
  *
  * <p>
  * It works like this,
  * We pop the top of the stack, store it in current, then execute it.
- * While exececuting the current element, the current element can push
+ * While executing the current element, the current element can push
  * more execution items onto the stack.
  * </p>
  *
  * <p>
- * After execution has finished, we pop the next item, and execute it, repeating till nothing is left to exectue.
+ * After execution has finished, we pop the next item, and execute it, repeating till nothing is left to execute.
  * </p>
  *
  * <p>
@@ -28,37 +29,34 @@ import games.strategy.engine.delegate.IDelegateBridge;
  */
 public class ExecutionStack implements Serializable {
   private static final long serialVersionUID = -8675285470515074530L;
-  private IExecutable m_current;
-  @SuppressWarnings("JdkObsolete") // change to Deque/ArrayDeque upon next incompatible release
-  private final Stack<IExecutable> m_stack = new Stack<>();
+  private IExecutable current;
+  private final Deque<IExecutable> stack = new ArrayDeque<>();
 
   void execute(final IDelegateBridge bridge) {
     // we were interrupted before, resume where we left off
-    if (m_current != null) {
-      m_stack.push(m_current);
+    if (current != null) {
+      stack.push(current);
     }
-    while (!m_stack.isEmpty()) {
-      m_current = m_stack.pop();
-      m_current.execute(this, bridge);
+    while (!stack.isEmpty()) {
+      current = stack.pop();
+      current.execute(this, bridge);
     }
-    m_current = null;
+    current = null;
   }
 
   void push(final Collection<IExecutable> executables) {
-    for (final IExecutable ex : executables) {
-      push(ex);
-    }
+    executables.forEach(stack::push);
   }
 
   public void push(final IExecutable executable) {
-    m_stack.push(executable);
+    stack.push(executable);
   }
 
   boolean isExecuting() {
-    return m_current != null;
+    return current != null;
   }
 
   public boolean isEmpty() {
-    return m_stack.isEmpty();
+    return stack.isEmpty();
   }
 }
