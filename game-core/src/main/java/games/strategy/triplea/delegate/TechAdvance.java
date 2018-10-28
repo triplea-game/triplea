@@ -63,7 +63,7 @@ public abstract class TechAdvance extends NamedAttachable {
     preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_SHIPYARDS, ImprovedShipyardsAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_AA_RADAR, AARadarAdvance.class);
+    preDefinedTechMap.put(TECH_PROPERTY_AA_RADAR, AaRadarAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_LONG_RANGE_AIRCRAFT, LongRangeAircraftAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_HEAVY_BOMBER, HeavyBomberAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT, ImprovedArtillerySupportAdvance.class);
@@ -110,7 +110,7 @@ public abstract class TechAdvance extends NamedAttachable {
     tf.addAdvance(new SuperSubsAdvance(tf.getData()));
     tf.addAdvance(new JetPowerAdvance(tf.getData()));
     tf.addAdvance(new ImprovedShipyardsAdvance(tf.getData()));
-    tf.addAdvance(new AARadarAdvance(tf.getData()));
+    tf.addAdvance(new AaRadarAdvance(tf.getData()));
     tf.addAdvance(new LongRangeAircraftAdvance(tf.getData()));
     tf.addAdvance(new HeavyBomberAdvance(tf.getData()));
     tf.addAdvance(new ImprovedArtillerySupportAdvance(tf.getData()));
