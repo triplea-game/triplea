@@ -59,7 +59,7 @@ public class NonFightingBattle extends DependentBattle {
     m_attackingFrom.add(attackingFrom);
     attackingUnits.addAll(units);
     final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.computeIfAbsent(attackingFrom,
-        i -> new ArrayList<>());
+        k -> new ArrayList<>());
     attackingFromMapUnits.addAll(units);
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
