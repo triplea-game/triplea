@@ -41,7 +41,7 @@ public class MovePerformer implements Serializable {
   private transient AbstractMoveDelegate moveDelegate;
   private transient IDelegateBridge bridge;
   private transient PlayerID player;
-  private AAInMoveUtil m_aaInMoveUtil;
+  private AaInMoveUtil m_aaInMoveUtil;
   private final ExecutionStack m_executionStack = new ExecutionStack();
   private UndoableMove m_currentMove;
   private Map<Unit, Collection<Unit>> m_newDependents;
@@ -450,7 +450,7 @@ public class MovePerformer implements Serializable {
    */
   private Collection<Unit> fireAa(final Route route, final Collection<Unit> units) {
     if (m_aaInMoveUtil == null) {
-      m_aaInMoveUtil = new AAInMoveUtil();
+      m_aaInMoveUtil = new AaInMoveUtil();
     }
     m_aaInMoveUtil.initialize(bridge);
     final Collection<Unit> unitsToRemove =

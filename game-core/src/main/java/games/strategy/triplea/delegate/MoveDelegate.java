@@ -583,7 +583,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
 
     // allow user to cancel move if aa guns will fire
-    final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
+    final AaInMoveUtil aaInMoveUtil = new AaInMoveUtil();
     aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {

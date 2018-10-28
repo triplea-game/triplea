@@ -30,7 +30,7 @@ import games.strategy.util.CollectionUtils;
 /**
  * Code to fire AA guns while in combat and non combat move.
  */
-class AAInMoveUtil implements Serializable {
+class AaInMoveUtil implements Serializable {
   private static final long serialVersionUID = 1787497998642717678L;
 
   private transient IDelegateBridge bridge;
@@ -38,9 +38,9 @@ class AAInMoveUtil implements Serializable {
   private Collection<Unit> casualties = new ArrayList<>();
   private final ExecutionStack executionStack = new ExecutionStack();
 
-  AAInMoveUtil() {}
+  AaInMoveUtil() {}
 
-  public AAInMoveUtil initialize(final IDelegateBridge bridge) {
+  public AaInMoveUtil initialize(final IDelegateBridge bridge) {
     this.bridge = bridge;
     this.player = bridge.getPlayerId();
     return this;
@@ -116,7 +116,7 @@ class AAInMoveUtil implements Serializable {
           // get rid of units already killed, so we don't target them twice
           validTargetedUnitsForThisRoll.removeAll(casualties);
           if (!validTargetedUnitsForThisRoll.isEmpty()) {
-            dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, AAInMoveUtil.this.bridge,
+            dice[0] = DiceRoll.rollAa(validTargetedUnitsForThisRoll, currentPossibleAa, AaInMoveUtil.this.bridge,
                 territory, true);
           }
         }
@@ -130,10 +130,10 @@ class AAInMoveUtil implements Serializable {
             final int hitCount = dice[0].getHits();
             if (hitCount == 0) {
               if (currentTypeAa.equals("AA")) {
-                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
+                AaInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
                     findDefender(currentPossibleAa, territory));
               } else {
-                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(
+                AaInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(
                     SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
                     findDefender(currentPossibleAa, territory));
               }
@@ -141,10 +141,10 @@ class AAInMoveUtil implements Serializable {
                   "No " + currentTypeAa + " hits in " + territory.getName());
             } else {
               if (currentTypeAa.equals("AA")) {
-                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
+                AaInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
                     findDefender(currentPossibleAa, territory));
               } else {
-                AAInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(
+                AaInMoveUtil.this.bridge.getSoundChannelBroadcaster().playSoundForAll(
                     SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
                     findDefender(currentPossibleAa, territory));
               }
