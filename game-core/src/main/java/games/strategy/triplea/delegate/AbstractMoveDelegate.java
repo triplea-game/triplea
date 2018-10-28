@@ -55,8 +55,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     final AbstractMoveExtendedDelegateState state = new AbstractMoveExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_movesToUndo = movesToUndo;
-    state.m_tempMovePerformer = tempMovePerformer;
+    state.movesToUndo = movesToUndo;
+    state.tempMovePerformer = tempMovePerformer;
     return state;
   }
 
@@ -66,10 +66,10 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     super.loadState(s.superState);
     // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo
     // move
-    if (s.m_movesToUndo != null) {
-      movesToUndo = s.m_movesToUndo;
+    if (s.movesToUndo != null) {
+      movesToUndo = s.movesToUndo;
     }
-    tempMovePerformer = s.m_tempMovePerformer;
+    tempMovePerformer = s.tempMovePerformer;
   }
 
   @Override
