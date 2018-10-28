@@ -35,10 +35,13 @@ public class ExecutionStack implements Serializable {
   void execute(final IDelegateBridge bridge) {
     isExecuting = true;
     while (!deque.isEmpty()) {
-      // In case execute throws an exception, don't remove
-      // the executable from the stack
-      deque.element().execute(this, bridge);
-      deque.pop();
+      final IExecutable executable = deque.pop();
+      try {
+        executable.execute(this, bridge);
+      } catch (final RuntimeException e) {
+        deque.push(executable);
+        throw e;
+      }
     }
     isExecuting = false;
   }
