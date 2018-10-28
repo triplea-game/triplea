@@ -73,11 +73,11 @@ public class UndoablePlacement extends AbstractUndoableMove {
 
   @Override
   protected final PlacementDescription getDescriptionObject() {
-    return new PlacementDescription(m_units, m_placeTerritory);
+    return new PlacementDescription(units, m_placeTerritory);
   }
 
   @Override
   public String toString() {
-    return getMoveLabel(" produces in ") + ": " + MyFormatter.unitsToTextNoOwner(m_units);
+    return getMoveLabel(" produces in ") + ": " + MyFormatter.unitsToTextNoOwner(units);
   }
 }

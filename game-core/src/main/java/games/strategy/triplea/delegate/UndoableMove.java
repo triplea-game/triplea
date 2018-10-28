@@ -92,7 +92,7 @@ public class UndoableMove extends AbstractUndoableMove {
   protected void undoSpecific(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-    battleTracker.undoBattle(m_route, m_units, bridge.getPlayerId(), bridge);
+    battleTracker.undoBattle(m_route, units, bridge.getPlayerId(), bridge);
     // clean up dependencies
     for (final UndoableMove other : m_iDependOn) {
       other.m_dependOnMe.remove(this);
@@ -103,7 +103,7 @@ public class UndoableMove extends AbstractUndoableMove {
       if (battle == null || battle.isOver()) {
         continue;
       }
-      for (final Unit unit : m_units) {
+      for (final Unit unit : units) {
         final Route routeUnitUsedToMove =
             DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
         if (!battle.getBattleType().isBombingRun()) {
@@ -149,7 +149,7 @@ public class UndoableMove extends AbstractUndoableMove {
       }
     }
     // Clear any temporary dependents
-    MovePanel.clearDependents(m_units);
+    MovePanel.clearDependents(units);
   }
 
   /**
@@ -165,14 +165,14 @@ public class UndoableMove extends AbstractUndoableMove {
       // if the other move has moves that depend on this
       if (!CollectionUtils.intersection(other.getUnits(), this.getUnits()).isEmpty()
           // if the other move has transports that we are loading
-          || !CollectionUtils.intersection(other.m_units, this.m_loaded).isEmpty()
+          || !CollectionUtils.intersection(other.units, this.m_loaded).isEmpty()
           // or we are moving through a previously conqueured territory
           // we should be able to take this out later
           // we need to add logic for this move to take over the same territories
           // when the other move is undone
           || !CollectionUtils.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty()
           // or we are unloading transports that have moved in another turn
-          || !CollectionUtils.intersection(other.m_units, this.m_unloaded).isEmpty()
+          || !CollectionUtils.intersection(other.units, this.m_unloaded).isEmpty()
           || !CollectionUtils.intersection(other.m_unloaded, this.m_unloaded).isEmpty()) {
         m_iDependOn.add(other);
         other.m_dependOnMe.add(this);
@@ -196,7 +196,7 @@ public class UndoableMove extends AbstractUndoableMove {
 
   @Override
   public String toString() {
-    return "UndoableMove index;" + m_index + " description:" + m_description;
+    return "UndoableMove index;" + index + " description:" + m_description;
   }
 
   @Override
@@ -215,6 +215,6 @@ public class UndoableMove extends AbstractUndoableMove {
 
   @Override
   protected final MoveDescription getDescriptionObject() {
-    return new MoveDescription(m_units, m_route);
+    return new MoveDescription(units, m_route);
   }
 }
