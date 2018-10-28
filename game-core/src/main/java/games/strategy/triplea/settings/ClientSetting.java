@@ -20,6 +20,8 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 /**
@@ -76,7 +78,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<File> mapFolderOverride = new FileClientSetting("MAP_FOLDER_OVERRIDE");
   public static final ClientSetting<File> mapListOverride = new FileClientSetting("MAP_LIST_OVERRIDE");
   public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =
-      new HttpProxyChoiceClientSetting("PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
+      new EnumClientSetting<>(HttpProxy.ProxyChoice.class, "PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
   public static final ClientSetting<String> proxyHost = new StringClientSetting("PROXY_HOST");
   public static final ClientSetting<Integer> proxyPort = new IntegerClientSetting("PROXY_PORT");
   public static final ClientSetting<File> saveGamesFolderPath = new FileClientSetting(
@@ -113,6 +115,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
+  @Getter(value = AccessLevel.PROTECTED)
   private final Class<T> type;
   private final String name;
   private final @Nullable T defaultValue;

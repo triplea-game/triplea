@@ -9,17 +9,15 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.framework.system.HttpProxy;
-
-final class HttpProxyChoiceClientSettingTest {
-  private final HttpProxyChoiceClientSetting clientSetting =
-      new HttpProxyChoiceClientSetting("name", HttpProxy.ProxyChoice.NONE);
+final class EnumClientSettingTest {
+  private final EnumClientSetting<FakeEnum> clientSetting =
+      new EnumClientSetting<>(FakeEnum.class, "name", FakeEnum.ONE);
 
   @Nested
   final class FormatValueTest {
     @Test
     void shouldReturnEnumConstantName() {
-      Arrays.stream(HttpProxy.ProxyChoice.values()).forEach(value -> {
+      Arrays.stream(FakeEnum.values()).forEach(value -> {
         assertThat(clientSetting.formatValue(value), is(value.toString()));
       });
     }
@@ -29,7 +27,7 @@ final class HttpProxyChoiceClientSettingTest {
   final class ParseValueTest {
     @Test
     void shouldReturnAssociatedEnumConstantWhenEncodedValueIsLegal() {
-      Arrays.stream(HttpProxy.ProxyChoice.values()).forEach(value -> {
+      Arrays.stream(FakeEnum.values()).forEach(value -> {
         assertThat(clientSetting.parseValue(value.toString()), is(value));
       });
     }
@@ -38,5 +36,9 @@ final class HttpProxyChoiceClientSettingTest {
     void shouldThrowExceptionWhenEncodedValueIsIllegal() {
       assertThrows(IllegalArgumentException.class, () -> clientSetting.parseValue("__unknown__"));
     }
+  }
+
+  private enum FakeEnum {
+    ONE, TWO, THREE;
   }
 }
