@@ -3,6 +3,9 @@ package games.strategy.triplea.settings;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.util.function.Consumer;
 
@@ -10,7 +13,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -50,21 +52,26 @@ final class ClientSettingTest {
 
   @ExtendWith(MockitoExtension.class)
   @Nested
-  final class SaveActionTest extends AbstractClientSettingTestCase {
+  final class SaveListenerTest extends AbstractClientSettingTestCase {
     private static final String TEST_VALUE = "value";
 
     @Mock
-    private Consumer<String> mockSaveListener;
+    private Consumer<GameSetting<String>> mockSaveListener;
     private final ClientSetting<String> clientSetting = new FakeClientSetting("TEST_SETTING");
 
     @Test
-    void saveActionListenerIsCalled() {
+    void saveListenerIsCalled() {
+      doAnswer(invocation -> {
+        @SuppressWarnings("unchecked")
+        final GameSetting<String> gameSetting = (GameSetting<String>) invocation.getArgument(0);
+        assertThat(gameSetting.getValue(), isPresentAndIs(TEST_VALUE));
+        return null;
+      }).when(mockSaveListener).accept(clientSetting);
       clientSetting.addSaveListener(mockSaveListener);
 
       clientSetting.save(TEST_VALUE);
 
-      Mockito.verify(mockSaveListener, Mockito.times(1))
-          .accept(TEST_VALUE);
+      verify(mockSaveListener).accept(clientSetting);
     }
 
     @Test
@@ -74,8 +81,7 @@ final class ClientSettingTest {
 
       clientSetting.save(TEST_VALUE);
 
-      Mockito.verify(mockSaveListener, Mockito.never())
-          .accept(TEST_VALUE);
+      verify(mockSaveListener, never()).accept(clientSetting);
     }
   }
 

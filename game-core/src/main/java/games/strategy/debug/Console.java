@@ -50,8 +50,8 @@ public final class Console {
   public Console() {
     setLogLevel(getDefaultLogLevel());
 
-    ClientSetting.showConsole.addSaveListener(newValue -> {
-      if (newValue.equals(String.valueOf(true))) {
+    ClientSetting.showConsole.addSaveListener(gameSetting -> {
+      if (gameSetting.getValueOrThrow()) {
         SwingUtilities.invokeLater(() -> setVisible(true));
       }
     });
