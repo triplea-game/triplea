@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -119,7 +118,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   private final Class<T> type;
   private final String name;
   private final @Nullable T defaultValue;
-  private final Collection<Consumer<String>> onSaveActions = new CopyOnWriteArrayList<>();
+  private final Collection<Consumer<GameSetting<T>>> onSaveActions = new CopyOnWriteArrayList<>();
 
   /**
    * Initializes a new instance of {@code ClientSetting} with no default value.
@@ -163,13 +162,13 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public final void addSaveListener(final Consumer<String> saveListener) {
+  public final void addSaveListener(final Consumer<GameSetting<T>> saveListener) {
     Preconditions.checkNotNull(saveListener);
     onSaveActions.add(saveListener);
   }
 
   @Override
-  public final void removeSaveListener(final Consumer<String> saveListener) {
+  public final void removeSaveListener(final Consumer<GameSetting<T>> saveListener) {
     onSaveActions.remove(saveListener);
   }
 
@@ -221,14 +220,13 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   private void saveString(final @Nullable String newValue) {
-    final String value = Strings.nullToEmpty(newValue);
-    onSaveActions.forEach(saveAction -> saveAction.accept(value));
-
-    if (value.isEmpty()) {
+    if (newValue == null) {
       getPreferences().remove(name);
     } else {
       getPreferences().put(name, newValue);
     }
+
+    onSaveActions.forEach(saveAction -> saveAction.accept(this));
   }
 
   /**

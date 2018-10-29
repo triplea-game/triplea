@@ -62,7 +62,7 @@ public interface GameSetting<T> {
    */
   void resetValue();
 
-  void addSaveListener(Consumer<String> listener);
+  void addSaveListener(Consumer<GameSetting<T>> listener);
 
-  void removeSaveListener(Consumer<String> listener);
+  void removeSaveListener(Consumer<GameSetting<T>> listener);
 }

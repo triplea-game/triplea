@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.settings.GameSetting;
 import games.strategy.ui.SwingComponents;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ import lombok.AllArgsConstructor;
  * </pre>
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class LookAndFeelSwingFrameListener implements Consumer<String> {
+public final class LookAndFeelSwingFrameListener implements Consumer<GameSetting<String>> {
   private final JFrame component;
 
   /**
@@ -29,14 +30,14 @@ public final class LookAndFeelSwingFrameListener implements Consumer<String> {
    * component. Listener removal is also handled and is attached to the window close event.
    */
   public static void register(final JFrame component) {
-    final Consumer<String> listener = new LookAndFeelSwingFrameListener(component);
+    final Consumer<GameSetting<String>> listener = new LookAndFeelSwingFrameListener(component);
     ClientSetting.lookAndFeel.addSaveListener(listener);
     SwingComponents.addWindowClosingListener(component,
         () -> ClientSetting.lookAndFeel.removeSaveListener(listener));
   }
 
   @Override
-  public void accept(final String s) {
+  public void accept(final GameSetting<String> gameSetting) {
     SwingUtilities.updateComponentTreeUI(component);
   }
 }

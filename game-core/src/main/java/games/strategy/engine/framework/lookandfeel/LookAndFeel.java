@@ -39,8 +39,8 @@ public final class LookAndFeel {
    * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void initialize() {
-    ClientSetting.lookAndFeel.addSaveListener(newValue -> {
-      setupLookAndFeel(newValue);
+    ClientSetting.lookAndFeel.addSaveListener(gameSetting -> {
+      setupLookAndFeel(gameSetting.getValueOrThrow());
       SettingsWindow.updateLookAndFeel();
       JOptionPane.showMessageDialog(
           null,
