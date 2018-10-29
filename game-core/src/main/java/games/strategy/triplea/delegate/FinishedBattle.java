@@ -27,9 +27,10 @@ import games.strategy.util.IntegerMap;
  */
 public class FinishedBattle extends AbstractBattle {
   private static final long serialVersionUID = -5852495231826940879L;
-  private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<>();
+
+  private final Collection<Territory> amphibiousAttackFrom = new ArrayList<>();
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<>();
+  private final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
 
   FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data,
@@ -67,13 +68,13 @@ public class FinishedBattle extends AbstractBattle {
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
     attackingUnits.addAll(units);
-    final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.computeIfAbsent(attackingFrom,
+    final Collection<Unit> attackingFromMapUnits = attackingFromMap.computeIfAbsent(attackingFrom,
         k -> new ArrayList<>());
     attackingFromMapUnits.addAll(units);
     // are we amphibious
     if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater()
         && units.stream().anyMatch(Matches.unitIsLand())) {
-      m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
+      amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
       amphibiousLandAttackers.addAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       isAmphibious = true;
     }
@@ -88,7 +89,7 @@ public class FinishedBattle extends AbstractBattle {
       return;
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+    Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
     // handle possible null pointer
     if (attackingFromMapUnits == null) {
       attackingFromMapUnits = new ArrayList<>();
@@ -102,9 +103,9 @@ public class FinishedBattle extends AbstractBattle {
       // if none of the units is a land unit, the attack from
       // that territory is no longer an amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
-        m_amphibiousAttackFrom.remove(attackingFrom);
+        amphibiousAttackFrom.remove(attackingFrom);
         // do we have any amphibious attacks left?
-        isAmphibious = !m_amphibiousAttackFrom.isEmpty();
+        isAmphibious = !amphibiousAttackFrom.isEmpty();
       }
     }
     for (final Collection<Unit> dependent : dependentUnits.values()) {
@@ -145,6 +146,6 @@ public class FinishedBattle extends AbstractBattle {
   }
 
   Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return m_attackingFromMap;
+    return attackingFromMap;
   }
 }

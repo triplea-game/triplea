@@ -222,8 +222,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final EndTurnExtendedDelegateState state = new EndTurnExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_needToInitialize = needToInitialize;
-    state.m_hasPostedTurnSummary = hasPostedTurnSummary;
+    state.needToInitialize = needToInitialize;
+    state.hasPostedTurnSummary = hasPostedTurnSummary;
     return state;
   }
 
@@ -231,8 +231,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   public void loadState(final Serializable state) {
     final EndTurnExtendedDelegateState s = (EndTurnExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
-    hasPostedTurnSummary = s.m_hasPostedTurnSummary;
+    needToInitialize = s.needToInitialize;
+    hasPostedTurnSummary = s.hasPostedTurnSummary;
   }
 
   @Override

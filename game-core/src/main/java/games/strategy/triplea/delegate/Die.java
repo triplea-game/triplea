@@ -13,42 +13,42 @@ public class Die implements Serializable {
     MISS, HIT, IGNORED
   }
 
-  private final DieType m_type;
+  private final DieType type;
   // the value of the dice, 0 based
-  private final int m_value;
+  private final int value;
   // this value is 1 based
-  private final int m_rolledAt;
+  private final int rolledAt;
 
   public Die(final int value) {
     this(value, -1, DieType.MISS);
   }
 
   Die(final int value, final int rolledAt, final DieType type) {
-    m_type = type;
-    m_value = value;
-    m_rolledAt = rolledAt;
+    this.type = type;
+    this.value = value;
+    this.rolledAt = rolledAt;
   }
 
   public Die.DieType getType() {
-    return m_type;
+    return type;
   }
 
   public int getValue() {
-    return m_value;
+    return value;
   }
 
   int getRolledAt() {
-    return m_rolledAt;
+    return rolledAt;
   }
 
   // compress to an int
   // we write a lot of dice over the network and to the saved
   // game, so we want to make this fairly efficient
   int getCompressedValue() {
-    if (m_value > 255 || m_rolledAt > 255) {
+    if (value > 255 || rolledAt > 255) {
       throw new IllegalStateException("too big to serialize");
     }
-    return (m_rolledAt << 8) + (m_value << 16) + (m_type.ordinal());
+    return (rolledAt << 8) + (value << 16) + (type.ordinal());
   }
 
   // read from an int
@@ -65,19 +65,19 @@ public class Die implements Serializable {
       return false;
     }
     final Die other = (Die) o;
-    return other.m_type == this.m_type && other.m_value == this.m_value && other.m_rolledAt == this.m_rolledAt;
+    return other.type == this.type && other.value == this.value && other.rolledAt == this.rolledAt;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_value, m_rolledAt);
+    return Objects.hash(value, rolledAt);
   }
 
   @Override
   public String toString() {
-    if (m_rolledAt < 0) {
-      return "Die roll:" + m_value + (m_type == DieType.IGNORED ? " type:" + m_type : "");
+    if (rolledAt < 0) {
+      return "Die roll:" + value + (type == DieType.IGNORED ? " type:" + type : "");
     }
-    return "Die roll:" + m_value + " rolled at:" + m_rolledAt + " type:" + m_type;
+    return "Die roll:" + value + " rolled at:" + rolledAt + " type:" + type;
   }
 }
