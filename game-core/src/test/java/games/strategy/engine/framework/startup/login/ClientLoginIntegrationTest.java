@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.startup.login;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,7 +86,7 @@ final class ClientLoginIntegrationTest {
     void shouldSucceedWhenPasswordMatches() {
       final IConnectionLogin connectionLogin = new TestConnectionLogin();
 
-      assertNotThrows(() -> newClientMessenger(connectionLogin).shutDown());
+      assertDoesNotThrow(() -> newClientMessenger(connectionLogin).shutDown());
     }
 
     @Test
