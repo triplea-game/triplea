@@ -856,7 +856,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
             // after that is applied, we have to make a map of all dependencies
             final Map<Unit, Collection<Unit>> dependenciesForMfb =
-                TransportTracker.transporting(attackingUnits);
+                TransportTracker.transportingWithAllPossibleUnits(attackingUnits);
             for (final Unit transport : CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
               // however, the map we add to the newly created battle, cannot hold any units that are NOT in this
               // territory.
@@ -873,8 +873,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   new ArrayList<>(CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport()));
               allNeighborUnits.addAll(t.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(player)));
               final Map<Unit, Collection<Unit>> dependenciesForNeighbors =
-                  TransportTracker.transporting(CollectionUtils
-                      .getMatches(allNeighborUnits, Matches.unitIsTransport().negate()));
+                  TransportTracker.transportingWithAllPossibleUnits(
+                      CollectionUtils.getMatches(allNeighborUnits, Matches.unitIsTransport().negate()));
               dependencies.put(t, dependenciesForNeighbors);
             }
             mfb.addDependentUnits(dependencies.get(to));
