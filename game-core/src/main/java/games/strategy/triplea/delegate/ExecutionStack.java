@@ -29,21 +29,19 @@ import games.strategy.engine.delegate.IDelegateBridge;
  */
 public class ExecutionStack implements Serializable {
   private static final long serialVersionUID = -8675285470515074530L;
-  private boolean isExecuting;
+  private IExecutable currentStep;
   private final Deque<IExecutable> deque = new ArrayDeque<>();
 
   void execute(final IDelegateBridge bridge) {
-    isExecuting = true;
-    while (!deque.isEmpty()) {
-      final IExecutable executable = deque.pop();
-      try {
-        executable.execute(this, bridge);
-      } catch (final RuntimeException e) {
-        deque.push(executable);
-        throw e;
-      }
+    // we were interrupted before, resume where we left off
+    if (currentStep != null) {
+      currentStep.execute(this, bridge);
     }
-    isExecuting = false;
+    while (!deque.isEmpty()) {
+      currentStep = deque.pop();
+      currentStep.execute(this, bridge);
+    }
+    currentStep = null;
   }
 
   void push(final Collection<IExecutable> executables) {
@@ -55,7 +53,7 @@ public class ExecutionStack implements Serializable {
   }
 
   boolean isExecuting() {
-    return isExecuting;
+    return currentStep != null;
   }
 
   public boolean isEmpty() {
