@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 
@@ -20,7 +19,6 @@ import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.util.Md5Crypt;
 
 /**
  * The client side of the lobby authentication protocol.
@@ -94,19 +92,11 @@ public class LobbyLogin {
           if (anonymousLogin) {
             response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
           } else {
-            final String salt = challenge.getOrDefault(LobbyLoginChallengeKeys.SALT, Md5Crypt.newSalt());
-            response.put(LobbyLoginResponseKeys.HASHED_PASSWORD, hashPassword(password, salt));
-            if (RsaAuthenticator.canProcessChallenge(challenge)) {
-              response.putAll(RsaAuthenticator.newResponse(challenge, password));
-            }
+            response.putAll(RsaAuthenticator.newResponse(challenge, password));
           }
           response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
           return response;
         });
-  }
-
-  private static String hashPassword(final String password, final String salt) {
-    return Md5Crypt.hashPassword(password, salt);
   }
 
   private static String playerMacIdString() {
@@ -177,12 +167,7 @@ public class LobbyLogin {
           final Map<String, String> response = new HashMap<>();
           response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
           response.put(LobbyLoginResponseKeys.EMAIL, email);
-          // TODO: Don't send the md5-hashed password once the lobby removes the support, kept for
-          // backwards-compatibility
-          response.put(LobbyLoginResponseKeys.HASHED_PASSWORD, hashPassword(password, Md5Crypt.newSalt()));
-          if (RsaAuthenticator.canProcessChallenge(challenge)) {
-            response.putAll(RsaAuthenticator.newResponse(challenge, password));
-          }
+          response.putAll(RsaAuthenticator.newResponse(challenge, password));
           response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
           return response;
         });

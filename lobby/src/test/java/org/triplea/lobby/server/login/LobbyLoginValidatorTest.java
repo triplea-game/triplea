@@ -468,18 +468,11 @@ public final class LobbyLoginValidatorTest {
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> {
-          thenChallengeShouldBeProcessableByRsaAuthenticator(challenge);
-          return ImmutableMap.<String, String>builder()
-              .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
-              .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-              .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-              .build();
-        };
-      }
-
-      private void thenChallengeShouldBeProcessableByRsaAuthenticator(final Map<String, String> challenge) {
-        assertThat(RsaAuthenticator.canProcessChallenge(challenge), is(true));
+        return challenge -> ImmutableMap.<String, String>builder()
+            .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
+            .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+            .build();
       }
     }
   }
