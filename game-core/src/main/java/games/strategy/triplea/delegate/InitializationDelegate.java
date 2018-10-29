@@ -60,7 +60,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_needToInitialize = this.needToInitialize;
+    state.needToInitialize = this.needToInitialize;
     return state;
   }
 
@@ -68,7 +68,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
     super.loadState(s.superState);
-    this.needToInitialize = s.m_needToInitialize;
+    this.needToInitialize = s.needToInitialize;
   }
 
   @Override
