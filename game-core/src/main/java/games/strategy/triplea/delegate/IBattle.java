@@ -25,25 +25,26 @@ public interface IBattle extends Serializable {
 
   enum BattleType {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
-    private final String m_type;
+
+    private final String type;
 
     BattleType(final String type) {
-      m_type = type;
+      this.type = type;
     }
 
     @Override
     public String toString() {
-      return m_type;
+      return type;
     }
 
     // if it has the word "Raid" in it, then it is a bombing battle
     public boolean isBombingRun() {
-      return m_type.contains("Raid");
+      return type.contains("Raid");
     }
 
     // if it has the word "Air" in it, then it is an air battle
     public boolean isAirPreBattleOrPreRaid() {
-      return m_type.contains("Air");
+      return type.contains("Air");
     }
   }
 
