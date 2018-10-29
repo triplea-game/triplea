@@ -20,26 +20,26 @@ import org.mockito.Mockito;
 import games.strategy.engine.delegate.IDelegateBridge;
 
 class ExecutionStackTest {
-  private final ExecutionStack dummy = new ExecutionStack();
+  private final ExecutionStack executionStack = new ExecutionStack();
 
   @Test
   void testStackIsProcessedInRightOrder() {
     final List<Integer> orderCheck = new ArrayList<>();
-    dummy.push(Arrays.asList(
+    executionStack.push(Arrays.asList(
         (stack, bridge) -> orderCheck.add(4),
         (stack, bridge) -> orderCheck.add(3)));
-    dummy.push((stack, bridge) -> {
+    executionStack.push((stack, bridge) -> {
       // Prevent infinite loop
       if (orderCheck.contains(1)) {
         fail("Executable was executed more than once");
       }
 
       orderCheck.add(1);
-      dummy.push((s, b) -> orderCheck.add(2));
+      executionStack.push((s, b) -> orderCheck.add(2));
     });
-    dummy.push((stack, bridge) -> orderCheck.add(0));
+    executionStack.push((stack, bridge) -> orderCheck.add(0));
 
-    dummy.execute(null);
+    executionStack.execute(null);
 
     assertThat(orderCheck.toArray(new Integer[0]), is(new Integer[]{0, 1, 2, 3, 4}));
   }
@@ -49,38 +49,38 @@ class ExecutionStackTest {
     final IExecutable mock = mock(IExecutable.class);
     final IDelegateBridge bridge = mock(IDelegateBridge.class);
 
-    dummy.push(mock);
-    dummy.execute(bridge);
+    executionStack.push(mock);
+    executionStack.execute(bridge);
 
-    verify(mock).execute(dummy, bridge);
+    verify(mock).execute(executionStack, bridge);
   }
 
   @Test
   void testIsEmpty() {
-    assertThat(dummy.isEmpty(), is(true));
+    assertThat(executionStack.isEmpty(), is(true));
 
     final IExecutable mock = mock(IExecutable.class);
 
-    dummy.push(mock);
-    assertThat(dummy.isEmpty(), is(false));
-    dummy.execute(null);
-    assertThat(dummy.isEmpty(), is(true));
+    executionStack.push(mock);
+    assertThat(executionStack.isEmpty(), is(false));
+    executionStack.execute(null);
+    assertThat(executionStack.isEmpty(), is(true));
 
-    dummy.push(Arrays.asList(mock, mock));
-    assertThat(dummy.isEmpty(), is(false));
-    dummy.execute(null);
-    assertThat(dummy.isEmpty(), is(true));
+    executionStack.push(Arrays.asList(mock, mock));
+    assertThat(executionStack.isEmpty(), is(false));
+    executionStack.execute(null);
+    assertThat(executionStack.isEmpty(), is(true));
   }
 
   @Test
   void testExecutionStackIsAbortedCorrectly() {
     final IExecutable mock = mock(IExecutable.class);
     Mockito.doThrow(RuntimeException.class).doNothing().when(mock).execute(any(), any());
-    dummy.push(mock);
+    executionStack.push(mock);
 
-    assertThrows(RuntimeException.class, () -> dummy.execute(null));
+    assertThrows(RuntimeException.class, () -> executionStack.execute(null));
 
-    assertDoesNotThrow(() -> dummy.execute(null));
+    assertDoesNotThrow(() -> executionStack.execute(null));
 
     verify(mock, times(2)).execute(any(), any());
   }
