@@ -1,7 +1,7 @@
 package games.strategy.engine.delegate;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -20,7 +20,7 @@ public final class DelegateExecutionManagerTest {
 
     // when: a second delegate is executed on the current thread after the first delegate's execution ends
     // then: no exception should be thrown to prevent the second delegate's execution
-    assertNotThrows(delegateExecutionManager::enterDelegateExecution);
+    assertDoesNotThrow(delegateExecutionManager::enterDelegateExecution);
   }
 
   @Test
@@ -48,7 +48,7 @@ public final class DelegateExecutionManagerTest {
 
     // when: a second delegate is executed on a different thread while the first delegate is still running
     // then: no exception should be thrown to prevent the second delegate's execution
-    assertNotThrows(delegateExecutionManager::enterDelegateExecution);
+    assertDoesNotThrow(delegateExecutionManager::enterDelegateExecution);
 
     testCompleteLatch.countDown();
     delegate1Thread.join();
