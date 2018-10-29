@@ -187,8 +187,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final EndRoundExtendedDelegateState state = new EndRoundExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_gameOver = gameOver;
-    state.m_winners = winners;
+    state.gameOver = gameOver;
+    state.winners = winners;
     return state;
   }
 
@@ -196,8 +196,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final EndRoundExtendedDelegateState s = (EndRoundExtendedDelegateState) state;
     super.loadState(s.superState);
-    gameOver = s.m_gameOver;
-    winners = s.m_winners;
+    gameOver = s.gameOver;
+    winners = s.winners;
   }
 
   @Override
