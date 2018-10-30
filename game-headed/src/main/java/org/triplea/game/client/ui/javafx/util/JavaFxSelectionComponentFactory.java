@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import javax.annotation.Nullable;
 
@@ -186,11 +187,23 @@ final class JavaFxSelectionComponentFactory {
   }
 
   static SelectionComponent<Region> folderPath(final ClientSetting<File> clientSetting) {
-    return new FolderSelector(clientSetting);
+    return new FileSelector(clientSetting, (window, selectedFile) -> {
+      final DirectoryChooser fileChooser = new DirectoryChooser();
+      if (selectedFile != null) {
+        fileChooser.setInitialDirectory(selectedFile);
+      }
+      return fileChooser.showDialog(window);
+    });
   }
 
   static SelectionComponent<Region> filePath(final ClientSetting<File> clientSetting) {
-    return new FileSelector(clientSetting);
+    return new FileSelector(clientSetting, (window, selectedFile) -> {
+      final FileChooser fileChooser = new FileChooser();
+      if (selectedFile != null) {
+        fileChooser.setInitialDirectory(selectedFile.getParentFile());
+      }
+      return fileChooser.showOpenDialog(window);
+    });
   }
 
   static SelectionComponent<Region> proxySettings(
@@ -200,12 +213,14 @@ final class JavaFxSelectionComponentFactory {
     return new ProxySetting(proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
   }
 
-  private abstract static class AbstractFileSelector extends Region implements SelectionComponent<Region> {
+  private static final class FileSelector extends Region implements SelectionComponent<Region> {
     private final ClientSetting<File> clientSetting;
     private final TextField textField;
     private @Nullable File selectedFile;
 
-    AbstractFileSelector(final ClientSetting<File> clientSetting) {
+    FileSelector(
+        final ClientSetting<File> clientSetting,
+        final BiFunction<Window, /* @Nullable */ File, /* @Nullable */ File> chooseFile) {
       this.clientSetting = clientSetting;
       final @Nullable File initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
@@ -217,7 +232,7 @@ final class JavaFxSelectionComponentFactory {
       final Button chooseFileButton = new Button("...");
       selectedFile = initialValue;
       chooseFileButton.setOnAction(e -> {
-        final @Nullable File file = chooseFile(chooseFileButton.getScene().getWindow(), selectedFile);
+        final @Nullable File file = chooseFile.apply(chooseFileButton.getScene().getWindow(), selectedFile);
         if (file != null) {
           selectedFile = file;
           textField.setText(file.toString());
@@ -226,8 +241,6 @@ final class JavaFxSelectionComponentFactory {
       wrapper.getChildren().addAll(textField, chooseFileButton);
       getChildren().add(wrapper);
     }
-
-    abstract @Nullable File chooseFile(Window window, @Nullable File selectedFile);
 
     @Override
     public Map<GameSetting<?>, Object> readValues() {
@@ -262,38 +275,6 @@ final class JavaFxSelectionComponentFactory {
     @Override
     public String validValueDescription() {
       return "";
-    }
-  }
-
-  private static final class FolderSelector extends AbstractFileSelector {
-    FolderSelector(final ClientSetting<File> clientSetting) {
-      super(clientSetting);
-    }
-
-    @Override
-    @Nullable
-    File chooseFile(final Window window, final @Nullable File selectedFile) {
-      final DirectoryChooser fileChooser = new DirectoryChooser();
-      if (selectedFile != null) {
-        fileChooser.setInitialDirectory(selectedFile);
-      }
-      return fileChooser.showDialog(window);
-    }
-  }
-
-  private static final class FileSelector extends AbstractFileSelector {
-    FileSelector(final ClientSetting<File> clientSetting) {
-      super(clientSetting);
-    }
-
-    @Override
-    @Nullable
-    File chooseFile(final Window window, final @Nullable File selectedFile) {
-      final FileChooser fileChooser = new FileChooser();
-      if (selectedFile != null) {
-        fileChooser.setInitialDirectory(selectedFile.getParentFile());
-      }
-      return fileChooser.showOpenDialog(window);
     }
   }
 
