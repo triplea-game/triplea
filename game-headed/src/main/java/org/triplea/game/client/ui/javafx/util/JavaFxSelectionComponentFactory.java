@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import javax.annotation.Nullable;
 
@@ -28,6 +29,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
 final class JavaFxSelectionComponentFactory {
 
@@ -185,11 +187,23 @@ final class JavaFxSelectionComponentFactory {
   }
 
   static SelectionComponent<Region> folderPath(final ClientSetting<File> clientSetting) {
-    return new FolderSelector(clientSetting);
+    return new FileSelector(clientSetting, (window, selectedFile) -> {
+      final DirectoryChooser fileChooser = new DirectoryChooser();
+      if (selectedFile != null) {
+        fileChooser.setInitialDirectory(selectedFile);
+      }
+      return fileChooser.showDialog(window);
+    });
   }
 
   static SelectionComponent<Region> filePath(final ClientSetting<File> clientSetting) {
-    return new FileSelector(clientSetting);
+    return new FileSelector(clientSetting, (window, selectedFile) -> {
+      final FileChooser fileChooser = new FileChooser();
+      if (selectedFile != null) {
+        fileChooser.setInitialDirectory(selectedFile.getParentFile());
+      }
+      return fileChooser.showOpenDialog(window);
+    });
   }
 
   static SelectionComponent<Region> proxySettings(
@@ -199,78 +213,14 @@ final class JavaFxSelectionComponentFactory {
     return new ProxySetting(proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
   }
 
-  private static final class FolderSelector extends Region implements SelectionComponent<Region> {
-    private final ClientSetting<File> clientSetting;
-    private final TextField textField;
-    private @Nullable File selectedFile;
-
-    FolderSelector(final ClientSetting<File> clientSetting) {
-      this.clientSetting = clientSetting;
-      final @Nullable File initialValue = clientSetting.getValue().orElse(null);
-      final HBox wrapper = new HBox();
-      textField = new TextField(SelectionComponentUiUtils.toString(clientSetting.getValue()));
-      textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
-      textField.setMaxWidth(Double.MAX_VALUE);
-      textField.setDisable(true);
-      final Button chooseFileButton = new Button("...");
-      selectedFile = initialValue;
-      chooseFileButton.setOnAction(e -> {
-        final DirectoryChooser fileChooser = new DirectoryChooser();
-        if (selectedFile != null) {
-          fileChooser.setInitialDirectory(selectedFile);
-        }
-        final @Nullable File file = fileChooser.showDialog(chooseFileButton.getScene().getWindow());
-        if (file != null) {
-          selectedFile = file;
-          textField.setText(file.toString());
-        }
-      });
-      wrapper.getChildren().addAll(textField, chooseFileButton);
-      getChildren().add(wrapper);
-    }
-
-    @Override
-    public Map<GameSetting<?>, Object> readValues() {
-      return Collections.singletonMap(clientSetting, selectedFile);
-    }
-
-    @Override
-    public void resetToDefault() {
-      reset(clientSetting.getDefaultValue());
-    }
-
-    @Override
-    public void reset() {
-      reset(clientSetting.getValue());
-    }
-
-    private void reset(final Optional<File> file) {
-      textField.setText(SelectionComponentUiUtils.toString(file));
-      selectedFile = file.orElse(null);
-    }
-
-    @Override
-    public Region getUiComponent() {
-      return this;
-    }
-
-    @Override
-    public boolean isValid() {
-      return true;
-    }
-
-    @Override
-    public String validValueDescription() {
-      return "";
-    }
-  }
-
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
     private final ClientSetting<File> clientSetting;
     private final TextField textField;
     private @Nullable File selectedFile;
 
-    FileSelector(final ClientSetting<File> clientSetting) {
+    FileSelector(
+        final ClientSetting<File> clientSetting,
+        final BiFunction<Window, /* @Nullable */ File, /* @Nullable */ File> chooseFile) {
       this.clientSetting = clientSetting;
       final @Nullable File initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
@@ -282,11 +232,7 @@ final class JavaFxSelectionComponentFactory {
       final Button chooseFileButton = new Button("...");
       selectedFile = initialValue;
       chooseFileButton.setOnAction(e -> {
-        final FileChooser fileChooser = new FileChooser();
-        if (selectedFile != null) {
-          fileChooser.setInitialDirectory(selectedFile.getParentFile());
-        }
-        final @Nullable File file = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
+        final @Nullable File file = chooseFile.apply(chooseFileButton.getScene().getWindow(), selectedFile);
         if (file != null) {
           selectedFile = file;
           textField.setText(file.toString());
