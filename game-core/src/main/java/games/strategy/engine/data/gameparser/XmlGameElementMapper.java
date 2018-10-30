@@ -34,8 +34,8 @@ import games.strategy.triplea.delegate.EndTurnDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.NoAirCheckPlaceDelegate;
-import games.strategy.triplea.delegate.NoPUEndTurnDelegate;
-import games.strategy.triplea.delegate.NoPUPurchaseDelegate;
+import games.strategy.triplea.delegate.NoPuEndTurnDelegate;
+import games.strategy.triplea.delegate.NoPuPurchaseDelegate;
 import games.strategy.triplea.delegate.PlaceDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.PurchaseDelegate;
@@ -78,8 +78,8 @@ public class XmlGameElementMapper {
           .put("InitializationDelegate", InitializationDelegate::new)
           .put("MoveDelegate", MoveDelegate::new)
           .put("NoAirCheckPlaceDelegate", NoAirCheckPlaceDelegate::new)
-          .put("NoPUEndTurnDelegate", NoPUEndTurnDelegate::new)
-          .put("NoPUPurchaseDelegate", NoPUPurchaseDelegate::new)
+          .put("NoPUEndTurnDelegate", NoPuEndTurnDelegate::new)
+          .put("NoPUPurchaseDelegate", NoPuPurchaseDelegate::new)
           .put("PlaceDelegate", PlaceDelegate::new)
           .put("PoliticsDelegate", PoliticsDelegate::new)
           .put("PurchaseDelegate", PurchaseDelegate::new)

@@ -219,9 +219,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public Serializable saveState() {
     final MoveExtendedDelegateState state = new MoveExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
-    state.m_needToDoRockets = needToDoRockets;
-    state.m_PUsLost = pusLost;
+    state.needToInitialize = needToInitialize;
+    state.needToDoRockets = needToDoRockets;
+    state.pusLost = pusLost;
     return state;
   }
 
@@ -229,9 +229,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public void loadState(final Serializable state) {
     final MoveExtendedDelegateState s = (MoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
-    needToDoRockets = s.m_needToDoRockets;
-    pusLost = s.m_PUsLost;
+    needToInitialize = s.needToInitialize;
+    needToDoRockets = s.needToDoRockets;
+    pusLost = s.pusLost;
   }
 
   @Override

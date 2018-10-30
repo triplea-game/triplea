@@ -12,7 +12,7 @@ import games.strategy.triplea.MapSupport;
  */
 @AutoSave(afterStepEnd = true)
 @MapSupport
-public class NoPUEndTurnDelegate extends EndTurnDelegate {
+public class NoPuEndTurnDelegate extends EndTurnDelegate {
   @Override
   protected int getProduction(final Collection<Territory> territories) {
     return 0;
