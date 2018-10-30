@@ -60,7 +60,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final RandomStartExtendedDelegateState state = new RandomStartExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_currentPickingPlayer = this.currentPickingPlayer;
+    state.currentPickingPlayer = this.currentPickingPlayer;
     return state;
   }
 
@@ -68,7 +68,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final RandomStartExtendedDelegateState s = (RandomStartExtendedDelegateState) state;
     super.loadState(s.superState);
-    this.currentPickingPlayer = s.m_currentPickingPlayer;
+    this.currentPickingPlayer = s.currentPickingPlayer;
   }
 
   private void setupBoard() {
