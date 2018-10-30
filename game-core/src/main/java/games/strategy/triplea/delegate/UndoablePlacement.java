@@ -17,8 +17,9 @@ import games.strategy.triplea.formatter.MyFormatter;
  */
 public class UndoablePlacement extends AbstractUndoableMove {
   private static final long serialVersionUID = -1493488646587233451L;
-  private final Territory m_placeTerritory;
-  private Territory m_producerTerritory;
+
+  private final Territory placeTerritory;
+  private Territory producerTerritory;
 
   /**
    * This constructor initializes an UndoablePlacement objects with the passed parameters.
@@ -26,20 +27,20 @@ public class UndoablePlacement extends AbstractUndoableMove {
   public UndoablePlacement(final CompositeChange change, final Territory producerTerritory,
       final Territory placeTerritory, final Collection<Unit> units) {
     super(change, units);
-    m_placeTerritory = placeTerritory;
-    m_producerTerritory = producerTerritory;
+    this.placeTerritory = placeTerritory;
+    this.producerTerritory = producerTerritory;
   }
 
   public Territory getProducerTerritory() {
-    return m_producerTerritory;
+    return producerTerritory;
   }
 
   public void setProducerTerritory(final Territory producerTerritory) {
-    m_producerTerritory = producerTerritory;
+    this.producerTerritory = producerTerritory;
   }
 
   public Territory getPlaceTerritory() {
-    return m_placeTerritory;
+    return placeTerritory;
   }
 
   @Override
@@ -47,10 +48,10 @@ public class UndoablePlacement extends AbstractUndoableMove {
     final GameData data = bridge.getData();
     final AbstractPlaceDelegate currentDelegate = (AbstractPlaceDelegate) data.getSequence().getStep().getDelegate();
     final Map<Territory, Collection<Unit>> produced = currentDelegate.getProduced();
-    final Collection<Unit> units = produced.get(m_producerTerritory);
+    final Collection<Unit> units = produced.get(producerTerritory);
     units.removeAll(getUnits());
     if (units.isEmpty()) {
-      produced.remove(m_producerTerritory);
+      produced.remove(producerTerritory);
     }
     currentDelegate.setProduced(new HashMap<>(produced));
   }
@@ -61,19 +62,19 @@ public class UndoablePlacement extends AbstractUndoableMove {
   }
 
   private String getMoveLabel(final String separator) {
-    return m_producerTerritory.equals(m_placeTerritory)
-        ? m_placeTerritory.getName()
-        : m_producerTerritory.getName() + separator + m_placeTerritory.getName();
+    return producerTerritory.equals(placeTerritory)
+        ? placeTerritory.getName()
+        : producerTerritory.getName() + separator + placeTerritory.getName();
   }
 
   @Override
   public final Territory getEnd() {
-    return m_placeTerritory;
+    return placeTerritory;
   }
 
   @Override
   protected final PlacementDescription getDescriptionObject() {
-    return new PlacementDescription(units, m_placeTerritory);
+    return new PlacementDescription(units, placeTerritory);
   }
 
   @Override
