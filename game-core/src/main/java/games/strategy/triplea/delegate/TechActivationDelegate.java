@@ -122,7 +122,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -130,7 +130,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   // Return string representing all advances in collection
