@@ -12,6 +12,7 @@ import games.strategy.triplea.MapSupport;
  */
 @AutoSave(afterStepEnd = true)
 @MapSupport
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // map compatibility; rename upon next map-incompatible release
 public class NoPUEndTurnDelegate extends EndTurnDelegate {
   @Override
   protected int getProduction(final Collection<Territory> territories) {
