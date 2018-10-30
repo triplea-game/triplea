@@ -20,8 +20,7 @@ import games.strategy.util.IntegerMap;
  * At the end of the turn collect units, not income.
  */
 @MapSupport
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // map compatibility; rename upon next map-incompatible release
-public class NoPUPurchaseDelegate extends PurchaseDelegate {
+public class NoPuPurchaseDelegate extends PurchaseDelegate {
   private boolean isPacific;
 
   @Override
