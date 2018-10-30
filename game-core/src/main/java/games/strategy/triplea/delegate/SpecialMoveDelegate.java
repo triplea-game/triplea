@@ -76,7 +76,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public Serializable saveState() {
     final SpecialMoveExtendedDelegateState state = new SpecialMoveExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -84,7 +84,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public void loadState(final Serializable state) {
     final SpecialMoveExtendedDelegateState s = (SpecialMoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   @Override
