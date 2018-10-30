@@ -34,10 +34,10 @@ public class UndoableMove extends AbstractUndoableMove {
   private String description;
   // this move is dependent on these moves
   // these moves cant be undone until this one has been
-  private final Set<UndoableMove> meDependOn = new HashSet<>();
+  private final Set<UndoableMove> dependencies = new HashSet<>();
   // these moves depend on me
   // we cant be undone until this is empty
-  private final Set<UndoableMove> dependOnMe = new HashSet<>();
+  private final Set<UndoableMove> dependents = new HashSet<>();
   // list of countries we took over
   private final Set<Territory> conquered = new HashSet<>();
   // transports loaded by this move
@@ -55,14 +55,14 @@ public class UndoableMove extends AbstractUndoableMove {
   }
 
   public boolean getcanUndo() {
-    return reasonCantUndo == null && dependOnMe.isEmpty();
+    return reasonCantUndo == null && dependents.isEmpty();
   }
 
   String getReasonCantUndo() {
     if (reasonCantUndo != null) {
       return reasonCantUndo;
-    } else if (!dependOnMe.isEmpty()) {
-      return "Move " + (dependOnMe.iterator().next().getIndex() + 1) + " must be undone first";
+    } else if (!dependents.isEmpty()) {
+      return "Move " + (dependents.iterator().next().getIndex() + 1) + " must be undone first";
     } else {
       throw new IllegalStateException("no reason");
     }
@@ -95,8 +95,8 @@ public class UndoableMove extends AbstractUndoableMove {
     final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
     battleTracker.undoBattle(route, units, bridge.getPlayerId(), bridge);
     // clean up dependencies
-    for (final UndoableMove other : meDependOn) {
-      other.dependOnMe.remove(this);
+    for (final UndoableMove other : dependencies) {
+      other.dependents.remove(this);
     }
     // if we are moving out of a battle zone, mark it
     // this can happen for air units moving out of a battle zone
@@ -175,16 +175,16 @@ public class UndoableMove extends AbstractUndoableMove {
           // or we are unloading transports that have moved in another turn
           || !CollectionUtils.intersection(other.units, this.unloaded).isEmpty()
           || !CollectionUtils.intersection(other.unloaded, this.unloaded).isEmpty()) {
-        meDependOn.add(other);
-        other.dependOnMe.add(this);
+        dependencies.add(other);
+        other.dependents.add(this);
       }
     }
   }
 
   // for use with airborne moving
   public void addDependency(final UndoableMove undoableMove) {
-    meDependOn.add(undoableMove);
-    undoableMove.dependOnMe.add(this);
+    dependencies.add(undoableMove);
+    undoableMove.dependents.add(this);
   }
 
   public boolean wasTransportUnloaded(final Unit transport) {
