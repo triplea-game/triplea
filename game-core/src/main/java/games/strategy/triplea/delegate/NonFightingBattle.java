@@ -29,9 +29,10 @@ import games.strategy.util.CollectionUtils;
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
-  private final Set<Territory> m_attackingFrom;
-  private final Collection<Territory> m_amphibiousAttackFrom;
-  private final Map<Territory, Collection<Unit>> m_attackingFromMap;
+
+  private final Set<Territory> attackingFrom;
+  private final Collection<Territory> amphibiousAttackFrom;
+  private final Map<Territory, Collection<Unit>> attackingFromMap;
 
   /**
    * Constructor. Suppress checkstyle warning.
@@ -39,9 +40,9 @@ public class NonFightingBattle extends DependentBattle {
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
     super(battleSite, attacker, battleTracker, data);
-    m_attackingFromMap = new HashMap<>();
-    m_attackingFrom = new HashSet<>();
-    m_amphibiousAttackFrom = new ArrayList<>();
+    attackingFromMap = new HashMap<>();
+    attackingFrom = new HashSet<>();
+    amphibiousAttackFrom = new ArrayList<>();
   }
 
   @Override
@@ -56,9 +57,9 @@ public class NonFightingBattle extends DependentBattle {
       }
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    m_attackingFrom.add(attackingFrom);
+    this.attackingFrom.add(attackingFrom);
     attackingUnits.addAll(units);
-    final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.computeIfAbsent(attackingFrom,
+    final Collection<Unit> attackingFromMapUnits = attackingFromMap.computeIfAbsent(attackingFrom,
         k -> new ArrayList<>());
     attackingFromMapUnits.addAll(units);
     // are we amphibious
@@ -108,14 +109,14 @@ public class NonFightingBattle extends DependentBattle {
       return;
     }
     final Territory attackingFrom = route.getTerritoryBeforeEnd();
-    Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+    Collection<Unit> attackingFromMapUnits = attackingFromMap.get(attackingFrom);
     // handle possible null pointer
     if (attackingFromMapUnits == null) {
       attackingFromMapUnits = new ArrayList<>();
     }
     attackingFromMapUnits.removeAll(units);
     if (attackingFromMapUnits.isEmpty()) {
-      m_attackingFrom.remove(attackingFrom);
+      this.attackingFrom.remove(attackingFrom);
     }
     // deal with amphibious assaults
     if (attackingFrom.isWater()) {
@@ -168,16 +169,16 @@ public class NonFightingBattle extends DependentBattle {
 
   @Override
   public Collection<Territory> getAttackingFrom() {
-    return m_attackingFrom;
+    return attackingFrom;
   }
 
   @Override
   public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return m_attackingFromMap;
+    return attackingFromMap;
   }
 
   @Override
   public Collection<Territory> getAmphibiousAttackTerritories() {
-    return m_amphibiousAttackFrom;
+    return amphibiousAttackFrom;
   }
 }
