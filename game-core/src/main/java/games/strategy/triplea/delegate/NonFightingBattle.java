@@ -34,9 +34,6 @@ public class NonFightingBattle extends DependentBattle {
   private final Collection<Territory> amphibiousAttackFrom;
   private final Map<Territory, Collection<Unit>> attackingFromMap;
 
-  /**
-   * Constructor. Suppress checkstyle warning.
-   */
   public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
       final GameData data) {
     super(battleSite, attacker, battleTracker, data);
@@ -158,9 +155,6 @@ public class NonFightingBattle extends DependentBattle {
     }
   }
 
-  /**
-   * Add dependent Units. Uninformative comment to suppress checkstyle warning.
-   */
   void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies) {
     for (final Map.Entry<Unit, Collection<Unit>> entry : dependencies.entrySet()) {
       dependentUnits.computeIfAbsent(entry.getKey(), k -> new LinkedHashSet<>()).addAll(entry.getValue());
