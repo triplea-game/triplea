@@ -8,7 +8,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 
 public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
-  protected boolean m_gameOver = false;
+  protected boolean gameOver = false;
 
   public TwoIfBySeaEndTurnDelegate() {}
 
@@ -23,13 +23,13 @@ public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data).getOwner().equals(british);
     final boolean japan =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data).getOwner().equals(japanese);
-    if (!m_gameOver) {
+    if (!gameOver) {
       if (britain && !japan) {
-        m_gameOver = true;
+        gameOver = true;
         bridge.getHistoryWriter().startEvent("British win.");
       }
       if (!britain && japan) {
-        m_gameOver = true;
+        gameOver = true;
         bridge.getHistoryWriter().startEvent("Japanese win.");
       }
     }
