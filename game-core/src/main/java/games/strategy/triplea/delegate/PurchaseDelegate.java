@@ -25,7 +25,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -46,7 +45,6 @@ import games.strategy.util.IntegerMap;
  * Subclasses can over ride addToPlayer(...) and removeFromPlayer(...) to change how
  * the adding or removing of resources is done.
  */
-@MapSupport
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
   private boolean needToInitialize = true;
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";

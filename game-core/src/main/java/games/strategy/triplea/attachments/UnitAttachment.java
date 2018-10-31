@@ -30,7 +30,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
@@ -42,7 +41,6 @@ import games.strategy.util.Tuple;
 /**
  * Despite the misleading name, this attaches not to individual Units but to UnitTypes.
  */
-@MapSupport
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
 

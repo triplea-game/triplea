@@ -22,7 +22,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -40,7 +39,6 @@ import games.strategy.util.IntegerMap;
  * Logic for dealing with player tech rolls. This class requires the
  * TechActivationDelegate which actually activates the tech.
  */
-@MapSupport
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate {
   private int techCost;
   private Map<PlayerID, Collection<TechAdvance>> techs;

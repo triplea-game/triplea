@@ -12,10 +12,8 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.util.IntegerMap;
 
-@MapSupport
 public class BidPurchaseDelegate extends PurchaseDelegate {
   private int bid;
   private int spent;

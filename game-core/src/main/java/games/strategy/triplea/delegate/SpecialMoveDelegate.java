@@ -19,7 +19,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
@@ -38,7 +37,6 @@ import games.strategy.util.IntegerMap;
  * airbase) to another
  * territory, instead of carrying them.
  */
-@MapSupport
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean needToInitialize = true;
 
