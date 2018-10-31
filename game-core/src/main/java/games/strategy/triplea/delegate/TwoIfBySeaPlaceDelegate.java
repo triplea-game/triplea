@@ -1,17 +1,15 @@
-package games.strategy.twoIfBySea.delegate;
+package games.strategy.triplea.delegate;
 
 import java.util.Collection;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.AbstractPlaceDelegate;
-import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
 /**
  * Logic for placing units.
  */
-public class PlaceDelegate extends AbstractPlaceDelegate {
+public class TwoIfBySeaPlaceDelegate extends AbstractPlaceDelegate {
   /**
    * Returns the production of the territory, ignores whether the territory was an original factory.
    */

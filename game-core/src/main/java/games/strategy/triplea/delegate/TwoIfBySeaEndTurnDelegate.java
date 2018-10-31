@@ -1,4 +1,4 @@
-package games.strategy.twoIfBySea.delegate;
+package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -6,12 +6,11 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 
-public class EndTurnDelegate extends AbstractEndTurnDelegate {
+public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
   protected boolean m_gameOver = false;
 
-  public EndTurnDelegate() {}
+  public TwoIfBySeaEndTurnDelegate() {}
 
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
