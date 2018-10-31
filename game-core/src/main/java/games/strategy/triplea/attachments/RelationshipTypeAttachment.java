@@ -11,9 +11,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 
-@MapSupport
 public class RelationshipTypeAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -4367286684249791984L;
 

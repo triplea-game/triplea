@@ -18,7 +18,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -33,7 +32,6 @@ import games.strategy.util.Tuple;
  * After that, any remaining units get placed one by one.
  * (Note that player may not be used here, because this delegate is not run by any player [it is null])
  */
-@MapSupport
 public class RandomStartDelegate extends BaseTripleADelegate {
   private static final int UNITS_PER_PICK = 1;
   private PlayerID currentPickingPlayer = null;

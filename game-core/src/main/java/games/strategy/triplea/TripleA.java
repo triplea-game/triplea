@@ -36,7 +36,6 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 
-@MapSupport
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
 

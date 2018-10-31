@@ -18,7 +18,6 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
@@ -31,7 +30,6 @@ import lombok.ToString;
  * An attachment, attached to a player that will describe which political
  * actions a player may take.
  */
-@MapSupport
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
 

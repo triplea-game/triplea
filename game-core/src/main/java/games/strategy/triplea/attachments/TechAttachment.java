@@ -11,11 +11,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 
-@MapSupport
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
 

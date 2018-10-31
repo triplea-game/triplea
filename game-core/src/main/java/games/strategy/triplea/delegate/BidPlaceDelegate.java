@@ -10,13 +10,11 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-@MapSupport
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
   public BidPlaceDelegate() {}
 

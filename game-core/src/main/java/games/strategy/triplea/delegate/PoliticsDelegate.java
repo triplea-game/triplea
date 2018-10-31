@@ -22,7 +22,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -37,7 +36,6 @@ import games.strategy.util.IntegerMap;
 /**
  * Responsible allowing players to perform politicalActions.
  */
-@MapSupport
 public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate {
   /** Creates new PoliticsDelegate. */
   public PoliticsDelegate() {}

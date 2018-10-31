@@ -32,7 +32,6 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -51,11 +50,9 @@ import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
-
 /**
  * Delegate to track and fight all battles.
  */
-@MapSupport
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
   private BattleTracker battleTracker = new BattleTracker();
