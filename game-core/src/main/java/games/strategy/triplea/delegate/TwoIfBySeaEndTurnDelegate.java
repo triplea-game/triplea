@@ -1,4 +1,4 @@
-package games.strategy.twoIfBySea.delegate;
+package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -6,12 +6,15 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 
-public class EndTurnDelegate extends AbstractEndTurnDelegate {
-  protected boolean m_gameOver = false;
-
-  public EndTurnDelegate() {}
+/**
+ * Logic for ending a turn in a Two If By Sea game.
+ *
+ * @deprecated Required for map compatibility. Remove upon next map-incompatible release.
+ */
+@Deprecated
+public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
+  protected boolean gameOver = false;
 
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
@@ -24,13 +27,13 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data).getOwner().equals(british);
     final boolean japan =
         TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data).getOwner().equals(japanese);
-    if (!m_gameOver) {
+    if (!gameOver) {
       if (britain && !japan) {
-        m_gameOver = true;
+        gameOver = true;
         bridge.getHistoryWriter().startEvent("British win.");
       }
       if (!britain && japan) {
-        m_gameOver = true;
+        gameOver = true;
         bridge.getHistoryWriter().startEvent("Japanese win.");
       }
     }
