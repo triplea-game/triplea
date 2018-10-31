@@ -7,10 +7,14 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 
+/**
+ * Logic for ending a turn in a Two If By Sea game.
+ *
+ * @deprecated Required for map compatibility. Remove upon next map-incompatible release.
+ */
+@Deprecated
 public class TwoIfBySeaEndTurnDelegate extends AbstractEndTurnDelegate {
   protected boolean gameOver = false;
-
-  public TwoIfBySeaEndTurnDelegate() {}
 
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {

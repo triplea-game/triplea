@@ -7,8 +7,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.util.CollectionUtils;
 
 /**
- * Logic for placing units.
+ * Logic for placing units in a Two If By Sea game.
+ *
+ * @deprecated Required for map compatibility. Remove upon next map-incompatible release.
  */
+@Deprecated
 public class TwoIfBySeaPlaceDelegate extends AbstractPlaceDelegate {
   /**
    * Returns the production of the territory, ignores whether the territory was an original factory.
