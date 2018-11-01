@@ -16,11 +16,12 @@ import games.strategy.engine.data.GameData;
  */
 class SerializedHistory implements Serializable {
   private static final long serialVersionUID = -5808427923253751651L;
-  private final List<SerializationWriter> m_Writers = new ArrayList<>();
-  private final GameData m_data;
+
+  private final List<SerializationWriter> writers = new ArrayList<>();
+  private final GameData gameData;
 
   public SerializedHistory(final History history, final GameData data, final List<Change> changes) {
-    m_data = data;
+    gameData = data;
     final Enumeration<?> enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
     enumeration.nextElement();
     int changeIndex = 0;
@@ -29,24 +30,24 @@ class SerializedHistory implements Serializable {
       // write the changes to the start of the node
       if (node instanceof IndexedHistoryNode) {
         while (changeIndex < ((IndexedHistoryNode) node).getChangeStartIndex()) {
-          m_Writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
+          writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
           changeIndex++;
         }
       }
       // write the node itself
-      m_Writers.add(node.getWriter());
+      writers.add(node.getWriter());
     }
     // write out remaining changes
     while (changeIndex < changes.size()) {
-      m_Writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
+      writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
       changeIndex++;
     }
   }
 
   public Object readResolve() {
-    final History history = new History(m_data);
+    final History history = new History(gameData);
     final HistoryWriter historyWriter = history.getHistoryWriter();
-    for (final SerializationWriter element : m_Writers) {
+    for (final SerializationWriter element : writers) {
       element.write(historyWriter);
     }
     return history;

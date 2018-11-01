@@ -16,15 +16,16 @@ import lombok.extern.java.Log;
 @Log
 public class HistoryWriter implements Serializable {
   private static final long serialVersionUID = 4230519614567508061L;
-  private final History m_history;
-  private HistoryNode m_current;
+
+  private final History history;
+  private HistoryNode current;
 
   public HistoryWriter(final History history) {
-    m_history = history;
+    this.history = history;
   }
 
   private void assertCorrectThread() {
-    if (m_history.getGameData().areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
+    if (history.getGameData().areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
   }
@@ -36,8 +37,8 @@ public class HistoryWriter implements Serializable {
       final String stepDisplayName) {
     assertCorrectThread();
     // we are being called for the first time
-    if (m_current == null) {
-      startNextRound(m_history.getGameData().getCurrentRound());
+    if (current == null) {
+      startNextRound(history.getGameData().getCurrentRound());
     }
     if (isCurrentEvent()) {
       closeCurrent();
@@ -49,7 +50,7 @@ public class HistoryWriter implements Serializable {
     if (!isCurrentRound()) {
       throw new IllegalStateException("Not in a round");
     }
-    final Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
+    final Step currentStep = new Step(stepName, delegateName, player, history.getChanges().size(), stepDisplayName);
     addToAndSetCurrent(currentStep);
   }
 
@@ -68,47 +69,47 @@ public class HistoryWriter implements Serializable {
     if (isCurrentRound()) {
       closeCurrent();
     }
-    final Round currentRound = new Round(round, m_history.getChanges().size());
-    m_current = (HistoryNode) m_history.getRoot();
+    final Round currentRound = new Round(round, history.getChanges().size());
+    current = (HistoryNode) history.getRoot();
     addToAndSetCurrent(currentRound);
   }
 
   private void closeCurrent() {
     assertCorrectThread();
-    final HistoryNode old = m_current;
-    m_history.getGameData().acquireWriteLock();
+    final HistoryNode old = current;
+    history.getGameData().acquireWriteLock();
     try {
       // remove steps where nothing happened
       if (isCurrentStep()) {
-        final HistoryNode parent = (HistoryNode) m_current.getParent();
-        if (m_current.getChildCount() == 0) {
+        final HistoryNode parent = (HistoryNode) current.getParent();
+        if (current.getChildCount() == 0) {
           final int index = parent.getChildCount() - 1;
-          parent.remove(m_current);
-          m_history.nodesWereRemoved(parent, new int[] {index}, new Object[] {m_current});
+          parent.remove(current);
+          history.nodesWereRemoved(parent, new int[] {index}, new Object[] {current});
         }
-        m_current = parent;
+        current = parent;
         return;
       }
-      m_current = (HistoryNode) m_current.getParent();
-      ((IndexedHistoryNode) old).setChangeEndIndex(m_history.getChanges().size());
+      current = (HistoryNode) current.getParent();
+      ((IndexedHistoryNode) old).setChangeEndIndex(history.getChanges().size());
     } finally {
-      m_history.getGameData().releaseWriteLock();
+      history.getGameData().releaseWriteLock();
     }
   }
 
   private void addToAndSetCurrent(final HistoryNode newNode) {
     addToCurrent(newNode);
-    m_current = newNode;
+    current = newNode;
   }
 
   private void addToCurrent(final HistoryNode newNode) {
-    m_history.getGameData().acquireWriteLock();
+    history.getGameData().acquireWriteLock();
     try {
-      m_history.insertNodeInto(newNode, m_current, m_current.getChildCount());
+      history.insertNodeInto(newNode, current, current.getChildCount());
     } finally {
-      m_history.getGameData().releaseWriteLock();
+      history.getGameData().releaseWriteLock();
     }
-    m_history.goToEnd();
+    history.goToEnd();
   }
 
   public void startEvent(final String eventName) {
@@ -120,20 +121,20 @@ public class HistoryWriter implements Serializable {
       throw new IllegalStateException("Cant add an event, not a step. "
           + "Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
     }
-    final Event event = new Event(eventName, m_history.getChanges().size());
+    final Event event = new Event(eventName, history.getChanges().size());
     addToAndSetCurrent(event);
   }
 
   private boolean isCurrentEvent() {
-    return m_current instanceof Event;
+    return current instanceof Event;
   }
 
   private boolean isCurrentRound() {
-    return m_current instanceof Round;
+    return current instanceof Round;
   }
 
   private boolean isCurrentStep() {
-    return m_current instanceof Step;
+    return current instanceof Step;
   }
 
   /**
@@ -142,7 +143,7 @@ public class HistoryWriter implements Serializable {
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.log(Level.SEVERE, "Not in an event, but trying to add child:" + node + " current is:" + m_current);
+      log.log(Level.SEVERE, "Not in an event, but trying to add child:" + node + " current is:" + current);
       startEvent("???");
     }
     addToCurrent(node);
@@ -154,10 +155,10 @@ public class HistoryWriter implements Serializable {
   public void addChange(final Change change) {
     assertCorrectThread();
     if (!isCurrentEvent() && !isCurrentStep()) {
-      log.log(Level.SEVERE, "Not in an event, but trying to add change:" + change + " current is:" + m_current);
+      log.log(Level.SEVERE, "Not in an event, but trying to add change:" + change + " current is:" + current);
       startEvent("Bad Event for change: \n" + change.toString());
     }
-    m_history.changeAdded(change);
+    history.changeAdded(change);
   }
 
   /**
@@ -166,15 +167,15 @@ public class HistoryWriter implements Serializable {
   public void setRenderingData(final Object details) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.log(Level.SEVERE, "Not in an event, but trying to set details:" + details + " current is:" + m_current);
+      log.log(Level.SEVERE, "Not in an event, but trying to set details:" + details + " current is:" + current);
       startEvent("???");
     }
-    m_history.getGameData().acquireWriteLock();
+    history.getGameData().acquireWriteLock();
     try {
-      ((Event) m_current).setRenderingData(details);
+      ((Event) current).setRenderingData(details);
     } finally {
-      m_history.getGameData().releaseWriteLock();
+      history.getGameData().releaseWriteLock();
     }
-    m_history.goToEnd();
+    history.goToEnd();
   }
 }
