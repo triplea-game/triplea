@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -177,7 +178,7 @@ public class SelectAndViewEditor extends EditorPanel {
     boolean found = false;
     for (int i = 0; i < model.getSize(); i++) {
       final IBean candidate = model.getElementAt(i);
-      if (candidate.equals(bean)) {
+      if (Objects.equals(candidate, bean)) {
         found = true;
         newModel.addElement(bean);
       } else {
