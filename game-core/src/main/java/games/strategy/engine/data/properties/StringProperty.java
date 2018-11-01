@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 /**
  * A string property with a simple text field editor.
  */
-public class StringProperty extends AEditableProperty {
+public class StringProperty extends AbstractEditableProperty {
   private static final long serialVersionUID = 4382624884674152208L;
 
   private String value;

@@ -16,7 +16,7 @@ import javax.swing.JComponent;
  * @param <T> String or something with a valid toString()
  * @param <U> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
-public class MapProperty<T, U> extends AEditableProperty {
+public class MapProperty<T, U> extends AbstractEditableProperty {
   private static final long serialVersionUID = -8021039503574228146L;
 
   private Map<T, U> map;

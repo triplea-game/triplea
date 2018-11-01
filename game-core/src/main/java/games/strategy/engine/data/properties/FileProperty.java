@@ -23,7 +23,7 @@ import games.strategy.engine.framework.system.SystemProperties;
  * change the file.
  * </p>
  */
-public class FileProperty extends AEditableProperty {
+public class FileProperty extends AbstractEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;
   private static final String[] defaultImageSuffixes = {"png", "jpg", "jpeg", "gif"};
 

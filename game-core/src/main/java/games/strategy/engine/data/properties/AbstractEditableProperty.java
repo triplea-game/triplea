@@ -8,13 +8,14 @@ import javax.swing.JComponent;
 /**
  * Superclass for all implementations of {@link IEditableProperty}.
  */
-public abstract class AEditableProperty implements IEditableProperty, Serializable, Comparable<AEditableProperty> {
+public abstract class AbstractEditableProperty
+    implements IEditableProperty, Serializable, Comparable<AbstractEditableProperty> {
   private static final long serialVersionUID = -5005729898242568847L;
 
   private final String name;
   private final String description;
 
-  public AEditableProperty(final String name, final String description) {
+  public AbstractEditableProperty(final String name, final String description) {
     this.name = name;
     this.description = description;
   }
@@ -48,11 +49,11 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
 
   @Override
   public boolean equals(final Object other) {
-    return other instanceof AEditableProperty && ((AEditableProperty) other).name.equals(name);
+    return other instanceof AbstractEditableProperty && ((AbstractEditableProperty) other).name.equals(name);
   }
 
   @Override
-  public int compareTo(final AEditableProperty other) {
+  public int compareTo(final AbstractEditableProperty other) {
     return name.compareTo(other.getName());
   }
 

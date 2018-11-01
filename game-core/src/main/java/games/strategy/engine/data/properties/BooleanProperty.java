@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 /**
  * Implementation of {@link IEditableProperty} for a Boolean value.
  */
-public class BooleanProperty extends AEditableProperty {
+public class BooleanProperty extends AbstractEditableProperty {
   // compatible with 0.9.0.2 saved games
   private static final long serialVersionUID = -7265501762343216435L;
 

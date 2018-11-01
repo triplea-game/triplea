@@ -14,7 +14,7 @@ import javax.swing.JTable;
  *
  * @param <T> The type of elements in the collection.
  */
-public class CollectionProperty<T> extends AEditableProperty {
+public class CollectionProperty<T> extends AbstractEditableProperty {
   private static final long serialVersionUID = 5338055034530377261L;
 
   private List<T> values;
