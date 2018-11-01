@@ -17,10 +17,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
 
@@ -43,7 +44,7 @@ public class ForumPosterEditor extends EditorPanel {
   private final IForumPoster bean;
 
   public ForumPosterEditor(final IForumPoster bean) {
-    this.bean = bean;
+    this.bean = Preconditions.checkNotNull(bean);
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
@@ -155,9 +156,6 @@ public class ForumPosterEditor extends EditorPanel {
 
   @Override
   public boolean isBeanValid() {
-    if (bean instanceof NullForumPoster) {
-      return true;
-    }
     final boolean loginValid = validateTextFieldNotEmpty(login, loginLabel);
     final boolean passwordValid = validateTextFieldNotEmpty(password, passwordLabel);
     boolean idValid = true;

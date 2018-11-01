@@ -61,10 +61,8 @@ public class SelectAndViewEditor extends EditorPanel {
         new Insets(0, 0, 0, 0), 0, 0));
     selector.setRenderer(new DisplayNameComboBoxRender());
     selector.addItemListener(e -> {
-      if (e.getStateChange() == ItemEvent.SELECTED) {
-        updateView();
-        fireEditorChanged();
-      }
+      updateView();
+      fireEditorChanged();
     });
     propertyChangeListener = evt -> fireEditorChanged();
     helpPanel = new JEditorPane();
@@ -103,7 +101,7 @@ public class SelectAndViewEditor extends EditorPanel {
     }
     view.removeAll();
     final IBean item = (IBean) selector.getSelectedItem();
-    editor = item.getEditor();
+    editor = item == null ? null : item.getEditor();
     if (editor != null) {
       // register a property change listener so we can re-notify our listeners
       editor.addPropertyChangeListener(propertyChangeListener);
