@@ -1,7 +1,5 @@
 package games.strategy.engine.data.properties;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -56,17 +54,7 @@ public class CollectionProperty<T> extends AbstractEditableProperty {
     for (int i = 0; i < values.size(); i++) {
       tableD[i][0] = values.get(i);
     }
-    final JTable table = new JTable(tableD, new Object[] {"Values: "});
-    table.addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(final FocusEvent e) {}
-
-      @Override
-      public void focusLost(final FocusEvent e) {
-        // TODO: change values
-      }
-    });
-    return table;
+    return new JTable(tableD, new Object[] {"Values: "});
   }
 
   @Override
