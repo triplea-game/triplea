@@ -1,6 +1,7 @@
 package org.triplea.game.client.ui.javafx.util;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,23 +187,23 @@ final class JavaFxSelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<Region> folderPath(final ClientSetting<File> clientSetting) {
-    return new FileSelector(clientSetting, (window, selectedFile) -> {
+  static SelectionComponent<Region> folderPath(final ClientSetting<Path> clientSetting) {
+    return new FileSelector(clientSetting, (window, selectedPath) -> {
       final DirectoryChooser fileChooser = new DirectoryChooser();
-      if (selectedFile != null) {
-        fileChooser.setInitialDirectory(selectedFile);
+      if (selectedPath != null) {
+        fileChooser.setInitialDirectory(selectedPath.toFile());
       }
-      return fileChooser.showDialog(window);
+      return Optional.ofNullable(fileChooser.showDialog(window)).map(File::toPath).orElse(null);
     });
   }
 
-  static SelectionComponent<Region> filePath(final ClientSetting<File> clientSetting) {
-    return new FileSelector(clientSetting, (window, selectedFile) -> {
+  static SelectionComponent<Region> filePath(final ClientSetting<Path> clientSetting) {
+    return new FileSelector(clientSetting, (window, selectedPath) -> {
       final FileChooser fileChooser = new FileChooser();
-      if (selectedFile != null) {
-        fileChooser.setInitialDirectory(selectedFile.getParentFile());
+      if (selectedPath != null) {
+        fileChooser.setInitialDirectory(selectedPath.getParent().toFile());
       }
-      return fileChooser.showOpenDialog(window);
+      return Optional.ofNullable(fileChooser.showOpenDialog(window)).map(File::toPath).orElse(null);
     });
   }
 
@@ -214,15 +215,15 @@ final class JavaFxSelectionComponentFactory {
   }
 
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
-    private final ClientSetting<File> clientSetting;
+    private final ClientSetting<Path> clientSetting;
     private final TextField textField;
-    private @Nullable File selectedFile;
+    private @Nullable Path selectedPath;
 
     FileSelector(
-        final ClientSetting<File> clientSetting,
-        final BiFunction<Window, /* @Nullable */ File, /* @Nullable */ File> chooseFile) {
+        final ClientSetting<Path> clientSetting,
+        final BiFunction<Window, /* @Nullable */ Path, /* @Nullable */ Path> chooseFile) {
       this.clientSetting = clientSetting;
-      final @Nullable File initialValue = clientSetting.getValue().orElse(null);
+      final @Nullable Path initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
       textField = new TextField(SelectionComponentUiUtils.toString(clientSetting.getValue()));
       textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
@@ -230,12 +231,12 @@ final class JavaFxSelectionComponentFactory {
       textField.setMinWidth(100);
       textField.setDisable(true);
       final Button chooseFileButton = new Button("...");
-      selectedFile = initialValue;
+      selectedPath = initialValue;
       chooseFileButton.setOnAction(e -> {
-        final @Nullable File file = chooseFile.apply(chooseFileButton.getScene().getWindow(), selectedFile);
-        if (file != null) {
-          selectedFile = file;
-          textField.setText(file.toString());
+        final @Nullable Path path = chooseFile.apply(chooseFileButton.getScene().getWindow(), selectedPath);
+        if (path != null) {
+          selectedPath = path;
+          textField.setText(path.toString());
         }
       });
       wrapper.getChildren().addAll(textField, chooseFileButton);
@@ -244,7 +245,7 @@ final class JavaFxSelectionComponentFactory {
 
     @Override
     public Map<GameSetting<?>, Object> readValues() {
-      return Collections.singletonMap(clientSetting, selectedFile);
+      return Collections.singletonMap(clientSetting, selectedPath);
     }
 
     @Override
@@ -257,9 +258,9 @@ final class JavaFxSelectionComponentFactory {
       reset(clientSetting.getValue());
     }
 
-    private void reset(final Optional<File> file) {
-      textField.setText(SelectionComponentUiUtils.toString(file));
-      selectedFile = file.orElse(null);
+    private void reset(final Optional<Path> path) {
+      textField.setText(SelectionComponentUiUtils.toString(path));
+      selectedPath = path.orElse(null);
     }
 
     @Override
