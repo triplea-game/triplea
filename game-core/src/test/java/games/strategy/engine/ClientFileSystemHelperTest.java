@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -71,18 +73,18 @@ public final class ClientFileSystemHelperTest {
   @Nested
   final class GetUserMapsFolderTest {
     @Mock
-    private GameSetting<File> currentSetting;
+    private GameSetting<Path> currentSetting;
     @Mock
-    private GameSetting<File> overrideSetting;
+    private GameSetting<Path> overrideSetting;
 
-    private File getUserMapsFolder() {
+    private Path getUserMapsFolder() {
       return ClientFileSystemHelper.getUserMapsFolder(currentSetting, overrideSetting);
     }
 
     @Test
     void shouldReturnCurrentFolderWhenOverrideFolderNotSet() {
       when(overrideSetting.isSet()).thenReturn(false);
-      final File currentFolder = new File("/path/to/current");
+      final Path currentFolder = Paths.get("/path", "to", "current");
       when(currentSetting.getValueOrThrow()).thenReturn(currentFolder);
 
       assertThat(getUserMapsFolder(), is(currentFolder));
@@ -91,7 +93,7 @@ public final class ClientFileSystemHelperTest {
     @Test
     void shouldReturnOverrideFolderWhenOverrideFolderSet() {
       when(overrideSetting.isSet()).thenReturn(true);
-      final File overrideFolder = new File("/path/to/override");
+      final Path overrideFolder = Paths.get("/path", "to", "override");
       when(overrideSetting.getValueOrThrow()).thenReturn(overrideFolder);
 
       assertThat(getUserMapsFolder(), is(overrideFolder));

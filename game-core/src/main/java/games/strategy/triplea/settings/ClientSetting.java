@@ -1,6 +1,6 @@
 package games.strategy.triplea.settings;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -74,15 +74,15 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> mapEdgeScrollSpeed = new IntegerClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
   public static final ClientSetting<Integer> mapEdgeScrollZoneSize =
       new IntegerClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
-  public static final ClientSetting<File> mapFolderOverride = new FileClientSetting("MAP_FOLDER_OVERRIDE");
-  public static final ClientSetting<File> mapListOverride = new FileClientSetting("MAP_LIST_OVERRIDE");
+  public static final ClientSetting<Path> mapFolderOverride = new PathClientSetting("MAP_FOLDER_OVERRIDE");
+  public static final ClientSetting<Path> mapListOverride = new PathClientSetting("MAP_LIST_OVERRIDE");
   public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =
       new EnumClientSetting<>(HttpProxy.ProxyChoice.class, "PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
   public static final ClientSetting<String> proxyHost = new StringClientSetting("PROXY_HOST");
   public static final ClientSetting<Integer> proxyPort = new IntegerClientSetting("PROXY_PORT");
-  public static final ClientSetting<File> saveGamesFolderPath = new FileClientSetting(
+  public static final ClientSetting<Path> saveGamesFolderPath = new PathClientSetting(
       "SAVE_GAMES_FOLDER_PATH",
-      new File(ClientFileSystemHelper.getUserRootFolder(), "savedGames"));
+      ClientFileSystemHelper.getUserRootFolder().toPath().resolve("savedGames"));
   public static final ClientSetting<Integer> serverObserverJoinWaitTime =
       new IntegerClientSetting("SERVER_OBSERVER_JOIN_WAIT_TIME", 180);
   public static final ClientSetting<Integer> serverStartGameSyncWaitTime =
@@ -101,9 +101,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES");
   public static final ClientSetting<Boolean> promptToDownloadTutorialMap =
       new BooleanClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
-  public static final ClientSetting<File> userMapsFolderPath = new FileClientSetting(
+  public static final ClientSetting<Path> userMapsFolderPath = new PathClientSetting(
       "USER_MAPS_FOLDER_PATH",
-      new File(ClientFileSystemHelper.getUserRootFolder(), "downloadedMaps"));
+      ClientFileSystemHelper.getUserRootFolder().toPath().resolve("downloadedMaps"));
   public static final ClientSetting<Integer> wheelScrollAmount = new IntegerClientSetting("WHEEL_SCROLL_AMOUNT", 60);
   public static final ClientSetting<String> playerName =
       new StringClientSetting("PLAYER_NAME", SystemProperties.getUserName());

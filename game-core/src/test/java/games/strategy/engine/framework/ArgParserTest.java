@@ -6,7 +6,8 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -72,18 +73,18 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void mapFolderOverrideClientSettingIsSetWhenSpecified() {
-    ClientSetting.mapFolderOverride.save(new File("some/path"));
-    final File mapFolder = new File("/path/to/maps");
+    ClientSetting.mapFolderOverride.save(Paths.get("some", "path"));
+    final Path mapFolder = Paths.get("/path", "to", "maps");
 
     ArgParser
-        .handleCommandLineArgs("-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolder.getPath());
+        .handleCommandLineArgs("-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolder.toString());
 
     assertThat(ClientSetting.mapFolderOverride.getValueOrThrow(), is(mapFolder));
   }
 
   @Test
   public void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
-    ClientSetting.mapFolderOverride.save(new File("some/path"));
+    ClientSetting.mapFolderOverride.save(Paths.get("some", "path"));
 
     ArgParser.handleCommandLineArgs();
 

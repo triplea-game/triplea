@@ -1,9 +1,9 @@
 package games.strategy.engine.framework;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 
 import games.strategy.triplea.settings.ClientSetting;
 
@@ -43,7 +43,7 @@ public final class ArgParser {
 
   private static void setSystemPropertyOrClientSetting(final String key, final String value) {
     if (CliProperties.MAP_FOLDER.equals(key)) {
-      ClientSetting.mapFolderOverride.saveAndFlush(new File(value));
+      ClientSetting.mapFolderOverride.saveAndFlush(Paths.get(value));
     } else {
       System.setProperty(key, value);
     }
