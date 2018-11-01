@@ -12,24 +12,25 @@ import javax.swing.JTextField;
  */
 public class StringProperty extends AEditableProperty {
   private static final long serialVersionUID = 4382624884674152208L;
-  private String m_value;
+
+  private String value;
 
   public StringProperty(final String name, final String description, final String defaultValue) {
     super(name, description);
-    m_value = defaultValue;
+    value = defaultValue;
   }
 
   @Override
   public JComponent getEditorComponent() {
-    final JTextField text = new JTextField(m_value);
-    text.addActionListener(e -> m_value = text.getText());
+    final JTextField text = new JTextField(value);
+    text.addActionListener(e -> value = text.getText());
     text.addFocusListener(new FocusListener() {
       @Override
       public void focusGained(final FocusEvent e) {}
 
       @Override
       public void focusLost(final FocusEvent e) {
-        m_value = text.getText();
+        value = text.getText();
       }
     });
     final Dimension ourMinimum = new Dimension(80, 20);
@@ -40,12 +41,12 @@ public class StringProperty extends AEditableProperty {
 
   @Override
   public Object getValue() {
-    return m_value;
+    return value;
   }
 
   @Override
   public void setValue(final Object value) throws ClassCastException {
-    m_value = (String) value;
+    this.value = (String) value;
   }
 
   @Override

@@ -22,7 +22,7 @@ public class NumberProperty extends AEditableProperty {
   public static final String MIN_PROPERTY_NAME = "min";
   private final int min;
 
-  private int m_value;
+  private int value;
 
   public NumberProperty(final String name, final String description, final int max, final int min, final int def) {
     super(name, description);
@@ -34,12 +34,12 @@ public class NumberProperty extends AEditableProperty {
     }
     this.max = max;
     this.min = min;
-    m_value = def;
+    value = def;
   }
 
   @Override
   public Integer getValue() {
-    return m_value;
+    return value;
   }
 
   @Override
@@ -51,14 +51,14 @@ public class NumberProperty extends AEditableProperty {
           "Number properties are no longer stored as Strings. You should delete your option cache, located at "
               + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
     }
-    m_value = (Integer) value;
+    this.value = (Integer) value;
   }
 
   @Override
   public JComponent getEditorComponent() {
     final IntTextField field = new IntTextField(min, max);
-    field.setValue(m_value);
-    field.addChangeListener(aField -> m_value = aField.getValue());
+    field.setValue(value);
+    field.addChangeListener(aField -> value = aField.getValue());
     return field;
   }
 

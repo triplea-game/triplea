@@ -27,8 +27,8 @@ public class FileProperty extends AEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;
   private static final String[] defaultImageSuffixes = {"png", "jpg", "jpeg", "gif"};
 
-  private final String[] m_acceptableSuffixes;
-  private File m_file;
+  private final String[] acceptableSuffixes;
+  private File file;
 
   /**
    * Construct a new file property.
@@ -54,8 +54,8 @@ public class FileProperty extends AEditableProperty {
 
   public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
     super(name, description);
-    m_file = getFileIfExists(file);
-    m_acceptableSuffixes = acceptableSuffixes;
+    this.file = getFileIfExists(file);
+    this.acceptableSuffixes = acceptableSuffixes;
   }
 
   /**
@@ -65,12 +65,12 @@ public class FileProperty extends AEditableProperty {
    */
   @Override
   public Object getValue() {
-    return m_file;
+    return file;
   }
 
   @Override
   public void setValue(final Object value) throws ClassCastException {
-    m_file = (File) value;
+    file = (File) value;
   }
 
   /**
@@ -81,19 +81,19 @@ public class FileProperty extends AEditableProperty {
   @Override
   public JComponent getEditorComponent() {
     final JTextField label;
-    if (m_file == null) {
+    if (file == null) {
       label = new JTextField();
     } else {
-      label = new JTextField(m_file.getAbsolutePath());
+      label = new JTextField(file.getAbsolutePath());
     }
     label.setEditable(false);
     label.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        final File selection = getFileUsingDialog(m_acceptableSuffixes);
+        final File selection = getFileUsingDialog(acceptableSuffixes);
         if (selection != null) {
-          m_file = selection;
-          label.setText(m_file.getAbsolutePath());
+          file = selection;
+          label.setText(file.getAbsolutePath());
           // Ask Swing to repaint this label when it's convenient
           SwingUtilities.invokeLater(label::repaint);
         }
@@ -175,7 +175,7 @@ public class FileProperty extends AEditableProperty {
       return true;
     }
     if (value instanceof File) {
-      return Arrays.stream(m_acceptableSuffixes).anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
+      return Arrays.stream(acceptableSuffixes).anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
     }
     return false;
   }

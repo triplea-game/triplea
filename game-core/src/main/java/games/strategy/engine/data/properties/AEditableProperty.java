@@ -10,12 +10,13 @@ import javax.swing.JComponent;
  */
 public abstract class AEditableProperty implements IEditableProperty, Serializable, Comparable<AEditableProperty> {
   private static final long serialVersionUID = -5005729898242568847L;
-  private final String m_name;
-  private final String m_description;
+
+  private final String name;
+  private final String description;
 
   public AEditableProperty(final String name, final String description) {
-    m_name = name;
-    m_description = description;
+    this.name = name;
+    this.description = description;
   }
 
   @Override
@@ -25,12 +26,12 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
 
   @Override
   public String getName() {
-    return m_name;
+    return name;
   }
 
   @Override
   public String getDescription() {
-    return m_description;
+    return description;
   }
 
   @Override
@@ -42,17 +43,17 @@ public abstract class AEditableProperty implements IEditableProperty, Serializab
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(m_name);
+    return Objects.hashCode(name);
   }
 
   @Override
   public boolean equals(final Object other) {
-    return other instanceof AEditableProperty && ((AEditableProperty) other).m_name.equals(m_name);
+    return other instanceof AEditableProperty && ((AEditableProperty) other).name.equals(name);
   }
 
   @Override
   public int compareTo(final AEditableProperty other) {
-    return m_name.compareTo(other.getName());
+    return name.compareTo(other.getName());
   }
 
   @Override

@@ -16,7 +16,8 @@ import javax.swing.JTable;
  */
 public class CollectionProperty<T> extends AEditableProperty {
   private static final long serialVersionUID = 5338055034530377261L;
-  private List<T> m_values;
+
+  private List<T> values;
 
   /**
    * Initializes a new instance of the CollectionProperty class.
@@ -27,33 +28,33 @@ public class CollectionProperty<T> extends AEditableProperty {
    */
   public CollectionProperty(final String name, final String description, final Collection<T> values) {
     super(name, description);
-    m_values = new ArrayList<>(values);
+    this.values = new ArrayList<>(values);
   }
 
   @Override
   public Object getValue() {
-    return m_values;
+    return values;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public void setValue(final Object value) throws ClassCastException {
-    m_values = (List<T>) value;
+    values = (List<T>) value;
   }
 
   @Override
   public int getRowsNeeded() {
-    return (m_values == null ? 1 : Math.max(1, m_values.size()));
+    return (values == null ? 1 : Math.max(1, values.size()));
   }
 
   @Override
   public JComponent getEditorComponent() {
-    if (m_values == null) {
+    if (values == null) {
       return new JTable();
     }
-    final Object[][] tableD = new Object[m_values.size()][1];
-    for (int i = 0; i < m_values.size(); i++) {
-      tableD[i][0] = m_values.get(i);
+    final Object[][] tableD = new Object[values.size()][1];
+    for (int i = 0; i < values.size(); i++) {
+      tableD[i][0] = values.get(i);
     }
     final JTable table = new JTable(tableD, new Object[] {"Values: "});
     table.addFocusListener(new FocusListener() {
@@ -62,7 +63,7 @@ public class CollectionProperty<T> extends AEditableProperty {
 
       @Override
       public void focusLost(final FocusEvent e) {
-        // TODO: change m_values
+        // TODO: change values
       }
     });
     return table;

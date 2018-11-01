@@ -15,10 +15,11 @@ import games.strategy.engine.ClientFileSystemHelper;
  */
 public class DoubleProperty extends AEditableProperty {
   private static final long serialVersionUID = 5521967819500867581L;
-  private final double m_max;
-  private final double m_min;
-  private double m_value;
-  private final int m_places;
+
+  private final double max;
+  private final double min;
+  private double value;
+  private final int places;
 
   public DoubleProperty(final String name, final String description, final double max, final double min,
       final double def, final int numberOfPlaces) {
@@ -29,10 +30,10 @@ public class DoubleProperty extends AEditableProperty {
     if (def > max || def < min) {
       throw new IllegalThreadStateException("Default value out of range");
     }
-    m_max = max;
-    m_min = min;
-    m_places = numberOfPlaces;
-    m_value = roundToPlace(def, numberOfPlaces, RoundingMode.FLOOR);
+    this.max = max;
+    this.min = min;
+    places = numberOfPlaces;
+    value = roundToPlace(def, numberOfPlaces, RoundingMode.FLOOR);
   }
 
   private static double roundToPlace(final double number, final int places, final RoundingMode roundingMode) {
@@ -43,7 +44,7 @@ public class DoubleProperty extends AEditableProperty {
 
   @Override
   public Double getValue() {
-    return m_value;
+    return value;
   }
 
   @Override
@@ -55,12 +56,12 @@ public class DoubleProperty extends AEditableProperty {
           + "You should delete your option cache, located at "
           + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
     }
-    m_value = roundToPlace((Double) value, m_places, RoundingMode.FLOOR);
+    this.value = roundToPlace((Double) value, places, RoundingMode.FLOOR);
   }
 
   @Override
   public JComponent getEditorComponent() {
-    final JSpinner field = new JSpinner(new SpinnerNumberModel(m_value, m_min, m_max, 1.0));
+    final JSpinner field = new JSpinner(new SpinnerNumberModel(value, min, max, 1.0));
 
     // NB: Workaround for JSpinner default sizing algorithm when min/max values have very large magnitudes
     // (see: https://implementsblog.com/2012/11/26/java-gotcha-jspinner-preferred-size/)
@@ -69,7 +70,7 @@ public class DoubleProperty extends AEditableProperty {
       ((JSpinner.DefaultEditor) fieldEditor).getTextField().setColumns(10);
     }
 
-    field.addChangeListener(e -> m_value = (double) field.getValue());
+    field.addChangeListener(e -> value = (double) field.getValue());
     return field;
   }
 
@@ -78,11 +79,11 @@ public class DoubleProperty extends AEditableProperty {
     if (value instanceof Double) {
       final double d;
       try {
-        d = roundToPlace((Double) value, m_places, RoundingMode.FLOOR);
+        d = roundToPlace((Double) value, places, RoundingMode.FLOOR);
       } catch (final Exception e) {
         return false;
       }
-      return d <= m_max && d >= m_min;
+      return d <= max && d >= min;
     }
     return false;
   }
