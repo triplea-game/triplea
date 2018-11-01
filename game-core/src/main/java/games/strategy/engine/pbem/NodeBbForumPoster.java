@@ -156,11 +156,6 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
   }
 
   @Override
-  public String getDisplayName() {
-    return getForumUrl();
-  }
-
-  @Override
   public void viewPosted() {
     OpenFileUtility.openUrl(getForumUrl() + "/topic/" + m_topicId);
   }

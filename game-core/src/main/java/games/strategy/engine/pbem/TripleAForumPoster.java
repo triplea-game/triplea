@@ -19,6 +19,11 @@ public class TripleAForumPoster extends NodeBbForumPoster {
   }
 
   @Override
+  public String getDisplayName() {
+    return "forums.triplea-game.org";
+  }
+
+  @Override
   public IForumPoster doClone() {
     final TripleAForumPoster clone = new TripleAForumPoster();
     clone.setTopicId(getTopicId());
