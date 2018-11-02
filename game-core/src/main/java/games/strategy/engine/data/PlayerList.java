@@ -58,7 +58,8 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID> 
   public Collection<String> getPlayersThatMayBeDisabled() {
     return players.values().stream()
         .filter(PlayerID::getCanBeDisabled)
-        .filter(p -> !p.getIsDisabled()).map(DefaultNamed::getName)
+        .filter(p -> !p.getIsDisabled())
+        .map(DefaultNamed::getName)
         .collect(Collectors.toSet());
   }
 
