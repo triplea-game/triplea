@@ -8,7 +8,8 @@ import java.util.List;
  */
 public class CompositeChange extends Change {
   private static final long serialVersionUID = 8152962976769419486L;
-  private final List<Change> m_changes;
+
+  private final List<Change> changes;
 
   public CompositeChange(final Change... changes) {
     this();
@@ -16,17 +17,17 @@ public class CompositeChange extends Change {
   }
 
   public CompositeChange() {
-    m_changes = new ArrayList<>();
+    changes = new ArrayList<>();
   }
 
   public CompositeChange(final List<Change> changes) {
-    m_changes = new ArrayList<>(changes);
+    this.changes = new ArrayList<>(changes);
   }
 
   public void add(final Change... changes) {
     for (final Change change : changes) {
       if (!change.isEmpty()) {
-        m_changes.add(change);
+        this.changes.add(change);
       }
     }
   }
@@ -36,8 +37,8 @@ public class CompositeChange extends Change {
     final List<Change> newChanges = new ArrayList<>();
     // to invert a list of changes, process the opposite of
     // each change in the reverse order of the original list
-    for (int i = m_changes.size() - 1; i >= 0; i--) {
-      final Change current = m_changes.get(i);
+    for (int i = changes.size() - 1; i >= 0; i--) {
+      final Change current = changes.get(i);
       newChanges.add(current.invert());
     }
     return new CompositeChange(newChanges);
@@ -45,7 +46,7 @@ public class CompositeChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    for (final Change current : m_changes) {
+    for (final Change current : changes) {
       current.perform(data);
     }
   }
@@ -55,7 +56,7 @@ public class CompositeChange extends Change {
    */
   @Override
   public boolean isEmpty() {
-    for (final Change c : m_changes) {
+    for (final Change c : changes) {
       if (!c.isEmpty()) {
         return false;
       }
@@ -64,11 +65,11 @@ public class CompositeChange extends Change {
   }
 
   public List<Change> getChanges() {
-    return new ArrayList<>(m_changes);
+    return new ArrayList<>(changes);
   }
 
   @Override
   public String toString() {
-    return "CompositeChange <" + (m_changes == null ? "null" : m_changes.toString()) + ">";
+    return "CompositeChange <" + (changes == null ? "null" : changes.toString()) + ">";
   }
 }
