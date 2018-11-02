@@ -7,46 +7,47 @@ import games.strategy.triplea.attachments.TechAttachment;
 
 class GenericTechChange extends Change {
   private static final long serialVersionUID = -2439447526511535571L;
-  private final Attachable m_attachedTo;
-  private final String m_attachmentName;
-  private final boolean m_newValue;
-  private final boolean m_oldValue;
-  private final String m_property;
+
+  private final Attachable attachedTo;
+  private final String attachmentName;
+  private final boolean newValue;
+  private final boolean oldValue;
+  private final String property;
 
   GenericTechChange(final TechAttachment attachment, final boolean newValue, final String property) {
     if (attachment == null) {
       throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
     }
-    m_attachedTo = attachment.getAttachedTo();
-    m_attachmentName = attachment.getName();
-    m_oldValue = attachment.hasGenericTech(property);
-    m_newValue = newValue;
-    m_property = property;
+    attachedTo = attachment.getAttachedTo();
+    attachmentName = attachment.getName();
+    oldValue = attachment.hasGenericTech(property);
+    this.newValue = newValue;
+    this.property = property;
   }
 
   public GenericTechChange(final Attachable attachTo, final String attachmentName, final boolean newValue,
       final boolean oldValue, final String property) {
-    m_attachmentName = attachmentName;
-    m_attachedTo = attachTo;
-    m_newValue = newValue;
-    m_oldValue = oldValue;
-    m_property = property;
+    this.attachmentName = attachmentName;
+    attachedTo = attachTo;
+    this.newValue = newValue;
+    this.oldValue = oldValue;
+    this.property = property;
   }
 
   @Override
   public void perform(final GameData data) {
-    final TechAttachment attachment = (TechAttachment) m_attachedTo.getAttachment(m_attachmentName);
-    attachment.setGenericTech(m_property, m_newValue);
+    final TechAttachment attachment = (TechAttachment) attachedTo.getAttachment(attachmentName);
+    attachment.setGenericTech(property, newValue);
   }
 
   @Override
   public Change invert() {
-    return new GenericTechChange(m_attachedTo, m_attachmentName, m_oldValue, m_newValue, m_property);
+    return new GenericTechChange(attachedTo, attachmentName, oldValue, newValue, property);
   }
 
   @Override
   public String toString() {
-    return "GenericTechChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue
-        + " old value:" + m_oldValue;
+    return "GenericTechChange attached to:" + attachedTo + " name:" + attachmentName + " new value:" + newValue
+        + " old value:" + oldValue;
   }
 }
