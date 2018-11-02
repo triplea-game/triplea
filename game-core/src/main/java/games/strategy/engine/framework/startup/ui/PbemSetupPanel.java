@@ -44,8 +44,6 @@ import games.strategy.engine.pbem.GmailEmailSender;
 import games.strategy.engine.pbem.HotmailEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.pbem.NullEmailSender;
-import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.engine.pbem.TripleAForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
@@ -189,7 +187,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
     final List<IForumPoster> forumPosters = new ArrayList<>();
-    forumPosters.add(useCacheIfAvailable(new NullForumPoster()));
+    forumPosters.add(null);
     forumPosters.add(useCacheIfAvailable(new AxisAndAlliesForumPoster()));
     forumPosters.add(useCacheIfAvailable(new TripleAForumPoster()));
     forumPosterEditor.setBeans(forumPosters);
@@ -217,7 +215,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private void loadEmailSender(final GameData data) {
     // The list of email, either loaded from cache or created
     final List<IEmailSender> emailSenders = new ArrayList<>();
-    emailSenders.add(useCacheIfAvailable(new NullEmailSender()));
+    emailSenders.add(null);
     emailSenders.add(useCacheIfAvailable(new GmailEmailSender()));
     emailSenders.add(useCacheIfAvailable(new HotmailEmailSender()));
     emailSenders.add(useCacheIfAvailable(new GenericEmailSender()));
