@@ -38,7 +38,7 @@ import lombok.extern.java.Log;
 abstract class NodeBbForumPoster extends AbstractForumPoster {
   private static final long serialVersionUID = -6128723809566917089L;
 
-  protected abstract String getForumUrl();
+  abstract String getForumUrl();
 
   @Override
   public boolean postTurnSummary(final String summary, final String title) {
