@@ -11,17 +11,17 @@ import java.io.Serializable;
 public class GameDataComponent implements Serializable {
   private static final long serialVersionUID = -2066504666509851740L;
 
-  private GameData m_data;
+  private GameData gameData;
 
   /**
    * Creates new GameDataComponent.
    */
   public GameDataComponent(final GameData gameData) {
-    m_data = gameData;
+    this.gameData = gameData;
   }
 
   public GameData getData() {
-    return m_data;
+    return gameData;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -31,15 +31,15 @@ public class GameDataComponent implements Serializable {
     if (stream instanceof GameObjectOutputStream) {
       return;
     }
-    stream.writeObject(m_data);
+    stream.writeObject(gameData);
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     if (stream instanceof GameObjectInputStream) {
       final GameObjectInputStream in = (GameObjectInputStream) stream;
-      m_data = in.getData();
+      gameData = in.getData();
     } else {
-      m_data = (GameData) stream.readObject();
+      gameData = (GameData) stream.readObject();
     }
   }
 }

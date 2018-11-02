@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.xml.TestAttachment;
 
 public final class MapPropertyWrapperTest {
@@ -19,10 +18,10 @@ public final class MapPropertyWrapperTest {
   public final class GetPropertyFieldTest {
     @Test
     public void shouldReturnFieldWhenFieldWithEmUnderscorePrefixExistsInTargetClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleEmUnderscoreAttachment.class);
+      final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleEmUnderscoreParentAttachment.class);
 
       assertThat(field.getName(), is("m_intValue"));
-      assertThat(field.getDeclaringClass(), is(ExampleEmUnderscoreAttachment.class));
+      assertThat(field.getDeclaringClass(), is(ExampleEmUnderscoreParentAttachment.class));
     }
 
     @Test
@@ -35,10 +34,10 @@ public final class MapPropertyWrapperTest {
 
     @Test
     public void shouldReturnFieldWhenFieldWithEmUnderscorePrefixExistsInAncestorClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("data", TestAttachment.class);
+      final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleEmUnderscoreChildAttachment.class);
 
-      assertThat(field.getName(), is("m_data"));
-      assertThat(field.getDeclaringClass(), is(GameDataComponent.class));
+      assertThat(field.getName(), is("m_intValue"));
+      assertThat(field.getDeclaringClass(), is(ExampleEmUnderscoreParentAttachment.class));
     }
 
     @Test
@@ -55,13 +54,21 @@ public final class MapPropertyWrapperTest {
     }
   }
 
-  static class ExampleEmUnderscoreAttachment extends TestAttachment {
+  static class ExampleEmUnderscoreParentAttachment extends TestAttachment {
     private static final long serialVersionUID = 4140595034027616571L;
 
     @SuppressWarnings("checkstyle:MemberName") // "m_" prefix required for test
     int m_intValue;
 
-    ExampleEmUnderscoreAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    ExampleEmUnderscoreParentAttachment(final String name, final Attachable attachable, final GameData gameData) {
+      super(name, attachable, gameData);
+    }
+  }
+
+  static class ExampleEmUnderscoreChildAttachment extends ExampleEmUnderscoreParentAttachment {
+    private static final long serialVersionUID = -2515485990895802645L;
+
+    ExampleEmUnderscoreChildAttachment(final String name, final Attachable attachable, final GameData gameData) {
       super(name, attachable, gameData);
     }
   }

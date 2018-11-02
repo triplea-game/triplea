@@ -9,21 +9,22 @@ import java.util.Set;
  */
 public class RepairFrontierList extends GameDataComponent {
   private static final long serialVersionUID = -5877933681560908405L;
-  private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<>();
+
+  private final Map<String, RepairFrontier> repairFrontiers = new HashMap<>();
 
   public RepairFrontierList(final GameData data) {
     super(data);
   }
 
   protected void addRepairFrontier(final RepairFrontier pf) {
-    m_repairFrontiers.put(pf.getName(), pf);
+    repairFrontiers.put(pf.getName(), pf);
   }
 
   public RepairFrontier getRepairFrontier(final String name) {
-    return m_repairFrontiers.get(name);
+    return repairFrontiers.get(name);
   }
 
   public Set<String> getRepairFrontierNames() {
-    return m_repairFrontiers.keySet();
+    return repairFrontiers.keySet();
   }
 }

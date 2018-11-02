@@ -14,8 +14,9 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
  */
 public class RelationshipTracker extends RelationshipInterpreter {
   private static final long serialVersionUID = -4740671761925519069L;
+
   // map of "playername:playername" to RelationshipType that exists between those 2 players
-  private final Map<RelatedPlayers, Relationship> m_relationships = new HashMap<>();
+  private final Map<RelatedPlayers, Relationship> relationships = new HashMap<>();
 
   public RelationshipTracker(final GameData data) {
     super(data);
@@ -29,14 +30,14 @@ public class RelationshipTracker extends RelationshipInterpreter {
    * @param relationshipType the RelationshipType between those two players that will be set.
    */
   public void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType relationshipType) {
-    m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(relationshipType));
+    relationships.put(new RelatedPlayers(p1, p2), new Relationship(relationshipType));
   }
 
   /**
    * Method for setting a relationship between two players, this should only be called during the Game Parser.
    */
   protected void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r, final int roundValue) {
-    m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
+    relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
   }
 
   @Override
@@ -45,7 +46,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   public Relationship getRelationship(final PlayerID p1, final PlayerID p2) {
-    return m_relationships.get(new RelatedPlayers(p1, p2));
+    return relationships.get(new RelatedPlayers(p1, p2));
   }
 
   public Set<Relationship> getRelationships(final PlayerID player1) {
@@ -60,7 +61,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   public int getRoundRelationshipWasCreated(final PlayerID p1, final PlayerID p2) {
-    return m_relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
+    return relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
   }
 
   /**
@@ -121,30 +122,30 @@ public class RelationshipTracker extends RelationshipInterpreter {
      */
     @Override
     public int hashCode() {
-      return Objects.hashCode(m_p1) + Objects.hashCode(m_p2);
+      return Objects.hashCode(player1) + Objects.hashCode(player2);
     }
 
-    private final PlayerID m_p1;
-    private final PlayerID m_p2;
+    private final PlayerID player1;
+    private final PlayerID player2;
 
-    public RelatedPlayers(final PlayerID p1, final PlayerID p2) {
-      m_p1 = p1;
-      m_p2 = p2;
+    public RelatedPlayers(final PlayerID player1, final PlayerID player2) {
+      this.player1 = player1;
+      this.player2 = player2;
     }
 
     @Override
     public boolean equals(final Object object) {
       if (object instanceof RelatedPlayers) {
         final RelatedPlayers relatedPlayers2 = (RelatedPlayers) object;
-        return (relatedPlayers2.m_p1.equals(m_p1) && relatedPlayers2.m_p2.equals(m_p2))
-            || (relatedPlayers2.m_p2.equals(m_p1) && relatedPlayers2.m_p1.equals(m_p2));
+        return (relatedPlayers2.player1.equals(player1) && relatedPlayers2.player2.equals(player2))
+            || (relatedPlayers2.player2.equals(player1) && relatedPlayers2.player1.equals(player2));
       }
       return super.equals(object);
     }
 
     @Override
     public String toString() {
-      return m_p1.getName() + "-" + m_p2.getName();
+      return player1.getName() + "-" + player2.getName();
     }
   }
 

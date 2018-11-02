@@ -16,27 +16,28 @@ import games.strategy.engine.delegate.IDelegate;
  */
 public class DelegateList extends GameDataComponent implements Iterable<IDelegate> {
   private static final long serialVersionUID = 4156921032854553312L;
-  private Map<String, IDelegate> m_delegates = new HashMap<>();
+
+  private Map<String, IDelegate> delegates = new HashMap<>();
 
   public DelegateList(final GameData data) {
     super(data);
   }
 
   public void addDelegate(final IDelegate del) {
-    m_delegates.put(del.getName(), del);
+    delegates.put(del.getName(), del);
   }
 
   public int size() {
-    return m_delegates.size();
+    return delegates.size();
   }
 
   @Override
   public Iterator<IDelegate> iterator() {
-    return m_delegates.values().iterator();
+    return delegates.values().iterator();
   }
 
   public IDelegate getDelegate(final String name) {
-    return m_delegates.get(name);
+    return delegates.get(name);
   }
 
   private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream out) {
@@ -44,6 +45,6 @@ public class DelegateList extends GameDataComponent implements Iterable<IDelegat
   }
 
   private void readObject(@SuppressWarnings("unused") final ObjectInputStream in) {
-    m_delegates = new HashMap<>();
+    delegates = new HashMap<>();
   }
 }
