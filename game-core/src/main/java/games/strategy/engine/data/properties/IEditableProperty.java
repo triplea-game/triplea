@@ -4,6 +4,8 @@ import javax.swing.JComponent;
 
 /**
  * An editable property.
+ *
+ * @param <T> The generic Type of the value being stored.
  */
 public interface IEditableProperty<T> {
   /**

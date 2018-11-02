@@ -149,7 +149,8 @@ public class GameProperties extends GameDataComponent {
    *
    * @throws IOException If an I/O error occurs while writing the list of editable properties.
    */
-  public static byte[] writeEditableProperties(final List<? extends IEditableProperty<?>> editableProperties) throws IOException {
+  public static byte[] writeEditableProperties(final List<? extends IEditableProperty<?>> editableProperties)
+      throws IOException {
     return IoUtils.writeToMemory(os -> {
       try (OutputStream gzipos = new GZIPOutputStream(os);
           ObjectOutputStream oos = new ObjectOutputStream(gzipos)) {
@@ -204,7 +205,8 @@ public class GameProperties extends GameDataComponent {
       if (prop == null || prop.getName() == null) {
         continue;
       }
-      final IEditableProperty<T> p = (IEditableProperty<T>) gamePropertiesToBeChanged.editableProperties.get(prop.getName());
+      final IEditableProperty<T> p = (IEditableProperty<T>) gamePropertiesToBeChanged.editableProperties
+          .get(prop.getName());
       if (p != null && prop.getName().equals(p.getName()) && p.validate(prop.getValue())) {
         p.setValue(prop.getValue());
       }

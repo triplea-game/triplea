@@ -8,7 +8,6 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.ui.PropertiesSelector;
 
 /**
