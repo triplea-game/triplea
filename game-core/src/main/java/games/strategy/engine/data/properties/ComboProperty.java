@@ -14,7 +14,7 @@ import games.strategy.ui.SwingComponents;
  *
  * @param <T> The type of the property value.
  */
-public class ComboProperty<T> extends AbstractEditableProperty {
+public class ComboProperty<T> extends AbstractEditableProperty<T> {
   private static final long serialVersionUID = -3098612299805630587L;
   public static final String POSSIBLE_VALUES_FIELD_NAME = "possibleValues";
   private final List<T> possibleValues;
@@ -40,14 +40,13 @@ public class ComboProperty<T> extends AbstractEditableProperty {
   }
 
   @Override
-  public Object getValue() {
+  public T getValue() {
     return value;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public void setValue(final Object value) throws ClassCastException {
-    this.value = (T) value;
+  public void setValue(final T value) {
+    this.value = value;
   }
 
   @Override
@@ -59,7 +58,7 @@ public class ComboProperty<T> extends AbstractEditableProperty {
   }
 
   @Override
-  public boolean validate(final Object value) {
+  public boolean validate(final T value) {
     return possibleValues != null && possibleValues.contains(value);
   }
 }

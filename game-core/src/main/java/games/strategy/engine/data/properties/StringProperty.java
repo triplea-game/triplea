@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 /**
  * A string property with a simple text field editor.
  */
-public class StringProperty extends AbstractEditableProperty {
+public class StringProperty extends AbstractEditableProperty<String> {
   private static final long serialVersionUID = 4382624884674152208L;
 
   private String value;
@@ -40,17 +40,17 @@ public class StringProperty extends AbstractEditableProperty {
   }
 
   @Override
-  public Object getValue() {
+  public String getValue() {
     return value;
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
-    this.value = (String) value;
+  public void setValue(final String value) {
+    this.value = value;
   }
 
   @Override
-  public boolean validate(final Object value) {
-    return value == null || value instanceof String;
+  public boolean validate(final String value) {
+    return true;
   }
 }

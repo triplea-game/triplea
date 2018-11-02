@@ -5,7 +5,7 @@ import javax.swing.JComponent;
 /**
  * An editable property.
  */
-public interface IEditableProperty {
+public interface IEditableProperty<T> {
   /**
    * get the name of the property.
    *
@@ -18,21 +18,19 @@ public interface IEditableProperty {
    *
    * @return the value
    */
-  Object getValue();
+  T getValue();
 
   /**
    * Indicates the object is a valid object for setting as our value.
    */
-  boolean validate(Object value);
+  boolean validate(T value);
 
   /**
    * Set the value of the property (programmatically), GUI would normally use the editor.
    *
    * @param value the new value
-   * @throws ClassCastException
-   *         if the type of value is wrong
    */
-  void setValue(Object value) throws ClassCastException;
+  void setValue(T value);
 
   /**
    * Returns the component used to edit this property.

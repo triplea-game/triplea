@@ -13,7 +13,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 /**
  * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
  */
-public class DoubleProperty extends AbstractEditableProperty {
+public class DoubleProperty extends AbstractEditableProperty<Double> {
   private static final long serialVersionUID = 5521967819500867581L;
 
   private final double max;
@@ -48,15 +48,8 @@ public class DoubleProperty extends AbstractEditableProperty {
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
-    if (value instanceof String) {
-      // warn developer which have run with the option cache when Number properties were stored as strings
-      // todo (kg) remove at a later point
-      throw new RuntimeException("Double and Number properties are no longer stored as Strings. "
-          + "You should delete your option cache, located at "
-          + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
-    }
-    this.value = roundToPlace((Double) value, places, RoundingMode.FLOOR);
+  public void setValue(final Double value) {
+    this.value = roundToPlace(value, places, RoundingMode.FLOOR);
   }
 
   @Override
@@ -75,16 +68,12 @@ public class DoubleProperty extends AbstractEditableProperty {
   }
 
   @Override
-  public boolean validate(final Object value) {
-    if (value instanceof Double) {
-      final double d;
-      try {
-        d = roundToPlace((Double) value, places, RoundingMode.FLOOR);
-      } catch (final Exception e) {
-        return false;
-      }
+  public boolean validate(final Double value) {
+    try {
+      final double d = roundToPlace(value, places, RoundingMode.FLOOR);
       return d <= max && d >= min;
+    } catch (final Exception e) {
+      return false;
     }
-    return false;
   }
 }

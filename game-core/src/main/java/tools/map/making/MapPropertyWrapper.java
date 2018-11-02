@@ -40,38 +40,36 @@ import lombok.extern.java.Log;
  * @param <T> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
 @Log
-public class MapPropertyWrapper<T> extends AbstractEditableProperty {
+public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
   private static final long serialVersionUID = 6406798101396215624L;
-  private final IEditableProperty property;
+  private final IEditableProperty<T> property;
   private final Method setter;
 
-  // TODO: remove the `getter` field when we can, kept around for serialization compatibility
-  @SuppressWarnings("unused")
-  private final Method getter = null;
 
+  @SuppressWarnings("unchecked")
   private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter) {
     super(name, description);
     this.setter = setter;
 
 
     if (defaultValue instanceof Boolean) {
-      property = new BooleanProperty(name, description, ((Boolean) defaultValue));
+      property = (IEditableProperty<T>) new BooleanProperty(name, description, ((Boolean) defaultValue));
     } else if (defaultValue instanceof Color) {
-      property = new ColorProperty(name, description, ((Color) defaultValue));
+      property = (IEditableProperty<T>) new ColorProperty(name, description, ((Color) defaultValue));
     } else if (defaultValue instanceof File) {
-      property = new FileProperty(name, description, ((File) defaultValue));
+      property = (IEditableProperty<T>) new FileProperty(name, description, ((File) defaultValue));
     } else if (defaultValue instanceof String) {
-      property = new StringProperty(name, description, ((String) defaultValue));
+      property = (IEditableProperty<T>) new StringProperty(name, description, ((String) defaultValue));
     } else if (defaultValue instanceof Collection) {
-      property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
+      property = (IEditableProperty<T>) new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
     } else if (defaultValue instanceof Map) {
-      property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
+      property = (IEditableProperty<T>) new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
-      property =
-          new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
+      property = (IEditableProperty<T>) new NumberProperty(name, description,
+          Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
     } else if (defaultValue instanceof Double) {
-      property =
-          new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
+      property = (IEditableProperty<T>) new DoubleProperty(name, description,
+          Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
     } else {
       throw new IllegalArgumentException(
           "Cannot instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
@@ -84,12 +82,12 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty {
   }
 
   @Override
-  public Object getValue() {
+  public T getValue() {
     return property.getValue();
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
+  public void setValue(final T value) {
     property.setValue(value);
   }
 
@@ -154,7 +152,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty {
   }
 
   @Override
-  public boolean validate(final Object value) {
+  public boolean validate(final T value) {
     return property.validate(value);
   }
 

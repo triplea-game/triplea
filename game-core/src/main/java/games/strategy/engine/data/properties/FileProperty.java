@@ -1,6 +1,7 @@
 package games.strategy.engine.data.properties;
 
 import java.awt.FileDialog;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -23,7 +24,7 @@ import games.strategy.engine.framework.system.SystemProperties;
  * change the file.
  * </p>
  */
-public class FileProperty extends AbstractEditableProperty {
+public class FileProperty extends AbstractEditableProperty<File> {
   private static final long serialVersionUID = 6826763550643504789L;
   private static final String[] defaultImageSuffixes = {"png", "jpg", "jpeg", "gif"};
 
@@ -52,7 +53,7 @@ public class FileProperty extends AbstractEditableProperty {
     this(name, description, file, defaultImageSuffixes);
   }
 
-  public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
+  private FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
     super(name, description);
     this.file = getFileIfExists(file);
     this.acceptableSuffixes = acceptableSuffixes;
@@ -64,13 +65,13 @@ public class FileProperty extends AbstractEditableProperty {
    * @return The file associated with this property
    */
   @Override
-  public Object getValue() {
+  public File getValue() {
     return file;
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
-    file = (File) value;
+  public void setValue(final File value) {
+    file = value;
   }
 
   /**
@@ -87,7 +88,7 @@ public class FileProperty extends AbstractEditableProperty {
       label = new JTextField(file.getAbsolutePath());
     }
     label.setEditable(false);
-    label.addMouseListener(new MouseListener() {
+    label.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
         final File selection = getFileUsingDialog(acceptableSuffixes);
@@ -98,18 +99,6 @@ public class FileProperty extends AbstractEditableProperty {
           SwingUtilities.invokeLater(label::repaint);
         }
       }
-
-      @Override
-      public void mouseEntered(final MouseEvent e) {}
-
-      @Override
-      public void mouseExited(final MouseEvent e) {}
-
-      @Override
-      public void mousePressed(final MouseEvent e) {}
-
-      @Override
-      public void mouseReleased(final MouseEvent e) {}
     });
     return label;
   }
@@ -170,13 +159,10 @@ public class FileProperty extends AbstractEditableProperty {
   }
 
   @Override
-  public boolean validate(final Object value) {
+  public boolean validate(final File value) {
     if (value == null) {
       return true;
     }
-    if (value instanceof File) {
-      return Arrays.stream(acceptableSuffixes).anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
-    }
-    return false;
+    return Arrays.stream(acceptableSuffixes).anyMatch(suffix -> value.getName().endsWith(suffix));
   }
 }

@@ -8,8 +8,8 @@ import javax.swing.JComponent;
 /**
  * Superclass for all implementations of {@link IEditableProperty}.
  */
-public abstract class AbstractEditableProperty
-    implements IEditableProperty, Serializable, Comparable<AbstractEditableProperty> {
+public abstract class AbstractEditableProperty<T>
+    implements IEditableProperty<T>, Serializable, Comparable<AbstractEditableProperty<T>> {
   private static final long serialVersionUID = -5005729898242568847L;
 
   private final String name;
