@@ -14,7 +14,7 @@ public class TripleAForumPoster extends NodeBbForumPoster {
   private static final long serialVersionUID = -3380344469767981030L;
 
   @Override
-  protected String getForumUrl() {
+  String getForumUrl() {
     return UrlConstants.TRIPLEA_FORUM.toString();
   }
 
