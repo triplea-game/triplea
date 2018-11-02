@@ -3,7 +3,6 @@ package games.strategy.engine.data.properties;
 import java.awt.FileDialog;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
@@ -50,13 +49,9 @@ public class FileProperty extends AbstractEditableProperty<File> {
 
 
   public FileProperty(final String name, final String description, final File file) {
-    this(name, description, file, defaultImageSuffixes);
-  }
-
-  private FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
     super(name, description);
     this.file = getFileIfExists(file);
-    this.acceptableSuffixes = acceptableSuffixes;
+    this.acceptableSuffixes = defaultImageSuffixes;
   }
 
   /**

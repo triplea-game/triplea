@@ -7,6 +7,8 @@ import javax.swing.JComponent;
 
 /**
  * Superclass for all implementations of {@link IEditableProperty}.
+ *
+ * @param <T> The generic Type of the value being stored.
  */
 public abstract class AbstractEditableProperty<T>
     implements IEditableProperty<T>, Serializable, Comparable<AbstractEditableProperty<T>> {

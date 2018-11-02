@@ -1,14 +1,11 @@
 package games.strategy.engine.data.properties;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-
-import games.strategy.engine.ClientFileSystemHelper;
 
 /**
  * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
