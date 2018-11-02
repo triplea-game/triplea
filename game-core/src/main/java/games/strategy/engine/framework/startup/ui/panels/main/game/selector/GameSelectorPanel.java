@@ -181,7 +181,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private void setOriginalPropertiesMap(final GameData data) {
     originalPropertiesMap.clear();
     if (data != null) {
-      for (final IEditableProperty property : data.getProperties().getEditableProperties()) {
+      for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
         originalPropertiesMap.put(property.getName(), property.getValue());
       }
     }
@@ -190,7 +190,7 @@ public class GameSelectorPanel extends JPanel implements Observer {
   private void selectGameOptions() {
     // backup current game properties before showing dialog
     final Map<String, Object> currentPropertiesMap = new HashMap<>();
-    for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
+    for (final IEditableProperty<?> property : model.getGameData().getProperties().getEditableProperties()) {
       currentPropertiesMap.put(property.getName(), property.getValue());
     }
     final PropertiesUi panel = new PropertiesUi(model.getGameData().getProperties(), true);
@@ -208,13 +208,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
     final Object buttonPressed = pane.getValue();
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
-      for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
+      for (final IEditableProperty<Object> property : model.getGameData().getProperties().getEditableProperties()) {
         property.setValue(currentPropertiesMap.get(property.getName()));
       }
     } else if (buttonPressed.equals(reset)) {
       if (!originalPropertiesMap.isEmpty()) {
         // restore properties, if cancel was pressed, or window was closed
-        for (final IEditableProperty property : model.getGameData().getProperties().getEditableProperties()) {
+        for (final IEditableProperty<Object> property : model.getGameData().getProperties().getEditableProperties()) {
           property.setValue(originalPropertiesMap.get(property.getName()));
         }
         selectGameOptions();

@@ -36,13 +36,13 @@ public class GameProperties extends GameDataComponent {
 
   // keep this in sync with the corresponding property, this name is used by reflection
   public static final String EDITABLE_PROPERTIES_FIELD_NAME = "editableProperties";
-  private final Map<String, IEditableProperty> editableProperties = new HashMap<>();
+  private final Map<String, IEditableProperty<Object>> editableProperties = new HashMap<>();
 
   // This list is used to keep track of order properties were
   // added.
   private final List<String> ordering = new ArrayList<>();
 
-  private final Map<String, IEditableProperty> playerProperties = new HashMap<>();
+  private final Map<String, IEditableProperty<?>> playerProperties = new HashMap<>();
 
   /**
    * Creates a new instance of GameProperties.
@@ -92,7 +92,7 @@ public class GameProperties extends GameDataComponent {
     if (value == null) {
       return defaultValue;
     }
-    return (Boolean) value;
+    return (boolean) value;
   }
 
   public int get(final String key, final int defaultValue) {
@@ -100,7 +100,7 @@ public class GameProperties extends GameDataComponent {
     if (value == null) {
       return defaultValue;
     }
-    return (Integer) value;
+    return (int) value;
   }
 
   public String get(final String key, final String defaultValue) {
@@ -111,7 +111,7 @@ public class GameProperties extends GameDataComponent {
     return (String) value;
   }
 
-  public void addEditableProperty(final IEditableProperty property) {
+  public void addEditableProperty(final IEditableProperty<Object> property) {
     // add to the editable properties
     editableProperties.put(property.getName(), property);
     ordering.add(property.getName());
@@ -122,8 +122,8 @@ public class GameProperties extends GameDataComponent {
    *
    * @return a list of IEditableProperty
    */
-  public List<IEditableProperty> getEditableProperties() {
-    final List<IEditableProperty> properties = new ArrayList<>();
+  public List<IEditableProperty<Object>> getEditableProperties() {
+    final List<IEditableProperty<Object>> properties = new ArrayList<>();
     for (final String propertyName : ordering) {
       if (editableProperties.containsKey(propertyName)) {
         properties.add(editableProperties.get(propertyName));
@@ -132,11 +132,11 @@ public class GameProperties extends GameDataComponent {
     return properties;
   }
 
-  public void addPlayerProperty(final IEditableProperty property) {
+  public void addPlayerProperty(final IEditableProperty<?> property) {
     playerProperties.put(property.getName(), property);
   }
 
-  public IEditableProperty getPlayerProperty(final String name) {
+  public IEditableProperty<?> getPlayerProperty(final String name) {
     return playerProperties.get(name);
   }
 
@@ -149,7 +149,7 @@ public class GameProperties extends GameDataComponent {
    *
    * @throws IOException If an I/O error occurs while writing the list of editable properties.
    */
-  public static byte[] writeEditableProperties(final List<IEditableProperty> editableProperties) throws IOException {
+  public static byte[] writeEditableProperties(final List<? extends IEditableProperty<?>> editableProperties) throws IOException {
     return IoUtils.writeToMemory(os -> {
       try (OutputStream gzipos = new GZIPOutputStream(os);
           ObjectOutputStream oos = new ObjectOutputStream(gzipos)) {
@@ -169,13 +169,13 @@ public class GameProperties extends GameDataComponent {
    * @throws ClassCastException If {@code byteArray} contains an object other than a list of editable properties.
    */
   @SuppressWarnings("unchecked")
-  public static List<IEditableProperty> readEditableProperties(final byte[] bytes)
+  public static List<IEditableProperty<Object>> readEditableProperties(final byte[] bytes)
       throws IOException, ClassCastException {
     return IoUtils.readFromMemory(bytes, is -> {
       try (InputStream bis = new BufferedInputStream(is);
           InputStream gzipis = new GZIPInputStream(bis);
           ObjectInputStream ois = new ObjectInputStream(gzipis)) {
-        return (List<IEditableProperty>) ois.readObject();
+        return (List<IEditableProperty<Object>>) ois.readObject();
       } catch (final ClassNotFoundException e) {
         throw new IOException(e);
       }
@@ -184,7 +184,7 @@ public class GameProperties extends GameDataComponent {
 
   public static void applyByteMapToChangeProperties(final byte[] byteArray,
       final GameProperties gamePropertiesToBeChanged) {
-    List<IEditableProperty> editableProperties = null;
+    List<IEditableProperty<Object>> editableProperties = null;
     try {
       editableProperties = readEditableProperties(byteArray);
     } catch (final ClassCastException | IOException e) {
@@ -194,16 +194,17 @@ public class GameProperties extends GameDataComponent {
     applyListToChangeProperties(editableProperties, gamePropertiesToBeChanged);
   }
 
-  private static void applyListToChangeProperties(final List<IEditableProperty> editableProperties,
+  @SuppressWarnings("unchecked")
+  private static <T> void applyListToChangeProperties(final List<IEditableProperty<T>> editableProperties,
       final GameProperties gamePropertiesToBeChanged) {
     if (editableProperties == null || editableProperties.isEmpty()) {
       return;
     }
-    for (final IEditableProperty prop : editableProperties) {
+    for (final IEditableProperty<T> prop : editableProperties) {
       if (prop == null || prop.getName() == null) {
         continue;
       }
-      final IEditableProperty p = gamePropertiesToBeChanged.editableProperties.get(prop.getName());
+      final IEditableProperty<T> p = (IEditableProperty<T>) gamePropertiesToBeChanged.editableProperties.get(prop.getName());
       if (p != null && prop.getName().equals(p.getName()) && p.validate(prop.getValue())) {
         p.setValue(prop.getValue());
       }

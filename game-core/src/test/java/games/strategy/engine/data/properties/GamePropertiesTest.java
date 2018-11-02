@@ -14,13 +14,13 @@ final class GamePropertiesTest {
   final class ReadWriteEditablePropertiesTest {
     @Test
     void shouldBeAbleToRoundTripEditableProperties() throws Exception {
-      final List<IEditableProperty> expected = Arrays.asList(
+      final List<StringProperty> expected = Arrays.asList(
           new StringProperty("name1", "description1", "value1"),
           new StringProperty("name2", "description2", "value2"),
           new StringProperty("name3", "description3", "value3"));
 
       final byte[] bytes = GameProperties.writeEditableProperties(expected);
-      final List<IEditableProperty> actual = GameProperties.readEditableProperties(bytes);
+      final List<IEditableProperty<Object>> actual = GameProperties.readEditableProperties(bytes);
 
       assertThat(actual, is(expected));
     }

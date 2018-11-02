@@ -161,19 +161,19 @@ public class GameDataExporter {
       final Field edPropField = GameProperties.class.getDeclaredField(GameProperties.EDITABLE_PROPERTIES_FIELD_NAME);
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
-      printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
+      printEditableProperties((Map<String, IEditableProperty<?>>) edPropField.get(gameProperties));
     } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
       log.log(Level.SEVERE, "An Error occured whilst trying trying to setup the Property List", e);
     }
     xmlfile.append("    </propertyList>\n");
   }
 
-  private void printEditableProperties(final Map<String, IEditableProperty> editableProperties) {
+  private void printEditableProperties(final Map<String, IEditableProperty<?>> editableProperties) {
     editableProperties.values().forEach(this::printEditableProperty);
   }
 
   @SuppressWarnings("unchecked")
-  private void printEditableProperty(final IEditableProperty prop) {
+  private void printEditableProperty(final IEditableProperty<?> prop) {
     String typeString = "";
     String value = "" + prop.getValue();
     if (prop.getClass().equals(BooleanProperty.class)) {

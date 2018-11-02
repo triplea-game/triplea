@@ -895,6 +895,7 @@ public final class GameParser {
         new NumberProperty(Constants.getPuIncomeBonus(playerId), null, 999, 0, 0)));
   }
 
+  @SuppressWarnings("unchecked")
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)
       throws GameParseException {
     // what type
@@ -906,7 +907,7 @@ public final class GameParser {
     }
     final Element child = (Element) children.get(0);
     final String childName = child.getNodeName();
-    final IEditableProperty editableProperty;
+    final IEditableProperty<?> editableProperty;
     switch (childName) {
       case "boolean":
         editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue));
@@ -940,7 +941,7 @@ public final class GameParser {
       default:
         throw newGameParseException("Unrecognized property type:" + childName);
     }
-    data.getProperties().addEditableProperty(editableProperty);
+    data.getProperties().addEditableProperty((IEditableProperty<Object>) editableProperty);
   }
 
   private void parseOffset(final Node offsetAttributes) {

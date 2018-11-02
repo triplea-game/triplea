@@ -38,7 +38,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
   @Override
   public void cacheGameProperties(final GameData gameData) {
     final Map<String, Object> serializableMap = new HashMap<>();
-    for (final IEditableProperty property : gameData.getProperties().getEditableProperties()) {
+    for (final IEditableProperty<?> property : gameData.getProperties().getEditableProperties()) {
       if (property.getValue() instanceof Serializable) {
         serializableMap.put(property.getName(), property.getValue());
       }
@@ -68,7 +68,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
         try (InputStream is = new FileInputStream(cache);
             ObjectInputStream in = new ObjectInputStream(is)) {
           final Map<String, Serializable> serializedMap = (Map<String, Serializable>) in.readObject();
-          for (final IEditableProperty property : gameData.getProperties().getEditableProperties()) {
+          for (final IEditableProperty<Object> property : gameData.getProperties().getEditableProperties()) {
             final Serializable ser = serializedMap.get(property.getName());
             if (ser != null) {
               property.setValue(ser);

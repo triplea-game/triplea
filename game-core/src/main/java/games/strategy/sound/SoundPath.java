@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import games.strategy.engine.data.properties.IEditableProperty;
-
 /**
  * Contains the sound file names and the directory of all sound files.
  */
@@ -140,7 +138,7 @@ public class SoundPath {
     return soundOptions;
   }
 
-  static List<IEditableProperty> getSoundOptions() {
+  static List<SoundOptionCheckBox> getSoundOptions() {
     return getAllSoundOptionsWithDescription().entrySet().stream()
         .map(e -> new SoundOptionCheckBox(e.getKey(), e.getValue()))
         .collect(Collectors.toList());
