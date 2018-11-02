@@ -8,9 +8,10 @@ import games.strategy.triplea.delegate.TechAdvance;
 
 class AddAvailableTech extends Change {
   private static final long serialVersionUID = 5664428883866434959L;
-  private final TechAdvance m_tech;
-  private final TechnologyFrontier m_frontier;
-  private final PlayerID m_player;
+
+  private final TechAdvance tech;
+  private final TechnologyFrontier frontier;
+  private final PlayerID player;
 
   public AddAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerID player) {
     if (front == null) {
@@ -19,19 +20,19 @@ class AddAvailableTech extends Change {
     if (tech == null) {
       throw new IllegalArgumentException("Null tech");
     }
-    m_tech = tech;
-    m_frontier = front;
-    m_player = player;
+    this.tech = tech;
+    frontier = front;
+    this.player = player;
   }
 
   @Override
   public void perform(final GameData data) {
-    final TechnologyFrontier front = m_player.getTechnologyFrontierList().getTechnologyFrontier(m_frontier.getName());
-    front.addAdvance(m_tech);
+    final TechnologyFrontier front = player.getTechnologyFrontierList().getTechnologyFrontier(frontier.getName());
+    front.addAdvance(tech);
   }
 
   @Override
   public Change invert() {
-    return new RemoveAvailableTech(m_frontier, m_tech, m_player);
+    return new RemoveAvailableTech(frontier, tech, player);
   }
 }

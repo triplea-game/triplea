@@ -7,32 +7,33 @@ import games.strategy.engine.data.IAttachment;
 
 class RemoveAttachmentChange extends Change {
   private static final long serialVersionUID = 6365648682759047674L;
-  private final IAttachment m_attachment;
-  private final String m_originalAttachmentName;
-  private final Attachable m_originalAttachable;
-  private final Attachable m_attachable;
-  private final String m_name;
+
+  private final IAttachment attachment;
+  private final String originalAttachmentName;
+  private final Attachable originalAttachable;
+  private final Attachable attachable;
+  private final String name;
 
   public RemoveAttachmentChange(final IAttachment attachment, final Attachable attachable, final String name) {
-    m_attachment = attachment;
-    m_originalAttachmentName = attachment.getName();
-    m_originalAttachable = attachment.getAttachedTo();
-    m_attachable = attachable;
-    m_name = name;
+    this.attachment = attachment;
+    originalAttachmentName = attachment.getName();
+    originalAttachable = attachment.getAttachedTo();
+    this.attachable = attachable;
+    this.name = name;
   }
 
   @Override
   protected void perform(final GameData data) {
-    m_originalAttachable.removeAttachment(m_originalAttachmentName);
-    m_attachment.setAttachedTo(m_attachable);
-    m_attachment.setName(m_name);
-    if (m_attachable != null && m_name != null) {
-      m_attachable.addAttachment(m_name, m_attachment);
+    originalAttachable.removeAttachment(originalAttachmentName);
+    attachment.setAttachedTo(attachable);
+    attachment.setName(name);
+    if (attachable != null && name != null) {
+      attachable.addAttachment(name, attachment);
     }
   }
 
   @Override
   public Change invert() {
-    return new AddAttachmentChange(m_attachment, m_originalAttachable, m_originalAttachmentName);
+    return new AddAttachmentChange(attachment, originalAttachable, originalAttachmentName);
   }
 }

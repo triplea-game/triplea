@@ -7,8 +7,9 @@ import games.strategy.engine.data.ProductionRule;
 
 class RemoveProductionRule extends Change {
   private static final long serialVersionUID = 2312599802275503095L;
-  private final ProductionRule m_rule;
-  private final ProductionFrontier m_frontier;
+
+  private final ProductionRule rule;
+  private final ProductionFrontier frontier;
 
   public RemoveProductionRule(final ProductionRule rule, final ProductionFrontier frontier) {
     if (rule == null) {
@@ -17,17 +18,17 @@ class RemoveProductionRule extends Change {
     if (frontier == null) {
       throw new IllegalArgumentException("Null frontier");
     }
-    m_rule = rule;
-    m_frontier = frontier;
+    this.rule = rule;
+    this.frontier = frontier;
   }
 
   @Override
   public void perform(final GameData data) {
-    m_frontier.removeRule(m_rule);
+    frontier.removeRule(rule);
   }
 
   @Override
   public Change invert() {
-    return new AddProductionRule(m_rule, m_frontier);
+    return new AddProductionRule(rule, frontier);
   }
 }
