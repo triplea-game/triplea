@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -103,8 +104,7 @@ public class SelectAndViewEditor extends EditorPanel {
       editor.removePropertyChangeListener(propertyChangeListener);
     }
     view.removeAll();
-    final IBean item = (IBean) selector.getSelectedItem();
-    editor = item == null ? null : item.getEditor();
+    editor = Optional.ofNullable((IBean) selector.getSelectedItem()).map(IBean::getEditor).orElse(null);
     if (editor != null) {
       // register a property change listener so we can re-notify our listeners
       editor.addPropertyChangeListener(propertyChangeListener);
