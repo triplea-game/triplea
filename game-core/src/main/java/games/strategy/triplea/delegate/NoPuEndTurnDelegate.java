@@ -5,14 +5,12 @@ import java.util.Collection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.MapSupport;
 
 /**
  * At the end of the turn collect NO income.
  */
 @AutoSave(afterStepEnd = true)
-@MapSupport
-public class NoPUEndTurnDelegate extends EndTurnDelegate {
+public class NoPuEndTurnDelegate extends EndTurnDelegate {
   @Override
   protected int getProduction(final Collection<Territory> territories) {
     return 0;

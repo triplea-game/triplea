@@ -14,7 +14,7 @@ import games.strategy.ui.SwingComponents;
  *
  * @param <T> The type of the property value.
  */
-public class ComboProperty<T> extends AEditableProperty {
+public class ComboProperty<T> extends AbstractEditableProperty {
   private static final long serialVersionUID = -3098612299805630587L;
   public static final String POSSIBLE_VALUES_FIELD_NAME = "possibleValues";
   private final List<T> possibleValues;

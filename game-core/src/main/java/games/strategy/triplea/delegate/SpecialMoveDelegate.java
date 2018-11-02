@@ -19,7 +19,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
@@ -38,7 +37,6 @@ import games.strategy.util.IntegerMap;
  * airbase) to another
  * territory, instead of carrying them.
  */
-@MapSupport
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean needToInitialize = true;
 
@@ -76,7 +74,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public Serializable saveState() {
     final SpecialMoveExtendedDelegateState state = new SpecialMoveExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -84,7 +82,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public void loadState(final Serializable state) {
     final SpecialMoveExtendedDelegateState s = (SpecialMoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   @Override

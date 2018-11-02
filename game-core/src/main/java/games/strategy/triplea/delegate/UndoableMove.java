@@ -29,83 +29,84 @@ import games.strategy.util.CollectionUtils;
  */
 public class UndoableMove extends AbstractUndoableMove {
   private static final long serialVersionUID = 8490182214651531358L;
-  private String m_reasonCantUndo;
-  private String m_description;
+
+  private String reasonCantUndo;
+  private String description;
   // this move is dependent on these moves
   // these moves cant be undone until this one has been
-  private final Set<UndoableMove> m_iDependOn = new HashSet<>();
+  private final Set<UndoableMove> dependencies = new HashSet<>();
   // these moves depend on me
   // we cant be undone until this is empty
-  private final Set<UndoableMove> m_dependOnMe = new HashSet<>();
+  private final Set<UndoableMove> dependents = new HashSet<>();
   // list of countries we took over
-  private final Set<Territory> m_conquered = new HashSet<>();
+  private final Set<Territory> conquered = new HashSet<>();
   // transports loaded by this move
-  private final Set<Unit> m_loaded = new HashSet<>();
+  private final Set<Unit> loaded = new HashSet<>();
   // transports unloaded by this move
-  private final Set<Unit> m_unloaded = new HashSet<>();
-  private final Route m_route;
+  private final Set<Unit> unloaded = new HashSet<>();
+  private final Route route;
 
   public void addToConquered(final Territory t) {
-    m_conquered.add(t);
+    conquered.add(t);
   }
 
   public Route getRoute() {
-    return m_route;
+    return route;
   }
 
   public boolean getcanUndo() {
-    return m_reasonCantUndo == null && m_dependOnMe.isEmpty();
+    return reasonCantUndo == null && dependents.isEmpty();
   }
 
   String getReasonCantUndo() {
-    if (m_reasonCantUndo != null) {
-      return m_reasonCantUndo;
-    } else if (!m_dependOnMe.isEmpty()) {
-      return "Move " + (m_dependOnMe.iterator().next().getIndex() + 1) + " must be undone first";
+    if (reasonCantUndo != null) {
+      return reasonCantUndo;
+    } else if (!dependents.isEmpty()) {
+      return "Move " + (dependents.iterator().next().getIndex() + 1) + " must be undone first";
     } else {
       throw new IllegalStateException("no reason");
     }
   }
 
   public void setCantUndo(final String reason) {
-    m_reasonCantUndo = reason;
+    reasonCantUndo = reason;
   }
 
   public void setDescription(final String description) {
-    m_description = description;
+    this.description = description;
   }
 
   public UndoableMove(final Collection<Unit> units, final Route route) {
     super(new CompositeChange(), units);
-    m_route = route;
+    this.route = route;
   }
 
   public void load(final Unit transport) {
-    m_loaded.add(transport);
+    loaded.add(transport);
   }
 
   public void unload(final Unit transport) {
-    m_unloaded.add(transport);
+    unloaded.add(transport);
   }
 
   @Override
   protected void undoSpecific(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     final BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
-    battleTracker.undoBattle(m_route, units, bridge.getPlayerId(), bridge);
+    battleTracker.undoBattle(route, units, bridge.getPlayerId(), bridge);
     // clean up dependencies
-    for (final UndoableMove other : m_iDependOn) {
-      other.m_dependOnMe.remove(this);
+    for (final UndoableMove other : dependencies) {
+      other.dependents.remove(this);
     }
     // if we are moving out of a battle zone, mark it
     // this can happen for air units moving out of a battle zone
-    for (final IBattle battle : battleTracker.getPendingBattles(m_route.getStart(), null)) {
+    for (final IBattle battle : battleTracker.getPendingBattles(route.getStart(), null)) {
       if (battle == null || battle.isOver()) {
         continue;
       }
       for (final Unit unit : units) {
         final Route routeUnitUsedToMove =
-            DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
+            DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, route.getStart());
         if (!battle.getBattleType().isBombingRun()) {
           // route units used to move will be null in the case
           // where an enemy sub is submerged in the territory, and another unit
@@ -165,56 +166,56 @@ public class UndoableMove extends AbstractUndoableMove {
       // if the other move has moves that depend on this
       if (!CollectionUtils.intersection(other.getUnits(), this.getUnits()).isEmpty()
           // if the other move has transports that we are loading
-          || !CollectionUtils.intersection(other.units, this.m_loaded).isEmpty()
+          || !CollectionUtils.intersection(other.units, this.loaded).isEmpty()
           // or we are moving through a previously conqueured territory
           // we should be able to take this out later
           // we need to add logic for this move to take over the same territories
           // when the other move is undone
-          || !CollectionUtils.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty()
+          || !CollectionUtils.intersection(other.conquered, route.getAllTerritories()).isEmpty()
           // or we are unloading transports that have moved in another turn
-          || !CollectionUtils.intersection(other.units, this.m_unloaded).isEmpty()
-          || !CollectionUtils.intersection(other.m_unloaded, this.m_unloaded).isEmpty()) {
-        m_iDependOn.add(other);
-        other.m_dependOnMe.add(this);
+          || !CollectionUtils.intersection(other.units, this.unloaded).isEmpty()
+          || !CollectionUtils.intersection(other.unloaded, this.unloaded).isEmpty()) {
+        dependencies.add(other);
+        other.dependents.add(this);
       }
     }
   }
 
   // for use with airborne moving
   public void addDependency(final UndoableMove undoableMove) {
-    m_iDependOn.add(undoableMove);
-    undoableMove.m_dependOnMe.add(this);
+    dependencies.add(undoableMove);
+    undoableMove.dependents.add(this);
   }
 
   public boolean wasTransportUnloaded(final Unit transport) {
-    return m_unloaded.contains(transport);
+    return unloaded.contains(transport);
   }
 
   public boolean wasTransportLoaded(final Unit transport) {
-    return m_loaded.contains(transport);
+    return loaded.contains(transport);
   }
 
   @Override
   public String toString() {
-    return "UndoableMove index;" + index + " description:" + m_description;
+    return "UndoableMove index;" + index + " description:" + description;
   }
 
   @Override
   public final String getMoveLabel() {
-    return m_route.getStart() + " -> " + m_route.getEnd();
+    return route.getStart() + " -> " + route.getEnd();
   }
 
   @Override
   public final Territory getEnd() {
-    return m_route.getEnd();
+    return route.getEnd();
   }
 
   public final Territory getStart() {
-    return m_route.getStart();
+    return route.getStart();
   }
 
   @Override
   protected final MoveDescription getDescriptionObject() {
-    return new MoveDescription(units, m_route);
+    return new MoveDescription(units, route);
   }
 }

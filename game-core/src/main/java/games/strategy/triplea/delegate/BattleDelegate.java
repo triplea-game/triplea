@@ -32,7 +32,6 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -51,11 +50,9 @@ import games.strategy.util.PredicateBuilder;
 import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
-
 /**
  * Delegate to track and fight all battles.
  */
-@MapSupport
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate {
   private BattleTracker battleTracker = new BattleTracker();
@@ -856,7 +853,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             }
             // after that is applied, we have to make a map of all dependencies
             final Map<Unit, Collection<Unit>> dependenciesForMfb =
-                TransportTracker.transporting(attackingUnits);
+                TransportTracker.transportingWithAllPossibleUnits(attackingUnits);
             for (final Unit transport : CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport())) {
               // however, the map we add to the newly created battle, cannot hold any units that are NOT in this
               // territory.
@@ -873,8 +870,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                   new ArrayList<>(CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport()));
               allNeighborUnits.addAll(t.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(player)));
               final Map<Unit, Collection<Unit>> dependenciesForNeighbors =
-                  TransportTracker.transporting(CollectionUtils
-                      .getMatches(allNeighborUnits, Matches.unitIsTransport().negate()));
+                  TransportTracker.transportingWithAllPossibleUnits(
+                      CollectionUtils.getMatches(allNeighborUnits, Matches.unitIsTransport().negate()));
               dependencies.put(t, dependenciesForNeighbors);
             }
             mfb.addDependentUnits(dependencies.get(to));

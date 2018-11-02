@@ -15,7 +15,6 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.UserActionAttachment;
@@ -27,7 +26,6 @@ import games.strategy.util.IntegerMap;
 /**
  * Contains validation and logic to change game data for UserActionAttachments.
  */
-@MapSupport
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
   public UserActionDelegate() {}
 

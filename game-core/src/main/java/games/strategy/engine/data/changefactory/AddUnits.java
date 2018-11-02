@@ -14,35 +14,36 @@ import games.strategy.engine.data.UnitHolder;
  */
 class AddUnits extends Change {
   private static final long serialVersionUID = 2694342784633196289L;
-  private final String m_name;
-  private final Collection<Unit> m_units;
-  private final String m_type;
+
+  private final String name;
+  private final Collection<Unit> units;
+  private final String type;
 
   AddUnits(final UnitCollection collection, final Collection<Unit> units) {
-    m_units = new ArrayList<>(units);
-    m_name = collection.getHolder().getName();
-    m_type = collection.getHolder().getType();
+    this.units = new ArrayList<>(units);
+    name = collection.getHolder().getName();
+    type = collection.getHolder().getType();
   }
 
   AddUnits(final String name, final String type, final Collection<Unit> units) {
-    m_units = new ArrayList<>(units);
-    m_type = type;
-    m_name = name;
+    this.units = new ArrayList<>(units);
+    this.type = type;
+    this.name = name;
   }
 
   @Override
   public Change invert() {
-    return new RemoveUnits(m_name, m_type, m_units);
+    return new RemoveUnits(name, type, units);
   }
 
   @Override
   protected void perform(final GameData data) {
-    final UnitHolder holder = data.getUnitHolder(m_name, m_type);
-    holder.getUnits().addAll(m_units);
+    final UnitHolder holder = data.getUnitHolder(name, type);
+    holder.getUnits().addAll(units);
   }
 
   @Override
   public String toString() {
-    return "Add unit change.  Add to:" + m_name + " units:" + m_units;
+    return "Add unit change.  Add to:" + name + " units:" + units;
   }
 }

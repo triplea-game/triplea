@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.data.properties.AEditableProperty;
+import games.strategy.engine.data.properties.AbstractEditableProperty;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.CollectionProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -40,7 +40,7 @@ import lombok.extern.java.Log;
  * @param <T> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
 @Log
-public class MapPropertyWrapper<T> extends AEditableProperty {
+public class MapPropertyWrapper<T> extends AbstractEditableProperty {
   private static final long serialVersionUID = 6406798101396215624L;
   private final IEditableProperty property;
   private final Method setter;

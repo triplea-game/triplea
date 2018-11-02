@@ -1,7 +1,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 
 /**
@@ -19,7 +18,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
  * undo the production, produce in f first, and then produce in e.
  * </p>
  */
-@MapSupport
 public class PlaceDelegate extends AbstractPlaceDelegate {
   protected int getProduction(final Territory territory) {
     // Can be null!

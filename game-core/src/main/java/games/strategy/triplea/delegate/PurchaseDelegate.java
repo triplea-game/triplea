@@ -25,7 +25,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -46,7 +45,6 @@ import games.strategy.util.IntegerMap;
  * Subclasses can over ride addToPlayer(...) and removeFromPlayer(...) to change how
  * the adding or removing of resources is done.
  */
-@MapSupport
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
   private boolean needToInitialize = true;
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
@@ -97,7 +95,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public Serializable saveState() {
     final PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -105,7 +103,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public void loadState(final Serializable state) {
     final PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   @Override

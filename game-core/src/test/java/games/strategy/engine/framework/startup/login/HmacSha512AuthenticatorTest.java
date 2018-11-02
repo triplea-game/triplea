@@ -9,8 +9,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.triplea.test.common.Assertions.assertNotThrows;
 
 import java.util.Arrays;
 import java.util.Base64;
@@ -118,7 +118,7 @@ final class HmacSha512AuthenticatorTest {
       final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
       final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
-      assertNotThrows(() -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+      assertDoesNotThrow(() -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
     }
 
     @Test

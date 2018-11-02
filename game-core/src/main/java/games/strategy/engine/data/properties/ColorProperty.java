@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
  * change the color.
  * </p>
  */
-public class ColorProperty extends AEditableProperty {
+public class ColorProperty extends AbstractEditableProperty {
   private static final long serialVersionUID = 6826763550643504789L;
   private static final int MAX_COLOR = 0xFFFFFF;
   private static final int MIN_COLOR = 0x000000;

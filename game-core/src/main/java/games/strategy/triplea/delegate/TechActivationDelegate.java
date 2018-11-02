@@ -11,7 +11,6 @@ import java.util.function.Predicate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -22,7 +21,6 @@ import games.strategy.util.CollectionUtils;
  * Logic for activating tech rolls. This delegate requires the
  * TechnologyDelegate to run correctly.
  */
-@MapSupport
 public class TechActivationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
@@ -122,7 +120,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -130,7 +128,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   // Return string representing all advances in collection

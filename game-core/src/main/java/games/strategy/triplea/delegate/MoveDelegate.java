@@ -23,7 +23,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -44,7 +43,6 @@ import games.strategy.util.Tuple;
  * Responsible for checking the validity of a move, and for moving the units.
  * </p>
  */
-@MapSupport
 @AutoSave(afterStepEnd = true)
 public class MoveDelegate extends AbstractMoveDelegate {
 
@@ -219,9 +217,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public Serializable saveState() {
     final MoveExtendedDelegateState state = new MoveExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
-    state.m_needToDoRockets = needToDoRockets;
-    state.m_PUsLost = pusLost;
+    state.needToInitialize = needToInitialize;
+    state.needToDoRockets = needToDoRockets;
+    state.pusLost = pusLost;
     return state;
   }
 
@@ -229,9 +227,9 @@ public class MoveDelegate extends AbstractMoveDelegate {
   public void loadState(final Serializable state) {
     final MoveExtendedDelegateState s = (MoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
-    needToDoRockets = s.m_needToDoRockets;
-    pusLost = s.m_PUsLost;
+    needToInitialize = s.needToInitialize;
+    needToDoRockets = s.needToDoRockets;
+    pusLost = s.pusLost;
   }
 
   @Override

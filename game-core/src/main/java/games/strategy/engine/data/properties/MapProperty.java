@@ -16,15 +16,16 @@ import javax.swing.JComponent;
  * @param <T> String or something with a valid toString()
  * @param <U> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
-public class MapProperty<T, U> extends AEditableProperty {
+public class MapProperty<T, U> extends AbstractEditableProperty {
   private static final long serialVersionUID = -8021039503574228146L;
-  private Map<T, U> m_map;
-  final List<IEditableProperty> m_properties = new ArrayList<>();
+
+  private Map<T, U> map;
+  final List<IEditableProperty> properties = new ArrayList<>();
 
   public MapProperty(final String name, final String description, final Map<T, U> map) {
     super(name, description);
-    m_map = map;
-    resetProperties(map, m_properties, name, description);
+    this.map = map;
+    resetProperties(map, properties, name, description);
   }
 
   @SuppressWarnings("unchecked")
@@ -57,29 +58,29 @@ public class MapProperty<T, U> extends AEditableProperty {
 
   @Override
   public int getRowsNeeded() {
-    return Math.max(1, m_properties.size());
+    return Math.max(1, properties.size());
   }
 
   @Override
   public Object getValue() {
-    return m_map;
+    return map;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public void setValue(final Object value) throws ClassCastException {
-    m_map = (Map<T, U>) value;
-    resetProperties(m_map, m_properties, this.getName(), this.getDescription());
+    map = (Map<T, U>) value;
+    resetProperties(map, properties, this.getName(), this.getDescription());
   }
 
   @Override
   public JComponent getEditorComponent() {
-    return new PropertiesUi(m_properties, true);
+    return new PropertiesUi(properties, true);
   }
 
   @Override
   public JComponent getViewComponent() {
-    return new PropertiesUi(m_properties, false);
+    return new PropertiesUi(properties, false);
   }
 
   @Override
@@ -92,10 +93,10 @@ public class MapProperty<T, U> extends AEditableProperty {
       try {
         @SuppressWarnings("unchecked")
         final Map<T, U> test = (Map<T, U>) value;
-        if (m_map != null && !m_map.isEmpty() && !test.isEmpty()) {
+        if (map != null && !map.isEmpty() && !test.isEmpty()) {
           T key = null;
           U val = null;
-          for (final Entry<T, U> entry : m_map.entrySet()) {
+          for (final Entry<T, U> entry : map.entrySet()) {
             if (entry.getValue() != null && entry.getKey() != null) {
               key = entry.getKey();
               val = entry.getValue();

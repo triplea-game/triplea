@@ -21,7 +21,6 @@ import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
@@ -36,7 +35,6 @@ import games.strategy.util.LocalizeHtml;
 /**
  * A delegate used to check for end of game conditions.
  */
-@MapSupport
 public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean gameOver = false;
   private Collection<PlayerID> winners = new ArrayList<>();
@@ -187,8 +185,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final EndRoundExtendedDelegateState state = new EndRoundExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_gameOver = gameOver;
-    state.m_winners = winners;
+    state.gameOver = gameOver;
+    state.winners = winners;
     return state;
   }
 
@@ -196,8 +194,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final EndRoundExtendedDelegateState s = (EndRoundExtendedDelegateState) state;
     super.loadState(s.superState);
-    gameOver = s.m_gameOver;
-    winners = s.m_winners;
+    gameOver = s.gameOver;
+    winners = s.winners;
   }
 
   @Override

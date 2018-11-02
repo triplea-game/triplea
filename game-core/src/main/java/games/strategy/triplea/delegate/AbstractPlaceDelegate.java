@@ -110,8 +110,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   public Serializable saveState() {
     final PlaceExtendedDelegateState state = new PlaceExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_produced = produced;
-    state.m_placements = placements;
+    state.produced = produced;
+    state.placements = placements;
     return state;
   }
 
@@ -119,8 +119,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   public void loadState(final Serializable state) {
     final PlaceExtendedDelegateState s = (PlaceExtendedDelegateState) state;
     super.loadState(s.superState);
-    produced = s.m_produced;
-    placements = s.m_placements;
+    produced = s.produced;
+    placements = s.placements;
   }
 
   /**
