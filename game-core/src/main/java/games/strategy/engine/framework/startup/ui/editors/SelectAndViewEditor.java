@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Objects;
@@ -61,8 +62,10 @@ public class SelectAndViewEditor extends EditorPanel {
         new Insets(0, 0, 0, 0), 0, 0));
     selector.setRenderer(new DisplayNameComboBoxRender());
     selector.addItemListener(e -> {
-      updateView();
-      fireEditorChanged();
+      if (e.getStateChange() == ItemEvent.SELECTED || selector.getSelectedItem() == null) {
+        updateView();
+        fireEditorChanged();
+      }
     });
     propertyChangeListener = evt -> fireEditorChanged();
     helpPanel = new JEditorPane();
