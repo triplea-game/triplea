@@ -25,17 +25,17 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private static final String DEFAULT_TYPE_AI = "AI";
   private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
-  private final boolean m_optional;
-  private final boolean m_canBeDisabled;
+  private final boolean optional;
+  private final boolean canBeDisabled;
   private final String defaultType;
   private final boolean isHidden;
-  private boolean m_isDisabled = false;
-  private final UnitCollection m_unitsHeld;
-  private final ResourceCollection m_resources;
-  private ProductionFrontier m_productionFrontier;
-  private RepairFrontier m_repairFrontier;
-  private final TechnologyFrontierList m_technologyFrontiers;
-  private String m_whoAmI = "null:no_one";
+  private boolean isDisabled = false;
+  private final UnitCollection unitsHeld;
+  private final ResourceCollection resources;
+  private ProductionFrontier productionFrontier;
+  private RepairFrontier repairFrontier;
+  private final TechnologyFrontierList technologyFrontiers;
+  private String whoAmI = "null:no_one";
 
   public PlayerID(final String name, final GameData data) {
     this(name, false, false, null, false, data);
@@ -44,21 +44,21 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final String defaultType,
       final boolean isHidden, final GameData data) {
     super(name, data);
-    m_optional = optional;
-    m_canBeDisabled = canBeDisabled;
+    this.optional = optional;
+    this.canBeDisabled = canBeDisabled;
     this.defaultType = defaultType;
     this.isHidden = isHidden;
-    m_unitsHeld = new UnitCollection(this, data);
-    m_resources = new ResourceCollection(data);
-    m_technologyFrontiers = new TechnologyFrontierList(data);
+    unitsHeld = new UnitCollection(this, data);
+    resources = new ResourceCollection(data);
+    technologyFrontiers = new TechnologyFrontierList(data);
   }
 
   public boolean getOptional() {
-    return m_optional;
+    return optional;
   }
 
   public boolean getCanBeDisabled() {
-    return m_canBeDisabled;
+    return canBeDisabled;
   }
 
   public boolean isHidden() {
@@ -67,31 +67,31 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
 
   @Override
   public UnitCollection getUnits() {
-    return m_unitsHeld;
+    return unitsHeld;
   }
 
   public ResourceCollection getResources() {
-    return m_resources;
+    return resources;
   }
 
   public TechnologyFrontierList getTechnologyFrontierList() {
-    return m_technologyFrontiers;
+    return technologyFrontiers;
   }
 
   public void setProductionFrontier(final ProductionFrontier frontier) {
-    m_productionFrontier = frontier;
+    productionFrontier = frontier;
   }
 
   public ProductionFrontier getProductionFrontier() {
-    return m_productionFrontier;
+    return productionFrontier;
   }
 
   public void setRepairFrontier(final RepairFrontier frontier) {
-    m_repairFrontier = frontier;
+    repairFrontier = frontier;
   }
 
   public RepairFrontier getRepairFrontier() {
-    return m_repairFrontier;
+    return repairFrontier;
   }
 
   @Override
@@ -136,7 +136,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     checkArgument(
         "AI".equalsIgnoreCase(typeId) || "Human".equalsIgnoreCase(typeId) || "null".equalsIgnoreCase(typeId),
         "whoAmI '" + encodedType + "' first part must be, ai or human or null");
-    m_whoAmI = encodedType;
+    whoAmI = encodedType;
   }
 
   private static List<String> tokenizeEncodedType(final String encodedType) {
@@ -144,11 +144,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   }
 
   public String getWhoAmI() {
-    return m_whoAmI;
+    return whoAmI;
   }
 
   public Type getPlayerType() {
-    final List<String> tokens = tokenizeEncodedType(m_whoAmI);
+    final List<String> tokens = tokenizeEncodedType(whoAmI);
     return new Type(tokens.get(0), tokens.get(1));
   }
 
@@ -157,11 +157,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   }
 
   public void setIsDisabled(final boolean isDisabled) {
-    m_isDisabled = isDisabled;
+    this.isDisabled = isDisabled;
   }
 
   public boolean getIsDisabled() {
-    return m_isDisabled;
+    return isDisabled;
   }
 
   /**
