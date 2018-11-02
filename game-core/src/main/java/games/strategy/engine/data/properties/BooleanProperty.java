@@ -18,11 +18,11 @@ public class BooleanProperty extends AbstractEditableProperty<Boolean> {
 
   @Override
   public Boolean getValue() {
-    return value ? Boolean.TRUE : Boolean.FALSE;
+    return value;
   }
 
   @Override
-  public void setValue(final Boolean value) throws IllegalArgumentException {
+  public void setValue(final Boolean value) {
     this.value = value;
   }
 
