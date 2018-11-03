@@ -18,8 +18,9 @@ import games.strategy.util.IntegerMap;
  */
 public class UnitCollection extends GameDataComponent implements Collection<Unit> {
   private static final long serialVersionUID = -3534037864426122864L;
-  private final List<Unit> m_units = new ArrayList<>();
-  private final NamedUnitHolder m_holder;
+
+  private final List<Unit> units = new ArrayList<>();
+  private final NamedUnitHolder holder;
 
   /**
    * Creates new UnitCollection.
@@ -29,53 +30,53 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    */
   public UnitCollection(final NamedUnitHolder holder, final GameData data) {
     super(data);
-    m_holder = holder;
+    this.holder = holder;
   }
 
   @Override
   public boolean add(final Unit unit) {
-    final boolean result = m_units.add(unit);
-    m_holder.notifyChanged();
+    final boolean result = units.add(unit);
+    holder.notifyChanged();
     return result;
   }
 
   @Override
   public boolean addAll(final Collection<? extends Unit> units) {
-    final boolean result = m_units.addAll(units);
-    m_holder.notifyChanged();
+    final boolean result = this.units.addAll(units);
+    holder.notifyChanged();
     return result;
   }
 
   @Override
   public boolean removeAll(final Collection<?> units) {
-    final boolean result = m_units.removeAll(units);
-    m_holder.notifyChanged();
+    final boolean result = this.units.removeAll(units);
+    holder.notifyChanged();
     return result;
   }
 
   public int getUnitCount() {
-    return m_units.size();
+    return units.size();
   }
 
   int getUnitCount(final UnitType type) {
-    return (int) m_units.stream().filter(u -> u.getType().equals(type)).count();
+    return (int) units.stream().filter(u -> u.getType().equals(type)).count();
   }
 
   public int getUnitCount(final UnitType type, final PlayerID owner) {
-    return (int) m_units.stream().filter(u -> u.getType().equals(type) && u.getOwner().equals(owner)).count();
+    return (int) units.stream().filter(u -> u.getType().equals(type) && u.getOwner().equals(owner)).count();
   }
 
   int getUnitCount(final PlayerID owner) {
-    return (int) m_units.stream().filter(u -> u.getOwner().equals(owner)).count();
+    return (int) units.stream().filter(u -> u.getOwner().equals(owner)).count();
   }
 
   @Override
   public boolean containsAll(final Collection<?> units) {
     // much faster for large sets
-    if (m_units.size() > 500 && units.size() > 500) {
-      return new HashSet<>(m_units).containsAll(units);
+    if (this.units.size() > 500 && units.size() > 500) {
+      return new HashSet<>(this.units).containsAll(units);
     }
-    return m_units.containsAll(units);
+    return this.units.containsAll(units);
   }
 
   /**
@@ -92,7 +93,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
       throw new IllegalArgumentException("value must be positiive.  Instead its:" + maxUnits);
     }
     final Collection<Unit> units = new ArrayList<>();
-    for (final Unit current : m_units) {
+    for (final Unit current : this.units) {
       if (current.getType().equals(type)) {
         units.add(current);
         if (units.size() == maxUnits) {
@@ -117,7 +118,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public Collection<Unit> getUnits() {
-    return new ArrayList<>(m_units);
+    return new ArrayList<>(units);
   }
 
   /**
@@ -141,18 +142,18 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    */
   public IntegerMap<UnitType> getUnitsByType(final PlayerID id) {
     final IntegerMap<UnitType> count = new IntegerMap<>();
-    m_units.stream().filter(unit -> unit.getOwner().equals(id)).forEach(unit -> count.add(unit.getType(), 1));
+    units.stream().filter(unit -> unit.getOwner().equals(id)).forEach(unit -> count.add(unit.getType(), 1));
     return count;
   }
 
   @Override
   public int size() {
-    return m_units.size();
+    return units.size();
   }
 
   @Override
   public boolean isEmpty() {
-    return m_units.isEmpty();
+    return units.isEmpty();
   }
 
   /**
@@ -160,7 +161,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    */
   public Set<PlayerID> getPlayersWithUnits() {
     // note nulls are handled by PlayerID.NULL_PLAYERID
-    return m_units.stream().map(Unit::getOwner).collect(Collectors.toSet());
+    return units.stream().map(Unit::getOwner).collect(Collectors.toSet());
   }
 
   /**
@@ -168,7 +169,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
    */
   public IntegerMap<PlayerID> getPlayerUnitCounts() {
     final IntegerMap<PlayerID> count = new IntegerMap<>();
-    m_units.forEach(unit -> count.add(unit.getOwner(), 1));
+    units.forEach(unit -> count.add(unit.getOwner(), 1));
     return count;
   }
 
@@ -177,29 +178,29 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   }
 
   public NamedUnitHolder getHolder() {
-    return m_holder;
+    return holder;
   }
 
   public boolean allMatch(final Predicate<Unit> matcher) {
-    return m_units.stream().allMatch(matcher);
+    return units.stream().allMatch(matcher);
   }
 
   public boolean anyMatch(final Predicate<Unit> matcher) {
-    return m_units.stream().anyMatch(matcher);
+    return units.stream().anyMatch(matcher);
   }
 
   public int countMatches(final Predicate<Unit> predicate) {
-    return CollectionUtils.countMatches(m_units, predicate);
+    return CollectionUtils.countMatches(units, predicate);
   }
 
   public List<Unit> getMatches(final Predicate<Unit> predicate) {
-    return CollectionUtils.getMatches(m_units, predicate);
+    return CollectionUtils.getMatches(units, predicate);
   }
 
   @Override
   public String toString() {
     final StringBuilder buf = new StringBuilder();
-    buf.append("Unit collecion held by ").append(m_holder.getName());
+    buf.append("Unit collecion held by ").append(holder.getName());
     buf.append(" units:");
     final IntegerMap<UnitType> units = getUnitsByType();
     for (final UnitType unit : units.keySet()) {
@@ -210,39 +211,39 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
 
   @Override
   public Iterator<Unit> iterator() {
-    return Collections.unmodifiableList(m_units).iterator();
+    return Collections.unmodifiableList(units).iterator();
   }
 
   @Override
   public boolean contains(final Object object) {
-    return m_units.contains(object);
+    return units.contains(object);
   }
 
   @Override
   public Object[] toArray() {
-    return m_units.toArray();
+    return units.toArray();
   }
 
   @Override
   public <T> T[] toArray(final T[] array) {
-    return m_units.toArray(array);
+    return units.toArray(array);
   }
 
   @Override
   public boolean remove(final Object object) {
-    final boolean result = m_units.remove(object);
-    m_holder.notifyChanged();
+    final boolean result = units.remove(object);
+    holder.notifyChanged();
     return result;
   }
 
   @Override
   public boolean retainAll(final Collection<?> collection) {
-    return m_units.retainAll(collection);
+    return units.retainAll(collection);
   }
 
   @Override
   public void clear() {
-    m_units.clear();
-    m_holder.notifyChanged();
+    units.clear();
+    holder.notifyChanged();
   }
 }
