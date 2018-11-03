@@ -33,7 +33,7 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   private void reorderTechsToMatchGameTechsOrder() {
     final GameData gameData = getData();
     if (gameData != null) {
-      techs.sort(Comparator.comparing(gameData.getTechnologyFrontier().getTechs()::indexOf));
+      techs.sort(Comparator.comparingInt(gameData.getTechnologyFrontier().getTechs()::indexOf));
       cachedTechs = null;
     }
   }
