@@ -1015,7 +1015,8 @@ public final class TripleAFrame extends JFrame {
           final JPanel panel = comps.getFirst();
           final JList<?> list = comps.getSecond();
           final String[] options = {"OK", "Cancel"};
-          final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION,
+          final int selection = EventThreadJOptionPane.showOptionDialog(this, panel, message,
+              JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.PLAIN_MESSAGE, null, options, null, getUiContext().getCountDownLatchHandler());
           if (selection == 0) {
             selected.set((Unit) list.getSelectedValue());

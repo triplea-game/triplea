@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -74,7 +73,9 @@ public class RocketsFireHelper {
     if (isWW2V2(data) || isAllRocketsAttack(data)) {
       return;
     }
-    fireWW2V1();
+    if (test == RocketType.ww2v1) {
+      fireWW2V1();
+    }
   }
 
   private static boolean isWW2V2(final GameData data) {
@@ -138,13 +139,10 @@ public class RocketsFireHelper {
           final Collection<Unit> rocketTargets = new ArrayList<>(
               CollectionUtils.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
           final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
-          if (rocketTargets == null) {
-            legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
-          } else {
-            // a hack for now, we let the rockets fire at anyone who could be targetted by any rocket
-            for (final Unit r : rocketTargets) {
-              legalTargetsForTheseRockets.addAll(UnitAttachment.get(r.getType()).getBombingTargets(data));
-            }
+          // a hack for now, we let the rockets fire at anyone who could be targetted by any rocket
+          // Not sure if that comment is still current
+          for (final Unit r : rocketTargets) {
+            legalTargetsForTheseRockets.addAll(UnitAttachment.get(r.getType()).getBombingTargets(data));
           }
           final Collection<Unit> enemyTargets =
               CollectionUtils.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
@@ -280,7 +278,7 @@ public class RocketsFireHelper {
     final int numberOfAttacks;
     // attackFrom could be null if WW2V1
     if (attackFrom == null) {
-      rockets = null;
+      rockets = new ArrayList<>();
       numberOfAttacks = 1;
     } else {
       rockets = new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
@@ -334,12 +332,10 @@ public class RocketsFireHelper {
             // we are zero based
             cost += r + 1;
           }
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
-              + MyFormatter.asDice(rolls);
+          transcript = "Rockets in " + attackFrom.getName() + " roll: " + MyFormatter.asDice(rolls);
         } else {
           cost = highestBonus * numberOfAttacks;
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus
-              + " damage for each rocket";
+          transcript = "Rockets in " + attackFrom.getName() + " do " + highestBonus + " damage for each rocket";
         }
       }
     } else {                   // Low luck
@@ -452,7 +448,7 @@ public class RocketsFireHelper {
       final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, pus, -cost);
       bridge.addChange(rocketCharge);
     }
-    bridge.getHistoryWriter().addChildToEvent(transcript, rockets == null ? null : new ArrayList<>(rockets));
+    bridge.getHistoryWriter().addChildToEvent(transcript, attackFrom == null ? null : new ArrayList<>(rockets));
     // this is null in WW2V1
     if (attackFrom != null) {
       if (!rockets.isEmpty()) {
@@ -466,7 +462,8 @@ public class RocketsFireHelper {
     // kill any units that can die if they have reached max damage (veqryn)
     final Collection<Unit> targetUnitCol = taUnit == null ? enemyTargetsTotal : Collections.singleton(taUnit);
     if (targetUnitCol.stream().anyMatch(Matches.unitCanDieFromReachingMaxDamage())) {
-      final List<Unit> unitsCanDie = CollectionUtils.getMatches(targetUnitCol, Matches.unitCanDieFromReachingMaxDamage());
+      final List<Unit> unitsCanDie =
+          CollectionUtils.getMatches(targetUnitCol, Matches.unitCanDieFromReachingMaxDamage());
       unitsCanDie.retainAll(
           CollectionUtils.getMatches(unitsCanDie, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory)));
       if (!unitsCanDie.isEmpty()) {
