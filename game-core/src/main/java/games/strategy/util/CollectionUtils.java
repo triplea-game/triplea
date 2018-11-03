@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -75,15 +76,6 @@ public final class CollectionUtils {
       return new ArrayList<>();
     }
     return c1.stream().filter(c2::contains).collect(Collectors.toList());
-  }
-
-  /**
-   * Equivalent to !intersection(c1,c2).isEmpty(), but more efficient.
-   *
-   * @return true if some element in c1 is in c2
-   */
-  public static <T> boolean someIntersect(final Collection<T> c1, final Collection<T> c2) {
-    return c1.stream().anyMatch(c2::contains);
   }
 
   /**
