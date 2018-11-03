@@ -64,6 +64,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   private boolean needToRecordBattleStatistics = true;
   private boolean needToCheckDefendingPlanesCanLand = true;
   private boolean needToCleanup = true;
+  private boolean needToCreateRockets = true;
+  private boolean needToFireRockets = true;
+  private RocketsFireHelper rocketHelper;
   private IBattle currentBattle = null;
 
   @Override
@@ -86,6 +89,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       doScrambling();
       needToScramble = false;
     }
+    if (needToCreateRockets) {
+      rocketHelper = new RocketsFireHelper(bridge, getData(), bridge.getPlayerId());
+      needToCreateRockets = false;
+    }
     if (needToKamikazeSuicideAttacks) {
       doKamikazeSuicideAttacks();
       needToKamikazeSuicideAttacks = false;
@@ -99,6 +106,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       needToAddBombardmentSources = false;
     }
     battleTracker.fightAirRaidsAndStrategicBombing(bridge);
+    if (needToFireRockets) {
+      rocketHelper.fireRockets();
+      needToFireRockets = false;
+    }
     battleTracker.fightDefenselessBattles(bridge);
     battleTracker.fightBattleIfOnlyOne(bridge);
   }
@@ -138,9 +149,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     state.battleTracker = battleTracker;
     state.needToInitialize = needToInitialize;
     state.needToScramble = needToScramble;
+    state.needToCreateRockets = needToCreateRockets;
     state.needToKamikazeSuicideAttacks = needToKamikazeSuicideAttacks;
     state.needToClearEmptyAirBattleAttacks = needToClearEmptyAirBattleAttacks;
     state.needToAddBombardmentSources = needToAddBombardmentSources;
+    state.needToFireRockets = needToFireRockets;
     state.needToRecordBattleStatistics = needToRecordBattleStatistics;
     state.needToCheckDefendingPlanesCanLand = needToCheckDefendingPlanesCanLand;
     state.needToCleanup = needToCleanup;
@@ -155,9 +168,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     battleTracker = s.battleTracker;
     needToInitialize = s.needToInitialize;
     needToScramble = s.needToScramble;
+    needToCreateRockets = s.needToCreateRockets;
     needToKamikazeSuicideAttacks = s.needToKamikazeSuicideAttacks;
     needToClearEmptyAirBattleAttacks = s.needToClearEmptyAirBattleAttacks;
     needToAddBombardmentSources = s.needToAddBombardmentSources;
+    needToFireRockets = s.needToFireRockets;
     needToRecordBattleStatistics = s.needToRecordBattleStatistics;
     needToCheckDefendingPlanesCanLand = s.needToCheckDefendingPlanesCanLand;
     needToCleanup = s.needToCleanup;

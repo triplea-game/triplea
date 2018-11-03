@@ -75,7 +75,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private int warBondDiceNumber = 0;
   private IntegerMap<UnitType> rocketDiceNumber = new IntegerMap<>();
   private int rocketDistance = 0;
-  private int rocketNumberPerTerritory = 0;
+  private int rocketNumberPerTerritory = 1;
   private Map<UnitType, Set<String>> unitAbilitiesGained = new HashMap<>();
   private boolean airborneForces = false;
   private IntegerMap<UnitType> airborneCapacity = new IntegerMap<>();

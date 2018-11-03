@@ -175,13 +175,6 @@ public final class Properties implements Constants {
   }
 
   /**
-   * Allow x rocket attack(s) per defending factory.
-   */
-  public static boolean getRocketAttacksPerFactoryInfinite(final GameData data) {
-    return data.getProperties().get(ROCKET_ATTACKS_PER_FACTORY_INFINITE, false);
-  }
-
-  /**
    * Are allied aircraft dependents of CVs.
    */
   public static boolean getAlliedAirIndependent(final GameData data) {
