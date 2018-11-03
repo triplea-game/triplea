@@ -14,32 +14,33 @@ import games.strategy.triplea.delegate.TechAdvance;
  */
 public class TechnologyFrontier extends GameDataComponent implements Iterable<TechAdvance> {
   private static final long serialVersionUID = -5245743727479551766L;
-  private final List<TechAdvance> m_techs = new ArrayList<>();
-  private List<TechAdvance> m_cachedTechs;
-  private final String m_name;
+
+  private final List<TechAdvance> techs = new ArrayList<>();
+  private List<TechAdvance> cachedTechs;
+  private final String name;
 
   public TechnologyFrontier(final String name, final GameData data) {
     super(data);
-    m_name = name;
+    this.name = name;
   }
 
   public TechnologyFrontier(final TechnologyFrontier other) {
     super(other.getData());
-    m_name = other.m_name;
-    m_techs.addAll(other.m_techs);
+    name = other.name;
+    techs.addAll(other.techs);
   }
 
   private void reorderTechsToMatchGameTechsOrder() {
     final GameData gameData = getData();
     if (gameData != null) {
-      m_techs.sort(Comparator.comparing(gameData.getTechnologyFrontier().getTechs()::indexOf));
-      m_cachedTechs = null;
+      techs.sort(Comparator.comparing(gameData.getTechnologyFrontier().getTechs()::indexOf));
+      cachedTechs = null;
     }
   }
 
   public void addAdvance(final TechAdvance t) {
-    m_cachedTechs = null;
-    m_techs.add(t);
+    cachedTechs = null;
+    techs.add(t);
     reorderTechsToMatchGameTechsOrder();
   }
 
@@ -50,32 +51,32 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   }
 
   public void removeAdvance(final TechAdvance t) {
-    if (!m_techs.contains(t)) {
+    if (!techs.contains(t)) {
       throw new IllegalStateException("Advance not present:" + t);
     }
-    m_cachedTechs = null;
-    m_techs.remove(t);
+    cachedTechs = null;
+    techs.remove(t);
   }
 
   public TechAdvance getAdvanceByProperty(final String property) {
-    return m_techs.stream()
+    return techs.stream()
         .filter(ta -> ta.getProperty().equals(property))
         .findAny()
         .orElse(null);
   }
 
   public TechAdvance getAdvanceByName(final String name) {
-    return m_techs.stream()
+    return techs.stream()
         .filter(ta -> ta.getName().equals(name))
         .findAny()
         .orElse(null);
   }
 
   public List<TechAdvance> getTechs() {
-    if (m_cachedTechs == null) {
-      m_cachedTechs = Collections.unmodifiableList(m_techs);
+    if (cachedTechs == null) {
+      cachedTechs = Collections.unmodifiableList(techs);
     }
-    return m_cachedTechs;
+    return cachedTechs;
   }
 
   @Override
@@ -84,21 +85,21 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
   }
 
   public String getName() {
-    return m_name;
+    return name;
   }
 
   public boolean isEmpty() {
-    return m_techs.isEmpty();
+    return techs.isEmpty();
   }
 
   @Override
   public String toString() {
-    return m_name;
+    return name;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(m_name);
+    return Objects.hashCode(name);
   }
 
   @Override
@@ -110,6 +111,6 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
       return false;
     }
     final TechnologyFrontier other = (TechnologyFrontier) o;
-    return m_name.equals(other.getName());
+    return name.equals(other.getName());
   }
 }
