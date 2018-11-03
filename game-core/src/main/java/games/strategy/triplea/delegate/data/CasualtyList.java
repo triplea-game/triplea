@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,12 +20,9 @@ public class CasualtyList implements Serializable {
    * @param damaged (can have multiple of the same unit, to show multiple hits to that unit)
    */
   public CasualtyList(final List<Unit> killed, final List<Unit> damaged) {
-    if (killed == null) {
-      throw new IllegalArgumentException("null killed");
-    }
-    if (damaged == null) {
-      throw new IllegalArgumentException("null damaged");
-    }
+    checkNotNull(killed);
+    checkNotNull(damaged);
+
     this.killed = new ArrayList<>(killed);
     this.damaged = new ArrayList<>(damaged);
   }

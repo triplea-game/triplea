@@ -1,5 +1,7 @@
 package games.strategy.engine.message;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,9 +32,7 @@ public class RemoteMethodCall implements Externalizable {
 
   public RemoteMethodCall(final String remoteName, final String methodName, final Object[] args,
       final Class<?>[] argTypes, final Class<?> remoteInterface) {
-    if (argTypes == null) {
-      throw new IllegalArgumentException("ArgTypes are null");
-    }
+    checkNotNull(argTypes);
     if (args == null && argTypes.length != 0) {
       throw new IllegalArgumentException("args but no types");
     }

@@ -1,5 +1,7 @@
 package games.strategy.engine.message;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import javax.annotation.concurrent.Immutable;
 
 import lombok.Getter;
@@ -14,9 +16,7 @@ public final class RemoteName {
   private final Class<?> clazz;
 
   public RemoteName(final String name, final Class<?> clazz) {
-    if (clazz == null) {
-      throw new IllegalArgumentException("Class cannot be null. Remote Name: " + name);
-    }
+    checkNotNull(clazz, "null class; remote name: " + name);
     if (!clazz.isInterface()) {
       throw new IllegalArgumentException("Not an interface. Remote Name: " + name);
     }

@@ -1,5 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -17,9 +19,8 @@ class AttachmentPropertyReset extends Change {
   private final String property;
 
   AttachmentPropertyReset(final IAttachment attachment, final String property) {
-    if (attachment == null) {
-      throw new IllegalArgumentException("No attachment, property:" + property);
-    }
+    checkNotNull(attachment, "null attachment; property: " + property);
+
     attachedTo = attachment.getAttachedTo();
     attachmentName = attachment.getName();
     oldValue = attachment.getPropertyOrThrow(property).getValue();

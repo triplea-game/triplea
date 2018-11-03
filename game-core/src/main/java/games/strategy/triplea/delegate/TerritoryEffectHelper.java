@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,9 +36,9 @@ public class TerritoryEffectHelper {
   }
 
   private static boolean unitTypeLoosesBlitz(final UnitType type, final Territory location) {
-    if (location == null || type == null) {
-      throw new IllegalStateException("Location and UnitType cannot be null");
-    }
+    checkNotNull(type);
+    checkNotNull(location);
+
     for (final TerritoryEffect effect : getEffects(location)) {
       if (TerritoryEffectAttachment.get(effect).getNoBlitz().contains(type)) {
         return true;

@@ -1,5 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ProductionFrontier;
@@ -12,12 +14,9 @@ class AddProductionRule extends Change {
   private final ProductionFrontier frontier;
 
   public AddProductionRule(final ProductionRule rule, final ProductionFrontier frontier) {
-    if (rule == null) {
-      throw new IllegalArgumentException("Null rule");
-    }
-    if (frontier == null) {
-      throw new IllegalArgumentException("Null frontier");
-    }
+    checkNotNull(rule);
+    checkNotNull(frontier);
+
     this.rule = rule;
     this.frontier = frontier;
   }

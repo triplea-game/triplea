@@ -1,5 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -14,12 +16,9 @@ class RemoveAvailableTech extends Change {
   private final PlayerID player;
 
   public RemoveAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerID player) {
-    if (front == null) {
-      throw new IllegalArgumentException("Null tech category");
-    }
-    if (tech == null) {
-      throw new IllegalArgumentException("Null tech");
-    }
+    checkNotNull(front);
+    checkNotNull(tech);
+
     this.tech = tech;
     frontier = front;
     this.player = player;

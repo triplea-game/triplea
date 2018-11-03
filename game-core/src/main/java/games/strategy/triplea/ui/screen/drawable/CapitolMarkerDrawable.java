@@ -1,5 +1,7 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -21,9 +23,8 @@ public class CapitolMarkerDrawable implements IDrawable {
   private final UiContext uiContext;
 
   public CapitolMarkerDrawable(final PlayerID player, final Territory location, final UiContext uiContext) {
-    if (player == null) {
-      throw new IllegalStateException("no player for capitol:" + location);
-    }
+    checkNotNull(player, "null player; capitol: " + location);
+
     this.player = player.getName();
     this.location = location.getName();
     this.uiContext = uiContext;

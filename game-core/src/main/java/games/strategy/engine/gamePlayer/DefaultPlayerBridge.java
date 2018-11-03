@@ -1,5 +1,7 @@
 package games.strategy.engine.gamePlayer;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,12 +38,9 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   public DefaultPlayerBridge(final IGame game) {
     this.game = game;
     final GameStepListener gameStepListener = (stepName, delegateName, player, round, displayName) -> {
-      if (stepName == null) {
-        throw new IllegalArgumentException("Null step");
-      }
-      if (delegateName == null) {
-        throw new IllegalArgumentException("Null delegate");
-      }
+      checkNotNull(stepName);
+      checkNotNull(delegateName);
+
       this.stepName = stepName;
       currentDelegate = delegateName;
     };
