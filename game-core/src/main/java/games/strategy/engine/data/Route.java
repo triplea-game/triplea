@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,7 +76,6 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public static Route join(final Route r1, final Route r2) {
     if (r1 == null || r2 == null) {
-      // throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
       return null;
     }
     if (r1.numberOfSteps() == 0) {
@@ -124,9 +125,8 @@ public class Route implements Serializable, Iterable<Territory> {
    * Set the start of this route.
    */
   public void setStart(final Territory newStartTerritory) {
-    if (newStartTerritory == null) {
-      throw new IllegalStateException("Null territory");
-    }
+    checkNotNull(newStartTerritory);
+
     start = newStartTerritory;
   }
 
@@ -158,9 +158,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * Add the given territory to the end of the route.
    */
   public void add(final Territory territory) {
-    if (territory == null) {
-      throw new IllegalStateException("Null territory");
-    }
+    checkNotNull(territory);
     if (territory.equals(start) || steps.contains(territory)) {
       throw new IllegalArgumentException(String.format(
           "Loops not allowed in steps, route: %s, new territory: %s", this, territory));

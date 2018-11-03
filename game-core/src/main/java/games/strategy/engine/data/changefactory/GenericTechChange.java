@@ -1,5 +1,7 @@
 package games.strategy.engine.data.changefactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -15,9 +17,8 @@ class GenericTechChange extends Change {
   private final String property;
 
   GenericTechChange(final TechAttachment attachment, final boolean newValue, final String property) {
-    if (attachment == null) {
-      throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-    }
+    checkNotNull(attachment, "null attachment; newValue: " + newValue + ", property: " + property);
+
     attachedTo = attachment.getAttachedTo();
     attachmentName = attachment.getName();
     oldValue = attachment.hasGenericTech(property);

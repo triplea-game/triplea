@@ -1,5 +1,7 @@
 package games.strategy.engine.message.unifiedmessenger;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -178,13 +180,12 @@ public class UnifiedMessenger {
   }
 
   public void removeImplementor(final String name, final Object implementor) {
+    checkNotNull(implementor);
+
     synchronized (endPointMutex) {
       final EndPoint endPoint = localEndPoints.get(name);
       if (endPoint == null) {
         throw new IllegalStateException("No end point for:" + name);
-      }
-      if (implementor == null) {
-        throw new IllegalArgumentException("null implementor");
       }
       final boolean noneLeft = endPoint.removeImplementor(implementor);
       if (noneLeft) {

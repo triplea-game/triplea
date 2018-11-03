@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -247,10 +249,9 @@ public abstract class TechAdvance extends NamedAttachable {
    * Returns all possible tech categories for this player.
    */
   public static List<TechnologyFrontier> getPlayerTechCategories(final PlayerID player) {
-    if (player != null) {
-      return player.getTechnologyFrontierList().getFrontiers();
-    }
-    throw new IllegalStateException("Player cannot be null");
+    checkNotNull(player);
+
+    return player.getTechnologyFrontierList().getFrontiers();
   }
 
   @Override

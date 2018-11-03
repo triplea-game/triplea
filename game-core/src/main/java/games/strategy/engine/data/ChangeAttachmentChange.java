@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A game data change that captures a change to an attachment property value.
  */
@@ -28,9 +30,8 @@ public class ChangeAttachmentChange extends Change {
    * @param property The property by String name.
    */
   public ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property) {
-    if (attachment == null) {
-      throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-    }
+    checkNotNull(attachment, "null attachment; newValue: " + newValue + ", property: " + property);
+
     attachedTo = attachment.getAttachedTo();
     attachmentName = attachment.getName();
     oldValue = attachment.getPropertyOrThrow(property).getValue();
@@ -45,9 +46,8 @@ public class ChangeAttachmentChange extends Change {
    */
   public ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property,
       final boolean resetFirst) {
-    if (attachment == null) {
-      throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-    }
+    checkNotNull(attachment, "null attachment; newValue: " + newValue + ", property: " + property);
+
     attachedTo = attachment.getAttachedTo();
     clearFirst = resetFirst;
     attachmentName = attachment.getName();

@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Objects;
@@ -16,9 +18,12 @@ public class DefaultNamed extends GameDataComponent implements Named {
 
   public DefaultNamed(final String name, final GameData data) {
     super(data);
-    if (name == null || name.length() == 0) {
-      throw new IllegalArgumentException("Name must not be null");
+
+    checkNotNull(name);
+    if (name.length() == 0) {
+      throw new IllegalArgumentException("Name must not be empty");
     }
+
     this.name = name;
   }
 

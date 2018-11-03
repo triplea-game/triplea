@@ -144,9 +144,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public boolean isSatisfied(
       final Map<ICondition, Boolean> testedConditions,
       final IDelegateBridge delegateBridge) {
-    if (testedConditions == null) {
-      throw new IllegalStateException("testedCondititions cannot be null");
-    }
+    checkNotNull(testedConditions);
+
     if (testedConditions.containsKey(this)) {
       return testedConditions.get(this);
     }

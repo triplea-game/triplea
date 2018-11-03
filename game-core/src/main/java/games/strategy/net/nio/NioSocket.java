@@ -1,5 +1,7 @@
 package games.strategy.net.nio;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
@@ -59,12 +61,9 @@ public class NioSocket implements ErrorReporter {
    * @param header The message header to send.
    */
   public void send(final SocketChannel to, final MessageHeader header) {
-    if (to == null) {
-      throw new IllegalArgumentException("to cant be null!");
-    }
-    if (header == null) {
-      throw new IllegalArgumentException("header cant be null");
-    }
+    checkNotNull(to);
+    checkNotNull(header);
+
     encoder.write(to, header);
   }
 

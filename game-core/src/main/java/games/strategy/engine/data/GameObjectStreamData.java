@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -48,9 +50,8 @@ public class GameObjectStreamData implements Externalizable {
   }
 
   Named getReference(final GameData data) {
-    if (data == null) {
-      throw new IllegalArgumentException("Data cant be null");
-    }
+    checkNotNull(data);
+
     data.acquireReadLock();
     try {
       switch (type) {

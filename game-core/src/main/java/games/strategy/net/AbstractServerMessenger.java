@@ -1,5 +1,7 @@
 package games.strategy.net;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
@@ -663,9 +665,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
 
   @Override
   public void socketError(final SocketChannel channel, final Exception error) {
-    if (channel == null) {
-      throw new IllegalArgumentException("Null channel");
-    }
+    checkNotNull(channel);
+
     // already closed, dont report it again
     final INode node = channelToNode.get(channel);
     if (node != null) {
