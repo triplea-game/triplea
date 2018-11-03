@@ -11,22 +11,23 @@ import games.strategy.triplea.delegate.TechAdvance;
  */
 public class TechnologyFrontierList extends GameDataComponent {
   private static final long serialVersionUID = 2958122401265284935L;
-  private final List<TechnologyFrontier> m_technologyFrontiers = new ArrayList<>();
+
+  private final List<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
 
   public TechnologyFrontierList(final GameData data) {
     super(data);
   }
 
   public void addTechnologyFrontier(final TechnologyFrontier tf) {
-    m_technologyFrontiers.add(tf);
+    technologyFrontiers.add(tf);
   }
 
   public int size() {
-    return m_technologyFrontiers.size();
+    return technologyFrontiers.size();
   }
 
   public TechnologyFrontier getTechnologyFrontier(final String name) {
-    for (final TechnologyFrontier tf : m_technologyFrontiers) {
+    for (final TechnologyFrontier tf : technologyFrontiers) {
       if (tf.getName().equals(name)) {
         return tf;
       }
@@ -36,13 +37,13 @@ public class TechnologyFrontierList extends GameDataComponent {
 
   public List<TechAdvance> getAdvances() {
     final List<TechAdvance> techs = new ArrayList<>();
-    for (final TechnologyFrontier t : m_technologyFrontiers) {
+    for (final TechnologyFrontier t : technologyFrontiers) {
       techs.addAll(t.getTechs());
     }
     return techs;
   }
 
   public List<TechnologyFrontier> getFrontiers() {
-    return Collections.unmodifiableList(m_technologyFrontiers);
+    return Collections.unmodifiableList(technologyFrontiers);
   }
 }
