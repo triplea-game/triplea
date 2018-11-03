@@ -124,7 +124,7 @@ public class RelationshipTracker extends RelationshipInterpreter {
     private final PlayerID player1;
     private final PlayerID player2;
 
-    public RelatedPlayers(final PlayerID player1, final PlayerID player2) {
+    RelatedPlayers(final PlayerID player1, final PlayerID player2) {
       this.player1 = player1;
       this.player2 = player2;
     }
