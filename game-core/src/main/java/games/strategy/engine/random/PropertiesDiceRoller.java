@@ -86,18 +86,18 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     return rollers;
   }
 
-  private final Properties m_props;
-  private String m_toAddress;
-  private String m_ccAddress;
-  private String m_gameId;
+  private final Properties props;
+  private String toAddress;
+  private String ccAddress;
+  private String gameId;
 
   public PropertiesDiceRoller(final Properties props) {
-    m_props = props;
+    this.props = props;
   }
 
   @Override
   public String getDisplayName() {
-    return m_props.getProperty("name");
+    return props.getProperty("name");
   }
 
   @Override
@@ -107,7 +107,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
 
   @Override
   public boolean sendsEmail() {
-    final String property = m_props.getProperty("send.email");
+    final String property = props.getProperty("send.email");
     if (property == null) {
       return true;
     }
@@ -119,13 +119,13 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
       final String gameUuid) throws IOException {
     final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
     String message = normalizedGameId + ":" + subjectMessage;
-    final int maxLength = Integer.valueOf(m_props.getProperty("message.maxlength"));
+    final int maxLength = Integer.valueOf(props.getProperty("message.maxlength"));
     if (message.length() > maxLength) {
       message = message.substring(0, maxLength - 1);
     }
     try (CloseableHttpClient httpClient =
         HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
-      final HttpPost httpPost = new HttpPost(m_props.getProperty("path"));
+      final HttpPost httpPost = new HttpPost(props.getProperty("path"));
       final List<NameValuePair> params = ImmutableList.of(
           new BasicNameValuePair("numdice", "" + numDice),
           new BasicNameValuePair("numsides", "" + max),
@@ -134,16 +134,15 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
           new BasicNameValuePair("subject", message),
           new BasicNameValuePair("roller", getToAddress()),
           new BasicNameValuePair("gm", getCcAddress()),
-          new BasicNameValuePair("send", "true")
-      );
+          new BasicNameValuePair("send", "true"));
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
       httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
       // this is to allow a dice server to allow the user to request the emails for the game
       // rather than sending out email for each roll
       httpPost.addHeader("X-Triplea-Game-UUID", gameUuid);
-      final String host = m_props.getProperty("host");
-      final int port = Integer.parseInt(m_props.getProperty("port", "-1"));
-      final String scheme = m_props.getProperty("scheme", "http");
+      final String host = props.getProperty("host");
+      final int port = Integer.parseInt(props.getProperty("port", "-1"));
+      final String scheme = props.getProperty("scheme", "http");
       final HttpHost hostConfig = new HttpHost(host, port, scheme);
       HttpProxy.addProxy(httpPost);
       try (CloseableHttpResponse response = httpClient.execute(hostConfig, httpPost)) {
@@ -154,13 +153,13 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
 
   @Override
   public String getInfoText() {
-    return m_props.getProperty("infotext");
+    return props.getProperty("infotext");
   }
 
   @Override
   public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException {
-    final String errorStartString = m_props.getProperty("error.start");
-    final String errorEndString = m_props.getProperty("error.end");
+    final String errorStartString = props.getProperty("error.start");
+    final String errorEndString = props.getProperty("error.end");
     // if the error strings are defined
     if (errorStartString != null && errorStartString.length() > 0 && errorEndString != null
         && errorEndString.length() > 0) {
@@ -176,11 +175,11 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     final String rollStartString;
     final String rollEndString;
     if (count == 1) {
-      rollStartString = m_props.getProperty("roll.single.start");
-      rollEndString = m_props.getProperty("roll.single.end");
+      rollStartString = props.getProperty("roll.single.start");
+      rollEndString = props.getProperty("roll.single.end");
     } else {
-      rollStartString = m_props.getProperty("roll.multiple.start");
-      rollEndString = m_props.getProperty("roll.multiple.end");
+      rollStartString = props.getProperty("roll.multiple.start");
+      rollEndString = props.getProperty("roll.multiple.end");
     }
     int startIndex = string.indexOf(rollStartString);
     if (startIndex == -1) {
@@ -210,38 +209,38 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
 
   @Override
   public String getToAddress() {
-    return m_toAddress;
+    return toAddress;
   }
 
   @Override
   public void setToAddress(final String toAddress) {
-    m_toAddress = toAddress;
+    this.toAddress = toAddress;
   }
 
   @Override
   public String getCcAddress() {
-    return m_ccAddress;
+    return ccAddress;
   }
 
   @Override
   public void setCcAddress(final String ccAddress) {
-    m_ccAddress = ccAddress;
+    this.ccAddress = ccAddress;
   }
 
   @Override
   public boolean supportsGameId() {
-    final String gameid = m_props.getProperty("gameid");
+    final String gameid = props.getProperty("gameid");
     return "true".equals(gameid);
   }
 
   @Override
   public void setGameId(final String gameId) {
-    m_gameId = gameId;
+    this.gameId = gameId;
   }
 
   @Override
   public String getGameId() {
-    return m_gameId;
+    return gameId;
   }
 
   @Override
