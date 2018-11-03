@@ -243,7 +243,7 @@ public class MovePanel extends AbstractMovePanel {
             final Collection<UnitCategory> unitCategory = UnitSeperator.categorize(Collections.singleton(unit));
 
             // Is one of the transported units of the same type we want to unload?
-            if (CollectionUtils.someIntersect(transCategories, unitCategory)) {
+            if (!Collections.disjoint(transCategories, unitCategory)) {
 
               // Unload the unit, remove the transport from our list, and continue
               hasChanged = true;

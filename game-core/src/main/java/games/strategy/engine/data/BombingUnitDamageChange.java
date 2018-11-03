@@ -1,9 +1,9 @@
 package games.strategy.engine.data;
 
+import java.util.Collections;
 import java.util.Set;
 
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -39,7 +39,7 @@ public class BombingUnitDamageChange extends Change {
     }
     final Set<Unit> units = hits.keySet();
     for (final Territory element : data.getMap().getTerritories()) {
-      if (CollectionUtils.someIntersect(element.getUnits().getUnits(), units)) {
+      if (!Collections.disjoint(element.getUnits().getUnits(), units)) {
         element.notifyChanged();
       }
     }

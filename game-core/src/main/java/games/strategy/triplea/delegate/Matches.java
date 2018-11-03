@@ -4,6 +4,7 @@ import static games.strategy.util.Util.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1117,7 +1118,7 @@ public final class Matches {
     return unit -> {
       final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
       return transporting != null
-          && CollectionUtils.someIntersect(UnitSeperator.categorize(transporting), unitCategories);
+          && !Collections.disjoint(UnitSeperator.categorize(transporting), unitCategories);
     };
   }
 
