@@ -110,19 +110,16 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   /**
-   * RelatedPlayers is a class of 2 players that are related, used in relationships.
+   * Two players that are related; used in relationships.
+   *
+   * <p>
+   * This class overrides {@link #equals(Object)} and {@link #hashCode()} such that the order of the players is not
+   * considered when instances of this class are used as keys in a hash container. For example, if you added an entry
+   * with the key (p1, p2), you can retrieve it with either the key (p1, p2) or (p2, p1).
+   * </p>
    */
   public static final class RelatedPlayers implements Serializable {
     private static final long serialVersionUID = 2124258606502106751L;
-
-    /**
-     * override hashCode to make sure that each new instance of this class can be matched in the Hashtable
-     * even if it was put in as (p1,p2) and you want to get it out as (p2,p1).
-     */
-    @Override
-    public int hashCode() {
-      return Objects.hashCode(player1) + Objects.hashCode(player2);
-    }
 
     private final PlayerID player1;
     private final PlayerID player2;
@@ -140,6 +137,11 @@ public class RelationshipTracker extends RelationshipInterpreter {
             || (relatedPlayers2.player2.equals(player1) && relatedPlayers2.player1.equals(player2));
       }
       return super.equals(object);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(player1) + Objects.hashCode(player2);
     }
 
     @Override
