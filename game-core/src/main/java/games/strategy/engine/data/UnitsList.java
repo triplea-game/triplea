@@ -14,24 +14,25 @@ import games.strategy.net.GUID;
  */
 public class UnitsList implements Serializable, Iterable<Unit> {
   private static final long serialVersionUID = -3134052492257867416L;
+
   // TODO - fix this, all units are never gcd
-  private final Map<GUID, Unit> m_allUnits = new HashMap<>();
+  private final Map<GUID, Unit> allUnits = new HashMap<>();
 
   UnitsList() {}
 
   public Unit get(final GUID id) {
-    return m_allUnits.get(id);
+    return allUnits.get(id);
   }
 
   public void put(final Unit unit) {
-    m_allUnits.put(unit.getId(), unit);
+    allUnits.put(unit.getId(), unit);
   }
 
   /*
    * Gets all units currently in the game
    */
   public Collection<Unit> getUnits() {
-    return Collections.unmodifiableCollection(m_allUnits.values());
+    return Collections.unmodifiableCollection(allUnits.values());
   }
 
   @Override
