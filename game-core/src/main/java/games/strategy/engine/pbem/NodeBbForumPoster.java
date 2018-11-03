@@ -95,6 +95,7 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
   private void deleteToken(final CloseableHttpClient client, final int userId, final String token)
       throws IOException {
     final HttpDelete httpDelete = new HttpDelete(getForumUrl() + "/api/v2/users/" + userId + "/tokens/" + token);
+    HttpProxy.addProxy(httpDelete);
     addTokenHeader(httpDelete, token);
     client.execute(httpDelete).close(); // ignore errors, execute and then close
   }
