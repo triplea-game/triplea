@@ -158,9 +158,7 @@ public class XmlGameElementMapper {
             "games.strategy.twoIfBySea.delegate.EndTurnDelegate",
             games.strategy.triplea.delegate.TwoIfBySeaEndTurnDelegate::new)
         .put("games.strategy.twoIfBySea.delegate.InitDelegate", InitializationDelegate::new)
-        .put(
-            "games.strategy.twoIfBySea.delegate.PlaceDelegate",
-            games.strategy.triplea.delegate.TwoIfBySeaPlaceDelegate::new)
+        .put("games.strategy.twoIfBySea.delegate.PlaceDelegate", PlaceDelegate::new)
         .build();
   }
 
