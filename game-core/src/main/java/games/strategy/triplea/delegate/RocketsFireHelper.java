@@ -389,12 +389,10 @@ public class RocketsFireHelper {
             // we are zero based
             cost += r + 1;
           }
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: "
-              + MyFormatter.asDice(rolls);
+          transcript = "Rockets in " + attackFrom.getName() + " roll: " + MyFormatter.asDice(rolls);
         } else {
           cost = highestBonus * numberOfAttacks;
-          transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus
-              + " damage for each rocket";
+          transcript = "Rockets in " + attackFrom.getName() + " do " + highestBonus + " damage for each rocket";
         }
       }
     }
