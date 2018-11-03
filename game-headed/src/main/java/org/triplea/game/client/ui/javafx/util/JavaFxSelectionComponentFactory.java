@@ -49,7 +49,7 @@ final class JavaFxSelectionComponentFactory {
       final int maxValue,
       final boolean allowUnset) {
     return new SelectionComponent<Region>() {
-      final Spinner<Integer> spinner = createSpinner();
+      private final Spinner<Integer> spinner = createSpinner();
 
       private Spinner<Integer> createSpinner() {
         final Spinner<Integer> spinner = new Spinner<>(
@@ -57,6 +57,11 @@ final class JavaFxSelectionComponentFactory {
             maxValue,
             getIntegerFromOptional(clientSetting.getValue()));
         spinner.setEditable(true);
+        spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
+          if (!newValue) {
+            spinner.increment(0); // hack to force editor to commit value when losing focus
+          }
+        });
         return spinner;
       }
 
