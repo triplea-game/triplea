@@ -22,10 +22,11 @@ import lombok.extern.java.Log;
 @Log
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
-  private PlayerID m_owner;
-  private final GUID m_uid;
-  private int m_hits = 0;
-  private final UnitType m_type;
+
+  private PlayerID owner;
+  private final GUID id;
+  private int hits = 0;
+  private final UnitType type;
 
   /**
    * Creates new Unit. Owner can be null.
@@ -40,38 +41,38 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     checkNotNull(type);
     checkNotNull(id);
 
-    m_type = type;
-    m_uid = id;
+    this.type = type;
+    this.id = id;
 
     setOwner(owner);
   }
 
   public GUID getId() {
-    return m_uid;
+    return id;
   }
 
   public UnitType getType() {
-    return m_type;
+    return type;
   }
 
   public PlayerID getOwner() {
-    return m_owner;
+    return owner;
   }
 
   public UnitAttachment getUnitAttachment() {
-    return (UnitAttachment) m_type.getAttachment("unitAttachment");
+    return (UnitAttachment) type.getAttachment("unitAttachment");
   }
 
   public int getHits() {
-    return m_hits;
+    return hits;
   }
 
   public void setHits(final int hits) {
-    m_hits = hits;
+    this.hits = hits;
   }
 
   public void setOwner(final @Nullable PlayerID player) {
-    m_owner = Optional.ofNullable(player).orElse(PlayerID.NULL_PLAYERID);
+    owner = Optional.ofNullable(player).orElse(PlayerID.NULL_PLAYERID);
   }
 
   @Override
@@ -80,48 +81,48 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
       return false;
     }
     final Unit other = (Unit) o;
-    return this.m_uid.equals(other.m_uid);
+    return this.id.equals(other.id);
   }
 
   public boolean isEquivalent(final Unit unit) {
-    return m_type != null && m_type.equals(unit.getType())
-        && m_owner != null && m_owner.equals(unit.getOwner())
-        && m_hits == unit.getHits();
+    return type != null && type.equals(unit.getType())
+        && owner != null && owner.equals(unit.getOwner())
+        && hits == unit.getHits();
   }
 
   @Override
   public int hashCode() {
-    if (m_type == null || m_owner == null || m_uid == null || this.getData() == null) {
+    if (type == null || owner == null || id == null || this.getData() == null) {
       final String text =
           "Unit.toString() -> Possible java de-serialization error: "
-              + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
+              + (type == null ? "Unit of UNKNOWN TYPE" : type.getName()) + " owned by " + (owner == null
                   ? "UNKNOWN OWNER"
-                  : m_owner.getName())
+                  : owner.getName())
               + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return 0;
     }
-    return Objects.hashCode(m_uid);
+    return Objects.hashCode(id);
   }
 
   @Override
   public String toString() {
     // TODO: none of these should happen,... except that they did a couple times.
-    if (m_type == null || m_owner == null || m_uid == null || this.getData() == null) {
+    if (type == null || owner == null || id == null || this.getData() == null) {
       final String text =
           "Unit.toString() -> Possible java de-serialization error: "
-              + (m_type == null ? "Unit of UNKNOWN TYPE" : m_type.getName()) + " owned by " + (m_owner == null
+              + (type == null ? "Unit of UNKNOWN TYPE" : type.getName()) + " owned by " + (owner == null
                   ? "UNKNOWN OWNER"
-                  : m_owner.getName())
+                  : owner.getName())
               + " with id: " + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return text;
     }
-    return m_type.getName() + " owned by " + m_owner.getName();
+    return type.getName() + " owned by " + owner.getName();
   }
 
   public String toStringNoOwner() {
-    return m_type.getName();
+    return type.getName();
   }
 
   /**

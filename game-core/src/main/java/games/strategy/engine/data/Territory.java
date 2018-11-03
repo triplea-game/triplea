@@ -9,12 +9,13 @@ import javax.annotation.Nullable;
  */
 public class Territory extends NamedAttachable implements NamedUnitHolder, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
-  private final boolean m_water;
-  private PlayerID m_owner = PlayerID.NULL_PLAYERID;
-  private final UnitCollection m_units;
+
+  private final boolean water;
+  private PlayerID owner = PlayerID.NULL_PLAYERID;
+  private final UnitCollection units;
   // In a grid-based game, stores the coordinate of the Territory
   @SuppressWarnings("unused")
-  private final int[] m_coordinate;
+  private final int[] coordinate;
 
   public Territory(final String name, final GameData data) {
     this(name, false, data);
@@ -23,36 +24,36 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   /** Creates new Territory. */
   public Territory(final String name, final boolean water, final GameData data) {
     super(name, data);
-    m_water = water;
-    m_units = new UnitCollection(this, getData());
-    m_coordinate = null;
+    this.water = water;
+    units = new UnitCollection(this, getData());
+    coordinate = null;
   }
 
   /** Creates new Territory. */
   public Territory(final String name, final boolean water, final GameData data, final int... coordinate) {
     super(name, data);
-    m_water = water;
-    m_units = new UnitCollection(this, getData());
+    this.water = water;
+    units = new UnitCollection(this, getData());
     if (data.getMap().isCoordinateValid(coordinate)) {
-      m_coordinate = coordinate;
+      this.coordinate = coordinate;
     } else {
       throw new IllegalArgumentException("Invalid coordinate: " + coordinate[0] + "," + coordinate[1]);
     }
   }
 
   public boolean isWater() {
-    return m_water;
+    return water;
   }
 
   /**
    * Returns the territory owner; will be {@link PlayerID#NULL_PLAYERID} if the territory is not owned.
    */
   public PlayerID getOwner() {
-    return m_owner;
+    return owner;
   }
 
   public void setOwner(final @Nullable PlayerID owner) {
-    m_owner = Optional.ofNullable(owner).orElse(PlayerID.NULL_PLAYERID);
+    this.owner = Optional.ofNullable(owner).orElse(PlayerID.NULL_PLAYERID);
     getData().notifyTerritoryOwnerChanged(this);
   }
 
@@ -61,7 +62,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
    */
   @Override
   public UnitCollection getUnits() {
-    return m_units;
+    return units;
   }
 
   /**
