@@ -1,8 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.attachments.TerritoryAttachment;
-
 /**
  * Logic for placing units.
  *
@@ -19,12 +16,4 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
  * </p>
  */
 public class PlaceDelegate extends AbstractPlaceDelegate {
-  protected int getProduction(final Territory territory) {
-    // Can be null!
-    final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-    if (ta != null) {
-      return ta.getProduction();
-    }
-    return 0;
-  }
 }
