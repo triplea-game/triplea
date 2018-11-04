@@ -90,7 +90,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       needToScramble = false;
     }
     if (needToCreateRockets) {
-      rocketHelper = new RocketsFireHelper(bridge, getData(), bridge.getPlayerId());
+      rocketHelper = RocketsFireHelper.setUpRockets(bridge, getData());
       needToCreateRockets = false;
     }
     if (needToKamikazeSuicideAttacks) {
@@ -107,7 +107,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     battleTracker.fightAirRaidsAndStrategicBombing(bridge);
     if (needToFireRockets) {
-      rocketHelper.fireRockets();
+      rocketHelper.fireRockets(bridge);
       needToFireRockets = false;
     }
     battleTracker.fightDefenselessBattles(bridge);
@@ -158,6 +158,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     state.needToCheckDefendingPlanesCanLand = needToCheckDefendingPlanesCanLand;
     state.needToCleanup = needToCleanup;
     state.currentBattle = currentBattle;
+    state.rocketHelper = rocketHelper;
     return state;
   }
 
@@ -177,6 +178,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     needToCheckDefendingPlanesCanLand = s.needToCheckDefendingPlanesCanLand;
     needToCleanup = s.needToCleanup;
     currentBattle = s.currentBattle;
+    rocketHelper = s.rocketHelper;
   }
 
   @Override

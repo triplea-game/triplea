@@ -29,7 +29,6 @@ import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.delegate.RocketsFireHelper.RocketType;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
@@ -193,7 +192,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // WW2V2/WW2V3, fires at end of combat move, for legacy maps only
     // WW2V1, fires at end of non combat move, for legacy maps only
     if (needToDoRockets && GameStepPropertiesHelper.isNonCombatMove(data, true)) {
-      new RocketsFireHelper(bridge, bridge.getPlayerId(), RocketType.ww2v1);
+      RocketsFireHelper.fireWW2V1(bridge);
       needToDoRockets = false;
     }
 

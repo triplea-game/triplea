@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,44 +38,59 @@ import games.strategy.util.PredicateBuilder;
 /**
  * Logic to fire rockets.
  */
-public class RocketsFireHelper {
-  private Set<Territory> attackingFromTerritories = new HashSet<>();
-  private Map<Territory, Territory> attackedTerritories = new LinkedHashMap<>();
-  private Map<Territory, Unit> attackedUnits = new LinkedHashMap<>();
-  private IDelegateBridge bridge;
-  private GameData data;
-  private PlayerID player;
+public class RocketsFireHelper implements Serializable {
+  private static final long serialVersionUID = -3694482580987118444L;
+  private final Set<Territory> attackingFromTerritories = new HashSet<>();
+  private final Map<Territory, Territory> attackedTerritories = new LinkedHashMap<>();
+  private final Map<Territory, Unit> attackedUnits = new LinkedHashMap<>();
+  private final GameData data;
   private boolean needToFindRocketTargets;
 
-  enum RocketType {
-    ww2v1
+  private RocketsFireHelper(final GameData passedData) {
+    data = passedData;
   }
 
-  RocketsFireHelper(final IDelegateBridge passedBridge, final GameData passedData, final PlayerID passedPlayer) {
-    bridge = passedBridge;
-    data = passedData;
-    player = passedPlayer;
+  /**
+   * Set up rockets for better than V1 rockets.
+   */
+  public static RocketsFireHelper setUpRockets(final IDelegateBridge bridge, final GameData passedData) {
+    final RocketsFireHelper object = new RocketsFireHelper(passedData);
     // WW2V2/WW2V3, fires at end of combat move - now moved to the start of the BattleDelegate
     // WW2V1, fires at end of non combat move so does not call here
-    needToFindRocketTargets = false;
-    if (GameStepPropertiesHelper.isFireRockets(data) && TechTracker.hasRocket(player)) {
-      if (games.strategy.triplea.Properties.getStrictRockets(data)) {
-        needToFindRocketTargets = true;
+    object.needToFindRocketTargets = false;
+    if (GameStepPropertiesHelper.isFireRockets(passedData) && TechTracker.hasRocket(bridge.getPlayerId())) {
+      if (Properties.getStrictRockets(passedData)) {
+        object.needToFindRocketTargets = true;
       } else {
-        findRocketTargets();
+        object.findRocketTargets(bridge);
       }
     }
+    return object;
   }
 
-  RocketsFireHelper(final IDelegateBridge passedBridge, final PlayerID passedPlayer, final RocketType test) {
-    bridge = passedBridge;
-    data = bridge.getData();
-    player = passedPlayer;
+  /**
+   * Fire rockets if we are v1
+   * In this rule set, each player only gets one rocket attack per turn. 
+   */
+  public static void fireWW2V1(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     if (isWW2V2(data) || isAllRocketsAttack(data)) {
       return;
     }
-    if (test == RocketType.ww2v1) {
-      fireWW2V1();
+    final PlayerID player = bridge.getPlayerId();
+    final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
+    final Set<Territory> targets = new HashSet<>();
+    for (final Territory territory : rocketTerritories) {
+      targets.addAll(getTargetsWithinRange(territory, data, player));
+    }
+    if (targets.isEmpty()) {
+      bridge.getHistoryWriter().startEvent(player.getName() + " has no targets to attack with rockets");
+      return;
+    }
+    final Territory attacked = getTarget(targets, bridge, null);
+
+    if (attacked != null) {
+      new RocketsFireHelper(data).fireRocket(bridge, null, attacked);
     }
   }
 
@@ -109,8 +125,9 @@ public class RocketsFireHelper {
   /**
    *  Find Rocket Targets and load up fire rockets for later execution if necessary. Directly fired with strict rockets.
    */
-  private void findRocketTargets() {
-    final Map<Territory,Integer> previouslyAttackedTerritories = new LinkedHashMap<>();
+  private void findRocketTargets(final IDelegateBridge bridge) {
+    final PlayerID player = bridge.getPlayerId();
+    final Map<Territory, Integer> previouslyAttackedTerritories = new LinkedHashMap<>();
     for (final Territory attackFrom : getTerritoriesWithRockets(data, player)) {
       final Set<Territory> targets = getTargetsWithinRange(attackFrom, data, player);
       final int maxAttacks = TechAbilityAttachment.getRocketNumberPerTerritory(player, data);
@@ -165,8 +182,8 @@ public class RocketsFireHelper {
         attackedUnits.put(attackFrom, unitTarget);
         // Strict Rockets are target, fire, target, fire ...
         // Sensible (non-strict) Rockets are target, target, target, fire, fire, fire.
-        if (games.strategy.triplea.Properties.getStrictRockets(data)) {
-          fireRocket(attackFrom, targetTerritory);
+        if (Properties.getStrictRockets(data)) {
+          fireRocket(bridge, attackFrom, targetTerritory);
           break;
         }
         // Can't add this value above because it would cause the rocket to fire twice in a strict rocket scenario
@@ -184,31 +201,13 @@ public class RocketsFireHelper {
   /**
   *  Fire rockets which have been previously targetted (if any), or for strict rockets target them too.
   */
-  public void fireRockets() {
+  public void fireRockets(final IDelegateBridge bridge) {
     if (needToFindRocketTargets) {
-      findRocketTargets();
+      findRocketTargets(bridge);
     }
     for (final Territory attackingFrom : attackingFromTerritories) {
       // Roll dice for the rocket attack damage and apply it
-      fireRocket(attackingFrom, attackedTerritories.get(attackingFrom));
-    }
-  }
-
-  /** In this rule set, each player only gets one rocket attack per turn. */
-  private void fireWW2V1() {
-    final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
-    final Set<Territory> targets = new HashSet<>();
-    for (final Territory territory : rocketTerritories) {
-      targets.addAll(getTargetsWithinRange(territory, data, player));
-    }
-    if (targets.isEmpty()) {
-      bridge.getHistoryWriter().startEvent(player.getName() + " has no targets to attack with rockets");
-      return;
-    }
-    final Territory attacked = getTarget(targets, bridge, null);
-
-    if (attacked != null) {
-      fireRocket(null, attacked);
+      fireRocket(bridge, attackingFrom, attackedTerritories.get(attackingFrom));
     }
   }
 
@@ -265,7 +264,8 @@ public class RocketsFireHelper {
     return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
   }
 
-  private void fireRocket(final Territory attackFrom, final Territory attackedTerritory) {
+  private void fireRocket(final IDelegateBridge bridge, final Territory attackFrom, final Territory attackedTerritory) {
+    final PlayerID player = bridge.getPlayerId();
     final PlayerID attacked = attackedTerritory.getOwner();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean damageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
@@ -338,7 +338,7 @@ public class RocketsFireHelper {
           transcript = "Rockets in " + attackFrom.getName() + " do " + highestBonus + " damage for each rocket";
         }
       }
-    } else {                   // Low luck
+    } else { // Low luck
       if (doNotUseBombingBonus) {
         // no bonus, so just roll based on the map's dice sides, but modify for LL
         final int maxDice = (data.getDiceSides() + 1) / 3;
