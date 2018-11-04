@@ -43,23 +43,21 @@ public class RocketsFireHelper implements Serializable {
   private final Set<Territory> attackingFromTerritories = new HashSet<>();
   private final Map<Territory, Territory> attackedTerritories = new LinkedHashMap<>();
   private final Map<Territory, Unit> attackedUnits = new LinkedHashMap<>();
-  private final GameData data;
   private boolean needToFindRocketTargets;
 
-  private RocketsFireHelper(final GameData passedData) {
-    data = passedData;
-  }
+  private RocketsFireHelper() {}
 
   /**
    * Set up rockets for better than V1 rockets.
    */
-  public static RocketsFireHelper setUpRockets(final IDelegateBridge bridge, final GameData passedData) {
-    final RocketsFireHelper object = new RocketsFireHelper(passedData);
+  public static RocketsFireHelper setUpRockets(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
+    final RocketsFireHelper object = new RocketsFireHelper();
     // WW2V2/WW2V3, fires at end of combat move - now moved to the start of the BattleDelegate
     // WW2V1, fires at end of non combat move so does not call here
     object.needToFindRocketTargets = false;
-    if (GameStepPropertiesHelper.isFireRockets(passedData) && TechTracker.hasRocket(bridge.getPlayerId())) {
-      if (Properties.getStrictRockets(passedData)) {
+    if (GameStepPropertiesHelper.isFireRockets(data) && TechTracker.hasRocket(bridge.getPlayerId())) {
+      if (Properties.getStrictRockets(data)) {
         object.needToFindRocketTargets = true;
       } else {
         object.findRocketTargets(bridge);
@@ -90,7 +88,7 @@ public class RocketsFireHelper implements Serializable {
     final Territory attacked = getTarget(targets, bridge, null);
 
     if (attacked != null) {
-      new RocketsFireHelper(data).fireRocket(bridge, null, attacked);
+      new RocketsFireHelper().fireRocket(bridge, data, null, attacked);
     }
   }
 
@@ -126,6 +124,7 @@ public class RocketsFireHelper implements Serializable {
    *  Find Rocket Targets and load up fire rockets for later execution if necessary. Directly fired with strict rockets.
    */
   private void findRocketTargets(final IDelegateBridge bridge) {
+    final GameData data = bridge.getData();
     final PlayerID player = bridge.getPlayerId();
     final Map<Territory, Integer> previouslyAttackedTerritories = new LinkedHashMap<>();
     for (final Territory attackFrom : getTerritoriesWithRockets(data, player)) {
@@ -183,7 +182,7 @@ public class RocketsFireHelper implements Serializable {
         // Strict Rockets are target, fire, target, fire ...
         // Sensible (non-strict) Rockets are target, target, target, fire, fire, fire.
         if (Properties.getStrictRockets(data)) {
-          fireRocket(bridge, attackFrom, targetTerritory);
+          fireRocket(bridge, data, attackFrom, targetTerritory);
           break;
         }
         // Can't add this value above because it would cause the rocket to fire twice in a strict rocket scenario
@@ -207,7 +206,7 @@ public class RocketsFireHelper implements Serializable {
     }
     for (final Territory attackingFrom : attackingFromTerritories) {
       // Roll dice for the rocket attack damage and apply it
-      fireRocket(bridge, attackingFrom, attackedTerritories.get(attackingFrom));
+      fireRocket(bridge, bridge.getData(), attackingFrom, attackedTerritories.get(attackingFrom));
     }
   }
 
@@ -264,7 +263,8 @@ public class RocketsFireHelper implements Serializable {
     return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
   }
 
-  private void fireRocket(final IDelegateBridge bridge, final Territory attackFrom, final Territory attackedTerritory) {
+  private void fireRocket(final IDelegateBridge bridge, final GameData data, final Territory attackFrom,
+      final Territory attackedTerritory) {
     final PlayerID player = bridge.getPlayerId();
     final PlayerID attacked = attackedTerritory.getOwner();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
