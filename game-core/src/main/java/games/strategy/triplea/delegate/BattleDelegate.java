@@ -90,7 +90,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       needToScramble = false;
     }
     if (needToCreateRockets) {
-      rocketHelper = new RocketsFireHelper(bridge, getData(), bridge.getPlayerId());
+      rocketHelper = RocketsFireHelper.setUpRockets(bridge);
       needToCreateRockets = false;
     }
     if (needToKamikazeSuicideAttacks) {

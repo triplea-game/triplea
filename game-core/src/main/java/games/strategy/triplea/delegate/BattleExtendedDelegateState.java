@@ -18,5 +18,6 @@ class BattleExtendedDelegateState implements Serializable {
   boolean needToRecordBattleStatistics;
   boolean needToCheckDefendingPlanesCanLand;
   boolean needToCleanup;
+  RocketsFireHelper rocketHelper;
   IBattle currentBattle;
 }
