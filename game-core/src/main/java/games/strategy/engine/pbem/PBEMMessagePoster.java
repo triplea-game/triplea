@@ -32,8 +32,9 @@ public class PBEMMessagePoster implements Serializable {
   public static final String EMAIL_SENDER_PROP_NAME = "games.strategy.engine.pbem.IEmailSender";
   public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PBEMMessagePoster";
   private static final long serialVersionUID = 2256265436928530566L;
-  private final IForumPoster m_forumPoster;
-  private final IEmailSender m_emailSender;
+
+  private final IForumPoster forumPoster;
+  private final IEmailSender emailSender;
   private transient File saveGameFile = null;
   private transient String turnSummary = null;
   private final transient String saveGameRef = null;
@@ -47,14 +48,14 @@ public class PBEMMessagePoster implements Serializable {
       final String title) {
     this.currentPlayer = currentPlayer;
     this.roundNumber = roundNumber;
-    m_forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
-    m_emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
+    forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
+    emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
     gameNameAndInfo =
         "TripleA " + title + " for game: " + gameData.getGameName() + ", version: " + gameData.getGameVersion();
   }
 
   public boolean hasMessengers() {
-    return m_forumPoster != null || m_emailSender != null;
+    return forumPoster != null || emailSender != null;
   }
 
   public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
@@ -68,7 +69,7 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   public IForumPoster getForumPoster() {
-    return m_forumPoster;
+    return forumPoster;
   }
 
   public void setTurnSummary(final String turnSummary) {
@@ -97,20 +98,20 @@ public class PBEMMessagePoster implements Serializable {
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title, final boolean includeSaveGame) {
     boolean forumSuccess = true;
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
-    if (m_forumPoster != null) {
-      saveGameSb.append(m_forumPoster.getTopicId()).append("_");
+    if (forumPoster != null) {
+      saveGameSb.append(forumPoster.getTopicId()).append("_");
     }
     saveGameSb.append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1))
         .append(roundNumber);
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
-    if (m_forumPoster != null) {
+    if (forumPoster != null) {
       if (includeSaveGame) {
-        m_forumPoster.addSaveGame(saveGameFile, saveGameName);
+        forumPoster.addSaveGame(saveGameFile, saveGameName);
       }
       try {
-        forumSuccess = m_forumPoster.postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
+        forumSuccess = forumPoster.postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
             "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber);
-        turnSummaryRef = m_forumPoster.getTurnSummaryRef();
+        turnSummaryRef = forumPoster.getTurnSummaryRef();
         if (turnSummaryRef != null && historyWriter != null) {
           historyWriter.startEvent("Turn Summary: " + turnSummaryRef);
         }
@@ -119,13 +120,13 @@ public class PBEMMessagePoster implements Serializable {
       }
     }
     boolean emailSuccess = true;
-    if (m_emailSender != null) {
+    if (emailSender != null) {
       final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
       subjectPostFix.append(" - ").append("round ").append(roundNumber);
       try {
-        m_emailSender.sendEmail(subjectPostFix.toString(), convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)),
+        emailSender.sendEmail(subjectPostFix.toString(), convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)),
             saveGameFile, saveGameName);
-        emailSendStatus = "Success, sent to " + m_emailSender.getToAddress();
+        emailSendStatus = "Success, sent to " + emailSender.getToAddress();
       } catch (final IOException e) {
         emailSuccess = false;
         emailSendStatus = "Failed! Error " + e.getMessage();
@@ -134,17 +135,17 @@ public class PBEMMessagePoster implements Serializable {
     }
     if (historyWriter != null) {
       final StringBuilder sb = new StringBuilder("Post Turn Summary");
-      if (m_forumPoster != null) {
-        sb.append(" to ").append(m_forumPoster.getDisplayName()).append(" success = ")
+      if (forumPoster != null) {
+        sb.append(" to ").append(forumPoster.getDisplayName()).append(" success = ")
             .append(String.valueOf(forumSuccess));
       }
-      if (m_emailSender != null) {
-        if (m_forumPoster != null) {
+      if (emailSender != null) {
+        if (forumPoster != null) {
           sb.append(" and to ");
         } else {
           sb.append(" to ");
         }
-        sb.append(m_emailSender.getToAddress()).append(" success = ").append(String.valueOf(emailSuccess));
+        sb.append(emailSender.getToAddress()).append(" success = ").append(String.valueOf(emailSuccess));
       }
       historyWriter.startEvent(sb.toString());
     }
@@ -167,7 +168,7 @@ public class PBEMMessagePoster implements Serializable {
    * @return return an email sender or null
    */
   public IEmailSender getEmailSender() {
-    return m_emailSender;
+    return emailSender;
   }
 
   /**
@@ -180,10 +181,10 @@ public class PBEMMessagePoster implements Serializable {
   }
 
   public boolean alsoPostMoveSummary() {
-    if (m_forumPoster != null) {
-      return m_forumPoster.getAlsoPostAfterCombatMove();
+    if (forumPoster != null) {
+      return forumPoster.getAlsoPostAfterCombatMove();
     }
-    return m_emailSender != null && m_emailSender.getAlsoPostAfterCombatMove();
+    return emailSender != null && emailSender.getAlsoPostAfterCombatMove();
   }
 
   /**
