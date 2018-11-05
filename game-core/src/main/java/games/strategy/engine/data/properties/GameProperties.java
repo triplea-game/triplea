@@ -170,13 +170,13 @@ public class GameProperties extends GameDataComponent {
    * @throws ClassCastException If {@code byteArray} contains an object other than a list of editable properties.
    */
   @SuppressWarnings("unchecked")
-  public static List<IEditableProperty<Object>> readEditableProperties(final byte[] bytes)
+  public static List<IEditableProperty<?>> readEditableProperties(final byte[] bytes)
       throws IOException, ClassCastException {
     return IoUtils.readFromMemory(bytes, is -> {
       try (InputStream bis = new BufferedInputStream(is);
           InputStream gzipis = new GZIPInputStream(bis);
           ObjectInputStream ois = new ObjectInputStream(gzipis)) {
-        return (List<IEditableProperty<Object>>) ois.readObject();
+        return (List<IEditableProperty<?>>) ois.readObject();
       } catch (final ClassNotFoundException e) {
         throw new IOException(e);
       }
@@ -185,7 +185,7 @@ public class GameProperties extends GameDataComponent {
 
   public static void applyByteMapToChangeProperties(final byte[] byteArray,
       final GameProperties gamePropertiesToBeChanged) {
-    List<IEditableProperty<Object>> editableProperties = null;
+    List<IEditableProperty<?>> editableProperties = null;
     try {
       editableProperties = readEditableProperties(byteArray);
     } catch (final ClassCastException | IOException e) {
@@ -196,19 +196,19 @@ public class GameProperties extends GameDataComponent {
   }
 
   @SuppressWarnings("unchecked")
-  private static <T> void applyListToChangeProperties(final List<IEditableProperty<T>> editableProperties,
+  private static void applyListToChangeProperties(final List<IEditableProperty<?>> editableProperties,
       final GameProperties gamePropertiesToBeChanged) {
     if (editableProperties == null || editableProperties.isEmpty()) {
       return;
     }
-    for (final IEditableProperty<T> prop : editableProperties) {
+    for (final IEditableProperty<?> prop : editableProperties) {
       if (prop == null || prop.getName() == null) {
         continue;
       }
-      final IEditableProperty<T> p = (IEditableProperty<T>) gamePropertiesToBeChanged.editableProperties
+      final IEditableProperty<?> p = gamePropertiesToBeChanged.editableProperties
           .get(prop.getName());
-      if (p != null && prop.getName().equals(p.getName()) && p.validate(prop.getValue())) {
-        p.setValue(prop.getValue());
+      if (p != null && prop.getName().equals(p.getName())) {
+        p.setValueIfValid(prop.getValue());
       }
     }
   }

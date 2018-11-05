@@ -25,7 +25,7 @@ public interface IEditableProperty<T> {
   /**
    * Indicates the object is a valid object for setting as our value.
    */
-  boolean validate(T value);
+  boolean validate(Object value);
 
   /**
    * Set the value of the property (programmatically), GUI would normally use the editor.
@@ -50,4 +50,10 @@ public interface IEditableProperty<T> {
   String getDescription();
 
   int getRowsNeeded();
+
+  default void setValueIfValid(final Object object) {
+    if (validate(object)) {
+      setValue((T) object);
+    }
+  }
 }

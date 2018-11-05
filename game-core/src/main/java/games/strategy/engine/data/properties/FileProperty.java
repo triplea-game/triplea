@@ -154,10 +154,13 @@ public class FileProperty extends AbstractEditableProperty<File> {
   }
 
   @Override
-  public boolean validate(final File value) {
+  public boolean validate(final Object value) {
     if (value == null) {
       return true;
     }
-    return Arrays.stream(acceptableSuffixes).anyMatch(suffix -> value.getName().endsWith(suffix));
+    if (value instanceof File) {
+      return Arrays.stream(acceptableSuffixes).anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
+    }
+    return false;
   }
 }

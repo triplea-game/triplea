@@ -152,7 +152,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
   }
 
   @Override
-  public boolean validate(final T value) {
+  public boolean validate(final Object value) {
     return property.validate(value);
   }
 

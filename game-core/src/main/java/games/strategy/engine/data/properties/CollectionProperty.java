@@ -57,7 +57,7 @@ public class CollectionProperty<T> extends AbstractEditableProperty<List<T>> {
   }
 
   @Override
-  public boolean validate(final List<T> value) {
-    return value != null;
+  public boolean validate(final Object value) {
+    return value instanceof List;
   }
 }

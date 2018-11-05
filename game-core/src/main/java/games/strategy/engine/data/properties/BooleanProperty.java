@@ -39,7 +39,7 @@ public class BooleanProperty extends AbstractEditableProperty<Boolean> {
   }
 
   @Override
-  public boolean validate(final Boolean value) {
-    return value != null;
+  public boolean validate(final Object value) {
+    return value instanceof Boolean;
   }
 }

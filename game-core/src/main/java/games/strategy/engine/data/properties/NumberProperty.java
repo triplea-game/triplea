@@ -52,7 +52,11 @@ public class NumberProperty extends AbstractEditableProperty<Integer> {
   }
 
   @Override
-  public boolean validate(final Integer value) {
-    return value <= max && value >= min;
+  public boolean validate(final Object value) {
+    if (value instanceof Integer) {
+      final int i = (int) value;
+      return i <= max && i >= min;
+    }
+    return false;
   }
 }

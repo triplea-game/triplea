@@ -85,36 +85,40 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
   }
 
   @Override
-  public boolean validate(final Map<T, U> value) {
+  @SuppressWarnings("unchecked")
+  public boolean validate(final Object value) {
     if (value == null) {
       // is this ok? no idea, no maps or anything use this
       return false;
     }
-    try {
-      if (map != null && !map.isEmpty() && !value.isEmpty()) {
-        T key = null;
-        U val = null;
-        for (final Entry<T, U> entry : map.entrySet()) {
-          if (entry.getValue() != null && entry.getKey() != null) {
-            key = entry.getKey();
-            val = entry.getValue();
-            break;
+    if (value instanceof Map) {
+      final Map<T, U> test = (Map<T, U>) value;
+      try {
+        if (map != null && !map.isEmpty() && !test.isEmpty()) {
+          T key = null;
+          U val = null;
+          for (final Entry<T, U> entry : map.entrySet()) {
+            if (entry.getValue() != null && entry.getKey() != null) {
+              key = entry.getKey();
+              val = entry.getValue();
+              break;
+            }
           }
-        }
-        if (key != null) {
-          for (final Entry<T, U> entry : value.entrySet()) {
-            if (entry.getKey() != null && entry.getValue() != null
-                && (!entry.getKey().getClass().isAssignableFrom(key.getClass())
-                    || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
-              return false;
+          if (key != null) {
+            for (final Entry<T, U> entry : test.entrySet()) {
+              if (entry.getKey() != null && entry.getValue() != null
+                  && (!entry.getKey().getClass().isAssignableFrom(key.getClass())
+                  || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
+                return false;
+              }
             }
           }
         }
+        final List<IEditableProperty<U>> testProps = new ArrayList<>();
+        resetProperties(test, testProps, this.getName(), this.getDescription());
+      } catch (final Exception e) {
+        return false;
       }
-      final List<IEditableProperty<U>> testProps = new ArrayList<>();
-      resetProperties(value, testProps, this.getName(), this.getDescription());
-    } catch (final Exception e) {
-      return false;
     }
     return true;
   }

@@ -50,7 +50,7 @@ public class StringProperty extends AbstractEditableProperty<String> {
   }
 
   @Override
-  public boolean validate(final String value) {
-    return true;
+  public boolean validate(final Object value) {
+    return value == null || value instanceof String;
   }
 }

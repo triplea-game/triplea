@@ -58,7 +58,7 @@ public class ComboProperty<T> extends AbstractEditableProperty<T> {
   }
 
   @Override
-  public boolean validate(final T value) {
+  public boolean validate(final Object value) {
     return possibleValues != null && possibleValues.contains(value);
   }
 }

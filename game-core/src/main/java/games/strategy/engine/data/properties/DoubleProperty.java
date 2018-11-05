@@ -2,14 +2,18 @@ package games.strategy.engine.data.properties;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.logging.Level;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import lombok.extern.java.Log;
+
 /**
  * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
  */
+@Log
 public class DoubleProperty extends AbstractEditableProperty<Double> {
   private static final long serialVersionUID = 5521967819500867581L;
 
@@ -30,13 +34,11 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
     this.max = max;
     this.min = min;
     places = numberOfPlaces;
-    value = roundToPlace(def, numberOfPlaces, RoundingMode.FLOOR);
+    value = roundToPlace(def, numberOfPlaces);
   }
 
-  private static double roundToPlace(final double number, final int places, final RoundingMode roundingMode) {
-    BigDecimal bd = new BigDecimal(number);
-    bd = bd.setScale(places, roundingMode);
-    return bd.doubleValue();
+  private static double roundToPlace(final double number, final int places) {
+    return new BigDecimal(number).setScale(places, RoundingMode.FLOOR).doubleValue();
   }
 
   @Override
@@ -46,7 +48,7 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
 
   @Override
   public void setValue(final Double value) {
-    this.value = roundToPlace(value, places, RoundingMode.FLOOR);
+    this.value = roundToPlace(value, places);
   }
 
   @Override
@@ -65,12 +67,15 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   }
 
   @Override
-  public boolean validate(final Double value) {
-    try {
-      final double d = roundToPlace(value, places, RoundingMode.FLOOR);
-      return d <= max && d >= min;
-    } catch (final Exception e) {
-      return false;
+  public boolean validate(final Object value) {
+    if (value instanceof Double) {
+      try {
+        final double d = roundToPlace((Double) value, places);
+        return d <= max && d >= min;
+      } catch (final Exception e) {
+        log.log(Level.WARNING, "Error during evaluation", e);
+      }
     }
+    return false;
   }
 }
