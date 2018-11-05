@@ -33,15 +33,15 @@ public abstract class AbstractForumPoster implements IForumPoster {
    * should be used instead.
    */
   private static final String USE_TRANSIENT_CREDENTIAL = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
-
   private static final long serialVersionUID = -734015230309508040L;
-  protected String m_username = null;
+
+  protected String username = null;
   private transient String transientUsername;
-  protected String m_password = null;
+  protected String password = null;
   private transient String transientPassword;
-  protected String m_topicId = null;
-  protected boolean m_includeSaveGame = true;
-  protected boolean m_alsoPostAfterCombatMove = false;
+  protected String topicId = null;
+  protected boolean includeSaveGame = true;
+  protected boolean alsoPostAfterCombatMove = false;
   protected transient File saveGameFile = null;
   protected transient String turnSummaryRef = null;
   protected transient String saveGameFileName = null;
@@ -49,14 +49,14 @@ public abstract class AbstractForumPoster implements IForumPoster {
   private boolean credentialsProtected = false;
 
   private void writeObject(final ObjectOutputStream out) throws IOException {
-    final String username = m_username;
-    final String password = m_password;
+    final String username = this.username;
+    final String password = this.password;
     try {
       protectCredentials();
       out.defaultWriteObject();
     } finally {
-      m_username = username;
-      m_password = password;
+      this.username = username;
+      this.password = password;
     }
   }
 
@@ -64,12 +64,12 @@ public abstract class AbstractForumPoster implements IForumPoster {
     if (credentialsSaved) {
       credentialsProtected = true;
       try (CredentialManager credentialManager = CredentialManager.newInstance()) {
-        m_username = credentialManager.protect(m_username);
-        m_password = credentialManager.protect(m_password);
+        username = credentialManager.protect(username);
+        password = credentialManager.protect(password);
       } catch (final CredentialManagerException e) {
         log.log(Level.SEVERE, "failed to protect PBF credentials", e);
-        m_username = "";
-        m_password = "";
+        username = "";
+        password = "";
       }
     } else {
       credentialsProtected = false;
@@ -84,12 +84,12 @@ public abstract class AbstractForumPoster implements IForumPoster {
   private void unprotectCredentials() {
     if (credentialsProtected) {
       try (CredentialManager credentialManager = CredentialManager.newInstance()) {
-        m_username = credentialManager.unprotectToString(m_username);
-        m_password = credentialManager.unprotectToString(m_password);
+        username = credentialManager.unprotectToString(username);
+        password = credentialManager.unprotectToString(password);
       } catch (final CredentialManagerException e) {
         log.log(Level.SEVERE, "failed to unprotect PBF credentials", e);
-        m_username = "";
-        m_password = "";
+        username = "";
+        password = "";
       }
     }
   }
@@ -101,22 +101,22 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   @Override
   public boolean getIncludeSaveGame() {
-    return m_includeSaveGame;
+    return includeSaveGame;
   }
 
   @Override
   public void setIncludeSaveGame(final boolean include) {
-    m_includeSaveGame = include;
+    includeSaveGame = include;
   }
 
   @Override
   public boolean getAlsoPostAfterCombatMove() {
-    return m_alsoPostAfterCombatMove;
+    return alsoPostAfterCombatMove;
   }
 
   @Override
   public void setAlsoPostAfterCombatMove(final boolean post) {
-    m_alsoPostAfterCombatMove = post;
+    alsoPostAfterCombatMove = post;
   }
 
   @Override
@@ -132,34 +132,34 @@ public abstract class AbstractForumPoster implements IForumPoster {
 
   @Override
   public void setTopicId(final String topicId) {
-    m_topicId = topicId;
+    this.topicId = topicId;
   }
 
   @Override
   public String getTopicId() {
-    return m_topicId;
+    return topicId;
   }
 
   @Override
   public void setUsername(final String username) {
-    m_username = credentialsSaved ? username : USE_TRANSIENT_CREDENTIAL;
+    this.username = credentialsSaved ? username : USE_TRANSIENT_CREDENTIAL;
     transientUsername = username;
   }
 
   @Override
   public String getUsername() {
-    return USE_TRANSIENT_CREDENTIAL.equals(m_username) ? transientUsername : m_username;
+    return USE_TRANSIENT_CREDENTIAL.equals(username) ? transientUsername : username;
   }
 
   @Override
   public void setPassword(final String password) {
-    m_password = credentialsSaved ? password : USE_TRANSIENT_CREDENTIAL;
+    this.password = credentialsSaved ? password : USE_TRANSIENT_CREDENTIAL;
     transientPassword = password;
   }
 
   @Override
   public String getPassword() {
-    return USE_TRANSIENT_CREDENTIAL.equals(m_password) ? transientPassword : m_password;
+    return USE_TRANSIENT_CREDENTIAL.equals(password) ? transientPassword : password;
   }
 
   @Override
@@ -177,7 +177,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
   @Override
   public void clearSensitiveInfo() {
     credentialsSaved = false;
-    m_username = m_password = USE_TRANSIENT_CREDENTIAL;
+    username = password = USE_TRANSIENT_CREDENTIAL;
   }
 
   @Override
