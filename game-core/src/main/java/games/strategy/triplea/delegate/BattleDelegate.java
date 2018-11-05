@@ -133,9 +133,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     super.end();
     needToInitialize = true;
     needToScramble = true;
+    needToCreateRockets = true;
     needToKamikazeSuicideAttacks = true;
     needToClearEmptyAirBattleAttacks = true;
     needToAddBombardmentSources = true;
+    needToFireRockets = true;
     needToRecordBattleStatistics = true;
     needToCleanup = true;
     needToCheckDefendingPlanesCanLand = true;
