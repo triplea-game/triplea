@@ -62,7 +62,7 @@ public interface IEditableProperty<T> {
 
   default void validateAndSet(final Object object) {
     if (!setValueIfValid(object)) {
-      throw new IllegalStateException("Invalid value " + object + " for class " + getClass().getCanonicalName());
+      throw new IllegalArgumentException("Invalid value " + object + " for class " + getClass().getCanonicalName());
     }
   }
 }
