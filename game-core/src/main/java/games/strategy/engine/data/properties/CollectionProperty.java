@@ -12,7 +12,7 @@ import javax.swing.JTable;
  *
  * @param <T> The type of elements in the collection.
  */
-public class CollectionProperty<T> extends AbstractEditableProperty {
+public class CollectionProperty<T> extends AbstractEditableProperty<List<T>> {
   private static final long serialVersionUID = 5338055034530377261L;
 
   private List<T> values;
@@ -30,14 +30,13 @@ public class CollectionProperty<T> extends AbstractEditableProperty {
   }
 
   @Override
-  public Object getValue() {
+  public List<T> getValue() {
     return values;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public void setValue(final Object value) throws ClassCastException {
-    values = (List<T>) value;
+  public void setValue(final List<T> value) {
+    values = value;
   }
 
   @Override
@@ -59,6 +58,6 @@ public class CollectionProperty<T> extends AbstractEditableProperty {
 
   @Override
   public boolean validate(final Object value) {
-    return value != null && List.class.isAssignableFrom(value.getClass());
+    return value instanceof List;
   }
 }

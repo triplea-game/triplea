@@ -39,7 +39,7 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       return;
     }
     try {
-      final List<IEditableProperty> properties = GameProperties.readEditableProperties(oldBytes);
+      final List<IEditableProperty<?>> properties = GameProperties.readEditableProperties(oldBytes);
       final PropertiesUi pui = new PropertiesUi(properties, true);
       final JScrollPane scroll = new JScrollPane(pui);
       scroll.setBorder(null);

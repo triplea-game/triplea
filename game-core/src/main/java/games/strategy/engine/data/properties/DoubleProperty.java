@@ -1,6 +1,5 @@
 package games.strategy.engine.data.properties;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -8,12 +7,10 @@ import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import games.strategy.engine.ClientFileSystemHelper;
-
 /**
  * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
  */
-public class DoubleProperty extends AbstractEditableProperty {
+public class DoubleProperty extends AbstractEditableProperty<Double> {
   private static final long serialVersionUID = 5521967819500867581L;
 
   private final double max;
@@ -33,13 +30,11 @@ public class DoubleProperty extends AbstractEditableProperty {
     this.max = max;
     this.min = min;
     places = numberOfPlaces;
-    value = roundToPlace(def, numberOfPlaces, RoundingMode.FLOOR);
+    value = roundToPlace(def, numberOfPlaces);
   }
 
-  private static double roundToPlace(final double number, final int places, final RoundingMode roundingMode) {
-    BigDecimal bd = new BigDecimal(number);
-    bd = bd.setScale(places, roundingMode);
-    return bd.doubleValue();
+  private static double roundToPlace(final double number, final int places) {
+    return new BigDecimal(number).setScale(places, RoundingMode.FLOOR).doubleValue();
   }
 
   @Override
@@ -48,15 +43,8 @@ public class DoubleProperty extends AbstractEditableProperty {
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
-    if (value instanceof String) {
-      // warn developer which have run with the option cache when Number properties were stored as strings
-      // todo (kg) remove at a later point
-      throw new RuntimeException("Double and Number properties are no longer stored as Strings. "
-          + "You should delete your option cache, located at "
-          + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
-    }
-    this.value = roundToPlace((Double) value, places, RoundingMode.FLOOR);
+  public void setValue(final Double value) {
+    this.value = roundToPlace(value, places);
   }
 
   @Override
@@ -77,12 +65,7 @@ public class DoubleProperty extends AbstractEditableProperty {
   @Override
   public boolean validate(final Object value) {
     if (value instanceof Double) {
-      final double d;
-      try {
-        d = roundToPlace((Double) value, places, RoundingMode.FLOOR);
-      } catch (final Exception e) {
-        return false;
-      }
+      final double d = roundToPlace((Double) value, places);
       return d <= max && d >= min;
     }
     return false;

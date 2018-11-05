@@ -8,7 +8,6 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.ui.PropertiesSelector;
 
 /**
@@ -35,27 +34,27 @@ public final class SoundOptions {
     final String selectAll = "All";
     final String selectNone = "None";
 
-    final List<IEditableProperty> properties = SoundPath.getSoundOptions();
+    final List<SoundOptionCheckBox> properties = SoundPath.getSoundOptions();
     final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
         ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {
       return;
     }
     if (pressedButton.equals(ok)) {
-      for (final IEditableProperty property : properties) {
-        clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
+      for (final SoundOptionCheckBox property : properties) {
+        clipPlayer.setMute(property.getClipName(), !property.getValue());
       }
       clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectAll)) {
-      for (final IEditableProperty property : properties) {
+      for (final SoundOptionCheckBox property : properties) {
         property.setValue(true);
-        clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), false);
+        clipPlayer.setMute(property.getClipName(), false);
       }
       clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectNone)) {
-      for (final IEditableProperty property : properties) {
+      for (final SoundOptionCheckBox property : properties) {
         property.setValue(false);
-        clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), true);
+        clipPlayer.setMute(property.getClipName(), true);
       }
       clipPlayer.saveSoundPreferences();
     }

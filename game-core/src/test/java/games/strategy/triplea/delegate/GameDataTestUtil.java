@@ -439,7 +439,7 @@ public final class GameDataTestUtil {
   }
 
   static void setSelectAaCasualties(final GameData data, final boolean val) {
-    for (final IEditableProperty property : data.getProperties().getEditableProperties()) {
+    for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.CHOOSE_AA)) {
         ((BooleanProperty) property).setValue(val);
         return;
@@ -449,7 +449,7 @@ public final class GameDataTestUtil {
   }
 
   static void makeGameLowLuck(final GameData data) {
-    for (final IEditableProperty property : data.getProperties().getEditableProperties()) {
+    for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.LOW_LUCK)) {
         ((BooleanProperty) property).setValue(true);
         return;

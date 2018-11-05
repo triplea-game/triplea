@@ -1,24 +1,20 @@
 package games.strategy.engine.data.properties;
 
-import java.io.File;
-
 import javax.swing.JComponent;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.ui.IntTextField;
 
 /**
  * Implementation of {@link IEditableProperty} for an integer value.
  */
-public class NumberProperty extends AbstractEditableProperty {
-  // compatible with 0.9.0.2 saved games
+public class NumberProperty extends AbstractEditableProperty<Integer> {
   private static final long serialVersionUID = 6826763550643504789L;
 
-  // Keep this in sync with the matchin property name, used by reflection.
+  // Keep this in sync with the matching property name, used by reflection.
   public static final String MAX_PROPERTY_NAME = "max";
   private final int max;
 
-  // Keep this in sync with the matchin property name, used by reflection.
+  // Keep this in sync with the matching property name, used by reflection.
   public static final String MIN_PROPERTY_NAME = "min";
   private final int min;
 
@@ -43,15 +39,8 @@ public class NumberProperty extends AbstractEditableProperty {
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
-    if (value instanceof String) {
-      // warn developer which have run with the option cache when Number properties were stored as strings
-      // todo (kg) remove at a later point
-      throw new RuntimeException(
-          "Number properties are no longer stored as Strings. You should delete your option cache, located at "
-              + new File(ClientFileSystemHelper.getUserRootFolder(), "optionCache").toString());
-    }
-    this.value = (Integer) value;
+  public void setValue(final Integer value) {
+    this.value = value;
   }
 
   @Override

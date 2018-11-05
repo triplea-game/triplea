@@ -339,7 +339,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           || data.getProperties().getEditableProperties().isEmpty()) {
         return null;
       }
-      final List<IEditableProperty> currentEditableProperties = data.getProperties().getEditableProperties();
+      final List<IEditableProperty<?>> currentEditableProperties = data.getProperties().getEditableProperties();
 
       try {
         return GameProperties.writeEditableProperties(currentEditableProperties);

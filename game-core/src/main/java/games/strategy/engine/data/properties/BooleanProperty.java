@@ -6,8 +6,7 @@ import javax.swing.JComponent;
 /**
  * Implementation of {@link IEditableProperty} for a Boolean value.
  */
-public class BooleanProperty extends AbstractEditableProperty {
-  // compatible with 0.9.0.2 saved games
+public class BooleanProperty extends AbstractEditableProperty<Boolean> {
   private static final long serialVersionUID = -7265501762343216435L;
 
   private boolean value;
@@ -18,13 +17,13 @@ public class BooleanProperty extends AbstractEditableProperty {
   }
 
   @Override
-  public Object getValue() {
-    return value ? Boolean.TRUE : Boolean.FALSE;
+  public Boolean getValue() {
+    return value;
   }
 
   @Override
-  public void setValue(final Object value) throws IllegalArgumentException {
-    this.value = (Boolean) value;
+  public void setValue(final Boolean value) {
+    this.value = value;
   }
 
   public void setValue(final boolean value) {
