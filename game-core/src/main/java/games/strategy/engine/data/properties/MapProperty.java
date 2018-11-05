@@ -119,7 +119,8 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
       } catch (final Exception e) {
         return false;
       }
+      return true;
     }
-    return true;
+    return false;
   }
 }
