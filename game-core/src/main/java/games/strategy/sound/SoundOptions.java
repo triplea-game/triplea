@@ -42,7 +42,7 @@ public final class SoundOptions {
     }
     if (pressedButton.equals(ok)) {
       for (final SoundOptionCheckBox property : properties) {
-        clipPlayer.setMute(property.getClipName(), !(Boolean) property.getValue());
+        clipPlayer.setMute(property.getClipName(), !property.getValue());
       }
       clipPlayer.saveSoundPreferences();
     } else if (pressedButton.equals(selectAll)) {
