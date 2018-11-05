@@ -87,6 +87,6 @@ public class ColorProperty extends AbstractEditableProperty<Color> {
 
   @Override
   public boolean validate(final Object value) {
-    return value == null || value instanceof Color;
+    return (value == null) || (value instanceof Color);
   }
 }

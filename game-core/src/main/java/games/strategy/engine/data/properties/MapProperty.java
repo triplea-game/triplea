@@ -91,9 +91,9 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
       return false;
     }
     if (value instanceof Map) {
-      @SuppressWarnings("unchecked")
-      final Map<T, U> test = (Map<T, U>) value;
       try {
+        @SuppressWarnings("unchecked")
+        final Map<T, U> test = (Map<T, U>) value;
         if (map != null && !map.isEmpty() && !test.isEmpty()) {
           T key = null;
           U val = null;

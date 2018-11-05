@@ -204,8 +204,7 @@ public class GameProperties extends GameDataComponent {
       if (prop == null || prop.getName() == null) {
         continue;
       }
-      final IEditableProperty<?> p = gamePropertiesToBeChanged.editableProperties
-          .get(prop.getName());
+      final IEditableProperty<?> p = gamePropertiesToBeChanged.editableProperties.get(prop.getName());
       if (p != null && prop.getName().equals(p.getName())) {
         p.setValueIfValid(prop.getValue());
       }
