@@ -146,7 +146,7 @@ public final class GameStepPropertiesHelper {
       final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.FIRE_ROCKETS);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
-      } else if (data.getSequence().getStep().getDelegate().getName().compareTo("battle") == 0) {
+      } else if (data.getSequence().getStep().getDelegate().getName().equals("battle")) {
         return Properties.getWW2V2(data) || Properties.getWW2V3(data);
       } else if (Properties.getWW2V2(data) || Properties.getWW2V3(data)) {
         return isCombatDelegate(data);
