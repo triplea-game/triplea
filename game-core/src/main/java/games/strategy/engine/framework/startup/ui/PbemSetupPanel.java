@@ -44,7 +44,7 @@ import games.strategy.engine.pbem.GmailEmailSender;
 import games.strategy.engine.pbem.HotmailEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.engine.pbem.TripleAForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.InternalDiceServer;
@@ -192,7 +192,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     forumPosters.add(useCacheIfAvailable(new TripleAForumPoster()));
     forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
-    final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PBEMMessagePoster.FORUM_POSTER_PROP_NAME);
+    final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PbemMessagePoster.FORUM_POSTER_PROP_NAME);
     if (forumPoster != null) {
       // if we have a cached version, use the credentials from this, as each player has different forum login
       final IForumPoster cached =
@@ -221,7 +221,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     emailSenders.add(useCacheIfAvailable(new GenericEmailSender()));
     emailSenderEditor.setBeans(emailSenders);
     // now get the sender from the save game, update it with credentials from the cache, and set it
-    final IEmailSender sender = (IEmailSender) data.getProperties().get(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME);
+    final IEmailSender sender = (IEmailSender) data.getProperties().get(PbemMessagePoster.EMAIL_SENDER_PROP_NAME);
     if (sender != null) {
       final IEmailSender cached =
           (IEmailSender) LocalBeanCache.INSTANCE.getSerializable(sender.getClass().getCanonicalName());
@@ -287,7 +287,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
       // this was the sensitive info is not stored in the save game, but the user cache still has the password
       final IForumPoster summaryPoster = poster.doClone();
       summaryPoster.clearSensitiveInfo();
-      data.getProperties().set(PBEMMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
+      data.getProperties().set(PbemMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
     }
     // store the email poster
     IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
@@ -296,11 +296,11 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
       // the locally cached version still has the password so the user doesn't have to enter it every time
       sender = sender.clone();
       sender.clearSensitiveInfo();
-      data.getProperties().set(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
+      data.getProperties().set(PbemMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
     }
     // store whether we are a pbem game or not, whether we are capable of posting a game save
     if (poster != null || sender != null) {
-      data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, true);
+      data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, true);
     }
   }
 

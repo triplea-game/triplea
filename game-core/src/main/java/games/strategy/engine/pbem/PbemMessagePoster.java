@@ -27,10 +27,10 @@ import lombok.extern.java.Log;
  * although the PBEM games will always be local
  */
 @Log
-public class PBEMMessagePoster implements Serializable {
+public class PbemMessagePoster implements Serializable {
   public static final String FORUM_POSTER_PROP_NAME = "games.strategy.engine.pbem.IForumPoster";
   public static final String EMAIL_SENDER_PROP_NAME = "games.strategy.engine.pbem.IEmailSender";
-  public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PBEMMessagePoster";
+  public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PbemMessagePoster";
   private static final long serialVersionUID = 2256265436928530566L;
 
   private final IForumPoster forumPoster;
@@ -44,7 +44,7 @@ public class PBEMMessagePoster implements Serializable {
   private final transient int roundNumber;
   private final transient String gameNameAndInfo;
 
-  public PBEMMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber,
+  public PbemMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber,
       final String title) {
     this.currentPlayer = currentPlayer;
     this.roundNumber = roundNumber;
@@ -193,7 +193,7 @@ public class PBEMMessagePoster implements Serializable {
    * posted.
    */
   public static void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame,
-      final PBEMMessagePoster posterPbem, final IAbstractForumPosterDelegate postingDelegate,
+      final PbemMessagePoster posterPbem, final IAbstractForumPosterDelegate postingDelegate,
       final TripleAFrame frame, final JComponent postButton) {
     String message = "";
     final IForumPoster turnSummaryMsgr = posterPbem.getForumPoster();

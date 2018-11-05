@@ -12,7 +12,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LauncherFactory;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.ui.SwingAction;
 
 /** Setup panel when hosting a local game. */
@@ -49,7 +49,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   @Override
   public void postStartGame() {
     final GameData data = gameSelectorModel.getGameData();
-    data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
+    data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, false);
   }
 
   @Override
