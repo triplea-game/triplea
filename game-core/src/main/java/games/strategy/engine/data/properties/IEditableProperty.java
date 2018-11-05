@@ -51,6 +51,7 @@ public interface IEditableProperty<T> {
 
   int getRowsNeeded();
 
+  @SuppressWarnings("unchecked")
   default void setValueIfValid(final Object object) {
     if (validate(object)) {
       setValue((T) object);
