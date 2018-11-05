@@ -4,8 +4,8 @@ import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.util.Interruptibles;
 import lombok.Getter;
 import lombok.ToString;

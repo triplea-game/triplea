@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.triplea.player.AbstractHumanPlayer;
 
 public class LocalPlayers {

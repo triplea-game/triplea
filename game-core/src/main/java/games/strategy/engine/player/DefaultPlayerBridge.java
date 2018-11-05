@@ -1,4 +1,4 @@
-package games.strategy.engine.gamePlayer;
+package games.strategy.engine.player;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

@@ -3,8 +3,8 @@ package games.strategy.triplea.ui;
 import javax.swing.Action;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.pbem.ForumPosterComponent;
+import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.ui.SwingAction;
 
