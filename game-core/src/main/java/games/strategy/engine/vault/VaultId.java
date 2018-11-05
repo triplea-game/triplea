@@ -8,7 +8,7 @@ import games.strategy.net.INode;
 /**
  * Uniquely identifies a cryptographic vault used to store random numbers on a particular node.
  */
-public class VaultID implements Serializable {
+public class VaultId implements Serializable {
   private static final long serialVersionUID = 8863728184933393296L;
   private static long currentId;
 
@@ -21,7 +21,7 @@ public class VaultID implements Serializable {
   // unique in this vm
   private final long uniqueId = getNextId();
 
-  VaultID(final INode generatedOn) {
+  VaultId(final INode generatedOn) {
     this.generatedOn = generatedOn;
   }
 
@@ -31,10 +31,10 @@ public class VaultID implements Serializable {
 
   @Override
   public boolean equals(final Object o) {
-    if (!(o instanceof VaultID)) {
+    if (!(o instanceof VaultId)) {
       return false;
     }
-    final VaultID other = (VaultID) o;
+    final VaultId other = (VaultId) o;
     return other.generatedOn.equals(this.generatedOn) && other.uniqueId == this.uniqueId;
   }
 
@@ -45,6 +45,6 @@ public class VaultID implements Serializable {
 
   @Override
   public String toString() {
-    return "VaultID generated on:" + generatedOn + " id:" + uniqueId;
+    return "VaultId generated on:" + generatedOn + " id:" + uniqueId;
   }
 }
