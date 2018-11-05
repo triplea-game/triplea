@@ -14,7 +14,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 
@@ -201,7 +201,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame) {
+  public boolean postTurnSummary(final PbemMessagePoster poster, final String title, final boolean includeSaveGame) {
     return poster.post(bridge.getHistoryWriter(), title, includeSaveGame);
   }
 

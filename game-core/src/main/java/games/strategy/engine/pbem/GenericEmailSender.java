@@ -65,29 +65,29 @@ public class GenericEmailSender implements IEmailSender {
     NONE, TLS
   }
 
-  private long m_timeout = TimeUnit.SECONDS.toMillis(60);
-  private String m_subjectPrefix;
-  private String m_userName;
-  private transient String transientUserName;
-  private String m_password;
+  private long timeout = TimeUnit.SECONDS.toMillis(60);
+  private String subjectPrefix;
+  private String username;
+  private transient String transientUsername;
+  private String password;
   private transient String transientPassword;
-  private String m_toAddress;
-  private String m_host = "smptserver.example.com";
-  private int m_port = 25;
-  private Encryption m_encryption;
-  private boolean m_alsoPostAfterCombatMove = false;
+  private String toAddress;
+  private String host = "smptserver.example.com";
+  private int port = 25;
+  private Encryption encryption;
+  private boolean alsoPostAfterCombatMove = false;
   private boolean credentialsSaved = false;
   private boolean credentialsProtected = false;
 
   private void writeObject(final ObjectOutputStream out) throws IOException {
-    final String userName = m_userName;
-    final String password = m_password;
+    final String username = this.username;
+    final String password = this.password;
     try {
       protectCredentials();
       out.defaultWriteObject();
     } finally {
-      m_userName = userName;
-      m_password = password;
+      this.username = username;
+      this.password = password;
     }
   }
 
@@ -95,12 +95,12 @@ public class GenericEmailSender implements IEmailSender {
     if (credentialsSaved) {
       credentialsProtected = true;
       try (CredentialManager credentialManager = CredentialManager.newInstance()) {
-        m_userName = credentialManager.protect(m_userName);
-        m_password = credentialManager.protect(m_password);
+        username = credentialManager.protect(username);
+        password = credentialManager.protect(password);
       } catch (final CredentialManagerException e) {
         log.log(Level.SEVERE, "failed to protect PBEM credentials", e);
-        m_userName = "";
-        m_password = "";
+        username = "";
+        password = "";
       }
     } else {
       credentialsProtected = false;
@@ -115,12 +115,12 @@ public class GenericEmailSender implements IEmailSender {
   private void unprotectCredentials() {
     if (credentialsProtected) {
       try (CredentialManager credentialManager = CredentialManager.newInstance()) {
-        m_userName = credentialManager.unprotectToString(m_userName);
-        m_password = credentialManager.unprotectToString(m_password);
+        username = credentialManager.unprotectToString(username);
+        password = credentialManager.unprotectToString(password);
       } catch (final CredentialManagerException e) {
         log.log(Level.SEVERE, "failed to unprotect PBEM credentials", e);
-        m_userName = "";
-        m_password = "";
+        username = "";
+        password = "";
       }
     }
   }
@@ -129,22 +129,22 @@ public class GenericEmailSender implements IEmailSender {
   public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName)
       throws IOException {
     // this is the last step and we create the email to send
-    if (m_toAddress == null) {
+    if (toAddress == null) {
       throw new IOException("Could not send email, no To address configured");
     }
     final Properties props = new Properties();
     if (getUserName() != null) {
       props.put("mail.smtp.auth", "true");
     }
-    if (m_encryption == Encryption.TLS) {
+    if (encryption == Encryption.TLS) {
       props.put("mail.smtp.starttls.enable", "true");
       props.put("mail.smtp.starttls.required", "true");
     }
     props.put("mail.smtp.host", getHost());
     props.put("mail.smtp.port", getPort());
-    props.put("mail.smtp.connectiontimeout", m_timeout);
-    props.put("mail.smtp.timeout", m_timeout);
-    final String to = m_toAddress;
+    props.put("mail.smtp.connectiontimeout", timeout);
+    props.put("mail.smtp.timeout", timeout);
+    final String to = toAddress;
     final String from = getUserName();
     // todo get the turn and player number from the game data
     try {
@@ -160,7 +160,7 @@ public class GenericEmailSender implements IEmailSender {
         mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(token));
       }
       // subject
-      mimeMessage.setSubject(m_subjectPrefix + " " + subject);
+      mimeMessage.setSubject(subjectPrefix + " " + subject);
       final MimeBodyPart bodypart = new MimeBodyPart();
       bodypart.setText(htmlMessage, "UTF-8");
       bodypart.setHeader("Content-Type", "text/html");
@@ -211,23 +211,23 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public String getUserName() {
-    return USE_TRANSIENT_CREDENTIAL.equals(m_userName) ? transientUserName : m_userName;
+    return USE_TRANSIENT_CREDENTIAL.equals(username) ? transientUsername : username;
   }
 
   @Override
-  public void setUserName(final String userName) {
-    m_userName = credentialsSaved ? userName : USE_TRANSIENT_CREDENTIAL;
-    transientUserName = userName;
+  public void setUserName(final String username) {
+    this.username = credentialsSaved ? username : USE_TRANSIENT_CREDENTIAL;
+    transientUsername = username;
   }
 
   @Override
   public String getPassword() {
-    return USE_TRANSIENT_CREDENTIAL.equals(m_password) ? transientPassword : m_password;
+    return USE_TRANSIENT_CREDENTIAL.equals(password) ? transientPassword : password;
   }
 
   @Override
   public void setPassword(final String password) {
-    m_password = credentialsSaved ? password : USE_TRANSIENT_CREDENTIAL;
+    this.password = credentialsSaved ? password : USE_TRANSIENT_CREDENTIAL;
     transientPassword = password;
   }
 
@@ -239,7 +239,7 @@ public class GenericEmailSender implements IEmailSender {
   @Override
   public void setCredentialsSaved(final boolean credentialsSaved) {
     this.credentialsSaved = credentialsSaved;
-    setUserName(transientUserName);
+    setUserName(transientUsername);
     setPassword(transientPassword);
   }
 
@@ -249,7 +249,7 @@ public class GenericEmailSender implements IEmailSender {
    * @return the timeout
    */
   public long getTimeout() {
-    return m_timeout;
+    return timeout;
   }
 
   /**
@@ -259,7 +259,7 @@ public class GenericEmailSender implements IEmailSender {
    * @param timeout the timeout in milli seconds. The default is 60 seconds (60000 milli seconds)
    */
   public void setTimeout(final long timeout) {
-    m_timeout = timeout;
+    this.timeout = timeout;
   }
 
   /**
@@ -268,7 +268,7 @@ public class GenericEmailSender implements IEmailSender {
    * @return the host to send to
    */
   public String getHost() {
-    return m_host;
+    return host;
   }
 
   /**
@@ -277,7 +277,7 @@ public class GenericEmailSender implements IEmailSender {
    * @param host the host
    */
   public void setHost(final String host) {
-    m_host = host;
+    this.host = host;
   }
 
   /**
@@ -286,7 +286,7 @@ public class GenericEmailSender implements IEmailSender {
    * @return the port
    */
   public int getPort() {
-    return m_port;
+    return port;
   }
 
   /**
@@ -295,7 +295,7 @@ public class GenericEmailSender implements IEmailSender {
    * @param port the port
    */
   public void setPort(final int port) {
-    m_port = port;
+    this.port = port;
   }
 
   /**
@@ -304,7 +304,7 @@ public class GenericEmailSender implements IEmailSender {
    * @return the selected encryption
    */
   public Encryption getEncryption() {
-    return m_encryption;
+    return encryption;
   }
 
   /**
@@ -313,7 +313,7 @@ public class GenericEmailSender implements IEmailSender {
    * @param encryption the encryption
    */
   public void setEncryption(final Encryption encryption) {
-    m_encryption = encryption;
+    this.encryption = encryption;
   }
 
   /**
@@ -322,18 +322,18 @@ public class GenericEmailSender implements IEmailSender {
    * @param to the to addresses
    */
   public void setToAddress(final String to) {
-    m_toAddress = to;
+    toAddress = to;
   }
 
   @Override
   public String getToAddress() {
-    return m_toAddress;
+    return toAddress;
   }
 
   @Override
   public void clearSensitiveInfo() {
     credentialsSaved = false;
-    m_userName = m_password = USE_TRANSIENT_CREDENTIAL;
+    username = password = USE_TRANSIENT_CREDENTIAL;
   }
 
   @Override
@@ -354,20 +354,20 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public boolean getAlsoPostAfterCombatMove() {
-    return m_alsoPostAfterCombatMove;
+    return alsoPostAfterCombatMove;
   }
 
   @Override
   public void setAlsoPostAfterCombatMove(final boolean postAlso) {
-    m_alsoPostAfterCombatMove = postAlso;
+    alsoPostAfterCombatMove = postAlso;
   }
 
   public String getSubjectPrefix() {
-    return m_subjectPrefix;
+    return subjectPrefix;
   }
 
   public void setSubjectPrefix(final String subjectPrefix) {
-    m_subjectPrefix = subjectPrefix;
+    this.subjectPrefix = subjectPrefix;
   }
 
   @Override
@@ -387,8 +387,8 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public String toString() {
-    return "GenericEmailSender{" + "m_toAddress='" + m_toAddress + '\'' + ", m_userName='" + m_userName + '\''
-        + ", m_host='" + m_host + '\'' + ", m_port=" + m_port + ", m_encryption=" + m_encryption + '}';
+    return "GenericEmailSender{" + "toAddress='" + toAddress + '\'' + ", username='" + username + '\''
+        + ", host='" + host + '\'' + ", port=" + port + ", encryption=" + encryption + '}';
   }
 
   @Override

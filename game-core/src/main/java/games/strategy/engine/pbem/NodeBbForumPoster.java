@@ -64,7 +64,7 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(new BasicNameValuePair("content",
-            text + ((m_includeSaveGame && saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
+            text + ((includeSaveGame && saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
@@ -158,7 +158,7 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
 
   @Override
   public void viewPosted() {
-    OpenFileUtility.openUrl(getForumUrl() + "/topic/" + m_topicId);
+    OpenFileUtility.openUrl(getForumUrl() + "/topic/" + topicId);
   }
 
   @Override
