@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 public final class Md5CryptTest {
   @Nested
+  @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
   public final class HashPasswordTest {
     @Test
     public void shouldReturnHashedPassword() {

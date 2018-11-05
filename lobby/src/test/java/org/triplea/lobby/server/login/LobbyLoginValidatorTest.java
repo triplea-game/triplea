@@ -104,6 +104,7 @@ public final class LobbyLoginValidatorTest {
       return RsaAuthenticator.hashPasswordWithSalt(password);
     }
 
+    @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
     final String md5Crypt(final String password) {
       return Md5Crypt.hashPassword(password, md5CryptSalt);
     }
