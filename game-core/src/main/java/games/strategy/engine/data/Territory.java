@@ -13,32 +13,15 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   private final boolean water;
   private PlayerID owner = PlayerID.NULL_PLAYERID;
   private final UnitCollection units;
-  // In a grid-based game, stores the coordinate of the Territory
-  @SuppressWarnings("unused")
-  private final int[] coordinate;
 
   public Territory(final String name, final GameData data) {
     this(name, false, data);
   }
 
-  /** Creates new Territory. */
   public Territory(final String name, final boolean water, final GameData data) {
     super(name, data);
     this.water = water;
     units = new UnitCollection(this, getData());
-    coordinate = null;
-  }
-
-  /** Creates new Territory. */
-  public Territory(final String name, final boolean water, final GameData data, final int... coordinate) {
-    super(name, data);
-    this.water = water;
-    units = new UnitCollection(this, getData());
-    if (data.getMap().isCoordinateValid(coordinate)) {
-      this.coordinate = coordinate;
-    } else {
-      throw new IllegalArgumentException("Invalid coordinate: " + coordinate[0] + "," + coordinate[1]);
-    }
   }
 
   public boolean isWater() {
