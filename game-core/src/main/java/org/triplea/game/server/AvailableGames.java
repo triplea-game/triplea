@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.headlessGameServer;
+package org.triplea.game.server;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +34,7 @@ import lombok.extern.java.Log;
  */
 @Log
 @Immutable
-public final class AvailableGames {
+final class AvailableGames {
   private static final String ZIP_EXTENSION = ".zip";
   private final Map<String, URI> availableGames;
   private final Set<String> availableMapFolderOrZipNames;
@@ -151,7 +151,7 @@ public final class AvailableGames {
   /**
    * Can return null.
    */
-  public GameData getGameData(final String gameName) {
+  GameData getGameData(final String gameName) {
     return Optional.ofNullable(availableGames.get(gameName))
         .map(uri -> parse(uri).orElse(null))
         .orElse(null);
@@ -169,7 +169,7 @@ public final class AvailableGames {
     return Optional.empty();
   }
 
-  public boolean containsMapName(final String mapNameProperty) {
+  boolean containsMapName(final String mapNameProperty) {
     return availableMapFolderOrZipNames.contains(mapNameProperty)
         || availableMapFolderOrZipNames.contains(mapNameProperty + "-master");
   }

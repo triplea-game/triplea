@@ -20,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.common.LobbyConstants;
@@ -30,7 +31,6 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.IGame;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemoteMessenger;

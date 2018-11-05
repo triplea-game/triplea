@@ -20,12 +20,12 @@ import java.util.zip.GZIPOutputStream;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.io.IOUtils;
+import org.triplea.game.server.HeadlessGameServer;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;

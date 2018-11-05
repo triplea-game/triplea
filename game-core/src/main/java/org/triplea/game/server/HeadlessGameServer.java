@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.headlessGameServer;
+package org.triplea.game.server;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;

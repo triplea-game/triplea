@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.headlessGameServer;
+package org.triplea.game.server;
 
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
@@ -8,7 +8,7 @@ import games.strategy.engine.framework.startup.ui.ISetupPanel;
 /**
  * Setup panel model for headless server.
  */
-public class HeadlessServerSetupPanelModel extends SetupPanelModel {
+class HeadlessServerSetupPanelModel extends SetupPanelModel {
   HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel) {
     super(gameSelectorModel);
   }
