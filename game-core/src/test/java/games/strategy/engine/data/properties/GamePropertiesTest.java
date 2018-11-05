@@ -20,7 +20,7 @@ final class GamePropertiesTest {
           new StringProperty("name3", "description3", "value3"));
 
       final byte[] bytes = GameProperties.writeEditableProperties(expected);
-      final List<IEditableProperty<Object>> actual = GameProperties.readEditableProperties(bytes);
+      final List<IEditableProperty<?>> actual = GameProperties.readEditableProperties(bytes);
 
       assertThat(actual, is(expected));
     }

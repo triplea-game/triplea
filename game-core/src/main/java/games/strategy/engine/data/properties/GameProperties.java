@@ -36,7 +36,7 @@ public class GameProperties extends GameDataComponent {
 
   // keep this in sync with the corresponding property, this name is used by reflection
   public static final String EDITABLE_PROPERTIES_FIELD_NAME = "editableProperties";
-  private final Map<String, IEditableProperty<Object>> editableProperties = new HashMap<>();
+  private final Map<String, IEditableProperty<?>> editableProperties = new HashMap<>();
 
   // This list is used to keep track of order properties were
   // added.
@@ -111,7 +111,7 @@ public class GameProperties extends GameDataComponent {
     return (String) value;
   }
 
-  public void addEditableProperty(final IEditableProperty<Object> property) {
+  public void addEditableProperty(final IEditableProperty<?> property) {
     // add to the editable properties
     editableProperties.put(property.getName(), property);
     ordering.add(property.getName());
@@ -122,8 +122,8 @@ public class GameProperties extends GameDataComponent {
    *
    * @return a list of IEditableProperty
    */
-  public List<IEditableProperty<Object>> getEditableProperties() {
-    final List<IEditableProperty<Object>> properties = new ArrayList<>();
+  public List<IEditableProperty<?>> getEditableProperties() {
+    final List<IEditableProperty<?>> properties = new ArrayList<>();
     for (final String propertyName : ordering) {
       if (editableProperties.containsKey(propertyName)) {
         properties.add(editableProperties.get(propertyName));

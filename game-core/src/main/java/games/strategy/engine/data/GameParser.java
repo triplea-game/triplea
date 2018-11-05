@@ -941,7 +941,7 @@ public final class GameParser {
       default:
         throw newGameParseException("Unrecognized property type:" + childName);
     }
-    data.getProperties().addEditableProperty((IEditableProperty<Object>) editableProperty);
+    data.getProperties().addEditableProperty(editableProperty);
   }
 
   private void parseOffset(final Node offsetAttributes) {
