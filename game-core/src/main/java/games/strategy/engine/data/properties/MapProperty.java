@@ -86,10 +86,6 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
 
   @Override
   public boolean validate(final Object value) {
-    if (value == null) {
-      // is this ok? no idea, no maps or anything use this
-      return false;
-    }
     if (value instanceof Map) {
       try {
         @SuppressWarnings("unchecked")
