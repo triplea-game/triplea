@@ -209,13 +209,13 @@ public class GameSelectorPanel extends JPanel implements Observer {
     if (buttonPressed == null || buttonPressed.equals(cancel)) {
       // restore properties, if cancel was pressed, or window was closed
       for (final IEditableProperty<?> property : model.getGameData().getProperties().getEditableProperties()) {
-        property.setValueIfValid(currentPropertiesMap.get(property.getName()));
+        property.validateAndSet(currentPropertiesMap.get(property.getName()));
       }
     } else if (buttonPressed.equals(reset)) {
       if (!originalPropertiesMap.isEmpty()) {
         // restore properties, if cancel was pressed, or window was closed
         for (final IEditableProperty<?> property : model.getGameData().getProperties().getEditableProperties()) {
-          property.setValueIfValid(originalPropertiesMap.get(property.getName()));
+          property.validateAndSet(originalPropertiesMap.get(property.getName()));
         }
         selectGameOptions();
       }

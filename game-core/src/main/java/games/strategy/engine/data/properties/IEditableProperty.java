@@ -52,9 +52,17 @@ public interface IEditableProperty<T> {
   int getRowsNeeded();
 
   @SuppressWarnings("unchecked")
-  default void setValueIfValid(final Object object) {
+  default boolean setValueIfValid(final Object object) {
     if (validate(object)) {
       setValue((T) object);
+      return true;
+    }
+    return false;
+  }
+
+  default void validateAndSet(final Object object) {
+    if (!setValueIfValid(object)) {
+      throw new IllegalStateException("Invalid value " + object + " for class " + getClass().getCanonicalName());
     }
   }
 }

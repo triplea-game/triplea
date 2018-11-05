@@ -71,7 +71,7 @@ public class FileBackedGamePropertiesCache implements IGamePropertiesCache {
           for (final IEditableProperty<?> property : gameData.getProperties().getEditableProperties()) {
             final Serializable ser = serializedMap.get(property.getName());
             if (ser != null) {
-              property.setValueIfValid(ser);
+              property.validateAndSet(ser);
             }
           }
         }
