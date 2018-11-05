@@ -51,29 +51,29 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     super(name, description);
     this.setter = setter;
 
+    final IEditableProperty<?> property;
 
     if (defaultValue instanceof Boolean) {
-      property = (IEditableProperty<T>) new BooleanProperty(name, description, ((Boolean) defaultValue));
+      property = new BooleanProperty(name, description, ((Boolean) defaultValue));
     } else if (defaultValue instanceof Color) {
-      property = (IEditableProperty<T>) new ColorProperty(name, description, ((Color) defaultValue));
+      property = new ColorProperty(name, description, ((Color) defaultValue));
     } else if (defaultValue instanceof File) {
-      property = (IEditableProperty<T>) new FileProperty(name, description, ((File) defaultValue));
+      property = new FileProperty(name, description, ((File) defaultValue));
     } else if (defaultValue instanceof String) {
-      property = (IEditableProperty<T>) new StringProperty(name, description, ((String) defaultValue));
+      property = new StringProperty(name, description, ((String) defaultValue));
     } else if (defaultValue instanceof Collection) {
-      property = (IEditableProperty<T>) new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
+      property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
     } else if (defaultValue instanceof Map) {
-      property = (IEditableProperty<T>) new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
+      property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
-      property = (IEditableProperty<T>) new NumberProperty(name, description,
-          Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
+      property = new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
     } else if (defaultValue instanceof Double) {
-      property = (IEditableProperty<T>) new DoubleProperty(name, description,
-          Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
+      property = new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
     } else {
       throw new IllegalArgumentException(
           "Cannot instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
     }
+    this.property = (IEditableProperty<T>) property;
   }
 
   @Override
