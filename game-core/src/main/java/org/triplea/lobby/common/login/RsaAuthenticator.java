@@ -50,13 +50,6 @@ public final class RsaAuthenticator {
   }
 
   /**
-   * Returns true if the specified map contains the required values.
-   */
-  public static boolean canProcessChallenge(final Map<String, String> challenge) {
-    return challenge.containsKey(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY);
-  }
-
-  /**
    * Creates a new challenge for the lobby server to send to the lobby client.
    *
    * @return The challenge as a collection of properties to be added to the message the lobby server sends the lobby
