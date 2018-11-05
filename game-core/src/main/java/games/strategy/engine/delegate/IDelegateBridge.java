@@ -6,8 +6,8 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ISound;
 

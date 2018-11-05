@@ -10,7 +10,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.player.IGamePlayer;
 
 class PlayerTypeTest {
 

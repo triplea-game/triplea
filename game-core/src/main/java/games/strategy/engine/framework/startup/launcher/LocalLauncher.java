@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;

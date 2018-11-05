@@ -8,7 +8,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;

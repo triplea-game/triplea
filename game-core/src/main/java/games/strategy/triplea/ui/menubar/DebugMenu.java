@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.swing.JMenu;
 
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;

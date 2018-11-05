@@ -9,7 +9,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.gamePlayer.IRemotePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;

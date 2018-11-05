@@ -1,4 +1,4 @@
-package games.strategy.engine.gamePlayer;
+package games.strategy.engine.player;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.startup.ui.PlayerType;

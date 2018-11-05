@@ -12,9 +12,9 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.player.IGamePlayer;
 
 /**
  * A game loader is responsible for telling the framework
