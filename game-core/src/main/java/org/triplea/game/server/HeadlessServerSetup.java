@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.headlessGameServer;
+package org.triplea.game.server;
 
 import java.util.List;
 import java.util.Map;

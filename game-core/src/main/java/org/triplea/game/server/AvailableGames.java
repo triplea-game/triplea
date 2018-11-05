@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.headlessGameServer;
+package org.triplea.game.server;
 
 import java.io.File;
 import java.io.FileInputStream;
