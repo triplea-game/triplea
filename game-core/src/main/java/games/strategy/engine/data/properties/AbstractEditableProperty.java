@@ -11,7 +11,7 @@ import javax.swing.JComponent;
  * @param <T> The generic Type of the value being stored.
  */
 public abstract class AbstractEditableProperty<T>
-    implements IEditableProperty<T>, Serializable, Comparable<AbstractEditableProperty<T>> {
+    implements IEditableProperty<T>, Serializable, Comparable<AbstractEditableProperty<?>> {
   private static final long serialVersionUID = -5005729898242568847L;
 
   private final String name;
@@ -51,11 +51,11 @@ public abstract class AbstractEditableProperty<T>
 
   @Override
   public boolean equals(final Object other) {
-    return other instanceof AbstractEditableProperty && ((AbstractEditableProperty) other).name.equals(name);
+    return other instanceof AbstractEditableProperty && ((AbstractEditableProperty<?>) other).name.equals(name);
   }
 
   @Override
-  public int compareTo(final AbstractEditableProperty other) {
+  public int compareTo(final AbstractEditableProperty<?> other) {
     return name.compareTo(other.getName());
   }
 
