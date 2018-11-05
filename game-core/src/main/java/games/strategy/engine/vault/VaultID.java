@@ -16,17 +16,17 @@ public class VaultID implements Serializable {
     return currentId++;
   }
 
-  private final INode m_generatedOn;
+  private final INode generatedOn;
   // this is a unique and monotone increasing id
   // unique in this vm
-  private final long m_uniqueID = getNextId();
+  private final long uniqueId = getNextId();
 
   VaultID(final INode generatedOn) {
-    m_generatedOn = generatedOn;
+    this.generatedOn = generatedOn;
   }
 
   INode getGeneratedOn() {
-    return m_generatedOn;
+    return generatedOn;
   }
 
   @Override
@@ -35,16 +35,16 @@ public class VaultID implements Serializable {
       return false;
     }
     final VaultID other = (VaultID) o;
-    return other.m_generatedOn.equals(this.m_generatedOn) && other.m_uniqueID == this.m_uniqueID;
+    return other.generatedOn.equals(this.generatedOn) && other.uniqueId == this.uniqueId;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_uniqueID, m_generatedOn.getName());
+    return Objects.hash(uniqueId, generatedOn.getName());
   }
 
   @Override
   public String toString() {
-    return "VaultID generated on:" + m_generatedOn + " id:" + m_uniqueID;
+    return "VaultID generated on:" + generatedOn + " id:" + uniqueId;
   }
 }
