@@ -2,18 +2,14 @@ package games.strategy.engine.data.properties;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.logging.Level;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import lombok.extern.java.Log;
-
 /**
  * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
  */
-@Log
 public class DoubleProperty extends AbstractEditableProperty<Double> {
   private static final long serialVersionUID = 5521967819500867581L;
 
@@ -69,12 +65,8 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   @Override
   public boolean validate(final Object value) {
     if (value instanceof Double) {
-      try {
-        final double d = roundToPlace((Double) value, places);
-        return d <= max && d >= min;
-      } catch (final Exception e) {
-        log.log(Level.WARNING, "Error during evaluation", e);
-      }
+      final double d = roundToPlace((Double) value, places);
+      return d <= max && d >= min;
     }
     return false;
   }
