@@ -195,7 +195,6 @@ public class GameProperties extends GameDataComponent {
     applyListToChangeProperties(editableProperties, gamePropertiesToBeChanged);
   }
 
-  @SuppressWarnings("unchecked")
   private static void applyListToChangeProperties(final List<IEditableProperty<?>> editableProperties,
       final GameProperties gamePropertiesToBeChanged) {
     if (editableProperties == null || editableProperties.isEmpty()) {

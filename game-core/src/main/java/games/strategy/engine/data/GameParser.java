@@ -895,7 +895,6 @@ public final class GameParser {
         new NumberProperty(Constants.getPuIncomeBonus(playerId), null, 999, 0, 0)));
   }
 
-  @SuppressWarnings("unchecked")
   private void parseEditableProperty(final Element property, final String name, final String defaultValue)
       throws GameParseException {
     // what type
