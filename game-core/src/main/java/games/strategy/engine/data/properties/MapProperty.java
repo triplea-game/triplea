@@ -85,13 +85,13 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public boolean validate(final Object value) {
     if (value == null) {
       // is this ok? no idea, no maps or anything use this
       return false;
     }
     if (value instanceof Map) {
+      @SuppressWarnings("unchecked")
       final Map<T, U> test = (Map<T, U>) value;
       try {
         if (map != null && !map.isEmpty() && !test.isEmpty()) {
@@ -108,7 +108,7 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
             for (final Entry<T, U> entry : test.entrySet()) {
               if (entry.getKey() != null && entry.getValue() != null
                   && (!entry.getKey().getClass().isAssignableFrom(key.getClass())
-                  || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
+                      || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
                 return false;
               }
             }
