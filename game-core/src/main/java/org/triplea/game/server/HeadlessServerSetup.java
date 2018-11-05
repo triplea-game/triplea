@@ -1,4 +1,4 @@
-package games.strategy.engine.framework.headlessGameServer;
+package org.triplea.game.server;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ import games.strategy.util.Interruptibles;
 /**
  * Server setup model.
  */
-public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
+class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   private final List<Observer> listeners = new CopyOnWriteArrayList<>();
   private final ServerModel model;
   private final GameSelectorModel gameSelectorModel;
@@ -93,7 +93,7 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
     return model.getChatPanel();
   }
 
-  public ServerModel getModel() {
+  ServerModel getModel() {
     return model;
   }
 
@@ -142,5 +142,4 @@ public class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   public boolean showCancelButton() {
     return true;
   }
-
 }

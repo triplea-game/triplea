@@ -10,7 +10,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.vault.Vault;
-import games.strategy.engine.vault.VaultID;
+import games.strategy.engine.vault.VaultId;
 
 /**
  * A random source that generates numbers using a secure algorithm shared
@@ -101,7 +101,7 @@ public class CryptoRandomSource implements IRandomSource {
     // generate numbers locally, and put them in the vault
     final int[] localRandom = plainRandom.getRandom(max, count, annotation);
     // lock it so the client knows that its there, but cant read it
-    final VaultID localId = vault.lock(intsToBytes(localRandom));
+    final VaultId localId = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
     final IRemoteRandom remote =
         (IRemoteRandom) (game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(remotePlayer)));

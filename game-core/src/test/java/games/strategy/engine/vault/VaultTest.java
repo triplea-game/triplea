@@ -64,7 +64,7 @@ public class VaultTest {
     // RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
     final Vault vault = new Vault(channelMessenger);
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
-    final VaultID id = vault.lock(data);
+    final VaultId id = vault.lock(data);
     vault.unlock(id);
     assertArrayEquals(data, vault.get(id));
     vault.release(id);
@@ -76,7 +76,7 @@ public class VaultTest {
    */
   public void temporarilyDisabledSoPleaseRunManuallytestServerLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
-    final VaultID id = serverVault.lock(data);
+    final VaultId id = serverVault.lock(data);
     clientVault.waitForId(id, 1000);
     assertTrue(clientVault.knowsAbout(id));
     serverVault.unlock(id);
@@ -90,7 +90,7 @@ public class VaultTest {
   @Test
   public void testClientLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
-    final VaultID id = clientVault.lock(data);
+    final VaultId id = clientVault.lock(data);
     serverVault.waitForId(id, 1000);
     assertTrue(serverVault.knowsAbout(id));
     clientVault.unlock(id);
@@ -108,8 +108,8 @@ public class VaultTest {
   public void temporarilyDisabledSoPleaseRunManuallytestMultiple() throws NotUnlockedException {
     final byte[] data1 = new byte[] {0, 1, 2, 3, 4, 5};
     final byte[] data2 = new byte[] {0xE, 0xF, 2, 1, 3, 1, 2, 12, 3, 31, 124, 12, 1};
-    final VaultID id1 = serverVault.lock(data1);
-    final VaultID id2 = serverVault.lock(data2);
+    final VaultId id1 = serverVault.lock(data1);
+    final VaultId id2 = serverVault.lock(data2);
     clientVault.waitForId(id1, 2000);
     clientVault.waitForId(id2, 2000);
     assertTrue(clientVault.knowsAbout(id1));
