@@ -583,7 +583,7 @@ public final class GameParser {
       for (int y = 0; y < sizeY; y++) {
         for (int x = 0; x < sizeX; x++) {
           final boolean isWater = water.contains(x + "-" + y);
-          map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
+          map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data));
         }
       }
       // Add any implicit horizontal connections
@@ -625,7 +625,7 @@ public final class GameParser {
         for (int x = 0; x < sizeX; x++) {
           if (!water.contains(x + "-" + y)) {
             final boolean isWater = false;
-            map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
+            map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data));
           }
         }
       }

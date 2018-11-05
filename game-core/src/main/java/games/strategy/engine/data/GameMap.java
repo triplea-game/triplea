@@ -77,7 +77,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return territories.get(listIndex);
   }
 
-  boolean isCoordinateValid(final int... coordinate) {
+  private boolean isCoordinateValid(final int... coordinate) {
     return coordinate.length == gridDimensions.length && IntStream.range(0, coordinate.length)
         .noneMatch(i -> coordinate[i] >= gridDimensions[i] || coordinate[i] < 0);
   }
