@@ -62,8 +62,8 @@ public final class Properties implements Constants {
     return data.getProperties().get(ROCKETS_CAN_FLY_OVER_IMPASSABLES, false);
   }
 
-  /**
-   * Pacific Theater.
+  /*
+   * Pacific Theater
    */
   public static boolean getPacificTheater(final GameData data) {
     return data.getProperties().get(PACIFIC_THEATER, false);

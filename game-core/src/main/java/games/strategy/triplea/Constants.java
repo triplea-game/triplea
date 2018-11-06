@@ -60,6 +60,7 @@ public interface Constants {
   String PROJECTION_OF_POWER = "Projection of Power";
   String ALL_ROCKETS_ATTACK = "All Rockets Attack";
   String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
+  String TARGET_ROCKETS_SEQUENTIALLY_AND_AFTER_SBR = "Target Rockets Sequentialy and After SBR";
   String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
   String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";
   String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
