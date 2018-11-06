@@ -1214,6 +1214,10 @@ public class WW2V3Year41Test {
   @Test
   public void testBomberWithTankOverWaterParatroopers() {
     final PlayerID germans = germans(gameData);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
+    advanceToStep(bridge, "CombatMove");
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     TechAttachment.get(germans).setParatroopers("true");
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory germany = territory("Germany", gameData);
@@ -1232,6 +1236,10 @@ public class WW2V3Year41Test {
   public void testBomberTankOverWater() {
     // can't transport a tank over water using a bomber
     final PlayerID germans = germans(gameData);
+    final IDelegateBridge bridge = newDelegateBridge(germans);
+    advanceToStep(bridge, "CombatMove");
+    moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
+    moveDelegate(gameData).start();
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory germany = territory("Germany", gameData);
     final Territory karelia = territory("Karelia S.S.R.", gameData);

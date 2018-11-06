@@ -537,7 +537,15 @@ public class AirMovementValidator {
     final List<Unit> ownedAir = new ArrayList<>();
     ownedAir.addAll(CollectionUtils.getMatches(route.getEnd().getUnits().getUnits(), ownedAirMatch));
     ownedAir.addAll(CollectionUtils.getMatches(units, ownedAirMatch));
-    // sort the list by shortest range first so those birds will get first pick of landingspots
+
+    // Remove suicide units if combat move and any enemy units at destination
+    final Collection<Unit> enemyUnitsAtEnd =
+        route.getEnd().getUnits().getMatches(Matches.enemyUnit(player, player.getData()));
+    if (!enemyUnitsAtEnd.isEmpty() && GameStepPropertiesHelper.isCombatMove(player.getData())) {
+      ownedAir.removeIf(Matches.unitIsSuicide());
+    }
+
+    // Sort the list by shortest range first so those birds will get first pick of landingspots
     ownedAir.sort(getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
     return ownedAir;
   }
