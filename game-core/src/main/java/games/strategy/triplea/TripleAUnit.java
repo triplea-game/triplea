@@ -13,7 +13,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -76,7 +76,7 @@ public class TripleAUnit extends Unit {
   // is this submarine submerged
   private boolean submerged = false;
   // original owner of this unit
-  private PlayerID originalOwner = null;
+  private PlayerId originalOwner = null;
   // Was this unit in combat
   private boolean wasInCombat = false;
   private boolean wasLoadedAfterCombat = false;
@@ -98,7 +98,7 @@ public class TripleAUnit extends Unit {
     return (TripleAUnit) u;
   }
 
-  public TripleAUnit(final UnitType type, final PlayerID owner, final GameData data) {
+  public TripleAUnit(final UnitType type, final PlayerId owner, final GameData data) {
     super(type, owner, data);
   }
 
@@ -236,11 +236,11 @@ public class TripleAUnit extends Unit {
     this.submerged = submerged;
   }
 
-  public PlayerID getOriginalOwner() {
+  public PlayerId getOriginalOwner() {
     return originalOwner;
   }
 
-  private void setOriginalOwner(final PlayerID originalOwner) {
+  private void setOriginalOwner(final PlayerId originalOwner) {
     this.originalOwner = originalOwner;
   }
 
@@ -373,14 +373,14 @@ public class TripleAUnit extends Unit {
   }
 
   public static int getProductionPotentialOfTerritory(final Collection<Unit> unitsAtStartOfStepInTerritory,
-      final Territory producer, final PlayerID player, final GameData data, final boolean accountForDamage,
+      final Territory producer, final PlayerId player, final GameData data, final boolean accountForDamage,
       final boolean mathMaxZero) {
     return getHowMuchCanUnitProduce(
         getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player,
         data, accountForDamage, mathMaxZero);
   }
 
-  public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player,
+  public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerId player,
       final GameData data, final boolean accountForDamage) {
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
         .and(Matches.unitIsBeingTransported().negate())
@@ -405,7 +405,7 @@ public class TripleAUnit extends Unit {
     return highestUnit;
   }
 
-  public static int getHowMuchCanUnitProduce(final Unit u, final Territory producer, final PlayerID player,
+  public static int getHowMuchCanUnitProduce(final Unit u, final Territory producer, final PlayerId player,
       final GameData data, final boolean accountForDamage, final boolean mathMaxZero) {
     if (u == null) {
       return 0;

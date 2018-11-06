@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
@@ -59,7 +59,7 @@ public class AirBattle extends AbstractBattle {
   // -1 would mean forever until one side is eliminated. (default is 1 round)
   protected final int maxRounds;
 
-  AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerID attacker,
+  AirBattle(final Territory battleSite, final boolean bombingRaid, final GameData data, final PlayerId attacker,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, bombingRaid, (bombingRaid ? BattleType.AIR_RAID : BattleType.AIR_BATTLE),
         data);
@@ -434,7 +434,7 @@ public class AirBattle extends AbstractBattle {
     if (units.isEmpty()) {
       return;
     }
-    final PlayerID retreatingPlayer = defender ? this.defender : attacker;
+    final PlayerId retreatingPlayer = defender ? this.defender : attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
     getDisplay(bridge).gotoBattleStep(battleId, step);
@@ -663,7 +663,7 @@ public class AirBattle extends AbstractBattle {
     return Matches.unitCanAirBattle();
   }
 
-  public static Predicate<Unit> defendingGroundSeaBattleInterceptors(final PlayerID attacker, final GameData data) {
+  public static Predicate<Unit> defendingGroundSeaBattleInterceptors(final PlayerId attacker, final GameData data) {
     return PredicateBuilder.of(
         Matches.unitCanAirBattle())
         .and(Matches.unitIsEnemyOf(data, attacker))
@@ -676,7 +676,7 @@ public class AirBattle extends AbstractBattle {
    * Returns a unit predicate that determines if it can potentially intercept including checking any
    * air base requirements.
    */
-  public static Predicate<Unit> defendingBombingRaidInterceptors(final Territory territory, final PlayerID attacker,
+  public static Predicate<Unit> defendingBombingRaidInterceptors(final Territory territory, final PlayerId attacker,
       final GameData data) {
     final Predicate<Unit> canIntercept = PredicateBuilder.of(
         Matches.unitCanIntercept())
@@ -693,7 +693,7 @@ public class AirBattle extends AbstractBattle {
             || Matches.territoryHasUnitsThatMatch(airbasesCanIntercept).test(territory));
   }
 
-  static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerID attacker,
+  static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerId attacker,
       final GameData data, final boolean bombing) {
     final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
     final Predicate<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(territory, attacker, data)
@@ -752,7 +752,7 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static void notifyCasualties(final GUID battleId, final IDelegateBridge bridge, final String stepName,
-      final DiceRoll dice, final PlayerID hitPlayer, final PlayerID firingPlayer, final CasualtyDetails details) {
+      final DiceRoll dice, final PlayerId hitPlayer, final PlayerId firingPlayer, final CasualtyDetails details) {
     getDisplay(bridge).casualtyNotification(battleId, stepName, dice, hitPlayer, details.getKilled(),
         details.getDamaged(), Collections.emptyMap());
     // execute in a seperate thread to allow either player to click continue first.

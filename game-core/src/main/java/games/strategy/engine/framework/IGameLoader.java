@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.ui.PlayerType;
@@ -58,5 +58,5 @@ public interface IGameLoader extends Serializable {
 
   void shutDown();
 
-  Unit createUnit(UnitType type, PlayerID owner, GameData data);
+  Unit createUnit(UnitType type, PlayerId owner, GameData data);
 }

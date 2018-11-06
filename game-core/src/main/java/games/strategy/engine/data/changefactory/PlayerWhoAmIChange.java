@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 
 class PlayerWhoAmIChange extends Change {
   private static final long serialVersionUID = -1486914230174337300L;
@@ -11,7 +11,7 @@ class PlayerWhoAmIChange extends Change {
   private final String endWhoAmI;
   private final String playerName;
 
-  PlayerWhoAmIChange(final String newWhoAmI, final PlayerID player) {
+  PlayerWhoAmIChange(final String newWhoAmI, final PlayerId player) {
     startWhoAmI = player.getWhoAmI();
     endWhoAmI = newWhoAmI;
     playerName = player.getName();
@@ -25,7 +25,7 @@ class PlayerWhoAmIChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    final PlayerID player = data.getPlayerList().getPlayerId(playerName);
+    final PlayerId player = data.getPlayerList().getPlayerId(playerName);
     player.setWhoAmI(endWhoAmI);
   }
 

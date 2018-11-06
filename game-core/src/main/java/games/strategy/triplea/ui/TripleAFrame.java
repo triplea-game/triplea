@@ -89,7 +89,7 @@ import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -216,9 +216,9 @@ public final class TripleAFrame extends JFrame {
   private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
   private List<Unit> unitsBeingMousedOver;
-  private PlayerID lastStepPlayer;
-  private PlayerID currentStepPlayer;
-  private final Map<PlayerID, Boolean> requiredTurnSeries = new HashMap<>();
+  private PlayerId lastStepPlayer;
+  private PlayerId currentStepPlayer;
+  private final Map<PlayerId, Boolean> requiredTurnSeries = new HashMap<>();
   private final ThreadPool messageAndDialogThreadPool = new ThreadPool(1);
   private final MapUnitTooltipManager tooltipManager;
   private boolean isCtrlPressed = false;
@@ -422,7 +422,7 @@ public final class TripleAFrame extends JFrame {
       }
       if (pane.getComponentAt(sel).equals(editPanel)) {
         data.acquireReadLock();
-        final PlayerID player1;
+        final PlayerId player1;
         try {
           player1 = data.getSequence().getStep().getPlayerId();
         } finally {
@@ -740,20 +740,20 @@ public final class TripleAFrame extends JFrame {
     setStatus(msg, mapPanel.getWarningImage());
   }
 
-  public IntegerMap<ProductionRule> getProduction(final PlayerID player, final boolean bid) {
+  public IntegerMap<ProductionRule> getProduction(final PlayerId player, final boolean bid) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToProduce(player);
     return actionButtons.waitForPurchase(bid);
   }
 
-  public Map<Unit, IntegerMap<RepairRule>> getRepair(final PlayerID player, final boolean bid,
-      final Collection<PlayerID> allowedPlayersToRepair) {
+  public Map<Unit, IntegerMap<RepairRule>> getRepair(final PlayerId player, final boolean bid,
+      final Collection<PlayerId> allowedPlayersToRepair) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToRepair(player);
     return actionButtons.waitForRepair(bid, allowedPlayersToRepair);
   }
 
-  public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat,
+  public MoveDescription getMove(final PlayerId player, final IPlayerBridge bridge, final boolean nonCombat,
       final String stepName) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToMove(player, nonCombat, stepName);
@@ -771,13 +771,13 @@ public final class TripleAFrame extends JFrame {
     }));
   }
 
-  public PlaceData waitForPlace(final PlayerID player, final boolean bid, final IPlayerBridge bridge) {
+  public PlaceData waitForPlace(final PlayerId player, final boolean bid, final IPlayerBridge bridge) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPlace(player);
     return actionButtons.waitForPlace(bid, bridge);
   }
 
-  public void waitForMoveForumPoster(final PlayerID player, final IPlayerBridge bridge) {
+  public void waitForMoveForumPoster(final PlayerId player, final IPlayerBridge bridge) {
     if (actionButtons == null) {
       return;
     }
@@ -785,7 +785,7 @@ public final class TripleAFrame extends JFrame {
     actionButtons.waitForMoveForumPosterPanel(this, bridge);
   }
 
-  public void waitForEndTurn(final PlayerID player, final IPlayerBridge bridge) {
+  public void waitForEndTurn(final PlayerId player, final IPlayerBridge bridge) {
     if (actionButtons == null) {
       return;
     }
@@ -793,7 +793,7 @@ public final class TripleAFrame extends JFrame {
     actionButtons.waitForEndTurn(this, bridge);
   }
 
-  public FightBattleDetails getBattle(final PlayerID player, final Map<BattleType, Collection<Territory>> battles) {
+  public FightBattleDetails getBattle(final PlayerId player, final Map<BattleType, Collection<Territory>> battles) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToBattle(player, battles);
     return actionButtons.waitForBattleSelection();
@@ -853,7 +853,7 @@ public final class TripleAFrame extends JFrame {
    * @return {@code true} if the user wishes to end the current movement/placement action, and thus destroy the affected
    *         air units; otherwise {@code false} if the user wishes to continue the current movement/placement action.
    */
-  public boolean getOkToLetAirDie(final PlayerID id, final Collection<Territory> airCantLand,
+  public boolean getOkToLetAirDie(final PlayerId id, final Collection<Territory> airCantLand,
       final boolean movePhase) {
     if (airCantLand == null || airCantLand.isEmpty()) {
       return true;
@@ -867,7 +867,7 @@ public final class TripleAFrame extends JFrame {
     final boolean lhtrProd = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     final int carrierCount = GameStepPropertiesHelper.getCombinedTurns(data, id).stream()
-        .map(PlayerID::getUnits)
+        .map(PlayerId::getUnits)
         .map(units -> units.getMatches(Matches.unitIsCarrier()))
         .mapToInt(List::size)
         .sum();
@@ -916,7 +916,7 @@ public final class TripleAFrame extends JFrame {
     return choice == JOptionPane.NO_OPTION;
   }
 
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+  public boolean acceptAction(final PlayerId playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     messageAndDialogThreadPool.waitForAll();
     final int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion,
@@ -1146,7 +1146,7 @@ public final class TripleAFrame extends JFrame {
    * @return A tuple whose first element is the selected territory and whose second element is the collection of
    *         selected units.
    */
-  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerID player,
+  public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final PlayerId player,
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     // total hacks
     messageAndDialogThreadPool.waitForAll();
@@ -1324,11 +1324,11 @@ public final class TripleAFrame extends JFrame {
         final UnitChooser chooser = new UnitChooser(possible, Collections.emptyMap(), false, uiContext);
         chooser.setMaxAndShowMaxButton(maxAllowed);
         chooser.addChangeListener(field -> {
-          final Map<PlayerID, ResourceCollection> playerFuelCost = new HashMap<>();
+          final Map<PlayerId, ResourceCollection> playerFuelCost = new HashMap<>();
           for (final Tuple<Territory, UnitChooser> tuple : choosers) {
-            final Map<PlayerID, ResourceCollection> map = Route
+            final Map<PlayerId, ResourceCollection> map = Route
                 .getScrambleFuelCostCharge(tuple.getSecond().getSelected(false), tuple.getFirst(), scrambleTo, data);
-            for (final Entry<PlayerID, ResourceCollection> playerAndCost : map.entrySet()) {
+            for (final Entry<PlayerId, ResourceCollection> playerAndCost : map.entrySet()) {
               if (playerFuelCost.containsKey(playerAndCost.getKey())) {
                 playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
               } else {
@@ -1339,7 +1339,7 @@ public final class TripleAFrame extends JFrame {
           fuelCostPanel.removeAll();
           boolean hasEnoughFuel = true;
           int count = 0;
-          for (final Entry<PlayerID, ResourceCollection> entry : playerFuelCost.entrySet()) {
+          for (final Entry<PlayerId, ResourceCollection> entry : playerFuelCost.entrySet()) {
             final JLabel label = new JLabel(entry.getKey().getName() + ": ");
             fuelCostPanel.add(label,
                 new GridBagConstraints(0, count, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
@@ -1480,7 +1480,7 @@ public final class TripleAFrame extends JFrame {
     return selection;
   }
 
-  public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun,
+  public PoliticalActionAttachment getPoliticalActionChoice(final PlayerId player, final boolean firstRun,
       final IPoliticsDelegate politicsDelegate) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToPolitics(player);
@@ -1488,7 +1488,7 @@ public final class TripleAFrame extends JFrame {
     return actionButtons.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
-  public UserActionAttachment getUserActionChoice(final PlayerID player, final boolean firstRun,
+  public UserActionAttachment getUserActionChoice(final PlayerId player, final boolean firstRun,
       final IUserActionDelegate userActionDelegate) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToUserActions(player);
@@ -1496,7 +1496,7 @@ public final class TripleAFrame extends JFrame {
     return actionButtons.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
-  public TechRoll getTechRolls(final PlayerID id) {
+  public TechRoll getTechRolls(final PlayerId id) {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToTech(id);
     // workaround for panel not receiving focus at beginning of tech phase
@@ -1555,7 +1555,7 @@ public final class TripleAFrame extends JFrame {
     }
     final int round;
     final String stepDisplayName;
-    final PlayerID player;
+    final PlayerId player;
     data.acquireReadLock();
     try {
       round = data.getSequence().getRound();
@@ -1604,7 +1604,7 @@ public final class TripleAFrame extends JFrame {
    * Invoked at the start of a player's turn to play a sound alerting the player it is their turn and to center the map
    * on the player's capital.
    */
-  public void requiredTurnSeries(final PlayerID player) {
+  public void requiredTurnSeries(final PlayerId player) {
     if (player == null || !Interruptibles.sleep(300)) {
       return;
     }
@@ -1919,7 +1919,7 @@ public final class TripleAFrame extends JFrame {
                 enumeration.nextElement();
                 int round = 0;
                 String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
-                PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
+                PlayerId currentPlayer = datacopy.getSequence().getStep(0).getPlayerId();
                 while (enumeration.hasMoreElements()) {
                   final HistoryNode node = (HistoryNode) enumeration.nextElement();
                   if (node instanceof Round) {

@@ -2,7 +2,7 @@ package games.strategy.sound;
 
 import java.util.Collection;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IChannelSubscribor;
 
 /**
@@ -21,7 +21,7 @@ public interface ISound extends IChannelSubscribor {
    * @param playerId The player who's sound we want to play (ie: russians infantry might make different sounds from
    *        german infantry, etc). Can be null.
    */
-  void playSoundForAll(final String clipName, final PlayerID playerId);
+  void playSoundForAll(final String clipName, final PlayerId playerId);
 
 
   /**
@@ -30,14 +30,14 @@ public interface ISound extends IChannelSubscribor {
    * (because all users have these).
    *
    * @param clipName The name of the sound clip to play, found in SoundPath.java
-   * @param playersToSendTo The machines controlling these PlayerID's who we want to hear this sound.
-   * @param butNotThesePlayers The machines controlling these PlayerID's who we do not want to hear this sound. If the
+   * @param playersToSendTo The machines controlling these PlayerId's who we want to hear this sound.
+   * @param butNotThesePlayers The machines controlling these PlayerId's who we do not want to hear this sound. If the
    *        machine controls players in both playersToSendTo and butNotThesePlayers, they will not hear a sound. (Can be
    *        null.)
    * @param includeObservers Whether to include non-playing machines
    */
   void playSoundToPlayers(final String clipName,
-      final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
+      final Collection<PlayerId> playersToSendTo, final Collection<PlayerId> butNotThesePlayers,
       final boolean includeObservers);
 
 }

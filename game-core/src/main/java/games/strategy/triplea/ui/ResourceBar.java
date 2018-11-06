@@ -13,7 +13,7 @@ import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.triplea.Constants;
@@ -61,7 +61,7 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
   public void gameDataChanged(final Change change) {
     gameData.acquireReadLock();
     try {
-      final PlayerID player = gameData.getSequence().getStep().getPlayerId();
+      final PlayerId player = gameData.getSequence().getStep().getPlayerId();
       if (player != null) {
         final IntegerMap<Resource> resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
         SwingUtilities.invokeLater(() -> {

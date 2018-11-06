@@ -15,7 +15,7 @@ import org.triplea.game.server.HeadlessGameServer;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -38,7 +38,7 @@ import games.strategy.util.LocalizeHtml;
  */
 public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean gameOver = false;
-  private Collection<PlayerID> winners = new ArrayList<>();
+  private Collection<PlayerId> winners = new ArrayList<>();
 
   /** Creates a new instance of EndRoundDelegate. */
   public EndRoundDelegate() {}
@@ -52,12 +52,12 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     String victoryMessage;
     final GameData data = getData();
     if (isPacificTheater()) {
-      final PlayerID japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
+      final PlayerId japanese = data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
       final PlayerAttachment pa = PlayerAttachment.get(japanese);
       if (pa != null && pa.getVps() >= 22) {
         victoryMessage = "Axis achieve VP victory";
         bridge.getHistoryWriter().startEvent(victoryMessage);
-        final Collection<PlayerID> winners = data.getAllianceTracker()
+        final Collection<PlayerId> winners = data.getAllianceTracker()
             .getPlayersInAlliance(data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
         signalGameOver(victoryMessage, winners, bridge);
       }
@@ -78,14 +78,14 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     if (isEconomicVictory()) { // Check for regular economic victory
       for (final String allianceName : data.getAllianceTracker().getAlliances()) {
         final int victoryAmount = getEconomicVictoryAmount(data, allianceName);
-        final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+        final Set<PlayerId> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
         int teamProd = 0;
-        for (final PlayerID player : teamMembers) {
+        for (final PlayerId player : teamMembers) {
           teamProd += getProduction(player);
           if (teamProd >= victoryAmount) {
             victoryMessage = allianceName + " achieve economic victory";
             bridge.getHistoryWriter().startEvent(victoryMessage);
-            final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+            final Collection<PlayerId> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
             // Added this to end the game on victory conditions
             signalGameOver(victoryMessage, winners, bridge);
           }
@@ -123,11 +123,11 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     final PlayerList playerList = data.getPlayerList();
     // now test older maps that only use these 5 players, to see if someone has won
-    final PlayerID russians = playerList.getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
-    final PlayerID germans = playerList.getPlayerId(Constants.PLAYER_NAME_GERMANS);
-    final PlayerID british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
-    final PlayerID japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
-    final PlayerID americans = playerList.getPlayerId(Constants.PLAYER_NAME_AMERICANS);
+    final PlayerId russians = playerList.getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
+    final PlayerId germans = playerList.getPlayerId(Constants.PLAYER_NAME_GERMANS);
+    final PlayerId british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
+    final PlayerId japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
+    final PlayerId americans = playerList.getPlayerId(Constants.PLAYER_NAME_AMERICANS);
     if (germans == null || russians == null || british == null || japanese == null || americans == null
         || playerList.size() > 5) {
       return;
@@ -156,12 +156,12 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     victoryMessage = " achieve a military victory";
     if (germany && japan && count >= 2) {
       bridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
-      final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Axis");
+      final Collection<PlayerId> winners = data.getAllianceTracker().getPlayersInAlliance("Axis");
       signalGameOver("Axis" + victoryMessage, winners, bridge);
     }
     if (russia && !germany && britain && !japan && america) {
       bridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
-      final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Allies");
+      final Collection<PlayerId> winners = data.getAllianceTracker().getPlayersInAlliance("Allies");
       signalGameOver("Allies" + victoryMessage, winners, bridge);
     }
   }
@@ -172,7 +172,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     final GameData data = getData();
     if (Properties.getTriggers(data)) {
       final CompositeChange change = new CompositeChange();
-      for (final PlayerID player : data.getPlayerList().getPlayers()) {
+      for (final PlayerId player : data.getPlayerList().getPlayers()) {
         change.add(AbstractTriggerAttachment.triggerSetUsedForThisRound(player));
       }
       if (!change.isEmpty()) {
@@ -211,7 +211,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     final Collection<Territory> territories = data.getMap().getTerritories();
     for (final String allianceName : data.getAllianceTracker().getAlliances()) {
       final int vcAmount = getVcAmount(data, allianceName, victoryType);
-      final Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+      final Set<PlayerId> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;
       for (final Territory t : territories) {
         if (Matches.isTerritoryOwnedBy(teamMembers).test(t)) {
@@ -223,7 +223,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       }
       if (teamVCs >= vcAmount) {
         bridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
-        final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+        final Collection<PlayerId> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
         // Added this to end the game on victory conditions
         signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, bridge);
       }
@@ -257,7 +257,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
    *
    * @param status the "game over" text to be displayed to each user.
    */
-  public void signalGameOver(final String status, final Collection<PlayerID> winners, final IDelegateBridge bridge) {
+  public void signalGameOver(final String status, final Collection<PlayerId> winners, final IDelegateBridge bridge) {
     // TO NOT USE playerBridge, because it might be null here! use aBridge instead.
     // If the game is over, we need to be able to alert all UIs to that fact.
     // The display object can send a message to all UIs.
@@ -266,7 +266,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       this.winners = winners;
       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
           ((this.winners != null && !this.winners.isEmpty()) ? this.winners.iterator().next()
-              : PlayerID.NULL_PLAYERID));
+              : PlayerId.NULL_PLAYERID));
       // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
       final String title = "Victory Achieved"
           + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
@@ -301,7 +301,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   /**
    * if null, the game is not over yet.
    */
-  public Collection<PlayerID> getWinners() {
+  public Collection<PlayerId> getWinners() {
     if (!gameOver) {
       return null;
     }
@@ -340,7 +340,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return Properties.getTriggeredVictory(getData());
   }
 
-  private int getProduction(final PlayerID id) {
+  private int getProduction(final PlayerId id) {
     return StreamSupport.stream(getData().getMap().spliterator(), false)
         .filter(current -> current.getOwner().equals(id))
         .mapToInt(TerritoryAttachment::getProduction)

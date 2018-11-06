@@ -38,7 +38,7 @@ import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
@@ -147,7 +147,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         playersEnabledListing = new HashMap<>();
         playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-        for (final PlayerID player : data.getPlayerList().getPlayers()) {
+        for (final PlayerId player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
           if (headless) {
             if (player.getIsDisabled()) {

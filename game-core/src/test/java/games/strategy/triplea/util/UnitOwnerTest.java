@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -16,9 +16,9 @@ final class UnitOwnerTest {
       final GameData gameData = new GameData();
       EqualsVerifier.forClass(UnitOwner.class)
           .withPrefabValues(
-              PlayerID.class,
-              new PlayerID("player1Name", gameData),
-              new PlayerID("player2Name", gameData))
+              PlayerId.class,
+              new PlayerId("player1Name", gameData),
+              new PlayerId("player2Name", gameData))
           .withPrefabValues(
               UnitType.class,
               new UnitType("unitType1Name", gameData),

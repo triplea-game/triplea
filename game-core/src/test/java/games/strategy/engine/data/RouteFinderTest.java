@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 public class RouteFinderTest {
 
-  private final PlayerID player = mock(PlayerID.class);
+  private final PlayerId player = mock(PlayerId.class);
   private final GameMap map = mock(GameMap.class);
   private final List<Territory> territories = new ArrayList<>();
 

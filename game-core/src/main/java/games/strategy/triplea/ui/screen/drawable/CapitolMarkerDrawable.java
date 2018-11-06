@@ -9,7 +9,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -22,7 +22,7 @@ public class CapitolMarkerDrawable implements IDrawable {
   private final String location;
   private final UiContext uiContext;
 
-  public CapitolMarkerDrawable(final PlayerID player, final Territory location, final UiContext uiContext) {
+  public CapitolMarkerDrawable(final PlayerId player, final Territory location, final UiContext uiContext) {
     checkNotNull(player, "null player; capitol: " + location);
 
     this.player = player.getName();

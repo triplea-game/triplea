@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -21,7 +21,7 @@ public final class TechTracker {
    * Returns what tech advances this player already has successfully researched (including ones that may not be in their
    * tech frontier).
    */
-  public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerID id, final GameData data) {
+  public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerId id, final GameData data) {
     final Collection<TechAdvance> techAdvances = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     // search all techs
@@ -38,7 +38,7 @@ public final class TechTracker {
    * successfully researched
    * already.
    */
-  public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final PlayerID id) {
+  public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final PlayerId id) {
     final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(id)) {
@@ -56,7 +56,7 @@ public final class TechTracker {
     return technologyFrontiers;
   }
 
-  public static void addAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance) {
+  public static void addAdvance(final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance && ((GenericTechAdvance) advance).getAdvance() == null) {
       attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
@@ -68,7 +68,7 @@ public final class TechTracker {
     advance.perform(player, bridge);
   }
 
-  static void removeAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance) {
+  static void removeAdvance(final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance) {
       if (((GenericTechAdvance) advance).getAdvance() == null) {
@@ -84,48 +84,48 @@ public final class TechTracker {
     bridge.addChange(attachmentChange);
   }
 
-  public static int getTechCost(final PlayerID id) {
+  public static int getTechCost(final PlayerId id) {
     final TechAttachment ta = TechAttachment.get(id);
     return ta.getTechCost();
   }
 
-  public static boolean hasLongRangeAir(final PlayerID player) {
+  public static boolean hasLongRangeAir(final PlayerId player) {
     return TechAttachment.get(player).getLongRangeAir();
   }
 
-  public static boolean hasHeavyBomber(final PlayerID player) {
+  public static boolean hasHeavyBomber(final PlayerId player) {
     return TechAttachment.get(player).getHeavyBomber();
   }
 
-  public static boolean hasSuperSubs(final PlayerID player) {
+  public static boolean hasSuperSubs(final PlayerId player) {
     return TechAttachment.get(player).getSuperSub();
   }
 
-  public static boolean hasJetFighter(final PlayerID player) {
+  public static boolean hasJetFighter(final PlayerId player) {
     return TechAttachment.get(player).getJetPower();
   }
 
-  public static boolean hasRocket(final PlayerID player) {
+  public static boolean hasRocket(final PlayerId player) {
     return TechAttachment.get(player).getRocket();
   }
 
-  public static boolean hasIndustrialTechnology(final PlayerID player) {
+  public static boolean hasIndustrialTechnology(final PlayerId player) {
     return TechAttachment.get(player).getIndustrialTechnology();
   }
 
-  public static boolean hasImprovedArtillerySupport(final PlayerID player) {
+  public static boolean hasImprovedArtillerySupport(final PlayerId player) {
     return TechAttachment.get(player).getImprovedArtillerySupport();
   }
 
-  public static boolean hasParatroopers(final PlayerID player) {
+  public static boolean hasParatroopers(final PlayerId player) {
     return TechAttachment.get(player).getParatroopers();
   }
 
-  public static boolean hasIncreasedFactoryProduction(final PlayerID player) {
+  public static boolean hasIncreasedFactoryProduction(final PlayerId player) {
     return TechAttachment.get(player).getIncreasedFactoryProduction();
   }
 
-  public static boolean hasAaRadar(final PlayerID player) {
+  public static boolean hasAaRadar(final PlayerId player) {
     return TechAttachment.get(player).getAaRadar();
   }
 }

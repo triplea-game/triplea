@@ -13,7 +13,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -40,7 +40,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     super(name, attachable, gameData);
   }
 
-  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player) {
+  public static CompositeChange triggerSetUsedForThisRound(final PlayerId player) {
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
       if (ta.getUsedThisRound()) {

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -29,7 +29,7 @@ public class AiUtilsTest {
   @Test
   public void testCost() {
     final UnitType infantry = GameDataTestUtil.infantry(gameData);
-    final PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerId british = GameDataTestUtil.british(gameData);
     assertEquals(3, AiUtils.getCost(infantry, british, gameData));
   }
 

@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
@@ -57,7 +57,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id);
     pickedTerritory = null;
     pickedUnits = new HashSet<>();

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
@@ -27,7 +27,7 @@ import lombok.extern.java.Log;
 class CountryChart {
   private final Map<Territory, List<Map<UnitType, Integer>>> infoMap = new HashMap<>();
 
-  void saveToFile(final PlayerID player, final PrintGenerationData printData) {
+  void saveToFile(final PlayerId player, final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     final Collection<Territory> terrCollection =
         CollectionUtils.getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));

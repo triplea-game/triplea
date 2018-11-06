@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate.remote;
 
 import java.util.Collection;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -24,15 +24,15 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
 
   String addUnits(Territory t, Collection<Unit> units);
 
-  String changeTerritoryOwner(Territory t, PlayerID player);
+  String changeTerritoryOwner(Territory t, PlayerId player);
 
-  String changePUs(PlayerID player, int pus);
+  String changePUs(PlayerId player, int pus);
 
-  String changeTechTokens(PlayerID player, int tokens);
+  String changeTechTokens(PlayerId player, int tokens);
 
-  String addTechAdvance(PlayerID player, Collection<TechAdvance> advance);
+  String addTechAdvance(PlayerId player, Collection<TechAdvance> advance);
 
-  String removeTechAdvance(PlayerID player, Collection<TechAdvance> advance);
+  String removeTechAdvance(PlayerId player, Collection<TechAdvance> advance);
 
   String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
 
@@ -41,5 +41,5 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
   String addComment(String message);
 
   String changePoliticalRelationships(
-      Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges);
+      Collection<Triple<PlayerId, PlayerId, RelationshipType>> relationshipChanges);
 }

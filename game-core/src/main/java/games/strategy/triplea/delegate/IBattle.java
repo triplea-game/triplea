@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -169,9 +169,9 @@ public interface IBattle extends Serializable {
 
   BattleResultDescription getBattleResultDescription();
 
-  PlayerID getAttacker();
+  PlayerId getAttacker();
 
-  PlayerID getDefender();
+  PlayerId getDefender();
 
   GUID getBattleId();
 }

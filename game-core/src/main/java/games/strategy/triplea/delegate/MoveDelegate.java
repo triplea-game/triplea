@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -313,7 +313,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
   }
 
   private static void removeMovementFromAirOnDamagedAlliedCarriers(final IDelegateBridge bridge,
-      final PlayerID player) {
+      final PlayerId player) {
     final GameData data = bridge.getData();
     final Predicate<Unit> crippledAlliedCarriersMatch = Matches.isUnitAllied(player, data)
         .and(Matches.unitIsOwnedBy(player).negate())
@@ -348,7 +348,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
   }
 
-  private static Change giveBonusMovement(final IDelegateBridge bridge, final PlayerID player) {
+  private static Change giveBonusMovement(final IDelegateBridge bridge, final PlayerId player) {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -357,7 +357,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  static Change giveBonusMovementToUnits(final PlayerID player, final GameData data, final Territory t) {
+  static Change giveBonusMovementToUnits(final PlayerId player, final GameData data, final Territory t) {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : t.getUnits().getUnits()) {
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
@@ -397,7 +397,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     return change;
   }
 
-  static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final PlayerID player) {
+  static void repairMultipleHitPointUnits(final IDelegateBridge bridge, final PlayerId player) {
     final GameData data = bridge.getData();
     final boolean repairOnlyOwn =
         Properties.getBattleshipsRepairAtBeginningOfRound(bridge.getData());
@@ -505,7 +505,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
       return 1;
     }
-    final PlayerID owner = unitToBeRepaired.getOwner();
+    final PlayerId owner = unitToBeRepaired.getOwner();
     final Predicate<Unit> repairUnit = Matches.alliedUnit(owner, data)
         .and(Matches.unitCanRepairOthers())
         .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
@@ -547,7 +547,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final GameData data = getData();
 
     // the reason we use this, is if we are in edit mode, we may have a different unit owner than the current player
-    final PlayerID player = getUnitsOwner(units);
+    final PlayerId player = getUnitsOwner(units);
     final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded,
         newDependents, GameStepPropertiesHelper.isNonCombatMove(data, false), movesToUndo, data);
     final StringBuilder errorMsg = new StringBuilder(100);
@@ -616,7 +616,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final boolean lhtrCarrierProd = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
-    for (final PlayerID p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
+    for (final PlayerId p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
       if (p.getUnits().anyMatch(Matches.unitIsCarrier())) {
         hasProducedCarriers = true;
         break;
@@ -626,7 +626,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     util.removeAirThatCantLand(player, lhtrCarrierProd && hasProducedCarriers);
 
     // if edit mode has been on, we need to clean up after all players
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
 
       // Check if player still has units to place
       if (!player.equals(this.player)) {

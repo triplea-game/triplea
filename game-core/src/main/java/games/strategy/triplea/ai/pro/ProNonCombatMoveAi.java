@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -58,7 +58,7 @@ class ProNonCombatMoveAi {
 
   private final ProOddsCalculator calc;
   private GameData data;
-  private PlayerID player;
+  private PlayerId player;
   private Map<Unit, Territory> unitTerritoryMap;
   private ProTerritoryManager territoryManager;
 
@@ -172,7 +172,7 @@ class ProNonCombatMoveAi {
   }
 
   void doMove(final Map<Territory, ProTerritory> moveMap, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
 
     this.data = data;
     this.player = player;

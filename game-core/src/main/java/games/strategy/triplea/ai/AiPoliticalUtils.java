@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
@@ -23,7 +23,7 @@ import games.strategy.util.CollectionUtils;
  * from NAP to Peace to War)
  */
 public class AiPoliticalUtils {
-  public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id,
+  public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerId id,
       final Map<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();
     for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id, testedConditions,
@@ -35,7 +35,7 @@ public class AiPoliticalUtils {
     return acceptableActions;
   }
 
-  public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id,
+  public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerId id,
       final Map<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
     final Collection<PoliticalActionAttachment> validActions =
@@ -71,7 +71,7 @@ public class AiPoliticalUtils {
     return paa -> paa.getCostResources().isEmpty();
   }
 
-  private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID id,
+  private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerId id,
       final GameData data) {
     return isFree(nextAction) && goesTowardsWar(nextAction, id, data);
   }
@@ -81,11 +81,11 @@ public class AiPoliticalUtils {
   // only switches from a Neutral to an War state... won't go through
   // in-between neutral states
   // TODO have another look at this part.
-  private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID p0,
+  private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerId p0,
       final GameData data) {
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange : nextAction.getRelationshipChanges()) {
-      final PlayerID p1 = relationshipChange.player1;
-      final PlayerID p2 = relationshipChange.player2;
+      final PlayerId p1 = relationshipChange.player1;
+      final PlayerId p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
@@ -99,11 +99,11 @@ public class AiPoliticalUtils {
     return false;
   }
 
-  private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0,
+  private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerId p0,
       final GameData data) {
     for (final PoliticalActionAttachment.RelationshipChange relationshipChange : nextAction.getRelationshipChanges()) {
-      final PlayerID p1 = relationshipChange.player1;
-      final PlayerID p2 = relationshipChange.player2;
+      final PlayerId p1 = relationshipChange.player1;
+      final PlayerId p2 = relationshipChange.player2;
       // only continue if p1 or p2 is the AI
       if (p0.equals(p1) || p0.equals(p2)) {
         final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
@@ -122,7 +122,7 @@ public class AiPoliticalUtils {
     return nextAction.getCostResources().isEmpty();
   }
 
-  private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player,
+  private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerId player,
       final GameData data) {
     // if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable
     // price.

@@ -12,7 +12,7 @@ import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -52,10 +52,10 @@ class UnitInformation {
           unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
         }
         unitInformation.write(getCostInformation(currentType) + ",");
-        unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + ","
-            + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
-            + currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + ","
-            + (!currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) ? "-" : "true") + ","
+        unitInformation.write(currentAttachment.getMovement(PlayerId.NULL_PLAYERID) + ","
+            + currentAttachment.getAttack(PlayerId.NULL_PLAYERID) + ","
+            + currentAttachment.getDefense(PlayerId.NULL_PLAYERID) + ","
+            + (!currentAttachment.getCanBlitz(PlayerId.NULL_PLAYERID) ? "-" : "true") + ","
             + (!currentAttachment.getArtillery() ? "-" : "true") + ","
             + (!currentAttachment.getArtillerySupportable() ? "-" : "true") + ","
             + (!currentAttachment.getCanProduceUnits() ? "-" : "true") + ","

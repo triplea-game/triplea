@@ -18,7 +18,7 @@ import org.mockito.verification.VerificationMode;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.History;
@@ -40,7 +40,7 @@ final class MockDelegateBridge {
    *
    * @return A mock that can be configured using standard Mockito idioms.
    */
-  static IDelegateBridge newInstance(final GameData gameData, final PlayerID playerId) {
+  static IDelegateBridge newInstance(final GameData gameData, final PlayerId playerId) {
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
     doAnswer(invocation -> {
       final Change change = invocation.getArgument(0);
@@ -61,7 +61,7 @@ final class MockDelegateBridge {
 
   private static IDelegateHistoryWriter newFakeDelegateHistoryWriter(final GameData gameData) {
     final HistoryWriter historyWriter = new HistoryWriter(new History(gameData));
-    historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
+    historyWriter.startNextStep("", "", PlayerId.NULL_PLAYERID, "");
     final IServerMessenger serverMessenger = mock(IServerMessenger.class);
     try {
       when(serverMessenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));

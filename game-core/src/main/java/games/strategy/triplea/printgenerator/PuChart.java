@@ -16,15 +16,15 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 class PuChart {
-  private final Iterable<PlayerID> players;
-  private final IntegerMap<PlayerID> moneyMap;
+  private final Iterable<PlayerId> players;
+  private final IntegerMap<PlayerId> moneyMap;
   private final int numPlayers;
-  private final PlayerID[] playerArray;
+  private final PlayerId[] playerArray;
   private final Integer[] moneyArray;
   private final Map<Integer, Integer> avoidMap;
   private final Font chartFont = new Font("Serif", Font.PLAIN, 12);
@@ -37,7 +37,7 @@ class PuChart {
     players = gameData.getPlayerList();
     moneyMap = new IntegerMap<>();
     numPlayers = gameData.getPlayerList().size();
-    playerArray = new PlayerID[numPlayers];
+    playerArray = new PlayerId[numPlayers];
     moneyArray = new Integer[numPlayers];
     avoidMap = new HashMap<>();
     puImage = new BufferedImage(600, 600, BufferedImage.TYPE_INT_ARGB);
@@ -47,7 +47,7 @@ class PuChart {
 
   private void initializeMap() {
     int count = 0;
-    for (final PlayerID currentPlayer : players) {
+    for (final PlayerId currentPlayer : players) {
       moneyMap.put(currentPlayer, currentPlayer.getResources().getQuantity(Constants.PUS));
       playerArray[count] = currentPlayer;
       moneyArray[count] = currentPlayer.getResources().getQuantity(Constants.PUS);

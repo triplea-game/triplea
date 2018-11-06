@@ -18,7 +18,7 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipTracker;
@@ -102,7 +102,7 @@ public class GameDataExporter {
 
   private static String playertechs(final GameData data) {
     final StringBuilder returnValue = new StringBuilder();
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       if (player.getTechnologyFrontierList().getFrontiers().size() > 0) {
         returnValue.append("        <playerTech player=\"").append(player.getName()).append("\">\n");
         for (final TechnologyFrontier frontier : player.getTechnologyFrontierList().getFrontiers()) {
@@ -279,10 +279,10 @@ public class GameDataExporter {
     }
     final RelationshipTracker rt = data.getRelationshipTracker();
     xmlfile.append("        <relationshipInitialize>\n");
-    final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-    final Collection<PlayerID> playersAlreadyDone = new HashSet<>();
-    for (final PlayerID p1 : players) {
-      for (final PlayerID p2 : players) {
+    final Collection<PlayerId> players = data.getPlayerList().getPlayers();
+    final Collection<PlayerId> playersAlreadyDone = new HashSet<>();
+    for (final PlayerId p1 : players) {
+      for (final PlayerId p2 : players) {
         if (p1.equals(p2) || playersAlreadyDone.contains(p2)) {
           continue;
         }
@@ -299,7 +299,7 @@ public class GameDataExporter {
 
   private void resourceInitialize(final GameData data) {
     xmlfile.append("        <resourceInitialize>\n");
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       for (final Resource resource : data.getResourceList().getResources()) {
         if (player.getResources().getQuantity(resource.getName()) > 0) {
           xmlfile.append("            <resourceGiven player=\"").append(player.getName()).append("\" resource=\"")
@@ -315,7 +315,7 @@ public class GameDataExporter {
     xmlfile.append("        <unitInitialize>\n");
     for (final Territory terr : data.getMap().getTerritories()) {
       final UnitCollection uc = terr.getUnits();
-      for (final PlayerID player : uc.getPlayersWithUnits()) {
+      for (final PlayerId player : uc.getPlayersWithUnits()) {
         final IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
         for (final UnitType unit : ucp.keySet()) {
           if (player == null || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
@@ -389,7 +389,7 @@ public class GameDataExporter {
       final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
       // TODO: keep this list updated
       String type = "";
-      if (attachTo.getClass().equals(PlayerID.class)) {
+      if (attachTo.getClass().equals(PlayerId.class)) {
         type = "player";
       }
       if (attachTo.getClass().equals(UnitType.class)) {
@@ -467,7 +467,7 @@ public class GameDataExporter {
   }
 
   private void playerRepair(final GameData data) {
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       try {
         final String playerRepair = player.getRepairFrontier().getName();
         final String playername = player.getName();
@@ -480,7 +480,7 @@ public class GameDataExporter {
   }
 
   private void playerProduction(final GameData data) {
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       try {
         final String playerfrontier = player.getProductionFrontier().getName();
         final String playername = player.getName();
@@ -579,12 +579,12 @@ public class GameDataExporter {
   private void playerList(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <playerList>\n");
-    for (final PlayerID player : data.getPlayerList().getPlayers()) {
+    for (final PlayerId player : data.getPlayerList().getPlayers()) {
       xmlfile.append("        <player name=\"").append(player.getName()).append("\" optional=\"")
           .append(player.getOptional()).append("\"/>\n");
     }
     for (final String allianceName : data.getAllianceTracker().getAlliances()) {
-      for (final PlayerID alliedPlayer : data.getAllianceTracker().getPlayersInAlliance(allianceName)) {
+      for (final PlayerId alliedPlayer : data.getAllianceTracker().getPlayersInAlliance(allianceName)) {
         xmlfile.append("        <alliance player=\"").append(alliedPlayer.getName()).append("\" alliance=\"")
             .append(allianceName).append("\"/>\n");
       }

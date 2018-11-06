@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -343,7 +343,7 @@ public class DiceRoll implements Externalizable {
   }
 
   private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower,
-      final int chosenDiceSize, final PlayerID playerRolling, final String annotation) {
+      final int chosenDiceSize, final PlayerId playerRolling, final String annotation) {
     int hits = totalPower / chosenDiceSize;
     final int hitsFractional = totalPower % chosenDiceSize;
     if (hitsFractional > 0) {
@@ -361,7 +361,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Roll dice for units.
    */
-  public static DiceRoll rollDice(final List<Unit> units, final boolean defending, final PlayerID player,
+  public static DiceRoll rollDice(final List<Unit> units, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     // Decide whether to use low luck rules or normal rules.
@@ -379,7 +379,7 @@ public class DiceRoll implements Externalizable {
    * @param annotation 0 based, add 1 to get actual die roll
    */
   public static DiceRoll rollNDice(final IDelegateBridge bridge, final int rollCount, final int sides,
-      final PlayerID playerRolling, final DiceType diceType, final String annotation) {
+      final PlayerId playerRolling, final DiceType diceType, final String annotation) {
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
@@ -555,7 +555,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Roll dice for units using low luck rules. Low luck rules based on rules in DAAK.
    */
-  private static DiceRoll rollDiceLowLuck(final List<Unit> unitsList, final boolean defending, final PlayerID player,
+  private static DiceRoll rollDiceLowLuck(final List<Unit> unitsList, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     final List<Unit> units = new ArrayList<>(unitsList);
@@ -802,11 +802,11 @@ public class DiceRoll implements Externalizable {
       final int unitPower1;
       final int unitPower2;
       if (u1.getDefence()) {
-        unitPower1 = ua1.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua1.getDefense(PlayerID.NULL_PLAYERID);
-        unitPower2 = ua2.getDefenseRolls(PlayerID.NULL_PLAYERID) * ua2.getDefense(PlayerID.NULL_PLAYERID);
+        unitPower1 = ua1.getDefenseRolls(PlayerId.NULL_PLAYERID) * ua1.getDefense(PlayerId.NULL_PLAYERID);
+        unitPower2 = ua2.getDefenseRolls(PlayerId.NULL_PLAYERID) * ua2.getDefense(PlayerId.NULL_PLAYERID);
       } else {
-        unitPower1 = ua1.getAttackRolls(PlayerID.NULL_PLAYERID) * ua1.getAttack(PlayerID.NULL_PLAYERID);
-        unitPower2 = ua2.getAttackRolls(PlayerID.NULL_PLAYERID) * ua2.getAttack(PlayerID.NULL_PLAYERID);
+        unitPower1 = ua1.getAttackRolls(PlayerId.NULL_PLAYERID) * ua1.getAttack(PlayerId.NULL_PLAYERID);
+        unitPower2 = ua2.getAttackRolls(PlayerId.NULL_PLAYERID) * ua2.getAttack(PlayerId.NULL_PLAYERID);
       }
       return Integer.compare(unitPower2, unitPower1);
     };
@@ -815,7 +815,7 @@ public class DiceRoll implements Externalizable {
     }
   }
 
-  static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player,
+  static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final String annotation) {
     {
       final Set<Unit> duplicatesCheckSet1 = new HashSet<>(unitsList);
@@ -922,7 +922,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Roll dice for units per normal rules.
    */
-  private static DiceRoll rollDiceNormal(final List<Unit> unitsList, final boolean defending, final PlayerID player,
+  private static DiceRoll rollDiceNormal(final List<Unit> unitsList, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     final List<Unit> units = new ArrayList<>(unitsList);
@@ -1000,7 +1000,7 @@ public class DiceRoll implements Externalizable {
     return diceRoll;
   }
 
-  private static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data) {
+  private static boolean isFirstTurnLimitedRoll(final PlayerId player, final GameData data) {
     // If player is null, Round > 1, or player has negate rule set: return false
     return !player.isNull()
         && data.getSequence().getRound() == 1
@@ -1008,7 +1008,7 @@ public class DiceRoll implements Externalizable {
         && isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerId());
   }
 
-  private static boolean isDominatingFirstRoundAttack(final PlayerID player) {
+  private static boolean isDominatingFirstRoundAttack(final PlayerId player) {
     if (player == null) {
       return false;
     }
@@ -1016,7 +1016,7 @@ public class DiceRoll implements Externalizable {
     return ra != null && ra.getDominatingFirstRoundAttack();
   }
 
-  private static boolean isNegateDominatingFirstRoundAttack(final PlayerID player) {
+  private static boolean isNegateDominatingFirstRoundAttack(final PlayerId player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getNegateDominatingFirstRoundAttack();
   }
@@ -1032,7 +1032,7 @@ public class DiceRoll implements Externalizable {
     return annotation.split(" ", 2)[0];
   }
 
-  static String getAnnotation(final List<Unit> units, final PlayerID player, final IBattle battle) {
+  static String getAnnotation(final List<Unit> units, final PlayerId player, final IBattle battle) {
     final StringBuilder buffer = new StringBuilder(80);
     // Note: This pattern is parsed when loading saved games to restore dice stats to get the player name via the
     // getPlayerNameFromAnnotation() function above. When changing this format, update getPlayerNameFromAnnotation(),

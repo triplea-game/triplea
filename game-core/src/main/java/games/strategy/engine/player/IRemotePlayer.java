@@ -1,6 +1,6 @@
 package games.strategy.engine.player;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemote;
 
 /**
@@ -12,5 +12,5 @@ public interface IRemotePlayer extends IRemote {
   /**
    * Returns the id of this player. This id is initialized by the initialize method in IGamePlayer.
    */
-  PlayerID getPlayerId();
+  PlayerId getPlayerId();
 }

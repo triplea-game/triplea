@@ -3,7 +3,7 @@ package games.strategy.triplea.player;
 import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.util.Interruptibles;
@@ -22,7 +22,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   @Getter(onMethod_ = {@Override})
   private final String name; // what nation are we playing? ex: "Americans"
   @Getter(onMethod_ = {@Override})
-  private PlayerID playerId;
+  private PlayerId playerId;
   @Getter
   private IPlayerBridge playerBridge;
   private boolean isStoppedGame = false;
@@ -36,7 +36,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
    * Anything that overrides this MUST call super.initialize(playerBridge, playerId);
    */
   @Override
-  public void initialize(final IPlayerBridge playerBridge, final PlayerID playerId) {
+  public void initialize(final IPlayerBridge playerBridge, final PlayerId playerId) {
     this.playerBridge = playerBridge;
     this.playerId = playerId;
   }
@@ -63,7 +63,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
         i++;
         if (i == 30) {
           log.log(Level.SEVERE, "Start step: " + stepName + " does not match player bridge step: " + bridgeStep
-              + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerID: " + getPlayerId().getName()
+              + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerId: " + getPlayerId().getName()
               + ", Game: " + getGameData().getGameName()
               + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
         }
@@ -71,7 +71,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
           log.log(Level.SEVERE, "Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
               + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very "
               + "soon. Player Bridge GameOver=" + getPlayerBridge().isGameOver()
-              + ", PlayerID: " + getPlayerId().getName() + ", Game: " + getGameData().getGameName());
+              + ", PlayerId: " + getPlayerId().getName() + ", Game: " + getGameData().getGameName());
           // waited more than 30 seconds, so just let stuff run (an error will pop up surely...)
           break;
         }

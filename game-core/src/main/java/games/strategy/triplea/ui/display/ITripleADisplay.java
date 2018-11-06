@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
@@ -29,8 +29,8 @@ public interface ITripleADisplay extends IDisplay {
    * listed as butNotThesePlayers.
    * (No message to any observers or players not in the list.)
    */
-  void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
-      final Collection<PlayerID> butNotThesePlayers, final String message, final String title);
+  void reportMessageToPlayers(final Collection<PlayerId> playersToSendTo,
+      final Collection<PlayerId> butNotThesePlayers, final String message, final String title);
 
   /**
    * Display info about the battle.
@@ -43,13 +43,13 @@ public interface ITripleADisplay extends IDisplay {
    * @param defendingUnits - defending units
    * @param killedUnits - killed units
    * @param dependentUnits - unit dependencies, maps Unit->Collection of units
-   * @param attacker - PlayerID of attacker
-   * @param defender - PlayerID of defender
+   * @param attacker - PlayerId of attacker
+   * @param defender - PlayerId of defender
    */
   void showBattle(GUID battleId, Territory location, String battleTitle, Collection<Unit> attackingUnits,
       Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
-      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
-      final PlayerID defender, final boolean isAmphibious, final BattleType battleType,
+      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerId attacker,
+      final PlayerId defender, final boolean isAmphibious, final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers);
 
   /**
@@ -68,16 +68,16 @@ public interface ITripleADisplay extends IDisplay {
   /**
    * Notify that the casualties occurred.
    */
-  void casualtyNotification(GUID battleId, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed,
+  void casualtyNotification(GUID battleId, String step, DiceRoll dice, PlayerId player, Collection<Unit> killed,
       Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents);
 
   /**
    * Notify that the casualties occurred, and only the casualty.
    */
-  void deadUnitNotification(GUID battleId, PlayerID player, Collection<Unit> dead,
+  void deadUnitNotification(GUID battleId, PlayerId player, Collection<Unit> dead,
       Map<Unit, Collection<Unit>> dependents);
 
-  void changedUnitsNotification(GUID battleId, PlayerID player, Collection<Unit> removedUnits,
+  void changedUnitsNotification(GUID battleId, PlayerId player, Collection<Unit> removedUnits,
       Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
 
   /**
@@ -88,7 +88,7 @@ public interface ITripleADisplay extends IDisplay {
   /**
    * Notify that the given player has retreated some or all of his units.
    */
-  void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer);
+  void notifyRetreat(String shortMessage, String message, String step, PlayerId retreatingPlayer);
 
   void notifyRetreat(GUID battleId, Collection<Unit> retreating);
 

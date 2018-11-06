@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
@@ -19,7 +19,7 @@ class RelationshipChange extends Change {
   private final String oldRelationshipTypeName;
   private final String newRelationshipTypeName;
 
-  RelationshipChange(final PlayerID player1, final PlayerID player2, final RelationshipType oldRelationshipType,
+  RelationshipChange(final PlayerId player1, final PlayerId player2, final RelationshipType oldRelationshipType,
       final RelationshipType newRelationshipType) {
     player1Name = player1.getName();
     player2Name = player2.getName();

@@ -24,7 +24,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -310,7 +310,7 @@ public class TileManager {
     }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
-      final PlayerID capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
+      final PlayerId capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
       drawing.add(new CapitolMarkerDrawable(capitalOf, territory, uiContext));
     }
     if (ta != null && (ta.getVictoryCity() != 0)) {

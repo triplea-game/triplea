@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
@@ -39,7 +39,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     // Activate techs
-    final Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
+    final Map<PlayerId, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
     final Collection<TechAdvance> advances = techMap.get(player);
     if ((advances != null) && (advances.size() > 0)) {
       // Start event
@@ -96,13 +96,13 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     if (pa == null) {
       return;
     }
-    final Collection<PlayerID> shareWith = pa.getShareTechnology();
+    final Collection<PlayerId> shareWith = pa.getShareTechnology();
     if (shareWith == null || shareWith.isEmpty()) {
       return;
     }
     final GameData data = getData();
     final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
-    for (final PlayerID p : shareWith) {
+    for (final PlayerId p : shareWith) {
       final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);
       final Collection<TechAdvance> toGive = CollectionUtils.intersection(currentAdvances, availableTechs);
       if (!toGive.isEmpty()) {

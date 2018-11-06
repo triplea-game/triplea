@@ -21,7 +21,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
@@ -136,7 +136,7 @@ public class ServerGame extends AbstractGame {
       }
 
       @Override
-      public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
+      public void stepChanged(final String stepName, final String delegateName, final PlayerId player, final int round,
           final String displayName, final boolean loadedFromSavedGame) {
         assertCorrectCaller();
         if (loadedFromSavedGame) {
@@ -170,7 +170,7 @@ public class ServerGame extends AbstractGame {
       final EventChild childNode = (EventChild) node;
       if (childNode.getRenderingData() instanceof DiceRoll) {
         final String playerName = DiceRoll.getPlayerNameFromAnnotation(childNode.getTitle());
-        final PlayerID playerId = gameData.getPlayerList().getPlayerId(playerName);
+        final PlayerId playerId = gameData.getPlayerList().getPlayerId(playerName);
 
         final DiceRoll diceRoll = (DiceRoll) childNode.getRenderingData();
         final int[] rolls = new int[diceRoll.size()];
@@ -250,12 +250,12 @@ public class ServerGame extends AbstractGame {
         delegate.getRemoteType());
   }
 
-  public static RemoteName getRemoteName(final PlayerID id, final GameData data) {
+  public static RemoteName getRemoteName(final PlayerId id, final GameData data) {
     return new RemoteName("games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + id.getName(),
         data.getGameLoader().getRemotePlayerType());
   }
 
-  public static RemoteName getRemoteRandomName(final PlayerID id) {
+  public static RemoteName getRemoteRandomName(final PlayerId id) {
     return new RemoteName("games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName(),
         IRemoteRandom.class);
   }
@@ -521,7 +521,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void waitForPlayerToFinishStep() {
-    final PlayerID playerId = getCurrentStep().getPlayerId();
+    final PlayerId playerId = getCurrentStep().getPlayerId();
     // no player specified for the given step
     if (playerId == null) {
       return;
@@ -548,7 +548,7 @@ public class ServerGame extends AbstractGame {
     final String delegateName = currentStep.getDelegate().getName();
     final String displayName = currentStep.getDisplayName();
     final int round = gameData.getSequence().getRound();
-    final PlayerID id = currentStep.getPlayerId();
+    final PlayerId id = currentStep.getPlayerId();
     notifyGameStepListeners(stepName, delegateName, id, round, displayName);
     getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
   }
@@ -580,7 +580,7 @@ public class ServerGame extends AbstractGame {
                   + ((player.getName().endsWith("s") || player.getName().endsWith("ese")
                       || player.getName().endsWith("ish")) ? " are" : " is")
                   + " now being played by: " + player.getPlayerType().getLabel());
-      final PlayerID p = data.getPlayerList().getPlayerId(player.getName());
+      final PlayerId p = data.getPlayerList().getPlayerId(player.getName());
       final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getPlayerType().getLabel());
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
@@ -593,7 +593,7 @@ public class ServerGame extends AbstractGame {
       bridge.getHistoryWriter().addChildToEvent(
           player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is")
               + " now being played by: Human:Client");
-      final PlayerID p = data.getPlayerList().getPlayerId(player);
+      final PlayerId p = data.getPlayerList().getPlayerId(player);
       final String newWhoAmI = "Human:Client";
       if (!p.getWhoAmI().equals(newWhoAmI)) {
         change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));

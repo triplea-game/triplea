@@ -14,7 +14,7 @@ import static org.mockito.Mockito.times;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -26,8 +26,8 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Create battle with 1 cruiser attacking 1 mine
-    final PlayerID usa = GameDataTestUtil.usa(twwGameData);
-    final PlayerID germany = GameDataTestUtil.germany(twwGameData);
+    final PlayerId usa = GameDataTestUtil.usa(twwGameData);
+    final PlayerId germany = GameDataTestUtil.germany(twwGameData);
     final Territory sz33 = territory("33 Sea Zone", twwGameData);
     addTo(sz33, GameDataTestUtil.americanCruiser(twwGameData).create(1, usa));
     final Territory sz40 = territory("40 Sea Zone", twwGameData);

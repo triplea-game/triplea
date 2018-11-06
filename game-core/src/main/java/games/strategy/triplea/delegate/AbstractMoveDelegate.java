@@ -10,7 +10,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -107,7 +107,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     updateUndoableMoveIndexes();
   }
 
-  protected PlayerID getUnitsOwner(final Collection<Unit> units) {
+  protected PlayerId getUnitsOwner(final Collection<Unit> units) {
     // if we are not in edit mode, return player. if we are in edit mode, we use whoever's units these are.
     return (units.isEmpty() || !BaseEditDelegate.getEditMode(getData())) ? player : units.iterator().next().getOwner();
   }
@@ -128,7 +128,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
       final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
 
   public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units,
-      final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
+      final Route route, final PlayerId player, final Collection<Unit> transportsToLoad,
       final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat,
       final List<UndoableMove> undoableMoves, final GameData data) {
     if (moveType == MoveType.SPECIAL) {
@@ -139,7 +139,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
+  public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerId player) {
     return new AirThatCantLandUtil(bridge).getTerritoriesWhereAirCantLand(player);
   }
 

@@ -17,7 +17,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 
@@ -34,7 +34,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private boolean allied = false;
   private boolean enemy = false;
   private String bonusType = null;
-  private List<PlayerID> players = new ArrayList<>();
+  private List<PlayerId> players = new ArrayList<>();
   private boolean impArtTech = false;
   // strings
   // roll or strength
@@ -214,7 +214,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private void setPlayers(final String names) throws GameParseException {
     final String[] s = splitOnColon(names);
     for (final String element : s) {
-      final PlayerID player = getData().getPlayerList().getPlayerId(element);
+      final PlayerId player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       }
@@ -222,11 +222,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private void setPlayers(final List<PlayerID> value) {
+  private void setPlayers(final List<PlayerId> value) {
     players = value;
   }
 
-  public List<PlayerID> getPlayers() {
+  public List<PlayerId> getPlayers() {
     return players;
   }
 

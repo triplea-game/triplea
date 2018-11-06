@@ -6,7 +6,7 @@ import java.util.Map;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
@@ -21,7 +21,7 @@ class PlayerOwnerChange extends Change {
   private final Map<GUID, String> newOwnerNamesByUnitId;
   private final String territoryName;
 
-  PlayerOwnerChange(final Collection<Unit> units, final PlayerID newOwner, final Territory territory) {
+  PlayerOwnerChange(final Collection<Unit> units, final PlayerId newOwner, final Territory territory) {
     oldOwnerNamesByUnitId = new HashMap<>();
     newOwnerNamesByUnitId = new HashMap<>();
     territoryName = territory.getName();
@@ -54,7 +54,7 @@ class PlayerOwnerChange extends Change {
             + " but got " + unit.getOwner());
       }
       final String owner = newOwnerNamesByUnitId.get(id);
-      final PlayerID player = data.getPlayerList().getPlayerId(owner);
+      final PlayerId player = data.getPlayerList().getPlayerId(owner);
       unit.setOwner(player);
     }
     data.getMap().getTerritory(territoryName).notifyChanged();

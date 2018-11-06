@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -40,7 +40,7 @@ import games.strategy.util.PredicateBuilder;
  */
 final class ProTechAi {
 
-  static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+  static void tech(final ITechDelegate techDelegate, final GameData data, final PlayerId player) {
     if (!Properties.getWW2V3TechModel(data)) {
       return;
     }
@@ -85,14 +85,14 @@ final class ProTechAi {
    * Does not check for extended range fighters or bombers
    */
   private static float getStrengthOfPotentialAttackers(final Territory location, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     final boolean transportsFirst = false;
 
     @Nullable
-    PlayerID enemyPlayer = null;
-    final List<PlayerID> enemyPlayers = getEnemyPlayers(data, player);
-    final Map<PlayerID, Float> enemyPlayerAttackMap = new HashMap<>();
-    final Iterator<PlayerID> playerIter = enemyPlayers.iterator();
+    PlayerId enemyPlayer = null;
+    final List<PlayerId> enemyPlayers = getEnemyPlayers(data, player);
+    final Map<PlayerId, Float> enemyPlayerAttackMap = new HashMap<>();
+    final Iterator<PlayerId> playerIter = enemyPlayers.iterator();
     if (location == null) {
       return -1000.0F;
     }
@@ -265,13 +265,13 @@ final class ProTechAi {
       enemyPlayerAttackMap.put(enemyPlayer, strength);
     }
     float maxStrength = 0.0F;
-    for (final PlayerID enemyPlayerCandidate : enemyPlayers) {
+    for (final PlayerId enemyPlayerCandidate : enemyPlayers) {
       if (enemyPlayerAttackMap.get(enemyPlayerCandidate) > maxStrength) {
         enemyPlayer = enemyPlayerCandidate;
         maxStrength = enemyPlayerAttackMap.get(enemyPlayerCandidate);
       }
     }
-    for (final PlayerID enemyPlayerCandidate : enemyPlayers) {
+    for (final PlayerId enemyPlayerCandidate : enemyPlayers) {
       if (!Objects.equals(enemyPlayer, enemyPlayerCandidate)) {
         // give 40% of other players...this is will affect a lot of decisions by AI
         maxStrength += enemyPlayerAttackMap.get(enemyPlayerCandidate) * 0.40F;
@@ -338,9 +338,9 @@ final class ProTechAi {
   /**
    * Returns a list of all enemy players.
    */
-  private static List<PlayerID> getEnemyPlayers(final GameData data, final PlayerID player) {
-    final List<PlayerID> enemyPlayers = new ArrayList<>();
-    for (final PlayerID players : data.getPlayerList().getPlayers()) {
+  private static List<PlayerId> getEnemyPlayers(final GameData data, final PlayerId player) {
+    final List<PlayerId> enemyPlayers = new ArrayList<>();
+    for (final PlayerId players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
         enemyPlayers.add(players);
       }
@@ -355,7 +355,7 @@ final class ProTechAi {
    * @return actual strength of enemy units (armor)
    */
   private static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes,
-      final GameData data, final PlayerID enemyPlayer) {
+      final GameData data, final PlayerId enemyPlayer) {
     final Set<Integer> ignore = new HashSet<>();
     ignore.add(1);
     final Predicate<Unit> blitzUnit = Matches.unitIsOwnedBy(enemyPlayer)
@@ -375,7 +375,7 @@ final class ProTechAi {
   }
 
   private static List<Unit> findAttackers(final Territory start, final int maxDistance,
-      final Set<Integer> ignoreDistance, final PlayerID player, final GameData data,
+      final Set<Integer> ignoreDistance, final PlayerId player, final GameData data,
       final Predicate<Unit> unitCondition, final Predicate<Territory> routeCondition,
       final List<Route> routes, final boolean sea) {
 
@@ -442,7 +442,7 @@ final class ProTechAi {
    * does not count planes already in the starting territory.
    */
   private static List<Unit> findPlaneAttackersThatCanLand(final Territory start, final int maxDistance,
-      final PlayerID player, final GameData data, final List<Territory> checked) {
+      final PlayerId player, final GameData data, final List<Territory> checked) {
 
     if (checked.isEmpty()) {
       return new ArrayList<>();
@@ -519,7 +519,7 @@ final class ProTechAi {
   }
 
   private static Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination,
-      final PlayerID player, final int maxDistance) {
+      final PlayerId player, final int maxDistance) {
     // note this does not care if subs are submerged or not
     // should it? does submerging affect movement of enemies?
     if (start == null || destination == null || !start.isWater() || !destination.isWater()) {
@@ -566,7 +566,7 @@ final class ProTechAi {
    * All Allied Territories which neighbor a territory
    * This duplicates getNeighbors(check, Matches.isTerritoryAllied(player, data))
    */
-  private static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerID player,
+  private static List<Territory> getNeighboringLandTerritories(final GameData data, final PlayerId player,
       final Territory check) {
     final List<Territory> territories = new ArrayList<>();
     final List<Territory> checkList = getExactNeighbors(check, data);

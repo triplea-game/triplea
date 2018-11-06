@@ -15,7 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -24,19 +24,19 @@ import games.strategy.util.IntegerMap;
 public class RandomStatsDetails implements Serializable {
   private static final long serialVersionUID = 69602197220912520L;
 
-  private final Map<PlayerID, IntegerMap<Integer>> data;
+  private final Map<PlayerId, IntegerMap<Integer>> data;
   private final IntegerMap<Integer> totalMap;
   private final DiceStatistic totalStats;
-  private final Map<PlayerID, DiceStatistic> playerStats = new HashMap<>();
+  private final Map<PlayerId, DiceStatistic> playerStats = new HashMap<>();
 
-  RandomStatsDetails(final Map<PlayerID, IntegerMap<Integer>> randomStats, final int diceSides) {
+  RandomStatsDetails(final Map<PlayerId, IntegerMap<Integer>> randomStats, final int diceSides) {
     data = randomStats;
     totalMap = new IntegerMap<>();
-    for (final Entry<PlayerID, IntegerMap<Integer>> entry : data.entrySet()) {
+    for (final Entry<PlayerId, IntegerMap<Integer>> entry : data.entrySet()) {
       totalMap.add(entry.getValue());
     }
     totalStats = getDiceStatistic(totalMap, diceSides);
-    for (final Entry<PlayerID, IntegerMap<Integer>> entry : data.entrySet()) {
+    for (final Entry<PlayerId, IntegerMap<Integer>> entry : data.entrySet()) {
       playerStats.put(entry.getKey(), getDiceStatistic(entry.getValue(), diceSides));
     }
   }
@@ -85,7 +85,7 @@ public class RandomStatsDetails implements Serializable {
     return new DiceStatistic(average, total, median, stdDeviation, variance);
   }
 
-  public Map<PlayerID, IntegerMap<Integer>> getData() {
+  public Map<PlayerId, IntegerMap<Integer>> getData() {
     return data;
   }
 
@@ -139,7 +139,7 @@ public class RandomStatsDetails implements Serializable {
       sb.append(
           getStatsString(getData().get(null), playerStats.get(null), "Null / Other"));
     }
-    for (final Entry<PlayerID, IntegerMap<Integer>> entry : getData().entrySet()) {
+    for (final Entry<PlayerId, IntegerMap<Integer>> entry : getData().entrySet()) {
       if (entry.getKey() == null) {
         continue;
       }
@@ -188,7 +188,7 @@ public class RandomStatsDetails implements Serializable {
     }
     final int rows = Math.max(2, getData().size() / 6);
     int x = 0;
-    for (final Entry<PlayerID, IntegerMap<Integer>> entry : getData().entrySet()) {
+    for (final Entry<PlayerId, IntegerMap<Integer>> entry : getData().entrySet()) {
       if (entry.getKey() == null) {
         continue;
       }

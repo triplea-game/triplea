@@ -12,7 +12,7 @@ import java.util.Set;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -43,7 +43,7 @@ public class TuvUtils {
    * @param data The game data.
    * @return a map of unit types to PU cost
    */
-  public static IntegerMap<UnitType> getCostsForTuv(final PlayerID player, final GameData data) {
+  public static IntegerMap<UnitType> getCostsForTuv(final PlayerId player, final GameData data) {
     data.acquireReadLock();
     final Resource pus;
     try {
@@ -168,15 +168,15 @@ public class TuvUtils {
    * will have their costs rounded up on a per unit basis.
    * Therefore, this map should NOT be used for Purchasing information!
    */
-  public static Map<PlayerID, Map<UnitType, ResourceCollection>> getResourceCostsForTuv(final GameData data,
+  public static Map<PlayerId, Map<UnitType, ResourceCollection>> getResourceCostsForTuv(final GameData data,
       final boolean includeAverageForMissingUnits) {
-    final Map<PlayerID, Map<UnitType, ResourceCollection>> result = new LinkedHashMap<>();
+    final Map<PlayerId, Map<UnitType, ResourceCollection>> result = new LinkedHashMap<>();
     final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits
         ? TuvUtils.getResourceCostsForTuvForAllPlayersMergedAndAveraged(data)
         : new HashMap<>();
-    final List<PlayerID> players = data.getPlayerList().getPlayers();
-    players.add(PlayerID.NULL_PLAYERID);
-    for (final PlayerID p : players) {
+    final List<PlayerId> players = data.getPlayerList().getPlayers();
+    players.add(PlayerId.NULL_PLAYERID);
+    for (final PlayerId p : players) {
       final ProductionFrontier frontier = p.getProductionFrontier();
       // any one will do then
       if (frontier == null) {
@@ -283,7 +283,7 @@ public class TuvUtils {
       }
       backupAveraged.put(entry.getKey(), avgCost);
     }
-    final Map<PlayerID, Map<UnitType, ResourceCollection>> allPlayersCurrent = getResourceCostsForTuv(data, false);
+    final Map<PlayerId, Map<UnitType, ResourceCollection>> allPlayersCurrent = getResourceCostsForTuv(data, false);
     allPlayersCurrent.remove(null);
     for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
       final List<ResourceCollection> costs = new ArrayList<>();
@@ -334,7 +334,7 @@ public class TuvUtils {
    * @param costs An integer map of unit types to costs
    * @return the total unit value.
    */
-  public static int getTuv(final Collection<Unit> units, final PlayerID player, final IntegerMap<UnitType> costs,
+  public static int getTuv(final Collection<Unit> units, final PlayerId player, final IntegerMap<UnitType> costs,
       final GameData data) {
     final Collection<Unit> playerUnits = CollectionUtils.getMatches(units, Matches.alliedUnit(player, data));
     return getTuv(playerUnits, costs);

@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import com.google.common.util.concurrent.Runnables;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -215,7 +215,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   }
 
   @Override
-  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
+  public void setCalculateData(final PlayerId attacker, final PlayerId defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects, final int initialRunCount) {
     synchronized (mutexCalcIsRunning) {
@@ -313,7 +313,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+  public AggregateResults setCalculateDataAndCalculate(final PlayerId attacker, final PlayerId defender,
       final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
       final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     synchronized (mutexCalcIsRunning) {

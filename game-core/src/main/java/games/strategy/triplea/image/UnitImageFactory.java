@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import javax.swing.ImageIcon;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
@@ -107,7 +107,7 @@ public class UnitImageFactory {
   /**
    * Return the appropriate unit image.
    */
-  public Optional<Image> getImage(final UnitType type, final PlayerID player, final boolean damaged,
+  public Optional<Image> getImage(final UnitType type, final PlayerId player, final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
@@ -135,11 +135,11 @@ public class UnitImageFactory {
     return Optional.of(scaledImage);
   }
 
-  public Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerID id) {
+  public Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerId id) {
     return getBaseImageUrl(baseImageName, id, resourceLoader);
   }
 
-  private static Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerID id,
+  private static Optional<URL> getBaseImageUrl(final String baseImageName, final PlayerId id,
       final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
@@ -147,7 +147,7 @@ public class UnitImageFactory {
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getBaseImage(final String baseImageName, final PlayerID id) {
+  private Optional<Image> getBaseImage(final String baseImageName, final PlayerId id) {
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
     Image image = null;
     if (imageLocation.isPresent()) {
@@ -157,7 +157,7 @@ public class UnitImageFactory {
     return Optional.ofNullable(image);
   }
 
-  public Optional<Image> getHighlightImage(final UnitType type, final PlayerID player, final boolean damaged,
+  public Optional<Image> getHighlightImage(final UnitType type, final PlayerId player, final boolean damaged,
       final boolean disabled) {
     final Optional<Image> baseImage = getImage(type, player, damaged, disabled);
     if (!baseImage.isPresent()) {
@@ -181,7 +181,7 @@ public class UnitImageFactory {
   /**
    * Return a icon image for a unit.
    */
-  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerID player, final boolean damaged,
+  public Optional<ImageIcon> getIcon(final UnitType type, final PlayerId player, final boolean damaged,
       final boolean disabled) {
     final String baseName = getBaseImageName(type, player, damaged, disabled);
     final String fullName = baseName + player.getName();
@@ -198,7 +198,7 @@ public class UnitImageFactory {
     return Optional.of(icon);
   }
 
-  private static String getBaseImageName(final UnitType type, final PlayerID id, final boolean damaged,
+  private static String getBaseImageName(final UnitType type, final PlayerId id, final boolean damaged,
       final boolean disabled) {
     StringBuilder name = new StringBuilder(32);
     name.append(type.getName());

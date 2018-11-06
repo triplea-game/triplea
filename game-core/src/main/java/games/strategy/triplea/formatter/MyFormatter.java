@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.DefaultNamed;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
@@ -45,7 +45,7 @@ public class MyFormatter {
     return unitsToTextNoOwner(units, null);
   }
 
-  public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerID owner) {
+  public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerId owner) {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (final Unit unit : units) {
       if (owner == null || owner.equals(unit.getOwner())) {

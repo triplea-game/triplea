@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.IRemotePlayer;
@@ -21,7 +21,7 @@ import games.strategy.sound.ISound;
  */
 public interface IDelegateBridge {
   /**
-   * Equivalent to getRemotePlayer(getPlayerID()).
+   * Equivalent to getRemotePlayer(getPlayerId()).
    *
    * @return remote for the current player.
    */
@@ -30,9 +30,9 @@ public interface IDelegateBridge {
   /**
    * Get a remote reference to the given player.
    */
-  IRemotePlayer getRemotePlayer(PlayerID id);
+  IRemotePlayer getRemotePlayer(PlayerId id);
 
-  PlayerID getPlayerId();
+  PlayerId getPlayerId();
 
   /**
    * Returns the current step name.
@@ -49,7 +49,7 @@ public interface IDelegateBridge {
   /**
    * equivalent to getRandom(max,1,annotation)[0].
    */
-  int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation);
+  int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation);
 
   /**
    * Return a random value to be used by the delegate.
@@ -61,7 +61,7 @@ public interface IDelegateBridge {
    *        a string used to describe the random event.
    *        <p>
    */
-  int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+  int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
       final String annotation);
 
   /**

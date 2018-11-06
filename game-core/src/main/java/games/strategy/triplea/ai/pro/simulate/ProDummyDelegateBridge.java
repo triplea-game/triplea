@@ -5,7 +5,7 @@ import java.util.Properties;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -23,13 +23,13 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
   private final ITripleADisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
-  private final PlayerID player;
+  private final PlayerId player;
   private final ProAi proAi;
   private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
   private final GameData gameData;
   private final CompositeChange allChanges = new CompositeChange();
 
-  public ProDummyDelegateBridge(final ProAi proAi, final PlayerID player, final GameData data) {
+  public ProDummyDelegateBridge(final ProAi proAi, final PlayerId player, final GameData data) {
     this.proAi = proAi;
     gameData = data;
     this.player = player;
@@ -54,7 +54,7 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerID id) {
+  public IRemotePlayer getRemotePlayer(final PlayerId id) {
     return proAi;
   }
 
@@ -64,18 +64,18 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
       final String annotation) {
     return randomSource.getRandom(max, count, annotation);
   }
 
   @Override
-  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation) {
     return randomSource.getRandom(max, annotation);
   }
 
   @Override
-  public PlayerID getPlayerId() {
+  public PlayerId getPlayerId() {
     return player;
   }
 

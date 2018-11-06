@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -45,12 +45,12 @@ import games.strategy.util.CollectionUtils;
  */
 public class ProPurchaseUtils {
 
-  public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerID player,
+  public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerId player,
       final List<ProPurchaseOption> purchaseOptions, final Territory t, final boolean isBid) {
     return findPurchaseOptionsForTerritory(player, purchaseOptions, t, t, isBid);
   }
 
-  public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerID player,
+  public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerId player,
       final List<ProPurchaseOption> purchaseOptions, final Territory t, final Territory factoryTerritory,
       final boolean isBid) {
     final List<ProPurchaseOption> result = new ArrayList<>();
@@ -62,7 +62,7 @@ public class ProPurchaseUtils {
     return result;
   }
 
-  private static boolean canTerritoryUsePurchaseOption(final PlayerID player, final ProPurchaseOption ppo,
+  private static boolean canTerritoryUsePurchaseOption(final PlayerId player, final ProPurchaseOption ppo,
       final Territory t, final Territory factoryTerritory, final boolean isBid) {
     if (ppo == null) {
       return false;
@@ -71,7 +71,7 @@ public class ProPurchaseUtils {
     return canUnitsBePlaced(units, player, t, factoryTerritory, isBid);
   }
 
-  public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t,
+  public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerId player, final Territory t,
       final boolean isBid) {
     return canUnitsBePlaced(units, player, t, t, isBid);
   }
@@ -79,7 +79,7 @@ public class ProPurchaseUtils {
   /**
    * Check if units can be placed in given territory by specified factory.
    */
-  public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerID player, final Territory t,
+  public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerId player, final Territory t,
       final Territory factoryTerritory, final boolean isBid) {
     final GameData data = player.getData();
     AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
@@ -102,7 +102,7 @@ public class ProPurchaseUtils {
         && units.stream().anyMatch(Matches.unitIsCarrier());
   }
 
-  public static List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerID player, final GameData data,
+  public static List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerId player, final GameData data,
       final List<ProPurchaseOption> purchaseOptions, final ProResourceTracker resourceTracker,
       final int remainingUnitProduction, final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
@@ -174,7 +174,7 @@ public class ProPurchaseUtils {
     return Optional.of(purchasePercentages.keySet().iterator().next());
   }
 
-  public static List<Unit> findMaxPurchaseDefenders(final PlayerID player, final Territory t,
+  public static List<Unit> findMaxPurchaseDefenders(final PlayerId player, final Territory t,
       final List<ProPurchaseOption> landPurchaseOptions) {
 
     ProLogger.info("Find max purchase defenders for " + t.getName());
@@ -221,7 +221,7 @@ public class ProPurchaseUtils {
    * @param player - current AI player
    * @return - map of all available purchase and place territories
    */
-  public static Map<Territory, ProPurchaseTerritory> findBidTerritories(final PlayerID player) {
+  public static Map<Territory, ProPurchaseTerritory> findBidTerritories(final PlayerId player) {
 
     ProLogger.info("Find all bid territories");
     final GameData data = ProData.getData();
@@ -249,7 +249,7 @@ public class ProPurchaseUtils {
     purchaseTerritories.values().forEach(ppt -> ppt.setUnitProduction(ppt.getUnitProduction() + 1));
   }
 
-  public static Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerID player) {
+  public static Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerId player) {
 
     ProLogger.info("Find all purchase territories");
     final GameData data = ProData.getData();
@@ -277,7 +277,7 @@ public class ProPurchaseUtils {
     return purchaseTerritories;
   }
 
-  private static int getUnitProduction(final Territory territory, final GameData data, final PlayerID player) {
+  private static int getUnitProduction(final Territory territory, final GameData data, final PlayerId player) {
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
         .and(Matches.unitIsBeingTransported().negate())
         .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).negate());
@@ -300,7 +300,7 @@ public class ProPurchaseUtils {
         territory, player, data, true, true);
   }
 
-  private static PlayerID getOriginalFactoryOwner(final Territory territory, final PlayerID player) {
+  private static PlayerId getOriginalFactoryOwner(final Territory territory, final PlayerId player) {
 
     final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.size() == 0) {
@@ -348,7 +348,7 @@ public class ProPurchaseUtils {
    * If no such rule can be found, then return null.
    * </p>
    */
-  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
+  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerId player) {
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier == null) {
       return null;

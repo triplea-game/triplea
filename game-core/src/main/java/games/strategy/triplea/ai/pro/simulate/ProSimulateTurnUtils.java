@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -41,7 +41,7 @@ import games.strategy.util.CollectionUtils;
  */
 public class ProSimulateTurnUtils {
 
-  public static void simulateBattles(final GameData data, final PlayerID player, final IDelegateBridge delegateBridge,
+  public static void simulateBattles(final GameData data, final PlayerId player, final IDelegateBridge delegateBridge,
       final ProOddsCalculator calc) {
 
     ProLogger.info("Starting battle simulation phase");
@@ -93,7 +93,7 @@ public class ProSimulateTurnUtils {
   }
 
   public static Map<Territory, ProTerritory> transferMoveMap(final Map<Territory, ProTerritory> moveMap,
-      final GameData toData, final PlayerID player) {
+      final GameData toData, final PlayerId player) {
 
     ProLogger.info("Transferring move map");
 
@@ -159,9 +159,9 @@ public class ProSimulateTurnUtils {
   }
 
   private static boolean checkIfCapturedTerritoryIsAlliedCapital(final Territory t, final GameData data,
-      final PlayerID player, final IDelegateBridge delegateBridge) {
+      final PlayerId player, final IDelegateBridge delegateBridge) {
 
-    final @Nullable PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
+    final @Nullable PlayerId terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(t);
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta != null && ta.getCapital() != null && terrOrigOwner != null
@@ -192,7 +192,7 @@ public class ProSimulateTurnUtils {
   }
 
   private static Unit transferUnit(final Unit u, final Map<Unit, Territory> unitTerritoryMap,
-      final List<Unit> usedUnits, final GameData toData, final PlayerID player) {
+      final List<Unit> usedUnits, final GameData toData, final PlayerId player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(u);
     final List<Unit> toUnits = toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
@@ -208,7 +208,7 @@ public class ProSimulateTurnUtils {
 
   private static Unit transferLoadedTransport(final Unit transport, final List<Unit> transportingUnits,
       final Map<Unit, Territory> unitTerritoryMap, final List<Unit> usedUnits, final GameData toData,
-      final PlayerID player) {
+      final PlayerId player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(transport);
     final List<Unit> toTransports = toData.getMap().getTerritory(unitTerritory.getName()).getUnits()

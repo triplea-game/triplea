@@ -34,7 +34,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -83,9 +83,9 @@ class OddsCalculatorPanel extends JPanel {
   private final IOddsCalculator calculator;
   private final PlayerUnitsPanel attackingUnitsPanel;
   private final PlayerUnitsPanel defendingUnitsPanel;
-  private final JComboBox<PlayerID> attackerCombo;
-  private final JComboBox<PlayerID> defenderCombo;
-  private final JComboBox<PlayerID> swapSidesCombo;
+  private final JComboBox<PlayerId> attackerCombo;
+  private final JComboBox<PlayerId> defenderCombo;
+  private final JComboBox<PlayerId> swapSidesCombo;
   private final JLabel attackerUnitsTotalNumber = new JLabel();
   private final JLabel defenderUnitsTotalNumber = new JLabel();
   private final JLabel attackerUnitsTotalTuv = new JLabel();
@@ -107,9 +107,9 @@ class OddsCalculatorPanel extends JPanel {
     calculateButton.setEnabled(false);
     data.acquireReadLock();
     try {
-      final Collection<PlayerID> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
-      if (doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, data)) {
-        playerList.add(PlayerID.NULL_PLAYERID);
+      final Collection<PlayerId> playerList = new ArrayList<>(data.getPlayerList().getPlayers());
+      if (doesPlayerHaveUnitsOnMap(PlayerId.NULL_PLAYERID, data)) {
+        playerList.add(PlayerId.NULL_PLAYERID);
       }
       attackerCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
       defenderCombo = new JComboBox<>(SwingComponents.newComboBoxModel(playerList));
@@ -432,7 +432,7 @@ class OddsCalculatorPanel extends JPanel {
           defenderCombo.setSelectedItem(location.getOwner());
         } else {
           // we need to find out the defender for sea zones
-          for (final PlayerID player : location.getUnits().getPlayersWithUnits()) {
+          for (final PlayerId player : location.getUnits().getPlayersWithUnits()) {
             if (!player.equals(getAttacker()) && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
               defenderCombo.setSelectedItem(player);
               break;
@@ -470,16 +470,16 @@ class OddsCalculatorPanel extends JPanel {
     }
   }
 
-  private PlayerID getDefender() {
-    return (PlayerID) defenderCombo.getSelectedItem();
+  private PlayerId getDefender() {
+    return (PlayerId) defenderCombo.getSelectedItem();
   }
 
-  private PlayerID getAttacker() {
-    return (PlayerID) attackerCombo.getSelectedItem();
+  private PlayerId getAttacker() {
+    return (PlayerId) attackerCombo.getSelectedItem();
   }
 
-  private PlayerID getSwapSides() {
-    return (PlayerID) swapSidesCombo.getSelectedItem();
+  private PlayerId getSwapSides() {
+    return (PlayerId) swapSidesCombo.getSelectedItem();
   }
 
 
@@ -640,13 +640,13 @@ class OddsCalculatorPanel extends JPanel {
     return landBattleCheckBox.isSelected();
   }
 
-  private PlayerID getEnemy(final PlayerID player) {
-    for (final PlayerID id : data.getPlayerList()) {
+  private PlayerId getEnemy(final PlayerId player) {
+    for (final PlayerId id : data.getPlayerList()) {
       if (data.getRelationshipTracker().isAtWar(player, id)) {
         return id;
       }
     }
-    for (final PlayerID id : data.getPlayerList()) {
+    for (final PlayerId id : data.getPlayerList()) {
       if (!data.getRelationshipTracker().isAllied(player, id)) {
         return id;
       }
@@ -720,7 +720,7 @@ class OddsCalculatorPanel extends JPanel {
     public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
         final boolean isSelected, final boolean cellHasFocus) {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-      final PlayerID id = (PlayerID) value;
+      final PlayerId id = (PlayerId) value;
       setText(id.getName());
       setIcon(new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(id)));
       return this;
@@ -731,7 +731,7 @@ class OddsCalculatorPanel extends JPanel {
     calculateButton.requestFocus();
   }
 
-  private static boolean doesPlayerHaveUnitsOnMap(final PlayerID player, final GameData data) {
+  private static boolean doesPlayerHaveUnitsOnMap(final PlayerId player, final GameData data) {
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnits()) {
         if (u.getOwner().equals(player)) {

@@ -2,7 +2,7 @@ package games.strategy.sound;
 
 import java.util.Collection;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.LocalPlayers;
 
 /**
@@ -19,19 +19,19 @@ public class DefaultSoundChannel implements ISound {
 
 
   @Override
-  public void playSoundForAll(final String clipName, final PlayerID playerId) {
+  public void playSoundForAll(final String clipName, final PlayerId playerId) {
     ClipPlayer.play(clipName, playerId);
   }
 
   @Override
   public void playSoundToPlayers(final String clipName,
-      final Collection<PlayerID> playersToSendTo, final Collection<PlayerID> butNotThesePlayers,
+      final Collection<PlayerId> playersToSendTo, final Collection<PlayerId> butNotThesePlayers,
       final boolean includeObservers) {
     if (playersToSendTo == null || playersToSendTo.isEmpty()) {
       return;
     }
     if (butNotThesePlayers != null) {
-      for (final PlayerID p : butNotThesePlayers) {
+      for (final PlayerId p : butNotThesePlayers) {
         if (localPlayers.playing(p)) {
           return;
         }

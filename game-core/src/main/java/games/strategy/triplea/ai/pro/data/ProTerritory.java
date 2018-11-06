@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -129,7 +129,7 @@ public class ProTerritory {
     return defenders;
   }
 
-  public List<Unit> getAllDefendersForCarrierCalcs(final GameData data, final PlayerID player) {
+  public List<Unit> getAllDefendersForCarrierCalcs(final GameData data, final PlayerId player) {
     if (Properties.getProduceNewFightersOnOldCarriers(data)) {
       return getAllDefenders();
     }
@@ -147,7 +147,7 @@ public class ProTerritory {
     return defenders;
   }
 
-  public List<Unit> getMaxEnemyDefenders(final PlayerID player, final GameData data) {
+  public List<Unit> getMaxEnemyDefenders(final PlayerId player, final GameData data) {
     final List<Unit> defenders = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
     defenders.addAll(maxScrambleUnits);
     return defenders;

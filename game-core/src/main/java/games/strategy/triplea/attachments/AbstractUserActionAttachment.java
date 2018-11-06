@@ -10,7 +10,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -45,7 +45,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
   // well. it is good to
   // set "actionAccept" to "UK" so UK can accept this action to go through.
-  protected List<PlayerID> actionAccept = new ArrayList<>();
+  protected List<PlayerId> actionAccept = new ArrayList<>();
 
   protected AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -124,7 +124,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   private void setActionAccept(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         actionAccept.add(tempPlayer);
       } else {
@@ -133,14 +133,14 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     }
   }
 
-  private void setActionAccept(final List<PlayerID> value) {
+  private void setActionAccept(final List<PlayerId> value) {
     actionAccept = value;
   }
 
   /**
    * Returns a list of players that must accept this action before it takes effect.
    */
-  public List<PlayerID> getActionAccept() {
+  public List<PlayerId> getActionAccept() {
     return actionAccept;
   }
 

@@ -14,14 +14,14 @@ import java.util.Set;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.delegate.BidPlaceDelegate;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
 
 class PlayerOrder {
-  private final List<PlayerID> playerSet = new ArrayList<>();
+  private final List<PlayerId> playerSet = new ArrayList<>();
 
   private static <E> Set<E> removeDups(final Collection<E> c) {
     return new LinkedHashSet<>(c);
@@ -42,7 +42,7 @@ class PlayerOrder {
           && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
-      final PlayerID currentPlayerId = currentStep.getPlayerId();
+      final PlayerId currentPlayerId = currentStep.getPlayerId();
       if (currentPlayerId != null && !currentPlayerId.isNull()) {
         playerSet.add(currentPlayerId);
       }
@@ -55,7 +55,7 @@ class PlayerOrder {
         StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
       turnWriter.write("Turn Order\r\n");
       int count = 1;
-      for (final PlayerID currentPlayerId : removeDups(playerSet)) {
+      for (final PlayerId currentPlayerId : removeDups(playerSet)) {
         turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
         count++;
       }

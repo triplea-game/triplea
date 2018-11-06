@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 
 /**
@@ -15,7 +15,7 @@ class ProductionFrontierChange extends Change {
   private final String endFrontierName;
   private final String playerName;
 
-  ProductionFrontierChange(final ProductionFrontier newFrontier, final PlayerID player) {
+  ProductionFrontierChange(final ProductionFrontier newFrontier, final PlayerId player) {
     startFrontierName = player.getProductionFrontier().getName();
     endFrontierName = newFrontier.getName();
     playerName = player.getName();
@@ -29,7 +29,7 @@ class ProductionFrontierChange extends Change {
 
   @Override
   protected void perform(final GameData data) {
-    final PlayerID player = data.getPlayerList().getPlayerId(playerName);
+    final PlayerId player = data.getPlayerList().getPlayerId(playerName);
     final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(endFrontierName);
     player.setProductionFrontier(frontier);
   }

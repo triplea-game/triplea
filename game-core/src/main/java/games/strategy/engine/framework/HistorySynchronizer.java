@@ -4,7 +4,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.EventChild;
 
 /**
@@ -80,7 +80,7 @@ public class HistorySynchronizer {
     }
 
     @Override
-    public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
+    public void stepChanged(final String stepName, final String delegateName, final PlayerId player, final int round,
         final String displayName, final boolean loadedFromSavedGame) {
       // we dont need to advance the game step in this case
       if (loadedFromSavedGame) {

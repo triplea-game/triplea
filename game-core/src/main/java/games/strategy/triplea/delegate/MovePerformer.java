@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -41,7 +41,7 @@ public class MovePerformer implements Serializable {
 
   private transient AbstractMoveDelegate moveDelegate;
   private transient IDelegateBridge bridge;
-  private transient PlayerID player;
+  private transient PlayerId player;
   private AaInMoveUtil aaInMoveUtil;
   private final ExecutionStack executionStack = new ExecutionStack();
   private UndoableMove currentMove;
@@ -63,7 +63,7 @@ public class MovePerformer implements Serializable {
     }
   }
 
-  private ITripleAPlayer getRemotePlayer(final PlayerID id) {
+  private ITripleAPlayer getRemotePlayer(final PlayerId id) {
     return (ITripleAPlayer) bridge.getRemotePlayer(id);
   }
 
@@ -71,7 +71,7 @@ public class MovePerformer implements Serializable {
     return getRemotePlayer(player);
   }
 
-  void moveUnits(final Collection<Unit> units, final Route route, final PlayerID id,
+  void moveUnits(final Collection<Unit> units, final Route route, final PlayerId id,
       final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents,
       final UndoableMove currentMove) {
     this.currentMove = currentMove;
@@ -87,7 +87,7 @@ public class MovePerformer implements Serializable {
   /**
    * We assume that the move is valid.
    */
-  private void populateStack(final Collection<Unit> units, final Route route, final PlayerID id,
+  private void populateStack(final Collection<Unit> units, final Route route, final PlayerId id,
       final Collection<Unit> transportsToLoad) {
     final IExecutable preAaFire = new IExecutable() {
       private static final long serialVersionUID = -7945930782650355037L;
@@ -285,13 +285,13 @@ public class MovePerformer implements Serializable {
     executionStack.execute(bridge);
   }
 
-  private static Predicate<Territory> getMustFightThroughMatch(final PlayerID id, final GameData data) {
+  private static Predicate<Territory> getMustFightThroughMatch(final PlayerId id, final GameData data) {
     return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)
         .or(Matches.territoryHasNonSubmergedEnemyUnits(id, data))
         .or(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
   }
 
-  private Change markMovementChange(final Collection<Unit> units, final Route route, final PlayerID id) {
+  private Change markMovementChange(final Collection<Unit> units, final Route route, final PlayerId id) {
     final GameData data = bridge.getData();
     final CompositeChange change = new CompositeChange();
     final Territory routeStart = route.getStart();

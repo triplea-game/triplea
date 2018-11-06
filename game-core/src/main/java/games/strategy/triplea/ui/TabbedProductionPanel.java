@@ -18,7 +18,7 @@ import javax.swing.JTabbedPane;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
@@ -36,7 +36,7 @@ class TabbedProductionPanel extends ProductionPanel {
     super(uiContext);
   }
 
-  static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
+  static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
     return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }

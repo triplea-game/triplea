@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.game.server.HeadlessGameServer;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -134,7 +134,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (useSecureRandomSource) {
         // server game.
         // try to find an opponent to be the other side of the crypto random source.
-        final PlayerID remotePlayer =
+        final PlayerId remotePlayer =
             serverGame.getPlayerManager().getRemoteOpponent(messenger.getLocalNode(), gameData);
         final CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, serverGame);
         serverGame.setRandomSource(randomSource);

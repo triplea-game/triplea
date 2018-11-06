@@ -79,7 +79,7 @@ public class BattleRecordsList extends GameDataComponent {
   /**
    * Returns the TUV damage caused by {@code attacker} from the battle results in {@code battleRecordsList}.
    */
-  public static int getTuvDamageCausedByPlayer(final PlayerID attacker, final BattleRecordsList battleRecordsList,
+  public static int getTuvDamageCausedByPlayer(final PlayerId attacker, final BattleRecordsList battleRecordsList,
       final int beginningRound, final int endRound, final boolean currentRoundOnly, final boolean includeNullPlayer) {
     final Collection<BattleRecords> brs = new ArrayList<>();
     if (currentRoundOnly) {
@@ -113,7 +113,7 @@ public class BattleRecordsList extends GameDataComponent {
    * @param attacker if null then any player
    * @param defender if null then any player
    */
-  public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender,
+  public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerId attacker, final PlayerId defender,
       final String battleType, final Collection<Territory> anyOfTheseTerritories, final BattleRecordsList brl,
       final int beginningRound, final int endRound, final boolean currentRoundOnly) {
     Preconditions.checkNotNull(brl);

@@ -18,7 +18,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -57,7 +57,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return Properties.getGiveUnitsByTerritory(getData());
   }
 
-  private static boolean canPlayerCollectIncome(final PlayerID player, final GameData data) {
+  private static boolean canPlayerCollectIncome(final PlayerId player, final GameData data) {
     return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, data);
   }
 
@@ -65,7 +65,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
    * Find estimated income for given player. This only takes into account income from territories,
    * units, NOs, and triggers. It ignores blockades, war bonds, relationship upkeep, and bonus income.
    */
-  public static IntegerMap<Resource> findEstimatedIncome(final PlayerID player, final GameData data) {
+  public static IntegerMap<Resource> findEstimatedIncome(final PlayerId player, final GameData data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
 
     // Only add territory resources if endTurn not endTurnNoPU
@@ -241,7 +241,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return true;
   }
 
-  private int rollWarBonds(final IDelegateBridge delegateBridge, final PlayerID player, final GameData data) {
+  private int rollWarBonds(final IDelegateBridge delegateBridge, final PlayerId player, final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
     if (sides <= 0 || count <= 0) {
@@ -257,7 +257,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return total;
   }
 
-  private String rollWarBondsForFriends(final IDelegateBridge delegateBridge, final PlayerID player,
+  private String rollWarBondsForFriends(final IDelegateBridge delegateBridge, final PlayerId player,
       final GameData data) {
     final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
     final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
@@ -271,13 +271,13 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     if (playerattachment == null) {
       return "";
     }
-    final Collection<PlayerID> shareWith = playerattachment.getShareTechnology();
+    final Collection<PlayerId> shareWith = playerattachment.getShareTechnology();
     if (shareWith == null || shareWith.isEmpty()) {
       return "";
     }
     // take first one
-    PlayerID giveWarBondsTo = null;
-    for (final PlayerID p : shareWith) {
+    PlayerId giveWarBondsTo = null;
+    for (final PlayerId p : shareWith) {
       final int diceCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
       final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
       if (diceSides <= 0 && diceCount <= 0) {
@@ -314,9 +314,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   private static void changeUnitOwnership(final IDelegateBridge bridge) {
-    final PlayerID player = bridge.getPlayerId();
+    final PlayerId player = bridge.getPlayerId();
     final PlayerAttachment pa = PlayerAttachment.get(player);
-    final Collection<PlayerID> possibleNewOwners = pa.getGiveUnitControl();
+    final Collection<PlayerId> possibleNewOwners = pa.getGiveUnitControl();
     final Collection<Territory> territories = bridge.getData().getMap().getTerritories();
     final CompositeChange change = new CompositeChange();
     final Collection<Tuple<Territory, Collection<Unit>>> changeList =
@@ -325,8 +325,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory);
       // if ownership should change in this territory
       if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty()) {
-        final Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();
-        for (final PlayerID terrNewOwner : terrNewOwners) {
+        final Collection<PlayerId> terrNewOwners = ta.getChangeUnitOwners();
+        for (final PlayerId terrNewOwner : terrNewOwners) {
           if (possibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
             final Collection<Unit> units = currTerritory.getUnits()
@@ -379,7 +379,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   // finds losses due to blockades, positive value returned.
-  private int getBlockadeProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge bridge,
+  private int getBlockadeProductionLoss(final PlayerId player, final GameData data, final IDelegateBridge bridge,
       final StringBuilder endTurnReport) {
     final PlayerAttachment playerRules = PlayerAttachment.get(player);
     if (playerRules != null && playerRules.getImmuneToBlockade()) {

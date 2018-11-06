@@ -1,6 +1,6 @@
 package games.strategy.engine.player;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 
 /**
@@ -14,7 +14,7 @@ public interface IGamePlayer extends IRemotePlayer {
   /**
    * Called before the game starts.
    */
-  void initialize(IPlayerBridge bridge, PlayerID id);
+  void initialize(IPlayerBridge bridge, PlayerId id);
 
   /**
    * Returns the nation name.

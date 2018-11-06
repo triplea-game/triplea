@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -130,13 +130,13 @@ public final class ForumPosterComponent extends JPanel {
   }
 
   private void updateHistoryLog() {
-    final Collection<PlayerID> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(data);
+    final Collection<PlayerId> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(data);
     // clear first, then update
     historyLog.clear();
     historyLog.printFullTurn(data, showDetailsCheckBox.isSelected(), allowedIDs);
     if (includeTerritoryAllPlayersCheckBox.isSelected()) {
-      for (final PlayerID player : data.getPlayerList().getPlayers()) {
-        final Collection<PlayerID> players = new ArrayList<>();
+      for (final PlayerId player : data.getPlayerList().getPlayers()) {
+        final Collection<PlayerId> players = new ArrayList<>();
         players.add(player);
         historyLog.printTerritorySummary(data, players);
       }

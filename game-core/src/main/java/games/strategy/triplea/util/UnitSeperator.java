@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -40,7 +40,7 @@ public class UnitSeperator {
     final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
     categories.sort(Comparator
         .comparing(UnitCategory::getOwner, Comparator
-            .comparing((final PlayerID p) -> !p.equals(t.getOwner()))
+            .comparing((final PlayerId p) -> !p.equals(t.getOwner()))
             .thenComparing(p -> Matches.isAtWar(p, data).test(t.getOwner()))
             .thenComparing(data.getPlayerList().getPlayers()::indexOf))
         .thenComparing(uc -> Matches.unitTypeCanMove(uc.getOwner()).test(uc.getType()))

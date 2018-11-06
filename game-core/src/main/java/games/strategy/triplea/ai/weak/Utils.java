@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -59,8 +59,8 @@ class Utils {
     return shortestRoute;
   }
 
-  static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID us, final GameData data) {
-    for (final PlayerID player : CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+  static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerId us, final GameData data) {
+    for (final PlayerId player : CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
         Matches.isAtWar(us, data))) {
       for (final Territory capital : TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
         if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {

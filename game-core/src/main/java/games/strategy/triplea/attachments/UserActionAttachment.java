@@ -15,7 +15,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
@@ -36,7 +36,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     super(name, attachable, gameData);
   }
 
-  public static Collection<UserActionAttachment> getUserActionAttachments(final PlayerID player) {
+  public static Collection<UserActionAttachment> getUserActionAttachments(final PlayerId player) {
     return player.getAttachments().values().stream()
         .filter(a -> a.getName().startsWith(Constants.USERACTION_ATTACHMENT_PREFIX))
         .filter(UserActionAttachment.class::isInstance)
@@ -44,7 +44,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
         .collect(Collectors.toList());
   }
 
-  static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
+  static UserActionAttachment get(final PlayerId player, final String nameOfAttachment) {
     return getAttachment(player, nameOfAttachment, UserActionAttachment.class);
   }
 
@@ -57,7 +57,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
               + thisErrorMsg());
     }
     TriggerAttachment trigger = null;
-    for (final PlayerID player : getData().getPlayerList().getPlayers()) {
+    for (final PlayerId player : getData().getPlayerList().getPlayers()) {
       for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
         if (ta.getName().equals(s[0])) {
           trigger = ta;
@@ -138,9 +138,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     }
   }
 
-  public Set<PlayerID> getOtherPlayers() {
-    final Set<PlayerID> otherPlayers = new HashSet<>();
-    otherPlayers.add((PlayerID) this.getAttachedTo());
+  public Set<PlayerId> getOtherPlayers() {
+    final Set<PlayerId> otherPlayers = new HashSet<>();
+    otherPlayers.add((PlayerId) this.getAttachedTo());
     otherPlayers.addAll(actionAccept);
     return otherPlayers;
   }
@@ -148,7 +148,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   /**
    * Returns the valid actions for this player.
    */
-  public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
+  public static Collection<UserActionAttachment> getValidActions(final PlayerId player,
       final Map<ICondition, Boolean> testedConditions) {
     return CollectionUtils.getMatches(getUserActionAttachments(player),
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions));

@@ -10,7 +10,7 @@ import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
@@ -65,15 +65,15 @@ public class ChangeFactory {
     }
   };
 
-  public static Change changeOwner(final Territory territory, final PlayerID owner) {
+  public static Change changeOwner(final Territory territory, final PlayerId owner) {
     return new OwnerChange(territory, owner);
   }
 
-  public static Change changeOwner(final Collection<Unit> units, final PlayerID owner, final Territory location) {
+  public static Change changeOwner(final Collection<Unit> units, final PlayerId owner, final Territory location) {
     return new PlayerOwnerChange(units, owner, location);
   }
 
-  public static Change changeOwner(final Unit unit, final PlayerID owner, final Territory location) {
+  public static Change changeOwner(final Unit unit, final PlayerId owner, final Territory location) {
     return new PlayerOwnerChange(Collections.singleton(unit), owner, location);
   }
 
@@ -81,7 +81,7 @@ public class ChangeFactory {
     return new AddUnits(territory.getUnits(), units);
   }
 
-  public static Change addUnits(final PlayerID player, final Collection<Unit> units) {
+  public static Change addUnits(final PlayerId player, final Collection<Unit> units) {
     return new AddUnits(player.getUnits(), units);
   }
 
@@ -89,7 +89,7 @@ public class ChangeFactory {
     return new RemoveUnits(territory.getUnits(), units);
   }
 
-  public static Change removeUnits(final PlayerID player, final Collection<Unit> units) {
+  public static Change removeUnits(final PlayerId player, final Collection<Unit> units) {
     return new RemoveUnits(player.getUnits(), units);
   }
 
@@ -97,19 +97,19 @@ public class ChangeFactory {
     return new CompositeChange(Arrays.asList(removeUnits(start, units), addUnits(end, units)));
   }
 
-  public static Change changeProductionFrontier(final PlayerID player, final ProductionFrontier frontier) {
+  public static Change changeProductionFrontier(final PlayerId player, final ProductionFrontier frontier) {
     return new ProductionFrontierChange(frontier, player);
   }
 
-  public static Change changePlayerWhoAmIChange(final PlayerID player, final String encodedPlayerTypeAndName) {
+  public static Change changePlayerWhoAmIChange(final PlayerId player, final String encodedPlayerTypeAndName) {
     return new PlayerWhoAmIChange(encodedPlayerTypeAndName, player);
   }
 
-  public static Change changeResourcesChange(final PlayerID player, final Resource resource, final int quantity) {
+  public static Change changeResourcesChange(final PlayerId player, final Resource resource, final int quantity) {
     return new ChangeResourceChange(player, resource, quantity);
   }
 
-  public static Change removeResourceCollection(final PlayerID id, final ResourceCollection resourceCollection) {
+  public static Change removeResourceCollection(final PlayerId id, final ResourceCollection resourceCollection) {
     final CompositeChange compositeChange = new CompositeChange();
     for (final Resource r : resourceCollection.getResourcesCopy().keySet()) {
       compositeChange.add(new ChangeResourceChange(id, r, -resourceCollection.getQuantity(r)));
@@ -143,11 +143,11 @@ public class ChangeFactory {
     return new RemoveProductionRule(rule, frontier);
   }
 
-  public static Change addAvailableTech(final TechnologyFrontier tf, final TechAdvance ta, final PlayerID player) {
+  public static Change addAvailableTech(final TechnologyFrontier tf, final TechAdvance ta, final PlayerId player) {
     return new AddAvailableTech(tf, ta, player);
   }
 
-  public static Change removeAvailableTech(final TechnologyFrontier tf, final TechAdvance ta, final PlayerID player) {
+  public static Change removeAvailableTech(final TechnologyFrontier tf, final TechAdvance ta, final PlayerId player) {
     return new RemoveAvailableTech(tf, ta, player);
   }
 
@@ -196,7 +196,7 @@ public class ChangeFactory {
    *
    * @return the Change of relationship between 2 players
    */
-  public static Change relationshipChange(final PlayerID player, final PlayerID player2,
+  public static Change relationshipChange(final PlayerId player, final PlayerId player2,
       final RelationshipType currentRelation, final RelationshipType newRelation) {
     return new RelationshipChange(player, player2, currentRelation, newRelation);
   }

@@ -16,7 +16,7 @@ import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -228,7 +228,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+  public boolean acceptAction(final PlayerId playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     final GameData data = getGameData();
     return !getPlayerId().amNotDeadYet(data)
@@ -253,7 +253,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     }
 
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     if (!soundPlayedAlreadyTechnology) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id);
       soundPlayedAlreadyTechnology = true;
@@ -286,7 +286,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
 
     if (nonCombat && !soundPlayedAlreadyNonCombatMove) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
@@ -322,7 +322,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     move(nonCombat, stepName);
   }
 
-  private boolean canAirLand(final boolean movePhase, final PlayerID player) {
+  private boolean canAirLand(final boolean movePhase, final PlayerId player) {
     final Collection<Territory> airCantLand;
     try {
       if (movePhase) {
@@ -357,7 +357,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       return;
     }
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     // play a sound for this phase
     if (!bid && !soundPlayedAlreadyPurchase) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id);
@@ -432,7 +432,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     while (true) {
       if (getPlayerBridge().isGameOver()) {
         return;
@@ -464,7 +464,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     final IAbstractPlaceDelegate placeDel;
     try {
       placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
@@ -524,7 +524,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
@@ -629,7 +629,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {
+  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerId hitPlayer) {
     // no need, we have already confirmed since we are firing player
     if (ui.getLocalPlayers().playing(hitPlayer)) {
       return;
@@ -653,7 +653,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   @Override
   public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     final PlayerAttachment pa = PlayerAttachment.get(id);
     if (pa == null) {
       return null;

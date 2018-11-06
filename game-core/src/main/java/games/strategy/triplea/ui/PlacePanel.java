@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.player.IPlayerBridge;
@@ -43,7 +43,7 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id, " place");
   }
 

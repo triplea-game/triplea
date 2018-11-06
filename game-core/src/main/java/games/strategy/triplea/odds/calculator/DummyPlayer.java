@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerType;
@@ -77,19 +77,19 @@ class DummyPlayer extends AbstractAi {
 
   @Override
   protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player) {}
+      final PlayerId player) {}
 
   @Override
   protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
-      final PlayerID player) {}
+      final PlayerId player) {}
 
   @Override
   protected void purchase(final boolean purcahseForBid, final int pusToSpend,
       final IPurchaseDelegate purchaseDelegate,
-      final GameData data, final PlayerID player) {}
+      final GameData data, final PlayerId player) {}
 
   @Override
-  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {}
+  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerId player) {}
 
   @Override
   public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
@@ -166,7 +166,7 @@ class DummyPlayer extends AbstractAi {
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {

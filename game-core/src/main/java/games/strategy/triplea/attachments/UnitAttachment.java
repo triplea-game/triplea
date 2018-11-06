@@ -24,7 +24,7 @@ import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -206,15 +206,15 @@ public class UnitAttachment extends DefaultAttachment {
   // and the repaired unit is sea)
   private IntegerMap<UnitType> repairsUnits = new IntegerMap<>();
   private IntegerMap<UnitType> givesMovement = new IntegerMap<>();
-  private List<Tuple<String, PlayerID>> destroyedWhenCapturedBy = new ArrayList<>();
+  private List<Tuple<String, PlayerId>> destroyedWhenCapturedBy = new ArrayList<>();
   // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create destroyedWhenCapturedBy with a
   // specific list
   private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = new HashMap<>();
   private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = new HashMap<>();
   private Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto = new LinkedHashMap<>();
   private int whenCapturedSustainsDamage = 0;
-  private List<PlayerID> canBeCapturedOnEnteringBy = new ArrayList<>();
-  private List<PlayerID> canBeGivenByTerritoryTo = new ArrayList<>();
+  private List<PlayerId> canBeCapturedOnEnteringBy = new ArrayList<>();
+  private List<PlayerId> canBeGivenByTerritoryTo = new ArrayList<>();
   // a set of information for dealing with special abilities or
   // loss of abilities when a unit takes x-y amount of damage
   private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged = new ArrayList<>();
@@ -308,7 +308,7 @@ public class UnitAttachment extends DefaultAttachment {
     return airDefense;
   }
 
-  public int getAirDefense(final PlayerID player) {
+  public int getAirDefense(final PlayerId player) {
     return (Math.min(getData().getDiceSides(), Math.max(0,
         airDefense + TechAbilityAttachment.getAirDefenseBonus((UnitType) this.getAttachedTo(), player, getData()))));
   }
@@ -329,7 +329,7 @@ public class UnitAttachment extends DefaultAttachment {
     return airAttack;
   }
 
-  public int getAirAttack(final PlayerID player) {
+  public int getAirAttack(final PlayerId player) {
     return (Math.min(getData().getDiceSides(), Math.max(0,
         airAttack + TechAbilityAttachment.getAirAttackBonus((UnitType) this.getAttachedTo(), player, getData()))));
   }
@@ -373,7 +373,7 @@ public class UnitAttachment extends DefaultAttachment {
   private void setCanBeGivenByTerritoryTo(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         canBeGivenByTerritoryTo.add(tempPlayer);
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
@@ -384,11 +384,11 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCanBeGivenByTerritoryTo(final List<PlayerID> value) {
+  private void setCanBeGivenByTerritoryTo(final List<PlayerId> value) {
     canBeGivenByTerritoryTo = value;
   }
 
-  public List<PlayerID> getCanBeGivenByTerritoryTo() {
+  public List<PlayerId> getCanBeGivenByTerritoryTo() {
     return canBeGivenByTerritoryTo;
   }
 
@@ -399,7 +399,7 @@ public class UnitAttachment extends DefaultAttachment {
   private void setCanBeCapturedOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         canBeCapturedOnEnteringBy.add(tempPlayer);
       } else {
@@ -408,11 +408,11 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCanBeCapturedOnEnteringBy(final List<PlayerID> value) {
+  private void setCanBeCapturedOnEnteringBy(final List<PlayerId> value) {
     canBeCapturedOnEnteringBy = value;
   }
 
-  public List<PlayerID> getCanBeCapturedOnEnteringBy() {
+  public List<PlayerId> getCanBeCapturedOnEnteringBy() {
     return canBeCapturedOnEnteringBy;
   }
 
@@ -478,11 +478,11 @@ public class UnitAttachment extends DefaultAttachment {
           + "playerFrom:playerTo:keepAttributes:unitType:howMany "
           + "(you may have additional unitType:howMany:unitType:howMany, etc" + thisErrorMsg());
     }
-    final PlayerID pfrom = getData().getPlayerList().getPlayerId(s[0]);
+    final PlayerId pfrom = getData().getPlayerList().getPlayerId(s[0]);
     if (pfrom == null && !s[0].equals("any")) {
       throw new GameParseException("whenCapturedChangesInto: No player named: " + s[0] + thisErrorMsg());
     }
-    final PlayerID pto = getData().getPlayerList().getPlayerId(s[1]);
+    final PlayerId pto = getData().getPlayerList().getPlayerId(s[1]);
     if (pto == null && !s[1].equals("any")) {
       throw new GameParseException("whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
     }
@@ -531,7 +531,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         destroyedWhenCapturedBy.add(Tuple.of(byOrFrom, tempPlayer));
       } else {
@@ -540,7 +540,7 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void setDestroyedWhenCapturedBy(final List<Tuple<String, PlayerID>> value) {
+  private void setDestroyedWhenCapturedBy(final List<Tuple<String, PlayerId>> value) {
     destroyedWhenCapturedBy = value;
   }
 
@@ -552,7 +552,7 @@ public class UnitAttachment extends DefaultAttachment {
     setDestroyedWhenCapturedBy(value);
   }
 
-  public List<Tuple<String, PlayerID>> getDestroyedWhenCapturedBy() {
+  public List<Tuple<String, PlayerId>> getDestroyedWhenCapturedBy() {
     return destroyedWhenCapturedBy;
   }
 
@@ -572,7 +572,7 @@ public class UnitAttachment extends DefaultAttachment {
     return canBlitz;
   }
 
-  public boolean getCanBlitz(final PlayerID player) {
+  public boolean getCanBlitz(final PlayerId player) {
     return canBlitz
         || TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ,
             (UnitType) this.getAttachedTo(), player, getData());
@@ -658,7 +658,7 @@ public class UnitAttachment extends DefaultAttachment {
     return canBombard;
   }
 
-  public boolean getCanBombard(final PlayerID player) {
+  public boolean getCanBombard(final PlayerId player) {
     return canBombard
         || TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD,
             (UnitType) this.getAttachedTo(), player, getData());
@@ -1307,7 +1307,7 @@ public class UnitAttachment extends DefaultAttachment {
     return movement;
   }
 
-  public int getMovement(final PlayerID player) {
+  public int getMovement(final PlayerId player) {
     return Math.max(0,
         movement + TechAbilityAttachment.getMovementBonus((UnitType) this.getAttachedTo(), player, getData()));
   }
@@ -1328,7 +1328,7 @@ public class UnitAttachment extends DefaultAttachment {
     return attack;
   }
 
-  public int getAttack(final PlayerID player) {
+  public int getAttack(final PlayerId player) {
     final int attackValue =
         attack + TechAbilityAttachment.getAttackBonus((UnitType) this.getAttachedTo(), player, getData());
     return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
@@ -1350,7 +1350,7 @@ public class UnitAttachment extends DefaultAttachment {
     return attackRolls;
   }
 
-  public int getAttackRolls(final PlayerID player) {
+  public int getAttackRolls(final PlayerId player) {
     return Math.max(0,
         attackRolls + TechAbilityAttachment.getAttackRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
   }
@@ -1371,7 +1371,7 @@ public class UnitAttachment extends DefaultAttachment {
     return defense;
   }
 
-  public int getDefense(final PlayerID player) {
+  public int getDefense(final PlayerId player) {
     int defenseValue =
         defense + TechAbilityAttachment.getDefenseBonus((UnitType) this.getAttachedTo(), player, getData());
     if (defenseValue > 0 && isSub && TechTracker.hasSuperSubs(player)) {
@@ -1397,7 +1397,7 @@ public class UnitAttachment extends DefaultAttachment {
     return defenseRolls;
   }
 
-  public int getDefenseRolls(final PlayerID player) {
+  public int getDefenseRolls(final PlayerId player) {
     return Math.max(0, defenseRolls
         + TechAbilityAttachment.getDefenseRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
   }
@@ -1935,7 +1935,7 @@ public class UnitAttachment extends DefaultAttachment {
     return attackAa;
   }
 
-  public int getAttackAa(final PlayerID player) {
+  public int getAttackAa(final PlayerId player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
     // does not divide
     // perfectly into attackAAmaxDieSides
@@ -1959,7 +1959,7 @@ public class UnitAttachment extends DefaultAttachment {
     return offensiveAttackAa;
   }
 
-  public int getOffensiveAttackAa(final PlayerID player) {
+  public int getOffensiveAttackAa(final PlayerId player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
     // does not divide
     // perfectly into attackAAmaxDieSides
@@ -2384,7 +2384,7 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final String limitType, final UnitType ut,
-      final Territory t, final PlayerID owner, final GameData data) {
+      final Territory t, final PlayerId owner, final GameData data) {
     final UnitAttachment ua = UnitAttachment.get(ut);
     final Tuple<Integer, String> stackingLimit;
     switch (limitType) {
@@ -2580,17 +2580,17 @@ public class UnitAttachment extends DefaultAttachment {
     return territories;
   }
 
-  private static boolean playerHasRockets(final PlayerID player) {
+  private static boolean playerHasRockets(final PlayerId player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     return ta != null && ta.getRocket();
   }
 
-  private static boolean playerHasMechInf(final PlayerID player) {
+  private static boolean playerHasMechInf(final PlayerId player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     return ta != null && ta.getMechanizedInfantry();
   }
 
-  private static boolean playerHasParatroopers(final PlayerID player) {
+  private static boolean playerHasParatroopers(final PlayerId player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     return ta != null && ta.getParatroopers();
   }
@@ -2746,7 +2746,7 @@ public class UnitAttachment extends DefaultAttachment {
    * Shows all except for: constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr,
    * canBeGivenByTerritoryTo, destroyedWhenCapturedBy, canBeCapturedOnEnteringBy.
    */
-  public String toStringShortAndOnlyImportantDifferences(final PlayerID player) {
+  public String toStringShortAndOnlyImportantDifferences(final PlayerId player) {
     final List<Tuple<String, String>> tuples = new ArrayList<>();
     final UnitType unitType = (UnitType) this.getAttachedTo();
 

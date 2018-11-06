@@ -16,7 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.triplea.Constants;
@@ -29,7 +29,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
 
   private final JCheckBox enabledCheckBox;
   private final String playerName;
-  private final PlayerID player;
+  private final PlayerId player;
   private final JComboBox<String> playerTypes;
   private final JComponent incomePercentage;
   private final JLabel incomePercentageLabel;
@@ -41,7 +41,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
   private final Collection<String> disableable;
   private final SetupPanel parent;
 
-  PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerID player,
+  PlayerSelectorRow(final List<PlayerSelectorRow> playerRows, final PlayerId player,
       final Map<String, String> reloadSelections, final Collection<String> disableable,
       final Map<String, Boolean> playersEnablementListing, final Collection<String> playerAlliances,
       final SetupPanel parent, final GameProperties gameProperties) {

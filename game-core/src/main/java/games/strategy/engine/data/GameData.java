@@ -417,7 +417,7 @@ public class GameData implements Serializable {
    * For example, this method will remove player delegates for players who have been disabled.
    */
   public void doPreGameStartDataModifications(final PlayerListing playerListing) {
-    final Set<PlayerID> playersWhoShouldBeRemoved = new HashSet<>();
+    final Set<PlayerId> playersWhoShouldBeRemoved = new HashSet<>();
     final Map<String, Boolean> playersEnabledListing = playerListing.getPlayersEnabledListing();
     playerList.getPlayers().stream()
         .filter(p -> (p.getCanBeDisabled() && !playersEnabledListing.get(p.getName())))
@@ -430,7 +430,7 @@ public class GameData implements Serializable {
     }
   }
 
-  private void removePlayerStepsFromSequence(final Set<PlayerID> playersWhoShouldBeRemoved) {
+  private void removePlayerStepsFromSequence(final Set<PlayerId> playersWhoShouldBeRemoved) {
     final int currentIndex = sequence.getStepIndex();
     int index = 0;
     int toSubtract = 0;

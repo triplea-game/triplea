@@ -24,8 +24,8 @@ public class AllianceTrackerTest {
 
   @Test
   public void testAddAlliance() {
-    final PlayerID bush = gameData.getPlayerList().getPlayerId("bush");
-    final PlayerID castro = gameData.getPlayerList().getPlayerId("castro");
+    final PlayerId bush = gameData.getPlayerList().getPlayerId("bush");
+    final PlayerId castro = gameData.getPlayerList().getPlayerId("castro");
     final AllianceTracker allianceTracker = gameData.getAllianceTracker();
     final RelationshipTracker relationshipTracker = gameData.getRelationshipTracker();
     assertFalse(relationshipTracker.isAllied(bush, castro));
@@ -42,13 +42,13 @@ public class AllianceTrackerTest {
 
   @Test
   public void getPlayersInAlliance_ShouldDifferentiateAllianceNamesThatAreSubstringsOfOtherAllianceNames() {
-    final PlayerID player1 = new PlayerID("Player1", gameData);
-    final PlayerID player2 = new PlayerID("Player2", gameData);
-    final PlayerID player3 = new PlayerID("Player3", gameData);
-    final PlayerID player4 = new PlayerID("Player4", gameData);
+    final PlayerId player1 = new PlayerId("Player1", gameData);
+    final PlayerId player2 = new PlayerId("Player2", gameData);
+    final PlayerId player3 = new PlayerId("Player3", gameData);
+    final PlayerId player4 = new PlayerId("Player4", gameData);
     final String alliance1Name = "Alliance";
     final String alliance2Name = "Anti" + alliance1Name;
-    final AllianceTracker allianceTracker = new AllianceTracker(ImmutableMultimap.<PlayerID, String>builder()
+    final AllianceTracker allianceTracker = new AllianceTracker(ImmutableMultimap.<PlayerId, String>builder()
         .put(player1, alliance1Name)
         .put(player2, alliance1Name)
         .put(player3, alliance2Name)

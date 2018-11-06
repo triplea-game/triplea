@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
@@ -25,10 +25,10 @@ import games.strategy.triplea.xml.TestMapGameData;
  */
 public abstract class AbstractDelegateTestCase {
   protected GameData gameData;
-  protected PlayerID british;
-  protected PlayerID japanese;
-  protected PlayerID russians;
-  protected PlayerID germans;
+  protected PlayerId british;
+  protected PlayerId japanese;
+  protected PlayerId russians;
+  protected PlayerId germans;
   protected Territory northSea;
   protected Territory uk;
   protected Territory germany;
@@ -156,7 +156,7 @@ public abstract class AbstractDelegateTestCase {
     pus = gameData.getResourceList().getResource("PUs");
   }
 
-  private void addTechAttachment(final PlayerID player) {
+  private void addTechAttachment(final PlayerId player) {
     player.addAttachment(
         Constants.TECH_ATTACHMENT_NAME,
         new TechAttachment(Constants.TECH_ATTACHMENT_NAME, player, gameData));
@@ -170,7 +170,7 @@ public abstract class AbstractDelegateTestCase {
     assertNotNull(string, string);
   }
 
-  protected final IDelegateBridge newDelegateBridge(final PlayerID player) {
+  protected final IDelegateBridge newDelegateBridge(final PlayerId player) {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 }
