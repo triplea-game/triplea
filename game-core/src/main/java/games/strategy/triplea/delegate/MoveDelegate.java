@@ -190,8 +190,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       removeAirThatCantLand();
     }
 
-    // WW2V2/WW2V3, fires at end of combat move, for legacy maps only
-    // WW2V1, fires at end of non combat move, for legacy maps only
+    // WW2V1, fires at end of non combat move.
     if (needToDoRockets && GameStepPropertiesHelper.isNonCombatMove(data, true)) {
       new RocketsFireHelper(bridge, bridge.getPlayerId(), RocketType.ww2v1);
       needToDoRockets = false;
