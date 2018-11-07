@@ -99,7 +99,8 @@ public class ProTransportUtils {
       units.removeAll(unitsToIgnore);
 
       // Sort units by attack
-      units.sort(getDecreasingAttackComparator(player));
+      units.sort(Comparator.<Unit>comparingInt(u -> UnitAttachment.get(u.getType()).getTransportCost())
+          .thenComparing(getDecreasingAttackComparator(player)));
 
       // Get best units that can be loaded
       selectedUnits.addAll(selectUnitsToTransportFromList(transport, units));
@@ -111,12 +112,37 @@ public class ProTransportUtils {
     final List<Unit> selectedUnits = new ArrayList<>();
     final int capacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
     int capacityCount = 0;
+
+    // Load as many units as possible
     for (final Unit unit : units) {
       final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
       if (cost <= (capacity - capacityCount)) {
         selectedUnits.add(unit);
         capacityCount += cost;
         if (capacityCount >= capacity) {
+          break;
+        }
+      }
+    }
+
+    // If extra space try to replace last unit with stronger unit
+    if (!selectedUnits.isEmpty() && capacityCount < capacity) {
+      final Unit lastUnit = selectedUnits.get(selectedUnits.size() - 1);
+      final int lastUnitCost = UnitAttachment.get(lastUnit.getType()).getTransportCost();
+      units.removeAll(selectedUnits);
+      Comparator<Unit> comparator;
+      if (Matches.unitIsLandTransport().test(transport)) {
+        comparator = Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
+            .thenComparing(getDecreasingAttackComparator(transport.getOwner()));
+      } else {
+        comparator = getDecreasingAttackComparator(transport.getOwner());
+      }
+      units.sort(comparator);
+      for (final Unit unit : units) {
+        final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
+        if (comparator.compare(unit, lastUnit) < 0 && (capacityCount - lastUnitCost + cost <= capacity)) {
+          selectedUnits.remove(lastUnit);
+          selectedUnits.add(unit);
           break;
         }
       }
@@ -173,13 +199,16 @@ public class ProTransportUtils {
         || units.isEmpty()) {
       return Collections.singletonList(unit);
     }
-    units.sort(Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
-        .thenComparing(getDecreasingAttackComparator(player)));
     final List<Unit> results = new ArrayList<>();
     results.add(unit);
     if (Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
+      units.sort(Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
+          .thenComparing(getDecreasingAttackComparator(player)));
       results.add(units.get(0));
     } else {
+      units.sort(Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
+          .thenComparing(Comparator.<Unit>comparingInt(u -> UnitAttachment.get(u.getType()).getTransportCost()))
+          .thenComparing(getDecreasingAttackComparator(player)));
       results.addAll(selectUnitsToTransportFromList(unit, units));
     }
     return results;
