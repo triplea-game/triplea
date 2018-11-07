@@ -23,7 +23,7 @@ import lombok.extern.java.Log;
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
 
-  private PlayerID owner;
+  private PlayerId owner;
   private final GUID id;
   private int hits = 0;
   private final UnitType type;
@@ -31,11 +31,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   /**
    * Creates new Unit. Owner can be null.
    */
-  public Unit(final UnitType type, final PlayerID owner, final GameData data) {
+  public Unit(final UnitType type, final PlayerId owner, final GameData data) {
     this(type, owner, data, new GUID());
   }
 
-  public Unit(final UnitType type, final PlayerID owner, final GameData data, final GUID id) {
+  public Unit(final UnitType type, final PlayerId owner, final GameData data, final GUID id) {
     super(data);
 
     checkNotNull(type);
@@ -55,7 +55,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     return type;
   }
 
-  public PlayerID getOwner() {
+  public PlayerId getOwner() {
     return owner;
   }
 
@@ -71,8 +71,8 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     this.hits = hits;
   }
 
-  public void setOwner(final @Nullable PlayerID player) {
-    owner = Optional.ofNullable(player).orElse(PlayerID.NULL_PLAYERID);
+  public void setOwner(final @Nullable PlayerId player) {
+    owner = Optional.ofNullable(player).orElse(PlayerId.NULL_PLAYERID);
   }
 
   @Override

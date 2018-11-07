@@ -28,7 +28,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * (because we are creating a savegame at a certain point in history, for example).
    */
   public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName,
-      final PlayerID player) {
+      final PlayerId player) {
     round = currentRound;
     boolean found = false;
     for (int i = 0; i < steps.size(); i++) {

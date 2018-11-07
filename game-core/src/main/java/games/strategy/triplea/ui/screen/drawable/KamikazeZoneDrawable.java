@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -33,19 +33,19 @@ public class KamikazeZoneDrawable implements IDrawable {
     // Change so only original owner gets the kamikazi zone marker
     final Territory terr = data.getMap().getTerritory(location);
     final TerritoryAttachment ta = TerritoryAttachment.get(terr);
-    PlayerID owner;
+    PlayerId owner;
     if (Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data)) {
       owner = terr.getOwner();
       if (owner == null) {
-        owner = PlayerID.NULL_PLAYERID;
+        owner = PlayerId.NULL_PLAYERID;
       }
     } else {
       if (ta == null) {
-        owner = PlayerID.NULL_PLAYERID;
+        owner = PlayerId.NULL_PLAYERID;
       } else {
         owner = ta.getOriginalOwner();
         if (owner == null) {
-          owner = PlayerID.NULL_PLAYERID;
+          owner = PlayerId.NULL_PLAYERID;
         }
       }
     }

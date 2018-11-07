@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -116,7 +116,7 @@ public class MovePanel extends AbstractMovePanel {
     this.moveType = moveType;
   }
 
-  private PlayerID getUnitOwner(final Collection<Unit> units) {
+  private PlayerId getUnitOwner(final Collection<Unit> units) {
     return (BaseEditDelegate.getEditMode(getData()) && units != null && !units.isEmpty())
         ? units.iterator().next().getOwner()
         : getCurrentPlayer();
@@ -368,7 +368,7 @@ public class MovePanel extends AbstractMovePanel {
     }
     if (units != null && !units.isEmpty()) {
       // force all units to have the same owner in edit mode
-      final PlayerID owner = getUnitOwner(units);
+      final PlayerId owner = getUnitOwner(units);
       if (BaseEditDelegate.getEditMode(getData())) {
         movableBuilder.and(Matches.unitIsOwnedBy(owner));
       }
@@ -377,7 +377,7 @@ public class MovePanel extends AbstractMovePanel {
     return movableBuilder.build();
   }
 
-  private static Predicate<Unit> areOwnedUnitsOfType(final Collection<Unit> units, final PlayerID owner) {
+  private static Predicate<Unit> areOwnedUnitsOfType(final Collection<Unit> units, final PlayerId owner) {
     return mainUnit -> units.stream()
         .filter(unit -> unit.getOwner().equals(owner))
         .anyMatch(Matches.unitIsOfType(mainUnit.getType()));
@@ -430,7 +430,7 @@ public class MovePanel extends AbstractMovePanel {
   private Route getRouteNonForced(final Territory start, final Territory end, final Collection<Unit> selectedUnits) {
     // can't rely on current player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
-    final PlayerID owner = getUnitOwner(selectedUnits);
+    final PlayerId owner = getUnitOwner(selectedUnits);
     return MoveValidator.getBestRoute(start, end, getData(), owner, selectedUnits,
         !GameStepPropertiesHelper.isAirborneMove(getData()));
   }
@@ -560,7 +560,7 @@ public class MovePanel extends AbstractMovePanel {
       return Collections.emptyList();
     }
     final Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
-    final PlayerID unitOwner = getUnitOwner(unitsToLoad);
+    final PlayerId unitOwner = getUnitOwner(unitsToLoad);
     final MustMoveWithDetails endMustMoveWith =
         MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, dependentUnits, getData(), unitOwner);
     int minTransportCost = defaultMinTransportCost;
@@ -749,7 +749,7 @@ public class MovePanel extends AbstractMovePanel {
       // basic match criteria only
       final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
       final Predicate<Collection<Unit>> ownerMatch = unitsToCheck -> {
-        final PlayerID owner = unitsToCheck.iterator().next().getOwner();
+        final PlayerId owner = unitsToCheck.iterator().next().getOwner();
         for (final Unit unit : unitsToCheck) {
           if (!owner.equals(unit.getOwner())) {
             return false;
@@ -840,7 +840,7 @@ public class MovePanel extends AbstractMovePanel {
         if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
             && TechAttachment.isAirTransportable(getCurrentPlayer())
             && selectedUnits.stream().anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
-          final PlayerID player = getCurrentPlayer();
+          final PlayerId player = getCurrentPlayer();
           // TODO Transporting allied units
           // Get the potential units to load
           final Predicate<Unit> unitsToLoadMatch = Matches.unitIsAirTransportable()
@@ -907,7 +907,7 @@ public class MovePanel extends AbstractMovePanel {
      * If null is returned, the move should be canceled.
      */
     public Collection<Unit> getLoadedAirTransports(final Route route, final Collection<Unit> capableUnitsToLoad,
-        final Collection<Unit> capableTransportsToLoad, final PlayerID player) {
+        final Collection<Unit> capableTransportsToLoad, final PlayerId player) {
       // Get the minimum transport cost of a candidate unit
       int minTransportCost = Integer.MAX_VALUE;
       for (final Unit unit : capableUnitsToLoad) {
@@ -1224,7 +1224,7 @@ public class MovePanel extends AbstractMovePanel {
       if (!getListening()) {
         return;
       }
-      final PlayerID owner = getUnitOwner(selectedUnits);
+      final PlayerId owner = getUnitOwner(selectedUnits);
       final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
       final boolean someOwned = units.stream().anyMatch(match);
       final boolean isCorrectTerritory = (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
@@ -1369,7 +1369,7 @@ public class MovePanel extends AbstractMovePanel {
   }
 
   @Override
-  public final void display(final PlayerID id) {
+  public final void display(final PlayerId id) {
     super.display(id, displayText);
   }
 

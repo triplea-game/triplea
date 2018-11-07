@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
@@ -20,7 +20,7 @@ public class ConvoyZoneDrawable implements IDrawable {
   private final String location;
   private final UiContext uiContext;
 
-  public ConvoyZoneDrawable(final PlayerID player, final Territory location, final UiContext uiContext) {
+  public ConvoyZoneDrawable(final PlayerId player, final Territory location, final UiContext uiContext) {
     this.player = player.getName();
     this.location = location.getName();
     this.uiContext = uiContext;

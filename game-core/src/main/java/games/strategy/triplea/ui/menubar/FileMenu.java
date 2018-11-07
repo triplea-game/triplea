@@ -11,7 +11,7 @@ import javax.swing.KeyStroke;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.pbem.PbemMessagePoster;
@@ -68,8 +68,8 @@ final class FileMenu extends JMenu {
       try {
         gameData.acquireReadLock();
         final GameStep step = gameData.getSequence().getStep();
-        final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
-            : (step.getPlayerId() == null ? PlayerID.NULL_PLAYERID : step.getPlayerId()));
+        final PlayerId currentPlayer = (step == null ? PlayerId.NULL_PLAYERID
+            : (step.getPlayerId() == null ? PlayerId.NULL_PLAYERID : step.getPlayerId()));
         final int round = gameData.getSequence().getRound();
         final HistoryLog historyLog = new HistoryLog();
         historyLog.printFullTurn(gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));

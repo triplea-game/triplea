@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -46,7 +46,7 @@ public class LhtrTest {
     gameData = TestMapGameData.LHTR.getGameData();
   }
 
-  private IDelegateBridge newDelegateBridge(final PlayerID player) {
+  private IDelegateBridge newDelegateBridge(final PlayerId player) {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
@@ -54,7 +54,7 @@ public class LhtrTest {
   public void testFightersCanLandOnNewPlacedCarrier() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -82,7 +82,7 @@ public class LhtrTest {
   public void testFightersDestroyedWhenNoPendingCarriers() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -106,7 +106,7 @@ public class LhtrTest {
   public void testAaGunsDontFireNonCombat() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "germanNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -126,7 +126,7 @@ public class LhtrTest {
   public void testSubDefenseBonus() {
     final UnitType sub = GameDataTestUtil.submarine(gameData);
     final UnitAttachment attachment = UnitAttachment.get(sub);
-    final PlayerID japanese = GameDataTestUtil.japanese(gameData);
+    final PlayerId japanese = GameDataTestUtil.japanese(gameData);
     // before the advance, subs defend and attack at 2
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
@@ -137,7 +137,7 @@ public class LhtrTest {
     assertEquals(3, attachment.getDefense(japanese));
     assertEquals(3, attachment.getAttack(japanese));
     // make sure this only changes for the player with the tech
-    final PlayerID americans = GameDataTestUtil.americans(gameData);
+    final PlayerId americans = GameDataTestUtil.americans(gameData);
     assertEquals(2, attachment.getDefense(americans));
     assertEquals(2, attachment.getAttack(americans));
   }
@@ -146,8 +146,8 @@ public class LhtrTest {
   public void testLhtrBombingRaid() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
@@ -173,8 +173,8 @@ public class LhtrTest {
   public void testLhtrBombingRaid2Bombers() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final PlayerId british = GameDataTestUtil.british(gameData);
     // add a unit
     final Unit bomber = GameDataTestUtil.bomber(gameData).create(british);
     final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));

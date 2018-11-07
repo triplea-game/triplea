@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
@@ -30,16 +30,16 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
-    final Set<PlayerID> players = new HashSet<>();
+    final Set<PlayerId> players = new HashSet<>();
     for (final Unit u : data.getMap().getTerritory(territoryName).getUnits()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
         players.add(u.getOwner());
       }
     }
     final Territory territory = data.getMap().getTerritory(territoryName);
-    PlayerID attacker = null;
+    PlayerId attacker = null;
     boolean draw = false;
-    for (final PlayerID p : players) {
+    for (final PlayerId p : players) {
       if (!territory.isWater()) {
         if (data.getRelationshipTracker().isAtWar(p, territory.getOwner())) {
           attacker = p;
@@ -48,7 +48,7 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
         }
 
         // O(n^2), but n is usually 2, and almost always < 10
-        for (final PlayerID p2 : players) {
+        for (final PlayerId p2 : players) {
           if (data.getRelationshipTracker().isAtWar(p, p2)) {
             draw = true;
             break;
@@ -56,7 +56,7 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
         }
       } else {
         // O(n^2), but n is usually 2, and almost always < 10
-        for (final PlayerID p2 : players) {
+        for (final PlayerId p2 : players) {
           if (data.getRelationshipTracker().isAtWar(p, p2)) {
             draw = true;
             break;

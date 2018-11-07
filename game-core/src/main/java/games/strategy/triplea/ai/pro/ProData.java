@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -27,7 +27,7 @@ public class ProData {
 
   private static ProAi proAi;
   private static GameData data;
-  private static PlayerID player;
+  private static PlayerId player;
 
   // Default values
   public static boolean isSimulation = false;
@@ -44,11 +44,11 @@ public class ProData {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);
   }
 
-  public static void initializeSimulation(final ProAi proAi, final GameData data, final PlayerID player) {
+  public static void initializeSimulation(final ProAi proAi, final GameData data, final PlayerId player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
-  private static void hiddenInitialize(final ProAi proAi, final GameData data, final PlayerID player,
+  private static void hiddenInitialize(final ProAi proAi, final GameData data, final PlayerId player,
       final boolean isSimulation) {
     ProData.proAi = proAi;
     ProData.data = data;
@@ -76,7 +76,7 @@ public class ProData {
     return data;
   }
 
-  public static PlayerID getPlayer() {
+  public static PlayerId getPlayer() {
     return player;
   }
 

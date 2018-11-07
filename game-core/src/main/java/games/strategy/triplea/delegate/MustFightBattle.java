@@ -20,7 +20,7 @@ import com.google.common.collect.Sets;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -96,7 +96,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   // -1 would mean forever until one side is eliminated (the default is infinite)
   private final int maxRounds;
 
-  public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data,
+  public MustFightBattle(final Territory battleSite, final PlayerId attacker, final GameData data,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
     defendingUnits.addAll(this.battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
@@ -107,7 +107,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  public void resetDefendingUnits(final PlayerID attacker, final GameData data) {
+  public void resetDefendingUnits(final PlayerId attacker, final GameData data) {
     defendingUnits.clear();
     defendingUnits.addAll(battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
   }
@@ -116,7 +116,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * Used for head-less battles.
    */
   public void setUnits(final Collection<Unit> defending, final Collection<Unit> attacking,
-      final Collection<Unit> bombarding, final Collection<Unit> amphibious, final PlayerID defender,
+      final Collection<Unit> bombarding, final Collection<Unit> amphibious, final PlayerId defender,
       final Collection<TerritoryEffect> territoryEffects) {
     defendingUnits = new ArrayList<>(defending);
     attackingUnits = new ArrayList<>(attacking);
@@ -354,10 +354,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (headless) {
       return;
     }
-    final Set<PlayerID> playerSet = battleSite.getUnits().getPlayersWithUnits();
+    final Set<PlayerId> playerSet = battleSite.getUnits().getPlayersWithUnits();
     // find all attacking players (unsorted)
-    final Collection<PlayerID> attackers = new ArrayList<>();
-    for (final PlayerID current : playerSet) {
+    final Collection<PlayerId> attackers = new ArrayList<>();
+    for (final PlayerId current : playerSet) {
       if (gameData.getRelationshipTracker().isAllied(attacker, current) || current.equals(attacker)) {
         attackers.add(current);
       }
@@ -365,8 +365,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final StringBuilder transcriptText = new StringBuilder();
     // find all attacking units (unsorted)
     final Collection<Unit> allAttackingUnits = new ArrayList<>();
-    for (final Iterator<PlayerID> attackersIter = attackers.iterator(); attackersIter.hasNext();) {
-      final PlayerID current = attackersIter.next();
+    for (final Iterator<PlayerId> attackersIter = attackers.iterator(); attackersIter.hasNext();) {
+      final PlayerId current = attackersIter.next();
       final String delim;
       if (attackersIter.hasNext()) {
         delim = "; ";
@@ -398,8 +398,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       bridge.getHistoryWriter().addChildToEvent(transcriptText.toString(), allAttackingUnits);
     }
     // find all defending players (unsorted)
-    final Collection<PlayerID> defenders = new ArrayList<>();
-    for (final PlayerID current : playerSet) {
+    final Collection<PlayerId> defenders = new ArrayList<>();
+    for (final PlayerId current : playerSet) {
       if (gameData.getRelationshipTracker().isAllied(defender, current) || current.equals(defender)) {
         defenders.add(current);
       }
@@ -407,8 +407,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final StringBuilder transcriptBuilder = new StringBuilder();
     // find all defending units (unsorted)
     final Collection<Unit> allDefendingUnits = new ArrayList<>();
-    for (final Iterator<PlayerID> defendersIter = defenders.iterator(); defendersIter.hasNext();) {
-      final PlayerID current = defendersIter.next();
+    for (final Iterator<PlayerId> defendersIter = defenders.iterator(); defendersIter.hasNext();) {
+      final PlayerId current = defendersIter.next();
       final String delim;
       if (defendersIter.hasNext()) {
         delim = "; ";
@@ -1220,7 +1220,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private Collection<Territory> getEmptyOrFriendlySeaNeighbors(final PlayerID player,
+  private Collection<Territory> getEmptyOrFriendlySeaNeighbors(final PlayerId player,
       final Collection<Unit> unitsToRetreat) {
     Collection<Territory> possible = gameData.getMap().getNeighbors(battleSite);
     if (headless) {
@@ -1283,7 +1283,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (units.size() == 0) {
       return;
     }
-    final PlayerID retreatingPlayer = defender ? this.defender : attacker;
+    final PlayerId retreatingPlayer = defender ? this.defender : attacker;
     final String text;
     if (subs) {
       text = retreatingPlayer.getName() + " retreat subs?";
@@ -1553,8 +1553,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void fire(final String stepName, final Collection<Unit> firingUnits, final Collection<Unit> attackableUnits,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defender, final ReturnFire returnFire,
       final String text) {
-    final PlayerID firing = defender ? this.defender : attacker;
-    final PlayerID defending = !defender ? this.defender : attacker;
+    final PlayerId firing = defender ? this.defender : attacker;
+    final PlayerId defending = !defender ? this.defender : attacker;
     if (firingUnits.isEmpty()) {
       return;
     }
@@ -1616,7 +1616,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   /**
    * Check for unescorted transports and kill them immediately.
    */
-  private void checkUndefendedTransports(final IDelegateBridge bridge, final PlayerID player) {
+  private void checkUndefendedTransports(final IDelegateBridge bridge, final PlayerId player) {
     // if we are the attacker, we can retreat instead of dying
     if (player.equals(attacker)
         && (!getAttackerRetreatTerritories().isEmpty() || attackingUnits.stream().anyMatch(Matches.unitIsAir()))) {
@@ -2392,7 +2392,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
         final List<Unit> allyOfAttackerUnits = battleSite.getUnits().getMatches(Matches.unitIsNotInfrastructure());
         if (!allyOfAttackerUnits.isEmpty()) {
-          final PlayerID abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
+          final PlayerId abandonedToPlayer = AbstractBattle.findPlayerWithMostUnits(allyOfAttackerUnits);
           bridge.getHistoryWriter().addChildToEvent(
               abandonedToPlayer.getName() + " takes over " + battleSite.getName() + " as there are no defenders left",
               allyOfAttackerUnits);
@@ -2539,7 +2539,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
-      final Territory battleSite, final PlayerID attacker, final GameData data) {
+      final Territory battleSite, final PlayerId attacker, final GameData data) {
     final CompositeChange change = new CompositeChange();
     // Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an
     // carrier unit

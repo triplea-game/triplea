@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.Properties;
@@ -119,8 +119,8 @@ public class ProOddsCalculator {
 
     final int minArmySize = Math.min(attackingUnits.size(), defendingUnits.size());
     final int runCount = Math.max(16, 100 - minArmySize);
-    final PlayerID attacker = attackingUnits.get(0).getOwner();
-    final PlayerID defender = defendingUnits.get(0).getOwner();
+    final PlayerId attacker = attackingUnits.get(0).getOwner();
+    final PlayerId defender = defendingUnits.get(0).getOwner();
     if (retreatWhenOnlyAirLeft) {
       calc.setRetreatWhenOnlyAirLeft(true);
     }

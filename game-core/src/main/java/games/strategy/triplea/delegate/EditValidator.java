@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -37,7 +37,7 @@ class EditValidator {
   }
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
-    if (Matches.territoryIsWater().test(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID)
+    if (Matches.territoryIsWater().test(territory) && territory.getOwner().equals(PlayerId.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
@@ -48,7 +48,7 @@ class EditValidator {
     if (units.isEmpty()) {
       return "No units selected";
     }
-    final PlayerID player = units.iterator().next().getOwner();
+    final PlayerId player = units.iterator().next().getOwner();
     // check land/water sanity
     if (territory.isWater()) {
       if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSea())) {
@@ -130,7 +130,7 @@ class EditValidator {
     return null;
   }
 
-  static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
+  static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -155,7 +155,7 @@ class EditValidator {
     return result;
   }
 
-  static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerID player) {
+  static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -196,7 +196,7 @@ class EditValidator {
     if (!territory.getUnits().getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
-    final PlayerID player = units.iterator().next().getOwner();
+    final PlayerId player = units.iterator().next().getOwner();
     // all units should be same owner
     if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
@@ -230,7 +230,7 @@ class EditValidator {
     if (!territory.getUnits().getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
-    final PlayerID player = units.iterator().next().getOwner();
+    final PlayerId player = units.iterator().next().getOwner();
     // all units should be same owner
     if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsOwnedBy(player))) {
       return "Not all units have the same owner";
@@ -248,12 +248,12 @@ class EditValidator {
   }
 
   static String validateChangePoliticalRelationships(
-      final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
+      final Collection<Triple<PlayerId, PlayerId, RelationshipType>> relationshipChanges) {
     final String result = null;
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
       return "Relationship Changes are empty";
     }
-    for (final Triple<PlayerID, PlayerID, RelationshipType> relationshipChange : relationshipChanges) {
+    for (final Triple<PlayerId, PlayerId, RelationshipType> relationshipChange : relationshipChanges) {
       if (relationshipChange.getFirst() == null || relationshipChange.getSecond() == null) {
         return "Players are null";
       }

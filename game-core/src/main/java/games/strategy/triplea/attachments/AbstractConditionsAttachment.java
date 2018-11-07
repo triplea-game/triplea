@@ -23,7 +23,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -66,9 +66,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (this.conditions == null) {
       this.conditions = new ArrayList<>();
     }
-    final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
+    final Collection<PlayerId> playerIds = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
-      this.conditions.add(playerIDs.stream()
+      this.conditions.add(playerIds.stream()
           .map(p -> p.getAttachment(subString))
           .map(RulesAttachment.class::cast)
           .filter(Objects::nonNull)

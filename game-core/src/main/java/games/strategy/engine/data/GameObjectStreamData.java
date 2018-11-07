@@ -23,7 +23,7 @@ public class GameObjectStreamData implements Externalizable {
   }
 
   public static boolean canSerialize(final Named obj) {
-    return obj instanceof PlayerID || obj instanceof UnitType || obj instanceof Territory
+    return obj instanceof PlayerId || obj instanceof UnitType || obj instanceof Territory
         || obj instanceof ProductionRule || obj instanceof IAttachment || obj instanceof ProductionFrontier;
   }
 
@@ -34,7 +34,7 @@ public class GameObjectStreamData implements Externalizable {
 
   public GameObjectStreamData(final Named named) {
     name = named.getName();
-    if (named instanceof PlayerID) {
+    if (named instanceof PlayerId) {
       type = GameType.PLAYERID;
     } else if (named instanceof Territory) {
       type = GameType.TERRITORY;

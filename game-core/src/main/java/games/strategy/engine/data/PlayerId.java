@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 /**
  * A game player (nation, power, etc.).
  */
-public class PlayerID extends NamedAttachable implements NamedUnitHolder {
+public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
 
   private static final String DEFAULT_TYPE_AI = "AI";
@@ -37,11 +37,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
   private final TechnologyFrontierList technologyFrontiers;
   private String whoAmI = "null:no_one";
 
-  public PlayerID(final String name, final GameData data) {
+  public PlayerId(final String name, final GameData data) {
     this(name, false, false, null, false, data);
   }
 
-  public PlayerID(final String name, final boolean optional, final boolean canBeDisabled, final String defaultType,
+  public PlayerId(final String name, final boolean optional, final boolean canBeDisabled, final String defaultType,
       final boolean isHidden, final GameData data) {
     super(name, data);
     this.optional = optional;
@@ -101,8 +101,8 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     return false;
   }
 
-  public static final PlayerID NULL_PLAYERID =
-      new PlayerID(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
+  public static final PlayerId NULL_PLAYERID =
+      new PlayerId(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
         // compatible with 0.9.0.2 saved games
         private static final long serialVersionUID = -6596127754502509049L;
 
@@ -114,7 +114,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
 
   @Override
   public String toString() {
-    return "PlayerID named:" + getName();
+    return "PlayerId named:" + getName();
   }
 
   @Override
@@ -190,7 +190,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder {
     if (data == null) {
       return currentPlayers;
     }
-    for (final PlayerID player : data.getPlayerList().getPlayers()) {
+    for (final PlayerId player : data.getPlayerList().getPlayers()) {
       currentPlayers.put(player.getName(), player.getPlayerType().name);
     }
     return currentPlayers;

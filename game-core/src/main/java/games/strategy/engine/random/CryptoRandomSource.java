@@ -6,7 +6,7 @@ import java.nio.IntBuffer;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.vault.Vault;
@@ -72,10 +72,10 @@ public class CryptoRandomSource implements IRandomSource {
 
   // the remote players who involved in rolling the dice
   // dice are rolled securly between us and her
-  private final PlayerID remotePlayer;
+  private final PlayerId remotePlayer;
   private final IGame game;
 
-  public CryptoRandomSource(final PlayerID remotePlayer, final IGame game) {
+  public CryptoRandomSource(final PlayerId remotePlayer, final IGame game) {
     this.remotePlayer = remotePlayer;
     this.game = game;
   }

@@ -9,7 +9,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -17,8 +17,8 @@ import games.strategy.triplea.delegate.TechAdvance;
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
 
-  // attaches to a PlayerID
-  public static TechAttachment get(final PlayerID id) {
+  // attaches to a PlayerId
+  public static TechAttachment get(final PlayerId id) {
     final TechAttachment attachment = id.getTechAttachment();
     // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
     // for them
@@ -28,7 +28,7 @@ public class TechAttachment extends DefaultAttachment {
     return attachment;
   }
 
-  static TechAttachment get(final PlayerID id, final String nameOfAttachment) {
+  static TechAttachment get(final PlayerId id, final String nameOfAttachment) {
     if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
       throw new IllegalStateException(
           "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
@@ -353,12 +353,12 @@ public class TechAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) {}
 
-  public static boolean isMechanizedInfantry(final PlayerID player) {
+  public static boolean isMechanizedInfantry(final PlayerId player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     return ta != null && ta.getMechanizedInfantry();
   }
 
-  public static boolean isAirTransportable(final PlayerID player) {
+  public static boolean isAirTransportable(final PlayerId player) {
     final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
     return ta != null && ta.getParatroopers();
   }

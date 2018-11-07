@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -42,7 +42,7 @@ class ProScrambleAi {
 
     // Get battle data
     final GameData data = ProData.getData();
-    final PlayerID player = ProData.getPlayer();
+    final PlayerId player = ProData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 

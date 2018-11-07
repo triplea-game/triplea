@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -29,7 +29,7 @@ import games.strategy.util.Tuple;
  */
 public class ProMoveUtils {
 
-  public static void calculateMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+  public static void calculateMoveRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
     final GameData data = ProData.getData();
@@ -109,7 +109,7 @@ public class ProMoveUtils {
     }
   }
 
-  public static void calculateAmphibRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+  public static void calculateAmphibRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad,
       final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
@@ -233,7 +233,7 @@ public class ProMoveUtils {
     }
   }
 
-  public static void calculateBombardMoveRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+  public static void calculateBombardMoveRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ProData.getData();
@@ -269,7 +269,7 @@ public class ProMoveUtils {
     }
   }
 
-  public static void calculateBombingRoutes(final PlayerID player, final List<Collection<Unit>> moveUnits,
+  public static void calculateBombingRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
 
     final GameData data = ProData.getData();

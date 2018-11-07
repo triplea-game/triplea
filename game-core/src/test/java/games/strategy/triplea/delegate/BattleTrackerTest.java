@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -57,7 +57,7 @@ public class BattleTrackerTest {
   public void verifyRaids() {
     final Territory territory = new Territory("terrName", mockGameData);
     final Route route = new Route(territory);
-    final PlayerID playerId = new PlayerID("name", mockGameData);
+    final PlayerId playerId = new PlayerId("name", mockGameData);
 
     // need at least one attacker for there to be considered a battle.
     final Unit unit = new TripleAUnit(new UnitType("unit", mockGameData), playerId, mockGameData);

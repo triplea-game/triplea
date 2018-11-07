@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -68,7 +68,7 @@ public class RocketsFireHelper {
     return Properties.getLimitRocketAndSbrDamageToProduction(data);
   }
 
-  static void fireRockets(final IDelegateBridge bridge, final PlayerID player) {
+  static void fireRockets(final IDelegateBridge bridge, final PlayerId player) {
     final GameData data = bridge.getData();
     final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
     if (rocketTerritories.isEmpty()) {
@@ -84,7 +84,7 @@ public class RocketsFireHelper {
 
   private static void fireWW2V2(
       final IDelegateBridge bridge,
-      final PlayerID player,
+      final PlayerId player,
       final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> attackedTerritories = new HashSet<>();
@@ -111,7 +111,7 @@ public class RocketsFireHelper {
   /** In this rule set, each player only gets one rocket attack per turn. */
   private static void fireWW2V1(
       final IDelegateBridge bridge,
-      final PlayerID player,
+      final PlayerId player,
       final Set<Territory> rocketTerritories) {
     final GameData data = bridge.getData();
     final Set<Territory> targets = new HashSet<>();
@@ -129,7 +129,7 @@ public class RocketsFireHelper {
     }
   }
 
-  static Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player) {
+  static Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerId player) {
     final Set<Territory> territories = new HashSet<>();
     final Predicate<Unit> ownedRockets = rocketMatch(player);
     final BattleTracker tracker = AbstractMoveDelegate.getBattleTracker(data);
@@ -144,7 +144,7 @@ public class RocketsFireHelper {
     return territories;
   }
 
-  private static Predicate<Unit> rocketMatch(final PlayerID player) {
+  private static Predicate<Unit> rocketMatch(final PlayerId player) {
     return Matches.unitIsRocket()
         .and(Matches.unitIsOwnedBy(player))
         .and(Matches.unitIsNotDisabled())
@@ -154,7 +154,7 @@ public class RocketsFireHelper {
   }
 
   private static Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
     final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
     final Set<Territory> hasFactory = new HashSet<>();
@@ -182,10 +182,10 @@ public class RocketsFireHelper {
     return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
   }
 
-  private static void fireRocket(final PlayerID player, final Territory attackedTerritory, final IDelegateBridge bridge,
+  private static void fireRocket(final PlayerId player, final Territory attackedTerritory, final IDelegateBridge bridge,
       final Territory attackFrom) {
     final GameData data = bridge.getData();
-    final PlayerID attacked = attackedTerritory.getOwner();
+    final PlayerId attacked = attackedTerritory.getOwner();
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean damageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage

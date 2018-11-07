@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.ProData;
@@ -25,7 +25,7 @@ public class ProOtherMoveOptions {
     moveMaps = new HashMap<>();
   }
 
-  public ProOtherMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerID player,
+  public ProOtherMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerId player,
       final boolean isAttacker) {
     maxMoveMap = createMaxMoveMap(moveMapList, player, isAttacker);
     moveMaps = createMoveMaps(moveMapList);
@@ -49,18 +49,18 @@ public class ProOtherMoveOptions {
   }
 
   private static Map<Territory, ProTerritory> createMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps,
-      final PlayerID player, final boolean isAttacker) {
+      final PlayerId player, final boolean isAttacker) {
 
 
     final Map<Territory, ProTerritory> result = new HashMap<>();
-    final List<PlayerID> players = ProUtils.getOtherPlayersInTurnOrder(player);
+    final List<PlayerId> players = ProUtils.getOtherPlayersInTurnOrder(player);
     for (final Map<Territory, ProTerritory> moveMap : moveMaps) {
       for (final Territory t : moveMap.keySet()) {
 
         // Get current player
         final Set<Unit> currentUnits = new HashSet<>(moveMap.get(t).getMaxUnits());
         currentUnits.addAll(moveMap.get(t).getMaxAmphibUnits());
-        final PlayerID movePlayer;
+        final PlayerId movePlayer;
         if (!currentUnits.isEmpty()) {
           movePlayer = currentUnits.iterator().next().getOwner();
         } else {

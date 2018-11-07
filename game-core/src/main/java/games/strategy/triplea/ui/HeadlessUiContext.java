@@ -5,7 +5,7 @@ import java.awt.Cursor;
 import javax.swing.JLabel;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
@@ -53,7 +53,7 @@ public class HeadlessUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player,
+  public JLabel createUnitImageJLabel(final UnitType type, final PlayerId player,
       final UnitDamage damaged, final UnitEnable disabled) {
     return null;
   }

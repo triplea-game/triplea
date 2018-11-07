@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.data.events.GameStepListener;
@@ -34,7 +34,7 @@ public abstract class AbstractGame implements IGame {
   protected final IMessenger messenger;
   protected final IRemoteMessenger remoteMessenger;
   protected final IChannelMessenger channelMessenger;
-  protected final Map<PlayerID, IGamePlayer> gamePlayers = new HashMap<>();
+  protected final Map<PlayerId, IGamePlayer> gamePlayers = new HashMap<>();
   protected volatile boolean isGameOver = false;
   protected final Vault vault;
   protected IGameModifiedChannel gameModifiedChannel;
@@ -61,7 +61,7 @@ public abstract class AbstractGame implements IGame {
   private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
     final PlayerList playerList = gameData.getPlayerList();
     for (final IGamePlayer gp : localPlayers) {
-      final PlayerID player = playerList.getPlayerId(gp.getName());
+      final PlayerId player = playerList.getPlayerId(gp.getName());
       gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
@@ -79,7 +79,7 @@ public abstract class AbstractGame implements IGame {
    * @param round round number
    * @param displayName display name
    */
-  protected void notifyGameStepListeners(final String stepName, final String delegateName, final PlayerID player,
+  protected void notifyGameStepListeners(final String stepName, final String delegateName, final PlayerId player,
       final int round, final String displayName) {
     for (final GameStepListener listener : gameStepListeners) {
       listener.gameStepChanged(stepName, delegateName, player, round, displayName);

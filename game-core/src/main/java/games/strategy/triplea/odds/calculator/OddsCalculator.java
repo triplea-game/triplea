@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -20,8 +20,8 @@ import games.strategy.triplea.delegate.MustFightBattle;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private GameData gameData;
-  private PlayerID attacker = null;
-  private PlayerID defender = null;
+  private PlayerId attacker = null;
+  private PlayerId defender = null;
   private Territory location = null;
   private Collection<Unit> attackingUnits = new ArrayList<>();
   private Collection<Unit> defendingUnits = new ArrayList<>();
@@ -75,7 +75,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
    * Calculates odds using the stored game data.
    */
   @Override
-  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
+  public void setCalculateData(final PlayerId attacker, final PlayerId defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException {
     if (isRunning) {
@@ -86,9 +86,9 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
     this.attacker =
-        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerID.NULL_PLAYERID.getName() : attacker.getName());
+        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerId.NULL_PLAYERID.getName() : attacker.getName());
     this.defender =
-        gameData.getPlayerList().getPlayerId(defender == null ? PlayerID.NULL_PLAYERID.getName() : defender.getName());
+        gameData.getPlayerList().getPlayerId(defender == null ? PlayerId.NULL_PLAYERID.getName() : defender.getName());
     this.location = gameData.getMap().getTerritory(location.getName());
     attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
@@ -102,7 +102,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+  public AggregateResults setCalculateDataAndCalculate(final PlayerId attacker, final PlayerId defender,
       final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
       final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);

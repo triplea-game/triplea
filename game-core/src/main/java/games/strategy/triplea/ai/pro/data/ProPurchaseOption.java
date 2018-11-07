@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Unit;
@@ -31,7 +31,7 @@ public class ProPurchaseOption {
 
   @Getter
   private final UnitType unitType;
-  private final PlayerID player;
+  private final PlayerId player;
 
   @Getter
   private final int cost;
@@ -84,7 +84,7 @@ public class ProPurchaseOption {
   @Getter
   private boolean isDefenseSupport;
 
-  ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerID player,
+  ProPurchaseOption(final ProductionRule productionRule, final UnitType unitType, final PlayerId player,
       final GameData data) {
     this.productionRule = productionRule;
     this.unitType = unitType;

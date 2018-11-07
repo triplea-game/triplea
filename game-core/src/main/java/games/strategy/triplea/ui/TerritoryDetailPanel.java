@@ -17,7 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
@@ -98,7 +98,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     final List<UnitCategory> units = UnitSeperator.getSortedUnitCategories(territory, uiContext.getMapData());
     @Nullable
-    PlayerID currentPlayer = null;
+    PlayerId currentPlayer = null;
     for (final UnitCategory item : units) {
       // seperate players with a seperator
       if (!item.getOwner().equals(currentPlayer)) {

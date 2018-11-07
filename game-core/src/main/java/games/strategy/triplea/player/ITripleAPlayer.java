@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -43,7 +43,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @return CasualtyDetails
    */
   CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count,
-      String message, DiceRoll dice, PlayerID hit, Collection<Unit> friendlyUnits, PlayerID enemyPlayer,
+      String message, DiceRoll dice, PlayerId hit, Collection<Unit> friendlyUnits, PlayerId enemyPlayer,
       Collection<Unit> enemyUnits, boolean amphibious, Collection<Unit> amphibiousLandAttackers,
       CasualtyList defaultCasualties, GUID battleId, Territory battlesite, boolean allowMultipleHitsPerUnit);
 
@@ -199,7 +199,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Allows the user to pause and confirm enemy casualties.
    */
-  void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer);
+  void confirmEnemyCasualties(GUID battleId, String message, PlayerId hitPlayer);
 
   void confirmOwnCasualties(GUID battleId, String message);
 
@@ -210,7 +210,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @param politics is this from politics delegate?
    * @return whether the player accepts the action proposal
    */
-  boolean acceptAction(PlayerID playerSendingProposal, String acceptanceQuestion, boolean politics);
+  boolean acceptAction(PlayerId playerSendingProposal, String acceptanceQuestion, boolean politics);
 
   /**
    * Asks the player if they wish to perform any kamikaze suicide attacks.

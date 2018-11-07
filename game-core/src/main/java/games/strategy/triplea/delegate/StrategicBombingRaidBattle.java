@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -60,10 +60,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
    *
    * @param battleSite - battle territory
    * @param data - game data
-   * @param attacker - attacker PlayerID
+   * @param attacker - attacker PlayerId
    * @param battleTracker - BattleTracker
    */
-  public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker,
+  public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerId attacker,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
     isAmphibious = false;

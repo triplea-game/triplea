@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.odds.calculator.AggregateResults;
@@ -46,7 +46,7 @@ class AggregateEstimate extends AggregateResults {
   }
 
   @Override
-  public double getAverageTuvSwing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
+  public double getAverageTuvSwing(final PlayerId attacker, final Collection<Unit> attackers, final PlayerId defender,
       final Collection<Unit> defenders, final GameData data) {
     final IntegerMap<UnitType> attackerCostsForTuv = TuvUtils.getCostsForTuv(attacker, data);
     final IntegerMap<UnitType> defenderCostsForTuv = TuvUtils.getCostsForTuv(defender, data);

@@ -11,7 +11,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   private static final long serialVersionUID = -6390555051736721082L;
 
   private final boolean water;
-  private PlayerID owner = PlayerID.NULL_PLAYERID;
+  private PlayerId owner = PlayerId.NULL_PLAYERID;
   private final UnitCollection units;
 
   public Territory(final String name, final GameData data) {
@@ -29,14 +29,14 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   }
 
   /**
-   * Returns the territory owner; will be {@link PlayerID#NULL_PLAYERID} if the territory is not owned.
+   * Returns the territory owner; will be {@link PlayerId#NULL_PLAYERID} if the territory is not owned.
    */
-  public PlayerID getOwner() {
+  public PlayerId getOwner() {
     return owner;
   }
 
-  public void setOwner(final @Nullable PlayerID owner) {
-    this.owner = Optional.ofNullable(owner).orElse(PlayerID.NULL_PLAYERID);
+  public void setOwner(final @Nullable PlayerId owner) {
+    this.owner = Optional.ofNullable(owner).orElse(PlayerId.NULL_PLAYERID);
     getData().notifyTerritoryOwnerChanged(this);
   }
 

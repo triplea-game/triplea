@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -120,7 +120,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
@@ -203,7 +203,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
 
   // TODO: This really needs to be rewritten with some basic logic
   @Override
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+  public boolean acceptAction(final PlayerId playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     // we are dead, just accept
     if (!getPlayerId().amNotDeadYet(getGameData())) {
@@ -238,7 +238,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   @Override
   public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
       final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     // we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
     final PlayerAttachment pa = PlayerAttachment.get(id);
     if (pa == null) {
@@ -293,7 +293,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       final List<Unit> unitChoices, final int unitsPerPick) {
     pause();
     final GameData data = getGameData();
-    final PlayerID me = getPlayerId();
+    final PlayerId me = getPlayerId();
     final Territory picked;
     if (territoryChoices == null || territoryChoices.isEmpty()) {
       picked = null;
@@ -417,7 +417,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {}
+  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerId hitPlayer) {}
 
   @Override
   public void reportError(final String error) {}
@@ -442,7 +442,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   @Override
   public final void start(final String name) {
     super.start(name);
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     if (name.endsWith("Bid")) {
       final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemoteDelegate();
       final String propertyName = id.getName() + " bid";
@@ -484,7 +484,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param player The player to buy for.
    */
   protected abstract void purchase(boolean purchaseForBid, int pusToSpend, IPurchaseDelegate purchaseDelegate,
-      GameData data, PlayerID player);
+      GameData data, PlayerId player);
 
   /**
    * It is the AI's turn to roll for technology.
@@ -493,7 +493,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param data - the game data
    * @param player - the player to roll tech for
    */
-  protected abstract void tech(ITechDelegate techDelegate, GameData data, PlayerID player);
+  protected abstract void tech(ITechDelegate techDelegate, GameData data, PlayerId player);
 
   /**
    * It is the AI's turn to move. Make all moves before returning from this method.
@@ -503,7 +503,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param data - the current game data
    * @param player - the player to move with
    */
-  protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player);
+  protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerId player);
 
   /**
    * It is the AI's turn to place units. get the units available to place with player.getUnits()
@@ -514,7 +514,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param player - the player to place for
    */
   protected abstract void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data,
-      PlayerID player);
+      PlayerId player);
 
   /**
    * No need to override this.
@@ -523,7 +523,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
    * @param player The player whose turn is ending.
    */
   protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate,
-      final PlayerID player) {
+      final PlayerId player) {
     // we should not override this...
   }
 
@@ -558,7 +558,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   protected void politicalActions() {
     final IPoliticsDelegate remotePoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemoteDelegate();
     final GameData data = getGameData();
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     final float numPlayers = data.getPlayerList().getPlayers().size();
     final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
     // We want to test the conditions each time to make sure they are still valid

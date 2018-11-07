@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import lombok.extern.java.Log;
 
 /**
@@ -33,7 +33,7 @@ public class HistoryWriter implements Serializable {
   /**
    * Can only be called if we are currently in a round or a step.
    */
-  public void startNextStep(final String stepName, final String delegateName, final PlayerID player,
+  public void startNextStep(final String stepName, final String delegateName, final PlayerId player,
       final String stepDisplayName) {
     assertCorrectThread();
     // we are being called for the first time

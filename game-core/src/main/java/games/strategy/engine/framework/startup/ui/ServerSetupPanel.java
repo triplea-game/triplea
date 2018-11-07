@@ -28,7 +28,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
 import games.strategy.engine.framework.network.ui.MutePlayerAction;
@@ -274,7 +274,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
     final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
         model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
-    final Map<String, String> reloadSelections = PlayerID.currentPlayers(gameSelectorModel.getGameData());
+    final Map<String, String> reloadSelections = PlayerId.currentPlayers(gameSelectorModel.getGameData());
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow newPlayerRow =

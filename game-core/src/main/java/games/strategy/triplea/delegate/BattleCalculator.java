@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -97,7 +97,7 @@ public class BattleCalculator {
    */
   static CasualtyDetails getAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> allFriendlyUnits, final Collection<Unit> defendingAa, final Collection<Unit> allEnemyUnits,
-      final DiceRoll dice, final IDelegateBridge bridge, final PlayerID firingPlayer, final PlayerID hitPlayer,
+      final DiceRoll dice, final IDelegateBridge bridge, final PlayerId firingPlayer, final PlayerId hitPlayer,
       final GUID battleId, final Territory terr, final Collection<TerritoryEffect> territoryEffects,
       final boolean amphibious, final Collection<Unit> amphibiousLandAttackers) {
     if (planes.isEmpty()) {
@@ -455,8 +455,8 @@ public class BattleCalculator {
    *
    * @param battleId may be null if we are not in a battle (eg, if this is an aa fire due to moving).
    */
-  public static CasualtyDetails selectCasualties(final String step, final PlayerID player,
-      final Collection<Unit> targetsToPickFrom, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+  public static CasualtyDetails selectCasualties(final String step, final PlayerId player,
+      final Collection<Unit> targetsToPickFrom, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite, final Collection<TerritoryEffect> territoryEffects, final IDelegateBridge bridge,
       final String text, final DiceRoll dice, final boolean defending, final GUID battleId, final boolean headLess,
@@ -618,7 +618,7 @@ public class BattleCalculator {
    * are listed, it is dead.
    */
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom,
-      final int hits, final boolean defending, final PlayerID player, final Collection<Unit> enemyUnits,
+      final int hits, final boolean defending, final PlayerId player, final Collection<Unit> enemyUnits,
       final boolean amphibious, final Collection<Unit> amphibiousLandAttackers, final Territory battlesite,
       final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data,
       final boolean allowMultipleHitsPerUnit, final boolean bonus) {
@@ -669,7 +669,7 @@ public class BattleCalculator {
    * (Veqryn)
    */
   private static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom,
-      final boolean defending, final PlayerID player, final Collection<Unit> enemyUnits, final boolean amphibious,
+      final boolean defending, final PlayerId player, final Collection<Unit> enemyUnits, final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers, final Territory battlesite, final IntegerMap<UnitType> costs,
       final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus) {
 
@@ -902,7 +902,7 @@ public class BattleCalculator {
     return false;
   }
 
-  private static int getRolls(final Collection<Unit> units, final PlayerID id,
+  private static int getRolls(final Collection<Unit> units, final PlayerId id,
       final boolean defend, final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
       final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
       final Set<List<UnitSupportAttachment>> supportRulesEnemy,
@@ -917,14 +917,14 @@ public class BattleCalculator {
     return count;
   }
 
-  static int getRolls(final Collection<Unit> units, final PlayerID id, final boolean defend,
+  static int getRolls(final Collection<Unit> units, final PlayerId id, final boolean defend,
       final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
     return getRolls(units, id, defend, bombing, new HashSet<>(),
         new IntegerMap<>(), new HashSet<>(),
         new IntegerMap<>(), territoryEffects);
   }
 
-  private static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
+  private static int getRolls(final Unit unit, final PlayerId id, final boolean defend,
       final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
       final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
       final Set<List<UnitSupportAttachment>> supportRulesEnemy,
@@ -963,7 +963,7 @@ public class BattleCalculator {
     return rolls;
   }
 
-  static int getRolls(final Unit unit, final PlayerID id, final boolean defend,
+  static int getRolls(final Unit unit, final PlayerId id, final boolean defend,
       final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
     return getRolls(unit, id, defend, bombing, new HashSet<>(),
         new IntegerMap<>(), new HashSet<>(),

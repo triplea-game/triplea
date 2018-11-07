@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -66,7 +66,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerID id) {
+  public IRemotePlayer getRemotePlayer(final PlayerId id) {
     return dummyAi;
   }
 
@@ -76,7 +76,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
       final String annotation) {
     if (count <= 0) {
       throw new IllegalStateException("count must be > o, annotation:" + annotation);
@@ -89,13 +89,13 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation) {
     return 0;
   }
 
   @Override
-  public PlayerID getPlayerId() {
-    return PlayerID.NULL_PLAYERID;
+  public PlayerId getPlayerId() {
+    return PlayerId.NULL_PLAYERID;
   }
 
   @Override
@@ -139,7 +139,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     public void startHistoryEvent(final String event, final Object renderingData) {}
 
     @Override
-    public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
+    public void stepChanged(final String stepName, final String delegateName, final PlayerId player, final int round,
         final String displayName, final boolean loadedFromSavedGame) {}
   }
 
@@ -150,25 +150,25 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
     @Override
     protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
-        final PlayerID player) {
+        final PlayerId player) {
       throw new UnsupportedOperationException();
     }
 
     @Override
     protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
-        final PlayerID player) {
+        final PlayerId player) {
       throw new UnsupportedOperationException();
     }
 
     @Override
     protected void purchase(final boolean purcahseForBid, final int pusToSpend,
         final IPurchaseDelegate purchaseDelegate,
-        final GameData data, final PlayerID player) {
+        final GameData data, final PlayerId player) {
       throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+    protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerId player) {
       throw new UnsupportedOperationException();
     }
 
@@ -204,7 +204,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
     @Override
     public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
         final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-        final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+        final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
         final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
         final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
         final boolean allowMultipleHitsPerUnit) {

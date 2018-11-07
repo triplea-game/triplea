@@ -14,7 +14,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -53,7 +53,7 @@ class ProCombatMoveAi {
   private final ProAi ai;
   private final ProOddsCalculator calc;
   private GameData data;
-  private PlayerID player;
+  private PlayerId player;
   private ProTerritoryManager territoryManager;
   private boolean isDefensive;
   private boolean isBombing;
@@ -154,7 +154,7 @@ class ProCombatMoveAi {
   }
 
   void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     this.data = data;
     this.player = player;
 
@@ -186,7 +186,7 @@ class ProCombatMoveAi {
     return isBombing;
   }
 
-  private List<ProTerritory> prioritizeAttackOptions(final PlayerID player, final List<ProTerritory> attackOptions) {
+  private List<ProTerritory> prioritizeAttackOptions(final PlayerId player, final List<ProTerritory> attackOptions) {
 
     ProLogger.info("Prioritizing territories to try to attack");
 

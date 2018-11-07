@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.ui.SwingAction;
 
@@ -72,8 +72,8 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
 
     final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
     final Map<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
-    final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
-    final List<PlayerID> players = data.getPlayerList().getPlayers();
+    final Map<String, String> reloadSelections = PlayerId.currentPlayers(data);
+    final List<PlayerId> players = data.getPlayerList().getPlayers();
 
     int gridx = 0;
     int gridy = 1;
@@ -113,7 +113,7 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     puIncomeBonusLabel.setVisible(false);
 
     // Add players in the order they were defined in the XML
-    for (final PlayerID player : players) {
+    for (final PlayerId player : players) {
       final PlayerSelectorRow selector =
           new PlayerSelectorRow(playerRows, player, reloadSelections, disableable, playersEnablementListing,
               data.getAllianceTracker().getAlliancesPlayerIsIn(player), this, data.getProperties());

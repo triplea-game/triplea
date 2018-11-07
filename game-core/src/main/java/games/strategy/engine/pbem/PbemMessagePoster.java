@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -40,11 +40,11 @@ public class PbemMessagePoster implements Serializable {
   private final transient String saveGameRef = null;
   private transient String turnSummaryRef = null;
   private transient String emailSendStatus;
-  private final transient PlayerID currentPlayer;
+  private final transient PlayerId currentPlayer;
   private final transient int roundNumber;
   private final transient String gameNameAndInfo;
 
-  public PbemMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber,
+  public PbemMessagePoster(final GameData gameData, final PlayerId currentPlayer, final int roundNumber,
       final String title) {
     this.currentPlayer = currentPlayer;
     this.roundNumber = roundNumber;

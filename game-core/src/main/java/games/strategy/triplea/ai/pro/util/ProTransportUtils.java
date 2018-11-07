@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
@@ -43,7 +43,7 @@ public class ProTransportUtils {
     return maxMovement;
   }
 
-  public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerID player, final Unit transport,
+  public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerId player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
       final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final double value) {
 
@@ -74,14 +74,14 @@ public class ProTransportUtils {
         unitsToIgnoreOrHaveBetterLandMove);
   }
 
-  public static List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
+  public static List<Unit> getUnitsToTransportFromTerritories(final PlayerId player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore) {
     return getUnitsToTransportFromTerritories(player, transport, territoriesToLoadFrom, unitsToIgnore,
         ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true));
   }
 
   // TODO: this needs fixed to consider whether a valid route exists to load all units
-  public static List<Unit> getUnitsToTransportFromTerritories(final PlayerID player, final Unit transport,
+  public static List<Unit> getUnitsToTransportFromTerritories(final PlayerId player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
       final Predicate<Unit> validUnitMatch) {
     final List<Unit> selectedUnits = new ArrayList<>();
@@ -165,7 +165,7 @@ public class ProTransportUtils {
     if (usedUnits.contains(unit)) {
       return new ArrayList<>();
     }
-    final PlayerID player = unit.getOwner();
+    final PlayerId player = unit.getOwner();
     final List<Unit> units = t.getUnits().getMatches(Matches.unitIsOwnedBy(player)
         .and(Matches.unitIsLandTransportable()).and(ProMatches.unitHasLessMovementThan(unit)));
     units.removeAll(usedUnits);
@@ -185,7 +185,7 @@ public class ProTransportUtils {
     return results;
   }
 
-  private static Comparator<Unit> getDecreasingAttackComparator(final PlayerID player) {
+  private static Comparator<Unit> getDecreasingAttackComparator(final PlayerId player) {
     return (o1, o2) -> {
 
       // Very rough way to add support power
@@ -209,7 +209,7 @@ public class ProTransportUtils {
     };
   }
 
-  public static List<Unit> getAirThatCantLandOnCarrier(final PlayerID player, final Territory t,
+  public static List<Unit> getAirThatCantLandOnCarrier(final PlayerId player, final Territory t,
       final List<Unit> units) {
     final GameData data = ProData.getData();
 
@@ -230,7 +230,7 @@ public class ProTransportUtils {
     return airThatCantLand;
   }
 
-  public static boolean validateCarrierCapacity(final PlayerID player, final Territory t,
+  public static boolean validateCarrierCapacity(final PlayerId player, final Territory t,
       final List<Unit> existingUnits, final Unit newUnit) {
     final GameData data = ProData.getData();
 
@@ -248,7 +248,7 @@ public class ProTransportUtils {
     return capacity >= 0;
   }
 
-  public static int getUnusedLocalCarrierCapacity(final PlayerID player, final Territory t,
+  public static int getUnusedLocalCarrierCapacity(final PlayerId player, final Territory t,
       final List<Unit> unitsToPlace) {
     final GameData data = ProData.getData();
 
@@ -279,7 +279,7 @@ public class ProTransportUtils {
     return capacity;
   }
 
-  public static int getUnusedCarrierCapacity(final PlayerID player, final Territory t, final List<Unit> unitsToPlace) {
+  public static int getUnusedCarrierCapacity(final PlayerId player, final Territory t, final List<Unit> unitsToPlace) {
     final List<Unit> units = new ArrayList<>(unitsToPlace);
     units.addAll(t.getUnits().getUnits());
     int capacity = AirMovementValidator.carrierCapacity(units, t);

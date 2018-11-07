@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -44,7 +44,7 @@ public class SimpleUnitPanel extends JPanel {
    * @param units a HashMap in the form ProductionRule -> number of units
    *        assumes that each production rule has 1 result, which is simple the number of units.
    */
-  void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player) {
+  void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerId player) {
     removeAll();
     final TreeSet<ProductionRule> productionRules = new TreeSet<>(productionRuleComparator);
     productionRules.addAll(units.keySet());
@@ -62,7 +62,7 @@ public class SimpleUnitPanel extends JPanel {
    * @param units a HashMap in the form RepairRule -> number of units
    *        assumes that each repair rule has 1 result, which is simply the number of units.
    */
-  public void setUnitsFromRepairRuleMap(final Map<Unit, IntegerMap<RepairRule>> units, final PlayerID player,
+  public void setUnitsFromRepairRuleMap(final Map<Unit, IntegerMap<RepairRule>> units, final PlayerId player,
       final GameData data) {
     removeAll();
     final Set<Unit> entries = units.keySet();
@@ -96,7 +96,7 @@ public class SimpleUnitPanel extends JPanel {
     }
   }
 
-  private void addUnits(final PlayerID player, final int quantity, final NamedAttachable unit,
+  private void addUnits(final PlayerId player, final int quantity, final NamedAttachable unit,
       final boolean damaged, final boolean disabled) {
     final JLabel label = new JLabel();
     label.setText(" x " + quantity);

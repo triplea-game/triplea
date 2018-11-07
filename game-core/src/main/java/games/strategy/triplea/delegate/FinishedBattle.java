@@ -8,7 +8,7 @@ import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -32,7 +32,7 @@ public class FinishedBattle extends AbstractBattle {
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
   private final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
 
-  FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+  FinishedBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data,
       final BattleResultDescription battleResultDescription, final WhoWon whoWon) {
     super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);

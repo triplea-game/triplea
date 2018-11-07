@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.util.IntegerMap;
@@ -56,11 +56,11 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return getResourcesPanel(resources, false, null);
   }
 
-  public JPanel getResourcesPanel(final ResourceCollection resources, final PlayerID player) {
+  public JPanel getResourcesPanel(final ResourceCollection resources, final PlayerId player) {
     return getResourcesPanel(resources, true, player);
   }
 
-  private JPanel getResourcesPanel(final ResourceCollection resources, final boolean showEmpty, final PlayerID player) {
+  private JPanel getResourcesPanel(final ResourceCollection resources, final boolean showEmpty, final PlayerId player) {
     final JPanel resourcePanel = new JPanel();
     final List<Resource> resourcesInOrder;
     final GameData data = resources.getData();

@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.delegate.TechAdvance;
 
@@ -13,9 +13,9 @@ class RemoveAvailableTech extends Change {
 
   private final TechAdvance tech;
   private final TechnologyFrontier frontier;
-  private final PlayerID player;
+  private final PlayerId player;
 
-  public RemoveAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerID player) {
+  public RemoveAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
     checkNotNull(front);
     checkNotNull(tech);
 

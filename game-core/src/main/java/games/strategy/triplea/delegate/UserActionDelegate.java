@@ -9,7 +9,7 @@ import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -168,7 +168,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * @param uaa the UserActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final UserActionAttachment uaa) {
-    for (final PlayerID player : uaa.getActionAccept()) {
+    for (final PlayerId player : uaa.getActionAccept()) {
       if (!(getRemotePlayer(player)).acceptAction(this.player,
           UserActionText.getInstance().getAcceptanceQuestion(uaa.getText()), false)) {
         return false;
@@ -198,7 +198,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     }
   }
 
-  private void sendNotificationToPlayers(final Collection<PlayerID> toPlayers, final Collection<PlayerID> dontSendTo,
+  private void sendNotificationToPlayers(final Collection<PlayerId> toPlayers, final Collection<PlayerId> dontSendTo,
       final String text) {
     if (!"NONE".equals(text)) {
       this.getDisplay().reportMessageToPlayers(toPlayers, dontSendTo, text, text);
@@ -210,13 +210,13 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification,
       final String targetNotification) {
-    final Collection<PlayerID> dontSendTo = new ArrayList<>();
+    final Collection<PlayerId> dontSendTo = new ArrayList<>();
     dontSendTo.add(player);
 
-    final Collection<PlayerID> targets = uaa.getActionAccept();
+    final Collection<PlayerId> targets = uaa.getActionAccept();
     sendNotificationToPlayers(targets, dontSendTo, targetNotification);
 
-    final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
+    final Collection<PlayerId> otherPlayers = getData().getPlayerList().getPlayers();
     otherPlayers.remove(player);
     otherPlayers.removeAll(targets);
     dontSendTo.addAll(targets);

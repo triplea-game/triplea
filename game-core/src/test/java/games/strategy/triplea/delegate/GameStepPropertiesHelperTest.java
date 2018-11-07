@@ -18,16 +18,16 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.xml.TestDelegate;
 
 final class GameStepPropertiesHelperTest {
   private final GameData gameData = new GameData();
-  private final PlayerID player1 = new PlayerID("player1", gameData);
-  private final PlayerID player2 = new PlayerID("player2", gameData);
-  private final PlayerID player3 = new PlayerID("player3", gameData);
-  private final PlayerID player4 = new PlayerID("player4", gameData);
+  private final PlayerId player1 = new PlayerId("player1", gameData);
+  private final PlayerId player2 = new PlayerId("player2", gameData);
+  private final PlayerId player3 = new PlayerId("player3", gameData);
+  private final PlayerId player4 = new PlayerId("player4", gameData);
   private final Properties gameStepProperties = new Properties();
   private final GameStep gameStep =
       new GameStep("name", "displayName", null, newDelegate(), gameData, gameStepProperties);
@@ -38,9 +38,9 @@ final class GameStepPropertiesHelperTest {
     return delegate;
   }
 
-  private static String joinPlayerNames(final PlayerID... playerIds) {
+  private static String joinPlayerNames(final PlayerId... playerIds) {
     return Arrays.stream(playerIds)
-        .map(PlayerID::getName)
+        .map(PlayerId::getName)
         .collect(Collectors.joining(":"));
   }
 
@@ -87,7 +87,7 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldIgnoreCombinedTurnsPlayersThatDoNotExist() {
-      final PlayerID unknownPlayer = new PlayerID("unknownPlayer", gameData);
+      final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
       givenGameStepProperty(GameStep.PropertyKeys.COMBINED_TURNS, joinPlayerNames(unknownPlayer, player2));
 
       assertThat(getCombinedTurns(gameData, player1), contains(player1, player2));
@@ -119,7 +119,7 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldIgnoreRepairPlayersThatDoNotExist() {
-      final PlayerID unknownPlayer = new PlayerID("unknownPlayer", gameData);
+      final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
       givenGameStepProperty(GameStep.PropertyKeys.REPAIR_PLAYERS, joinPlayerNames(unknownPlayer, player2));
 
       assertThat(getRepairPlayers(gameData, player1), contains(player1, player2));
@@ -144,7 +144,7 @@ final class GameStepPropertiesHelperTest {
 
     @Test
     void shouldIgnoreTurnSummaryPlayersThatDoNotExist() {
-      final PlayerID unknownPlayer = new PlayerID("unknownPlayer", gameData);
+      final PlayerId unknownPlayer = new PlayerId("unknownPlayer", gameData);
       givenGameStepProperty(GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, joinPlayerNames(unknownPlayer, player1));
 
       assertThat(getTurnSummaryPlayers(gameData), contains(player1));

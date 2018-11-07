@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -34,7 +34,7 @@ public class NonFightingBattle extends DependentBattle {
   private final Collection<Territory> amphibiousAttackFrom;
   private final Map<Territory, Collection<Unit>> attackingFromMap;
 
-  public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+  public NonFightingBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
       final GameData data) {
     super(battleSite, attacker, battleTracker, data);
     attackingFromMap = new HashMap<>();

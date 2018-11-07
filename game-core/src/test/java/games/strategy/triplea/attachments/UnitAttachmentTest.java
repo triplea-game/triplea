@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
@@ -37,8 +37,8 @@ public class UnitAttachmentTest {
   private final String unit1String = "Unit1";
   private final String unit2String = "Unit2";
 
-  private final PlayerID player1 = mock(PlayerID.class);
-  private final PlayerID player2 = mock(PlayerID.class);
+  private final PlayerId player1 = mock(PlayerId.class);
+  private final PlayerId player2 = mock(PlayerId.class);
   private final UnitType unit1 = mock(UnitType.class);
   private final UnitType unit2 = mock(UnitType.class);
 

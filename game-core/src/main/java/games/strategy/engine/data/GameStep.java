@@ -18,7 +18,7 @@ public class GameStep extends GameDataComponent {
 
   private final String name;
   private final String displayName;
-  private final PlayerID player;
+  private final PlayerId player;
   private final String delegateName;
   private int runCount = 0;
   private int maxRunCount = -1;
@@ -56,7 +56,7 @@ public class GameStep extends GameDataComponent {
    * @param data game data
    * @param stepProperties properties of the game step
    */
-  public GameStep(final String name, final String displayName, final PlayerID player, final IDelegate delegate,
+  public GameStep(final String name, final String displayName, final PlayerId player, final IDelegate delegate,
       final GameData data, final Properties stepProperties) {
     super(data);
     this.name = name;
@@ -70,7 +70,7 @@ public class GameStep extends GameDataComponent {
     return name;
   }
 
-  public PlayerID getPlayerId() {
+  public PlayerId getPlayerId() {
     return player;
   }
 

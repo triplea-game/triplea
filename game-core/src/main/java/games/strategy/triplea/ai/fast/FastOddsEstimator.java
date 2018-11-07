@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -24,7 +24,7 @@ class FastOddsEstimator implements IOddsCalculator {
   public void setGameData(final GameData data) {}
 
   @Override
-  public void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
+  public void setCalculateData(final PlayerId attacker, final PlayerId defender, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
       final Collection<Unit> bombardingUnits, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     this.location = location;
@@ -55,7 +55,7 @@ class FastOddsEstimator implements IOddsCalculator {
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+  public AggregateResults setCalculateDataAndCalculate(final PlayerId attacker, final PlayerId defender,
       final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
       final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
     setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);

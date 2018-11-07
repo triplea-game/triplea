@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -43,7 +43,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public PlayerID getPlayerId() {
+  public PlayerId getPlayerId() {
     return bridge.getPlayerId();
   }
 
@@ -52,12 +52,12 @@ public class GameDelegateBridge implements IDelegateBridge {
    * neither player cheats.
    */
   @Override
-  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation) {
+  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation) {
     return bridge.getRandom(max, player, diceType, annotation);
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
       final String annotation) {
     return bridge.getRandom(max, count, player, diceType, annotation);
   }
@@ -78,7 +78,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerID id) {
+  public IRemotePlayer getRemotePlayer(final PlayerId id) {
     return bridge.getRemotePlayer(id);
   }
 

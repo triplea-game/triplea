@@ -5,7 +5,7 @@ import java.io.Serializable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -19,12 +19,12 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   private int spent;
   private boolean hasBid = false;
 
-  private static int getBidAmount(final GameData data, final PlayerID currentPlayer) {
+  private static int getBidAmount(final GameData data, final PlayerId currentPlayer) {
     final String propertyName = currentPlayer.getName() + " bid";
     return data.getProperties().get(propertyName, 0);
   }
 
-  public static boolean doesPlayerHaveBid(final GameData data, final PlayerID player) {
+  public static boolean doesPlayerHaveBid(final GameData data, final PlayerId player) {
     return getBidAmount(data, player) != 0;
   }
 
@@ -61,7 +61,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate {
   }
 
   @Override
-  protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {
+  protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerId player) {
     final ResourceCollection bidCollection = new ResourceCollection(getData());
     // TODO: allow bids to have more than just PUs
     bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), bid);

@@ -26,7 +26,7 @@ import java.util.zip.ZipFile;
 
 import com.google.common.base.Splitter;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
@@ -266,11 +266,11 @@ public class ClipPlayer {
    *        random.
    * @param playerId - the name of the player, or null
    */
-  public static void play(final String clipPath, final PlayerID playerId) {
+  public static void play(final String clipPath, final PlayerId playerId) {
     getInstance().playClip(clipPath, playerId);
   }
 
-  private void playClip(final String clipName, final PlayerID playerId) {
+  private void playClip(final String clipName, final PlayerId playerId) {
     if (beSilent || isMuted(clipName)) {
       return;
     }

@@ -227,7 +227,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   Set<Territory> getNeighborsValidatingCanals(final Territory territory, final Predicate<Territory> neighborFilter,
-      final Collection<Unit> units, final PlayerID player) {
+      final Collection<Unit> units, final PlayerId player) {
     return getNeighbors(territory, player == null
         ? neighborFilter
         : neighborFilter.and(t -> MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData())));
@@ -265,7 +265,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   @Nullable
   public Route getRouteIgnoreEndValidatingCanals(final Territory t1, final Territory t2,
-      final Predicate<Territory> cond, final Collection<Unit> units, final PlayerID player) {
+      final Predicate<Territory> cond, final Collection<Unit> units, final PlayerId player) {
     checkNotNull(t1);
     checkNotNull(t2);
     return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2).orElse(null);
@@ -407,7 +407,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     return territories.iterator();
   }
 
-  public List<Territory> getTerritoriesOwnedBy(final PlayerID player) {
+  public List<Territory> getTerritoriesOwnedBy(final PlayerId player) {
     return territories.stream()
         .filter(t -> t.getOwner().equals(player))
         .collect(Collectors.toList());

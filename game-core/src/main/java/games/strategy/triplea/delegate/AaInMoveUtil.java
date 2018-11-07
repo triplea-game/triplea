@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -34,7 +34,7 @@ class AaInMoveUtil implements Serializable {
   private static final long serialVersionUID = 1787497998642717678L;
 
   private transient IDelegateBridge bridge;
-  private transient PlayerID player;
+  private transient PlayerId player;
   private Collection<Unit> casualties = new ArrayList<>();
   private final ExecutionStack executionStack = new ExecutionStack();
 
@@ -58,7 +58,7 @@ class AaInMoveUtil implements Serializable {
     return Properties.getAaTerritoryRestricted(getData());
   }
 
-  private ITripleAPlayer getRemotePlayer(final PlayerID id) {
+  private ITripleAPlayer getRemotePlayer(final PlayerId id) {
     return (ITripleAPlayer) bridge.getRemotePlayer(id);
   }
 
@@ -85,7 +85,7 @@ class AaInMoveUtil implements Serializable {
     if (units.isEmpty()) {
       return;
     }
-    final PlayerID movingPlayer = movingPlayer(units);
+    final PlayerId movingPlayer = movingPlayer(units);
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, getData());
     final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
@@ -193,7 +193,7 @@ class AaInMoveUtil implements Serializable {
     }
     // can't rely on player being the unit owner in Edit Mode
     // look at the units being moved to determine allies and enemies
-    final PlayerID movingPlayer = movingPlayer(units);
+    final PlayerId movingPlayer = movingPlayer(units);
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, data);
     // don't iterate over the end
@@ -232,7 +232,7 @@ class AaInMoveUtil implements Serializable {
     return DelegateFinder.battleDelegate(getData()).getBattleTracker();
   }
 
-  private PlayerID movingPlayer(final Collection<Unit> units) {
+  private PlayerId movingPlayer(final Collection<Unit> units) {
     if (units.stream().anyMatch(Matches.unitIsOwnedBy(player))) {
       return player;
     }
@@ -242,15 +242,15 @@ class AaInMoveUtil implements Serializable {
         .map(Unit::getOwner)
         .filter(Objects::nonNull)
         .findAny()
-        .orElse(PlayerID.NULL_PLAYERID);
+        .orElse(PlayerId.NULL_PLAYERID);
   }
 
-  private static PlayerID findDefender(final Collection<Unit> defendingUnits, final Territory territory) {
+  private static PlayerId findDefender(final Collection<Unit> defendingUnits, final Territory territory) {
     if (defendingUnits == null || defendingUnits.isEmpty()) {
       if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()) {
         return territory.getOwner();
       }
-      return PlayerID.NULL_PLAYERID;
+      return PlayerId.NULL_PLAYERID;
     } else if (territory != null && territory.getOwner() != null && !territory.getOwner().isNull()
         && defendingUnits.stream().anyMatch(Matches.unitIsOwnedBy(territory.getOwner()))) {
       return territory.getOwner();
@@ -260,7 +260,7 @@ class AaInMoveUtil implements Serializable {
         .map(Unit::getOwner)
         .filter(Objects::nonNull)
         .findAny()
-        .orElse(PlayerID.NULL_PLAYERID);
+        .orElse(PlayerId.NULL_PLAYERID);
   }
 
   /**

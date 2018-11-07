@@ -19,7 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -349,7 +349,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route.add(westAfrica);
     assertEquals(4, equatorialAfrica.getUnits().size());
     assertEquals(0, westAfrica.getUnits().size());
-    assertEquals(PlayerID.NULL_PLAYERID, westAfrica.getOwner());
+    assertEquals(PlayerId.NULL_PLAYERID, westAfrica.getOwner());
     assertEquals(35, british.getResources().getQuantity(pus));
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);

@@ -16,13 +16,13 @@ final class RelationshipTrackerTest {
     @Nested
     final class EqualsAndHashCodeTest {
       private final GameData gameData = new GameData();
-      private final PlayerID player1 = new PlayerID("red", gameData);
-      private final PlayerID player2 = new PlayerID("black", gameData);
+      private final PlayerId player1 = new PlayerId("red", gameData);
+      private final PlayerId player2 = new PlayerId("black", gameData);
 
       @Test
       void shouldBeEquatableAndHashable() {
         EqualsVerifier.forClass(RelatedPlayers.class)
-            .withPrefabValues(PlayerID.class, player1, player2)
+            .withPrefabValues(PlayerId.class, player1, player2)
             .suppress(Warning.NULL_FIELDS)
             .verify();
       }

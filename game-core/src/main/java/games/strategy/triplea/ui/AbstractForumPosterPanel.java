@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.pbem.ForumPosterComponent;
@@ -38,7 +38,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id);
     SwingUtilities.invokeLater(() -> {
       actionLabel.setText(id.getName() + " " + getTitle());

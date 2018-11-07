@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -30,7 +30,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
   public void start() {
     super.start();
     isPacific = isPacificTheater();
-    final PlayerID player = bridge.getPlayerId();
+    final PlayerId player = bridge.getPlayerId();
     final Collection<Territory> territories = getData().getMap().getTerritoriesOwnedBy(player);
     final Collection<Unit> units = getProductionUnits(territories, player);
     final Change productionChange = ChangeFactory.addUnits(player, units);
@@ -39,7 +39,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     bridge.addChange(productionChange);
   }
 
-  private Collection<Unit> getProductionUnits(final Collection<Territory> territories, final PlayerID player) {
+  private Collection<Unit> getProductionUnits(final Collection<Territory> territories, final PlayerId player) {
     final Collection<Unit> productionUnits = new ArrayList<>();
     if (!(isProductionPerXTerritoriesRestricted() || isProductionPerValuedTerritoryRestricted())) {
       return productionUnits;
@@ -79,7 +79,7 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     return productionUnits;
   }
 
-  private int getBurmaRoad(final PlayerID player) {
+  private int getBurmaRoad(final PlayerId player) {
     // only for pacific - should equal 4 for extra inf
     int burmaRoadCount = 0;
     for (final Territory current : getData().getMap().getTerritories()) {

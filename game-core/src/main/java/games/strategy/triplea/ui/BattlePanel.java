@@ -26,7 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
@@ -98,7 +98,7 @@ public class BattlePanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id);
     SwingUtilities.invokeLater(() -> {
       removeAll();
@@ -207,7 +207,7 @@ public class BattlePanel extends ActionPanel {
   public void showBattle(final GUID battleId, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-      final PlayerID attacker, final PlayerID defender,
+      final PlayerId attacker, final PlayerId defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
     Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
       if (battleDisplay != null) {
@@ -298,7 +298,7 @@ public class BattlePanel extends ActionPanel {
         "Bombard", JOptionPane.YES_NO_OPTION, getMap().getUiContext().getCountDownLatchHandler()) == 0;
   }
 
-  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
+  public void casualtyNotification(final String step, final DiceRoll dice, final PlayerId player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
@@ -307,7 +307,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
+  public void deadUnitNotification(final PlayerId player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
@@ -316,7 +316,7 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
-  public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
+  public void changedUnitsNotification(final PlayerId player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits) {
     SwingUtilities.invokeLater(() -> {
       if (battleDisplay != null) {
@@ -334,7 +334,7 @@ public class BattlePanel extends ActionPanel {
   }
 
   public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
-      final int count, final String message, final DiceRoll dice, final PlayerID hit,
+      final int count, final String message, final DiceRoll dice, final PlayerId hit,
       final CasualtyList defaultCasualties, final GUID battleId, final boolean allowMultipleHitsPerUnit) {
     // if the battle display is null, then this is an aa fire during move
     if (battleId == null) {
@@ -352,7 +352,7 @@ public class BattlePanel extends ActionPanel {
 
   private @Nullable CasualtyDetails getCasualtiesAa(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerID hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
+      final PlayerId hit, final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
     final Supplier<CasualtyDetails> action = () -> {
       final boolean isEditMode = (dice == null);
       final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents,

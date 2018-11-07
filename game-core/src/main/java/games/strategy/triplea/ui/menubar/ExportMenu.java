@@ -32,7 +32,7 @@ import javax.swing.tree.TreeNode;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
@@ -167,7 +167,7 @@ final class ExportMenu extends JMenu {
       // tokens or # techs, etc.
       final IStat[] statsExtended = statPanel.getStatsExtended(gameData);
       final String[] alliances = statPanel.getAlliances().toArray(new String[0]);
-      final PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[0]);
+      final PlayerId[] players = statPanel.getPlayers().toArray(new PlayerId[0]);
       // its important here to translate the player objects into our game data
       // the players for the stat panel are only relevant with respect to
       // the game data they belong to
@@ -196,10 +196,10 @@ final class ExportMenu extends JMenu {
       text.append("\n");
       text.append("Turn Order: ,");
       text.append("\n");
-      final List<PlayerID> playerOrderList = new ArrayList<>(gameData.getPlayerList().getPlayers());
+      final List<PlayerId> playerOrderList = new ArrayList<>(gameData.getPlayerList().getPlayers());
       playerOrderList.sort(new PlayerOrderComparator(gameData));
-      final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
-      for (final PlayerID currentPlayerId : playerOrderSetNoDuplicates) {
+      final Set<PlayerId> playerOrderSetNoDuplicates = new LinkedHashSet<>(playerOrderList);
+      for (final PlayerId currentPlayerId : playerOrderSetNoDuplicates) {
         text.append(currentPlayerId.getName()).append(",");
         final Collection<String> allianceNames = gameData.getAllianceTracker().getAlliancesPlayerIsIn(currentPlayerId);
         for (final String allianceName : allianceNames) {
@@ -211,7 +211,7 @@ final class ExportMenu extends JMenu {
       text.append("Winners: ,");
       final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegateList().getDelegate("endRound");
       if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
-        for (final PlayerID p : delegateEndRound.getWinners()) {
+        for (final PlayerId p : delegateEndRound.getWinners()) {
           text.append(p.getName()).append(",");
         }
       } else {
@@ -266,7 +266,7 @@ final class ExportMenu extends JMenu {
       text.append("\n");
       text.append("Round,Player Turn,Phase Name,");
       for (final IStat stat : stats) {
-        for (final PlayerID player : players) {
+        for (final PlayerId player : players) {
           text.append(stat.getName()).append(" ");
           text.append(player.getName());
           text.append(",");
@@ -278,7 +278,7 @@ final class ExportMenu extends JMenu {
         }
       }
       for (final IStat element : statsExtended) {
-        for (final PlayerID player : players) {
+        for (final PlayerId player : players) {
           text.append(element.getName()).append(" ");
           text.append(player.getName());
           text.append(",");
@@ -294,7 +294,7 @@ final class ExportMenu extends JMenu {
       @SuppressWarnings("unchecked")
       final Enumeration<TreeNode> nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
       @Nullable
-      PlayerID currentPlayer = null;
+      PlayerId currentPlayer = null;
       int round = 0;
       while (nodes.hasMoreElements()) {
         // we want to export on change of turn
@@ -347,7 +347,7 @@ final class ExportMenu extends JMenu {
         }
         text.append(round).append(",").append(playerName).append(",").append(stepName).append(",");
         for (final IStat stat : stats) {
-          for (final PlayerID player : players) {
+          for (final PlayerId player : players) {
             text.append(stat.getFormatter().format(stat.getValue(player, clone)));
             text.append(",");
           }
@@ -357,7 +357,7 @@ final class ExportMenu extends JMenu {
           }
         }
         for (final IStat element2 : statsExtended) {
-          for (final PlayerID player : players) {
+          for (final PlayerId player : players) {
             text.append(element2.getFormatter().format(element2.getValue(player, clone)));
             text.append(",");
           }

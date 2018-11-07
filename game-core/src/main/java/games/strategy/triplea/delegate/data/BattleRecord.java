@@ -3,7 +3,7 @@ package games.strategy.triplea.delegate.data;
 import java.io.Serializable;
 import java.util.Objects;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.SerializationProxySupport;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.BattleResults;
@@ -60,8 +60,8 @@ public class BattleRecord implements Serializable {
 
   private static final long serialVersionUID = 3642216371483289106L;
   private Territory battleSite;
-  private PlayerID attacker;
-  private PlayerID defender;
+  private PlayerId attacker;
+  private PlayerId defender;
   private int attackerLostTuv = 0;
   private int defenderLostTuv = 0;
   private BattleResultDescription battleResultDescription;
@@ -70,7 +70,7 @@ public class BattleRecord implements Serializable {
 
 
   @SerializationProxySupport
-  private BattleRecord(final Territory battleSite, final PlayerID attacker, final PlayerID defender,
+  private BattleRecord(final Territory battleSite, final PlayerId attacker, final PlayerId defender,
       final int attackerLostTuv,
       final int defenderLostTuv, final BattleResultDescription battleResultDescription, final BattleType battleType,
       final BattleResults battleResults) {
@@ -92,8 +92,8 @@ public class BattleRecord implements Serializable {
   private static class SerializationProxy implements Serializable {
     private static final long serialVersionUID = 355188139820567143L;
     private final Territory battleSite;
-    private final PlayerID attacker;
-    private final PlayerID defender;
+    private final PlayerId attacker;
+    private final PlayerId defender;
     private final int attackerLostTuv;
     private final int defenderLostTuv;
     private final BattleResultDescription battleResultDescription;
@@ -131,13 +131,13 @@ public class BattleRecord implements Serializable {
     battleResults = record.battleResults;
   }
 
-  protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType) {
+  protected BattleRecord(final Territory battleSite, final PlayerId attacker, final BattleType battleType) {
     this.battleSite = battleSite;
     this.attacker = attacker;
     this.battleType = battleType;
   }
 
-  protected void setResult(final PlayerID defender, final int attackerLostTuv, final int defenderLostTuv,
+  protected void setResult(final PlayerId defender, final int attackerLostTuv, final int defenderLostTuv,
       final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
     this.defender = defender;
     this.attackerLostTuv = attackerLostTuv;
@@ -154,19 +154,19 @@ public class BattleRecord implements Serializable {
     this.battleSite = battleSite;
   }
 
-  protected PlayerID getAttacker() {
+  protected PlayerId getAttacker() {
     return attacker;
   }
 
-  protected void setAttacker(final PlayerID attacker) {
+  protected void setAttacker(final PlayerId attacker) {
     this.attacker = attacker;
   }
 
-  protected PlayerID getDefender() {
+  protected PlayerId getDefender() {
     return defender;
   }
 
-  protected void setDefenders(final PlayerID defender) {
+  protected void setDefenders(final PlayerId defender) {
     this.defender = defender;
   }
 

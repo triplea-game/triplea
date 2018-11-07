@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -41,7 +41,7 @@ public class AirMovementValidator {
   // this turn, and
   // therefore would need pickup.
   static MoveValidationResult validateAirCanLand(final GameData data, final Collection<Unit> units,
-      final Route route, final PlayerID player, final MoveValidationResult result) {
+      final Route route, final PlayerId player, final MoveValidationResult result) {
     // First check if we even need to check
     if (getEditMode(data) // Edit Mode, no need to check
         || units.stream().noneMatch(Matches.unitIsAir()) // No Airunits, nothing to check
@@ -135,7 +135,7 @@ public class AirMovementValidator {
   }
 
   private static LinkedHashMap<Unit, Integer> getMovementLeftForValidatingAir(final Collection<Unit> airBeingValidated,
-      final PlayerID player, final Route route) {
+      final PlayerId player, final Route route) {
     final LinkedHashMap<Unit, Integer> map = new LinkedHashMap<>();
     for (final Unit unit : airBeingValidated) {
       // unit must be in either start or end.
@@ -160,7 +160,7 @@ public class AirMovementValidator {
 
   private static IntegerMap<Territory> populateStaticAlliedAndBuildingCarrierCapacity(
       final List<Territory> landingSpots, final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters,
-      final PlayerID player, final GameData data) {
+      final PlayerId player, final GameData data) {
     final IntegerMap<Territory> startingSpace = new IntegerMap<>();
     final Predicate<Unit> carrierAlliedNotOwned = Matches.unitIsOwnedBy(player).negate()
         .and(Matches.isUnitAllied(player, data))
@@ -168,7 +168,7 @@ public class AirMovementValidator {
     final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     final List<Unit> carriersInProductionQueue = GameStepPropertiesHelper.getCombinedTurns(data, player).stream()
-        .map(PlayerID::getUnits)
+        .map(PlayerId::getUnits)
         .map(units -> units.getMatches(Matches.unitIsCarrier()))
         .flatMap(List::stream)
         .collect(Collectors.toList());
@@ -200,7 +200,7 @@ public class AirMovementValidator {
   private static void validateAirCaughtByMovingCarriersAndOwnedAndAlliedAir(final MoveValidationResult result,
       final List<Territory> landingSpots, final Collection<Territory> potentialCarrierOrigins,
       final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters, final Collection<Unit> airThatMustLandOnCarriers,
-      final Collection<Unit> airNotToConsider, final PlayerID player, final Route route, final GameData data) {
+      final Collection<Unit> airNotToConsider, final PlayerId player, final Route route, final GameData data) {
     final Predicate<Unit> ownedCarrierMatch = Matches.unitIsOwnedBy(player).and(Matches.unitIsCarrier());
     final Predicate<Unit> ownedAirMatch = Matches.unitIsOwnedBy(player)
         .and(Matches.unitIsAir())
@@ -471,7 +471,7 @@ public class AirMovementValidator {
     };
   }
 
-  private static int maxMovementLeftForAllOwnedCarriers(final PlayerID player, final GameData data) {
+  private static int maxMovementLeftForAllOwnedCarriers(final PlayerId player, final GameData data) {
     int max = 0;
     final Predicate<Unit> ownedCarrier = Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
@@ -483,7 +483,7 @@ public class AirMovementValidator {
   }
 
   private static int maxMovementLeftForTheseAirUnitsBeingValidated(final Collection<Unit> airUnits, final Route route,
-      final PlayerID player) {
+      final PlayerId player) {
     int max = 0;
     for (final Unit u : airUnits) {
       if (Matches.unitIsOwnedBy(player).test(u)) {
@@ -530,7 +530,7 @@ public class AirMovementValidator {
    * @param player the player owning the units
    */
   private static List<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route,
-      final PlayerID player) {
+      final PlayerId player) {
     final Predicate<Unit> ownedAirMatch = Matches.unitIsAir()
         .and(Matches.unitOwnedBy(player))
         .and(Matches.unitIsKamikaze().negate());
@@ -554,7 +554,7 @@ public class AirMovementValidator {
     return Comparator.comparingInt(u -> getMovementLeftForAirUnitNotMovedYet(u, route));
   }
 
-  private static boolean canAirReachThisSpot(final GameData data, final PlayerID player,
+  private static boolean canAirReachThisSpot(final GameData data, final PlayerId player,
       final Territory currentSpot, final int movementLeft, final Territory landingSpot,
       final boolean areNeutralsPassableByAir) {
     final Route route = data.getMap().getRoute(currentSpot, landingSpot,
@@ -591,7 +591,7 @@ public class AirMovementValidator {
       return false;
     }
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
-    final PlayerID player = unit.getOwner();
+    final PlayerId player = unit.getOwner();
     final List<Territory> possibleSpots = CollectionUtils.getMatches(data.getMap().getNeighbors(current, movementLeft),
         Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
     // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movement cost is very high and air units
@@ -613,7 +613,7 @@ public class AirMovementValidator {
    * Does take into account whether a battle has been fought in the territory already.
    * Note units must only be air units
    */
-  public static boolean canLand(final Collection<Unit> airUnits, final Territory territory, final PlayerID player,
+  public static boolean canLand(final Collection<Unit> airUnits, final Territory territory, final PlayerId player,
       final GameData data) {
     if (airUnits.isEmpty() || !airUnits.stream().allMatch(Matches.unitIsAir())) {
       throw new IllegalArgumentException("can only test if air will land");
@@ -723,7 +723,7 @@ public class AirMovementValidator {
     return BaseEditDelegate.getEditMode(data);
   }
 
-  public static Collection<Unit> getFriendly(final Territory territory, final PlayerID player, final GameData data) {
+  public static Collection<Unit> getFriendly(final Territory territory, final PlayerId player, final GameData data) {
     return territory.getUnits().getMatches(Matches.alliedUnit(player, data));
   }
 

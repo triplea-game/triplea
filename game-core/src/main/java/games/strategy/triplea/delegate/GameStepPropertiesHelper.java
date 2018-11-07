@@ -11,7 +11,7 @@ import com.google.common.base.Splitter;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Properties;
 import lombok.extern.java.Log;
 
@@ -43,17 +43,17 @@ public final class GameStepPropertiesHelper {
    *
    * @return The set of players; may be empty if not set.
    */
-  public static Set<PlayerID> getTurnSummaryPlayers(final GameData data) {
+  public static Set<PlayerId> getTurnSummaryPlayers(final GameData data) {
     checkNotNull(data);
 
     return getPlayersFromProperty(data, GameStep.PropertyKeys.TURN_SUMMARY_PLAYERS, null);
   }
 
-  private static Set<PlayerID> getPlayersFromProperty(
+  private static Set<PlayerId> getPlayersFromProperty(
       final GameData gameData,
       final String propertyKey,
-      final @Nullable PlayerID defaultPlayer) {
-    final Set<PlayerID> players = new HashSet<>();
+      final @Nullable PlayerId defaultPlayer) {
+    final Set<PlayerId> players = new HashSet<>();
     if (defaultPlayer != null) {
       players.add(defaultPlayer);
     }
@@ -64,7 +64,7 @@ public final class GameStepPropertiesHelper {
           gameData.getSequence().getStep().getProperties().getProperty(propertyKey);
       if (encodedPlayerNames != null) {
         for (final String playerName : Splitter.on(':').split(encodedPlayerNames)) {
-          final @Nullable PlayerID player = gameData.getPlayerList().getPlayerId(playerName);
+          final @Nullable PlayerId player = gameData.getPlayerList().getPlayerId(playerName);
           if (player != null) {
             players.add(player);
           } else {
@@ -223,7 +223,7 @@ public final class GameStepPropertiesHelper {
    * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
    *         not the set could be empty. never null.
    */
-  public static Set<PlayerID> getCombinedTurns(final GameData data, final @Nullable PlayerID player) {
+  public static Set<PlayerId> getCombinedTurns(final GameData data, final @Nullable PlayerId player) {
     checkNotNull(data);
 
     return getPlayersFromProperty(data, GameStep.PropertyKeys.COMBINED_TURNS, player);
@@ -277,7 +277,7 @@ public final class GameStepPropertiesHelper {
    * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
    *         not the set could be empty. never null.
    */
-  public static Set<PlayerID> getRepairPlayers(final GameData data, final @Nullable PlayerID player) {
+  public static Set<PlayerId> getRepairPlayers(final GameData data, final @Nullable PlayerId player) {
     checkNotNull(data);
 
     return getPlayersFromProperty(data, GameStep.PropertyKeys.REPAIR_PLAYERS, player);

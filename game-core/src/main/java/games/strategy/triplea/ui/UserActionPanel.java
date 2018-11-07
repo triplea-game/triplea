@@ -26,7 +26,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -58,7 +58,7 @@ public class UserActionPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id);
     choice = null;
     SwingUtilities.invokeLater(() -> {
@@ -187,7 +187,7 @@ public class UserActionPanel extends ActionPanel {
   }
 
   @VisibleForTesting
-  static boolean canPlayerAffordUserAction(final PlayerID player, final UserActionAttachment userAction) {
+  static boolean canPlayerAffordUserAction(final PlayerId player, final UserActionAttachment userAction) {
     return player.getResources().has(userAction.getCostResources());
   }
 
@@ -212,7 +212,7 @@ public class UserActionPanel extends ActionPanel {
    */
   private JPanel getOtherPlayerFlags(final UserActionAttachment uaa) {
     final JPanel panel = new JPanel();
-    for (final PlayerID p : uaa.getOtherPlayers()) {
+    for (final PlayerId p : uaa.getOtherPlayers()) {
       panel.add(new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }
     return panel;

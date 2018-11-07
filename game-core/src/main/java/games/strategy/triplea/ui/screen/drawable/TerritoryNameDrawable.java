@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -65,7 +65,7 @@ public class TerritoryNameDrawable implements IDrawable {
           }
         } else if (ta.getProduction() > 0 && ta.getOriginalOwner() != null) {
           drawComments = true;
-          final PlayerID originalOwner = ta.getOriginalOwner();
+          final PlayerId originalOwner = ta.getOriginalOwner();
           commentText = originalOwner.getName() + " Convoy Center";
         }
       }

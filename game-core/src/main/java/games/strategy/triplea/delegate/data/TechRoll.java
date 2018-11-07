@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate.data;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.util.IntegerMap;
 
@@ -13,7 +13,7 @@ public class TechRoll {
   private final TechnologyFrontier tech;
   private final int rolls;
   private int newTokens;
-  private final IntegerMap<PlayerID> whoPaysHowMuch;
+  private final IntegerMap<PlayerId> whoPaysHowMuch;
 
   public TechRoll(final TechnologyFrontier advance, final int rolls) {
     this(advance, rolls, 0);
@@ -24,7 +24,7 @@ public class TechRoll {
   }
 
   public TechRoll(final TechnologyFrontier advance, final int rolls, final int newTokens,
-      final IntegerMap<PlayerID> whoPaysHowMuch) {
+      final IntegerMap<PlayerId> whoPaysHowMuch) {
     this.rolls = rolls;
     tech = advance;
     this.newTokens = newTokens;
@@ -47,7 +47,7 @@ public class TechRoll {
     this.newTokens = tokens;
   }
 
-  public IntegerMap<PlayerID> getWhoPaysHowMuch() {
+  public IntegerMap<PlayerId> getWhoPaysHowMuch() {
     return whoPaysHowMuch;
   }
 }

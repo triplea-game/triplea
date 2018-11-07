@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -47,11 +47,11 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (units.isEmpty()) {
       return null;
     }
-    final Collection<PlayerID> owners = new HashSet<>();
+    final Collection<PlayerId> owners = new HashSet<>();
     for (final Unit u : units) {
       owners.add(u.getOwner());
     }
-    for (final PlayerID p : owners) {
+    for (final PlayerId p : owners) {
       final List<Unit> unitsOwned = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(p));
       logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": "
           + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
@@ -75,7 +75,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return null;
     }
     // now make sure land units are put on transports properly
-    final PlayerID player = units.iterator().next().getOwner();
+    final PlayerId player = units.iterator().next().getOwner();
     final GameData data = getData();
     Map<Unit, Unit> mapLoading = null;
     if (territory.isWater()) {
@@ -120,7 +120,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changeTerritoryOwner(final Territory territory, final PlayerID player) {
+  public String changeTerritoryOwner(final Territory territory, final PlayerId player) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -155,7 +155,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changePUs(final PlayerID player, final int newTotal) {
+  public String changePUs(final PlayerId player, final int newTotal) {
     final String result = checkEditMode();
     if (result != null) {
       return result;
@@ -174,7 +174,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changeTechTokens(final PlayerID player, final int newTotal) {
+  public String changeTechTokens(final PlayerId player, final int newTotal) {
     final String result = checkEditMode();
     if (result != null) {
       return result;
@@ -193,7 +193,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String addTechAdvance(final PlayerID player, final Collection<TechAdvance> advances) {
+  public String addTechAdvance(final PlayerId player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -209,7 +209,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String removeTechAdvance(final PlayerID player, final Collection<TechAdvance> advances) {
+  public String removeTechAdvance(final PlayerId player, final Collection<TechAdvance> advances) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -286,7 +286,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
   public String changePoliticalRelationships(
-      final Collection<Triple<PlayerID, PlayerID, RelationshipType>> relationshipChanges) {
+      final Collection<Triple<PlayerId, PlayerId, RelationshipType>> relationshipChanges) {
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
       return null;
     }
@@ -299,7 +299,7 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(getData());
-    for (final Triple<PlayerID, PlayerID, RelationshipType> relationshipChange : relationshipChanges) {
+    for (final Triple<PlayerId, PlayerId, RelationshipType> relationshipChange : relationshipChanges) {
       final RelationshipType currentRelation = getData().getRelationshipTracker()
           .getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());
       if (!currentRelation.equals(relationshipChange.getThird())) {

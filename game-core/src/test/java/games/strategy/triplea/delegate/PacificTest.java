@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -31,8 +31,8 @@ public class PacificTest extends AbstractDelegateTestCase {
   UnitType destroyer;
   UnitType battleship;
   // Define players
-  PlayerID americans;
-  PlayerID chinese;
+  PlayerId americans;
+  PlayerId chinese;
   // Define territories
   Territory queensland;
   Territory unitedStates;
