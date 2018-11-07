@@ -108,6 +108,9 @@ public class ProTransportUtils {
     return selectedUnits;
   }
 
+  /**
+   * Selects the best units to load on the transport from the given list.
+   */
   public static List<Unit> selectUnitsToTransportFromList(final Unit transport, final List<Unit> units) {
     final List<Unit> selectedUnits = new ArrayList<>();
     final int capacity = UnitAttachment.get(transport.getType()).getTransportCapacity();
