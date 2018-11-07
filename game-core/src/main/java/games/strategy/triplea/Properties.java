@@ -62,7 +62,11 @@ public final class Properties implements Constants {
     return data.getProperties().get(ROCKETS_CAN_FLY_OVER_IMPASSABLES, false);
   }
 
-  /*
+  public static boolean getSequentiallyTargetedRockets(final GameData data) {
+    return data.getProperties().get(TARGET_ROCKETS_SEQUENTIALLY_AND_AFTER_SBR, false);
+  }
+
+  /**
    * Pacific Theater
    */
   public static boolean getPacificTheater(final GameData data) {

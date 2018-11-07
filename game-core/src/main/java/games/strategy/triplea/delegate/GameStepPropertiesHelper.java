@@ -137,28 +137,6 @@ public final class GameStepPropertiesHelper {
   }
 
   /**
-   * Fire rockets after phase is over. This method is here for legacy support.
-   * Ideally, all maps with rockets will set PROPERY_fireRockets for move and battle phases.
-   */
-  static boolean isFireRockets(final GameData data) {
-    data.acquireReadLock();
-    try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.FIRE_ROCKETS);
-      if (prop != null) {
-        return Boolean.parseBoolean(prop);
-      } else if (data.getSequence().getStep().getDelegate().getName().equals("battle")) {
-        return Properties.getWW2V2(data) || Properties.getWW2V3(data);
-      } else if (Properties.getWW2V2(data) || Properties.getWW2V3(data)) {
-        return isCombatDelegate(data);
-      }
-      return isNonCombatDelegate(data);
-
-    } finally {
-      data.releaseReadLock();
-    }
-  }
-
-  /**
    * Repairs damaged units. Normally would occur at either start of combat move or end of turn, depending.
    */
   static boolean isRepairUnits(final GameData data) {

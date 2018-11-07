@@ -191,8 +191,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
     }
 
     // WW2V1, fires at end of non combat move.
+    // Other versions fire Rockets in BattleDelegate
     if (needToDoRockets && GameStepPropertiesHelper.isNonCombatMove(data, true)) {
-      new RocketsFireHelper(bridge, bridge.getPlayerId(), RocketType.ww2v1);
+      if (TechTracker.hasRocket(bridge.getPlayerId())
+          && !Properties.getWW2V2(data) && !Properties.getAllRocketsAttack(data)) {
+        RocketsFireHelper.fireWW2V1(bridge);
+      }
       needToDoRockets = false;
     }
 
