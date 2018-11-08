@@ -33,6 +33,7 @@ import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
+import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.headless.game.server.ArgValidationResult;
@@ -42,7 +43,6 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
@@ -269,7 +269,7 @@ public class HeadlessGameServer {
         new Thread(() -> {
           log.info("Remote Stop Game Initiated.");
           try {
-            serverGame.saveGame(SaveGameFileChooser.getHeadlessAutoSaveFile());
+            serverGame.saveGame(AutoSaveFileUtils.getHeadlessAutoSaveFile());
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to save game", e);
           }

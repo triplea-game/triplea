@@ -23,6 +23,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -30,7 +31,6 @@ import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import swinglib.JButtonBuilder;
@@ -123,21 +123,21 @@ public class GameSelectorPanel extends JPanel implements Observer {
           final JPopupMenu menu = new JPopupMenu();
           menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction());
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE));
+              HeadlessAutoSaveType.AUTOSAVE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_ODD));
+              HeadlessAutoSaveType.AUTOSAVE_ODD));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_EVEN));
+              HeadlessAutoSaveType.AUTOSAVE_EVEN));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_END_TURN));
+              HeadlessAutoSaveType.AUTOSAVE_END_TURN));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_BEFORE_BATTLE));
+              HeadlessAutoSaveType.AUTOSAVE_BEFORE_BATTLE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_AFTER_BATTLE));
+              HeadlessAutoSaveType.AUTOSAVE_AFTER_BATTLE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_AFTER_COMBAT_MOVE));
+              HeadlessAutoSaveType.AUTOSAVE_AFTER_COMBAT_MOVE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              SaveGameFileChooser.AUTOSAVE_TYPE.AUTOSAVE_AFTER_NON_COMBAT_MOVE));
+              HeadlessAutoSaveType.AUTOSAVE_AFTER_NON_COMBAT_MOVE));
           menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
           final Point point = loadSavedGame.getLocation();
           menu.show(GameSelectorPanel.this, point.x + loadSavedGame.getWidth(), point.y);

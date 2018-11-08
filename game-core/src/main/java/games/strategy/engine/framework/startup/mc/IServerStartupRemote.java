@@ -2,8 +2,8 @@ package games.strategy.engine.framework.startup.mc;
 
 import java.util.Set;
 
+import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 
@@ -34,7 +34,7 @@ public interface IServerStartupRemote extends IRemote {
 
   void changeServerGameTo(final String gameName);
 
-  void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave);
+  void changeToLatestAutosave(final HeadlessAutoSaveType typeOfAutosave);
 
   void changeToGameSave(final byte[] bytes, final String fileName);
 

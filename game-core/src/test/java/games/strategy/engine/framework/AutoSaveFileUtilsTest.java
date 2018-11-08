@@ -1,10 +1,10 @@
-package games.strategy.engine.framework.ui;
+package games.strategy.engine.framework;
 
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getAfterStepAutoSaveFile;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getAutoSaveFile;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getAutoSaveFileName;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getBeforeStepAutoSaveFile;
-import static games.strategy.engine.framework.ui.SaveGameFileChooser.getLostConnectionAutoSaveFile;
+import static games.strategy.engine.framework.AutoSaveFileUtils.getAfterStepAutoSaveFile;
+import static games.strategy.engine.framework.AutoSaveFileUtils.getAutoSaveFile;
+import static games.strategy.engine.framework.AutoSaveFileUtils.getAutoSaveFileName;
+import static games.strategy.engine.framework.AutoSaveFileUtils.getBeforeStepAutoSaveFile;
+import static games.strategy.engine.framework.AutoSaveFileUtils.getLostConnectionAutoSaveFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -15,11 +15,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.framework.CliProperties;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 
-final class SaveGameFileChooserTest extends AbstractClientSettingTestCase {
+final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
   @Nested
   final class GetAutoSaveFileTest {
     @Test
