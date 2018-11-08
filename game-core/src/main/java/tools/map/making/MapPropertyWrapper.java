@@ -42,9 +42,9 @@ import lombok.extern.java.Log;
 @Log
 public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
   private static final long serialVersionUID = 6406798101396215624L;
+
   private final IEditableProperty<T> property;
   private final Method setter;
-
 
   @SuppressWarnings("unchecked")
   private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter) {
@@ -156,7 +156,6 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     return property.validate(value);
   }
 
-
   private static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
       final boolean justFromSuper) {
     if (!justFromSuper) {
@@ -189,10 +188,6 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
    */
   @VisibleForTesting
   static Field getPropertyField(final String propertyName, final Class<?> type) {
-    try {
-      return getFieldIncludingFromSuperClasses(type, "m_" + propertyName, false);
-    } catch (final IllegalStateException ignored) {
-      return getFieldIncludingFromSuperClasses(type, propertyName, false);
-    }
+    return getFieldIncludingFromSuperClasses(type, propertyName, false);
   }
 }
