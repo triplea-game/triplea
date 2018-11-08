@@ -373,7 +373,7 @@ class TechPanel extends ActionPanel {
             final ScrollableTextField whoPaysTextField = new ScrollableTextField(0, helperPUs);
             whoPaysTextField.addChangeListener(setWidgetAction());
             whoPaysTextFields.put(p, whoPaysTextField);
-            // TODO: force players to pay if it goes above the cost m_player can afford.
+            // TODO: force players to pay if it goes above the cost player can afford.
             add(new JLabel(p.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
                 GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
             add(whoPaysTextField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,

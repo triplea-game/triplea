@@ -163,7 +163,7 @@ public class ClipPlayer {
    * If set to true, no sounds will play.
    * This property is persisted using the java.tools.prefs API, and will persist after the vm has stopped.
    *
-   * @param beSilent new value for m_beSilent
+   * @param beSilent new value for beSilent
    */
   static void setBeSilent(final boolean beSilent) {
     final ClipPlayer clipPlayer = getInstance();

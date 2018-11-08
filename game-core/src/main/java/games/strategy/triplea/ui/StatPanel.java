@@ -74,7 +74,6 @@ class StatPanel extends AbstractStatPanel {
     final JTable techTable = new JTable(techModel);
     techTable.getTableHeader().setReorderingAllowed(false);
     techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
-    // setupIconHeaders(m_techTable);
     // show icons for players:
     final TableCellRenderer componentRenderer = new JComponentTableCellRenderer();
     for (int i = 1; i < techTable.getColumnCount(); i++) {

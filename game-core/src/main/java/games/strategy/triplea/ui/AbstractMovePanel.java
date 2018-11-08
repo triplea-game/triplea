@@ -65,7 +65,8 @@ abstract class AbstractMovePanel extends ActionPanel {
     return bridge;
   }
 
-  // m_frame methods
+  // frame methods
+
   final void clearStatusMessage() {
     frame.clearStatusMessage();
   }

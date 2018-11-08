@@ -39,7 +39,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   public Serializable saveState() {
     final UserActionExtendedDelegateState state = new UserActionExtendedDelegateState();
     state.superState = super.saveState();
-    // state.m_testedConditions = m_testedConditions;
     // add other variables to state here:
     return state;
   }
