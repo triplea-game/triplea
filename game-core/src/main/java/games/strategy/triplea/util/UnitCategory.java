@@ -37,8 +37,6 @@ public class UnitCategory implements Comparable<UnitCategory> {
   private final int movement;
   // movement of the units
   private final int transportCost;
-  // movement of the units
-  // private final Territory m_originatingTerr;
   private final PlayerId owner;
   // the units in the category, may be duplicates.
   private final List<Unit> units = new ArrayList<>();

@@ -24,7 +24,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
   // A collection of UndoableMoves
   protected List<UndoableMove> movesToUndo = new ArrayList<>();
-  // protected final TransportTracker m_transportTracker = new TransportTracker();
   // if we are in the process of doing a move. this instance will allow us to resume the move
   protected MovePerformer tempMovePerformer;
 
