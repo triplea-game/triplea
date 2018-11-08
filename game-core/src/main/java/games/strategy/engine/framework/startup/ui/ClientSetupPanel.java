@@ -22,9 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.IChatPanel;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
-import games.strategy.engine.framework.ui.SaveGameFileChooser.AUTOSAVE_TYPE;
 import games.strategy.ui.SwingAction;
 
 /**
@@ -251,14 +251,16 @@ public class ClientSetupPanel extends SetupPanel {
     actions.add(clientModel.getHostBotSetMapClientAction(this));
     actions.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
     actions.add(clientModel.getHostBotChangeGameToSaveGameClientAction());
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_ODD));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_EVEN));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_END_TURN));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_BEFORE_BATTLE));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_AFTER_BATTLE));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_AFTER_COMBAT_MOVE));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, AUTOSAVE_TYPE.AUTOSAVE_AFTER_NON_COMBAT_MOVE));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE_ODD));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE_EVEN));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE_END_TURN));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE_BEFORE_BATTLE));
+    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE_AFTER_BATTLE));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE_AFTER_COMBAT_MOVE));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AUTOSAVE_AFTER_NON_COMBAT_MOVE));
     actions.add(clientModel.getHostBotGetGameSaveClientAction(this));
     return actions;
   }

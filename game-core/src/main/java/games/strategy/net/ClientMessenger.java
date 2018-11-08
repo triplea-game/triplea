@@ -18,8 +18,8 @@ import java.util.logging.Level;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
+import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -269,7 +269,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
+  public void changeToLatestAutosave(final HeadlessAutoSaveType typeOfAutosave) {
     bareBonesSendMessageToServer("changeToLatestAutosave", typeOfAutosave);
   }
 

@@ -32,7 +32,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
@@ -353,7 +352,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveBefore(final IDelegate delegate) {
-    saveGame(SaveGameFileChooser.getBeforeStepAutoSaveFile(delegate.getName(), HeadlessGameServer.headless()));
+    saveGame(AutoSaveFileUtils.getBeforeStepAutoSaveFile(delegate.getName(), HeadlessGameServer.headless()));
   }
 
   @Override
@@ -444,8 +443,8 @@ public class ServerGame extends AbstractGame {
     if (gameData.getSequence().next()) {
       gameData.getHistory().getHistoryWriter().startNextRound(gameData.getSequence().getRound());
       saveGame(gameData.getSequence().getRound() % 2 == 0
-          ? SaveGameFileChooser.getEvenRoundAutoSaveFile(headless)
-          : SaveGameFileChooser.getOddRoundAutoSaveFile(headless));
+          ? AutoSaveFileUtils.getEvenRoundAutoSaveFile(headless)
+          : AutoSaveFileUtils.getOddRoundAutoSaveFile(headless));
     }
     if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
       autoSaveAfter(currentDelegate, headless);
@@ -453,13 +452,13 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveAfter(final String stepName, final boolean headless) {
-    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName, headless));
+    saveGame(AutoSaveFileUtils.getAfterStepAutoSaveFile(stepName, headless));
   }
 
   private void autoSaveAfter(final IDelegate delegate, final boolean headless) {
     final String typeName = delegate.getClass().getTypeName();
     final String stepName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
-    saveGame(SaveGameFileChooser.getAfterStepAutoSaveFile(stepName, headless));
+    saveGame(AutoSaveFileUtils.getAfterStepAutoSaveFile(stepName, headless));
   }
 
   private void endStep() {
