@@ -18,10 +18,10 @@ import javax.annotation.Nullable;
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;
 
-  private final int m_major;
-  private final int m_minor;
-  private final int m_point;
-  private final int m_micro;
+  private final int major;
+  private final int minor;
+  private final int point;
+  private final int micro;
   private final String exactVersion;
 
   /**
@@ -42,10 +42,10 @@ public final class Version implements Serializable, Comparable<Version> {
    * Constructs a Version object with all version values set.
    */
   public Version(final int major, final int minor, final int point, final int micro) {
-    this.m_major = major;
-    this.m_minor = minor;
-    this.m_point = point;
-    this.m_micro = micro;
+    this.major = major;
+    this.minor = minor;
+    this.point = point;
+    this.micro = micro;
     exactVersion = toString();
   }
 
@@ -60,11 +60,11 @@ public final class Version implements Serializable, Comparable<Version> {
         .matcher(version);
 
     if (matcher.find()) {
-      m_major = Integer.parseInt(matcher.group(1));
-      m_minor = Optional.ofNullable(matcher.group(2)).map(Integer::valueOf).orElse(0);
-      m_point = Optional.ofNullable(matcher.group(3)).map(Integer::valueOf).orElse(0);
+      major = Integer.parseInt(matcher.group(1));
+      minor = Optional.ofNullable(matcher.group(2)).map(Integer::valueOf).orElse(0);
+      point = Optional.ofNullable(matcher.group(3)).map(Integer::valueOf).orElse(0);
       final String microString = matcher.group(4);
-      m_micro = "dev".equals(microString)
+      micro = "dev".equals(microString)
           ? Integer.MAX_VALUE
           : Optional.ofNullable(microString).map(Integer::valueOf).orElse(0);
       return;
@@ -90,28 +90,28 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns the major version number.
    */
   public int getMajor() {
-    return m_major;
+    return major;
   }
 
   /**
    * Returns the minor version number.
    */
   public int getMinor() {
-    return m_minor;
+    return minor;
   }
 
   /**
    * Returns the point version number.
    */
   public int getPoint() {
-    return m_point;
+    return point;
   }
 
   /**
    * Returns the micro version number.
    */
   public int getMicro() {
-    return m_micro;
+    return micro;
   }
 
   @Override
@@ -121,7 +121,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_major, m_minor, m_point, m_micro);
+    return Objects.hash(major, minor, point, micro);
   }
 
   @Override
@@ -178,7 +178,7 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns a new version with the major, minor, and point versions from this instance and the specified micro version.
    */
   public Version withMicro(final int micro) {
-    return new Version(m_major, m_minor, m_point, micro);
+    return new Version(major, minor, point, micro);
   }
 
   /**
@@ -187,14 +187,14 @@ public final class Version implements Serializable, Comparable<Version> {
   public String toStringFull() {
     return String.join(
         ".",
-        String.valueOf(m_major),
-        String.valueOf(m_minor),
-        String.valueOf(m_point),
-        (m_micro == Integer.MAX_VALUE) ? "dev" : String.valueOf(m_micro));
+        String.valueOf(major),
+        String.valueOf(minor),
+        String.valueOf(point),
+        (micro == Integer.MAX_VALUE) ? "dev" : String.valueOf(micro));
   }
 
   @Override
   public String toString() {
-    return m_micro != 0 ? toStringFull() : m_major + "." + m_minor + (m_point != 0 ? "." + m_point : "");
+    return micro != 0 ? toStringFull() : major + "." + minor + (point != 0 ? "." + point : "");
   }
 }
