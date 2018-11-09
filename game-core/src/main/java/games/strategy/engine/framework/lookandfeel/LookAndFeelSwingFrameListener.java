@@ -31,9 +31,8 @@ public final class LookAndFeelSwingFrameListener implements Consumer<GameSetting
    */
   public static void register(final JFrame component) {
     final Consumer<GameSetting<String>> listener = new LookAndFeelSwingFrameListener(component);
-    ClientSetting.lookAndFeel.addSaveListener(listener);
-    SwingComponents.addWindowClosingListener(component,
-        () -> ClientSetting.lookAndFeel.removeSaveListener(listener));
+    ClientSetting.lookAndFeel.addListener(listener);
+    SwingComponents.addWindowClosingListener(component, () -> ClientSetting.lookAndFeel.removeListener(listener));
   }
 
   @Override

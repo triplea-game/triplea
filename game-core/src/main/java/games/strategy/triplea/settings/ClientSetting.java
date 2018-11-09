@@ -118,7 +118,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   private final Class<T> type;
   private final String name;
   private final @Nullable T defaultValue;
-  private final Collection<Consumer<GameSetting<T>>> onSaveActions = new CopyOnWriteArrayList<>();
+  private final Collection<Consumer<GameSetting<T>>> listeners = new CopyOnWriteArrayList<>();
 
   /**
    * Initializes a new instance of {@code ClientSetting} with no default value.
@@ -162,14 +162,14 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public final void addSaveListener(final Consumer<GameSetting<T>> saveListener) {
-    Preconditions.checkNotNull(saveListener);
-    onSaveActions.add(saveListener);
+  public final void addListener(final Consumer<GameSetting<T>> listener) {
+    Preconditions.checkNotNull(listener);
+    listeners.add(listener);
   }
 
   @Override
-  public final void removeSaveListener(final Consumer<GameSetting<T>> saveListener) {
-    onSaveActions.remove(saveListener);
+  public final void removeListener(final Consumer<GameSetting<T>> listener) {
+    listeners.remove(listener);
   }
 
   public static void showSettingsWindow() {
@@ -225,7 +225,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       getPreferences().put(name, value);
     }
 
-    onSaveActions.forEach(saveAction -> saveAction.accept(this));
+    listeners.forEach(listener -> listener.accept(this));
   }
 
   /**

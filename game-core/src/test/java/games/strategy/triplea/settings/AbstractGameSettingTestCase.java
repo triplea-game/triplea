@@ -136,7 +136,7 @@ public abstract class AbstractGameSettingTestCase {
   }
 
   @Nested
-  final class SaveObjectTest {
+  final class SetObjectValueTest {
     @Test
     void shouldResetValueWhenValueIsNull() {
       final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);

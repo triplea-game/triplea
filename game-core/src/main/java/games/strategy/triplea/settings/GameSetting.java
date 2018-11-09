@@ -62,7 +62,13 @@ public interface GameSetting<T> {
    */
   void resetValue();
 
-  void addSaveListener(Consumer<GameSetting<T>> listener);
+  /**
+   * Registers {@code listener} to receive a notification whenever the setting value has changed.
+   */
+  void addListener(Consumer<GameSetting<T>> listener);
 
-  void removeSaveListener(Consumer<GameSetting<T>> listener);
+  /**
+   * Unregisters {@code listener} to no longer receive a notification whenever the setting value has changed.
+   */
+  void removeListener(Consumer<GameSetting<T>> listener);
 }
