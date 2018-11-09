@@ -2,7 +2,6 @@ package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +15,9 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
@@ -32,7 +30,6 @@ import lombok.ToString;
  * An attachment, attached to a player that will describe which political
  * actions a player may take.
  */
-@MapSupport
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
 
@@ -43,7 +40,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     super(name, attachable, gameData);
   }
 
-  public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerID player) {
+  public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerId player) {
     return player.getAttachments().values().stream()
         .filter(a -> a.getName().startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
         .filter(PoliticalActionAttachment.class::isInstance)
@@ -51,12 +48,12 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
         .collect(Collectors.toList());
   }
 
-  public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment) {
+  public static PoliticalActionAttachment get(final PlayerId player, final String nameOfAttachment) {
     return get(player, nameOfAttachment, null);
   }
 
-  static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment,
-      final Collection<PlayerID> playersToSearch) {
+  static PoliticalActionAttachment get(final PlayerId player, final String nameOfAttachment,
+      final Collection<PlayerId> playersToSearch) {
     PoliticalActionAttachment paa = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
     if (paa == null) {
       if (playersToSearch == null) {
@@ -64,7 +61,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
             "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
       }
 
-      for (final PlayerID otherPlayer : playersToSearch) {
+      for (final PlayerId otherPlayer : playersToSearch) {
         if (otherPlayer.equals(player)) {
           continue;
         }
@@ -132,8 +129,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   /**
    * Returns a set of all other players involved in this PoliticalAction.
    */
-  public Set<PlayerID> getOtherPlayers() {
-    final Set<PlayerID> otherPlayers = new LinkedHashSet<>();
+  public Set<PlayerId> getOtherPlayers() {
+    final Set<PlayerId> otherPlayers = new LinkedHashSet<>();
     for (final String relationshipChange : this.relationshipChange) {
       final String[] s = splitOnColon(relationshipChange);
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[0]));
@@ -146,8 +143,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   /**
    * Returns the valid actions for this player.
    */
-  public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player,
-      final HashMap<ICondition, Boolean> testedConditions, final GameData data) {
+  public static Collection<PoliticalActionAttachment> getValidActions(final PlayerId player,
+      final Map<ICondition, Boolean> testedConditions, final GameData data) {
     if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }
@@ -185,8 +182,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   @EqualsAndHashCode
   @ToString
   public static final class RelationshipChange {
-    public final PlayerID player1;
-    public final PlayerID player2;
+    public final PlayerId player1;
+    public final PlayerId player2;
     public final RelationshipType relationshipType;
   }
 }

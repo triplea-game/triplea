@@ -49,9 +49,7 @@ deploy:
     tags: false
     condition: "$TRIPLEA_RELEASE = true"
     repo: triplea-game/triplea
-    branches:
-      only:
-        - master
+    branch: master
 notifications:
   webhooks:
     urls:

@@ -210,14 +210,14 @@ public class IntegerMapTest {
     test.add(k2, 1);
     test.add(k3, 0);
     final Iterator<Map.Entry<Object, Integer>> iterator = test.entrySet().iterator();
-    final Map.Entry first = iterator.next();
-    assertEquals(first.getKey(), k1);
-    assertEquals(first.getValue(), 2);
-    final Map.Entry second = iterator.next();
-    assertEquals(second.getKey(), k2);
-    assertEquals(second.getValue(), 1);
-    final Map.Entry third = iterator.next();
-    assertEquals(third.getKey(), k3);
-    assertEquals(third.getValue(), 0);
+    final Map.Entry<Object, Integer> first = iterator.next();
+    assertEquals(k1, first.getKey());
+    assertEquals(2, first.getValue().intValue());
+    final Map.Entry<Object, Integer> second = iterator.next();
+    assertEquals(k2, second.getKey());
+    assertEquals(1, second.getValue().intValue());
+    final Map.Entry<Object, Integer> third = iterator.next();
+    assertEquals(k3, third.getKey());
+    assertEquals(0, third.getValue().intValue());
   }
 }

@@ -1,8 +1,8 @@
 package games.strategy.engine.data.properties;
 
 import java.awt.FileDialog;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
@@ -23,12 +23,12 @@ import games.strategy.engine.framework.system.SystemProperties;
  * change the file.
  * </p>
  */
-public class FileProperty extends AEditableProperty {
+public class FileProperty extends AbstractEditableProperty<File> {
   private static final long serialVersionUID = 6826763550643504789L;
   private static final String[] defaultImageSuffixes = {"png", "jpg", "jpeg", "gif"};
 
-  private final String[] m_acceptableSuffixes;
-  private File m_file;
+  private final String[] acceptableSuffixes;
+  private File file;
 
   /**
    * Construct a new file property.
@@ -49,13 +49,9 @@ public class FileProperty extends AEditableProperty {
 
 
   public FileProperty(final String name, final String description, final File file) {
-    this(name, description, file, defaultImageSuffixes);
-  }
-
-  public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes) {
     super(name, description);
-    m_file = getFileIfExists(file);
-    m_acceptableSuffixes = acceptableSuffixes;
+    this.file = getFileIfExists(file);
+    this.acceptableSuffixes = defaultImageSuffixes;
   }
 
   /**
@@ -64,13 +60,13 @@ public class FileProperty extends AEditableProperty {
    * @return The file associated with this property
    */
   @Override
-  public Object getValue() {
-    return m_file;
+  public File getValue() {
+    return file;
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
-    m_file = (File) value;
+  public void setValue(final File value) {
+    file = value;
   }
 
   /**
@@ -81,35 +77,23 @@ public class FileProperty extends AEditableProperty {
   @Override
   public JComponent getEditorComponent() {
     final JTextField label;
-    if (m_file == null) {
+    if (file == null) {
       label = new JTextField();
     } else {
-      label = new JTextField(m_file.getAbsolutePath());
+      label = new JTextField(file.getAbsolutePath());
     }
     label.setEditable(false);
-    label.addMouseListener(new MouseListener() {
+    label.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
-        final File selection = getFileUsingDialog(m_acceptableSuffixes);
+        final File selection = getFileUsingDialog(acceptableSuffixes);
         if (selection != null) {
-          m_file = selection;
-          label.setText(m_file.getAbsolutePath());
+          file = selection;
+          label.setText(file.getAbsolutePath());
           // Ask Swing to repaint this label when it's convenient
           SwingUtilities.invokeLater(label::repaint);
         }
       }
-
-      @Override
-      public void mouseEntered(final MouseEvent e) {}
-
-      @Override
-      public void mouseExited(final MouseEvent e) {}
-
-      @Override
-      public void mousePressed(final MouseEvent e) {}
-
-      @Override
-      public void mouseReleased(final MouseEvent e) {}
     });
     return label;
   }
@@ -175,7 +159,7 @@ public class FileProperty extends AEditableProperty {
       return true;
     }
     if (value instanceof File) {
-      return Arrays.stream(m_acceptableSuffixes).anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
+      return Arrays.stream(acceptableSuffixes).anyMatch(suffix -> ((File) value).getName().endsWith(suffix));
     }
     return false;
   }

@@ -2,7 +2,7 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
@@ -13,41 +13,45 @@ import games.strategy.util.CollectionUtils;
  */
 class RelationshipChange extends Change {
   private static final long serialVersionUID = 2694339584633196289L;
-  private final String m_player1;
-  private final String m_player2;
-  private final String m_OldRelation;
-  private final String m_NewRelation;
 
-  RelationshipChange(final PlayerID player1, final PlayerID player2, final RelationshipType oldRelation,
-      final RelationshipType newRelation) {
-    m_player1 = player1.getName();
-    m_player2 = player2.getName();
-    m_OldRelation = oldRelation.getName();
-    m_NewRelation = newRelation.getName();
+  private final String player1Name;
+  private final String player2Name;
+  private final String oldRelationshipTypeName;
+  private final String newRelationshipTypeName;
+
+  RelationshipChange(final PlayerId player1, final PlayerId player2, final RelationshipType oldRelationshipType,
+      final RelationshipType newRelationshipType) {
+    player1Name = player1.getName();
+    player2Name = player2.getName();
+    oldRelationshipTypeName = oldRelationshipType.getName();
+    newRelationshipTypeName = newRelationshipType.getName();
   }
 
-  private RelationshipChange(final String player1, final String player2, final String oldRelation,
-      final String newRelation) {
-    m_player1 = player1;
-    m_player2 = player2;
-    m_OldRelation = oldRelation;
-    m_NewRelation = newRelation;
+  private RelationshipChange(final String player1Name, final String player2Name, final String oldRelationshipTypeName,
+      final String newRelationshipTypeName) {
+    this.player1Name = player1Name;
+    this.player2Name = player2Name;
+    this.oldRelationshipTypeName = oldRelationshipTypeName;
+    this.newRelationshipTypeName = newRelationshipTypeName;
   }
 
   @Override
   public Change invert() {
-    return new RelationshipChange(m_player1, m_player2, m_NewRelation, m_OldRelation);
+    return new RelationshipChange(player1Name, player2Name, newRelationshipTypeName, oldRelationshipTypeName);
   }
 
   @Override
   protected void perform(final GameData data) {
-    data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerId(m_player1),
-        data.getPlayerList().getPlayerId(m_player2), data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
+    data.getRelationshipTracker().setRelationship(
+        data.getPlayerList().getPlayerId(player1Name),
+        data.getPlayerList().getPlayerId(player2Name),
+        data.getRelationshipTypeList().getRelationshipType(newRelationshipTypeName));
     // now redraw territories in case of new hostility
-    if (Matches.relationshipTypeIsAtWar().test(data.getRelationshipTypeList().getRelationshipType(m_NewRelation))) {
+    if (Matches.relationshipTypeIsAtWar()
+        .test(data.getRelationshipTypeList().getRelationshipType(newRelationshipTypeName))) {
       for (final Territory t : CollectionUtils.getMatches(data.getMap().getTerritories(),
-          Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(m_player1))
-              .and(Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(m_player2))))) {
+          Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(player1Name))
+              .and(Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerId(player2Name))))) {
         t.notifyChanged();
       }
     }
@@ -55,7 +59,7 @@ class RelationshipChange extends Change {
 
   @Override
   public String toString() {
-    return "Add relation change. " + m_player1 + " and " + m_player2 + " change from " + m_OldRelation + " to "
-        + m_NewRelation;
+    return "Add relation change. " + player1Name + " and " + player2Name
+        + " change from " + oldRelationshipTypeName + " to " + newRelationshipTypeName;
   }
 }

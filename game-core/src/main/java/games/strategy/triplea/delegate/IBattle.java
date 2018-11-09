@@ -2,18 +2,18 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
-import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
+import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 
 /**
  * Represents a battle.
@@ -25,25 +25,26 @@ public interface IBattle extends Serializable {
 
   enum BattleType {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
-    private final String m_type;
+
+    private final String type;
 
     BattleType(final String type) {
-      m_type = type;
+      this.type = type;
     }
 
     @Override
     public String toString() {
-      return m_type;
+      return type;
     }
 
     // if it has the word "Raid" in it, then it is a bombing battle
     public boolean isBombingRun() {
-      return m_type.contains("Raid");
+      return type.contains("Raid");
     }
 
     // if it has the word "Air" in it, then it is an air battle
     public boolean isAirPreBattleOrPreRaid() {
-      return m_type.contains("Air");
+      return type.contains("Air");
     }
   }
 
@@ -56,7 +57,7 @@ public interface IBattle extends Serializable {
    *        targeting them mapped to each defending unit.
    * @return attack change object
    */
-  Change addAttackChange(Route route, Collection<Unit> units, HashMap<Unit, HashSet<Unit>> targets);
+  Change addAttackChange(Route route, Collection<Unit> units, Map<Unit, Set<Unit>> targets);
 
   /**
    * There are two distinct super-types of battles: Bombing battles, and Fighting battles.
@@ -168,9 +169,9 @@ public interface IBattle extends Serializable {
 
   BattleResultDescription getBattleResultDescription();
 
-  PlayerID getAttacker();
+  PlayerId getAttacker();
 
-  PlayerID getDefender();
+  PlayerId getDefender();
 
   GUID getBattleId();
 }

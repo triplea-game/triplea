@@ -32,7 +32,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
@@ -50,7 +50,7 @@ class CommentPanel extends JPanel {
   private JButton save;
   private final GameData data;
   private final TripleAFrame frame;
-  private final Map<PlayerID, Icon> iconMap = new HashMap<>();
+  private final Map<PlayerId, Icon> iconMap = new HashMap<>();
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -95,7 +95,7 @@ class CommentPanel extends JPanel {
     save = new JButton(saveAction);
     save.setMargin(inset);
     save.setFocusable(false);
-    for (final PlayerID playerId : data.getPlayerList().getPlayers()) {
+    for (final PlayerId playerId : data.getPlayerList().getPlayers()) {
       Optional.ofNullable(frame.getUiContext().getFlagImageFactory().getSmallFlag(playerId))
           .ifPresent(image -> iconMap.put(playerId, new ImageIcon(image)));
     }
@@ -134,7 +134,7 @@ class CommentPanel extends JPanel {
         final Pattern p = Pattern.compile("^COMMENT: (.*)");
         final Matcher m = p.matcher(title);
         if (m.matches()) {
-          final PlayerID playerId = data.getSequence().getStep().getPlayerId();
+          final PlayerId playerId = data.getSequence().getStep().getPlayerId();
           final int round = data.getSequence().getRound();
           final String player = playerId.getName();
           final Icon icon = iconMap.get(playerId);
@@ -174,7 +174,7 @@ class CommentPanel extends JPanel {
         if (node instanceof Round) {
           round++;
         } else if (node instanceof Step) {
-          final PlayerID playerId = ((Step) node).getPlayerId();
+          final PlayerId playerId = ((Step) node).getPlayerId();
           if (playerId != null) {
             player = playerId.getName();
             icon = iconMap.get(playerId);

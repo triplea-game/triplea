@@ -1,6 +1,6 @@
 package games.strategy.triplea;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 
 /**
  * Constants used throughout the game.
@@ -251,11 +251,11 @@ public interface Constants {
 
   String CONSTRUCTION_TYPE_FACTORY = "factory";
 
-  static String getIncomePercentageFor(final PlayerID playerId) {
+  static String getIncomePercentageFor(final PlayerId playerId) {
     return playerId.getName() + " Income Percentage";
   }
 
-  static String getPuIncomeBonus(final PlayerID playerId) {
+  static String getPuIncomeBonus(final PlayerId playerId) {
     return playerId.getName() + "PU Income Bonus";
   }
 

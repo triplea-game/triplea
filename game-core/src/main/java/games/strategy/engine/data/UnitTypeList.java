@@ -12,7 +12,8 @@ import java.util.Set;
  */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
   private static final long serialVersionUID = 9002927658524651749L;
-  private final Map<String, UnitType> m_unitTypes = new LinkedHashMap<>();
+
+  private final Map<String, UnitType> unitTypes = new LinkedHashMap<>();
 
   /**
    * Creates new UnitTypeCollection.
@@ -24,11 +25,11 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   }
 
   protected void addUnitType(final UnitType type) {
-    m_unitTypes.put(type.getName(), type);
+    unitTypes.put(type.getName(), type);
   }
 
   public UnitType getUnitType(final String name) {
-    return m_unitTypes.get(name);
+    return unitTypes.get(name);
   }
 
   /**
@@ -37,7 +38,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   public Set<UnitType> getUnitTypes(final String[] names) {
     final Set<UnitType> types = new HashSet<>();
     for (final String name : names) {
-      final UnitType type = m_unitTypes.get(name);
+      final UnitType type = unitTypes.get(name);
       if (type == null) {
         return null;
       }
@@ -47,15 +48,15 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
   }
 
   public int size() {
-    return m_unitTypes.size();
+    return unitTypes.size();
   }
 
   @Override
   public Iterator<UnitType> iterator() {
-    return m_unitTypes.values().iterator();
+    return unitTypes.values().iterator();
   }
 
   public Set<UnitType> getAllUnitTypes() {
-    return new LinkedHashSet<>(m_unitTypes.values());
+    return new LinkedHashSet<>(unitTypes.values());
   }
 }

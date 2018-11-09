@@ -9,10 +9,10 @@ import java.util.logging.Level;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
@@ -62,7 +62,7 @@ public class ClientGame extends AbstractGame {
       }
 
       @Override
-      public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round,
+      public void stepChanged(final String stepName, final String delegateName, final PlayerId player, final int round,
           final String displayName, final boolean loadedFromSavedGame) {
         // we want to skip the first iteration, since that simply advances us to step 0
         if (firstRun) {
@@ -155,7 +155,7 @@ public class ClientGame extends AbstractGame {
       gp.start(stepName);
     };
     remoteMessenger.registerRemote(gameStepAdvancer, getRemoteStepAdvancerName(channelMessenger.getLocalNode()));
-    for (final PlayerID player : this.gamePlayers.keySet()) {
+    for (final PlayerId player : this.gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
       remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
     }
@@ -171,7 +171,7 @@ public class ClientGame extends AbstractGame {
       remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(channelMessenger.getLocalNode()));
       vault.shutDown();
       for (final IGamePlayer gp : gamePlayers.values()) {
-        final PlayerID player;
+        final PlayerId player;
         gameData.acquireReadLock();
         try {
           player = gameData.getPlayerList().getPlayerId(gp.getName());

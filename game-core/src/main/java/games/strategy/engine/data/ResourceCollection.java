@@ -8,7 +8,8 @@ import games.strategy.util.IntegerMap;
  */
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
-  private final IntegerMap<Resource> m_resources = new IntegerMap<>();
+
+  private final IntegerMap<Resource> resources = new IntegerMap<>();
 
   public ResourceCollection(final GameData data) {
     super(data);
@@ -16,19 +17,19 @@ public class ResourceCollection extends GameDataComponent {
 
   public ResourceCollection(final ResourceCollection other) {
     super(other.getData());
-    m_resources.add(other.m_resources);
+    resources.add(other.resources);
   }
 
   public ResourceCollection(final ResourceCollection[] others, final GameData data) {
     super(data);
     for (final ResourceCollection other : others) {
-      m_resources.add(other.m_resources);
+      resources.add(other.resources);
     }
   }
 
   public ResourceCollection(final GameData data, final IntegerMap<Resource> resources) {
     this(data);
-    m_resources.add(resources);
+    this.resources.add(resources);
   }
 
   public void addResource(final Resource resource, final int quantity) {
@@ -57,11 +58,11 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   public void removeAllOfResource(final Resource resource) {
-    m_resources.removeKey(resource);
+    resources.removeKey(resource);
   }
 
   private void change(final Resource resource, final int quantity) {
-    m_resources.add(resource, quantity);
+    resources.add(resource, quantity);
   }
 
   /**
@@ -71,15 +72,15 @@ public class ResourceCollection extends GameDataComponent {
     if (quantity < 0) {
       throw new IllegalArgumentException("quantity must be positive");
     }
-    m_resources.put(resource, quantity);
+    resources.put(resource, quantity);
   }
 
   public IntegerMap<Resource> getResourcesCopy() {
-    return new IntegerMap<>(m_resources);
+    return new IntegerMap<>(resources);
   }
 
   public int getQuantity(final Resource resource) {
-    return m_resources.getInt(resource);
+    return resources.getInt(resource);
   }
 
   public int getQuantity(final String name) {
@@ -96,20 +97,20 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   public boolean has(final IntegerMap<Resource> map) {
-    return m_resources.greaterThanOrEqualTo(map);
+    return resources.greaterThanOrEqualTo(map);
   }
 
   /**
    * Returns new ResourceCollection containing the difference between both collections.
    */
   public ResourceCollection difference(final ResourceCollection otherCollection) {
-    final ResourceCollection returnCollection = new ResourceCollection(getData(), m_resources);
+    final ResourceCollection returnCollection = new ResourceCollection(getData(), resources);
     returnCollection.subtract(otherCollection);
     return returnCollection;
   }
 
   private void subtract(final ResourceCollection resourceCollection) {
-    subtract(resourceCollection.m_resources);
+    subtract(resourceCollection.resources);
   }
 
   private void subtract(final IntegerMap<Resource> cost) {
@@ -119,7 +120,7 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   public void add(final ResourceCollection otherResources) {
-    m_resources.add(otherResources.m_resources);
+    resources.add(otherResources.resources);
   }
 
   public void add(final IntegerMap<Resource> resources) {
@@ -138,7 +139,7 @@ public class ResourceCollection extends GameDataComponent {
    * Will apply a discount if giving a fractional double (ie: 0.5 = 50% discount). Will round up remainder.
    */
   public void discount(final double discount) {
-    m_resources.multiplyAllValuesBy(discount);
+    resources.multiplyAllValuesBy(discount);
   }
 
   /**
@@ -148,7 +149,7 @@ public class ResourceCollection extends GameDataComponent {
     if (cost.size() == 0 || (cost.totalValues() <= 0 && cost.isPositive())) {
       return 10000;
     }
-    final ResourceCollection resources = new ResourceCollection(getData(), m_resources);
+    final ResourceCollection resources = new ResourceCollection(getData(), this.resources);
     for (int i = 0; i <= 10000; i++) {
       try {
         resources.subtract(cost);
@@ -162,7 +163,7 @@ public class ResourceCollection extends GameDataComponent {
 
   @Override
   public String toString() {
-    return toString(m_resources, getData());
+    return toString(resources, getData());
   }
 
   public static String toString(final IntegerMap<Resource> resources, final GameData data) {
@@ -214,7 +215,7 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   public String toStringForHtml() {
-    return toStringForHtml(m_resources, getData());
+    return toStringForHtml(resources, getData());
   }
 
   public static String toStringForHtml(final IntegerMap<Resource> resources, final GameData data) {
@@ -227,11 +228,11 @@ public class ResourceCollection extends GameDataComponent {
    * @param times multiply this Collection times times.
    */
   public void multiply(final int times) {
-    final IntegerMap<Resource> base = new IntegerMap<>(m_resources);
+    final IntegerMap<Resource> base = new IntegerMap<>(resources);
     add(base, times - 1);
   }
 
   public boolean isEmpty() {
-    return m_resources.isEmpty();
+    return resources.isEmpty();
   }
 }

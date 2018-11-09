@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.ResourceLoader;
@@ -138,7 +138,7 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel createUnitImageJLabel(final UnitType type, final PlayerID player,
+  public JLabel createUnitImageJLabel(final UnitType type, final PlayerId player,
       final UnitDamage damaged, final UnitEnable disabled) {
     final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, damaged == UnitDamage.DAMAGED,
         disabled == UnitEnable.DISABLED);

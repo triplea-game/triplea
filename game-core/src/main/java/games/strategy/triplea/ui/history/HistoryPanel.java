@@ -30,7 +30,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UiContext;
@@ -408,7 +408,7 @@ public class HistoryPanel extends JPanel {
     public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean sel,
         final boolean expanded, final boolean leaf, final int row, final boolean haveFocus) {
       if (value instanceof Step) {
-        final PlayerID player = ((Step) value).getPlayerId();
+        final PlayerId player = ((Step) value).getPlayerId();
         if (player != null) {
           if (uiContext != null) {
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, haveFocus);

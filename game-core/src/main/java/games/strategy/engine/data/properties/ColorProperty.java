@@ -3,8 +3,8 @@ package games.strategy.engine.data.properties;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
  * change the color.
  * </p>
  */
-public class ColorProperty extends AEditableProperty {
+public class ColorProperty extends AbstractEditableProperty<Color> {
   private static final long serialVersionUID = 6826763550643504789L;
   private static final int MAX_COLOR = 0xFFFFFF;
   private static final int MIN_COLOR = 0x000000;
@@ -44,16 +44,16 @@ public class ColorProperty extends AEditableProperty {
   }
 
   @Override
-  public Object getValue() {
+  public Color getValue() {
     return color;
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
+  public void setValue(final Color value) {
     if (value == null) {
       color = Color.black;
     } else {
-      color = (Color) value;
+      color = value;
     }
   }
 
@@ -69,7 +69,7 @@ public class ColorProperty extends AEditableProperty {
         g2.fill(g2.getClip());
       }
     };
-    label.addMouseListener(new MouseListener() {
+    label.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
         final Color colorSelected =
@@ -81,18 +81,6 @@ public class ColorProperty extends AEditableProperty {
           SwingUtilities.invokeLater(label::repaint);
         }
       }
-
-      @Override
-      public void mouseEntered(final MouseEvent e) {}
-
-      @Override
-      public void mouseExited(final MouseEvent e) {}
-
-      @Override
-      public void mousePressed(final MouseEvent e) {}
-
-      @Override
-      public void mouseReleased(final MouseEvent e) {}
     });
     return label;
   }

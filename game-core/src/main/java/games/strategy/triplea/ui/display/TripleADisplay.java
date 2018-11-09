@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -32,7 +32,7 @@ public class TripleADisplay implements ITripleADisplay {
   public void showBattle(final GUID battleId, final Territory location, final String battleTitle,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-      final Map<Unit, Collection<Unit>> unitDependents, final PlayerID attacker, final PlayerID defender,
+      final Map<Unit, Collection<Unit>> unitDependents, final PlayerId attacker, final PlayerId defender,
       final boolean isAmphibious, final BattleType battleType, final Collection<Unit> amphibiousLandAttackers) {
     ui.getBattlePanel().showBattle(battleId, location, attackingUnits, defendingUnits, killedUnits,
         attackingWaitingToDie, defendingWaitingToDie, attacker, defender, isAmphibious, battleType,
@@ -45,19 +45,19 @@ public class TripleADisplay implements ITripleADisplay {
   }
 
   @Override
-  public void casualtyNotification(final GUID battleId, final String step, final DiceRoll dice, final PlayerID player,
+  public void casualtyNotification(final GUID battleId, final String step, final DiceRoll dice, final PlayerId player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     ui.getBattlePanel().casualtyNotification(step, dice, player, killed, damaged, dependents);
   }
 
   @Override
-  public void deadUnitNotification(final GUID battleId, final PlayerID player, final Collection<Unit> killed,
+  public void deadUnitNotification(final GUID battleId, final PlayerId player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     ui.getBattlePanel().deadUnitNotification(player, killed, dependents);
   }
 
   @Override
-  public void changedUnitsNotification(final GUID battleId, final PlayerID player, final Collection<Unit> removedUnits,
+  public void changedUnitsNotification(final GUID battleId, final PlayerId player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents) {
     ui.getBattlePanel().changedUnitsNotification(player, removedUnits, addedUnits);
   }
@@ -74,7 +74,7 @@ public class TripleADisplay implements ITripleADisplay {
 
   @Override
   public void notifyRetreat(final String shortMessage, final String message, final String step,
-      final PlayerID retreatingPlayer) {
+      final PlayerId retreatingPlayer) {
     // we just told the game to retreat, so we already know
     if (ui.getLocalPlayers().playing(retreatingPlayer)) {
       return;
@@ -134,20 +134,20 @@ public class TripleADisplay implements ITripleADisplay {
   }
 
   @Override
-  public void reportMessageToPlayers(final Collection<PlayerID> playersToSendTo,
-      final Collection<PlayerID> butNotThesePlayers, final String message, final String title) {
+  public void reportMessageToPlayers(final Collection<PlayerId> playersToSendTo,
+      final Collection<PlayerId> butNotThesePlayers, final String message, final String title) {
     if (playersToSendTo == null || playersToSendTo.isEmpty()) {
       return;
     }
     if (butNotThesePlayers != null) {
-      for (final PlayerID p : butNotThesePlayers) {
+      for (final PlayerId p : butNotThesePlayers) {
         if (ui.getLocalPlayers().playing(p)) {
           return;
         }
       }
     }
     boolean isPlaying = false;
-    for (final PlayerID p : playersToSendTo) {
+    for (final PlayerId p : playersToSendTo) {
       if (ui.getLocalPlayers().playing(p)) {
         isPlaying = true;
         break;

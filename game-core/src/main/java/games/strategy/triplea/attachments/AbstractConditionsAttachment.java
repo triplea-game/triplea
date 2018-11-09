@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -22,7 +23,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -65,9 +66,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     if (this.conditions == null) {
       this.conditions = new ArrayList<>();
     }
-    final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
+    final Collection<PlayerId> playerIds = getData().getPlayerList().getPlayers();
     for (final String subString : splitOnColon(conditions)) {
-      this.conditions.add(playerIDs.stream()
+      this.conditions.add(playerIds.stream()
           .map(p -> p.getAttachment(subString))
           .map(RulesAttachment.class::cast)
           .filter(Objects::nonNull)
@@ -143,9 +144,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
   public boolean isSatisfied(
       final Map<ICondition, Boolean> testedConditions,
       final IDelegateBridge delegateBridge) {
-    if (testedConditions == null) {
-      throw new IllegalStateException("testedCondititions cannot be null");
-    }
+    checkNotNull(testedConditions);
+
     if (testedConditions.containsKey(this)) {
       return testedConditions.get(this);
     }
@@ -159,9 +159,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * conditions and contained
    * conditions to get the final list.
    */
-  public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions,
-      final HashSet<ICondition> initialAllConditionsNeededSoFar) {
-    final HashSet<ICondition> allConditionsNeededSoFar = Optional.ofNullable(initialAllConditionsNeededSoFar)
+  public static Set<ICondition> getAllConditionsRecursive(final Set<ICondition> startingListOfConditions,
+      final Set<ICondition> initialAllConditionsNeededSoFar) {
+    final Set<ICondition> allConditionsNeededSoFar = Optional.ofNullable(initialAllConditionsNeededSoFar)
         .orElseGet(HashSet::new);
     allConditionsNeededSoFar.addAll(startingListOfConditions);
     for (final ICondition condition : startingListOfConditions) {
@@ -180,9 +180,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
    * one to their boolean
    * value.
    */
-  public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules,
-      final HashMap<ICondition, Boolean> initialAllConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
-    final HashMap<ICondition, Boolean> allConditionsTestedSoFar = Optional.ofNullable(initialAllConditionsTestedSoFar)
+  public static Map<ICondition, Boolean> testAllConditionsRecursive(final Set<ICondition> rules,
+      final Map<ICondition, Boolean> initialAllConditionsTestedSoFar, final IDelegateBridge delegateBridge) {
+    final Map<ICondition, Boolean> allConditionsTestedSoFar = Optional.ofNullable(initialAllConditionsTestedSoFar)
         .orElseGet(HashMap::new);
     for (final ICondition c : rules) {
       if (!allConditionsTestedSoFar.containsKey(c)) {

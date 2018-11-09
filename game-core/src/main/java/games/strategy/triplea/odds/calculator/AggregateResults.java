@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.oddsCalculator.ta.BattleResults;
+import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -87,7 +87,7 @@ public class AggregateResults {
     return Tuple.of(attackerTuv / results.size(), defenderTuv / results.size());
   }
 
-  public double getAverageTuvSwing(final PlayerID attacker, final Collection<Unit> attackers, final PlayerID defender,
+  public double getAverageTuvSwing(final PlayerId attacker, final Collection<Unit> attackers, final PlayerId defender,
       final Collection<Unit> defenders, final GameData data) {
     if (results.isEmpty()) {
       return 0.0;

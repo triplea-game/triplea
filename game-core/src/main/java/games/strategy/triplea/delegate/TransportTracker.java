@@ -3,7 +3,9 @@ package games.strategy.triplea.delegate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -58,18 +60,33 @@ public class TransportTracker {
    * Returns a map of transport -> collection of transported units.
    */
   public static Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units) {
+    return transporting(units, TransportTracker::transporting);
+  }
+
+  private static Map<Unit, Collection<Unit>> transporting(
+      final Collection<Unit> units,
+      final Function<Unit, Collection<Unit>> getUnitsTransportedByTransport) {
     final Map<Unit, Collection<Unit>> returnVal = new HashMap<>();
     for (final Unit transported : units) {
       final Unit transport = transportedBy(transported);
       Collection<Unit> transporting = null;
       if (transport != null) {
-        transporting = transporting(transport);
+        transporting = getUnitsTransportedByTransport.apply(transport);
       }
       if (transporting != null) {
         returnVal.put(transport, transporting);
       }
     }
     return returnVal;
+  }
+
+  /**
+   * Returns a map of transport -> collection of transported units.
+   * This method is identical to {@link #transporting(Collection)} except that it considers all elements in
+   * {@code units} as the possible units to transport (see {@link #transporting(Unit, Collection)}).
+   */
+  public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(final Collection<Unit> units) {
+    return transporting(units, transport -> transporting(transport, units));
   }
 
   public static boolean isTransporting(final Unit transport) {
@@ -108,7 +125,7 @@ public class TransportTracker {
     if (!transport.getTransporting().contains(unit)) {
       throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
     }
-    final ArrayList<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
+    final List<Unit> newUnloaded = new ArrayList<>(transport.getUnloaded());
     newUnloaded.add(unit);
     change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
     if (!GameStepPropertiesHelper.isNonCombatMove(unit.getData(), true)) {

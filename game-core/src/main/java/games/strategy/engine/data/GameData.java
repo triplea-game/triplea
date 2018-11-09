@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,10 +102,8 @@ public class GameData implements Serializable {
   private final TechnologyFrontier technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
-  private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues =
-      new ArrayList<>();
-  @SuppressWarnings("JdkObsolete") // change to HashMap upon next incompatible release
-  private final Map<String, TerritoryEffect> territoryEffectList = new Hashtable<>();
+  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues = new ArrayList<>();
+  private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
   /** Creates new GameData. */
@@ -382,11 +380,11 @@ public class GameData implements Serializable {
   }
 
   public void addToAttachmentOrderAndValues(
-      final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues) {
+      final Tuple<IAttachment, List<Tuple<String, String>>> attachmentAndValues) {
     attachmentOrderAndValues.add(attachmentAndValues);
   }
 
-  public List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> getAttachmentOrderAndValues() {
+  public List<Tuple<IAttachment, List<Tuple<String, String>>>> getAttachmentOrderAndValues() {
     return attachmentOrderAndValues;
   }
 
@@ -419,7 +417,7 @@ public class GameData implements Serializable {
    * For example, this method will remove player delegates for players who have been disabled.
    */
   public void doPreGameStartDataModifications(final PlayerListing playerListing) {
-    final Set<PlayerID> playersWhoShouldBeRemoved = new HashSet<>();
+    final Set<PlayerId> playersWhoShouldBeRemoved = new HashSet<>();
     final Map<String, Boolean> playersEnabledListing = playerListing.getPlayersEnabledListing();
     playerList.getPlayers().stream()
         .filter(p -> (p.getCanBeDisabled() && !playersEnabledListing.get(p.getName())))
@@ -432,7 +430,7 @@ public class GameData implements Serializable {
     }
   }
 
-  private void removePlayerStepsFromSequence(final Set<PlayerID> playersWhoShouldBeRemoved) {
+  private void removePlayerStepsFromSequence(final Set<PlayerId> playersWhoShouldBeRemoved) {
     final int currentIndex = sequence.getStepIndex();
     int index = 0;
     int toSubtract = 0;

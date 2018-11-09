@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,7 +16,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -26,7 +25,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -47,7 +45,6 @@ import games.strategy.util.IntegerMap;
  * Subclasses can over ride addToPlayer(...) and removeFromPlayer(...) to change how
  * the adding or removing of resources is done.
  */
-@MapSupport
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
   private boolean needToInitialize = true;
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
@@ -67,11 +64,11 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
                 .or(TriggerAttachment.prodFrontierEditMatch())
                 .or(TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
-        final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+        final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
             new HashSet<>(Collections.singleton(player)), purchaseDelegateTriggerMatch);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.
-          final HashMap<ICondition, Boolean> testedConditions =
+          final Map<ICondition, Boolean> testedConditions =
               TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
           // get all triggers that are satisfied based on the tested conditions.
           final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
@@ -98,7 +95,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public Serializable saveState() {
     final PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -106,7 +103,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public void loadState(final Serializable state) {
     final PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   @Override
@@ -143,7 +140,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   /**
    * subclasses can over ride this method to use different restrictions as to what a player can buy.
    */
-  protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player) {
+  protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerId player) {
     return player.getResources().has(costs);
   }
 
@@ -308,7 +305,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   private IntegerMap<Resource> getRepairCosts(final Map<Unit, IntegerMap<RepairRule>> repairRules,
-      final PlayerID player) {
+      final PlayerId player) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
     for (final IntegerMap<RepairRule> map : repairRules.values()) {
       for (final RepairRule rule : map.keySet()) {

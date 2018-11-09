@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -14,7 +15,8 @@ import games.strategy.triplea.attachments.RelationshipTypeAttachment;
  */
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
-  private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<>();
+
+  private final Map<String, RelationshipType> relationshipTypes = new HashMap<>();
 
   /**
    * Convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself).
@@ -85,7 +87,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    */
   @VisibleForTesting
   public RelationshipType addRelationshipType(final RelationshipType relationshipType) {
-    m_relationshipTypes.put(relationshipType.getName(), relationshipType);
+    relationshipTypes.put(relationshipType.getName(), relationshipType);
     return relationshipType;
   }
 
@@ -96,12 +98,12 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    * @return RelationshipType with this name
    */
   public RelationshipType getRelationshipType(final String name) {
-    return m_relationshipTypes.get(name);
+    return relationshipTypes.get(name);
   }
 
   @Override
   public Iterator<RelationshipType> iterator() {
-    return m_relationshipTypes.values().iterator();
+    return relationshipTypes.values().iterator();
   }
 
   public RelationshipType getDefaultAlliedRelationship() {
@@ -113,6 +115,6 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   public Collection<RelationshipType> getAllRelationshipTypes() {
-    return m_relationshipTypes.values();
+    return relationshipTypes.values();
   }
 }

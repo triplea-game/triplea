@@ -3,7 +3,7 @@ package games.strategy.engine.stats;
 import java.text.NumberFormat;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 
 /**
  * A game statistic, such as total resources, total unit value, etc. Statistics can be obtained per player or for all
@@ -12,7 +12,7 @@ import games.strategy.engine.data.PlayerID;
 public interface IStat {
   String getName();
 
-  double getValue(PlayerID player, GameData data);
+  double getValue(PlayerId player, GameData data);
 
   double getValue(String alliance, GameData data);
 

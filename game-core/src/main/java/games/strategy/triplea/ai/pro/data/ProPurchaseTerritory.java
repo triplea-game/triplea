@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.pro.util.ProMatches;
@@ -24,7 +24,7 @@ public class ProPurchaseTerritory {
   @Getter
   private final List<ProPlaceTerritory> canPlaceTerritories;
 
-  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
+  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerId player,
       final int unitProduction) {
     this(territory, data, player, unitProduction, false);
   }
@@ -38,7 +38,7 @@ public class ProPurchaseTerritory {
    * @param unitProduction - max unit production for territory
    * @param isBid - true when bid phase, false when normal purchase phase
    */
-  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerID player,
+  public ProPurchaseTerritory(final Territory territory, final GameData data, final PlayerId player,
       final int unitProduction, final boolean isBid) {
     this.territory = territory;
     this.unitProduction = unitProduction;

@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -23,7 +23,7 @@ import games.strategy.util.IntegerMap;
 class EditProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 5826523459539469173L;
 
-  static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
+  static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
       final UiContext uiContext) {
     return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<>());
   }
@@ -40,7 +40,7 @@ class EditProductionPanel extends ProductionPanel {
   }
 
   @Override
-  protected void initRules(final PlayerID player, final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
       id = player;

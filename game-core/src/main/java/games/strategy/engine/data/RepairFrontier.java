@@ -12,8 +12,9 @@ import java.util.List;
  */
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule> {
   private static final long serialVersionUID = -5148536624986056753L;
-  private final List<RepairRule> m_rules;
-  private List<RepairRule> m_cachedRules;
+
+  private final List<RepairRule> rules;
+  private List<RepairRule> cachedRules;
 
   public RepairFrontier(final String name, final GameData data) {
     this(name, data, Collections.emptyList());
@@ -24,22 +25,22 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 
     checkNotNull(rules);
 
-    m_rules = new ArrayList<>(rules);
+    this.rules = new ArrayList<>(rules);
   }
 
   void addRule(final RepairRule rule) {
-    if (m_rules.contains(rule)) {
+    if (rules.contains(rule)) {
       throw new IllegalStateException("Rule already added:" + rule);
     }
-    m_rules.add(rule);
-    m_cachedRules = null;
+    rules.add(rule);
+    cachedRules = null;
   }
 
   public List<RepairRule> getRules() {
-    if (m_cachedRules == null) {
-      m_cachedRules = Collections.unmodifiableList(m_rules);
+    if (cachedRules == null) {
+      cachedRules = Collections.unmodifiableList(rules);
     }
-    return m_cachedRules;
+    return cachedRules;
   }
 
   @Override

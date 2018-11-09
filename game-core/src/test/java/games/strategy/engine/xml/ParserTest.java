@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.data.DelegateList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.RelationshipTracker;
@@ -80,8 +80,8 @@ public class ParserTest {
   @Test
   public void testAllianceMade() {
     final PlayerList players = gameData.getPlayerList();
-    final PlayerID castro = players.getPlayerId("castro");
-    final PlayerID chretian = players.getPlayerId("chretian");
+    final PlayerId castro = players.getPlayerId("castro");
+    final PlayerId chretian = players.getPlayerId("chretian");
     final RelationshipTracker alliances = gameData.getRelationshipTracker();
     assertTrue(alliances.isAllied(castro, chretian));
   }
@@ -110,7 +110,7 @@ public class ParserTest {
   @Test
   public void testPlayerProduction() {
     final ProductionFrontier cf = gameData.getProductionFrontierList().getProductionFrontier("canProd");
-    final PlayerID can = gameData.getPlayerList().getPlayerId("chretian");
+    final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(cf, can.getProductionFrontier());
   }
 
@@ -141,7 +141,7 @@ public class ParserTest {
 
   @Test
   public void testUnitsHeldInitialized() {
-    final PlayerID bush = gameData.getPlayerList().getPlayerId("bush");
+    final PlayerId bush = gameData.getPlayerList().getPlayerId("bush");
     assertEquals(20, bush.getUnits().getUnitCount());
   }
 
@@ -153,7 +153,7 @@ public class ParserTest {
 
   @Test
   public void testResourcesGiven() {
-    final PlayerID chretian = gameData.getPlayerList().getPlayerId("chretian");
+    final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
     final Resource resource = gameData.getResourceList().getResource("silver");
     assertEquals(200, chretian.getResources().getQuantity(resource));
   }

@@ -10,7 +10,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
@@ -69,14 +69,14 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
    */
   public static ICondition getCondition(final String playerName, final String conditionName,
       final GameData data) {
-    final PlayerID player = data.getPlayerList().getPlayerId(playerName);
+    final PlayerId player = data.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
       log.log(Level.SEVERE,
           "When trying to find condition: " + conditionName + ", player does not exist: " + playerName);
       return null;
     }
-    final Collection<PlayerID> allPlayers = data.getPlayerList().getPlayers();
+    final Collection<PlayerId> allPlayers = data.getPlayerList().getPlayers();
     final ICondition attachment;
     try {
       if (conditionName.contains(Constants.RULES_OBJECTIVE_PREFIX)

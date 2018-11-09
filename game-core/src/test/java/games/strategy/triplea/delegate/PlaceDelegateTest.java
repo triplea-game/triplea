@@ -10,13 +10,13 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.util.IntegerMap;
 
@@ -24,7 +24,7 @@ public class PlaceDelegateTest extends AbstractDelegateTestCase {
   protected PlaceDelegate delegate;
   protected IDelegateBridge bridge;
 
-  private Collection<Unit> getInfantry(final int count, final PlayerID player) {
+  private Collection<Unit> getInfantry(final int count, final PlayerId player) {
     return gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY).create(count, player);
   }
 

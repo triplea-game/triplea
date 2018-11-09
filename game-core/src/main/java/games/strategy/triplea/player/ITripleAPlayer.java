@@ -1,20 +1,19 @@
 package games.strategy.triplea.player;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.gamePlayer.IRemotePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
@@ -44,7 +43,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @return CasualtyDetails
    */
   CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count,
-      String message, DiceRoll dice, PlayerID hit, Collection<Unit> friendlyUnits, PlayerID enemyPlayer,
+      String message, DiceRoll dice, PlayerId hit, Collection<Unit> friendlyUnits, PlayerId enemyPlayer,
       Collection<Unit> enemyUnits, boolean amphibious, Collection<Unit> amphibiousLandAttackers,
       CasualtyList defaultCasualties, GUID battleId, Territory battlesite, boolean allowMultipleHitsPerUnit);
 
@@ -189,7 +188,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    *        from that location
    * @return a list of units to scramble mapped to where they are coming from
    */
-  HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo,
+  Map<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo,
       Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers);
 
   /**
@@ -200,7 +199,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   /**
    * Allows the user to pause and confirm enemy casualties.
    */
-  void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer);
+  void confirmEnemyCasualties(GUID battleId, String message, PlayerId hitPlayer);
 
   void confirmOwnCasualties(GUID battleId, String message);
 
@@ -211,13 +210,13 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @param politics is this from politics delegate?
    * @return whether the player accepts the action proposal
    */
-  boolean acceptAction(PlayerID playerSendingProposal, String acceptanceQuestion, boolean politics);
+  boolean acceptAction(PlayerId playerSendingProposal, String acceptanceQuestion, boolean politics);
 
   /**
    * Asks the player if they wish to perform any kamikaze suicide attacks.
    */
-  HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
-      HashMap<Territory, Collection<Unit>> possibleUnitsToAttack);
+  Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+      Map<Territory, Collection<Unit>> possibleUnitsToAttack);
 
   /**
    * Used during the RandomStartDelegate for assigning territories to players, and units to territories.

@@ -739,9 +739,9 @@
     <br>
     <br>
 - mapName: Iron War
-  mapCategory: EXPERIMENTAL
+  mapCategory: GOOD
   url: https://github.com/triplea-maps/iron_war/archive/master.zip
-  version: 17
+  version: 18
   img: https://raw.githubusercontent.com/triplea-maps/iron_war/master/description/MapThumbnail.png
   description: |
     <br><b><em>by Frostion</em></b>
@@ -757,7 +757,7 @@
     <br>
     <br>
 - mapName: Iron War Europe
-  mapCategory: EXPERIMENTAL
+  mapCategory: GOOD
   url: https://github.com/triplea-maps/iron_war_europe/archive/master.zip
   version: 3
   img: https://raw.githubusercontent.com/triplea-maps/iron_war_europe/master/description/MapThumbnail.png

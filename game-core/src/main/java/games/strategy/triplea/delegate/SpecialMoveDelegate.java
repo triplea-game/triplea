@@ -12,19 +12,18 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
@@ -38,7 +37,6 @@ import games.strategy.util.IntegerMap;
  * airbase) to another
  * territory, instead of carrying them.
  */
-@MapSupport
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean needToInitialize = true;
 
@@ -76,7 +74,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public Serializable saveState() {
     final SpecialMoveExtendedDelegateState state = new SpecialMoveExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -84,7 +82,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   public void loadState(final Serializable state) {
     final SpecialMoveExtendedDelegateState s = (SpecialMoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   @Override
@@ -101,7 +99,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final GameData data = getData();
     // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current
     // player.
-    final PlayerID player = getUnitsOwner(units);
+    final PlayerId player = getUnitsOwner(units);
     // here we have our own new validation method....
     final MoveValidationResult result = validateMove(units, route, player, data);
     final StringBuilder errorMsg = new StringBuilder(100);
@@ -118,7 +116,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
     }
     // allow user to cancel move if aa guns will fire
-    final AAInMoveUtil aaInMoveUtil = new AAInMoveUtil();
+    final AaInMoveUtil aaInMoveUtil = new AaInMoveUtil();
     aaInMoveUtil.initialize(bridge);
     final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
@@ -159,7 +157,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
-      final PlayerID player, final GameData data) {
+      final PlayerId player, final GameData data) {
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
@@ -184,7 +182,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static MoveValidationResult validateAirborneMovements(final GameData data, final Collection<Unit> units,
-      final Route route, final PlayerID player, final MoveValidationResult result) {
+      final Route route, final PlayerId player, final MoveValidationResult result) {
     if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
       return result.setErrorReturnResult("Do Not Have Airborne Tech");
     }
@@ -197,7 +195,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     if (route.numberOfSteps() > airborneDistance) {
       return result.setErrorReturnResult("Destination Is Out Of Range");
     }
-    final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
+    final Collection<PlayerId> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
     final Predicate<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
     final Territory start = route.getStart();
     final Territory end = route.getEnd();
@@ -280,12 +278,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return result;
   }
 
-  private static Predicate<Unit> getAirborneBaseMatch(final PlayerID player, final GameData data) {
+  private static Predicate<Unit> getAirborneBaseMatch(final PlayerId player, final GameData data) {
     return getAirborneMatch(TechAbilityAttachment.getAirborneBases(player, data),
         data.getRelationshipTracker().getAllies(player, true));
   }
 
-  private static Predicate<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerID> unitOwners) {
+  private static Predicate<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerId> unitOwners) {
     return Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners)
         .and(Matches.unitIsOfTypes(types))
         .and(Matches.unitIsNotDisabled())
@@ -296,7 +294,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private static Change getNewAssignmentOfNumberLaunchedChange(
       final int initialNewNumberLaunched,
       final Collection<Unit> bases,
-      final PlayerID player,
+      final PlayerId player,
       final GameData data) {
     final CompositeChange launchedChange = new CompositeChange();
     int newNumberLaunched = initialNewNumberLaunched;
@@ -320,7 +318,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return launchedChange;
   }
 
-  private static boolean allowAirborne(final PlayerID player, final GameData data) {
+  private static boolean allowAirborne(final PlayerId player, final GameData data) {
     if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
       return false;
     }
@@ -331,7 +329,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return false;
     }
     final GameMap map = data.getMap();
-    final Collection<PlayerID> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
+    final Collection<PlayerId> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
     final Collection<Territory> territoriesWeCanLaunchFrom = CollectionUtils.getMatches(map.getTerritories(),
         Matches.territoryHasUnitsThatMatch(getAirborneMatch(airborneBases, alliesForBases)));
 

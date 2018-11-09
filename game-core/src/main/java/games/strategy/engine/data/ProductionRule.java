@@ -10,8 +10,9 @@ import games.strategy.util.IntegerMap;
  */
 public class ProductionRule extends DefaultNamed {
   private static final long serialVersionUID = -6598296283127741307L;
-  private IntegerMap<Resource> m_cost = new IntegerMap<>();
-  private IntegerMap<NamedAttachable> m_results = new IntegerMap<>();
+
+  private IntegerMap<Resource> costs = new IntegerMap<>();
+  private IntegerMap<NamedAttachable> results = new IntegerMap<>();
 
   /** Creates new ProductionRule. */
   public ProductionRule(final String name, final GameData data) {
@@ -22,12 +23,12 @@ public class ProductionRule extends DefaultNamed {
   public ProductionRule(final String name, final GameData data, final IntegerMap<NamedAttachable> results,
       final IntegerMap<Resource> costs) {
     super(name, data);
-    m_results = results;
-    m_cost = costs;
+    this.results = results;
+    this.costs = costs;
   }
 
   protected void addCost(final Resource resource, final int quantity) {
-    m_cost.put(resource, quantity);
+    costs.put(resource, quantity);
   }
 
   /**
@@ -37,15 +38,15 @@ public class ProductionRule extends DefaultNamed {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
       throw new IllegalArgumentException("results must be units or resources, not:" + obj.getClass().getName());
     }
-    m_results.put(obj, quantity);
+    results.put(obj, quantity);
   }
 
   public IntegerMap<Resource> getCosts() {
-    return new IntegerMap<>(m_cost);
+    return new IntegerMap<>(costs);
   }
 
   public IntegerMap<NamedAttachable> getResults() {
-    return m_results;
+    return results;
   }
 
   @Override
@@ -67,12 +68,12 @@ public class ProductionRule extends DefaultNamed {
     } finally {
       getData().releaseReadLock();
     }
-    if (m_cost.getInt(pus) != 0) {
+    if (costs.getInt(pus) != 0) {
       sb.append("; ");
-      sb.append(m_cost.getInt(pus));
+      sb.append(costs.getInt(pus));
       sb.append(" ").append(pus.getName());
     }
-    for (final Entry<Resource, Integer> entry : m_cost.entrySet()) {
+    for (final Entry<Resource, Integer> entry : costs.entrySet()) {
       final Resource r = entry.getKey();
       if (r.equals(pus)) {
         continue;

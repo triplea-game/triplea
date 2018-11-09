@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
@@ -26,5 +26,5 @@ public final class FakeTechAdvance extends TechAdvance {
   }
 
   @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {}
+  public void perform(final PlayerId id, final IDelegateBridge bridge) {}
 }

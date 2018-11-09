@@ -9,26 +9,27 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.dataObjects.AbstractMoveDescription;
+import games.strategy.triplea.delegate.data.AbstractMoveDescription;
 
 /**
  * Contains all the data to describe an abstract move (move or placement) and to undo it.
  */
 public abstract class AbstractUndoableMove implements Serializable {
   private static final long serialVersionUID = -3164832285286161069L;
+
   /**
    * Stores the serialized state of the move and battle delegates (just
    * as if they were saved), and a CompositeChange that represents all the changes that
    * were made during the move.
    * Some moves (such as those following an aa fire) can't be undone.
    */
-  protected final CompositeChange m_change;
-  protected int m_index;
-  protected final Collection<Unit> m_units;
+  protected final CompositeChange change;
+  protected int index;
+  protected final Collection<Unit> units;
 
   public AbstractUndoableMove(final CompositeChange change, final Collection<Unit> units) {
-    m_change = change;
-    m_units = units;
+    this.change = change;
+    this.units = units;
   }
 
   public boolean containsAnyOf(final Set<Unit> units) {
@@ -44,33 +45,33 @@ public abstract class AbstractUndoableMove implements Serializable {
   }
 
   private boolean containsUnit(final Unit unit) {
-    return m_units.contains(unit);
+    return units.contains(unit);
   }
 
   final void undo(final IDelegateBridge delegateBridge) {
     // undo any changes to the game data
     delegateBridge.getHistoryWriter().startEvent(
         delegateBridge.getPlayerId().getName() + " undo move " + (getIndex() + 1) + ".", getDescriptionObject());
-    delegateBridge.addChange(m_change.invert());
+    delegateBridge.addChange(change.invert());
     undoSpecific(delegateBridge);
   }
 
   protected abstract void undoSpecific(IDelegateBridge bridge);
 
   public final void addChange(final Change change) {
-    m_change.add(change);
+    this.change.add(change);
   }
 
   public Collection<Unit> getUnits() {
-    return m_units;
+    return units;
   }
 
   public int getIndex() {
-    return m_index;
+    return index;
   }
 
   public void setIndex(final int index) {
-    m_index = index;
+    this.index = index;
   }
 
   public abstract String getMoveLabel();

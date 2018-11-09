@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +10,8 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -40,8 +38,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // how many times can you perform this action each round?
   protected int attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment).
   protected int attemptsLeftThisTurn = 1;
   // which players should accept this action? this could be the player who is the target of this action in the case of
   // proposing a treaty or
@@ -49,7 +45,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
   // well. it is good to
   // set "actionAccept" to "UK" so UK can accept this action to go through.
-  protected List<PlayerID> actionAccept = new ArrayList<>();
+  protected List<PlayerId> actionAccept = new ArrayList<>();
 
   protected AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -58,7 +54,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   /**
    * Indicates there is no condition to this action or if the condition is satisfied.
    */
-  public boolean canPerform(final HashMap<ICondition, Boolean> testedConditions) {
+  public boolean canPerform(final Map<ICondition, Boolean> testedConditions) {
     return conditions == null || isSatisfied(testedConditions);
   }
 
@@ -128,7 +124,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   private void setActionAccept(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         actionAccept.add(tempPlayer);
       } else {
@@ -137,14 +133,14 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     }
   }
 
-  private void setActionAccept(final List<PlayerID> value) {
+  private void setActionAccept(final List<PlayerId> value) {
     actionAccept = value;
   }
 
   /**
    * Returns a list of players that must accept this action before it takes effect.
    */
-  public List<PlayerID> getActionAccept() {
+  public List<PlayerId> getActionAccept() {
     return actionAccept;
   }
 

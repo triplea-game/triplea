@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.ProData;
@@ -46,7 +46,7 @@ public class ProSortMoveOptionsUtils {
     return sortedUnitAttackOptions;
   }
 
-  public static Map<Unit, Set<Territory>> sortUnitNeededOptions(final PlayerID player,
+  public static Map<Unit, Set<Territory>> sortUnitNeededOptions(final PlayerId player,
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap,
       final ProOddsCalculator calc) {
     final GameData data = ProData.getData();
@@ -95,7 +95,7 @@ public class ProSortMoveOptionsUtils {
     return sortedUnitAttackOptions;
   }
 
-  public static Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerID player,
+  public static Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerId player,
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap,
       final Map<Unit, Territory> unitTerritoryMap, final ProOddsCalculator calc) {
     final GameData data = ProData.getData();

@@ -37,6 +37,7 @@ import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.network.ui.ChangeGameOptionsClientAction;
 import games.strategy.engine.framework.network.ui.ChangeGameToSaveGameClientAction;
@@ -47,15 +48,14 @@ import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.io.IoUtils;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
@@ -450,7 +450,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotChangeToAutosaveClientAction(final Component parent,
-      final SaveGameFileChooser.AUTOSAVE_TYPE autosaveType) {
+      final HeadlessAutoSaveType autosaveType) {
     return new ChangeToAutosaveClientAction(parent, getMessenger(), autosaveType);
   }
 

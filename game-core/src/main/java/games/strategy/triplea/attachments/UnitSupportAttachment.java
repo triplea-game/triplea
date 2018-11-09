@@ -17,33 +17,24 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 
-@MapSupport
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
 
   private Set<UnitType> unitType = null;
-  @InternalDoNotExport
   private boolean offence = false;
-  @InternalDoNotExport
   private boolean defence = false;
-  @InternalDoNotExport
   private boolean roll = false;
-  @InternalDoNotExport
   private boolean strength = false;
   private int bonus = 0;
   private int number = 0;
-  @InternalDoNotExport
   private boolean allied = false;
-  @InternalDoNotExport
   private boolean enemy = false;
   private String bonusType = null;
-  private List<PlayerID> players = new ArrayList<>();
+  private List<PlayerId> players = new ArrayList<>();
   private boolean impArtTech = false;
   // strings
   // roll or strength
@@ -223,7 +214,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private void setPlayers(final String names) throws GameParseException {
     final String[] s = splitOnColon(names);
     for (final String element : s) {
-      final PlayerID player = getData().getPlayerList().getPlayerId(element);
+      final PlayerId player = getData().getPlayerList().getPlayerId(element);
       if (player == null) {
         throw new GameParseException("Could not find player. name:" + element + thisErrorMsg());
       }
@@ -231,11 +222,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private void setPlayers(final List<PlayerID> value) {
+  private void setPlayers(final List<PlayerId> value) {
     players = value;
   }
 
-  public List<PlayerID> getPlayers() {
+  public List<PlayerId> getPlayers() {
     return players;
   }
 
@@ -304,7 +295,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
    * boolean first is a cheat, adds a bogus support to a unit
    * in the case that supportable units are declared before any artillery
    */
-  @InternalDoNotExport
   static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException {
     final String attachmentName =
         (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD) + type.getName();
@@ -323,7 +313,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     type.addAttachment(attachmentName, rule);
   }
 
-  @InternalDoNotExport
   private static Set<UnitType> getTargets(final GameData data) {
     Set<UnitType> types = null;
     for (final UnitSupportAttachment rule : get(data)) {
@@ -340,7 +329,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     return types;
   }
 
-  @InternalDoNotExport
   private void addUnitTypes(final Set<UnitType> types) {
     if (types == null) {
       return;
@@ -351,7 +339,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     unitType.addAll(types);
   }
 
-  @InternalDoNotExport
   static void setOldSupportCount(final UnitType type, final GameData data, final String count) {
     for (final UnitSupportAttachment rule : get(data)) {
       if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttachedTo() == type) {
@@ -360,7 +347,6 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  @InternalDoNotExport
   static void addTarget(final UnitType type, final GameData data) throws GameParseException {
     boolean first = true;
     for (final UnitSupportAttachment rule : get(data)) {

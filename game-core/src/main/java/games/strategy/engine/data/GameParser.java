@@ -255,7 +255,7 @@ public final class GameParser {
     for (final Resource r : data.getResourceList().getResources()) {
       validateAttachments(r);
     }
-    for (final PlayerID r : data.getPlayerList().getPlayers()) {
+    for (final PlayerId r : data.getPlayerList().getPlayers()) {
       validateAttachments(r);
     }
     for (final RelationshipType r : data.getRelationshipTypeList().getAllRelationshipTypes()) {
@@ -273,9 +273,9 @@ public final class GameParser {
 
   private void validateRelationships() throws GameParseException {
     // for every player
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       // in relation to every player
-      for (final PlayerID player2 : data.getPlayerList()) {
+      for (final PlayerId player2 : data.getPlayerList()) {
         // See if there is a relationship between them
         if ((data.getRelationshipTracker().getRelationshipType(player, player2) == null)) {
           // or else throw an exception!
@@ -340,7 +340,7 @@ public final class GameParser {
   /**
    * If mustfind is true and cannot find the player an exception will be thrown.
    */
-  private PlayerID getPlayerId(final Element element, final String attribute, final boolean mustFind)
+  private PlayerId getPlayerId(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
     return getValidatedObject(element, attribute, mustFind, data.getPlayerList()::getPlayerId, "player");
   }
@@ -583,7 +583,7 @@ public final class GameParser {
       for (int y = 0; y < sizeY; y++) {
         for (int x = 0; x < sizeX; x++) {
           final boolean isWater = water.contains(x + "-" + y);
-          map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
+          map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data));
         }
       }
       // Add any implicit horizontal connections
@@ -625,7 +625,7 @@ public final class GameParser {
         for (int x = 0; x < sizeX; x++) {
           if (!water.contains(x + "-" + y)) {
             final boolean isWater = false;
-            map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data, x, y));
+            map.addTerritory(new Territory(name + "_" + x + "_" + y, isWater, data));
           }
         }
       }
@@ -728,10 +728,10 @@ public final class GameParser {
   }
 
   @VisibleForTesting
-  List<PlayerID> parsePlayersFromIsDisplayedFor(final String encodedPlayerNames) throws GameParseException {
-    final List<PlayerID> players = new ArrayList<>();
+  List<PlayerId> parsePlayersFromIsDisplayedFor(final String encodedPlayerNames) throws GameParseException {
+    final List<PlayerId> players = new ArrayList<>();
     for (final String playerName : Splitter.on(':').split(encodedPlayerNames)) {
-      final @Nullable PlayerID player = data.getPlayerList().getPlayerId(playerName);
+      final @Nullable PlayerId player = data.getPlayerList().getPlayerId(playerName);
       if (player == null) {
         throw newGameParseException("Parse resources could not find player: " + playerName);
       }
@@ -770,16 +770,16 @@ public final class GameParser {
       final boolean canBeDisabled = current.getAttribute("canBeDisabled").equals("true");
       final String defaultType = current.getAttribute("defaultType");
       final boolean isHidden = current.getAttribute("isHidden").equals("true");
-      final PlayerID newPlayer = new PlayerID(name, isOptional, canBeDisabled, defaultType, isHidden, data);
+      final PlayerId newPlayer = new PlayerId(name, isOptional, canBeDisabled, defaultType, isHidden, data);
       playerList.addPlayerId(newPlayer);
     }
   }
 
   private void parseAlliances(final Element root) throws GameParseException {
     final AllianceTracker allianceTracker = data.getAllianceTracker();
-    final Collection<PlayerID> players = data.getPlayerList().getPlayers();
+    final Collection<PlayerId> players = data.getPlayerList().getPlayers();
     for (final Element current : getChildren("alliance", root)) {
-      final PlayerID p1 = getPlayerId(current, "player", true);
+      final PlayerId p1 = getPlayerId(current, "player", true);
       final String alliance = current.getAttribute("alliance");
       allianceTracker.addToAlliance(p1, alliance);
     }
@@ -788,11 +788,11 @@ public final class GameParser {
       final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
       final RelationshipTypeList relationshipTypeList = data.getRelationshipTypeList();
       // iterate through all players to get known allies and enemies
-      for (final PlayerID currentPlayer : players) {
+      for (final PlayerId currentPlayer : players) {
         // start with all players as enemies
         // start with no players as allies
-        final Set<PlayerID> allies = allianceTracker.getAllies(currentPlayer);
-        final Set<PlayerID> enemies = new HashSet<>(players);
+        final Set<PlayerId> allies = allianceTracker.getAllies(currentPlayer);
+        final Set<PlayerId> enemies = new HashSet<>(players);
         enemies.removeAll(allies);
 
         // remove self from enemieslist (in case of free-for-all)
@@ -800,11 +800,11 @@ public final class GameParser {
         // remove self from allieslist (in case you are a member of an alliance)
         allies.remove(currentPlayer);
         // At this point enemies and allies should be set for this player.
-        for (final PlayerID alliedPLayer : allies) {
+        for (final PlayerId alliedPLayer : allies) {
           relationshipTracker.setRelationship(currentPlayer, alliedPLayer,
               relationshipTypeList.getDefaultAlliedRelationship());
         }
-        for (final PlayerID enemyPlayer : enemies) {
+        for (final PlayerId enemyPlayer : enemies) {
           relationshipTracker.setRelationship(currentPlayer, enemyPlayer,
               relationshipTypeList.getDefaultWarRelationship());
         }
@@ -816,8 +816,8 @@ public final class GameParser {
     if (relations.size() > 0) {
       final RelationshipTracker tracker = data.getRelationshipTracker();
       for (final Element current : relations) {
-        final PlayerID p1 = getPlayerId(current, "player1", true);
-        final PlayerID p2 = getPlayerId(current, "player2", true);
+        final PlayerId p1 = getPlayerId(current, "player1", true);
+        final PlayerId p2 = getPlayerId(current, "player2", true);
         final RelationshipType r = getRelationshipType(current, "type", true);
         final int roundValue = Integer.valueOf(current.getAttribute("roundValue"));
         tracker.setRelationship(p1, p2, r, roundValue);
@@ -906,7 +906,7 @@ public final class GameParser {
     }
     final Element child = (Element) children.get(0);
     final String childName = child.getNodeName();
-    final IEditableProperty editableProperty;
+    final IEditableProperty<?> editableProperty;
     switch (childName) {
       case "boolean":
         editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue));
@@ -977,7 +977,7 @@ public final class GameParser {
   private void parseSteps(final List<Element> stepList) throws GameParseException {
     for (final Element current : stepList) {
       final IDelegate delegate = getDelegate(current, "delegate", true);
-      final PlayerID player = getPlayerId(current, "player", false);
+      final PlayerId player = getPlayerId(current, "player", false);
       final String name = current.getAttribute("name");
       String displayName = null;
       final List<Element> propertyElements = getChildren("stepProperty", current);
@@ -1119,7 +1119,7 @@ public final class GameParser {
 
   private void parsePlayerTech(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final PlayerID player = getPlayerId(current, "player", true);
+      final PlayerId player = getPlayerId(current, "player", true);
       final TechnologyFrontierList categories = player.getTechnologyFrontierList();
       parseCategories(getChildren("category", current), categories);
     }
@@ -1146,7 +1146,7 @@ public final class GameParser {
 
   private void parsePlayerProduction(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final PlayerID player = getPlayerId(current, "player", true);
+      final PlayerId player = getPlayerId(current, "player", true);
       final ProductionFrontier frontier = getProductionFrontier(current, "frontier", true);
       player.setProductionFrontier(frontier);
     }
@@ -1154,7 +1154,7 @@ public final class GameParser {
 
   private void parsePlayerRepair(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final PlayerID player = getPlayerId(current, "player", true);
+      final PlayerId player = getPlayerId(current, "player", true);
       final RepairFrontier repairFrontier = getRepairFrontier(current, "frontier", true);
       player.setRepairFrontier(repairFrontier);
     }
@@ -1216,7 +1216,7 @@ public final class GameParser {
           .orElseThrow(() -> newGameParseException("Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
 
-      final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
+      final List<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
       // keep a list of attachment references in the order they were added
       data.addToAttachmentOrderAndValues(Tuple.of(attachment, attachmentOptionValues));
     }
@@ -1244,9 +1244,9 @@ public final class GameParser {
     }
   }
 
-  private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
+  private List<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values)
       throws GameParseException {
-    final ArrayList<Tuple<String, String>> options = new ArrayList<>();
+    final List<Tuple<String, String>> options = new ArrayList<>();
     for (final Element current : values) {
       // decapitalize the property name for backwards compatibility
       final String name = decapitalize(current.getAttribute("name"));
@@ -1307,7 +1307,7 @@ public final class GameParser {
   private void parseOwner(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
       final Territory territory = getTerritory(current, "territory", true);
-      final PlayerID owner = getPlayerId(current, "owner", true);
+      final PlayerId owner = getPlayerId(current, "owner", true);
       territory.setOwner(owner);
       // Set the original owner on startup.
       // TODO Look into this
@@ -1323,7 +1323,7 @@ public final class GameParser {
           // occupiedTerrOf),
           // then we DO NOT set the original owner again.
           // This is how we can have a game start with territories owned by 1 faction but controlled by a 2nd faction.
-          final PlayerID currentOwner = ta.getOriginalOwner();
+          final PlayerId currentOwner = ta.getOriginalOwner();
           if (currentOwner == null) {
             ta.setOriginalOwner(owner);
           }
@@ -1339,9 +1339,9 @@ public final class GameParser {
       final String ownerString = current.getAttribute("owner");
       final String hitsTakenString = current.getAttribute("hitsTaken");
       final String unitDamageString = current.getAttribute("unitDamage");
-      final PlayerID owner;
+      final PlayerId owner;
       if (ownerString == null || ownerString.trim().length() == 0) {
-        owner = PlayerID.NULL_PLAYERID;
+        owner = PlayerId.NULL_PLAYERID;
       } else {
         owner = getPlayerId(current, "owner", false);
       }
@@ -1371,7 +1371,7 @@ public final class GameParser {
 
   private void parseHeldUnits(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final PlayerID player = getPlayerId(current, "player", true);
+      final PlayerId player = getPlayerId(current, "player", true);
       final UnitType type = getUnitType(current, "unitType", true);
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       player.getUnits().addAll(type.create(quantity, player));
@@ -1380,7 +1380,7 @@ public final class GameParser {
 
   private void parseResourceInitialization(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final PlayerID player = getPlayerId(current, "player", true);
+      final PlayerId player = getPlayerId(current, "player", true);
       final Resource resource = getResource(current, "resource", true);
       final int quantity = Integer.parseInt(current.getAttribute("quantity"));
       player.getResources().addResource(resource, quantity);

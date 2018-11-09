@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.Triple;
@@ -34,7 +34,7 @@ public class PoliticalStateOverview extends JPanel {
   private final UiContext uiContext;
   private final GameData data;
   private final boolean editable;
-  private final Set<Triple<PlayerID, PlayerID, RelationshipType>> editChanges = new HashSet<>();
+  private final Set<Triple<PlayerId, PlayerId, RelationshipType>> editChanges = new HashSet<>();
 
   /**
    * Constructs this panel.
@@ -57,13 +57,13 @@ public class PoliticalStateOverview extends JPanel {
     // draw horizontal labels
     int currentCell = 1;
     final Insets insets = new Insets(5, 2, 5, 2);
-    for (final PlayerID p : data.getPlayerList()) {
+    for (final PlayerId p : data.getPlayerList()) {
       this.add(getPlayerLabel(p), new GridBagConstraints(currentCell++, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER,
           GridBagConstraints.BOTH, insets, 0, 0));
     }
     // draw vertical labels and dividers
     currentCell = 1;
-    for (final PlayerID p : data.getPlayerList()) {
+    for (final PlayerId p : data.getPlayerList()) {
       this.add(new JSeparator(), new GridBagConstraints(0, currentCell++, 20, 1, 0.1, 0.1, GridBagConstraints.WEST,
           GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
       this.add(getPlayerLabel(p), new GridBagConstraints(0, currentCell++, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
@@ -72,8 +72,8 @@ public class PoliticalStateOverview extends JPanel {
     // draw cells
     int x = 1;
     int y = 2;
-    for (final PlayerID verticalPlayer : data.getPlayerList()) {
-      for (final PlayerID horizontalPlayer : data.getPlayerList()) {
+    for (final PlayerId verticalPlayer : data.getPlayerList()) {
+      for (final PlayerId horizontalPlayer : data.getPlayerList()) {
         if (horizontalPlayer.equals(verticalPlayer)) {
           this.add(new JLabel(PoliticalStateOverview.LABEL_SELF), new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0,
               GridBagConstraints.CENTER, GridBagConstraints.NONE, insets, 0, 0));
@@ -91,9 +91,9 @@ public class PoliticalStateOverview extends JPanel {
    * Gets a label showing the coloured relationshipName between these two
    * players.
    */
-  private JPanel getRelationshipLabel(final PlayerID player1, final PlayerID player2) {
+  private JPanel getRelationshipLabel(final PlayerId player1, final PlayerId player2) {
     RelationshipType relType = null;
-    for (final Triple<PlayerID, PlayerID, RelationshipType> changesSoFar : editChanges) {
+    for (final Triple<PlayerId, PlayerId, RelationshipType> changesSoFar : editChanges) {
       if ((player1.equals(changesSoFar.getFirst()) && player2.equals(changesSoFar.getSecond()))
           || (player2.equals(changesSoFar.getFirst()) && player1.equals(changesSoFar.getSecond()))) {
         relType = changesSoFar.getThird();
@@ -114,7 +114,7 @@ public class PoliticalStateOverview extends JPanel {
     return relationshipLabelPanel;
   }
 
-  private JComponent getRelationshipComponent(final PlayerID player1, final PlayerID player2,
+  private JComponent getRelationshipComponent(final PlayerId player1, final PlayerId player2,
       final RelationshipType relType) {
     if (!editable) {
       return new JLabel(relType.getName());
@@ -184,7 +184,7 @@ public class PoliticalStateOverview extends JPanel {
    * @param player the player to get the label for
    * @return the label representing this player
    */
-  protected JLabel getPlayerLabel(final PlayerID player) {
+  protected JLabel getPlayerLabel(final PlayerId player) {
     return new JLabel(player.getName(), new ImageIcon(uiContext.getFlagImageFactory().getFlag(player)), JLabel.LEFT);
   }
 
@@ -197,7 +197,7 @@ public class PoliticalStateOverview extends JPanel {
     this.revalidate();
   }
 
-  Collection<Triple<PlayerID, PlayerID, RelationshipType>> getEditChanges() {
+  Collection<Triple<PlayerId, PlayerId, RelationshipType>> getEditChanges() {
     if (!editable) {
       return null;
     }

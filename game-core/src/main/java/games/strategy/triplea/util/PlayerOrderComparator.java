@@ -6,13 +6,13 @@ import java.util.Comparator;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
 
 /**
- * A comparator for {@link PlayerID} that sorts instances in game play order.
+ * A comparator for {@link PlayerId} that sorts instances in game play order.
  */
-public class PlayerOrderComparator implements Comparator<PlayerID>, Serializable {
+public class PlayerOrderComparator implements Comparator<PlayerId>, Serializable {
   private static final long serialVersionUID = -6271054939349383653L;
   private final GameData gameData;
 
@@ -24,7 +24,7 @@ public class PlayerOrderComparator implements Comparator<PlayerID>, Serializable
    * sort based on first step that isn't a bid related step.
    */
   @Override
-  public int compare(final PlayerID p1, final PlayerID p2) {
+  public int compare(final PlayerId p1, final PlayerId p2) {
     if (p1.equals(p2)) {
       return 0;
     }

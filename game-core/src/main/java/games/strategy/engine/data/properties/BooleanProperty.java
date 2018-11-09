@@ -6,35 +6,35 @@ import javax.swing.JComponent;
 /**
  * Implementation of {@link IEditableProperty} for a Boolean value.
  */
-public class BooleanProperty extends AEditableProperty {
-  // compatible with 0.9.0.2 saved games
+public class BooleanProperty extends AbstractEditableProperty<Boolean> {
   private static final long serialVersionUID = -7265501762343216435L;
-  private boolean mValue;
+
+  private boolean value;
 
   public BooleanProperty(final String name, final String description, final boolean defaultValue) {
     super(name, description);
-    mValue = defaultValue;
+    value = defaultValue;
   }
 
   @Override
-  public Object getValue() {
-    return mValue ? Boolean.TRUE : Boolean.FALSE;
+  public Boolean getValue() {
+    return value;
   }
 
   @Override
-  public void setValue(final Object value) throws IllegalArgumentException {
-    mValue = (Boolean) value;
+  public void setValue(final Boolean value) {
+    this.value = value;
   }
 
   public void setValue(final boolean value) {
-    mValue = value;
+    this.value = value;
   }
 
   @Override
   public JComponent getEditorComponent() {
     final JCheckBox box = new JCheckBox("");
-    box.setSelected(mValue);
-    box.addActionListener(e -> mValue = box.isSelected());
+    box.setSelected(value);
+    box.addActionListener(e -> value = box.isSelected());
     return box;
   }
 

@@ -2,7 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.util.Arrays;
 
-import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;

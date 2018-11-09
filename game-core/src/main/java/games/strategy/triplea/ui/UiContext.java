@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.JLabel;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.image.DiceImageFactory;
@@ -47,7 +47,7 @@ public interface UiContext {
   /**
    * Indicates the damaged or undamaged version of a unit image should be used.
    *
-   * @see UiContext#createUnitImageJLabel(UnitType, PlayerID, UnitDamage, UnitEnable)
+   * @see UiContext#createUnitImageJLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
    */
   enum UnitDamage {
     DAMAGED, NOT_DAMAGED
@@ -56,17 +56,17 @@ public interface UiContext {
   /**
    * Indicates the enabled or disabled version of a unit image should be used.
    *
-   * @see UiContext#createUnitImageJLabel(UnitType, PlayerID, UnitDamage, UnitEnable)
+   * @see UiContext#createUnitImageJLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
    */
   enum UnitEnable {
     DISABLED, ENABLED
   }
 
-  default JLabel createUnitImageJLabel(final UnitType type, final PlayerID player) {
+  default JLabel createUnitImageJLabel(final UnitType type, final PlayerId player) {
     return createUnitImageJLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
-  JLabel createUnitImageJLabel(final UnitType type, final PlayerID player,
+  JLabel createUnitImageJLabel(final UnitType type, final PlayerId player,
       final UnitDamage damaged,
       final UnitEnable disabled);
 

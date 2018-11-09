@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,8 +41,9 @@ import games.strategy.util.Tuple;
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
   private static final List<Territory> EMPTY_TERRITORY_LIST = Collections.emptyList();
-  private final List<Territory> m_steps = new ArrayList<>();
-  private Territory m_start;
+
+  private final List<Territory> steps = new ArrayList<>();
+  private Territory start;
 
   public Route() {}
 
@@ -73,7 +76,6 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public static Route join(final Route r1, final Route r2) {
     if (r1 == null || r2 == null) {
-      // throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
       return null;
     }
     if (r1.numberOfSteps() == 0) {
@@ -85,9 +87,9 @@ public class Route implements Serializable, Iterable<Territory> {
         throw new IllegalArgumentException("Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
       }
     }
-    final Collection<Territory> c1 = new ArrayList<>(r1.m_steps);
+    final Collection<Territory> c1 = new ArrayList<>(r1.steps);
     c1.add(r1.getStart());
-    final Collection<Territory> c2 = new ArrayList<>(r2.m_steps);
+    final Collection<Territory> c2 = new ArrayList<>(r2.steps);
     if (!CollectionUtils.intersection(c1, c2).isEmpty()) {
       return null;
     }
@@ -116,24 +118,23 @@ public class Route implements Serializable, Iterable<Territory> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_start, getSteps());
+    return Objects.hash(start, getSteps());
   }
 
   /**
    * Set the start of this route.
    */
   public void setStart(final Territory newStartTerritory) {
-    if (newStartTerritory == null) {
-      throw new IllegalStateException("Null territory");
-    }
-    m_start = newStartTerritory;
+    checkNotNull(newStartTerritory);
+
+    start = newStartTerritory;
   }
 
   /**
    * Returns start territory for this route.
    */
   public Territory getStart() {
-    return m_start;
+    return start;
   }
 
   /**
@@ -146,7 +147,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (hasNoSteps()) {
       return false;
     }
-    final boolean startLand = !m_start.isWater();
+    final boolean startLand = !start.isWater();
     final boolean overWater = anyMatch(Territory::isWater);
 
     // If we started on land, went over water, and ended on land, we cross water.
@@ -157,21 +158,19 @@ public class Route implements Serializable, Iterable<Territory> {
    * Add the given territory to the end of the route.
    */
   public void add(final Territory territory) {
-    if (territory == null) {
-      throw new IllegalStateException("Null territory");
-    }
-    if (territory.equals(m_start) || m_steps.contains(territory)) {
+    checkNotNull(territory);
+    if (territory.equals(start) || steps.contains(territory)) {
       throw new IllegalArgumentException(String.format(
-          "Loops not allowed in m_routes, route: %s, new territory: %s", this, territory));
+          "Loops not allowed in steps, route: %s, new territory: %s", this, territory));
     }
-    m_steps.add(territory);
+    steps.add(territory);
   }
 
   /**
    * Returns the number of steps in this route. Does not include start.
    */
   public int numberOfSteps() {
-    return m_steps.size();
+    return steps.size();
   }
 
   /**
@@ -187,7 +186,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @param i step number
    */
   public Territory getTerritoryAtStep(final int i) {
-    return m_steps.get(i);
+    return steps.get(i);
   }
 
   /**
@@ -197,7 +196,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether any territories in this route match the given match (start territory is not tested).
    */
   public boolean anyMatch(final Predicate<Territory> match) {
-    return m_steps.stream().anyMatch(match);
+    return steps.stream().anyMatch(match);
   }
 
   /**
@@ -224,12 +223,12 @@ public class Route implements Serializable, Iterable<Territory> {
    * @param match referring match
    */
   public Collection<Territory> getMatches(final Predicate<Territory> match) {
-    return CollectionUtils.getMatches(m_steps, match);
+    return CollectionUtils.getMatches(steps, match);
   }
 
   @Override
   public String toString() {
-    final StringBuilder buf = new StringBuilder("Route:").append(m_start);
+    final StringBuilder buf = new StringBuilder("Route:").append(start);
     for (final Territory t : getSteps()) {
       buf.append(" -> ");
       buf.append(t.getName());
@@ -238,8 +237,8 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   public List<Territory> getAllTerritories() {
-    final ArrayList<Territory> list = new ArrayList<>(m_steps);
-    list.add(0, m_start);
+    final List<Territory> list = new ArrayList<>(steps);
+    list.add(0, start);
     return list;
   }
 
@@ -248,7 +247,7 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public List<Territory> getSteps() {
     if (numberOfSteps() > 0) {
-      return new ArrayList<>(m_steps);
+      return new ArrayList<>(steps);
     }
     return EMPTY_TERRITORY_LIST;
   }
@@ -258,7 +257,7 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public List<Territory> getMiddleSteps() {
     if (numberOfSteps() > 1) {
-      return new ArrayList<>(m_steps).subList(0, numberOfSteps() - 1);
+      return new ArrayList<>(steps).subList(0, numberOfSteps() - 1);
     }
     return EMPTY_TERRITORY_LIST;
   }
@@ -267,10 +266,10 @@ public class Route implements Serializable, Iterable<Territory> {
    * Returns last territory in the route.
    */
   public Territory getEnd() {
-    if (m_steps.isEmpty()) {
-      return m_start;
+    if (steps.isEmpty()) {
+      return start;
     }
-    return m_steps.get(m_steps.size() - 1);
+    return steps.get(steps.size() - 1);
   }
 
   @Override
@@ -282,7 +281,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * Indicates whether this route has any steps.
    */
   public boolean hasSteps() {
-    return !m_steps.isEmpty();
+    return !steps.isEmpty();
   }
 
   /**
@@ -298,7 +297,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether the route has 1 step
    */
   public boolean hasExactlyOneStep() {
-    return this.m_steps.size() == 1;
+    return this.steps.size() == 1;
   }
 
   /**
@@ -308,7 +307,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return the territory before the end territory
    */
   public Territory getTerritoryBeforeEnd() {
-    return (m_steps.size() <= 1) ? getStart() : getTerritoryAtStep(m_steps.size() - 2);
+    return (steps.size() <= 1) ? getStart() : getTerritoryAtStep(steps.size() - 2);
   }
 
   /**
@@ -338,7 +337,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * Indicates whether this route has more then one step.
    */
   public boolean hasMoreThenOneStep() {
-    return m_steps.size() > 1;
+    return steps.size() > 1;
   }
 
   /**
@@ -347,7 +346,7 @@ public class Route implements Serializable, Iterable<Territory> {
   public boolean hasNeutralBeforeEnd() {
     for (final Territory current : getMiddleSteps()) {
       // neutral is owned by null and is not sea
-      if (!current.isWater() && current.getOwner().equals(PlayerID.NULL_PLAYERID)) {
+      if (!current.isWater() && current.getOwner().equals(PlayerId.NULL_PLAYERID)) {
         return true;
       }
     }
@@ -374,7 +373,7 @@ public class Route implements Serializable, Iterable<Territory> {
     return ((TripleAUnit) unit).getMovementLeft() - numberOfSteps();
   }
 
-  public static Change getFuelChanges(final Collection<Unit> units, final Route route, final PlayerID player,
+  public static Change getFuelChanges(final Collection<Unit> units, final Route route, final PlayerId player,
       final GameData data) {
     final CompositeChange changes = new CompositeChange();
     final Tuple<ResourceCollection, Set<Unit>> tuple =
@@ -389,7 +388,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   public static ResourceCollection getMovementFuelCostCharge(final Collection<Unit> units, final Route route,
-      final PlayerID player, final GameData data) {
+      final PlayerId player, final GameData data) {
     return Route.getFuelCostsAndUnitsChargedFlatFuelCost(units, route, player, data, false).getFirst();
   }
 
@@ -397,13 +396,13 @@ public class Route implements Serializable, Iterable<Territory> {
    * Calculates how much fuel each player needs to scramble the specified units. ONLY SUPPORTS 1 territory distance
    * scrambles properly as otherwise a route needs to be calculated.
    */
-  public static Map<PlayerID, ResourceCollection> getScrambleFuelCostCharge(final Collection<Unit> units,
+  public static Map<PlayerId, ResourceCollection> getScrambleFuelCostCharge(final Collection<Unit> units,
       final Territory from, final Territory to, final GameData data) {
-    final Map<PlayerID, ResourceCollection> map = new HashMap<>();
+    final Map<PlayerId, ResourceCollection> map = new HashMap<>();
     final Route toRoute = new Route(from, to);
     final Route returnRoute = new Route(to, from);
     for (final Unit unit : units) {
-      final PlayerID player = unit.getOwner();
+      final PlayerId player = unit.getOwner();
       final ResourceCollection cost = new ResourceCollection(data);
       cost.add(getMovementFuelCostCharge(Collections.singleton(unit), toRoute, player, data));
       cost.add(getFuelCostsAndUnitsChargedFlatFuelCost(
@@ -422,7 +421,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * and if non-combat then ignores air units moving with carrier.
    */
   private static Tuple<ResourceCollection, Set<Unit>> getFuelCostsAndUnitsChargedFlatFuelCost(
-      final Collection<Unit> units, final Route route, final PlayerID player, final GameData data,
+      final Collection<Unit> units, final Route route, final PlayerId player, final GameData data,
       final boolean ignoreFlat) {
 
     if (!Properties.getUseFuelCost(data)) {

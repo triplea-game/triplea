@@ -29,20 +29,20 @@ import games.strategy.util.Version;
  */
 @NetworkData
 public class PlayerListing implements Serializable {
-  // keep compatability with older versions
   private static final long serialVersionUID = -8913538086737733980L;
+
   /**
    * Maps String player name -> node Name
    * if node name is null then the player is available to play.
    */
-  private final Map<String, String> m_playerToNodeListing;
-  private final Map<String, Boolean> m_playersEnabledListing;
-  private final Map<String, String> m_localPlayerTypes;
-  private final Collection<String> m_playersAllowedToBeDisabled;
-  private final Version m_gameVersion;
-  private final String m_gameName;
-  private final String m_gameRound;
-  private final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder;
+  private final Map<String, String> playerToNodeListing;
+  private final Map<String, Boolean> playersEnabledListing;
+  private final Map<String, String> localPlayerTypes;
+  private final Collection<String> playersAllowedToBeDisabled;
+  private final Version gameVersion;
+  private final String gameName;
+  private final String gameRound;
+  private final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder;
 
   /**
    * Creates a new instance of PlayerListing.
@@ -60,24 +60,24 @@ public class PlayerListing implements Serializable {
     // Note: Sets from guava immutables are not necessarily serializable (!)
     // We use copy constructors here to avoid this problem.
 
-    m_playerToNodeListing = Optional.ofNullable(playerToNodeListing)
+    this.playerToNodeListing = Optional.ofNullable(playerToNodeListing)
         .map(HashMap::new)
         .orElseGet(HashMap::new);
-    m_playersEnabledListing = Optional.ofNullable(playersEnabledListing)
+    this.playersEnabledListing = Optional.ofNullable(playersEnabledListing)
         .map(HashMap::new)
         .orElseGet(HashMap::new);
-    m_localPlayerTypes = localPlayerTypes.entrySet()
+    this.localPlayerTypes = localPlayerTypes.entrySet()
         .stream()
         // convert Map<String,PlayerType> -> Map<String,String>
         .collect(Collectors.toMap(Entry::getKey, e -> e.getValue().getLabel()));
-    m_gameVersion = gameVersion;
-    m_gameName = gameName;
-    m_gameRound = gameRound;
-    m_playersAllowedToBeDisabled = Optional.ofNullable(playersAllowedToBeDisabled)
+    this.gameVersion = gameVersion;
+    this.gameName = gameName;
+    this.gameRound = gameRound;
+    this.playersAllowedToBeDisabled = Optional.ofNullable(playersAllowedToBeDisabled)
         .map(HashSet::new)
         .orElseGet(HashSet::new);
 
-    m_playerNamesAndAlliancesInTurnOrder =
+    this.playerNamesAndAlliancesInTurnOrder =
         Optional.ofNullable(playerNamesAndAlliancesInTurnOrder)
             .orElse(Collections.emptyMap())
             .entrySet()
@@ -91,55 +91,53 @@ public class PlayerListing implements Serializable {
                 LinkedHashMap::new));
 
     // make sure none of the collection values are null.
-    // m_playerToNodeListing is an exception, it can have null values meaning no user has chosen a given nation.
-    Preconditions.checkArgument(m_playersEnabledListing.values().stream().noneMatch(Objects::isNull),
-        m_playersEnabledListing.toString());
-    Preconditions.checkArgument(m_localPlayerTypes.values().stream().noneMatch(Objects::isNull),
-        m_localPlayerTypes.toString());
-    Preconditions.checkArgument(m_playersAllowedToBeDisabled.stream().noneMatch(Objects::isNull),
-        m_playersAllowedToBeDisabled.toString());
-    Preconditions.checkArgument(m_playerNamesAndAlliancesInTurnOrder.values().stream().noneMatch(Objects::isNull),
-        m_playerNamesAndAlliancesInTurnOrder.toString());
+    // playerToNodeListing is an exception, it can have null values meaning no user has chosen a given nation.
+    Preconditions.checkArgument(this.playersEnabledListing.values().stream().noneMatch(Objects::isNull),
+        this.playersEnabledListing.toString());
+    Preconditions.checkArgument(this.localPlayerTypes.values().stream().noneMatch(Objects::isNull),
+        this.localPlayerTypes.toString());
+    Preconditions.checkArgument(this.playersAllowedToBeDisabled.stream().noneMatch(Objects::isNull),
+        this.playersAllowedToBeDisabled.toString());
+    Preconditions.checkArgument(this.playerNamesAndAlliancesInTurnOrder.values().stream().noneMatch(Objects::isNull),
+        this.playerNamesAndAlliancesInTurnOrder.toString());
   }
 
-
   public Collection<String> getPlayersAllowedToBeDisabled() {
-    return m_playersAllowedToBeDisabled;
+    return playersAllowedToBeDisabled;
   }
 
   public Map<String, String> getPlayerToNodeListing() {
-    return m_playerToNodeListing;
+    return playerToNodeListing;
   }
 
   public Map<String, Boolean> getPlayersEnabledListing() {
-    return m_playersEnabledListing;
+    return playersEnabledListing;
   }
 
   public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
-    return m_playerNamesAndAlliancesInTurnOrder;
+    return playerNamesAndAlliancesInTurnOrder;
   }
 
   public String getGameName() {
-    return m_gameName;
+    return gameName;
   }
 
   public Version getGameVersion() {
-    return m_gameVersion;
+    return gameVersion;
   }
 
   @Override
   public String toString() {
-    return "PlayerListingMessage:" + m_playerToNodeListing;
+    return "PlayerListingMessage:" + playerToNodeListing;
   }
 
   public String getGameRound() {
-    return m_gameRound;
+    return gameRound;
   }
 
   public Map<String, PlayerType> getLocalPlayerTypeMap() {
-    return m_localPlayerTypes.entrySet()
+    return localPlayerTypes.entrySet()
         .stream()
         .collect(Collectors.toMap(Entry::getKey, e -> PlayerType.fromLabel(e.getValue())));
   }
-
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -29,7 +29,7 @@ class InitialSetup {
       unitInfoMap.put(currentType, currentTypeUnitAttachment);
     }
     new UnitInformation().saveToFile(printData, unitInfoMap);
-    for (final PlayerID currentPlayer : gameData.getPlayerList()) {
+    for (final PlayerId currentPlayer : gameData.getPlayerList()) {
       new CountryChart().saveToFile(currentPlayer, printData);
     }
     new PuInfo().saveToFile(printData);

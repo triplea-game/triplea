@@ -7,7 +7,7 @@ import java.util.Set;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.UnitType;
@@ -32,7 +32,7 @@ public class ProPurchaseOptionMap {
   private final List<ProPurchaseOption> factoryOptions;
   private final List<ProPurchaseOption> specialOptions;
 
-  public ProPurchaseOptionMap(final PlayerID player, final GameData data) {
+  public ProPurchaseOptionMap(final PlayerId player, final GameData data) {
 
     ProLogger.info("Purchase Options");
 

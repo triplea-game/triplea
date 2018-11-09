@@ -5,7 +5,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.dataObjects.BattleListing;
+import games.strategy.triplea.delegate.data.BattleListing;
 
 public interface IBattleDelegate extends IRemote, IDelegate {
   /**

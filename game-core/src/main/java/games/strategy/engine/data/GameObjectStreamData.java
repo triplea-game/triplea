@@ -1,5 +1,7 @@
 package games.strategy.engine.data;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -21,7 +23,7 @@ public class GameObjectStreamData implements Externalizable {
   }
 
   public static boolean canSerialize(final Named obj) {
-    return obj instanceof PlayerID || obj instanceof UnitType || obj instanceof Territory
+    return obj instanceof PlayerId || obj instanceof UnitType || obj instanceof Territory
         || obj instanceof ProductionRule || obj instanceof IAttachment || obj instanceof ProductionFrontier;
   }
 
@@ -32,7 +34,7 @@ public class GameObjectStreamData implements Externalizable {
 
   public GameObjectStreamData(final Named named) {
     name = named.getName();
-    if (named instanceof PlayerID) {
+    if (named instanceof PlayerId) {
       type = GameType.PLAYERID;
     } else if (named instanceof Territory) {
       type = GameType.TERRITORY;
@@ -48,9 +50,8 @@ public class GameObjectStreamData implements Externalizable {
   }
 
   Named getReference(final GameData data) {
-    if (data == null) {
-      throw new IllegalArgumentException("Data cant be null");
-    }
+    checkNotNull(data);
+
     data.acquireReadLock();
     try {
       switch (type) {

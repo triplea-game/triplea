@@ -10,7 +10,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.triplea.util.PlayerOrderComparator;
@@ -33,8 +33,8 @@ public abstract class AbstractStatPanel extends JPanel {
     return getAllianceMap().keySet();
   }
 
-  protected Map<String, Set<PlayerID>> getAllianceMap() {
-    final Map<String, Set<PlayerID>> allianceMap = new LinkedHashMap<>();
+  protected Map<String, Set<PlayerId>> getAllianceMap() {
+    final Map<String, Set<PlayerId>> allianceMap = new LinkedHashMap<>();
     for (final String alliance : gameData.getAllianceTracker().getAlliances()) {
       if (gameData.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1) {
         allianceMap.put(alliance, gameData.getAllianceTracker().getPlayersInAlliance(alliance));
@@ -43,8 +43,8 @@ public abstract class AbstractStatPanel extends JPanel {
     return allianceMap;
   }
 
-  public List<PlayerID> getPlayers() {
-    final List<PlayerID> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
+  public List<PlayerId> getPlayers() {
+    final List<PlayerId> players = new ArrayList<>(gameData.getPlayerList().getPlayers());
     players.sort(new PlayerOrderComparator(gameData));
     return players;
   }
@@ -62,7 +62,7 @@ public abstract class AbstractStatPanel extends JPanel {
     }
 
     @Override
-    public double getValue(final PlayerID player, final GameData data) {
+    public double getValue(final PlayerId player, final GameData data) {
       return player.getResources().getQuantity(resource);
     }
   }

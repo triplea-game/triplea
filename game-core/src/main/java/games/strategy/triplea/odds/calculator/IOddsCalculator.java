@@ -3,7 +3,7 @@ package games.strategy.triplea.odds.calculator;
 import java.util.Collection;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -14,13 +14,13 @@ import games.strategy.engine.data.Unit;
 public interface IOddsCalculator {
   void setGameData(final GameData data);
 
-  void setCalculateData(final PlayerID attacker, final PlayerID defender, final Territory location,
+  void setCalculateData(final PlayerId attacker, final PlayerId defender, final Territory location,
       final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
       final Collection<TerritoryEffect> territoryEffects, final int runCount);
 
   AggregateResults calculate();
 
-  AggregateResults setCalculateDataAndCalculate(final PlayerID attacker, final PlayerID defender,
+  AggregateResults setCalculateDataAndCalculate(final PlayerId attacker, final PlayerId defender,
       final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
       final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount);
 

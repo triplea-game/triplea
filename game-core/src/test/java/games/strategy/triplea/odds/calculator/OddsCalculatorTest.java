@@ -17,7 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.GameDataTestUtil;
@@ -36,8 +36,8 @@ public class OddsCalculatorTest {
   public void testUnbalancedFight() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Collection<Unit> defendingUnits = new ArrayList<>(germany.getUnits().getUnits());
-    final PlayerID russians = GameDataTestUtil.russians(gameData);
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
+    final PlayerId russians = GameDataTestUtil.russians(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(100, russians);
     final List<Unit> bombardingUnits = Collections.emptyList();
     final IOddsCalculator calculator = new OddsCalculator(gameData);
@@ -55,8 +55,8 @@ public class OddsCalculatorTest {
     // 1 fighter
     // if one attacking inf must live, the odds
     // much worse
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final PlayerID british = GameDataTestUtil.british(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final PlayerId british = GameDataTestUtil.british(gameData);
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");
     final List<Unit> defendingUnits = GameDataTestUtil.fighter(gameData).create(1, british, false);
     final List<Unit> attackingUnits = GameDataTestUtil.infantry(gameData).create(1, germans, false);

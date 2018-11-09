@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -17,9 +17,9 @@ final class PoliticalActionAttachmentTest {
   @Nested
   final class GetRelationshipChangesTest {
     private final GameData gameData = new GameData();
-    private final PlayerID player1 = new PlayerID("player1", gameData);
-    private final PlayerID player2 = new PlayerID("player2", gameData);
-    private final PlayerID player3 = new PlayerID("player3", gameData);
+    private final PlayerId player1 = new PlayerId("player1", gameData);
+    private final PlayerId player2 = new PlayerId("player2", gameData);
+    private final PlayerId player3 = new PlayerId("player3", gameData);
     private final RelationshipType relationshipType1 = new RelationshipType("relationshipType1", gameData);
     private final RelationshipType relationshipType2 = new RelationshipType("relationshipType2", gameData);
     private final PoliticalActionAttachment politicalActionAttachment =
@@ -75,9 +75,9 @@ final class PoliticalActionAttachmentTest {
       final GameData gameData = new GameData();
       EqualsVerifier.forClass(PoliticalActionAttachment.RelationshipChange.class)
           .withPrefabValues(
-              PlayerID.class,
-              new PlayerID("redPlayerId", gameData),
-              new PlayerID("blackPlayerId", gameData))
+              PlayerId.class,
+              new PlayerId("redPlayerId", gameData),
+              new PlayerId("blackPlayerId", gameData))
           .withPrefabValues(
               RelationshipType.class,
               new RelationshipType("redRelationshipType", gameData),

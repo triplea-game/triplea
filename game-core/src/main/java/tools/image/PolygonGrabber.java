@@ -122,7 +122,6 @@ public final class PolygonGrabber {
     // the current set of polyongs
     private List<Polygon> current;
     // holds the map image
-    // private Image m_image;
     private BufferedImage bufferedImage;
     // maps String -> List of polygons
     private Map<String, List<Polygon>> polygons = new HashMap<>();

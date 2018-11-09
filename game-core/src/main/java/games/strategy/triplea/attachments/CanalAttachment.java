@@ -16,11 +16,9 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
-@MapSupport
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
 
@@ -89,7 +87,7 @@ public class CanalAttachment extends DefaultAttachment {
       this.landTerritories = null;
       return;
     }
-    final HashSet<Territory> terrs = new HashSet<>();
+    final Set<Territory> terrs = new HashSet<>();
     for (final String name : splitOnColon(landTerritories)) {
       final Territory territory = getData().getMap().getTerritory(name);
       if (territory == null) {

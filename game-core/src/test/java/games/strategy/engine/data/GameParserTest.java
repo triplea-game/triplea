@@ -41,17 +41,17 @@ final class GameParserTest {
     private final GameData gameData = new GameData();
     private final GameParser gameParser = new GameParser(gameData, "mapName");
 
-    private String joinPlayerNames(final PlayerID... playerIds) {
+    private String joinPlayerNames(final PlayerId... playerIds) {
       return Arrays.stream(playerIds)
-          .map(PlayerID::getName)
+          .map(PlayerId::getName)
           .collect(Collectors.joining(":"));
     }
 
     @Test
     void shouldReturnPlayersWhenAllPlayersExist() throws Exception {
-      final PlayerID player1 = new PlayerID("player1Name", gameData);
+      final PlayerId player1 = new PlayerId("player1Name", gameData);
       gameData.getPlayerList().addPlayerId(player1);
-      final PlayerID player2 = new PlayerID("player2Name", gameData);
+      final PlayerId player2 = new PlayerId("player2Name", gameData);
       gameData.getPlayerList().addPlayerId(player2);
 
       assertThat(
@@ -64,7 +64,7 @@ final class GameParserTest {
 
     @Test
     void shouldThrowExceptionWhenAnyPlayerDoesNotExist() {
-      final PlayerID player = new PlayerID("unknownPlayerName", gameData);
+      final PlayerId player = new PlayerId("unknownPlayerName", gameData);
 
       final Exception e = assertThrows(
           GameParseException.class,

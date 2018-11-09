@@ -30,26 +30,27 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
+import org.triplea.game.server.HeadlessGameServer;
+
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -146,7 +147,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         playersEnabledListing = new HashMap<>();
         playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-        for (final PlayerID player : data.getPlayerList().getPlayers()) {
+        for (final PlayerId player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
           if (headless) {
             if (player.getIsDisabled()) {
@@ -338,7 +339,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           || data.getProperties().getEditableProperties().isEmpty()) {
         return null;
       }
-      final List<IEditableProperty> currentEditableProperties = data.getProperties().getEditableProperties();
+      final List<IEditableProperty<?>> currentEditableProperties = data.getProperties().getEditableProperties();
 
       try {
         return GameProperties.writeEditableProperties(currentEditableProperties);
@@ -367,7 +368,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
 
     @Override
-    public void changeToLatestAutosave(final SaveGameFileChooser.AUTOSAVE_TYPE autoSaveType) {
+    public void changeToLatestAutosave(final HeadlessAutoSaveType autoSaveType) {
       final @Nullable HeadlessGameServer headlessGameServer = HeadlessGameServer.getInstance();
       if (headlessGameServer != null) {
         headlessGameServer.loadGameSave(autoSaveType.getFile());

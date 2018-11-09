@@ -2,7 +2,6 @@ package games.strategy.triplea.ai.pro;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,7 @@ import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -39,8 +38,8 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -136,7 +135,7 @@ public class ProAi extends AbstractAi {
 
   @Override
   protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     final long start = System.currentTimeMillis();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
@@ -158,7 +157,7 @@ public class ProAi extends AbstractAi {
 
   @Override
   protected void purchase(final boolean purchaseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
-      final GameData data, final PlayerID player) {
+      final GameData data, final PlayerId player) {
     final long start = System.currentTimeMillis();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
@@ -195,7 +194,7 @@ public class ProAi extends AbstractAi {
         data.releaseWriteLock();
       }
       calc.setData(dataCopy);
-      final PlayerID playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
+      final PlayerId playerCopy = dataCopy.getPlayerList().getPlayerId(player.getName());
       final IMoveDelegate moveDel = DelegateFinder.moveDelegate(dataCopy);
       final IDelegateBridge bridge = new ProDummyDelegateBridge(this, playerCopy, dataCopy);
       moveDel.setDelegateBridgeAndPlayer(bridge);
@@ -252,7 +251,7 @@ public class ProAi extends AbstractAi {
 
   @Override
   protected void place(final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     final long start = System.currentTimeMillis();
     ProLogUi.notifyStartOfRound(data.getSequence().getRound(), player.getName());
     initializeData();
@@ -262,7 +261,7 @@ public class ProAi extends AbstractAi {
   }
 
   @Override
-  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerId player) {
     ProTechAi.tech(techDelegate, data, player);
   }
 
@@ -273,7 +272,7 @@ public class ProAi extends AbstractAi {
 
     // Get battle data
     final GameData data = getGameData();
-    final PlayerID player = getPlayerId();
+    final PlayerId player = getPlayerId();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
@@ -314,7 +313,7 @@ public class ProAi extends AbstractAi {
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
@@ -338,7 +337,7 @@ public class ProAi extends AbstractAi {
 
       // Get battle data
       final GameData data = getGameData();
-      final PlayerID player = getPlayerId();
+      final PlayerId player = getPlayerId();
       final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
       final IBattle battle = delegate.getBattleTracker().getPendingBattle(battleId);
 
@@ -389,13 +388,13 @@ public class ProAi extends AbstractAi {
   }
 
   @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     initializeData();
 
     // Get battle data
     final GameData data = getGameData();
-    final PlayerID player = getPlayerId();
+    final PlayerId player = getPlayerId();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 
@@ -417,7 +416,7 @@ public class ProAi extends AbstractAi {
 
     // Get battle data
     final GameData data = getGameData();
-    final PlayerID player = getPlayerId();
+    final PlayerId player = getPlayerId();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(unitTerritory, false, BattleType.NORMAL);
 

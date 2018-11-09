@@ -3,16 +3,14 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -23,7 +21,6 @@ import games.strategy.util.CollectionUtils;
  * Logic for activating tech rolls. This delegate requires the
  * TechnologyDelegate to run correctly.
  */
-@MapSupport
 public class TechActivationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
@@ -42,7 +39,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     // Activate techs
-    final Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
+    final Map<PlayerId, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
     final Collection<TechAdvance> advances = techMap.get(player);
     if ((advances != null) && (advances.size() > 0)) {
       // Start event
@@ -63,11 +60,11 @@ public class TechActivationDelegate extends BaseTripleADelegate {
               .or(TriggerAttachment.techMatch())
               .or(TriggerAttachment.supportMatch()));
       // get all possible triggers based on this match.
-      final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+      final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
           new HashSet<>(Collections.singleton(player)), techActivationDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
-        final HashMap<ICondition, Boolean> testedConditions =
+        final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
@@ -99,13 +96,13 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     if (pa == null) {
       return;
     }
-    final Collection<PlayerID> shareWith = pa.getShareTechnology();
+    final Collection<PlayerId> shareWith = pa.getShareTechnology();
     if (shareWith == null || shareWith.isEmpty()) {
       return;
     }
     final GameData data = getData();
     final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
-    for (final PlayerID p : shareWith) {
+    for (final PlayerId p : shareWith) {
       final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);
       final Collection<TechAdvance> toGive = CollectionUtils.intersection(currentAdvances, availableTechs);
       if (!toGive.isEmpty()) {
@@ -123,7 +120,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_needToInitialize = needToInitialize;
+    state.needToInitialize = needToInitialize;
     return state;
   }
 
@@ -131,7 +128,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
     super.loadState(s.superState);
-    needToInitialize = s.m_needToInitialize;
+    needToInitialize = s.needToInitialize;
   }
 
   // Return string representing all advances in collection

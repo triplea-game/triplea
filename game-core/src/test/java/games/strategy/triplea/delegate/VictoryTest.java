@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -27,8 +27,8 @@ import games.strategy.util.IntegerMap;
  */
 public class VictoryTest {
   private GameData gameData;
-  private PlayerID italians;
-  private PlayerID germans;
+  private PlayerId italians;
+  private PlayerId germans;
   private IDelegateBridge testBridge;
 
   private IntegerMap<Resource> italianResources;

@@ -48,7 +48,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
@@ -60,8 +60,8 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.UnitCategory;
@@ -82,8 +82,8 @@ public class BattleDisplay extends JPanel {
   private static final String DICE_KEY = "D";
   private static final String CASUALTIES_KEY = "C";
   private static final String MESSAGE_KEY = "M";
-  private final PlayerID defender;
-  private final PlayerID attacker;
+  private final PlayerId defender;
+  private final PlayerId attacker;
   private final Territory location;
   private final GameData gameData;
   private final JButton actionButton = new JButton();
@@ -105,7 +105,7 @@ public class BattleDisplay extends JPanel {
   private final Action nullAction = SwingAction.of(" ", e -> {
   });
 
-  BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender,
+  BattleDisplay(final GameData data, final Territory territory, final PlayerId attacker, final PlayerId defender,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
       final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType,
@@ -172,7 +172,7 @@ public class BattleDisplay extends JPanel {
    * @param killedUnits list of units killed
    * @param playerId player kills belongs to
    */
-  private Collection<Unit> updateKilledUnits(final Collection<Unit> killedUnits, final PlayerID playerId) {
+  private Collection<Unit> updateKilledUnits(final Collection<Unit> killedUnits, final PlayerId playerId) {
     final JPanel casualtyPanel;
     if (playerId.equals(defender)) {
       casualtyPanel = casualtiesInstantPanelDefender;
@@ -206,7 +206,7 @@ public class BattleDisplay extends JPanel {
     return dependentUnitsReturned;
   }
 
-  void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player,
+  void casualtyNotification(final String step, final DiceRoll dice, final PlayerId player,
       final Collection<Unit> killed, final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents) {
     setStep(step);
     casualties.setNotification(dice, killed, damaged, dependents);
@@ -219,7 +219,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  void deadUnitNotification(final PlayerID player, final Collection<Unit> killed,
+  void deadUnitNotification(final PlayerId player, final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
     casualties.setNotificationShort(killed, dependents);
     actionLayout.show(actionPanel, CASUALTIES_KEY);
@@ -231,7 +231,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits,
+  void changedUnitsNotification(final PlayerId player, final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits) {
     if (player.equals(defender)) {
       if (removedUnits != null) {
@@ -403,10 +403,9 @@ public class BattleDisplay extends JPanel {
       imagePanel.add(retreatTerritory);
       imagePanel.setBorder(new EmptyBorder(10, 10, 10, 0));
       this.add(imagePanel, BorderLayout.EAST);
-      final List<Territory> listElements = new ArrayList<>(possible);
-      list = new JList<>(SwingComponents.newListModel(listElements));
+      list = new JList<>(SwingComponents.newListModel(possible));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      if (listElements.size() >= 1) {
+      if (!possible.isEmpty()) {
         list.setSelectedIndex(0);
       }
       final JScrollPane scroll = new JScrollPane(list);
@@ -433,7 +432,7 @@ public class BattleDisplay extends JPanel {
   }
 
   CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
-      final int count, final String message, final DiceRoll dice, final PlayerID hit,
+      final int count, final String message, final DiceRoll dice, final PlayerId hit,
       final CasualtyList defaultCasualties, final boolean allowMultipleHitsPerUnit) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This method should not be run in the event dispatch thread");
@@ -614,7 +613,7 @@ public class BattleDisplay extends JPanel {
     this.steps.listBattle(steps);
   }
 
-  private static JComponent getPlayerComponent(final PlayerID id) {
+  private static JComponent getPlayerComponent(final PlayerId id) {
     final JLabel player = new JLabel(id.getName());
     player.setBorder(new EmptyBorder(5, 5, 5, 5));
     player.setFont(player.getFont().deriveFont((float) 14));
@@ -808,14 +807,14 @@ public class BattleDisplay extends JPanel {
 
   private static final class TableData {
     static final TableData NULL = new TableData();
-    private PlayerID player;
+    private PlayerId player;
     private UnitType unitType;
     private int count;
     private Optional<ImageIcon> icon;
 
     private TableData() {}
 
-    TableData(final PlayerID player, final int count, final UnitType type, final boolean damaged,
+    TableData(final PlayerId player, final int count, final UnitType type, final boolean damaged,
         final boolean disabled, final UiContext uiContext) {
       this.player = player;
       this.count = count;

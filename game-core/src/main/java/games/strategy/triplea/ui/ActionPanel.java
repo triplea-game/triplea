@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Properties;
 
 /**
@@ -16,7 +16,7 @@ import games.strategy.triplea.Properties;
 public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
   private final GameData data;
-  private PlayerID currentPlayer;
+  private PlayerId currentPlayer;
   protected final MapPanel map;
   private boolean active;
   private CountDownLatch latch;
@@ -109,12 +109,12 @@ public abstract class ActionPanel extends JPanel {
     return data;
   }
 
-  public void display(final PlayerID player) {
+  public void display(final PlayerId player) {
     currentPlayer = player;
     setActive(true);
   }
 
-  protected PlayerID getCurrentPlayer() {
+  protected PlayerId getCurrentPlayer() {
     return currentPlayer;
   }
 

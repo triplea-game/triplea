@@ -13,17 +13,17 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import lombok.extern.java.Log;
 
 @Log
 class PuInfo {
-  private final Map<PlayerID, Map<Resource, Integer>> infoMap = new HashMap<>();
+  private final Map<PlayerId, Map<Resource, Integer>> infoMap = new HashMap<>();
 
   void saveToFile(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
-    for (final PlayerID currentPlayer : gameData.getPlayerList()) {
+    for (final PlayerId currentPlayer : gameData.getPlayerList()) {
       infoMap.put(currentPlayer,
           gameData.getResourceList().getResources().stream()
               .collect(Collectors.toMap(
@@ -53,7 +53,7 @@ class PuInfo {
         }
         resourceWriter.write("\r\n");
         // Print Player's and Resource Amount's
-        for (final PlayerID currentPlayer : gameData.getPlayerList()) {
+        for (final PlayerId currentPlayer : gameData.getPlayerList()) {
           resourceWriter.write(currentPlayer.getName());
           final Map<Resource, Integer> resourceMap = infoMap.get(currentPlayer);
           for (final int amountResource : resourceMap.values()) {

@@ -3,6 +3,7 @@ package games.strategy.engine;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.security.CodeSource;
 import java.util.logging.Level;
 
@@ -109,7 +110,8 @@ public final class ClientFileSystemHelper {
    *         retained between engine installations. Users can override this location in settings.
    */
   public static File getUserMapsFolder() {
-    final File mapsFolder = getUserMapsFolder(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride);
+    final File mapsFolder =
+        getUserMapsFolder(ClientSetting.userMapsFolderPath, ClientSetting.mapFolderOverride).toFile();
     if (!mapsFolder.exists()) {
       mapsFolder.mkdirs();
     }
@@ -120,9 +122,9 @@ public final class ClientFileSystemHelper {
   }
 
   @VisibleForTesting
-  static File getUserMapsFolder(
-      final GameSetting<File> currentUserMapsFolderSetting,
-      final GameSetting<File> overrideUserMapsFolderSetting) {
+  static Path getUserMapsFolder(
+      final GameSetting<Path> currentUserMapsFolderSetting,
+      final GameSetting<Path> overrideUserMapsFolderSetting) {
     return overrideUserMapsFolderSetting.isSet()
         ? overrideUserMapsFolderSetting.getValueOrThrow()
         : currentUserMapsFolderSetting.getValueOrThrow();

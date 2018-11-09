@@ -35,7 +35,7 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -55,13 +55,13 @@ class ProductionPanel extends JPanel {
   protected final JLabel left = new JLabel();
   protected final JPanel remainingResources = new JPanel();
   protected JButton done;
-  protected PlayerID id;
+  protected PlayerId id;
   protected GameData data;
 
   private JDialog dialog;
   private boolean bid;
 
-  static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
+  static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
     return new ProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }
@@ -84,7 +84,7 @@ class ProductionPanel extends JPanel {
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
-  IntegerMap<ProductionRule> show(final PlayerID id, final JFrame parent, final GameData data, final boolean bid,
+  IntegerMap<ProductionRule> show(final PlayerId id, final JFrame parent, final GameData data, final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     dialog = new JDialog(parent, "Produce", true);
     dialog.getContentPane().add(this);
@@ -112,7 +112,7 @@ class ProductionPanel extends JPanel {
     return rules;
   }
 
-  protected void initRules(final PlayerID player, final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
       id = player;
@@ -222,7 +222,7 @@ class ProductionPanel extends JPanel {
     private final IntegerMap<Resource> cost;
     private int quantity;
     private final ProductionRule rule;
-    private final PlayerID id;
+    private final PlayerId id;
     private final Set<ScrollableTextField> textFields = new HashSet<>();
 
     protected JPanel getPanelComponent() {
@@ -315,7 +315,7 @@ class ProductionPanel extends JPanel {
       return panel;
     }
 
-    Rule(final ProductionRule rule, final PlayerID id) {
+    Rule(final ProductionRule rule, final PlayerId id) {
       this.rule = rule;
       cost = rule.getCosts();
       this.id = id;

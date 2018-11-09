@@ -2,7 +2,7 @@ package games.strategy.triplea.settings;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -12,11 +12,11 @@ public final class SelectionComponentUiUtils {
   private SelectionComponentUiUtils() {}
 
   /**
-   * Converts {@code file} into a string suitable for display in the UI.
+   * Converts {@code path} into a string suitable for display in the UI.
    */
-  public static String toString(final Optional<File> file) {
-    checkNotNull(file);
+  public static String toString(final Optional<Path> path) {
+    checkNotNull(path);
 
-    return file.map(File::getAbsolutePath).orElse("");
+    return path.map(it -> it.toAbsolutePath().toString()).orElse("");
   }
 }

@@ -34,8 +34,8 @@ import games.strategy.triplea.delegate.EndTurnDelegate;
 import games.strategy.triplea.delegate.InitializationDelegate;
 import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.NoAirCheckPlaceDelegate;
-import games.strategy.triplea.delegate.NoPUEndTurnDelegate;
-import games.strategy.triplea.delegate.NoPUPurchaseDelegate;
+import games.strategy.triplea.delegate.NoPuEndTurnDelegate;
+import games.strategy.triplea.delegate.NoPuPurchaseDelegate;
 import games.strategy.triplea.delegate.PlaceDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.PurchaseDelegate;
@@ -44,7 +44,6 @@ import games.strategy.triplea.delegate.SpecialMoveDelegate;
 import games.strategy.triplea.delegate.TechActivationDelegate;
 import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.UserActionDelegate;
-import games.strategy.twoIfBySea.delegate.InitDelegate;
 import lombok.extern.java.Log;
 
 /**
@@ -78,8 +77,8 @@ public class XmlGameElementMapper {
           .put("InitializationDelegate", InitializationDelegate::new)
           .put("MoveDelegate", MoveDelegate::new)
           .put("NoAirCheckPlaceDelegate", NoAirCheckPlaceDelegate::new)
-          .put("NoPUEndTurnDelegate", NoPUEndTurnDelegate::new)
-          .put("NoPUPurchaseDelegate", NoPUPurchaseDelegate::new)
+          .put("NoPUEndTurnDelegate", NoPuEndTurnDelegate::new)
+          .put("NoPUPurchaseDelegate", NoPuPurchaseDelegate::new)
           .put("PlaceDelegate", PlaceDelegate::new)
           .put("PoliticsDelegate", PoliticsDelegate::new)
           .put("PurchaseDelegate", PurchaseDelegate::new)
@@ -88,11 +87,7 @@ public class XmlGameElementMapper {
           .put("TechActivationDelegate", TechActivationDelegate::new)
           .put("TechnologyDelegate", TechnologyDelegate::new)
           .put("UserActionDelegate", UserActionDelegate::new)
-          .put("games.strategy.twoIfBySea.delegate.EndTurnDelegate",
-              games.strategy.twoIfBySea.delegate.EndTurnDelegate::new)
-          .put("games.strategy.twoIfBySea.delegate.InitDelegate", InitDelegate::new)
-          .put("games.strategy.twoIfBySea.delegate.PlaceDelegate",
-              games.strategy.twoIfBySea.delegate.PlaceDelegate::new)
+          .putAll(newTwoIfBySeaDelegateMap())
           .put("games.strategy.engine.xml.TestDelegate", TestDelegate::new)
           .build();
 
@@ -154,6 +149,17 @@ public class XmlGameElementMapper {
       this.attachable = attachable;
       this.gameData = gameData;
     }
+  }
+
+  @SuppressWarnings("deprecation") // required for map compatibility; remove upon next map-incompatible release
+  private static ImmutableMap<String, Supplier<IDelegate>> newTwoIfBySeaDelegateMap() {
+    return ImmutableMap.<String, Supplier<IDelegate>>builder()
+        .put(
+            "games.strategy.twoIfBySea.delegate.EndTurnDelegate",
+            games.strategy.triplea.delegate.TwoIfBySeaEndTurnDelegate::new)
+        .put("games.strategy.twoIfBySea.delegate.InitDelegate", InitializationDelegate::new)
+        .put("games.strategy.twoIfBySea.delegate.PlaceDelegate", PlaceDelegate::new)
+        .build();
   }
 
   /**

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
@@ -15,7 +15,7 @@ import games.strategy.engine.data.Unit;
 public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
 
-  DependentBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker,
+  DependentBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
       final GameData data) {
     super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
   }

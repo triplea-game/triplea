@@ -3,11 +3,11 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.triplea.Constants;
 
 public abstract class BaseEditDelegate extends BasePersistentDelegate {

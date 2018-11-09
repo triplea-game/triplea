@@ -22,14 +22,14 @@ import com.google.common.collect.Multimap;
  */
 public class AllianceTracker implements Serializable {
   private static final long serialVersionUID = 2815023984535209353L;
-  // maps PlayerID to Collection of alliances names
-  private final Multimap<PlayerID, String> alliances;
+  // maps PlayerId to Collection of alliances names
+  private final Multimap<PlayerId, String> alliances;
 
   public AllianceTracker() {
     this(HashMultimap.create());
   }
 
-  public AllianceTracker(final Multimap<PlayerID, String> alliances) {
+  public AllianceTracker(final Multimap<PlayerId, String> alliances) {
     this.alliances = alliances;
   }
 
@@ -40,7 +40,7 @@ public class AllianceTracker implements Serializable {
 
   private static class SerializationProxy implements Serializable {
     private static final long serialVersionUID = -4193924040595347947L;
-    private final Multimap<PlayerID, String> alliances;
+    private final Multimap<PlayerId, String> alliances;
 
     public SerializationProxy(final AllianceTracker allianceTracker) {
       alliances = ImmutableMultimap.copyOf(allianceTracker.alliances);
@@ -53,12 +53,12 @@ public class AllianceTracker implements Serializable {
 
 
   /**
-   * Adds PlayerID player to the alliance specified by allianceName.
+   * Adds PlayerId player to the alliance specified by allianceName.
    *
    * @param player The player to add to the alliance.
    * @param allianceName The alliance to add to.
    */
-  protected void addToAlliance(final PlayerID player, final String allianceName) {
+  protected void addToAlliance(final PlayerId player, final String allianceName) {
     alliances.put(player, allianceName);
   }
 
@@ -70,25 +70,25 @@ public class AllianceTracker implements Serializable {
   }
 
   /**
-   * Returns the PlayerID's that are members of the alliance
+   * Returns the PlayerId's that are members of the alliance
    * specified by the String allianceName.
    *
    * @param allianceName Alliance name
    * @return all the players in the given alliance
    */
-  public Set<PlayerID> getPlayersInAlliance(final String allianceName) {
+  public Set<PlayerId> getPlayersInAlliance(final String allianceName) {
     return alliances.entries().stream()
         .filter(e -> e.getValue().equals(allianceName))
         .map(Map.Entry::getKey)
         .collect(Collectors.toSet());
   }
 
-  public Collection<String> getAlliancesPlayerIsIn(final PlayerID player) {
+  public Collection<String> getAlliancesPlayerIsIn(final PlayerId player) {
     final Collection<String> alliancesPlayerIsIn = alliances.get(player);
     return !alliancesPlayerIsIn.isEmpty() ? alliancesPlayerIsIn : Collections.singleton(player.getName());
   }
 
-  Set<PlayerID> getAllies(final PlayerID currentPlayer) {
+  Set<PlayerId> getAllies(final PlayerId currentPlayer) {
     return alliances.get(currentPlayer).stream()
         .map(this::getPlayersInAlliance)
         .flatMap(Collection::stream)

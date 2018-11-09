@@ -13,10 +13,10 @@ import lombok.extern.java.Log;
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
 
-  private final List<GameStep> m_steps = new ArrayList<>();
-  private int m_currentIndex;
-  private int m_round = 1;
-  private int m_roundOffset = 0;
+  private final List<GameStep> steps = new ArrayList<>();
+  private int currentIndex;
+  private int round = 1;
+  private int roundOffset = 0;
 
   public GameSequence(final GameData data) {
     super(data);
@@ -28,51 +28,51 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * (because we are creating a savegame at a certain point in history, for example).
    */
   public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName,
-      final PlayerID player) {
-    m_round = currentRound;
+      final PlayerId player) {
+    round = currentRound;
     boolean found = false;
-    for (int i = 0; i < m_steps.size(); i++) {
-      final GameStep step = m_steps.get(i);
+    for (int i = 0; i < steps.size(); i++) {
+      final GameStep step = steps.get(i);
       if (step != null && step.getDisplayName().equalsIgnoreCase(stepDisplayName)) {
         if ((player == null && step.getPlayerId() == null) || (player != null && player.equals(step.getPlayerId()))) {
-          m_currentIndex = i;
+          currentIndex = i;
           found = true;
           break;
         }
       }
     }
     if (!found) {
-      m_currentIndex = 0;
+      currentIndex = 0;
       log.severe(() -> String.format("Step Not Found (%s:%s), will instead use: %s",
-          stepDisplayName, (player != null) ? player.getName() : "null", m_steps.get(m_currentIndex)));
+          stepDisplayName, (player != null) ? player.getName() : "null", steps.get(currentIndex)));
     }
   }
 
   public void addStep(final GameStep step) {
-    m_steps.add(step);
+    steps.add(step);
   }
 
   public int getRound() {
-    return m_round + m_roundOffset;
+    return round + roundOffset;
   }
 
   public int getRoundOffset() {
-    return m_roundOffset;
+    return roundOffset;
   }
 
   public void setRoundOffset(final int roundOffset) {
-    m_roundOffset = roundOffset;
+    this.roundOffset = roundOffset;
   }
 
   public int getStepIndex() {
-    return m_currentIndex;
+    return currentIndex;
   }
 
   void setStepIndex(final int newIndex) {
-    if ((newIndex < 0) || (newIndex >= m_steps.size())) {
+    if ((newIndex < 0) || (newIndex >= steps.size())) {
       throw new IllegalArgumentException("New index out of range: " + newIndex);
     }
-    m_currentIndex = newIndex;
+    currentIndex = newIndex;
   }
 
   /**
@@ -81,10 +81,10 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * @return boolean whether the round has changed.
    */
   public synchronized boolean next() {
-    m_currentIndex++;
-    if (m_currentIndex >= m_steps.size()) {
-      m_currentIndex = 0;
-      m_round++;
+    currentIndex++;
+    if (currentIndex >= steps.size()) {
+      currentIndex = 0;
+      round++;
       return true;
     }
     return false;
@@ -96,33 +96,33 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
    * Does not change any data or fields.
    */
   public synchronized boolean testWeAreOnLastStep() {
-    return m_currentIndex + 1 >= m_steps.size();
+    return currentIndex + 1 >= steps.size();
   }
 
   public synchronized GameStep getStep() {
     // since we can now delete game steps mid game, it is a good idea to test if our index is out of range
-    if (m_currentIndex < 0) {
-      m_currentIndex = 0;
+    if (currentIndex < 0) {
+      currentIndex = 0;
     }
-    if (m_currentIndex >= m_steps.size()) {
+    if (currentIndex >= steps.size()) {
       next();
     }
-    return getStep(m_currentIndex);
+    return getStep(currentIndex);
   }
 
   public GameStep getStep(final int index) {
-    if ((index < 0) || (index >= m_steps.size())) {
-      throw new IllegalArgumentException("Attempt to access invalid state: " + index + ", steps = " + m_steps);
+    if ((index < 0) || (index >= steps.size())) {
+      throw new IllegalArgumentException("Attempt to access invalid state: " + index + ", steps = " + steps);
     }
-    return m_steps.get(index);
+    return steps.get(index);
   }
 
   @Override
   public Iterator<GameStep> iterator() {
-    return m_steps.iterator();
+    return steps.iterator();
   }
 
   public int size() {
-    return m_steps.size();
+    return steps.size();
   }
 }

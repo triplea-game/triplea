@@ -8,9 +8,15 @@
 
     All automated hosts have been updated to use the latest stable engine 1.9.0.0.12226. It's recommended that
     all players download and install the latest release here: https://triplea-game.org/download/
+    
+    The New ToC5 has started! Sign up here!
+    https://forums.triplea-game.org/topic/1061/tournament-of-champions-season-5-for-aa-50-anniversary-41-version
 
     Have an idea on how to make TripleA better? If so please post a reply with 1-3 features/changes to this thread:
     https://forums.triplea-game.org/topic/1032/most-wanted-features-changes
+    
+    Join the TripleA ranked ladder by posting here:
+    https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
   error_message:
 - version: 1.10.0.0
   host: lobby.triplea-game.org

@@ -272,7 +272,7 @@ public class MessengerIntegrationTest {
 
   private static class MessageListener implements IMessageListener {
     private final List<Serializable> messages = new ArrayList<>();
-    private final ArrayList<INode> senders = new ArrayList<>();
+    private final List<INode> senders = new ArrayList<>();
     private final Object lock = new Object();
 
     @Override

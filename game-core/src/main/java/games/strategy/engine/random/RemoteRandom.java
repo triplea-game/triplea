@@ -7,7 +7,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.VerifiedRandomNumbers;
 import games.strategy.engine.vault.NotUnlockedException;
 import games.strategy.engine.vault.Vault;
-import games.strategy.engine.vault.VaultID;
+import games.strategy.engine.vault.VaultId;
 
 /**
  * Default implementation of {@link IRemoteRandom}.
@@ -26,7 +26,7 @@ public class RemoteRandom implements IRemoteRandom {
   private final PlainRandomSource plainRandom = new PlainRandomSource();
   private final IGame game;
   // remembered from generate to unlock
-  private VaultID remoteVaultId;
+  private VaultId remoteVaultId;
   private String annotation;
   private int max;
   // have we recieved a generate request, but not a unlock request
@@ -41,7 +41,7 @@ public class RemoteRandom implements IRemoteRandom {
   }
 
   @Override
-  public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultId)
+  public int[] generate(final int max, final int count, final String annotation, final VaultId remoteVaultId)
       throws IllegalStateException {
     if (waitingForUnlock) {
       throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation. "

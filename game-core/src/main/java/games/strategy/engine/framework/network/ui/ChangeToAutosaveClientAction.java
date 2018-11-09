@@ -7,7 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.net.IClientMessenger;
 
 /**
@@ -17,10 +17,10 @@ public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
   private final Component parent;
   private final IClientMessenger clientMessenger;
-  private final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave;
+  private final HeadlessAutoSaveType typeOfAutosave;
 
   public ChangeToAutosaveClientAction(final Component parent, final IClientMessenger clientMessenger,
-      final SaveGameFileChooser.AUTOSAVE_TYPE typeOfAutosave) {
+      final HeadlessAutoSaveType typeOfAutosave) {
     super("Change To " + typeOfAutosave.toString().toLowerCase());
     this.parent = JOptionPane.getFrameForComponent(parent);
     this.clientMessenger = clientMessenger;

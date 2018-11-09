@@ -15,12 +15,9 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.util.IntegerMap;
 
-@MapSupport
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
 
@@ -79,7 +76,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     combatOffenseEffect = new IntegerMap<>();
   }
 
-  @InternalDoNotExport
   private void setCombatEffect(final String combatEffect, final boolean defending) throws GameParseException {
     final String[] s = splitOnColon(combatEffect);
     if (s.length < 2) {

@@ -15,11 +15,11 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
-import games.strategy.triplea.delegate.dataObjects.MoveDescription;
+import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -65,7 +65,8 @@ abstract class AbstractMovePanel extends ActionPanel {
     return bridge;
   }
 
-  // m_frame methods
+  // frame methods
+
   final void clearStatusMessage() {
     frame.clearStatusMessage();
   }
@@ -226,7 +227,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     SwingUtilities.invokeLater(this::cancelMove);
   }
 
-  protected final void display(final PlayerID id, final String actionLabel) {
+  protected final void display(final PlayerId id, final String actionLabel) {
     super.display(id);
     SwingUtilities.invokeLater(() -> {
       removeAll();

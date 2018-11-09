@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -58,7 +58,7 @@ public class PurchasePanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id);
     purchase = new IntegerMap<>();
     SwingUtilities.invokeLater(() -> {
@@ -116,7 +116,7 @@ public class PurchasePanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final PlayerID player = getCurrentPlayer();
+      final PlayerId player = getCurrentPlayer();
       final GameData data = getData();
       if (isTabbedProduction()) {
         purchase = TabbedProductionPanel.getProduction(player, (JFrame) getTopLevelAncestor(), data, bid,
@@ -180,7 +180,7 @@ public class PurchasePanel extends ActionPanel {
           }
         }
       }
-      final PlayerID player = getCurrentPlayer();
+      final PlayerId player = getCurrentPlayer();
       final Collection<Unit> unitsNeedingFactory =
           CollectionUtils.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
       if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
@@ -196,7 +196,7 @@ public class PurchasePanel extends ActionPanel {
     release();
   });
 
-  private static boolean isUnlimitedProduction(final PlayerID player) {
+  private static boolean isUnlimitedProduction(final PlayerId player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getUnlimitedProduction();
   }

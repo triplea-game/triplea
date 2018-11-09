@@ -11,14 +11,13 @@ import java.util.function.Predicate;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
@@ -33,10 +32,9 @@ import games.strategy.util.Tuple;
  * After that, any remaining units get placed one by one.
  * (Note that player may not be used here, because this delegate is not run by any player [it is null])
  */
-@MapSupport
 public class RandomStartDelegate extends BaseTripleADelegate {
   private static final int UNITS_PER_PICK = 1;
-  private PlayerID currentPickingPlayer = null;
+  private PlayerId currentPickingPlayer = null;
 
   @Override
   public void start() {
@@ -60,7 +58,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   public Serializable saveState() {
     final RandomStartExtendedDelegateState state = new RandomStartExtendedDelegateState();
     state.superState = super.saveState();
-    state.m_currentPickingPlayer = this.currentPickingPlayer;
+    state.currentPickingPlayer = this.currentPickingPlayer;
     return state;
   }
 
@@ -68,17 +66,17 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final RandomStartExtendedDelegateState s = (RandomStartExtendedDelegateState) state;
     super.loadState(s.superState);
-    this.currentPickingPlayer = s.m_currentPickingPlayer;
+    this.currentPickingPlayer = s.currentPickingPlayer;
   }
 
   private void setupBoard() {
     final GameData data = getData();
     final boolean randomTerritories = Properties.getTerritoriesAreAssignedRandomly(data);
     final Predicate<Territory> pickableTerritoryMatch = getTerritoryPickableMatch();
-    final Predicate<PlayerID> playerCanPickMatch = getPlayerCanPickMatch();
+    final Predicate<PlayerId> playerCanPickMatch = getPlayerCanPickMatch();
     final List<Territory> allPickableTerritories =
         CollectionUtils.getMatches(data.getMap().getTerritories(), pickableTerritoryMatch);
-    final List<PlayerID> playersCanPick =
+    final List<PlayerId> playersCanPick =
         new ArrayList<>(CollectionUtils.getMatches(data.getPlayerList().getPlayers(), playerCanPickMatch));
     // we need a main event
     if (!playersCanPick.isEmpty()) {
@@ -153,7 +151,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         bridge.addChange(change);
       }
       allPickableTerritories.remove(picked);
-      final PlayerID lastPlayer = currentPickingPlayer;
+      final PlayerId lastPlayer = currentPickingPlayer;
       currentPickingPlayer = getNextPlayer(playersCanPick, currentPickingPlayer);
       if (!playerCanPickMatch.test(lastPlayer)) {
         playersCanPick.remove(lastPlayer);
@@ -197,7 +195,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       bridge.getHistoryWriter().addChildToEvent(currentPickingPlayer.getName() + " places "
           + MyFormatter.unitsToTextNoOwner(unitsToPlace) + " in territory " + picked.getName(), unitsToPlace);
       bridge.addChange(change);
-      final PlayerID lastPlayer = currentPickingPlayer;
+      final PlayerId lastPlayer = currentPickingPlayer;
       currentPickingPlayer = getNextPlayer(playersCanPick, currentPickingPlayer);
       if (!playerCanPickMatch.test(lastPlayer)) {
         playersCanPick.remove(lastPlayer);
@@ -208,7 +206,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     }
   }
 
-  private static PlayerID getNextPlayer(final List<PlayerID> playersCanPick, final PlayerID currentPlayer) {
+  private static PlayerId getNextPlayer(final List<PlayerId> playersCanPick, final PlayerId currentPlayer) {
     int index = playersCanPick.indexOf(currentPlayer);
     if (index == -1) {
       return null;
@@ -226,13 +224,13 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   private static Predicate<Territory> getTerritoryPickableMatch() {
     return Matches.territoryIsLand()
         .and(Matches.territoryIsNotImpassable())
-        .and(Matches.isTerritoryOwnedBy(PlayerID.NULL_PLAYERID))
+        .and(Matches.isTerritoryOwnedBy(PlayerId.NULL_PLAYERID))
         .and(Matches.territoryIsEmpty());
   }
 
-  private static Predicate<PlayerID> getPlayerCanPickMatch() {
+  private static Predicate<PlayerId> getPlayerCanPickMatch() {
     return player -> player != null
-        && !player.equals(PlayerID.NULL_PLAYERID)
+        && !player.equals(PlayerId.NULL_PLAYERID)
         && !player.getUnits().isEmpty()
         && !player.getIsDisabled();
   }

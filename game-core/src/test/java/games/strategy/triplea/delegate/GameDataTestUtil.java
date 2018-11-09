@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -30,100 +30,100 @@ public final class GameDataTestUtil {
   private GameDataTestUtil() {}
 
   /**
-   * Get the german PlayerID for the given GameData object.
+   * Get the german PlayerId for the given GameData object.
    *
-   * @return A german PlayerID.
+   * @return A german PlayerId.
    */
-  public static PlayerID germans(final GameData data) {
+  public static PlayerId germans(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_GERMANS);
   }
 
   /**
-   * Get the germany PlayerID for the given GameData object.
+   * Get the germany PlayerId for the given GameData object.
    *
-   * @return A germany PlayerID.
+   * @return A germany PlayerId.
    */
-  public static PlayerID germany(final GameData data) {
+  public static PlayerId germany(final GameData data) {
     return data.getPlayerList().getPlayerId("Germany");
   }
 
   /**
-   * Get the italian PlayerID for the given GameData object.
+   * Get the italian PlayerId for the given GameData object.
    *
-   * @return A italian PlayerID.
+   * @return A italian PlayerId.
    */
-  static PlayerID italians(final GameData data) {
+  static PlayerId italians(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_ITALIANS);
   }
 
-  public static PlayerID italy(final GameData data) {
+  public static PlayerId italy(final GameData data) {
     return data.getPlayerList().getPlayerId("Italy");
   }
 
   /**
-   * Get the russian PlayerID for the given GameData object.
+   * Get the russian PlayerId for the given GameData object.
    *
-   * @return A russian PlayerID.
+   * @return A russian PlayerId.
    */
-  public static PlayerID russians(final GameData data) {
+  public static PlayerId russians(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_RUSSIANS);
   }
 
   /**
-   * Get the american PlayerID for the given GameData object.
+   * Get the american PlayerId for the given GameData object.
    *
-   * @return A american PlayerID.
+   * @return A american PlayerId.
    */
-  public static PlayerID americans(final GameData data) {
+  public static PlayerId americans(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_AMERICANS);
   }
 
   /**
-   * Get the USA PlayerID for the given GameData object.
+   * Get the USA PlayerId for the given GameData object.
    *
-   * @return A USA PlayerID.
+   * @return A USA PlayerId.
    */
-  public static PlayerID usa(final GameData data) {
+  public static PlayerId usa(final GameData data) {
     return data.getPlayerList().getPlayerId("Usa");
   }
 
   /**
-   * Get the british PlayerID for the given GameData object.
+   * Get the british PlayerId for the given GameData object.
    *
-   * @return A british PlayerID.
+   * @return A british PlayerId.
    */
-  public static PlayerID british(final GameData data) {
+  public static PlayerId british(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_BRITISH);
   }
 
-  public static PlayerID britain(final GameData data) {
+  public static PlayerId britain(final GameData data) {
     return data.getPlayerList().getPlayerId("Britain");
   }
 
   /**
-   * Get the japanese PlayerID for the given GameData object.
+   * Get the japanese PlayerId for the given GameData object.
    *
-   * @return A japanese PlayerID.
+   * @return A japanese PlayerId.
    */
-  public static PlayerID japanese(final GameData data) {
+  public static PlayerId japanese(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_JAPANESE);
   }
 
   /**
-   * Get the Japan PlayerID for the given GameData object.
+   * Get the Japan PlayerId for the given GameData object.
    *
-   * @return A Japan PlayerID.
+   * @return A Japan PlayerId.
    */
-  public static PlayerID japan(final GameData data) {
+  public static PlayerId japan(final GameData data) {
     return data.getPlayerList().getPlayerId("Japan");
   }
 
   /**
-   * Get the chinese PlayerID for the given GameData object.
+   * Get the chinese PlayerId for the given GameData object.
    *
-   * @return A chinese PlayerID.
+   * @return A chinese PlayerId.
    */
-  public static PlayerID chinese(final GameData data) {
+  public static PlayerId chinese(final GameData data) {
     return data.getPlayerList().getPlayerId(Constants.PLAYER_NAME_CHINESE);
   }
 
@@ -339,9 +339,9 @@ public final class GameDataTestUtil {
   }
 
   /**
-   * Adds all units from the given Collection to the given PlayerID.
+   * Adds all units from the given Collection to the given PlayerId.
    */
-  static void addTo(final PlayerID t, final Collection<Unit> units, final GameData data) {
+  static void addTo(final PlayerId t, final Collection<Unit> units, final GameData data) {
     data.performChange(ChangeFactory.addUnits(t, units));
   }
 
@@ -439,7 +439,7 @@ public final class GameDataTestUtil {
   }
 
   static void setSelectAaCasualties(final GameData data, final boolean val) {
-    for (final IEditableProperty property : data.getProperties().getEditableProperties()) {
+    for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.CHOOSE_AA)) {
         ((BooleanProperty) property).setValue(val);
         return;
@@ -449,7 +449,7 @@ public final class GameDataTestUtil {
   }
 
   static void makeGameLowLuck(final GameData data) {
-    for (final IEditableProperty property : data.getProperties().getEditableProperties()) {
+    for (final IEditableProperty<?> property : data.getProperties().getEditableProperties()) {
       if (property.getName().equals(Constants.LOW_LUCK)) {
         ((BooleanProperty) property).setValue(true);
         return;
@@ -458,7 +458,7 @@ public final class GameDataTestUtil {
     throw new IllegalStateException();
   }
 
-  static void givePlayerRadar(final PlayerID player) {
+  static void givePlayerRadar(final PlayerId player) {
     TechAttachment.get(player).setAaRadar(Boolean.TRUE.toString());
   }
 

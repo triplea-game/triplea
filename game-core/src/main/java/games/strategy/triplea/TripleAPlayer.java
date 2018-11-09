@@ -16,7 +16,7 @@ import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
@@ -32,13 +32,13 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.dataObjects.BattleListing;
-import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
-import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
-import games.strategy.triplea.delegate.dataObjects.MoveDescription;
-import games.strategy.triplea.delegate.dataObjects.TechResults;
-import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.delegate.data.BattleListing;
+import games.strategy.triplea.delegate.data.CasualtyDetails;
+import games.strategy.triplea.delegate.data.CasualtyList;
+import games.strategy.triplea.delegate.data.FightBattleDetails;
+import games.strategy.triplea.delegate.data.MoveDescription;
+import games.strategy.triplea.delegate.data.TechResults;
+import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
@@ -228,7 +228,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+  public boolean acceptAction(final PlayerId playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     final GameData data = getGameData();
     return !getPlayerId().amNotDeadYet(data)
@@ -253,7 +253,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     }
 
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     if (!soundPlayedAlreadyTechnology) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id);
       soundPlayedAlreadyTechnology = true;
@@ -286,7 +286,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
 
     if (nonCombat && !soundPlayedAlreadyNonCombatMove) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id);
@@ -322,7 +322,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     move(nonCombat, stepName);
   }
 
-  private boolean canAirLand(final boolean movePhase, final PlayerID player) {
+  private boolean canAirLand(final boolean movePhase, final PlayerId player) {
     final Collection<Territory> airCantLand;
     try {
       if (movePhase) {
@@ -357,7 +357,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       return;
     }
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     // play a sound for this phase
     if (!bid && !soundPlayedAlreadyPurchase) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id);
@@ -374,7 +374,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
           damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits().getUnits(), myDamaged));
         }
         if (damagedUnits.size() > 0) {
-          final HashMap<Unit, IntegerMap<RepairRule>> repair =
+          final Map<Unit, IntegerMap<RepairRule>> repair =
               ui.getRepair(id, bid, GameStepPropertiesHelper.getRepairPlayers(data, id));
           if (repair != null) {
             final IPurchaseDelegate purchaseDel;
@@ -432,7 +432,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       throw new IllegalStateException(errorContext, e);
     }
 
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     while (true) {
       if (getPlayerBridge().isGameOver()) {
         return;
@@ -464,7 +464,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     if (getPlayerBridge().isGameOver()) {
       return;
     }
-    final PlayerID id = getPlayerId();
+    final PlayerId id = getPlayerId();
     final IAbstractPlaceDelegate placeDel;
     try {
       placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
@@ -524,7 +524,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerID hit, final Collection<Unit> friendlyUnits, final PlayerID enemyPlayer,
+      final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
@@ -617,7 +617,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
     return ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);
   }
@@ -629,7 +629,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer) {
+  public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerId hitPlayer) {
     // no need, we have already confirmed since we are firing player
     if (ui.getLocalPlayers().playing(hitPlayer)) {
       return;
@@ -651,9 +651,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
-      final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack) {
-    final PlayerID id = getPlayerId();
+  public Map<Territory, Map<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(
+      final Map<Territory, Collection<Unit>> possibleUnitsToAttack) {
+    final PlayerId id = getPlayerId();
     final PlayerAttachment pa = PlayerAttachment.get(id);
     if (pa == null) {
       return null;
@@ -673,7 +673,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     if (attackTokens.size() <= 0) {
       return null;
     }
-    final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
+    final Map<Territory, Map<Unit, IntegerMap<Resource>>> kamikazeSuicideAttacks = new HashMap<>();
     for (final Entry<Resource, Integer> entry : attackTokens.entrySet()) {
       final Resource resource = entry.getKey();
       final int max = entry.getValue();
@@ -681,7 +681,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
           ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, resource, max);
       for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet()) {
         final Territory territory = selectionEntry.getKey();
-        final HashMap<Unit, IntegerMap<Resource>> currentTerr =
+        final Map<Unit, IntegerMap<Resource>> currentTerr =
             kamikazeSuicideAttacks.getOrDefault(territory, new HashMap<>());
         for (final Entry<Unit, Integer> unitEntry : selectionEntry.getValue().entrySet()) {
           final Unit unit = unitEntry.getKey();

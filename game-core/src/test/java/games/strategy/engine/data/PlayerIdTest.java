@@ -15,7 +15,7 @@ import games.strategy.util.Tuple;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class PlayerIdTest {
-  private final PlayerID playerId = new PlayerID("name", new GameData());
+  private final PlayerId playerId = new PlayerId("name", new GameData());
 
   @Nested
   final class GetPlayerTypeTest {
@@ -27,7 +27,7 @@ final class PlayerIdTest {
           Tuple.of("null", "Bot")).forEach(idAndName -> {
             playerId.setWhoAmI(idAndName.getFirst() + ":" + idAndName.getSecond());
 
-            assertThat(playerId.getPlayerType(), is(new PlayerID.Type(idAndName.getFirst(), idAndName.getSecond())));
+            assertThat(playerId.getPlayerType(), is(new PlayerId.Type(idAndName.getFirst(), idAndName.getSecond())));
           });
     }
   }
@@ -96,7 +96,7 @@ final class PlayerIdTest {
   final class TypeTest {
     @Test
     void shouldBeEquatableAndHashable() {
-      EqualsVerifier.forClass(PlayerID.Type.class).verify();
+      EqualsVerifier.forClass(PlayerId.Type.class).verify();
     }
   }
 }

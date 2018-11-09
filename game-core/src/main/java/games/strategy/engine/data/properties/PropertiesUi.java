@@ -21,9 +21,9 @@ public class PropertiesUi extends JPanel {
     this(gameProperties.getEditableProperties(), editable);
   }
 
-  public PropertiesUi(final List<? extends IEditableProperty> properties, final boolean editable) {
+  public PropertiesUi(final List<? extends IEditableProperty<?>> properties, final boolean editable) {
     init();
-    for (final IEditableProperty property : properties) {
+    for (final IEditableProperty<?> property : properties) {
       // Limit it to 14 rows then start a new column
       // Don't know if this is the most elegant solution, but it works.
       if (nextRow >= 15) {

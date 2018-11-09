@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;

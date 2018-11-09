@@ -78,23 +78,14 @@ public final class CollectionUtils {
   }
 
   /**
-   * Equivalent to !intersection(c1,c2).isEmpty(), but more efficient.
-   *
-   * @return true if some element in c1 is in c2
-   */
-  public static <T> boolean someIntersect(final Collection<T> c1, final Collection<T> c2) {
-    return c1.stream().anyMatch(c2::contains);
-  }
-
-  /**
    * Returns a such that a exists in c1 but not in c2.
    * Always returns a new collection.
    */
   public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2) {
-    if (c1 == null || c1.size() == 0) {
+    if (c1 == null || c1.isEmpty()) {
       return new ArrayList<>(0);
     }
-    if (c2 == null || c2.size() == 0) {
+    if (c2 == null || c2.isEmpty()) {
       return new ArrayList<>(c1);
     }
     return c1.stream().filter(Util.not(c2::contains)).collect(Collectors.toList());

@@ -15,13 +15,14 @@ import games.strategy.engine.delegate.IDelegate;
  */
 public class GameStep extends GameDataComponent {
   private static final long serialVersionUID = -7944468945162840931L;
-  private final String m_name;
-  private final String m_displayName;
-  private final PlayerID m_player;
-  private final String m_delegate;
-  private int m_runCount = 0;
-  private int m_maxRunCount = -1;
-  private final Properties m_properties;
+
+  private final String name;
+  private final String displayName;
+  private final PlayerId player;
+  private final String delegateName;
+  private int runCount = 0;
+  private int maxRunCount = -1;
+  private final Properties properties;
 
   /**
    * The keys for all supported game step properties.
@@ -55,26 +56,26 @@ public class GameStep extends GameDataComponent {
    * @param data game data
    * @param stepProperties properties of the game step
    */
-  public GameStep(final String name, final String displayName, final PlayerID player, final IDelegate delegate,
+  public GameStep(final String name, final String displayName, final PlayerId player, final IDelegate delegate,
       final GameData data, final Properties stepProperties) {
     super(data);
-    m_name = name;
-    m_displayName = displayName;
-    m_player = player;
-    m_delegate = delegate.getName();
-    m_properties = stepProperties;
+    this.name = name;
+    this.displayName = displayName;
+    this.player = player;
+    delegateName = delegate.getName();
+    properties = stepProperties;
   }
 
   public String getName() {
-    return m_name;
+    return name;
   }
 
-  public PlayerID getPlayerId() {
-    return m_player;
+  public PlayerId getPlayerId() {
+    return player;
   }
 
   public IDelegate getDelegate() {
-    return getData().getDelegateList().getDelegate(m_delegate);
+    return getData().getDelegateList().getDelegate(delegateName);
   }
 
   @Override
@@ -83,36 +84,36 @@ public class GameStep extends GameDataComponent {
       return false;
     }
     final GameStep other = (GameStep) o;
-    return other.m_name.equals(this.m_name) && other.m_delegate.equals(this.m_delegate)
-        && other.m_player.equals(this.m_player);
+    return other.name.equals(this.name) && other.delegateName.equals(this.delegateName)
+        && other.player.equals(this.player);
   }
 
   public boolean hasReachedMaxRunCount() {
-    return m_maxRunCount != -1 && m_maxRunCount <= m_runCount;
+    return maxRunCount != -1 && maxRunCount <= runCount;
   }
 
   public void incrementRunCount() {
-    m_runCount++;
+    runCount++;
   }
 
   public void setMaxRunCount(final int count) {
-    m_maxRunCount = count;
+    maxRunCount = count;
   }
 
   public int getMaxRunCount() {
-    return m_maxRunCount;
+    return maxRunCount;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_name, m_delegate, m_player);
+    return Objects.hash(name, delegateName, player);
   }
 
   public String getDisplayName() {
-    if (m_displayName == null) {
+    if (displayName == null) {
       return getDelegate().getDisplayName();
     }
-    return m_displayName;
+    return displayName;
   }
 
   /**
@@ -134,11 +135,11 @@ public class GameStep extends GameDataComponent {
    * Move delegates -> combinedTurns = colon separated list of players which have intermeshed phases<br>
    */
   public Properties getProperties() {
-    return m_properties;
+    return properties;
   }
 
   @Override
   public String toString() {
-    return "GameStep:" + m_name + " delegate:" + m_delegate + " player:" + m_player + " displayName:" + m_displayName;
+    return "GameStep:" + name + " delegate:" + delegateName + " player:" + player + " displayName:" + displayName;
   }
 }

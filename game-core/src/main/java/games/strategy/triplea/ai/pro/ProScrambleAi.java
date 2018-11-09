@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -37,12 +37,12 @@ class ProScrambleAi {
     calc = ai.getCalc();
   }
 
-  HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
+  Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo,
       final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers) {
 
     // Get battle data
     final GameData data = ProData.getData();
-    final PlayerID player = ProData.getPlayer();
+    final PlayerId player = ProData.getPlayer();
     final BattleDelegate delegate = DelegateFinder.battleDelegate(data);
     final IBattle battle = delegate.getBattleTracker().getPendingBattle(scrambleTo, false, BattleType.NORMAL);
 
@@ -121,7 +121,7 @@ class ProScrambleAi {
     }
 
     // Return units to scramble
-    final HashMap<Territory, Collection<Unit>> scrambleMap = new HashMap<>();
+    final Map<Territory, Collection<Unit>> scrambleMap = new HashMap<>();
     for (final Territory t : possibleScramblers.keySet()) {
       for (final Unit u : possibleScramblers.get(t).getSecond()) {
         if (unitsToScramble.contains(u)) {

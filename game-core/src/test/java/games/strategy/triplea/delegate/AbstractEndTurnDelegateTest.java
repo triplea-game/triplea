@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
@@ -26,7 +26,7 @@ final class AbstractEndTurnDelegateTest {
     @Test
     void testFindEstimatedIncome() throws Exception {
       final GameData global40Data = TestMapGameData.GLOBAL1940.getGameData();
-      final PlayerID germans = GameDataTestUtil.germans(global40Data);
+      final PlayerId germans = GameDataTestUtil.germans(global40Data);
       final IntegerMap<Resource> results = AbstractEndTurnDelegate.findEstimatedIncome(germans, global40Data);
       final int pus = results.getInt(new Resource(Constants.PUS, global40Data));
       assertEquals(40, pus);

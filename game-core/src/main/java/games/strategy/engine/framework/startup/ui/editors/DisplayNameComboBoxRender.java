@@ -17,8 +17,9 @@ class DisplayNameComboBoxRender extends DefaultListCellRenderer {
       final boolean isSelected, final boolean cellHasFocus) {
     super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
     setText(Optional.ofNullable(value)
-        .map(bean -> ((IBean) bean).getDisplayName())
-        .orElse(""));
+        .map(IBean.class::cast)
+        .map(IBean::getDisplayName)
+        .orElse("disabled"));
     return this;
   }
 }

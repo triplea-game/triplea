@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ai.pro.ProData;
@@ -26,7 +26,7 @@ public class ProTerritoryValueUtils {
   private static final int MIN_FACTORY_CHECK_DISTANCE = 9;
   private static final int MAX_FACTORY_CHECK_DISTANCE = 30;
 
-  public static double findTerritoryAttackValue(final PlayerID player, final Territory t) {
+  public static double findTerritoryAttackValue(final PlayerId player, final Territory t) {
     final GameData data = ProData.getData();
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
@@ -42,14 +42,14 @@ public class ProTerritoryValueUtils {
     return value;
   }
 
-  public static Map<Territory, Double> findTerritoryValues(final PlayerID player,
+  public static Map<Territory, Double> findTerritoryValues(final PlayerId player,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack) {
 
     return findTerritoryValues(player, territoriesThatCantBeHeld, territoriesToAttack,
         new HashSet<>(ProData.getData().getMap().getTerritories()));
   }
 
-  public static Map<Territory, Double> findTerritoryValues(final PlayerID player,
+  public static Map<Territory, Double> findTerritoryValues(final PlayerId player,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack,
       final Set<Territory> territoriesToCheck) {
 
@@ -78,7 +78,7 @@ public class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
-  public static Map<Territory, Double> findSeaTerritoryValues(final PlayerID player,
+  public static Map<Territory, Double> findSeaTerritoryValues(final PlayerId player,
       final List<Territory> territoriesThatCantBeHeld) {
 
     // Determine value for water territories
@@ -136,7 +136,7 @@ public class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
-  private static int findMaxLandMassSize(final PlayerID player) {
+  private static int findMaxLandMassSize(final PlayerId player) {
     int maxLandMassSize = 1;
     final GameData data = ProData.getData();
     for (final Territory t : data.getMap().getTerritories()) {
@@ -152,7 +152,7 @@ public class ProTerritoryValueUtils {
     return maxLandMassSize;
   }
 
-  private static Map<Territory, Double> findEnemyCapitalsAndFactoriesValue(final PlayerID player,
+  private static Map<Territory, Double> findEnemyCapitalsAndFactoriesValue(final PlayerId player,
       final int maxLandMassSize, final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack) {
 
@@ -199,7 +199,7 @@ public class ProTerritoryValueUtils {
     return enemyCapitalsAndFactoriesMap;
   }
 
-  private static double findLandValue(final Territory t, final PlayerID player, final int maxLandMassSize,
+  private static double findLandValue(final Territory t, final PlayerId player, final int maxLandMassSize,
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap, final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack) {
 
@@ -257,7 +257,7 @@ public class ProTerritoryValueUtils {
     return value;
   }
 
-  private static double findWaterValue(final Territory t, final PlayerID player, final int maxLandMassSize,
+  private static double findWaterValue(final Territory t, final PlayerId player, final int maxLandMassSize,
       final Map<Territory, Double> enemyCapitalsAndFactoriesMap, final List<Territory> territoriesThatCantBeHeld,
       final List<Territory> territoriesToAttack, final Map<Territory, Double> territoryValueMap) {
 

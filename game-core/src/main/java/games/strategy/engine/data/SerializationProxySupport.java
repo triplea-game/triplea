@@ -26,7 +26,7 @@ package games.strategy.engine.data;
  *
  * private static class SerializationProxy implements Serializable {
  *   private static final long serialVersionUID = -4193924040595347947L;
- *   private final Multimap&lt;PlayerID, String> alliances;
+ *   private final Multimap&lt;PlayerId, String> alliances;
  *
  *   // Copy constructor is okay using private API
  *   public SerializationProxy(AllianceTracker allianceTracker) {

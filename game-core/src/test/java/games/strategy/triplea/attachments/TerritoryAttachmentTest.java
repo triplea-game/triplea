@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class TerritoryAttachmentTest {
   @Nested
   final class GetCaptureOwnershipChangesTest {
     private final GameData gameData = new GameData();
-    private final PlayerID player1 = new PlayerID("player1", gameData);
-    private final PlayerID player2 = new PlayerID("player2", gameData);
-    private final PlayerID player3 = new PlayerID("player3", gameData);
+    private final PlayerId player1 = new PlayerId("player1", gameData);
+    private final PlayerId player2 = new PlayerId("player2", gameData);
+    private final PlayerId player3 = new PlayerId("player3", gameData);
     private final TerritoryAttachment territoryAttachment =
         new TerritoryAttachment("territoryAttachment", null, gameData);
 
@@ -67,9 +67,9 @@ final class TerritoryAttachmentTest {
       final GameData gameData = new GameData();
       EqualsVerifier.forClass(TerritoryAttachment.CaptureOwnershipChange.class)
           .withPrefabValues(
-              PlayerID.class,
-              new PlayerID("redPlayerId", gameData),
-              new PlayerID("blackPlayerId", gameData))
+              PlayerId.class,
+              new PlayerId("redPlayerId", gameData),
+              new PlayerId("blackPlayerId", gameData))
           .verify();
     }
   }

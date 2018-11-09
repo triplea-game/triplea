@@ -2,7 +2,6 @@ package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +15,9 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
@@ -29,7 +27,6 @@ import games.strategy.util.Tuple;
  * A class of attachments that can be "activated" during a user action delegate.
  * For now they will just be conditions that can then fire triggers.
  */
-@MapSupport
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
 
@@ -39,7 +36,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     super(name, attachable, gameData);
   }
 
-  public static Collection<UserActionAttachment> getUserActionAttachments(final PlayerID player) {
+  public static Collection<UserActionAttachment> getUserActionAttachments(final PlayerId player) {
     return player.getAttachments().values().stream()
         .filter(a -> a.getName().startsWith(Constants.USERACTION_ATTACHMENT_PREFIX))
         .filter(UserActionAttachment.class::isInstance)
@@ -47,7 +44,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
         .collect(Collectors.toList());
   }
 
-  static UserActionAttachment get(final PlayerID player, final String nameOfAttachment) {
+  static UserActionAttachment get(final PlayerId player, final String nameOfAttachment) {
     return getAttachment(player, nameOfAttachment, UserActionAttachment.class);
   }
 
@@ -60,7 +57,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
               + thisErrorMsg());
     }
     TriggerAttachment trigger = null;
-    for (final PlayerID player : getData().getPlayerList().getPlayers()) {
+    for (final PlayerId player : getData().getPlayerList().getPlayers()) {
       for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
         if (ta.getName().equals(s[0])) {
           trigger = ta;
@@ -101,7 +98,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   public static void fireTriggers(final UserActionAttachment actionAttachment,
-      final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
+      final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
@@ -114,7 +111,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
         continue;
       }
       final TriggerAttachment toFire = optionalTrigger.get();
-      final HashSet<TriggerAttachment> toFireSet = new HashSet<>();
+      final Set<TriggerAttachment> toFireSet = new HashSet<>();
       toFireSet.add(toFire);
       final String[] options = splitOnColon(tuple.getSecond());
       final int numberOfTimesToFire = getInt(options[0]);
@@ -141,9 +138,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     }
   }
 
-  public Set<PlayerID> getOtherPlayers() {
-    final HashSet<PlayerID> otherPlayers = new HashSet<>();
-    otherPlayers.add((PlayerID) this.getAttachedTo());
+  public Set<PlayerId> getOtherPlayers() {
+    final Set<PlayerId> otherPlayers = new HashSet<>();
+    otherPlayers.add((PlayerId) this.getAttachedTo());
     otherPlayers.addAll(actionAccept);
     return otherPlayers;
   }
@@ -151,8 +148,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   /**
    * Returns the valid actions for this player.
    */
-  public static Collection<UserActionAttachment> getValidActions(final PlayerID player,
-      final HashMap<ICondition, Boolean> testedConditions) {
+  public static Collection<UserActionAttachment> getValidActions(final PlayerId player,
+      final Map<ICondition, Boolean> testedConditions) {
     return CollectionUtils.getMatches(getUserActionAttachments(player),
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions));
   }

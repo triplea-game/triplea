@@ -13,7 +13,7 @@ import com.google.common.collect.Streams;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
@@ -41,9 +41,9 @@ public class ProUtils {
     return unitTerritoryMap;
   }
 
-  public static List<PlayerID> getOtherPlayersInTurnOrder(final PlayerID player) {
+  public static List<PlayerId> getOtherPlayersInTurnOrder(final PlayerId player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> players = new ArrayList<>();
+    final List<PlayerId> players = new ArrayList<>();
     final GameSequence sequence = data.getSequence();
     final int startIndex = sequence.getStepIndex();
     for (int i = 0; i < sequence.size(); i++) {
@@ -52,7 +52,7 @@ public class ProUtils {
         currentIndex -= sequence.size();
       }
       final GameStep step = sequence.getStep(currentIndex);
-      final PlayerID stepPlayer = step.getPlayerId();
+      final PlayerId stepPlayer = step.getPlayerId();
       if (step.getName().endsWith("CombatMove") && stepPlayer != null && !stepPlayer.equals(player)
           && !players.contains(stepPlayer)) {
         players.add(step.getPlayerId());
@@ -61,23 +61,23 @@ public class ProUtils {
     return players;
   }
 
-  public static List<PlayerID> getAlliedPlayersInTurnOrder(final PlayerID player) {
+  public static List<PlayerId> getAlliedPlayersInTurnOrder(final PlayerId player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> players = getOtherPlayersInTurnOrder(player);
+    final List<PlayerId> players = getOtherPlayersInTurnOrder(player);
     players.removeIf(currentPlayer -> !data.getRelationshipTracker().isAllied(player, currentPlayer));
     return players;
   }
 
-  public static List<PlayerID> getEnemyPlayersInTurnOrder(final PlayerID player) {
+  public static List<PlayerId> getEnemyPlayersInTurnOrder(final PlayerId player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> players = getOtherPlayersInTurnOrder(player);
+    final List<PlayerId> players = getOtherPlayersInTurnOrder(player);
     players.removeIf(currentPlayer -> data.getRelationshipTracker().isAllied(player, currentPlayer));
     return players;
   }
 
-  public static boolean isPlayersTurnFirst(final List<PlayerID> playersInOrder, final PlayerID player1,
-      final PlayerID player2) {
-    for (final PlayerID p : playersInOrder) {
+  public static boolean isPlayersTurnFirst(final List<PlayerId> playersInOrder, final PlayerId player1,
+      final PlayerId player2) {
+    for (final PlayerId p : playersInOrder) {
       if (p.equals(player1)) {
         return true;
       } else if (p.equals(player2)) {
@@ -87,10 +87,10 @@ public class ProUtils {
     return true;
   }
 
-  private static List<PlayerID> getEnemyPlayers(final PlayerID player) {
+  private static List<PlayerId> getEnemyPlayers(final PlayerId player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> enemyPlayers = new ArrayList<>();
-    for (final PlayerID players : data.getPlayerList().getPlayers()) {
+    final List<PlayerId> enemyPlayers = new ArrayList<>();
+    for (final PlayerId players : data.getPlayerList().getPlayers()) {
       if (!data.getRelationshipTracker().isAllied(player, players)) {
         enemyPlayers.add(players);
       }
@@ -98,10 +98,10 @@ public class ProUtils {
     return enemyPlayers;
   }
 
-  private static List<PlayerID> getAlliedPlayers(final PlayerID player) {
+  private static List<PlayerId> getAlliedPlayers(final PlayerId player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> alliedPlayers = new ArrayList<>();
-    for (final PlayerID players : data.getPlayerList().getPlayers()) {
+    final List<PlayerId> alliedPlayers = new ArrayList<>();
+    for (final PlayerId players : data.getPlayerList().getPlayers()) {
       if (data.getRelationshipTracker().isAllied(player, players)) {
         alliedPlayers.add(players);
       }
@@ -109,11 +109,11 @@ public class ProUtils {
     return alliedPlayers;
   }
 
-  public static List<PlayerID> getPotentialEnemyPlayers(final PlayerID player) {
+  public static List<PlayerId> getPotentialEnemyPlayers(final PlayerId player) {
     final GameData data = ProData.getData();
-    final List<PlayerID> otherPlayers = data.getPlayerList().getPlayers();
-    for (final Iterator<PlayerID> it = otherPlayers.iterator(); it.hasNext();) {
-      final PlayerID otherPlayer = it.next();
+    final List<PlayerId> otherPlayers = data.getPlayerList().getPlayers();
+    for (final Iterator<PlayerId> it = otherPlayers.iterator(); it.hasNext();) {
+      final PlayerId otherPlayer = it.next();
       final RelationshipType relation = data.getRelationshipTracker().getRelationshipType(player, otherPlayer);
       if (Matches.relationshipTypeIsAllied().test(relation) || isPassiveNeutralPlayer(otherPlayer)) {
         it.remove();
@@ -122,7 +122,7 @@ public class ProUtils {
     return otherPlayers;
   }
 
-  public static double getPlayerProduction(final PlayerID player, final GameData data) {
+  public static double getPlayerProduction(final PlayerId player, final GameData data) {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
       // Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
@@ -134,10 +134,10 @@ public class ProUtils {
     return production;
   }
 
-  public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerID player) {
+  public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerId player) {
     final List<Territory> enemyCapitals = new ArrayList<>();
-    final List<PlayerID> enemyPlayers = getEnemyPlayers(player);
-    for (final PlayerID otherPlayer : enemyPlayers) {
+    final List<PlayerId> enemyPlayers = getEnemyPlayers(player);
+    for (final PlayerId otherPlayer : enemyPlayers) {
       enemyCapitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(otherPlayer, data));
     }
     enemyCapitals.retainAll(
@@ -147,10 +147,10 @@ public class ProUtils {
     return enemyCapitals;
   }
 
-  public static List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerID player) {
+  public static List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerId player) {
     final List<Territory> capitals = new ArrayList<>();
-    final List<PlayerID> players = getAlliedPlayers(player);
-    for (final PlayerID alliedPlayer : players) {
+    final List<PlayerId> players = getAlliedPlayers(player);
+    for (final PlayerId alliedPlayer : players) {
       capitals.addAll(TerritoryAttachment.getAllCurrentlyOwnedCapitals(alliedPlayer, data));
     }
     capitals.retainAll(CollectionUtils.getMatches(capitals, Matches.territoryIsNotImpassableToLandUnits(player, data)));
@@ -158,7 +158,7 @@ public class ProUtils {
     return capitals;
   }
 
-  public static int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerID player,
+  public static int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerId player,
       final Territory t) {
     final Set<Territory> landTerritories =
         data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
@@ -175,7 +175,7 @@ public class ProUtils {
     return (minDistance < 10) ? minDistance : -1;
   }
 
-  public static int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerID player,
+  public static int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerId player,
       final Territory t, final Map<Territory, Double> territoryValueMap) {
     final Set<Territory> landTerritories =
         data.getMap().getNeighbors(t, 9, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
@@ -198,7 +198,7 @@ public class ProUtils {
     return (minDistance < 10) ? minDistance : -1;
   }
 
-  public static int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerID player,
+  public static int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerId player,
       final Territory t) {
     final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);
     final List<Territory> enemyOrAdjacentLandTerritories = CollectionUtils.getMatches(neighborTerritories,
@@ -218,10 +218,10 @@ public class ProUtils {
    * Returns whether the game is a FFA based on whether any of the player's enemies
    * are enemies of each other.
    */
-  public static boolean isFfa(final GameData data, final PlayerID player) {
+  public static boolean isFfa(final GameData data, final PlayerId player) {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
-    final Set<PlayerID> enemies = relationshipTracker.getEnemies(player);
-    final Set<PlayerID> enemiesWithoutNeutrals =
+    final Set<PlayerId> enemies = relationshipTracker.getEnemies(player);
+    final Set<PlayerId> enemiesWithoutNeutrals =
         enemies.stream().filter(p -> !isNeutralPlayer(p)).collect(Collectors.toSet());
     return enemiesWithoutNeutrals.stream()
         .anyMatch(e -> relationshipTracker.isAtWarWithAnyOfThesePlayers(e, enemiesWithoutNeutrals));
@@ -235,11 +235,11 @@ public class ProUtils {
    * Determines whether a player is neutral by checking if all players in its alliance can be considered
    * neutral as defined by: isPassiveNeutralPlayer OR (isHidden and defaultType is AI or DoesNothing).
    */
-  public static boolean isNeutralPlayer(final PlayerID player) {
+  public static boolean isNeutralPlayer(final PlayerId player) {
     if (player.isNull()) {
       return true;
     }
-    final Set<PlayerID> allies = player.getData().getRelationshipTracker().getAllies(player, true);
+    final Set<PlayerId> allies = player.getData().getRelationshipTracker().getAllies(player, true);
     return allies.stream().allMatch(
         a -> isPassiveNeutralPlayer(a) || (a.isHidden() && (a.isDefaultTypeAi() || a.isDefaultTypeDoesNothing())));
   }
@@ -247,7 +247,7 @@ public class ProUtils {
   /**
    * Returns true if the player is Null or doesn't have a combat move phase.
    */
-  public static boolean isPassiveNeutralPlayer(final PlayerID player) {
+  public static boolean isPassiveNeutralPlayer(final PlayerId player) {
     if (player.isNull()) {
       return true;
     }

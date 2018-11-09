@@ -78,6 +78,7 @@ public class LobbyLoginValidatorIntegrationTest {
         password);
   }
 
+  @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
   private static String md5Crypt(final String value) {
     return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
   }
