@@ -208,7 +208,7 @@ public class ClientModel implements IMessengerErrorListener {
     }
     final String name = props.getName();
     log.fine("Client playing as:" + name);
-    ClientSetting.playerName.save(name);
+    ClientSetting.playerName.setValue(name);
     ClientSetting.flush();
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {

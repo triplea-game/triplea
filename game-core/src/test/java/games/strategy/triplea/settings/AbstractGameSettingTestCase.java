@@ -141,7 +141,7 @@ public abstract class AbstractGameSettingTestCase {
     void shouldResetValueWhenValueIsNull() {
       final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);
 
-      gameSetting.saveObject(NO_VALUE);
+      gameSetting.setObjectValue(NO_VALUE);
 
       assertThat(gameSetting.getValue(), isPresentAndIs(DEFAULT_VALUE));
     }
@@ -150,7 +150,7 @@ public abstract class AbstractGameSettingTestCase {
     void shouldSetValueWhenValueIsNonNullAndHasCorrectType() {
       final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);
 
-      gameSetting.saveObject(OTHER_VALUE);
+      gameSetting.setObjectValue(OTHER_VALUE);
 
       assertThat(gameSetting.getValue(), isPresentAndIs(OTHER_VALUE));
     }
@@ -159,7 +159,7 @@ public abstract class AbstractGameSettingTestCase {
     void shouldThrowExceptionWhenValueIsNonNullAndHasWrongType() {
       final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);
 
-      assertThrows(ClassCastException.class, () -> gameSetting.saveObject("2112"));
+      assertThrows(ClassCastException.class, () -> gameSetting.setObjectValue("2112"));
     }
   }
 }

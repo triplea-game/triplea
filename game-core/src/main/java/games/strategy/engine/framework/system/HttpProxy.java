@@ -52,8 +52,8 @@ public class HttpProxy {
       port = host.isEmpty() ? null : address.get().getPort();
     }
 
-    ClientSetting.proxyHost.save(host);
-    ClientSetting.proxyPort.save(port);
+    ClientSetting.proxyHost.setValue(host);
+    ClientSetting.proxyPort.setValue(port);
     ClientSetting.flush();
   }
 

@@ -133,7 +133,7 @@ public class MapDownloadController {
     return new TutorialMapPreferences() {
       @Override
       public void preventPromptToDownload() {
-        ClientSetting.promptToDownloadTutorialMap.save(false);
+        ClientSetting.promptToDownloadTutorialMap.setValue(false);
         ClientSetting.flush();
       }
 

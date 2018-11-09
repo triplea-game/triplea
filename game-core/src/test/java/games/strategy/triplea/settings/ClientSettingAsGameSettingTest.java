@@ -11,7 +11,7 @@ final class ClientSettingAsGameSettingTest extends AbstractGameSettingTestCase {
   protected GameSetting<Integer> newGameSetting(final @Nullable Integer value, final @Nullable Integer defaultValue) {
     final TestClientSetting clientSetting = new TestClientSetting(defaultValue);
     if (value != null) {
-      clientSetting.save(value);
+      clientSetting.setValue(value);
     }
     return clientSetting;
   }

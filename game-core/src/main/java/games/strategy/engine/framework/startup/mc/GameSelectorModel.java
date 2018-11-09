@@ -56,9 +56,9 @@ public class GameSelectorModel extends Observable {
     fileName = entry.getLocation();
     setGameData(entry.getGameData());
     if (entry.getGameData() != null) {
-      ClientSetting.defaultGameName.save(entry.getGameData().getGameName());
+      ClientSetting.defaultGameName.setValue(entry.getGameData().getGameName());
     }
-    ClientSetting.defaultGameUri.save(entry.getUri().toString());
+    ClientSetting.defaultGameUri.setValue(entry.getUri().toString());
     ClientSetting.flush();
   }
 

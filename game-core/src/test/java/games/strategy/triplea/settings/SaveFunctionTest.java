@@ -95,7 +95,7 @@ public class SaveFunctionTest {
         + "which should only happen when settings were successfully saved.",
         callCount.get(), is(1));
 
-    Mockito.verify(mockSetting).saveObject(TestData.fakeValue);
+    Mockito.verify(mockSetting).setObjectValue(TestData.fakeValue);
   }
 
   @Test

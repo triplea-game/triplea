@@ -38,10 +38,10 @@ import lombok.extern.java.Log;
  *
  * <code><pre>
  * // loading a value
- * String value = ClientSetting.aiPauseDuration.value();
+ * String value = ClientSetting.aiPauseDuration.getValueOrThrow();
  *
  * // saving value
- * ClientSetting.aiPauseDuration.save(500);
+ * ClientSetting.aiPauseDuration.setValue(500);
  * ClientSetting.flush();
  * </pre></code>
  *
@@ -177,8 +177,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   /**
-   * Persists user preferences.x Note: 'value()' read calls will not pick up any new
-   * values saved values until after 'flush' has been called.
+   * Persists all pending client setting changes to the backing store.
    */
   public static void flush() {
     flush(getPreferences());
@@ -188,7 +187,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     try {
       preferences.flush();
     } catch (final BackingStoreException e) {
-      log.log(Level.SEVERE, "Failed to save settings", e);
+      log.log(Level.SEVERE, "Failed to persist client settings", e);
     }
   }
 
@@ -210,20 +209,20 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public final void saveObject(final @Nullable Object newValue) {
-    save(type.cast(newValue));
+  public final void setObjectValue(final @Nullable Object value) {
+    setValue(type.cast(value));
   }
 
   @Override
-  public final void save(final @Nullable T newValue) {
-    saveString(Optional.ofNullable(newValue).map(this::formatValue).orElse(null));
+  public final void setValue(final @Nullable T value) {
+    setStringValue(Optional.ofNullable(value).map(this::formatValue).orElse(null));
   }
 
-  private void saveString(final @Nullable String newValue) {
-    if (newValue == null) {
+  private void setStringValue(final @Nullable String value) {
+    if (value == null) {
       getPreferences().remove(name);
     } else {
-      getPreferences().put(name, newValue);
+      getPreferences().put(name, value);
     }
 
     onSaveActions.forEach(saveAction -> saveAction.accept(this));
@@ -234,12 +233,12 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
    */
   protected abstract String formatValue(T value);
 
-  public final void saveAndFlush(final @Nullable T newValue) {
-    save(newValue);
+  public final void setValueAndFlush(final @Nullable T value) {
+    setValue(value);
 
     // do the flush on a new thread to guarantee we do not block EDT.
     // Flush operations are pretty slow!
-    // Save preferences before spawning new thread; tests may call resetPreferences() before it can run.
+    // Store preferences before spawning new thread; tests may call resetPreferences() before it can run.
     final Preferences preferences = getPreferences();
     new Thread(() -> flush(preferences)).start();
   }
@@ -277,7 +276,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   @Override
   public final void resetValue() {
-    saveAndFlush(null);
+    setValueAndFlush(null);
   }
 
   @Override

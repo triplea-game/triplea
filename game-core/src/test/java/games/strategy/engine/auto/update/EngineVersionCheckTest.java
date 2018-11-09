@@ -91,7 +91,7 @@ final class EngineVersionCheckTest {
       givenFirstRun();
 
       assertThat(whenIsEngineUpdateCheckRequired(), is(true));
-      verify(updateCheckDateSetting).save(formatUpdateCheckDate(now));
+      verify(updateCheckDateSetting).setValue(formatUpdateCheckDate(now));
       verify(flushSetting).run();
     }
 
@@ -125,7 +125,7 @@ final class EngineVersionCheckTest {
       givenEngineUpdateCheckLastRunRelativeToNow(0, ChronoUnit.DAYS);
 
       assertThat(whenIsEngineUpdateCheckRequired(), is(false));
-      verify(updateCheckDateSetting, never()).save(anyString());
+      verify(updateCheckDateSetting, never()).setValue(anyString());
       verify(flushSetting, never()).run();
     }
   }

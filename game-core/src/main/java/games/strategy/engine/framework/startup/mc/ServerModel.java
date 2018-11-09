@@ -195,7 +195,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           }
           final String name = options.getName();
           log.fine("Server playing as:" + name);
-          ClientSetting.playerName.save(name);
+          ClientSetting.playerName.setValue(name);
           ClientSetting.flush();
           final int port = options.getPort();
           if (port >= 65536 || port == 0) {

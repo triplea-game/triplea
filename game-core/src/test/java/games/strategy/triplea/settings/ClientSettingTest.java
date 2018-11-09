@@ -44,7 +44,7 @@ final class ClientSettingTest {
           throw new IllegalArgumentException();
         }
       };
-      clientSetting.save("otherValue");
+      clientSetting.setValue("otherValue");
 
       assertThat(clientSetting.getValue(), isPresentAndIs(defaultValue));
     }
@@ -69,7 +69,7 @@ final class ClientSettingTest {
       }).when(mockSaveListener).accept(clientSetting);
       clientSetting.addSaveListener(mockSaveListener);
 
-      clientSetting.save(TEST_VALUE);
+      clientSetting.setValue(TEST_VALUE);
 
       verify(mockSaveListener).accept(clientSetting);
     }
@@ -79,7 +79,7 @@ final class ClientSettingTest {
       clientSetting.addSaveListener(mockSaveListener);
       clientSetting.removeSaveListener(mockSaveListener);
 
-      clientSetting.save(TEST_VALUE);
+      clientSetting.setValue(TEST_VALUE);
 
       verify(mockSaveListener, never()).accept(clientSetting);
     }

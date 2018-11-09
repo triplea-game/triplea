@@ -121,7 +121,7 @@ class SettingsPane extends StackPane {
         .map(SelectionComponent::readValues)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
-        .forEach(entry -> entry.getKey().saveObject(entry.getValue()));
+        .forEach(entry -> entry.getKey().setObjectValue(entry.getValue()));
     // TODO visual feedback
   }
 
