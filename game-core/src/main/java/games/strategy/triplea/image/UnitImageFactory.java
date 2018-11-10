@@ -22,6 +22,9 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
+/**
+ * A factory for creating unit images.
+ */
 public class UnitImageFactory {
   public static final int DEFAULT_UNIT_ICON_SIZE = 48;
   /**
@@ -157,6 +160,11 @@ public class UnitImageFactory {
     return Optional.ofNullable(image);
   }
 
+  /**
+   * Returns the highlight image for the specified unit.
+   *
+   * @return The highlight image or empty if no base image is available for the specified unit.
+   */
   public Optional<Image> getHighlightImage(final UnitType type, final PlayerId player, final boolean damaged,
       final boolean disabled) {
     final Optional<Image> baseImage = getImage(type, player, damaged, disabled);
