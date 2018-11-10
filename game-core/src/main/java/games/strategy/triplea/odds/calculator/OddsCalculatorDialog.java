@@ -16,6 +16,10 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.SwingComponents;
 
+/**
+ * A dialog that allows the user to set up an arbitrary battle and calculate the attacker's odds of successfully winning
+ * the battle. Also known as the Battle Calculator.
+ */
 public class OddsCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
   private static final int MAX_HEIGHT = 640;
@@ -23,6 +27,9 @@ public class OddsCalculatorDialog extends JDialog {
   private static Dimension lastShape;
   private final OddsCalculatorPanel panel;
 
+  /**
+   * Shows the Odds Calculator dialog and initializes it using the current state of the specified territory.
+   */
   public static void show(final TripleAFrame taFrame, final Territory t) {
     final OddsCalculatorDialog dialog =
         new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUiContext(), taFrame, t);
