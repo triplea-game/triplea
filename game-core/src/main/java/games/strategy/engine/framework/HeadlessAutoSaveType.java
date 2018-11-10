@@ -9,16 +9,6 @@ import java.nio.file.Path;
 public enum HeadlessAutoSaveType {
   AUTOSAVE(AutoSaveFileUtils.getHeadlessAutoSaveFile()),
 
-  /**
-   * A second auto-save that a headless game server will alternate between (the other being {@link #AUTOSAVE}).
-   *
-   * @deprecated No longer supported. If an old client happens to request this auto-save, it now forwards to the
-   *             same file as {@link #AUTOSAVE} instead of simply doing nothing. Remove upon next stable release (i.e.
-   *             once no stable client will ever request this auto-save).
-   */
-  @Deprecated
-  AUTOSAVE2(AutoSaveFileUtils.getHeadlessAutoSaveFile()),
-
   AUTOSAVE_ODD(AutoSaveFileUtils.getOddRoundAutoSaveFile(true)),
 
   AUTOSAVE_EVEN(AutoSaveFileUtils.getEvenRoundAutoSaveFile(true)),
