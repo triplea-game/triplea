@@ -87,6 +87,14 @@ public class AggregateResults {
     return Tuple.of(attackerTuv / results.size(), defenderTuv / results.size());
   }
 
+  /**
+   * Returns the average TUV swing across all simulations of the battle.
+   *
+   * @return A positive value indicates the defender lost more unit value, on average, than the attacker (i.e. the
+   *         attacker "won"). A negative value indicates the attacker lost more unit value, on average, than the
+   *         defender (i.e. the defender "won"). Zero indicates the attacker and defender lost, on average, equal unit
+   *         value (i.e. a tie).
+   */
   public double getAverageTuvSwing(final PlayerId attacker, final Collection<Unit> attackers, final PlayerId defender,
       final Collection<Unit> defenders, final GameData data) {
     if (results.isEmpty()) {
@@ -166,6 +174,9 @@ public class AggregateResults {
         .count() / (double) results.size();
   }
 
+  /**
+   * Returns the average number of rounds fought across all simulations of the battle.
+   */
   public double getAverageBattleRoundsFought() {
     if (results.isEmpty()) {
       return 0.0;
