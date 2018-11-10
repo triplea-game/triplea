@@ -1,18 +1,21 @@
 package games.strategy.engine.data.gameparser;
 
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.logging.Level;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.xml.TestAttachment;
-import games.strategy.engine.xml.TestDelegate;
 import games.strategy.triplea.attachments.CanalAttachment;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -65,94 +68,53 @@ import lombok.extern.java.Log;
  * </p>
  */
 @Log
-public class XmlGameElementMapper {
-  /* Maps a name (given as an XML attribute value) to a supplier function that creates the corresponding delegate */
-  private final ImmutableMap<String, Supplier<IDelegate>> delegateMap =
-      ImmutableMap.<String, Supplier<IDelegate>>builder()
-          .put("BattleDelegate", BattleDelegate::new)
-          .put("BidPlaceDelegate", BidPlaceDelegate::new)
-          .put("BidPurchaseDelegate", BidPurchaseDelegate::new)
-          .put("EndRoundDelegate", EndRoundDelegate::new)
-          .put("EndTurnDelegate", EndTurnDelegate::new)
-          .put("InitializationDelegate", InitializationDelegate::new)
-          .put("MoveDelegate", MoveDelegate::new)
-          .put("NoAirCheckPlaceDelegate", NoAirCheckPlaceDelegate::new)
-          .put("NoPUEndTurnDelegate", NoPuEndTurnDelegate::new)
-          .put("NoPUPurchaseDelegate", NoPuPurchaseDelegate::new)
-          .put("PlaceDelegate", PlaceDelegate::new)
-          .put("PoliticsDelegate", PoliticsDelegate::new)
-          .put("PurchaseDelegate", PurchaseDelegate::new)
-          .put("RandomStartDelegate", RandomStartDelegate::new)
-          .put("SpecialMoveDelegate", SpecialMoveDelegate::new)
-          .put("TechActivationDelegate", TechActivationDelegate::new)
-          .put("TechnologyDelegate", TechnologyDelegate::new)
-          .put("UserActionDelegate", UserActionDelegate::new)
-          .putAll(newTwoIfBySeaDelegateMap())
-          .put("games.strategy.engine.xml.TestDelegate", TestDelegate::new)
-          .build();
+public final class XmlGameElementMapper {
+  private final ImmutableMap<String, Supplier<IDelegate>> delegateFactoriesByTypeName;
+  private final ImmutableMap<String, AttachmentFactory> attachmentFactoriesByTypeName;
 
-  /*
-   * Maps a name (given as an XML attribute value) to a function that can create attachment objects.
-   */
-  private final ImmutableMap<String, Function<AttachmentData, IAttachment>> attachmentMap =
-      ImmutableMap.<String, Function<AttachmentData, IAttachment>>builder()
-          .put("CanalAttachment", attachmentData -> new CanalAttachment(attachmentData.name,
-              attachmentData.attachable, attachmentData.gameData))
-          .put("PlayerAttachment",
-              attachmentData -> new PlayerAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("PoliticalActionAttachment",
-              attachmentData -> new PoliticalActionAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("RelationshipTypeAttachment",
-              attachmentData -> new RelationshipTypeAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("RulesAttachment",
-              attachmentData -> new RulesAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("TechAbilityAttachment",
-              attachmentData -> new TechAbilityAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("TechAttachment",
-              attachmentData -> new TechAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("TerritoryAttachment",
-              attachmentData -> new TerritoryAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("TerritoryEffectAttachment",
-              attachmentData -> new TerritoryEffectAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("TriggerAttachment",
-              attachmentData -> new TriggerAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("UnitAttachment",
-              attachmentData -> new UnitAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("UnitSupportAttachment",
-              attachmentData -> new UnitSupportAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("UserActionAttachment",
-              attachmentData -> new UserActionAttachment(attachmentData.name, attachmentData.attachable,
-                  attachmentData.gameData))
-          .put("games.strategy.engine.xml.TestAttachment", attachmentData -> new TestAttachment(attachmentData.name,
-              attachmentData.attachable, attachmentData.gameData))
-          .build();
+  public XmlGameElementMapper() {
+    this(Collections.emptyMap(), Collections.emptyMap());
+  }
 
-  /** Small data holder class. */
-  private static class AttachmentData {
-    private final String name;
-    private final Attachable attachable;
-    private final GameData gameData;
+  @VisibleForTesting
+  public XmlGameElementMapper(
+      final Map<String, Supplier<IDelegate>> auxiliaryDelegateFactoriesByTypeName,
+      final Map<String, AttachmentFactory> auxiliaryAttachmentFactoriesByTypeName) {
+    checkNotNull(auxiliaryDelegateFactoriesByTypeName);
+    checkNotNull(auxiliaryAttachmentFactoriesByTypeName);
 
-    AttachmentData(final String name, final Attachable attachable, final GameData gameData) {
-      this.name = name;
-      this.attachable = attachable;
-      this.gameData = gameData;
-    }
+    delegateFactoriesByTypeName = newDelegateFactories(auxiliaryDelegateFactoriesByTypeName);
+    attachmentFactoriesByTypeName = newAttachmentFactories(auxiliaryAttachmentFactoriesByTypeName);
+  }
+
+  private static ImmutableMap<String, Supplier<IDelegate>> newDelegateFactories(
+      final Map<String, Supplier<IDelegate>> auxiliaryDelegateFactoriesByTypeName) {
+    return ImmutableMap.<String, Supplier<IDelegate>>builder()
+        .put("BattleDelegate", BattleDelegate::new)
+        .put("BidPlaceDelegate", BidPlaceDelegate::new)
+        .put("BidPurchaseDelegate", BidPurchaseDelegate::new)
+        .put("EndRoundDelegate", EndRoundDelegate::new)
+        .put("EndTurnDelegate", EndTurnDelegate::new)
+        .put("InitializationDelegate", InitializationDelegate::new)
+        .put("MoveDelegate", MoveDelegate::new)
+        .put("NoAirCheckPlaceDelegate", NoAirCheckPlaceDelegate::new)
+        .put("NoPUEndTurnDelegate", NoPuEndTurnDelegate::new)
+        .put("NoPUPurchaseDelegate", NoPuPurchaseDelegate::new)
+        .put("PlaceDelegate", PlaceDelegate::new)
+        .put("PoliticsDelegate", PoliticsDelegate::new)
+        .put("PurchaseDelegate", PurchaseDelegate::new)
+        .put("RandomStartDelegate", RandomStartDelegate::new)
+        .put("SpecialMoveDelegate", SpecialMoveDelegate::new)
+        .put("TechActivationDelegate", TechActivationDelegate::new)
+        .put("TechnologyDelegate", TechnologyDelegate::new)
+        .put("UserActionDelegate", UserActionDelegate::new)
+        .putAll(newTwoIfBySeaDelegateFactories())
+        .putAll(auxiliaryDelegateFactoriesByTypeName)
+        .build();
   }
 
   @SuppressWarnings("deprecation") // required for map compatibility; remove upon next map-incompatible release
-  private static ImmutableMap<String, Supplier<IDelegate>> newTwoIfBySeaDelegateMap() {
+  private static ImmutableMap<String, Supplier<IDelegate>> newTwoIfBySeaDelegateFactories() {
     return ImmutableMap.<String, Supplier<IDelegate>>builder()
         .put(
             "games.strategy.twoIfBySea.delegate.EndTurnDelegate",
@@ -162,35 +124,75 @@ public class XmlGameElementMapper {
         .build();
   }
 
+  private static ImmutableMap<String, AttachmentFactory> newAttachmentFactories(
+      final Map<String, AttachmentFactory> auxiliaryAttachmentFactoriesByTypeName) {
+    return ImmutableMap.<String, AttachmentFactory>builder()
+        .put("CanalAttachment", CanalAttachment::new)
+        .put("PlayerAttachment", PlayerAttachment::new)
+        .put("PoliticalActionAttachment", PoliticalActionAttachment::new)
+        .put("RelationshipTypeAttachment", RelationshipTypeAttachment::new)
+        .put("RulesAttachment", RulesAttachment::new)
+        .put("TechAbilityAttachment", TechAbilityAttachment::new)
+        .put("TechAttachment", TechAttachment::new)
+        .put("TerritoryAttachment", TerritoryAttachment::new)
+        .put("TerritoryEffectAttachment", TerritoryEffectAttachment::new)
+        .put("TriggerAttachment", TriggerAttachment::new)
+        .put("UnitAttachment", UnitAttachment::new)
+        .put("UnitSupportAttachment", UnitSupportAttachment::new)
+        .put("UserActionAttachment", UserActionAttachment::new)
+        .putAll(auxiliaryAttachmentFactoriesByTypeName)
+        .build();
+  }
+
   /**
-   * Loads a new instance of the given class.
-   * Assumes a zero argument constructor.
+   * Returns a new delegate of the type associated with the specified name.
    */
-  public Optional<IDelegate> getDelegate(final String className) {
-    final String bareName = className.replaceAll("^games\\.strategy\\.triplea\\.delegate\\.", "");
-    if (!delegateMap.containsKey(bareName)) {
-      handleMissingObjectError("delegate", className);
-      return Optional.empty();
+  public Optional<IDelegate> newDelegate(final String typeName) {
+    checkNotNull(typeName);
+
+    final String normalizedTypeName = typeName.replaceAll("^games\\.strategy\\.triplea\\.delegate\\.", "");
+    final @Nullable Supplier<IDelegate> delegateFactory = delegateFactoriesByTypeName.get(normalizedTypeName);
+    if (delegateFactory != null) {
+      return Optional.of(delegateFactory.get());
     }
 
-    return Optional.of(delegateMap.get(bareName).get());
+    handleMissingObject("delegate", typeName);
+    return Optional.empty();
   }
 
-  private static void handleMissingObjectError(final String typeLabel, final String value) {
-    log.log(Level.SEVERE, "Could not find " + typeLabel + " '" + value + "'. This is can be a map configuration"
-        + " problem, and would need to be fixed in the map XML. Or, the map XML is using a feature from a newer game"
-        + " engine version, and you will need to install the latest TripleA for it to be enabled. Meanwhile, the"
-        + " functionality provided by this " + typeLabel + " will not available.");
+  private static void handleMissingObject(final String objectTypeName, final String objectName) {
+    log.severe("Could not find " + objectTypeName + " '" + objectName + "'. This can be a map configuration "
+        + "problem, and would need to be fixed in the map XML. Or the map XML is using a feature from a newer game "
+        + "engine version, and you will need to install the latest TripleA for it to be enabled. Meanwhile, the "
+        + "functionality provided by this " + objectTypeName + " will not available.");
   }
 
-  public Optional<IAttachment> getAttachment(final String javaClass, final String name, final Attachable attachable,
-      final GameData data) {
-    final String bareName = javaClass.replaceAll("^games\\.strategy\\.triplea\\.attachments\\.", "");
-    if (!attachmentMap.containsKey(bareName)) {
-      handleMissingObjectError("attachment", javaClass);
-      return Optional.empty();
+  /**
+   * Returns a new attachment of the type associated with the specified name.
+   */
+  public Optional<IAttachment> newAttachment(
+      final String typeName,
+      final String name,
+      final Attachable attachable,
+      final GameData gameData) {
+    checkNotNull(typeName);
+
+    final String normalizedTypeName = typeName.replaceAll("^games\\.strategy\\.triplea\\.attachments\\.", "");
+    final @Nullable AttachmentFactory attachmentFactory = attachmentFactoriesByTypeName.get(normalizedTypeName);
+    if (attachmentFactory != null) {
+      return Optional.of(attachmentFactory.newAttachment(name, attachable, gameData));
     }
-    final Function<AttachmentData, IAttachment> attachmentFactoryFunction = attachmentMap.get(bareName);
-    return Optional.of(attachmentFactoryFunction.apply(new AttachmentData(name, attachable, data)));
+
+    handleMissingObject("attachment", typeName);
+    return Optional.empty();
+  }
+
+  /**
+   * A factory for creating instances of {@link IAttachment}.
+   */
+  @FunctionalInterface
+  @VisibleForTesting
+  public interface AttachmentFactory {
+    IAttachment newAttachment(String name, Attachable attachable, GameData gameData);
   }
 }

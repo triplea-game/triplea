@@ -61,21 +61,23 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class GameParser {
+  public static final String DTD_FILE_NAME = "game.dtd";
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
   private final GameData data;
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
-  public static final String DTD_FILE_NAME = "game.dtd";
   private final String mapName;
-
-  private GameParser(final String mapName) {
-    this(new GameData(), mapName);
-  }
+  private final XmlGameElementMapper xmlGameElementMapper;
 
   @VisibleForTesting
   GameParser(final GameData gameData, final String mapName) {
+    this(gameData, mapName, new XmlGameElementMapper());
+  }
+
+  private GameParser(final GameData gameData, final String mapName, final XmlGameElementMapper xmlGameElementMapper) {
     data = gameData;
     this.mapName = mapName;
+    this.xmlGameElementMapper = xmlGameElementMapper;
   }
 
   /**
@@ -85,10 +87,20 @@ public final class GameParser {
    */
   public static GameData parse(final String mapName, final InputStream stream)
       throws GameParseException, EngineVersionException {
+    return parse(mapName, stream, new XmlGameElementMapper());
+  }
+
+  @VisibleForTesting
+  public static GameData parse(
+      final String mapName,
+      final InputStream stream,
+      final XmlGameElementMapper xmlGameElementMapper)
+      throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
     checkNotNull(stream);
+    checkNotNull(xmlGameElementMapper);
 
-    return new GameParser(mapName).parse(stream);
+    return new GameParser(new GameData(), mapName, xmlGameElementMapper).parse(stream);
   }
 
   private GameData parse(final InputStream stream) throws GameParseException, EngineVersionException {
@@ -120,7 +132,7 @@ public final class GameParser {
     checkNotNull(mapName);
     checkNotNull(stream);
 
-    return new GameParser(mapName).parseShallow(stream);
+    return new GameParser(new GameData(), mapName).parseShallow(stream);
   }
 
   private GameData parseShallow(final InputStream stream) throws GameParseException, EngineVersionException {
@@ -956,10 +968,8 @@ public final class GameParser {
     for (final Element current : delegateList) {
       // load the class
       final String className = current.getAttribute("javaClass");
-      final XmlGameElementMapper elementMapper = new XmlGameElementMapper();
-
-      final IDelegate delegate = elementMapper.getDelegate(className).orElseThrow(
-          () -> newGameParseException("Class <" + className + "> is not a delegate."));
+      final IDelegate delegate = xmlGameElementMapper.newDelegate(className)
+          .orElseThrow(() -> newGameParseException("Class <" + className + "> is not a delegate."));
       final String name = current.getAttribute("name");
       String displayName = current.getAttribute("display");
       if (displayName == null) {
@@ -1212,7 +1222,7 @@ public final class GameParser {
       final Attachable attachable = findAttachment(current, current.getAttribute("type"));
       final String name = current.getAttribute("name");
       final List<Element> options = getChildren("option", current);
-      final IAttachment attachment = new XmlGameElementMapper().getAttachment(className, name, attachable, data)
+      final IAttachment attachment = xmlGameElementMapper.newAttachment(className, name, attachable, data)
           .orElseThrow(() -> newGameParseException("Attachment of type " + className + " could not be instantiated"));
       attachable.addAttachment(name, attachment);
 

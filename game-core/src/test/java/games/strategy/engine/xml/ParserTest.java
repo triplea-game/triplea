@@ -20,6 +20,7 @@ import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;

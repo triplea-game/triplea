@@ -20,7 +20,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.xml.TestDelegate;
 
 final class GameStepPropertiesHelperTest {
   private final GameData gameData = new GameData();
