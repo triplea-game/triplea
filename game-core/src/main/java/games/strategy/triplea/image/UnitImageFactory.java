@@ -159,23 +159,20 @@ public class UnitImageFactory {
 
   public Optional<Image> getHighlightImage(final UnitType type, final PlayerId player, final boolean damaged,
       final boolean disabled) {
-    final Optional<Image> baseImage = getImage(type, player, damaged, disabled);
-    if (!baseImage.isPresent()) {
-      return Optional.empty();
-    }
+    return getImage(type, player, damaged, disabled).map(UnitImageFactory::highlightImage);
+  }
 
-    final Image base = baseImage.get();
-    final BufferedImage newImage = Util.createImage(base.getWidth(null), base.getHeight(null), true);
+  private static Image highlightImage(final Image image) {
+    final BufferedImage highlightedImage = Util.createImage(image.getWidth(null), image.getHeight(null), true);
     // copy the real image
-    final Graphics2D g = newImage.createGraphics();
-    g.drawImage(base, 0, 0, null);
-    // we want a highlight only over the area
-    // that is not clear
+    final Graphics2D g = highlightedImage.createGraphics();
+    g.drawImage(image, 0, 0, null);
+    // we want a highlight only over the area that is not clear
     g.setComposite(AlphaComposite.SrcIn);
     g.setColor(new Color(240, 240, 240, 127));
-    g.fillRect(0, 0, base.getWidth(null), base.getHeight(null));
+    g.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
     g.dispose();
-    return Optional.of(newImage);
+    return highlightedImage;
   }
 
   /**
