@@ -123,21 +123,21 @@ public class GameSelectorPanel extends JPanel implements Observer {
           final JPopupMenu menu = new JPopupMenu();
           menu.add(clientModelForHostBots.getHostBotChangeGameToSaveGameClientAction());
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE));
+              HeadlessAutoSaveType.DEFAULT));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE_ODD));
+              HeadlessAutoSaveType.ODD_ROUND));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE_EVEN));
+              HeadlessAutoSaveType.EVEN_ROUND));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE_END_TURN));
+              HeadlessAutoSaveType.END_TURN));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE_BEFORE_BATTLE));
+              HeadlessAutoSaveType.BEFORE_BATTLE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE_AFTER_BATTLE));
+              HeadlessAutoSaveType.AFTER_BATTLE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE_AFTER_COMBAT_MOVE));
+              HeadlessAutoSaveType.AFTER_COMBAT_MOVE));
           menu.add(clientModelForHostBots.getHostBotChangeToAutosaveClientAction(GameSelectorPanel.this,
-              HeadlessAutoSaveType.AUTOSAVE_AFTER_NON_COMBAT_MOVE));
+              HeadlessAutoSaveType.AFTER_NON_COMBAT_MOVE));
           menu.add(clientModelForHostBots.getHostBotGetGameSaveClientAction(GameSelectorPanel.this));
           final Point point = loadSavedGame.getLocation();
           menu.show(GameSelectorPanel.this, point.x + loadSavedGame.getWidth(), point.y);
