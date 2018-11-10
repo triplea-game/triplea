@@ -26,6 +26,9 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 import lombok.extern.java.Log;
 
+/**
+ * A factory for creating the base tile images used to render a map.
+ */
 @Log
 public final class TileImageFactory {
   // one instance in the application
