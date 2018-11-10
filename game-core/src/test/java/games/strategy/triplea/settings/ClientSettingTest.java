@@ -3,6 +3,7 @@ package games.strategy.triplea.settings;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -47,6 +48,21 @@ final class ClientSettingTest {
       clientSetting.setValue("otherValue");
 
       assertThat(clientSetting.getValue(), isPresentAndIs(defaultValue));
+    }
+  }
+
+  @Nested
+  final class SetValueTest extends AbstractClientSettingTestCase {
+    @Test
+    void shouldClearPreferenceWhenValueEqualsDefaultValue() {
+      final String name = "name";
+      final String defaultValue = "defaultValue";
+      final ClientSetting<String> clientSetting = new FakeClientSetting(name, defaultValue);
+      clientSetting.setValue("otherValue");
+
+      clientSetting.setValue(defaultValue);
+
+      assertThat(getPreferences().get(name, null), is(nullValue()));
     }
   }
 

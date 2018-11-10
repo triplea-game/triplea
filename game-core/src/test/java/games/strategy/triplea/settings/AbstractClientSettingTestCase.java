@@ -1,8 +1,13 @@
 package games.strategy.triplea.settings;
 
+import java.util.prefs.Preferences;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * Superclass for test fixtures that directly or indirectly interact with instances of {@link ClientSetting}.
@@ -13,12 +18,14 @@ import org.sonatype.goodies.prefs.memory.MemoryPreferences;
  * </p>
  */
 public abstract class AbstractClientSettingTestCase {
+  @Getter(AccessLevel.PROTECTED)
+  private final Preferences preferences = new MemoryPreferences();
+
   protected AbstractClientSettingTestCase() {}
 
   @BeforeEach
-  @SuppressWarnings("static-method")
   public final void initializeClientSettingPreferences() {
-    ClientSetting.setPreferences(new MemoryPreferences());
+    ClientSetting.setPreferences(preferences);
   }
 
   @AfterEach

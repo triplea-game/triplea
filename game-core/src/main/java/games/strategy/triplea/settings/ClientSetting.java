@@ -1,5 +1,7 @@
 package games.strategy.triplea.settings;
 
+import static games.strategy.util.Util.not;
+
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
@@ -215,7 +217,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   @Override
   public final void setValue(final @Nullable T value) {
-    setStringValue(Optional.ofNullable(value).map(this::formatValue).orElse(null));
+    setStringValue(Optional.ofNullable(value)
+        .filter(not(this::isDefaultValue))
+        .map(this::formatValue)
+        .orElse(null));
   }
 
   private void setStringValue(final @Nullable String value) {
@@ -226,6 +231,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     }
 
     listeners.forEach(listener -> listener.accept(this));
+  }
+
+  private boolean isDefaultValue(final T value) {
+    return value.equals(defaultValue);
   }
 
   /**
