@@ -162,6 +162,13 @@ public class HeadlessGameServer {
     }
   }
 
+  /**
+   * Loads a save game from the specified stream.
+   *
+   * @param input The stream containing the save game.
+   * @param fileName The label used to identify the save game in the UI. Typically the file name of the save game on
+   *        the remote client that requested the save game to be loaded.
+   */
   public synchronized void loadGameSave(final InputStream input, final String fileName) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
@@ -183,6 +190,11 @@ public class HeadlessGameServer {
     }
   }
 
+  /**
+   * Loads the game properties from the specified byte array and applies them to the currently-selected game.
+   *
+   * @param bytes The serialized game properties.
+   */
   public synchronized void loadGameOptions(final byte[] bytes) {
     // don't change mid-game
     if (setupPanelModel.getPanel() != null && game == null) {
@@ -220,6 +232,9 @@ public class HeadlessGameServer {
     }
   }
 
+  /**
+   * Sends a chat message to all nodes except the originating node.
+   */
   public static synchronized void sendChat(final String chatString) {
     final HeadlessGameServer instance = getInstance();
     if (instance != null) {
@@ -242,6 +257,14 @@ public class HeadlessGameServer {
     return BCrypt.hashpw(password, salt);
   }
 
+  /**
+   * Shuts down this headless game server at the request of a remote moderator.
+   *
+   * @param hashedPassword The hashed server password provided by the remote moderator.
+   * @param salt The salt used to hash the server password.
+   *
+   * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
+   */
   public String remoteShutdown(final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
@@ -258,6 +281,15 @@ public class HeadlessGameServer {
     return "Invalid password!";
   }
 
+  /**
+   * Stops the active game on this headless game server at the request of a remote moderator. The game will be saved
+   * before it is stopped.
+   *
+   * @param hashedPassword The hashed server password provided by the remote moderator.
+   * @param salt The salt used to hash the server password.
+   *
+   * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
+   */
   public String remoteStopGame(final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
@@ -282,6 +314,14 @@ public class HeadlessGameServer {
     return "Invalid password!";
   }
 
+  /**
+   * Returns the chat log from this headless game server at the request of a remote moderator.
+   *
+   * @param hashedPassword The hashed server password provided by the remote moderator.
+   * @param salt The salt used to hash the server password.
+   *
+   * @return The chat log if the operation succeeded; otherwise an error message if the operation failed.
+   */
   public String remoteGetChatLog(final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
@@ -298,6 +338,17 @@ public class HeadlessGameServer {
     return "Invalid password!";
   }
 
+  /**
+   * Mutes the specified player within this headless game server for the specified duration at the request of a remote
+   * moderator.
+   *
+   * @param playerName The name of the player to mute.
+   * @param minutes The duration (in minutes) of the mute.
+   * @param hashedPassword The hashed server password provided by the remote moderator.
+   * @param salt The salt used to hash the server password.
+   *
+   * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
+   */
   public String remoteMutePlayer(final String playerName, final int minutes, final String hashedPassword,
       final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
@@ -340,6 +391,15 @@ public class HeadlessGameServer {
     return "Invalid password!";
   }
 
+  /**
+   * Boots the specified player from this headless game server at the request of a remote moderator.
+   *
+   * @param playerName The name of the player to boot.
+   * @param hashedPassword The hashed server password provided by the remote moderator.
+   * @param salt The salt used to hash the server password.
+   *
+   * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
+   */
   public String remoteBootPlayer(final String playerName, final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
@@ -376,6 +436,17 @@ public class HeadlessGameServer {
     return "Invalid password!";
   }
 
+  /**
+   * Bans the specified player from this headless game server for the specified duration at the request of a remote
+   * moderator.
+   *
+   * @param playerName The name of the player to ban.
+   * @param hours The duration (in hours) of the ban.
+   * @param hashedPassword The hashed server password provided by the remote moderator.
+   * @param salt The salt used to hash the server password.
+   *
+   * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
+   */
   public String remoteBanPlayer(final String playerName, final int hours, final String hashedPassword,
       final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");

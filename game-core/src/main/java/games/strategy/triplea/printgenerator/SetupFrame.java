@@ -15,6 +15,9 @@ import games.strategy.engine.data.GameData;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;
 
+/**
+ * The top-level UI component for configuring the Setup Chart exporter.
+ */
 public class SetupFrame extends JPanel {
   private static final long serialVersionUID = 7308943603423170303L;
   private final JTextField outField;
