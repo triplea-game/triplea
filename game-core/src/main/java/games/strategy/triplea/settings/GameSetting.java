@@ -21,22 +21,22 @@ public interface GameSetting<T> {
   /**
    * Sets the current value of the setting using an untyped value.
    *
-   * @param newValue The new setting value or {@code null} to clear the setting value. Clearing the setting value will
+   * @param value The new setting value or {@code null} to clear the setting value. Clearing the setting value will
    *        result in the default value being returned on future reads of the setting value. If no default value is
    *        defined for the setting, future reads will return an empty result.
    *
-   * @throws ClassCastException If the type of of {@code newValue} is incompatible with the setting value type.
+   * @throws ClassCastException If the type of of {@code value} is incompatible with the setting value type.
    */
-  void saveObject(@Nullable Object newValue);
+  void setObjectValue(@Nullable Object value);
 
   /**
    * Sets the current value of the setting.
    *
-   * @param newValue The new setting value or {@code null} to clear the setting value. Clearing the setting value will
+   * @param value The new setting value or {@code null} to clear the setting value. Clearing the setting value will
    *        result in the default value being returned on future reads of the setting value. If no default value is
    *        defined for the setting, future reads will return an empty result.
    */
-  void save(@Nullable T newValue);
+  void setValue(@Nullable T value);
 
   /**
    * Returns the default value of the setting or empty if the setting has no default value.
@@ -62,7 +62,13 @@ public interface GameSetting<T> {
    */
   void resetValue();
 
-  void addSaveListener(Consumer<GameSetting<T>> listener);
+  /**
+   * Registers {@code listener} to receive a notification whenever the setting value has changed.
+   */
+  void addListener(Consumer<GameSetting<T>> listener);
 
-  void removeSaveListener(Consumer<GameSetting<T>> listener);
+  /**
+   * Unregisters {@code listener} to no longer receive a notification whenever the setting value has changed.
+   */
+  void removeListener(Consumer<GameSetting<T>> listener);
 }

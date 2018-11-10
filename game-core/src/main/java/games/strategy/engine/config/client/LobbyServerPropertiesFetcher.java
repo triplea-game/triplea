@@ -82,8 +82,8 @@ public final class LobbyServerPropertiesFetcher {
     try {
       final LobbyServerProperties downloadedProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
           LobbyPropertyFileParser::parse);
-      ClientSetting.lobbyLastUsedHost.save(downloadedProps.host);
-      ClientSetting.lobbyLastUsedPort.save(downloadedProps.port);
+      ClientSetting.lobbyLastUsedHost.setValue(downloadedProps.host);
+      ClientSetting.lobbyLastUsedPort.setValue(downloadedProps.port);
       ClientSetting.flush();
       return downloadedProps;
     } catch (final IOException e) {

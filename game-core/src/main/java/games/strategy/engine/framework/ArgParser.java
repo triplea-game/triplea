@@ -43,7 +43,7 @@ public final class ArgParser {
 
   private static void setSystemPropertyOrClientSetting(final String key, final String value) {
     if (CliProperties.MAP_FOLDER.equals(key)) {
-      ClientSetting.mapFolderOverride.saveAndFlush(Paths.get(value));
+      ClientSetting.mapFolderOverride.setValueAndFlush(Paths.get(value));
     } else {
       System.setProperty(key, value);
     }

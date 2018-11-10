@@ -44,7 +44,7 @@ final class ClientSettingTest {
           throw new IllegalArgumentException();
         }
       };
-      clientSetting.save("otherValue");
+      clientSetting.setValue("otherValue");
 
       assertThat(clientSetting.getValue(), isPresentAndIs(defaultValue));
     }
@@ -52,36 +52,36 @@ final class ClientSettingTest {
 
   @ExtendWith(MockitoExtension.class)
   @Nested
-  final class SaveListenerTest extends AbstractClientSettingTestCase {
+  final class ListenerTest extends AbstractClientSettingTestCase {
     private static final String TEST_VALUE = "value";
 
     @Mock
-    private Consumer<GameSetting<String>> mockSaveListener;
+    private Consumer<GameSetting<String>> listener;
     private final ClientSetting<String> clientSetting = new FakeClientSetting("TEST_SETTING");
 
     @Test
-    void saveListenerIsCalled() {
+    void listenerShouldBeCalled() {
       doAnswer(invocation -> {
         @SuppressWarnings("unchecked")
         final GameSetting<String> gameSetting = (GameSetting<String>) invocation.getArgument(0);
         assertThat(gameSetting.getValue(), isPresentAndIs(TEST_VALUE));
         return null;
-      }).when(mockSaveListener).accept(clientSetting);
-      clientSetting.addSaveListener(mockSaveListener);
+      }).when(listener).accept(clientSetting);
+      clientSetting.addListener(listener);
 
-      clientSetting.save(TEST_VALUE);
+      clientSetting.setValue(TEST_VALUE);
 
-      verify(mockSaveListener).accept(clientSetting);
+      verify(listener).accept(clientSetting);
     }
 
     @Test
-    void verifyRemovedSavedListenersAreNotCalled() {
-      clientSetting.addSaveListener(mockSaveListener);
-      clientSetting.removeSaveListener(mockSaveListener);
+    void removedListenerShouldNotBeCalled() {
+      clientSetting.addListener(listener);
+      clientSetting.removeListener(listener);
 
-      clientSetting.save(TEST_VALUE);
+      clientSetting.setValue(TEST_VALUE);
 
-      verify(mockSaveListener, never()).accept(clientSetting);
+      verify(listener, never()).accept(clientSetting);
     }
   }
 

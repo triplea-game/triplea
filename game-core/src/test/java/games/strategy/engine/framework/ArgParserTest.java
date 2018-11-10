@@ -73,7 +73,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void mapFolderOverrideClientSettingIsSetWhenSpecified() {
-    ClientSetting.mapFolderOverride.save(Paths.get("some", "path"));
+    ClientSetting.mapFolderOverride.setValue(Paths.get("some", "path"));
     final Path mapFolder = Paths.get("/path", "to", "maps");
 
     ArgParser
@@ -84,7 +84,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
-    ClientSetting.mapFolderOverride.save(Paths.get("some", "path"));
+    ClientSetting.mapFolderOverride.setValue(Paths.get("some", "path"));
 
     ArgParser.handleCommandLineArgs();
 

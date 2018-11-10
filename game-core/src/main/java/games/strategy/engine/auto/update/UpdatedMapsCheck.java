@@ -32,7 +32,7 @@ final class UpdatedMapsCheck {
       return false;
     }
 
-    updateCheckDateSetting.save(formatUpdateCheckDate(now));
+    updateCheckDateSetting.setValue(formatUpdateCheckDate(now));
     flushSetting.run();
     return true;
   }

@@ -36,7 +36,7 @@ final class SaveFunction {
             .stream()
             .filter(entry -> !entry.getKey().getValue().equals(Optional.ofNullable(entry.getValue())))
             .forEach(entry -> {
-              entry.getKey().saveObject(entry.getValue());
+              entry.getKey().setObjectValue(entry.getValue());
               successMsg.append(String.format("%s was updated to: %s\n", entry.getKey(), entry.getValue()));
             });
       } else {

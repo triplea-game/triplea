@@ -50,13 +50,13 @@ public final class Console {
   public Console() {
     setLogLevel(getDefaultLogLevel());
 
-    ClientSetting.showConsole.addSaveListener(gameSetting -> {
+    ClientSetting.showConsole.addListener(gameSetting -> {
       if (gameSetting.getValueOrThrow()) {
         SwingUtilities.invokeLater(() -> setVisible(true));
       }
     });
 
-    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.saveAndFlush(false));
+    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.setValueAndFlush(false));
     LookAndFeelSwingFrameListener.register(frame);
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     frame.getContentPane().setLayout(new BorderLayout());
@@ -144,7 +144,7 @@ public final class Console {
   }
 
   private static void setDefaultLogLevel(final Level level) {
-    ClientSetting.loggingVerbosity.saveAndFlush(level.getName());
+    ClientSetting.loggingVerbosity.setValueAndFlush(level.getName());
   }
 
   public void setVisible(final boolean visible) {
