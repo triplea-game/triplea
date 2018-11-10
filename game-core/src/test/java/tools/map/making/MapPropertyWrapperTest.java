@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.xml.TestAttachment;
+import games.strategy.engine.data.TestAttachment;
 
 final class MapPropertyWrapperTest {
   @Nested

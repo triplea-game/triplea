@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.xml.TestDelegate;
+import games.strategy.triplea.delegate.TestDelegate;
 
 final class GameSequenceTest {
   @Nested

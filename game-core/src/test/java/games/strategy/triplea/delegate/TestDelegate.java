@@ -1,9 +1,8 @@
-package games.strategy.engine.xml;
+package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.delegate.AbstractDelegate;
 
 /**
  * A simple dumb delegate, don't actually call these methods.

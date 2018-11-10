@@ -29,8 +29,8 @@
         <unit name="inf"/>
     </unitList>
     <gamePlay>
-        <delegate name="battle" javaClass="games.strategy.engine.xml.TestDelegate"/>
-        <delegate name="move" javaClass="games.strategy.engine.xml.TestDelegate"/>
+        <delegate name="battle" javaClass="TestDelegate"/>
+        <delegate name="move" javaClass="TestDelegate"/>
         <sequence>
             <step name="noPlayer" delegate="move" />
             <step name="usMove" delegate="move" player="bush"/>
@@ -68,13 +68,13 @@
         <attachment name="unitAttachment" attachTo="inf" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
             <option name="transportCost" value="1"/>
         </attachment>
-        <attachment name="resourceAttachment" attachTo="gold" javaClass="games.strategy.engine.xml.TestAttachment" type="resource">
+        <attachment name="resourceAttachment" attachTo="gold" javaClass="TestAttachment" type="resource">
             <option name="value" value="gold"/>
         </attachment>
-        <attachment name="territoryAttachment" attachTo="us" javaClass="games.strategy.engine.xml.TestAttachment" type="territory">
+        <attachment name="territoryAttachment" attachTo="us" javaClass="TestAttachment" type="territory">
             <option name="value" value="us of a"/>
         </attachment>
-        <attachment name="playerAttachment" attachTo="chretian" javaClass="games.strategy.engine.xml.TestAttachment" type="player">
+        <attachment name="playerAttachment" attachTo="chretian" javaClass="TestAttachment" type="player">
             <option name="value" value="liberal"/>
         </attachment>
     </attachmentList>
