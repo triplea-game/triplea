@@ -431,22 +431,20 @@ public class DiceRollTest {
   }
 
   @Test
-  public void testDiceRollCount() {
+  public void testSbrRolls() {
     final PlayerId british = GameDataTestUtil.british(gameData);
-    final Territory location = gameData.getMap().getTerritory("United Kingdom");
-    final Unit bombers =
+    final Unit bomber =
         gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber()).get(0);
-    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(location);
     // default 1 roll
-    assertThat(BattleCalculator.getRolls(bombers, british, false, true, territoryEffects), is(1));
-    assertThat(BattleCalculator.getRolls(bombers, british, true, true, territoryEffects), is(1));
+    assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(1));
+    assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(1));
     // hb, for revised 2 on attack, 1 on defence
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // lhtr hb, 2 for both
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
-    assertThat(BattleCalculator.getRolls(bombers, british, false, true, territoryEffects), is(2));
-    assertThat(BattleCalculator.getRolls(bombers, british, true, true, territoryEffects), is(2));
+    assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(2));
+    assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(2));
   }
 }

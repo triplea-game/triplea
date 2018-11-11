@@ -26,7 +26,6 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -900,74 +899,6 @@ public class BattleCalculator {
       return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;
     }
     return false;
-  }
-
-  private static int getRolls(final Collection<Unit> units, final PlayerId id,
-      final boolean defend, final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
-      final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
-      final Set<List<UnitSupportAttachment>> supportRulesEnemy,
-      final IntegerMap<UnitSupportAttachment> supportLeftEnemyCopy,
-      final Collection<TerritoryEffect> territoryEffects) {
-    int count = 0;
-    for (final Unit unit : units) {
-      final int unitRoll = getRolls(unit, id, defend, bombing, supportRulesFriendly, supportLeftFriendlyCopy,
-          supportRulesEnemy, supportLeftEnemyCopy, territoryEffects);
-      count += unitRoll;
-    }
-    return count;
-  }
-
-  static int getRolls(final Collection<Unit> units, final PlayerId id, final boolean defend,
-      final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
-    return getRolls(units, id, defend, bombing, new HashSet<>(),
-        new IntegerMap<>(), new HashSet<>(),
-        new IntegerMap<>(), territoryEffects);
-  }
-
-  private static int getRolls(final Unit unit, final PlayerId id, final boolean defend,
-      final boolean bombing, final Set<List<UnitSupportAttachment>> supportRulesFriendly,
-      final IntegerMap<UnitSupportAttachment> supportLeftFriendlyCopy,
-      final Set<List<UnitSupportAttachment>> supportRulesEnemy,
-      final IntegerMap<UnitSupportAttachment> supportLeftEnemyCopy,
-      final Collection<TerritoryEffect> territoryEffects) {
-    final UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
-    int rolls;
-    if (defend) {
-      rolls = unitAttachment.getDefenseRolls(id);
-    } else {
-      rolls = unitAttachment.getAttackRolls(id);
-    }
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> dummyEmptyMap =
-        new HashMap<>();
-    rolls += DiceRoll.getSupport(unit, supportRulesFriendly, supportLeftFriendlyCopy, dummyEmptyMap, null, false, true);
-    rolls += DiceRoll.getSupport(unit, supportRulesEnemy, supportLeftEnemyCopy, dummyEmptyMap, null, false, true);
-    rolls = Math.max(0, rolls);
-    // if we are strategic bombing, we do not care what the strength of the unit is...
-    if (bombing) {
-      return rolls;
-    }
-    int strength;
-    if (defend) {
-      strength = unitAttachment.getDefense(unit.getOwner());
-    } else {
-      strength = unitAttachment.getAttack(unit.getOwner());
-    }
-    // TODO: we should add in isMarine bonus too...
-    strength +=
-        DiceRoll.getSupport(unit, supportRulesFriendly, supportLeftFriendlyCopy, dummyEmptyMap, null, true, false);
-    strength += DiceRoll.getSupport(unit, supportRulesEnemy, supportLeftEnemyCopy, dummyEmptyMap, null, true, false);
-    strength += TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defend);
-    if (strength <= 0) {
-      rolls = 0;
-    }
-    return rolls;
-  }
-
-  static int getRolls(final Unit unit, final PlayerId id, final boolean defend,
-      final boolean bombing, final Collection<TerritoryEffect> territoryEffects) {
-    return getRolls(unit, id, defend, bombing, new HashSet<>(),
-        new IntegerMap<>(), new HashSet<>(),
-        new IntegerMap<>(), territoryEffects);
   }
 
   /**
