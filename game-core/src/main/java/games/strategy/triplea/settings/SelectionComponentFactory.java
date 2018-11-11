@@ -13,7 +13,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -34,6 +36,8 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import swinglib.JButtonBuilder;
 import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;
@@ -427,6 +431,38 @@ final class SelectionComponentFactory {
       final ClientSetting<String> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
 
+
+      /**
+       * Data class to store a 3-tuple consisting of
+       * a server host, a server port and whether or not
+       * to use an encrypted connection.
+       */
+      @AllArgsConstructor
+      @Immutable
+      final class EmailProviderSetting {
+        @Nonnull
+        private final String displayName;
+        @Getter
+        @Nonnull
+        private final String host;
+        @Getter
+        @Nonnull
+        private final int port;
+        @Getter
+        @Nonnull
+        private final boolean isEncrypted;
+
+        @Override
+        public String toString() {
+          return displayName;
+        }
+      }
+
+      private final List<EmailProviderSetting> knownProviders = Arrays.asList(
+          new EmailProviderSetting("GMail", "smtp.gmail.com", 587, true),
+          new EmailProviderSetting("Hotmail", "smtp.live.com", 587, true)
+      );
+
       final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 
       final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
@@ -452,15 +488,13 @@ final class SelectionComponentFactory {
           .addLeftJustified(JButtonBuilder.builder()
               .title("Presets...")
               .actionListener(() -> {
-                final JComboBox<PlayByEmailSetting.KnownEmailServerConfigurations> comboBox =
-                    JComboBoxBuilder.builder(PlayByEmailSetting.KnownEmailServerConfigurations.class)
-                        .items(Arrays.asList(PlayByEmailSetting.KnownEmailServerConfigurations.values()))
+                final JComboBox<EmailProviderSetting> comboBox =
+                    JComboBoxBuilder.builder(EmailProviderSetting.class)
+                        .items(knownProviders)
                         .build();
                 if (JOptionPane.showConfirmDialog(this.panel.getParent(), JPanelBuilder.builder().add(comboBox).build(),
                     "Select a Preset", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                  final PlayByEmailSetting.EmailProviderSetting config =
-                      ((PlayByEmailSetting.KnownEmailServerConfigurations) comboBox.getSelectedItem())
-                          .getEmailProviderInfo();
+                  final EmailProviderSetting config = (EmailProviderSetting) comboBox.getSelectedItem();
                   serverField.setText(config.getHost());
                   portSpinner.setValue(config.getPort());
                   tlsCheckBox.setSelected(config.isEncrypted());
