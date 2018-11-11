@@ -30,7 +30,6 @@ import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
-import games.strategy.triplea.delegate.RocketsFireHelper.RocketType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;

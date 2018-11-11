@@ -107,7 +107,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
     battleTracker.fightAirRaidsAndStrategicBombing(bridge);
     if (needToFireRockets) {
-      rocketHelper.fireRockets();
+      rocketHelper.fireRockets(bridge);
       needToFireRockets = false;
     }
     battleTracker.fightDefenselessBattles(bridge);
