@@ -245,7 +245,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   private boolean isDefaultValue(final T value) {
-    return value.equals(defaultValue);
+    return value.equals(getDefaultValue().orElse(null));
   }
 
   /**
@@ -264,12 +264,12 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public final Optional<T> getDefaultValue() {
+  public Optional<T> getDefaultValue() {
     return Optional.ofNullable(defaultValue);
   }
 
   @Override
-  public final Optional<T> getValue() {
+  public Optional<T> getValue() {
     final Optional<String> encodedCurrentValue = getEncodedCurrentValue();
     return encodedCurrentValue.isPresent() ? encodedCurrentValue.map(this::parseValueOrElseDefault) : getDefaultValue();
   }
