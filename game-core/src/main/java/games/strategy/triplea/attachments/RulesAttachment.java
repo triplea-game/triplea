@@ -983,9 +983,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         case "enemy": // any enemy units in the territory
           allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
           break;
-        case "enemy_surface": // any enemy units (not trn/sub) in the territory
+        case "enemy_surface": // any enemy sea units (not trn/sub) in the territory
           allUnits.retainAll(
               CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)
+                  .and(Matches.unitIsSea())
                   .and(Matches.unitIsNotSub())
                   .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
           break;
