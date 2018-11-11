@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.sun.security.ntlm.Client;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -113,8 +114,16 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
   public static final ClientSetting<String> loggingVerbosity =
       new StringClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
-  public static final ClientSetting<PlayByEmailSetting.UserEmailConfiguration> emailConfig =
-      new PlayByEmailSetting("EMAIL_PREFERENCES");
+  public static final ClientSetting<String> emailServerHost =
+      new StringClientSetting("EMAIL_SERVER_HOST", null);
+  public static final ClientSetting<Integer> emailServerPort =
+      new IntegerClientSetting("EMAIL_SERVER_PORT", 0);
+  public static final ClientSetting<Boolean> emailServerSecurity =
+      new BooleanClientSetting("EMAIL_SERVER_SECURITY", true);
+  public static final ClientSetting<String> emailUsername =
+      new ProtectedStringClientSetting("EMAIL_USERNAME", "");
+  public static final ClientSetting<String> emailPassword =
+      new ProtectedStringClientSetting("EMAIL_PASSWORD", "");
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
@@ -218,7 +227,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public final void setValue(final @Nullable T value) {
+  public void setValue(final @Nullable T value) {
     setStringValue(Optional.ofNullable(value)
         .filter(not(this::isDefaultValue))
         .map(this::formatValue)

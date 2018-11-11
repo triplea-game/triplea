@@ -30,6 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
@@ -418,32 +419,24 @@ final class SelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<JComponent> emailSettings(final ClientSetting<PlayByEmailSetting
-      .UserEmailConfiguration> setting) {
+  static SelectionComponent<JComponent> emailSettings(
+      final ClientSetting<String> hostSetting,
+      final ClientSetting<Integer> portSetting,
+      final ClientSetting<Boolean> tlsSetting,
+      final ClientSetting<String> usernameSetting,
+      final ClientSetting<String> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
 
-      final JTextField serverField = new JTextField(setting.getValue()
-          .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-          .map(PlayByEmailSetting.EmailProviderSetting::getHost)
-          .orElse(""), 20);
+      final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 
-      final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel((int) setting.getValue()
-          .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-          .map(PlayByEmailSetting.EmailProviderSetting::getPort)
-          .orElse(0), 0, 65535, 1));
+      final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
+          (int) portSetting.getValue().orElse(0), 0, 65535, 1));
 
-      final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", setting.getValue()
-          .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-          .map(PlayByEmailSetting.EmailProviderSetting::isEncrypted)
-          .orElse(true));
+      final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
 
-      final JTextField usernameField = new JTextField(setting.getValue()
-          .map(PlayByEmailSetting.UserEmailConfiguration::getUsername)
-          .orElse(""), 20);
+      final JTextField usernameField = new JTextField(usernameSetting.getValue().orElse(""), 20);
 
-      final JPasswordField passwordField = new JPasswordField(setting.getValue()
-          .map(PlayByEmailSetting.UserEmailConfiguration::getPassword)
-          .orElse(""), 20);
+      final JPasswordField passwordField = new JPasswordField(passwordSetting.getValue().orElse(""), 20);
 
       final JPanel panel = JPanelBuilder.builder()
           .verticalBoxLayout()
@@ -487,65 +480,35 @@ final class SelectionComponentFactory {
 
       @Override
       public Map<GameSetting<?>, Object> readValues() {
-        if (serverField.getText().isEmpty()
-            || (int) portSpinner.getValue() == 0
-            || usernameField.getText().isEmpty()
-            || passwordField.getPassword().length == 0) {
-          return Collections.singletonMap(setting, null);
-        }
-        return Collections.singletonMap(setting, new PlayByEmailSetting.UserEmailConfiguration(
-            new PlayByEmailSetting.EmailProviderSetting(
-                serverField.getText(),
-                (int) portSpinner.getValue(),
-                tlsCheckBox.isSelected()
-            ),
-            usernameField.getText(),
-            new String(passwordField.getPassword())
-        ));
+        final char[] password = passwordField.getPassword();
+
+        final Map<GameSetting<?>, Object> map = ImmutableMap.<GameSetting<?>, Object>builder()
+            .put(hostSetting, Strings.emptyToNull(serverField.getText()))
+            .put(portSetting, portSpinner.getValue())
+            .put(tlsSetting, tlsCheckBox.isSelected())
+            .put(usernameSetting, Strings.emptyToNull(usernameField.getText()))
+            .put(passwordSetting, password.length == 0 ? null : new String(password))
+            .build();
+        Arrays.fill(password, '\0');
+        return map;
       }
 
       @Override
       public void resetToDefault() {
-        serverField.setText(setting.getDefaultValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-            .map(PlayByEmailSetting.EmailProviderSetting::getHost)
-            .orElse(""));
-        portSpinner.setValue(setting.getDefaultValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-            .map(PlayByEmailSetting.EmailProviderSetting::getPort)
-            .orElse(0));
-        tlsCheckBox.setSelected(setting.getDefaultValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-            .map(PlayByEmailSetting.EmailProviderSetting::isEncrypted)
-            .orElse(true));
-        usernameField.setText(setting.getDefaultValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getUsername)
-            .orElse(""));
-        passwordField.setText(setting.getDefaultValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getPassword)
-            .orElse(""));
+        serverField.setText(hostSetting.getDefaultValue().orElse(""));
+        portSpinner.setValue(portSetting.getDefaultValue().orElse(0));
+        tlsCheckBox.setSelected(tlsSetting.getDefaultValue().orElse(true));
+        usernameField.setText(usernameSetting.getDefaultValue().orElse(""));
+        passwordField.setText(passwordSetting.getDefaultValue().orElse(""));
       }
 
       @Override
       public void reset() {
-        serverField.setText(setting.getValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-            .map(PlayByEmailSetting.EmailProviderSetting::getHost)
-            .orElse(""));
-        portSpinner.setValue(setting.getValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-            .map(PlayByEmailSetting.EmailProviderSetting::getPort)
-            .orElse(0));
-        tlsCheckBox.setSelected(setting.getValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
-            .map(PlayByEmailSetting.EmailProviderSetting::isEncrypted)
-            .orElse(true));
-        usernameField.setText(setting.getValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getUsername)
-            .orElse(""));
-        passwordField.setText(setting.getValue()
-            .map(PlayByEmailSetting.UserEmailConfiguration::getPassword)
-            .orElse(""));
+        serverField.setText(hostSetting.getValue().orElse(""));
+        portSpinner.setValue(portSetting.getValue().orElse(0));
+        tlsCheckBox.setSelected(tlsSetting.getValue().orElse(true));
+        usernameField.setText(usernameSetting.getValue().orElse(""));
+        passwordField.setText(passwordSetting.getValue().orElse(""));
       }
     };
   }

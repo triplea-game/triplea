@@ -288,7 +288,12 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Configure the settings of your preferred email server.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return SelectionComponentFactory.emailSettings(ClientSetting.emailConfig);
+      return SelectionComponentFactory.emailSettings(
+          ClientSetting.emailServerHost,
+          ClientSetting.emailServerPort,
+          ClientSetting.emailServerSecurity,
+          ClientSetting.emailUsername,
+          ClientSetting.emailPassword);
     }
   };
 

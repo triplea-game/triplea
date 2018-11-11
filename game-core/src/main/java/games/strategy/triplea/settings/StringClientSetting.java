@@ -1,6 +1,6 @@
 package games.strategy.triplea.settings;
 
-final class StringClientSetting extends ClientSetting<String> {
+class StringClientSetting extends ClientSetting<String> {
   StringClientSetting(final String name) {
     super(String.class, name);
   }
