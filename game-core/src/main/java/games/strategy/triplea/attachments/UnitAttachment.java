@@ -2851,9 +2851,10 @@ public class UnitAttachment extends DefaultAttachment {
                 : (support.getOffence() ? "Attack" : "Defense"));
         final String text = String.valueOf(support.getBonus())
             + (moreThanOneSupportType ? " " + support.getBonusType() : "")
-            + (support.getStrength() && support.getRoll()
-                ? " Power & Rolls"
-                : (support.getStrength() ? " Power" : " Rolls"))
+            + " "
+            + (support.getDice() == null ? ""
+                : support.getDice().replace(":", " & ").replace("AAroll", "Targeted Roll")
+                    .replace("AAstrength", "Targeted Power").replace("roll", "Roll").replace("strength", "Power"))
             + " to " + support.getNumber()
             + (support.getAllied() && support.getEnemy()
                 ? " Allied & Enemy "
