@@ -173,7 +173,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
     }
   }
 
-  private String getDice() {
+  String getDice() {
     return dice;
   }
 
@@ -393,6 +393,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
         .put("defence", MutableProperty.ofReadOnly(this::getDefence))
         .put("roll", MutableProperty.ofReadOnly(this::getRoll))
         .put("strength", MutableProperty.ofReadOnly(this::getStrength))
+        .put("aaRoll", MutableProperty.ofReadOnly(this::getAaRoll))
+        .put("aaStrength", MutableProperty.ofReadOnly(this::getAaStrength))
         .put("bonus",
             MutableProperty.of(
                 this::setBonus,
