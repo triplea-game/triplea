@@ -113,6 +113,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
   public static final ClientSetting<String> loggingVerbosity =
       new StringClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
+  public static final ClientSetting<PlayByEmailSetting.UserEmailConfiguration> emailConfig =
+      new PlayByEmailSetting("EMAIL_PREFERENCES");
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
