@@ -418,7 +418,8 @@ final class SelectionComponentFactory {
     };
   }
 
-  static SelectionComponent<JComponent> emailSettings(final ClientSetting<PlayByEmailSetting.UserEmailConfiguration> setting) {
+  static SelectionComponent<JComponent> emailSettings(final ClientSetting<PlayByEmailSetting
+      .UserEmailConfiguration> setting) {
     return new AlwaysValidInputSelectionComponent() {
 
       final JTextField serverField = new JTextField(setting.getValue()
@@ -429,8 +430,7 @@ final class SelectionComponentFactory {
       final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel((int) setting.getValue()
           .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
           .map(PlayByEmailSetting.EmailProviderSetting::getPort)
-          .orElse(0)
-          , 0, 65535, 1));
+          .orElse(0), 0, 65535, 1));
 
       final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", setting.getValue()
           .map(PlayByEmailSetting.UserEmailConfiguration::getEmailProviderSetting)
@@ -465,12 +465,12 @@ final class SelectionComponentFactory {
                         .build();
                 if (JOptionPane.showConfirmDialog(this.panel.getParent(), JPanelBuilder.builder().add(comboBox).build(),
                     "Select a Preset", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                    final PlayByEmailSetting.EmailProviderSetting config =
-                        ((PlayByEmailSetting.KnownEmailServerConfigurations) comboBox.getSelectedItem())
-                            .getEmailProviderInfo();
-                    serverField.setText(config.getHost());
-                    portSpinner.setValue(config.getPort());
-                    tlsCheckBox.setSelected(config.isEncrypted());
+                  final PlayByEmailSetting.EmailProviderSetting config =
+                      ((PlayByEmailSetting.KnownEmailServerConfigurations) comboBox.getSelectedItem())
+                          .getEmailProviderInfo();
+                  serverField.setText(config.getHost());
+                  portSpinner.setValue(config.getPort());
+                  tlsCheckBox.setSelected(config.isEncrypted());
                 }
               })
             .build())
@@ -488,9 +488,9 @@ final class SelectionComponentFactory {
       @Override
       public Map<GameSetting<?>, Object> readValues() {
         if (serverField.getText().isEmpty()
-          || (int) portSpinner.getValue() == 0
-          || usernameField.getText().isEmpty()
-          || passwordField.getPassword().length == 0) {
+            || (int) portSpinner.getValue() == 0
+            || usernameField.getText().isEmpty()
+            || passwordField.getPassword().length == 0) {
           return Collections.singletonMap(setting, null);
         }
         return Collections.singletonMap(setting, new PlayByEmailSetting.UserEmailConfiguration(

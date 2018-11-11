@@ -10,8 +10,16 @@ import games.strategy.security.CredentialManagerException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * A setting class providing mechanisms to store Email-Server related information
+ * in a single ClientSetting.
+ */
 public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEmailConfiguration> {
 
+  /**
+   * List of Known Email Server configurations.
+   * Used to populate presets in the Settings.
+   */
   enum KnownEmailServerConfigurations {
     GMAIL("GMail", new EmailProviderSetting("smtp.gmail.com", 587, true)),
     HOTMAIL("Hotmail", new EmailProviderSetting("smtp.live.com", 587, true));
@@ -53,6 +61,11 @@ public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEma
     return encodedValue.isEmpty() ? null : UserEmailConfiguration.parse(encodedValue);
   }
 
+  /**
+   * Data class to store a 3-tuple consisting of
+   * a server host, a server port and whether or not
+   * to use an encrypted connection.
+   */
   @Getter
   @AllArgsConstructor
   @Immutable
@@ -64,6 +77,10 @@ public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEma
     @Nonnull
     private final boolean isEncrypted;
 
+    /**
+     * Deserializes a given JSON string into an EmailProviderSetting
+     * object.
+     */
     static EmailProviderSetting parse(final String encodedValue) {
       final JSONObject object = new JSONObject(encodedValue);
       return new EmailProviderSetting(
@@ -72,6 +89,9 @@ public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEma
           object.getBoolean("secure"));
     }
 
+    /**
+     * Serializes this object into a valid JSON object.
+     */
     @Override
     public String toString() {
       final JSONObject object = new JSONObject();
@@ -82,6 +102,13 @@ public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEma
     }
   }
 
+
+  /**
+   * Data class to store user-related information about a user's
+   * account at an email provider service.
+   * Passwords and usernames are stored encrypted, using the master password
+   * if available.
+   */
   public static final class UserEmailConfiguration {
     private final EmailProviderSetting setting;
     private final String username;
@@ -114,7 +141,7 @@ public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEma
     public String getUsername() {
       try (CredentialManager manager = CredentialManager.newInstance()) {
         return manager.unprotectToString(username);
-      } catch (CredentialManagerException e) {
+      } catch (final CredentialManagerException e) {
         throw new IllegalStateException("CredentialManager needs to be available in order to unprotect username.", e);
       }
     }
@@ -122,11 +149,14 @@ public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEma
     public String getPassword() {
       try (CredentialManager manager = CredentialManager.newInstance()) {
         return manager.unprotectToString(password);
-      } catch (CredentialManagerException e) {
+      } catch (final CredentialManagerException e) {
         throw new IllegalStateException("CredentialManager needs to be available in order to unprotect passwords.", e);
       }
     }
 
+    /**
+     * Deserializes a valid JSON object into a UserEmailConfiguration object.
+     */
     static UserEmailConfiguration parse(final String encodedValue) {
       final JSONObject object = new JSONObject(encodedValue);
       return new UserEmailConfiguration(
@@ -136,6 +166,9 @@ public class PlayByEmailSetting extends ClientSetting<PlayByEmailSetting.UserEma
           false);
     }
 
+    /**
+     * Serializes this object into a valid JSON String.
+     */
     @Override
     public String toString() {
       final JSONObject object = new JSONObject();
