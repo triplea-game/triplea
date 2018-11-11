@@ -16,7 +16,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.sun.security.ntlm.Client;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;

@@ -11,7 +11,7 @@ class ProtectedStringClientSetting extends StringClientSetting {
     super(name, protect(defaultValue));
   }
 
-  private static String protect(String value) {
+  private static String protect(final String value) {
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.protect(value);
     } catch (final CredentialManagerException e) {
@@ -19,7 +19,7 @@ class ProtectedStringClientSetting extends StringClientSetting {
     }
   }
 
-  private static String unprotect(String encodedValue) {
+  private static String unprotect(final String encodedValue) {
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.unprotectToString(encodedValue);
     } catch (final CredentialManagerException e) {
