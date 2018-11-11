@@ -24,7 +24,7 @@ public class PlayByEmailSettingTest {
     try (CredentialManager manager = CredentialManager.newInstance()) {
       final String protectedUsername = manager.protect(username);
       final String protectedPassword = manager.protect(password);
-      final String emailJSON = String
+      final String emailJson = String
           .format("{\"host\": \"%s\", \"port\": %d, \"secure\": %b}", host, port, false)
           .replaceAll("\"", "\\\\\"");
       final PlayByEmailSetting.UserEmailConfiguration config = setting
@@ -32,7 +32,7 @@ public class PlayByEmailSettingTest {
               "{\"configuration\": \"%s\",\n"
               + "\"username\": \"%s\",\n"
               + "\"password\": \"%s\"\n}",
-              emailJSON, protectedUsername, protectedPassword));
+              emailJson, protectedUsername, protectedPassword));
       assertEquals(username, config.getUsername());
       assertEquals(password, config.getPassword());
       final PlayByEmailSetting.EmailProviderSetting providerSetting = config.getEmailProviderSetting();
