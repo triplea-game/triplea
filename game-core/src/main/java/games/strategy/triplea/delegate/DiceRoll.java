@@ -349,6 +349,7 @@ public class DiceRoll implements Externalizable {
   public static DiceRoll rollDice(final List<Unit> units, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+
     // Decide whether to use low luck rules or normal rules.
     if (Properties.getLowLuck(bridge.getData())) {
       return rollDiceLowLuck(units, defending, player, bridge, battle, annotation, territoryEffects,
@@ -383,14 +384,13 @@ public class DiceRoll implements Externalizable {
    *        battle.
    */
   public static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor, final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final boolean defending, final boolean bombing, final GameData data, final Territory location,
+      final List<Unit> unitsGettingPowerFor, final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending,
+      final boolean bombing, final GameData data, final Territory location,
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers) {
 
-    return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor,
-        allEnemyUnitsAliveOrWaitingToDie, defending, bombing, data, location, territoryEffects,
-        isAmphibiousBattle, amphibiousLandAttackers, new HashMap<>(),
+    return getUnitPowerAndRollsForNormalBattles(unitsGettingPowerFor, allEnemyUnitsAliveOrWaitingToDie, defending,
+        bombing, data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers, new HashMap<>(),
         new HashMap<>());
   }
 
@@ -401,112 +401,114 @@ public class DiceRoll implements Externalizable {
    *        battle.
    */
   protected static Map<Unit, Tuple<Integer, Integer>> getUnitPowerAndRollsForNormalBattles(
-      final List<Unit> unitsGettingPowerFor,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending, final boolean bombing,
-      final GameData data, final Territory location,
+      final List<Unit> unitsGettingPowerFor, final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defending,
+      final boolean bombing, final GameData data, final Territory location,
       final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibiousBattle,
       final Collection<Unit> amphibiousLandAttackers, final Map<Unit, IntegerMap<Unit>> unitSupportPowerMap,
       final Map<Unit, IntegerMap<Unit>> unitSupportRollsMap) {
+
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRolls = new HashMap<>();
     if (unitsGettingPowerFor == null || unitsGettingPowerFor.isEmpty()) {
       return unitPowerAndRolls;
     }
-    // get all supports, friendly and enemy
+
+    // Get all supports, friendly and enemy
     final Set<List<UnitSupportAttachment>> supportRulesFriendly = new HashSet<>();
     final IntegerMap<UnitSupportAttachment> supportLeftFriendly = new IntegerMap<>();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly =
-        new HashMap<>();
-    getSupport(unitsGettingPowerFor, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
-        data, defending, true);
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendly = new HashMap<>();
+    getSupport(unitsGettingPowerFor, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly, data,
+        defending, true);
     final Set<List<UnitSupportAttachment>> supportRulesEnemy = new HashSet<>();
     final IntegerMap<UnitSupportAttachment> supportLeftEnemy = new IntegerMap<>();
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy =
-        new HashMap<>();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemy = new HashMap<>();
     getSupport(allEnemyUnitsAliveOrWaitingToDie, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, data,
         !defending, false);
-    // copy for rolls
+
+    // Copy for rolls
     final IntegerMap<UnitSupportAttachment> supportLeftFriendlyRolls = new IntegerMap<>(supportLeftFriendly);
     final IntegerMap<UnitSupportAttachment> supportLeftEnemyRolls = new IntegerMap<>(supportLeftEnemy);
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendlyRolls =
-        new HashMap<>();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftFriendlyRolls = new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftFriendly.keySet()) {
       supportUnitsLeftFriendlyRolls.put(usa, new IntegerMap<>(supportUnitsLeftFriendly.get(usa)));
     }
-    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemyRolls =
-        new HashMap<>();
+    final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeftEnemyRolls = new HashMap<>();
     for (final UnitSupportAttachment usa : supportUnitsLeftEnemy.keySet()) {
       supportUnitsLeftEnemyRolls.put(usa, new IntegerMap<>(supportUnitsLeftEnemy.get(usa)));
     }
-    final int diceSides = data.getDiceSides();
-    for (final Unit current : unitsGettingPowerFor) {
-      // find our initial strength
+
+    for (final Unit unit : unitsGettingPowerFor) {
+
+      // Find unit's strength
       int strength;
-      final UnitAttachment ua = UnitAttachment.get(current.getType());
+      final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (defending) {
-        strength = ua.getDefense(current.getOwner());
-        if (isFirstTurnLimitedRoll(current.getOwner(), data)) {
+        strength = ua.getDefense(unit.getOwner());
+        if (isFirstTurnLimitedRoll(unit.getOwner(), data)) {
           strength = Math.min(1, strength);
         } else {
-          strength += getSupport(current, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
+          strength += getSupport(unit, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
               unitSupportPowerMap, true, false);
         }
-        strength += getSupport(current, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap,
+        strength += getSupport(unit, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap,
             true, false);
       } else {
-        strength = ua.getAttack(current.getOwner());
+        strength = ua.getAttack(unit.getOwner());
         if (ua.getIsMarine() != 0 && isAmphibiousBattle) {
-          if (amphibiousLandAttackers.contains(current)) {
+          if (amphibiousLandAttackers.contains(unit)) {
             strength += ua.getIsMarine();
           }
         }
         if (ua.getIsSea() && isAmphibiousBattle && Matches.territoryIsLand().test(location)) {
-          // change the strength to be bombard, not attack/defense, because this is a
+          // Change the strength to be bombard, not attack/defense, because this is a bombarding naval unit
           strength = ua.getBombard();
-          // bombarding naval unit
         }
-        strength += getSupport(current, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
+        strength += getSupport(unit, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
             unitSupportPowerMap, true, false);
-        strength += getSupport(current, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap,
+        strength += getSupport(unit, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap,
             true, false);
       }
-      strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
-      strength = Math.min(Math.max(strength, 0), diceSides);
-      // now determine our rolls
+      strength += TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defending);
+      strength = Math.min(Math.max(strength, 0), data.getDiceSides());
+
+      // Find unit's rolls
       int rolls;
       if (!bombing && strength == 0) {
         rolls = 0;
       } else {
         if (defending) {
-          rolls = ua.getDefenseRolls(current.getOwner());
+          rolls = ua.getDefenseRolls(unit.getOwner());
         } else {
-          rolls = ua.getAttackRolls(current.getOwner());
+          rolls = ua.getAttackRolls(unit.getOwner());
         }
-        rolls += getSupport(current, supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendlyRolls,
+        rolls += getSupport(unit, supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendlyRolls,
             unitSupportRollsMap, false, true);
-        rolls += getSupport(current, supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemyRolls,
+        rolls += getSupport(unit, supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemyRolls,
             unitSupportRollsMap, false, true);
         rolls = Math.max(0, rolls);
         if (rolls == 0) {
           strength = 0;
         }
       }
-      unitPowerAndRolls.put(current, Tuple.of(strength, rolls));
+
+      unitPowerAndRolls.put(unit, Tuple.of(strength, rolls));
     }
+
     return unitPowerAndRolls;
   }
 
-  public static int getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
-      final GameData data) {
+  public static int getTotalPower(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
     return getTotalPowerAndRolls(unitPowerAndRollsMap, data).getFirst();
   }
 
-
   private static Tuple<Integer, Integer> getTotalPowerAndRolls(
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap, final GameData data) {
+
     final int diceSides = data.getDiceSides();
     final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
-    // bonus is normally 1 for most games
+
+    // Bonus is normally 1 for most games
     final int extraRollBonus = Math.max(1, data.getDiceSides() / 6);
+
     int totalPower = 0;
     int totalRolls = 0;
     for (final Entry<Unit, Tuple<Integer, Integer>> entry : unitPowerAndRollsMap.entrySet()) {
@@ -522,8 +524,7 @@ public class DiceRoll implements Externalizable {
         final UnitAttachment ua = UnitAttachment.get(entry.getKey().getType());
         if (lhtrBombers || ua.getChooseBestRoll()) {
           // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add
-          // +1 onto the power to
-          // simulate the gains of having the best die picked.
+          // +1 onto the power to simulate the gains of having the best die picked.
           unitStrength += extraRollBonus * (unitRolls - 1);
           totalPower += Math.min(unitStrength, diceSides);
           totalRolls += unitRolls;
@@ -538,11 +539,12 @@ public class DiceRoll implements Externalizable {
   }
 
   /**
-   * Roll dice for units using low luck rules. Low luck rules based on rules in DAAK.
+   * Roll dice for units using low luck rules.
    */
   private static DiceRoll rollDiceLowLuck(final List<Unit> unitsList, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
     final Territory location = battle.getTerritory();
@@ -551,30 +553,34 @@ public class DiceRoll implements Externalizable {
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
             data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+
     final int power = getTotalPower(unitPowerAndRollsMap, data);
     if (power == 0) {
       return new DiceRoll(Collections.emptyList(), 0, 0);
     }
+
+    // Roll dice for the fractional part of the dice
     int hitCount = power / data.getDiceSides();
     final List<Die> dice = new ArrayList<>();
-    // We need to roll dice for the fractional part of the dice.
     final int rollFor = power % data.getDiceSides();
     final int[] random;
     if (rollFor == 0) {
       random = new int[0];
     } else {
       random = bridge.getRandom(data.getDiceSides(), 1, player, DiceType.COMBAT, annotation);
-      // zero based
+      // Zero based
       final boolean hit = rollFor > random[0];
       if (hit) {
         hitCount++;
       }
       dice.add(new Die(random[0], rollFor, hit ? DieType.HIT : DieType.MISS));
     }
+
     // Create DiceRoll object
     final double expectedHits = ((double) power) / data.getDiceSides();
     final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
     bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+
     return diceRoll;
   }
 
@@ -700,15 +706,15 @@ public class DiceRoll implements Externalizable {
 
   private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
       final boolean friendly) {
-    // first, sort the lists inside each set
+
+    // First, sort the lists inside each set
     final Comparator<UnitSupportAttachment> compList = (u1, u2) -> {
       int compareTo;
-      // we want to apply the biggest bonus first
+
       // Make sure stronger supports are ordered first if friendly, and worst are ordered first if enemy
       // TODO: it is possible that we will waste negative support if we reduce a units power to less than zero.
       // We should actually apply enemy negative support in order from worst to least bad, on a unit list that is
-      // ordered from strongest
-      // to weakest.
+      // ordered from strongest to weakest.
       final boolean u1CanBonus = defense ? u1.getDefence() : u1.getOffence();
       final boolean u2CanBonus = defense ? u2.getDefence() : u2.getOffence();
       if (friendly) {
@@ -747,21 +753,17 @@ public class DiceRoll implements Externalizable {
           }
         }
       }
-      // if the bonuses are the same, we want to make sure any support which only supports 1 single unittype goes
-      // first
-      // the reason being that we could have Support1 which supports both infantry and mech infantry, and Support2
-      // which only supports
-      // mech infantry
-      // if the Support1 goes first, and the mech infantry is first in the unit list (highly probable), then Support1
-      // will end up using
-      // all of itself up on the mech infantry
-      // then when the Support2 comes up, all the mech infantry are used up, and it does nothing.
-      // instead, we want Support2 to come first, support all mech infantry that it can, then have Support1 come in
-      // and support whatever
-      // is left, that way no support is wasted
+
+      // If the bonuses are the same, we want to make sure any support which only supports 1 single unit type goes
+      // first because there could be Support1 which supports both infantry and mech infantry, and Support2
+      // which only supports mech infantry. If the Support1 goes first, and the mech infantry is first in the unit list
+      // (highly probable), then Support1 will end up using all of itself up on the mech infantry then when the Support2
+      // comes up, all the mech infantry are used up, and it does nothing. Instead, we want Support2 to come first,
+      // support all mech infantry that it can, then have Support1 come in and support whatever is left, that way no
+      // support is wasted.
       // TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will
-      // come first. It should
-      // come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
+      // come first. It should come first, unless we would have support wasted otherwise. This ends up being a pretty
+      // tricky math puzzle.
       final Set<UnitType> types1 = u1.getUnitType();
       final Set<UnitType> types2 = u2.getUnitType();
       final int s1 = types1 == null ? 0 : types1.size();
@@ -770,9 +772,9 @@ public class DiceRoll implements Externalizable {
       if (compareTo != 0) {
         return compareTo;
       }
-      // Now we need to sort so that the supporters who are the most powerful go before the less powerful
-      // This is not necessary for the providing of support, but is necessary for our default casualty selection
-      // method
+
+      // Now we need to sort so that the supporters who are the most powerful go before the less powerful. This is not
+      // necessary for the providing of support, but is necessary for our default casualty selection method.
       final UnitType unitType1 = (UnitType) u1.getAttachedTo();
       final UnitType unitType2 = (UnitType) u2.getAttachedTo();
       final UnitAttachment ua1 = UnitAttachment.get(unitType1);
@@ -786,8 +788,10 @@ public class DiceRoll implements Externalizable {
         unitPower1 = ua1.getAttackRolls(PlayerId.NULL_PLAYERID) * ua1.getAttack(PlayerId.NULL_PLAYERID);
         unitPower2 = ua2.getAttackRolls(PlayerId.NULL_PLAYERID) * ua2.getAttack(PlayerId.NULL_PLAYERID);
       }
+
       return Integer.compare(unitPower2, unitPower1);
     };
+
     for (final List<UnitSupportAttachment> attachments : support) {
       attachments.sort(compList);
     }
@@ -897,6 +901,7 @@ public class DiceRoll implements Externalizable {
   private static DiceRoll rollDiceNormal(final List<Unit> unitsList, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+
     final List<Unit> units = new ArrayList<>(unitsList);
     final GameData data = bridge.getData();
     sortByStrength(units, defending);
@@ -906,12 +911,14 @@ public class DiceRoll implements Externalizable {
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
         DiceRoll.getUnitPowerAndRollsForNormalBattles(units, allEnemyUnitsAliveOrWaitingToDie, defending, false,
             data, location, territoryEffects, isAmphibiousBattle, amphibiousLandAttackers);
+
     final Tuple<Integer, Integer> totalPowerAndRolls = getTotalPowerAndRolls(unitPowerAndRollsMap, data);
     final int totalPower = totalPowerAndRolls.getFirst();
     final int rollCount = totalPowerAndRolls.getSecond();
     if (rollCount == 0) {
       return new DiceRoll(new ArrayList<>(), 0, 0);
     }
+
     final int[] random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
     final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     final List<Die> dice = new ArrayList<>();
@@ -935,7 +942,7 @@ public class DiceRoll implements Externalizable {
             smallestDieIndex = i;
           }
         }
-        // zero based
+        // Zero based
         final boolean hit = strength > random[diceIndex + smallestDieIndex];
         dice.add(new Die(random[diceIndex + smallestDieIndex], strength, hit ? DieType.HIT : DieType.MISS));
         for (int i = 0; i < rolls; i++) {
@@ -949,7 +956,7 @@ public class DiceRoll implements Externalizable {
         diceIndex += rolls;
       } else {
         for (int i = 0; i < rolls; i++) {
-          // zero based
+          // Zero based
           final boolean hit = strength > random[diceIndex];
           dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
           if (hit) {
@@ -959,9 +966,11 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
+
     final double expectedHits = ((double) totalPower) / data.getDiceSides();
     final DiceRoll diceRoll = new DiceRoll(dice, hitCount, expectedHits);
     bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), diceRoll);
+
     return diceRoll;
   }
 
