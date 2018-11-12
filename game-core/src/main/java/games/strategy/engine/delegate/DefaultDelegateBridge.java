@@ -6,14 +6,14 @@ import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.AbstractGame;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.gamePlayer.IRemotePlayer;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.MessengerException;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
@@ -45,7 +45,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public PlayerID getPlayerId() {
+  public PlayerId getPlayerId() {
     return gameData.getSequence().getStep().getPlayerId();
   }
 
@@ -58,7 +58,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
    * neither player cheats.
    */
   @Override
-  public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
+  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation)
       throws IllegalArgumentException, IllegalStateException {
     final int random = randomSource.getRandom(max, annotation);
     randomStats.addRandom(random, player, diceType);
@@ -66,7 +66,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType,
+  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
       final String annotation) throws IllegalArgumentException, IllegalStateException {
     final int[] randomValues = randomSource.getRandom(max, count, annotation);
     randomStats.addRandom(randomValues, player, diceType);
@@ -108,7 +108,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerID id) {
+  public IRemotePlayer getRemotePlayer(final PlayerId id) {
     try {
       final Object implementor = game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, gameData));
       return (IRemotePlayer) getOutbound(implementor);

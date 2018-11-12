@@ -325,7 +325,7 @@ public final class ConnectionFinder {
    * @return a Point2D object that represents the center of mass of the given shape
    */
   private static Point2D getCentroid(final Shape currentShape) {
-    final ArrayList<Point2D> pointList = new ArrayList<>(32);
+    final List<Point2D> pointList = new ArrayList<>(32);
     final PathIterator pathIterator = currentShape.getPathIterator(null);
     int lastMoveToIndex = -1;
     while (!pathIterator.isDone()) {

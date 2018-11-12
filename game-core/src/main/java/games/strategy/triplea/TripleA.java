@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.IGame;
@@ -19,9 +19,9 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.HeadlessSoundChannel;
@@ -36,7 +36,6 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 
-@MapSupport
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
 
@@ -146,7 +145,7 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data) {
+  public Unit createUnit(final UnitType type, final PlayerId owner, final GameData data) {
     return new TripleAUnit(type, owner, data);
   }
 }

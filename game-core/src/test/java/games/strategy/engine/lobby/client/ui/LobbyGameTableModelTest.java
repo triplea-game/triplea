@@ -3,7 +3,7 @@ package games.strategy.engine.lobby.client.ui;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
-import static org.triplea.test.common.Assertions.assertNotThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -123,7 +123,7 @@ final class LobbyGameTableModelTest {
   final class FormatBotStartTimeTest {
     @Test
     void shouldNotThrowException() {
-      assertNotThrows(() -> LobbyGameTableModel.formatBotStartTime(Instant.now()));
+      assertDoesNotThrow(() -> LobbyGameTableModel.formatBotStartTime(Instant.now()));
     }
   }
 }

@@ -10,7 +10,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -60,7 +60,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_needToInitialize = this.needToInitialize;
+    state.needToInitialize = this.needToInitialize;
     return state;
   }
 
@@ -68,7 +68,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
   public void loadState(final Serializable state) {
     final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
     super.loadState(s.superState);
-    this.needToInitialize = s.m_needToInitialize;
+    this.needToInitialize = s.needToInitialize;
   }
 
   @Override
@@ -170,7 +170,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     if (!Properties.getDisabledPlayersAssetsDeleted(data)) {
       return;
     }
-    for (final PlayerID player : data.getPlayerList().getPlayers()) {
+    for (final PlayerId player : data.getPlayerList().getPlayers()) {
       if (player.isNull() || !player.getIsDisabled()) {
         continue;
       }
@@ -216,7 +216,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
 
   private static void initTech(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    for (final PlayerID player : data.getPlayerList().getPlayers()) {
+    for (final PlayerId player : data.getPlayerList().getPlayers()) {
       final Collection<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data);
       if (!advances.isEmpty()) {
         bridge.getHistoryWriter().startEvent("Initializing " + player.getName() + " with tech advances");

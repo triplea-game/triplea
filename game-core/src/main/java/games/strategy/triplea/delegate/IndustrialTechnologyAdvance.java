@@ -2,7 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -26,7 +26,7 @@ public final class IndustrialTechnologyAdvance extends TechAdvance {
   }
 
   @Override
-  public void perform(final PlayerID id, final IDelegateBridge bridge) {
+  public void perform(final PlayerId id, final IDelegateBridge bridge) {
     final ProductionFrontier current = id.getProductionFrontier();
     // they already have it
     if (current.getName().endsWith("IndustrialTechnology")) {

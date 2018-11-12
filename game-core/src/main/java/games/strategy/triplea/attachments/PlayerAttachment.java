@@ -14,30 +14,28 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
-@MapSupport
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
 
   /**
    * Convenience method. can be null
    */
-  public static PlayerAttachment get(final PlayerID p) {
+  public static PlayerAttachment get(final PlayerId p) {
     // allow null
     return p.getPlayerAttachment();
   }
 
-  static PlayerAttachment get(final PlayerID p, final String nameOfAttachment) {
+  static PlayerAttachment get(final PlayerId p, final String nameOfAttachment) {
     final PlayerAttachment playerAttachment = p.getPlayerAttachment();
     if (playerAttachment == null) {
       throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
@@ -52,12 +50,12 @@ public class PlayerAttachment extends DefaultAttachment {
   private int retainCapitalNumber = 1;
   // number of capitals needed before we lose ability to gain money and produce units
   private int retainCapitalProduceNumber = 1;
-  private List<PlayerID> giveUnitControl = new ArrayList<>();
-  private List<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
+  private List<PlayerId> giveUnitControl = new ArrayList<>();
+  private List<PlayerId> captureUnitOnEnteringBy = new ArrayList<>();
   // gives any technology researched to this player automatically
-  private List<PlayerID> shareTechnology = new ArrayList<>();
+  private List<PlayerId> shareTechnology = new ArrayList<>();
   // allows these players to help pay for technology
-  private List<PlayerID> helpPayTechCost = new ArrayList<>();
+  private List<PlayerId> helpPayTechCost = new ArrayList<>();
   // do we lose our money and have it disappear or is that money captured?
   private boolean destroysPus = false;
   // are we immune to being blockaded?
@@ -93,7 +91,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("placementLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
-    final HashSet<UnitType> types = new HashSet<>();
+    final Set<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
       types.addAll(getData().getUnitTypeList().getAllUnitTypes());
     } else {
@@ -132,7 +130,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("movementLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
-    final HashSet<UnitType> types = new HashSet<>();
+    final Set<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
       types.addAll(getData().getUnitTypeList().getAllUnitTypes());
     } else {
@@ -171,7 +169,7 @@ public class PlayerAttachment extends DefaultAttachment {
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
       throw new GameParseException("attackingLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
-    final HashSet<UnitType> types = new HashSet<>();
+    final Set<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
       types.addAll(getData().getUnitTypeList().getAllUnitTypes());
     } else {
@@ -199,7 +197,7 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType,
-      final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerID owner, final GameData data) {
+      final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerId owner, final GameData data) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);
     if (pa == null) {
       return true;
@@ -369,7 +367,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setGiveUnitControl(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         giveUnitControl.add(tempPlayer);
       } else {
@@ -378,11 +376,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setGiveUnitControl(final List<PlayerID> value) {
+  private void setGiveUnitControl(final List<PlayerId> value) {
     giveUnitControl = value;
   }
 
-  public List<PlayerID> getGiveUnitControl() {
+  public List<PlayerId> getGiveUnitControl() {
     return giveUnitControl;
   }
 
@@ -393,7 +391,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         captureUnitOnEnteringBy.add(tempPlayer);
       } else {
@@ -402,11 +400,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
+  private void setCaptureUnitOnEnteringBy(final List<PlayerId> value) {
     captureUnitOnEnteringBy = value;
   }
 
-  public List<PlayerID> getCaptureUnitOnEnteringBy() {
+  public List<PlayerId> getCaptureUnitOnEnteringBy() {
     return captureUnitOnEnteringBy;
   }
 
@@ -417,7 +415,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setShareTechnology(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         shareTechnology.add(tempPlayer);
       } else {
@@ -426,11 +424,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setShareTechnology(final List<PlayerID> value) {
+  private void setShareTechnology(final List<PlayerId> value) {
     shareTechnology = value;
   }
 
-  public List<PlayerID> getShareTechnology() {
+  public List<PlayerId> getShareTechnology() {
     return shareTechnology;
   }
 
@@ -441,7 +439,7 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setHelpPayTechCost(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         helpPayTechCost.add(tempPlayer);
       } else {
@@ -450,11 +448,11 @@ public class PlayerAttachment extends DefaultAttachment {
     }
   }
 
-  private void setHelpPayTechCost(final List<PlayerID> value) {
+  private void setHelpPayTechCost(final List<PlayerId> value) {
     helpPayTechCost = value;
   }
 
-  public List<PlayerID> getHelpPayTechCost() {
+  public List<PlayerId> getHelpPayTechCost() {
     return helpPayTechCost;
   }
 

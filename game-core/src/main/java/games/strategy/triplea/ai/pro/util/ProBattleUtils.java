@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -107,11 +107,11 @@ public class ProBattleUtils {
     return (myPower * 6.0 / data.getDiceSides());
   }
 
-  public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player) {
+  public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerId player) {
     return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<>());
   }
 
-  public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerID player,
+  public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerId player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
     final GameData data = ProData.getData();
@@ -158,7 +158,7 @@ public class ProBattleUtils {
   }
 
   public static boolean territoryHasLocalLandSuperiorityAfterMoves(final Territory t, final int distance,
-      final PlayerID player, final Map<Territory, ProTerritory> moveMap) {
+      final PlayerId player, final Map<Territory, ProTerritory> moveMap) {
     final GameData data = ProData.getData();
 
     // Find enemy strength
@@ -188,7 +188,7 @@ public class ProBattleUtils {
     return strengthDifference <= 50;
   }
 
-  public static boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerID player,
+  public static boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerId player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<Unit> unitsToPlace) {
     final GameData data = ProData.getData();
 

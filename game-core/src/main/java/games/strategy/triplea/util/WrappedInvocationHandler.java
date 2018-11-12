@@ -1,5 +1,7 @@
 package games.strategy.triplea.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -12,9 +14,8 @@ public class WrappedInvocationHandler implements InvocationHandler {
   private final Object delegate;
 
   public WrappedInvocationHandler(final Object delegate) {
-    if (delegate == null) {
-      throw new IllegalArgumentException("delegate cant be null");
-    }
+    checkNotNull(delegate);
+
     this.delegate = delegate;
   }
 

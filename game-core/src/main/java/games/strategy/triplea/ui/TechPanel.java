@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.Action;
@@ -23,13 +24,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.ui.SwingAction;
@@ -43,14 +44,14 @@ class TechPanel extends ActionPanel {
   private TechRoll techRoll;
   private int currTokens = 0;
   private int quantity;
-  private IntegerMap<PlayerID> whoPaysHowMuch = null;
+  private IntegerMap<PlayerId> whoPaysHowMuch = null;
 
   TechPanel(final GameData data, final MapPanel map) {
     super(data, map);
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id);
     SwingUtilities.invokeLater(() -> {
       removeAll();
@@ -149,7 +150,7 @@ class TechPanel extends ActionPanel {
   });
 
   private final Action getTechTokenAction = SwingAction.of("Buy Tech Tokens...", e -> {
-    final PlayerID currentPlayer = getCurrentPlayer();
+    final PlayerId currentPlayer = getCurrentPlayer();
     currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
     // Notify user if there are no more techs to acheive
     final List<TechnologyFrontier> techCategories = getAvailableCategories();
@@ -179,7 +180,7 @@ class TechPanel extends ActionPanel {
 
     final int pus = currentPlayer.getResources().getQuantity(Constants.PUS);
     // see if anyone will help us to pay
-    final Collection<PlayerID> helpPay;
+    final Collection<PlayerId> helpPay;
     final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
     if (pa != null) {
       helpPay = pa.getHelpPayTechCost();
@@ -263,11 +264,11 @@ class TechPanel extends ActionPanel {
   private static final class TechRollPanel extends JPanel {
     private static final long serialVersionUID = -3794742986339086059L;
     final int pus;
-    final PlayerID player;
+    final PlayerId player;
     final JLabel left = new JLabel();
     final ScrollableTextField textField;
 
-    TechRollPanel(final int pus, final PlayerID player) {
+    TechRollPanel(final int pus, final PlayerId player) {
       setLayout(new GridBagLayout());
       this.pus = pus;
       this.player = player;
@@ -304,19 +305,19 @@ class TechPanel extends ActionPanel {
     int totalPus;
     final int playerPus;
     final ScrollableTextField playerPuField;
-    final PlayerID player;
+    final PlayerId player;
     final JLabel left = new JLabel();
     final JLabel right = new JLabel();
     final JLabel totalCost = new JLabel();
     final ScrollableTextField textField;
-    HashMap<PlayerID, ScrollableTextField> whoPaysTextFields = null;
+    Map<PlayerId, ScrollableTextField> whoPaysTextFields = null;
 
-    TechTokenPanel(final int pus, final int currTokens, final PlayerID player, final Collection<PlayerID> helpPay) {
+    TechTokenPanel(final int pus, final int currTokens, final PlayerId player, final Collection<PlayerId> helpPay) {
       playerPus = pus;
       totalPus = pus;
       if (helpPay != null && !helpPay.isEmpty()) {
         helpPay.remove(player);
-        for (final PlayerID p : helpPay) {
+        for (final PlayerId p : helpPay) {
           totalPus += p.getResources().getQuantity(Constants.PUS);
         }
       }
@@ -366,13 +367,13 @@ class TechPanel extends ActionPanel {
         add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
             GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
         row++;
-        for (final PlayerID p : helpPay) {
+        for (final PlayerId p : helpPay) {
           final int helperPUs = p.getResources().getQuantity(Constants.PUS);
           if (helperPUs > 0) {
             final ScrollableTextField whoPaysTextField = new ScrollableTextField(0, helperPUs);
             whoPaysTextField.addChangeListener(setWidgetAction());
             whoPaysTextFields.put(p, whoPaysTextField);
-            // TODO: force players to pay if it goes above the cost m_player can afford.
+            // TODO: force players to pay if it goes above the cost player can afford.
             add(new JLabel(p.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
                 GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
             add(whoPaysTextField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
@@ -391,14 +392,14 @@ class TechPanel extends ActionPanel {
       }
       final int cost = TechTracker.getTechCost(player) * textField.getValue();
       int totalPaidByOthers = 0;
-      for (final Entry<PlayerID, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
+      for (final Entry<PlayerId, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
         totalPaidByOthers += Math.max(0, entry.getValue().getValue());
       }
       final int totalPaidByPlayer = Math.max(0, cost - totalPaidByOthers);
       int amountOver = -1 * (playerPus - totalPaidByPlayer);
-      final Iterator<Entry<PlayerID, ScrollableTextField>> otherPayers = whoPaysTextFields.entrySet().iterator();
+      final Iterator<Entry<PlayerId, ScrollableTextField>> otherPayers = whoPaysTextFields.entrySet().iterator();
       while (amountOver > 0 && otherPayers.hasNext()) {
-        final Entry<PlayerID, ScrollableTextField> entry = otherPayers.next();
+        final Entry<PlayerId, ScrollableTextField> entry = otherPayers.next();
         int current = entry.getValue().getValue();
         final int max = entry.getValue().getMax();
         if (current < max) {
@@ -410,13 +411,13 @@ class TechPanel extends ActionPanel {
       }
       // now check if we are negative
       totalPaidByOthers = 0;
-      for (final Entry<PlayerID, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
+      for (final Entry<PlayerId, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
         totalPaidByOthers += Math.max(0, entry.getValue().getValue());
       }
       int amountUnder = -1 * (cost - totalPaidByOthers);
-      final Iterator<Entry<PlayerID, ScrollableTextField>> otherPayers2 = whoPaysTextFields.entrySet().iterator();
+      final Iterator<Entry<PlayerId, ScrollableTextField>> otherPayers2 = whoPaysTextFields.entrySet().iterator();
       while (amountUnder > 0 && otherPayers2.hasNext()) {
-        final Entry<PlayerID, ScrollableTextField> entry = otherPayers2.next();
+        final Entry<PlayerId, ScrollableTextField> entry = otherPayers2.next();
         int current = entry.getValue().getValue();
         if (current > 0) {
           final int canSubtract = Math.min(current, amountUnder);
@@ -445,16 +446,16 @@ class TechPanel extends ActionPanel {
       return textField.getValue();
     }
 
-    IntegerMap<PlayerID> getWhoPaysHowMuch() {
+    IntegerMap<PlayerId> getWhoPaysHowMuch() {
       final int techCost = TechTracker.getTechCost(player);
       final int numberOfTechRolls = getValue();
       final int totalCost = numberOfTechRolls * techCost;
-      final IntegerMap<PlayerID> whoPaysHowMuch = new IntegerMap<>();
+      final IntegerMap<PlayerId> whoPaysHowMuch = new IntegerMap<>();
       if (whoPaysTextFields == null || whoPaysTextFields.isEmpty()) {
         whoPaysHowMuch.put(player, totalCost);
       } else {
         int runningTotal = 0;
-        for (final Entry<PlayerID, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
+        for (final Entry<PlayerId, ScrollableTextField> entry : whoPaysTextFields.entrySet()) {
           final int value = entry.getValue().getValue();
           whoPaysHowMuch.put(entry.getKey(), value);
           runningTotal += value;

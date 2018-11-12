@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.IGame;
 import swinglib.JPanelBuilder;
 
@@ -23,7 +23,7 @@ public class PlayersPanel {
         .verticalBoxLayout()
         .build();
     for (final String player : game.getPlayerManager().getPlayers()) {
-      final PlayerID playerId = game.getData().getPlayerList().getPlayerId(player);
+      final PlayerId playerId = game.getData().getPlayerList().getPlayerId(player);
       if (playerId.isAi()) {
         panel.add(new JLabel(playerId.getPlayerType().name + " is " + playerId.getName(), JLabel.RIGHT));
       } else {

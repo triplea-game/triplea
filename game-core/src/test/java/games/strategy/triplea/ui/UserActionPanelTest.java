@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
@@ -30,8 +30,8 @@ final class UserActionPanelTest {
 
   private Resource pus;
 
-  private PlayerID createPlayer() {
-    final PlayerID player = new PlayerID("player", data);
+  private PlayerId createPlayer() {
+    final PlayerId player = new PlayerId("player", data);
     player.getResources().addResource(pus, 42);
     return player;
   }
@@ -55,7 +55,7 @@ final class UserActionPanelTest {
   final class CanPlayerAffordUserActionTest {
     @Test
     void shouldReturnFalseWhenUserActionCostGreaterThanPlayerPUs() {
-      final PlayerID player = createPlayer();
+      final PlayerId player = createPlayer();
       final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) + 1);
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
@@ -65,7 +65,7 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostEqualToPlayerPUs() {
-      final PlayerID player = createPlayer();
+      final PlayerId player = createPlayer();
       final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus));
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
@@ -75,7 +75,7 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostLessThanPlayerPUs() {
-      final PlayerID player = createPlayer();
+      final PlayerId player = createPlayer();
       final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) - 1);
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
@@ -85,7 +85,7 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostIsZeroAndPlayerPUsIsZero() {
-      final PlayerID player = createPlayer();
+      final PlayerId player = createPlayer();
       final UserActionAttachment userAction = createUserActionWithCost(0);
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);

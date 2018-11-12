@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -26,7 +26,7 @@ public class PactOfSteel2Test {
     gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
   }
 
-  private IDelegateBridge newDelegateBridge(final PlayerID player) {
+  private IDelegateBridge newDelegateBridge(final PlayerId player) {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
@@ -37,9 +37,9 @@ public class PactOfSteel2Test {
     final Territory eastBalkans = gameData.getMap().getTerritory("East Balkans");
     final Territory ukraineSsr = gameData.getMap().getTerritory("Ukraine S.S.R.");
     final Territory belorussia = gameData.getMap().getTerritory("Belorussia");
-    final PlayerID british = GameDataTestUtil.british(gameData);
-    final PlayerID germans = GameDataTestUtil.germans(gameData);
-    final PlayerID russians = GameDataTestUtil.russians(gameData);
+    final PlayerId british = GameDataTestUtil.british(gameData);
+    final PlayerId germans = GameDataTestUtil.germans(gameData);
+    final PlayerId russians = GameDataTestUtil.russians(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // this National Objective russia has to own at least 3 of the 5 territories by itself
     final RulesAttachment russianEasternEurope =

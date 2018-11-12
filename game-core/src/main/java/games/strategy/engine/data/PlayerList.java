@@ -17,53 +17,55 @@ import lombok.ToString;
  * Wrapper around the set of players in a game to provide utility functions and methods.
  */
 @ToString
-public class PlayerList extends GameDataComponent implements Iterable<PlayerID> {
+public class PlayerList extends GameDataComponent implements Iterable<PlayerId> {
   private static final long serialVersionUID = -3895068111754745446L;
-  // maps String playerName -> PlayerID
-  private final Map<String, PlayerID> m_players = new LinkedHashMap<>();
+
+  // maps String playerName -> PlayerId
+  private final Map<String, PlayerId> players = new LinkedHashMap<>();
 
   public PlayerList(final GameData data) {
     super(data);
   }
 
   @VisibleForTesting
-  public void addPlayerId(final PlayerID player) {
-    m_players.put(player.getName(), player);
+  public void addPlayerId(final PlayerId player) {
+    players.put(player.getName(), player);
   }
 
   public int size() {
-    return m_players.size();
+    return players.size();
   }
 
-  public PlayerID getPlayerId(final String name) {
-    if (PlayerID.NULL_PLAYERID.getName().equals(name)) {
-      return PlayerID.NULL_PLAYERID;
+  public PlayerId getPlayerId(final String name) {
+    if (PlayerId.NULL_PLAYERID.getName().equals(name)) {
+      return PlayerId.NULL_PLAYERID;
     }
-    return m_players.get(name);
+    return players.get(name);
   }
 
-  public List<PlayerID> getPlayers() {
-    return new ArrayList<>(m_players.values());
+  public List<PlayerId> getPlayers() {
+    return new ArrayList<>(players.values());
   }
 
   /**
    * an iterator of a new arraylist copy of the players.
    */
   @Override
-  public Iterator<PlayerID> iterator() {
+  public Iterator<PlayerId> iterator() {
     return getPlayers().iterator();
   }
 
   public Collection<String> getPlayersThatMayBeDisabled() {
-    return m_players.values().stream()
-        .filter(PlayerID::getCanBeDisabled)
-        .filter(p -> !p.getIsDisabled()).map(DefaultNamed::getName)
+    return players.values().stream()
+        .filter(PlayerId::getCanBeDisabled)
+        .filter(p -> !p.getIsDisabled())
+        .map(DefaultNamed::getName)
         .collect(Collectors.toSet());
   }
 
-  public HashMap<String, Boolean> getPlayersEnabledListing() {
-    final HashMap<String, Boolean> playersEnabledListing = new HashMap<>();
-    for (final PlayerID p : m_players.values()) {
+  public Map<String, Boolean> getPlayersEnabledListing() {
+    final Map<String, Boolean> playersEnabledListing = new HashMap<>();
+    for (final PlayerId p : players.values()) {
       playersEnabledListing.put(p.getName(), !p.getIsDisabled());
     }
     return playersEnabledListing;

@@ -29,9 +29,9 @@ public class UnitCollectionTest {
   private UnitType unitTypeOne;
   private UnitType unitTypeTwo;
   @Mock
-  private final PlayerID defaultPlayerId = Mockito.spy(new PlayerID("Default Player", true, false, null, false, null));
+  private final PlayerId defaultPlayerId = Mockito.spy(new PlayerId("Default Player", true, false, null, false, null));
   @Mock
-  private PlayerID otherPlayerId;
+  private PlayerId otherPlayerId;
   private UnitCollection unitCollection;
 
   private Unit unitDefaultPlayer1;
@@ -366,7 +366,7 @@ public class UnitCollectionTest {
   @Test
   public void getPlayerUnitCounts() {
     final UnitCollection allPlayerUnitCollection = addAllPlayerUnitsToUnitCollection(unitCollection);
-    final IntegerMap<PlayerID> playerUnitCounts = allPlayerUnitCollection.getPlayerUnitCounts();
+    final IntegerMap<PlayerId> playerUnitCounts = allPlayerUnitCollection.getPlayerUnitCounts();
     assertThat(playerUnitCounts.getInt(defaultPlayerId), is(equalTo(unitCountDefaultPlayer)));
     assertThat(playerUnitCounts.getInt(otherPlayerId), is(equalTo(unitCountOtherPlayer)));
   }

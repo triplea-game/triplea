@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
@@ -71,7 +71,7 @@ public class PlayerUnitsPanel extends JPanel {
   /**
    * Sets up components to an initial state.
    */
-  public void init(final PlayerID id, final List<Unit> units, final boolean land) {
+  public void init(final PlayerId id, final List<Unit> units, final boolean land) {
     isLand = land;
     categories = new ArrayList<>(categorize(id, units));
     categories.sort(Comparator.comparing(UnitCategory::getType, (ut1, ut2) -> {
@@ -136,7 +136,7 @@ public class PlayerUnitsPanel extends JPanel {
    * production frontier and then any unit types the player owns on the map. Then populate the list
    * of units into the categories.
    */
-  private Set<UnitCategory> categorize(final PlayerID id, final List<Unit> units) {
+  private Set<UnitCategory> categorize(final PlayerId id, final List<Unit> units) {
 
     // Get all unit types from production frontier and player unit types on the map
     final Set<UnitCategory> categories = new LinkedHashSet<>();
@@ -163,7 +163,7 @@ public class PlayerUnitsPanel extends JPanel {
    * Return all the unit types available for the given player. A unit type is
    * available if the unit can be purchased or if a player has one on the map.
    */
-  private Collection<UnitType> getUnitTypes(final PlayerID player) {
+  private Collection<UnitType> getUnitTypes(final PlayerId player) {
     Collection<UnitType> unitTypes = new LinkedHashSet<>();
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier != null) {

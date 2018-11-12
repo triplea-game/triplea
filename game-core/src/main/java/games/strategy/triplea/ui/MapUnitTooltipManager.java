@@ -20,7 +20,7 @@ import javax.swing.Timer;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.StringUtils;
@@ -104,7 +104,7 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @param player The owner of the unit.
    * @param count The number of units.
    */
-  public static void setUnitTooltip(final JComponent component, final UnitType unitType, final PlayerID player,
+  public static void setUnitTooltip(final JComponent component, final UnitType unitType, final PlayerId player,
       final int count) {
     final String text = getTooltipTextForUnit(unitType, player, count);
     component.setToolTipText("<html>" + text + "</html>");
@@ -119,7 +119,7 @@ public final class MapUnitTooltipManager implements ActionListener {
    *
    * @return The tooltip text.
    */
-  public static String getTooltipTextForUnit(final UnitType unitType, final PlayerID player, final int count) {
+  public static String getTooltipTextForUnit(final UnitType unitType, final PlayerId player, final int count) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
     final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
         StringUtils.capitalize(unitType.getName()), player.getName());

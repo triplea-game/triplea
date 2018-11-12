@@ -20,13 +20,12 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import lombok.AccessLevel;
@@ -34,7 +33,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@MapSupport
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
@@ -45,11 +43,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   private int production = 0;
   private int victoryCity = 0;
   private boolean isImpassable = false;
-  private PlayerID originalOwner = null;
+  private PlayerId originalOwner = null;
   private boolean convoyRoute = false;
   private Set<Territory> convoyAttached = new HashSet<>();
-  private List<PlayerID> changeUnitOwners = new ArrayList<>();
-  private List<PlayerID> captureUnitOnEnteringBy = new ArrayList<>();
+  private List<PlayerId> changeUnitOwners = new ArrayList<>();
+  private List<PlayerId> captureUnitOnEnteringBy = new ArrayList<>();
   private boolean navalBase = false;
   private boolean airBase = false;
   private boolean kamikazeZone = false;
@@ -63,7 +61,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
-  public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data) {
+  public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerId player, final GameData data) {
     final List<Territory> capitalsListOriginal = TerritoryAttachment.getAllCapitals(player, data);
     final List<Territory> capitalsListOwned = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
     final PlayerAttachment pa = PlayerAttachment.get(player);
@@ -80,14 +78,14 @@ public class TerritoryAttachment extends DefaultAttachment {
    * If a capital has no neighbor connections, it will be sent last.
    */
   public static @Nullable Territory getFirstOwnedCapitalOrFirstUnownedCapital(
-      final PlayerID player,
+      final PlayerId player,
       final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
     final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
+        final PlayerId whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
         }
@@ -119,12 +117,12 @@ public class TerritoryAttachment extends DefaultAttachment {
   /**
    * will return empty list if none controlled, never returns null.
    */
-  public static List<Territory> getAllCapitals(final PlayerID player, final GameData data) {
+  public static List<Territory> getAllCapitals(final PlayerId player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
+        final PlayerId whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
         }
@@ -146,12 +144,12 @@ public class TerritoryAttachment extends DefaultAttachment {
   /**
    * will return empty list if none controlled, never returns null.
    */
-  public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data) {
+  public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerId player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
       if (ta != null && ta.getCapital() != null) {
-        final PlayerID whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
+        final PlayerId whoseCapital = data.getPlayerList().getPlayerId(ta.getCapital());
         if (whoseCapital == null) {
           throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
         }
@@ -285,7 +283,7 @@ public class TerritoryAttachment extends DefaultAttachment {
       capital = null;
       return;
     }
-    final PlayerID p = getData().getPlayerList().getPlayerId(value);
+    final PlayerId p = getData().getPlayerList().getPlayerId(value);
     if (p == null) {
       throw new GameParseException("No Player named: " + value + thisErrorMsg());
     }
@@ -373,7 +371,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   /**
    * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing.
    */
-  public void setOriginalOwner(final PlayerID player) {
+  public void setOriginalOwner(final PlayerId player) {
     originalOwner = player;
   }
 
@@ -381,14 +379,14 @@ public class TerritoryAttachment extends DefaultAttachment {
     if (player == null) {
       originalOwner = null;
     }
-    final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(player);
+    final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(player);
     if (tempPlayer == null) {
       throw new GameParseException("No player named: " + player + thisErrorMsg());
     }
     originalOwner = tempPlayer;
   }
 
-  public PlayerID getOriginalOwner() {
+  public PlayerId getOriginalOwner() {
     return originalOwner;
   }
 
@@ -415,7 +413,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private void setChangeUnitOwners(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         changeUnitOwners.add(tempPlayer);
       } else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false")) {
@@ -426,11 +424,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
   }
 
-  private void setChangeUnitOwners(final List<PlayerID> value) {
+  private void setChangeUnitOwners(final List<PlayerId> value) {
     changeUnitOwners = value;
   }
 
-  public List<PlayerID> getChangeUnitOwners() {
+  public List<PlayerId> getChangeUnitOwners() {
     return changeUnitOwners;
   }
 
@@ -441,7 +439,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
-      final PlayerID tempPlayer = getData().getPlayerList().getPlayerId(name);
+      final PlayerId tempPlayer = getData().getPlayerList().getPlayerId(name);
       if (tempPlayer != null) {
         captureUnitOnEnteringBy.add(tempPlayer);
       } else {
@@ -450,11 +448,11 @@ public class TerritoryAttachment extends DefaultAttachment {
     }
   }
 
-  private void setCaptureUnitOnEnteringBy(final List<PlayerID> value) {
+  private void setCaptureUnitOnEnteringBy(final List<PlayerId> value) {
     captureUnitOnEnteringBy = value;
   }
 
-  public List<PlayerID> getCaptureUnitOnEnteringBy() {
+  public List<PlayerId> getCaptureUnitOnEnteringBy() {
     return captureUnitOnEnteringBy;
   }
 
@@ -470,7 +468,7 @@ public class TerritoryAttachment extends DefaultAttachment {
           "whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
     }
     for (final String name : s) {
-      final PlayerID player = getData().getPlayerList().getPlayerId(name);
+      final PlayerId player = getData().getPlayerList().getPlayerId(name);
       if (player == null) {
         throw new GameParseException("No player named: " + name + thisErrorMsg());
       }
@@ -652,12 +650,12 @@ public class TerritoryAttachment extends DefaultAttachment {
         sb.append("Land Territory");
       }
       sb.append(br);
-      final PlayerID owner = t.getOwner();
+      final PlayerId owner = t.getOwner();
       if (owner != null && !owner.isNull()) {
         sb.append("Current Owner: ").append(t.getOwner().getName());
         sb.append(br);
       }
-      final PlayerID originalOwner = getOriginalOwner();
+      final PlayerId originalOwner = getOriginalOwner();
       if (originalOwner != null) {
         sb.append("Original Owner: ").append(originalOwner.getName());
         sb.append(br);
@@ -879,7 +877,7 @@ public class TerritoryAttachment extends DefaultAttachment {
   @EqualsAndHashCode
   @ToString
   public static final class CaptureOwnershipChange {
-    public final PlayerID capturingPlayer;
-    public final PlayerID receivingPlayer;
+    public final PlayerId capturingPlayer;
+    public final PlayerId receivingPlayer;
   }
 }

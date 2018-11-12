@@ -28,7 +28,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
 import games.strategy.engine.framework.network.ui.MutePlayerAction;
@@ -40,7 +40,7 @@ import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.net.IServerMessenger;
 
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
@@ -216,7 +216,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   @Override
   public void postStartGame() {
     final GameData data = gameSelectorModel.getGameData();
-    data.getProperties().set(PBEMMessagePoster.PBEM_GAME_PROP_NAME, false);
+    data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, false);
   }
 
   @Override
@@ -274,7 +274,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
     final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
         model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
-    final Map<String, String> reloadSelections = PlayerID.currentPlayers(gameSelectorModel.getGameData());
+    final Map<String, String> reloadSelections = PlayerId.currentPlayers(gameSelectorModel.getGameData());
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
       final PlayerRow newPlayerRow =

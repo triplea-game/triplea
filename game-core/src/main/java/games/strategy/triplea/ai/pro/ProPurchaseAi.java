@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
@@ -43,7 +43,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.util.TuvUtils;
@@ -58,7 +58,7 @@ class ProPurchaseAi {
   private final ProOddsCalculator calc;
   private GameData data;
   private GameData startOfTurnData; // Used to count current units on map for maxBuiltPerPlayer
-  private PlayerID player;
+  private PlayerId player;
   private ProResourceTracker resourceTracker;
   private ProTerritoryManager territoryManager;
   private boolean isBid = false;
@@ -68,7 +68,7 @@ class ProPurchaseAi {
   }
 
   int repair(final int initialPusRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     int pusRemaining = initialPusRemaining;
     ProLogger.info("Repairing factories with PUsRemaining=" + pusRemaining);
 
@@ -111,7 +111,7 @@ class ProPurchaseAi {
           if (diff > 0) {
             final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
             repairMap.add(rrule, diff);
-            final HashMap<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
+            final Map<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
             repair.put(fixUnit, repairMap);
             pusRemaining -= diff;
             ProLogger.debug("Repairing factory=" + fixUnit + ", damage=" + diff + ", repairRule=" + rrule);

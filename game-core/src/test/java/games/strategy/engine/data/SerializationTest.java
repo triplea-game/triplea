@@ -44,9 +44,9 @@ public class SerializationTest {
 
   @Test
   public void testWritePlayerId() throws Exception {
-    final PlayerID id = gameDataSource.getPlayerList().getPlayerId("chretian");
-    final PlayerID readId = (PlayerID) serialize(id);
-    final PlayerID localId = gameDataSink.getPlayerList().getPlayerId("chretian");
+    final PlayerId id = gameDataSource.getPlayerList().getPlayerId("chretian");
+    final PlayerId readId = (PlayerId) serialize(id);
+    final PlayerId localId = gameDataSink.getPlayerList().getPlayerId("chretian");
     assertThat(localId, is(not(sameInstance(readId))));
   }
 

@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -27,9 +27,9 @@ class RepairPanel extends ActionPanel {
   private static final String CHANGE = "Change...";
   private static final String BUY = "Repair...";
   private final JLabel actionLabel = new JLabel();
-  private HashMap<Unit, IntegerMap<RepairRule>> repair;
+  private Map<Unit, IntegerMap<RepairRule>> repair;
   private boolean bid;
-  private Collection<PlayerID> allowedPlayersToRepair;
+  private Collection<PlayerId> allowedPlayersToRepair;
   private final SimpleUnitPanel unitsPanel;
   private final JLabel repairdSoFar = new JLabel();
   private final JButton buyButton;
@@ -42,7 +42,7 @@ class RepairPanel extends ActionPanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id);
     repair = new HashMap<>();
     SwingUtilities.invokeLater(() -> {
@@ -68,8 +68,8 @@ class RepairPanel extends ActionPanel {
         () -> actionLabel.setText(getCurrentPlayer().getName() + " repair " + (bid ? " for bid" : "")));
   }
 
-  HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
-      final Collection<PlayerID> allowedPlayersToRepair) {
+  Map<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+      final Collection<PlayerId> allowedPlayersToRepair) {
     this.bid = bid;
     this.allowedPlayersToRepair = allowedPlayersToRepair;
     refreshActionLabelText();
@@ -83,7 +83,7 @@ class RepairPanel extends ActionPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final PlayerID player = getCurrentPlayer();
+      final PlayerId player = getCurrentPlayer();
       final GameData data = getData();
       repair = ProductionRepairPanel.getProduction(player, allowedPlayersToRepair, (JFrame) getTopLevelAncestor(),
           data, bid, repair, getMap().getUiContext());

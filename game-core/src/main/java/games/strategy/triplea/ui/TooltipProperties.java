@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -57,13 +57,13 @@ public final class TooltipProperties {
   /**
    * Get unit type tooltip checking for custom tooltip content.
    */
-  public String getTooltip(final UnitType unitType, final PlayerID playerId) {
+  public String getTooltip(final UnitType unitType, final PlayerId playerId) {
     final String customTip = getToolTip(unitType, playerId, false);
     if (!customTip.isEmpty()) {
       return LocalizeHtml.localizeImgLinksInHtml(customTip);
     }
     final String generated = UnitAttachment.get(unitType)
-        .toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerID.NULL_PLAYERID : playerId));
+        .toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerId.NULL_PLAYERID : playerId));
     final String appendedTip = getToolTip(unitType, playerId, true);
     if (!appendedTip.isEmpty()) {
       return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
@@ -71,10 +71,10 @@ public final class TooltipProperties {
     return generated;
   }
 
-  private String getToolTip(final UnitType ut, final PlayerID playerId, final boolean isAppending) {
+  private String getToolTip(final UnitType ut, final PlayerId playerId, final boolean isAppending) {
     final String append = isAppending ? ".append" : "";
     final String tooltip = properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "."
-        + (playerId == null ? PlayerID.NULL_PLAYERID.getName() : playerId.getName()) + append, "");
+        + (playerId == null ? PlayerId.NULL_PLAYERID.getName() : playerId.getName()) + append, "");
     return (tooltip == null || tooltip.isEmpty())
         ? properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + append, "")
         : tooltip;

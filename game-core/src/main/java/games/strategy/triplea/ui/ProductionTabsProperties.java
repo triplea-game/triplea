@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
 import games.strategy.util.Tuple;
@@ -43,7 +43,7 @@ class ProductionTabsProperties {
   private final List<Rule> rules;
   private List<Tuple<String, List<Rule>>> ruleLists;
 
-  protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> rules) {
+  protected ProductionTabsProperties(final PlayerId playerId, final List<Rule> rules) {
     this.rules = rules;
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
     URL url = loader.getResource(PROPERTY_FILE + "." + playerId.getName() + ".properties");
@@ -64,7 +64,7 @@ class ProductionTabsProperties {
     }
   }
 
-  static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> rules) {
+  static ProductionTabsProperties getInstance(final PlayerId playerId, final List<Rule> rules) {
     return new ProductionTabsProperties(playerId, rules);
   }
 

@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
@@ -26,7 +26,7 @@ public final class ForumPosterComponent extends JPanel {
   private static final long serialVersionUID = 4754052934098190357L;
 
   private final GameData data;
-  private PBEMMessagePoster poster;
+  private PbemMessagePoster poster;
   private TripleAFrame frame;
   private HistoryLog historyLog;
   private final JButton postButton;
@@ -72,7 +72,7 @@ public final class ForumPosterComponent extends JPanel {
   private void post() {
     postButton.setEnabled(false);
     updateHistoryLog();
-    PBEMMessagePoster.postTurn(title, historyLog, includeSavegameCheckBox.isSelected(), poster,
+    PbemMessagePoster.postTurn(title, historyLog, includeSavegameCheckBox.isSelected(), poster,
         forumPosterDelegate, frame, postButton);
     repostTurnSummaryCheckBox.setSelected(false);
   }
@@ -82,7 +82,7 @@ public final class ForumPosterComponent extends JPanel {
    *
    * @return A reference to this panel; must be added to the parent container's layout.
    */
-  public ForumPosterComponent layoutComponents(final PBEMMessagePoster poster,
+  public ForumPosterComponent layoutComponents(final PbemMessagePoster poster,
       final IAbstractForumPosterDelegate forumPosterDelegate, final TripleAFrame frame,
       final boolean hasPosted, final boolean allowIncludeTerritorySummary,
       final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary,
@@ -130,13 +130,13 @@ public final class ForumPosterComponent extends JPanel {
   }
 
   private void updateHistoryLog() {
-    final Collection<PlayerID> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(data);
+    final Collection<PlayerId> allowedIDs = GameStepPropertiesHelper.getTurnSummaryPlayers(data);
     // clear first, then update
     historyLog.clear();
     historyLog.printFullTurn(data, showDetailsCheckBox.isSelected(), allowedIDs);
     if (includeTerritoryAllPlayersCheckBox.isSelected()) {
-      for (final PlayerID player : data.getPlayerList().getPlayers()) {
-        final Collection<PlayerID> players = new ArrayList<>();
+      for (final PlayerId player : data.getPlayerList().getPlayers()) {
+        final Collection<PlayerId> players = new ArrayList<>();
         players.add(player);
         historyLog.printTerritorySummary(data, players);
       }

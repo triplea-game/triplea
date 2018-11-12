@@ -34,7 +34,7 @@ import games.strategy.engine.message.RemoteName;
  * </p>
  *
  * <p>
- * NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultID id)</code> method
+ * NOTE: to allow the data locked in the vault to be gc'd, the <code>release(VaultId id)</code> method
  * should be called when it is no longer needed.
  * </p>
  */
@@ -50,12 +50,12 @@ public class Vault {
   private static final byte[] KNOWN_VAL = new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE};
   private final KeyGenerator keyGen;
   private final IChannelMessenger channelMessenger;
-  // Maps VaultID -> SecretKey
-  private final ConcurrentMap<VaultID, SecretKey> secretKeys = new ConcurrentHashMap<>();
-  // maps ValutID -> encrypted byte[]
-  private final ConcurrentMap<VaultID, byte[]> unverifiedValues = new ConcurrentHashMap<>();
-  // maps VaultID -> byte[]
-  private final ConcurrentMap<VaultID, byte[]> verifiedValues = new ConcurrentHashMap<>();
+  // Maps VaultId -> SecretKey
+  private final ConcurrentMap<VaultId, SecretKey> secretKeys = new ConcurrentHashMap<>();
+  // maps VaultId -> encrypted byte[]
+  private final ConcurrentMap<VaultId, byte[]> unverifiedValues = new ConcurrentHashMap<>();
+  // maps VaultId -> byte[]
+  private final ConcurrentMap<VaultId, byte[]> verifiedValues = new ConcurrentHashMap<>();
   private final Object waitForLock = new Object();
 
   /**
@@ -113,8 +113,8 @@ public class Vault {
    * @param data - the data to lock
    * @return the VaultId of the data
    */
-  public VaultID lock(final byte[] data) {
-    final VaultID id = new VaultID(channelMessenger.getLocalNode());
+  public VaultId lock(final byte[] data) {
+    final VaultId id = new VaultId(channelMessenger.getLocalNode());
     final SecretKey key = keyGen.generateKey();
     if (secretKeys.putIfAbsent(id, key) != null) {
       throw new IllegalStateException("dupliagte id:" + id);
@@ -164,7 +164,7 @@ public class Vault {
    *
    * @param id - the vault id to unlock
    */
-  public void unlock(final VaultID id) {
+  public void unlock(final VaultId id) {
     if (!id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
       throw new IllegalArgumentException("Cant unlock data that wasnt locked on this node");
     }
@@ -180,14 +180,14 @@ public class Vault {
    *
    * @return - has this id been unlocked
    */
-  public boolean isUnlocked(final VaultID id) {
+  public boolean isUnlocked(final VaultId id) {
     return verifiedValues.containsKey(id);
   }
 
   /**
    * Get the unlocked data.
    */
-  public byte[] get(final VaultID id) throws NotUnlockedException {
+  public byte[] get(final VaultId id) throws NotUnlockedException {
     if (verifiedValues.containsKey(id)) {
       return verifiedValues.get(id);
     } else if (unverifiedValues.containsKey(id)) {
@@ -200,12 +200,12 @@ public class Vault {
   /**
    * Do we know about the given vault id.
    */
-  public boolean knowsAbout(final VaultID id) {
+  public boolean knowsAbout(final VaultId id) {
     return verifiedValues.containsKey(id) || unverifiedValues.containsKey(id);
   }
 
-  public List<VaultID> knownIds() {
-    final ArrayList<VaultID> knownIds = new ArrayList<>(verifiedValues.keySet());
+  public List<VaultId> knownIds() {
+    final List<VaultId> knownIds = new ArrayList<>(verifiedValues.keySet());
     knownIds.addAll(unverifiedValues.keySet());
     return knownIds;
   }
@@ -221,13 +221,13 @@ public class Vault {
    * If the id has already been released, then nothing will happen.
    * </p>
    */
-  public void release(final VaultID id) {
+  public void release(final VaultId id) {
     getRemoteBroadcaster().release(id);
   }
 
   private final IRemoteVault remoteVault = new IRemoteVault() {
     @Override
-    public void addLockedValue(final VaultID id, final byte[] data) {
+    public void addLockedValue(final VaultId id, final byte[] data) {
       if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
         return;
       }
@@ -240,7 +240,7 @@ public class Vault {
     }
 
     @Override
-    public void unlock(final VaultID id, final byte[] secretKeyBytes) {
+    public void unlock(final VaultId id, final byte[] secretKeyBytes) {
       if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
         return;
       }
@@ -281,7 +281,7 @@ public class Vault {
     }
 
     @Override
-    public void release(final VaultID id) {
+    public void release(final VaultId id) {
       unverifiedValues.remove(id);
       verifiedValues.remove(id);
     }
@@ -291,7 +291,7 @@ public class Vault {
    * Waits until we know about a given vault id.
    * waits for at most timeout milliseconds
    */
-  public void waitForId(final VaultID id, final long timeoutMs) {
+  public void waitForId(final VaultId id, final long timeoutMs) {
     if (timeoutMs <= 0) {
       throw new IllegalArgumentException("Must suppply positive timeout argument");
     }
@@ -316,7 +316,7 @@ public class Vault {
   /**
    * Wait until the given id is unlocked.
    */
-  public void waitForIdToUnlock(final VaultID id, final long timeout) {
+  public void waitForIdToUnlock(final VaultId id, final long timeout) {
     if (timeout <= 0) {
       throw new IllegalArgumentException("Must suppply positive timeout argument");
     }
@@ -338,11 +338,11 @@ public class Vault {
   }
 
   interface IRemoteVault extends IChannelSubscribor {
-    void addLockedValue(VaultID id, byte[] data);
+    void addLockedValue(VaultId id, byte[] data);
 
-    void unlock(VaultID id, byte[] secretKeyBytes);
+    void unlock(VaultId id, byte[] secretKeyBytes);
 
-    void release(VaultID id);
+    void release(VaultId id);
   }
 }
 

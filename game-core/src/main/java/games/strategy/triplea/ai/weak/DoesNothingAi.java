@@ -2,7 +2,7 @@ package games.strategy.triplea.ai.weak;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -27,7 +27,7 @@ public class DoesNothingAi extends AbstractAi {
 
   @Override
   protected void purchase(final boolean purchaseForBid, final int pusToSpend, final IPurchaseDelegate purchaseDelegate,
-      final GameData data, final PlayerID player) {
+      final GameData data, final PlayerId player) {
     // spend whatever we have
     if (!player.getResources().isEmpty()) {
       (new WeakAi(this.getName())).purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
@@ -36,19 +36,19 @@ public class DoesNothingAi extends AbstractAi {
   }
 
   @Override
-  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player) {
+  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerId player) {
     pause();
   }
 
   @Override
   protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     pause();
   }
 
   @Override
   protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
-      final PlayerID player) {
+      final PlayerId player) {
     // place whatever we have
     if (!player.getUnits().isEmpty()) {
       (new WeakAi(this.getName())).place(placeForBid, placeDelegate, data, player);
@@ -62,7 +62,7 @@ public class DoesNothingAi extends AbstractAi {
   }
 
   @Override
-  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final PlayerID player) {
+  protected void endTurn(final IAbstractForumPosterDelegate endTurnForumPosterDelegate, final PlayerId player) {
     // destroy whatever we have
     final ResourceCollection resourceCollection = player.getResources();
     final Change removeChange = ChangeFactory.removeResourceCollection(player, resourceCollection);
@@ -75,7 +75,7 @@ public class DoesNothingAi extends AbstractAi {
   }
 
   @Override
-  public boolean acceptAction(final PlayerID playerSendingProposal, final String acceptanceQuestion,
+  public boolean acceptAction(final PlayerId playerSendingProposal, final String acceptanceQuestion,
       final boolean politics) {
     return true;
   }

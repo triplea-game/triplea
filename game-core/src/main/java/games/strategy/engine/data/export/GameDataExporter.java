@@ -18,7 +18,7 @@ import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipTracker;
@@ -102,7 +102,7 @@ public class GameDataExporter {
 
   private static String playertechs(final GameData data) {
     final StringBuilder returnValue = new StringBuilder();
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       if (player.getTechnologyFrontierList().getFrontiers().size() > 0) {
         returnValue.append("        <playerTech player=\"").append(player.getName()).append("\">\n");
         for (final TechnologyFrontier frontier : player.getTechnologyFrontierList().getFrontiers()) {
@@ -161,19 +161,19 @@ public class GameDataExporter {
       final Field edPropField = GameProperties.class.getDeclaredField(GameProperties.EDITABLE_PROPERTIES_FIELD_NAME);
       edPropField.setAccessible(true);
       printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
-      printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
+      printEditableProperties((Map<String, IEditableProperty<?>>) edPropField.get(gameProperties));
     } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
       log.log(Level.SEVERE, "An Error occured whilst trying trying to setup the Property List", e);
     }
     xmlfile.append("    </propertyList>\n");
   }
 
-  private void printEditableProperties(final Map<String, IEditableProperty> editableProperties) {
+  private void printEditableProperties(final Map<String, IEditableProperty<?>> editableProperties) {
     editableProperties.values().forEach(this::printEditableProperty);
   }
 
   @SuppressWarnings("unchecked")
-  private void printEditableProperty(final IEditableProperty prop) {
+  private void printEditableProperty(final IEditableProperty<?> prop) {
     String typeString = "";
     String value = "" + prop.getValue();
     if (prop.getClass().equals(BooleanProperty.class)) {
@@ -279,10 +279,10 @@ public class GameDataExporter {
     }
     final RelationshipTracker rt = data.getRelationshipTracker();
     xmlfile.append("        <relationshipInitialize>\n");
-    final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-    final Collection<PlayerID> playersAlreadyDone = new HashSet<>();
-    for (final PlayerID p1 : players) {
-      for (final PlayerID p2 : players) {
+    final Collection<PlayerId> players = data.getPlayerList().getPlayers();
+    final Collection<PlayerId> playersAlreadyDone = new HashSet<>();
+    for (final PlayerId p1 : players) {
+      for (final PlayerId p2 : players) {
         if (p1.equals(p2) || playersAlreadyDone.contains(p2)) {
           continue;
         }
@@ -299,7 +299,7 @@ public class GameDataExporter {
 
   private void resourceInitialize(final GameData data) {
     xmlfile.append("        <resourceInitialize>\n");
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       for (final Resource resource : data.getResourceList().getResources()) {
         if (player.getResources().getQuantity(resource.getName()) > 0) {
           xmlfile.append("            <resourceGiven player=\"").append(player.getName()).append("\" resource=\"")
@@ -315,7 +315,7 @@ public class GameDataExporter {
     xmlfile.append("        <unitInitialize>\n");
     for (final Territory terr : data.getMap().getTerritories()) {
       final UnitCollection uc = terr.getUnits();
-      for (final PlayerID player : uc.getPlayersWithUnits()) {
+      for (final PlayerId player : uc.getPlayersWithUnits()) {
         final IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
         for (final UnitType unit : ucp.keySet()) {
           if (player == null || player.getName().equals(Constants.PLAYER_NAME_NEUTRAL)) {
@@ -346,7 +346,7 @@ public class GameDataExporter {
   private void attachments(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <attachmentList>\n");
-    for (final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()) {
+    for (final Tuple<IAttachment, List<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()) {
       // TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now
       // (including changes to
       // the game data)
@@ -356,7 +356,7 @@ public class GameDataExporter {
   }
 
   private static String printAttachmentOptionsBasedOnOriginalXml(
-      final ArrayList<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
+      final List<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment) {
     if (attachmentPlusValues.isEmpty()) {
       return "";
     }
@@ -380,7 +380,7 @@ public class GameDataExporter {
     return sb.toString();
   }
 
-  private void printAttachments(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentPlusValues) {
+  private void printAttachments(final Tuple<IAttachment, List<Tuple<String, String>>> attachmentPlusValues) {
     final IAttachment attachment = attachmentPlusValues.getFirst();
     try {
       // TODO: none of the attachment exporter classes have been updated since TripleA version 1.3.2.2
@@ -389,7 +389,7 @@ public class GameDataExporter {
       final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
       // TODO: keep this list updated
       String type = "";
-      if (attachTo.getClass().equals(PlayerID.class)) {
+      if (attachTo.getClass().equals(PlayerId.class)) {
         type = "player";
       }
       if (attachTo.getClass().equals(UnitType.class)) {
@@ -467,7 +467,7 @@ public class GameDataExporter {
   }
 
   private void playerRepair(final GameData data) {
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       try {
         final String playerRepair = player.getRepairFrontier().getName();
         final String playername = player.getName();
@@ -480,7 +480,7 @@ public class GameDataExporter {
   }
 
   private void playerProduction(final GameData data) {
-    for (final PlayerID player : data.getPlayerList()) {
+    for (final PlayerId player : data.getPlayerList()) {
       try {
         final String playerfrontier = player.getProductionFrontier().getName();
         final String playername = player.getName();
@@ -539,16 +539,9 @@ public class GameDataExporter {
     xmlfile.append("\n");
     xmlfile.append("        <sequence>\n");
     for (final GameStep step : data.getSequence()) {
-      try {
-        final Field delegateField = GameStep.class.getDeclaredField("m_delegate"); // TODO: unchecked reflection
-        delegateField.setAccessible(true);
-        final String delegate = (String) delegateField.get(step);
-        xmlfile.append("            <step name=\"").append(step.getName()).append("\" delegate=\"").append(delegate)
-            .append("\"");
-      } catch (final NullPointerException | NoSuchFieldException | IllegalArgumentException
-          | IllegalAccessException e) {
-        log.log(Level.SEVERE, "An Error occured whilst trying to sequence in game " + data.getGameName(), e);
-      }
+      xmlfile.append("            <step");
+      xmlfile.append(" name=\"").append(step.getName()).append("\"");
+      xmlfile.append(" delegate=\"").append(step.getDelegate().getName()).append("\"");
       if (step.getPlayerId() != null) {
         xmlfile.append(" player=\"").append(step.getPlayerId().getName()).append("\"");
       }
@@ -579,12 +572,12 @@ public class GameDataExporter {
   private void playerList(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <playerList>\n");
-    for (final PlayerID player : data.getPlayerList().getPlayers()) {
+    for (final PlayerId player : data.getPlayerList().getPlayers()) {
       xmlfile.append("        <player name=\"").append(player.getName()).append("\" optional=\"")
           .append(player.getOptional()).append("\"/>\n");
     }
     for (final String allianceName : data.getAllianceTracker().getAlliances()) {
-      for (final PlayerID alliedPlayer : data.getAllianceTracker().getPlayersInAlliance(allianceName)) {
+      for (final PlayerId alliedPlayer : data.getAllianceTracker().getPlayersInAlliance(allianceName)) {
         xmlfile.append("        <alliance player=\"").append(alliedPlayer.getName()).append("\" alliance=\"")
             .append(allianceName).append("\"/>\n");
       }

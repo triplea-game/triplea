@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,9 +32,9 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
   private final IGame game;
   private final UiContext uiContext;
-  int maxIconCounter = 0;
-  final HashMap<String, List<Icon>> iconMap = new HashMap<>();
-  final HashMap<String, Set<String>> playerMap = new HashMap<>();
+  private int maxIconCounter = 0;
+  private final Map<String, List<Icon>> iconMap = new HashMap<>();
+  private final Map<String, Set<String>> playerMap = new HashMap<>();
 
   public PlayerChatRenderer(final IGame game, final UiContext uiContext) {
     this.game = game;

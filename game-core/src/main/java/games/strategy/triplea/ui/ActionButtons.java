@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.CardLayout;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,19 +11,19 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.IBattle.BattleType;
-import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
-import games.strategy.triplea.delegate.dataObjects.MoveDescription;
-import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.delegate.data.FightBattleDetails;
+import games.strategy.triplea.delegate.data.MoveDescription;
+import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.util.IntegerMap;
@@ -111,7 +110,7 @@ public class ActionButtons extends JPanel {
     });
   }
 
-  void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName) {
+  void changeToMove(final PlayerId id, final boolean nonCombat, final String stepName) {
     movePanel.setNonCombat(nonCombat);
     final boolean airBorne = stepName.endsWith("AirborneCombatMove");
     final String displayText = (airBorne ? " Airborne" : (nonCombat ? " Non" : ""));
@@ -120,44 +119,44 @@ public class ActionButtons extends JPanel {
     changeTo(id, movePanel);
   }
 
-  public void changeToRepair(final PlayerID id) {
+  public void changeToRepair(final PlayerId id) {
     changeTo(id, repairPanel);
   }
 
-  public void changeToProduce(final PlayerID id) {
+  public void changeToProduce(final PlayerId id) {
     changeTo(id, purchasePanel);
   }
 
-  public void changeToPlace(final PlayerID id) {
+  public void changeToPlace(final PlayerId id) {
     changeTo(id, placePanel);
   }
 
-  public void changeToBattle(final PlayerID id, final Map<BattleType, Collection<Territory>> battles) {
+  public void changeToBattle(final PlayerId id, final Map<BattleType, Collection<Territory>> battles) {
     battlePanel.setBattlesAndBombing(battles);
     changeTo(id, battlePanel);
   }
 
-  public void changeToPolitics(final PlayerID id) {
+  public void changeToPolitics(final PlayerId id) {
     changeTo(id, politicsPanel);
   }
 
-  public void changeToUserActions(final PlayerID id) {
+  public void changeToUserActions(final PlayerId id) {
     changeTo(id, userActionPanel);
   }
 
-  public void changeToTech(final PlayerID id) {
+  public void changeToTech(final PlayerId id) {
     changeTo(id, techPanel);
   }
 
-  public void changeToEndTurn(final PlayerID id) {
+  public void changeToEndTurn(final PlayerId id) {
     changeTo(id, endTurnPanel);
   }
 
-  public void changeToMoveForumPosterPanel(final PlayerID id) {
+  public void changeToMoveForumPosterPanel(final PlayerId id) {
     changeTo(id, moveForumPosterPanel);
   }
 
-  private void changeTo(final PlayerID id, final ActionPanel newCurrent) {
+  private void changeTo(final PlayerId id, final ActionPanel newCurrent) {
     actionPanel.setActive(false);
     actionPanel = newCurrent;
     // newCurrent might be null if we are shutting down
@@ -168,7 +167,7 @@ public class ActionButtons extends JPanel {
     SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, actionPanel.toString()));
   }
 
-  public void changeToPickTerritoryAndUnits(final PlayerID id) {
+  public void changeToPickTerritoryAndUnits(final PlayerId id) {
     changeTo(id, pickTerritoryAndUnitsPanel);
   }
 
@@ -186,8 +185,8 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no move was made.
    */
-  public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
-      final Collection<PlayerID> allowedPlayersToRepair) {
+  public Map<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
+      final Collection<PlayerId> allowedPlayersToRepair) {
     return repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 

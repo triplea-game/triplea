@@ -8,7 +8,6 @@ import java.util.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 
 /**
@@ -28,10 +27,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   private static final long serialVersionUID = -1985116207387301730L;
   private static final Splitter COLON_SPLITTER = Splitter.on(':');
 
-  @InternalDoNotExport
-  private Attachable m_attachedTo;
-  @InternalDoNotExport
-  private String m_name;
+  private Attachable attachedTo;
+  private String name;
 
   protected DefaultAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(gameData);
@@ -109,38 +106,36 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 
   @Override
   public Attachable getAttachedTo() {
-    return m_attachedTo;
+    return attachedTo;
   }
 
   @Override
-  @InternalDoNotExport
   public void setAttachedTo(final Attachable attachable) {
-    m_attachedTo = attachable;
+    attachedTo = attachable;
   }
 
   @Override
   public String getName() {
-    return m_name;
+    return name;
   }
 
   @Override
-  @InternalDoNotExport
   public void setName(final String name) {
-    m_name = name;
+    this.name = name;
   }
 
   /**
-   * Any overriding method for toString needs to include at least the Class, m_attachedTo, and m_name.
+   * Any overriding method for toString needs to include at least the Class, attachedTo, and name.
    * Or call super.toString()
    */
   @Override
   public String toString() {
-    return getClass().getSimpleName() + " attached to:" + m_attachedTo + " with name:" + m_name;
+    return getClass().getSimpleName() + " attached to:" + attachedTo + " with name:" + name;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_attachedTo, m_name);
+    return Objects.hash(attachedTo, name);
   }
 
   @Override
@@ -152,7 +147,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return false;
     }
     final DefaultAttachment other = (DefaultAttachment) obj;
-    return Objects.equals(Objects.toString(m_attachedTo, null), Objects.toString(other.m_attachedTo, null))
-        && (Objects.equals(m_name, other.m_name) || this.toString().equals(other.toString()));
+    return Objects.equals(Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
+        && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
   }
 }

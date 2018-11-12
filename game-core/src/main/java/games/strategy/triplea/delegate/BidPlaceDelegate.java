@@ -6,35 +6,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-@MapSupport
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
   public BidPlaceDelegate() {}
 
   // Allow production of any number of units
   @Override
-  protected String checkProduction(final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected String checkProduction(final Territory to, final Collection<Unit> units, final PlayerId player) {
     return null;
   }
 
   // Return whether we can place bid in a certain territory
   @Override
-  protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerID player) {
+  protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerId player) {
     return canProduce(to, to, units, player);
   }
 
   @Override
   protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units,
-      final PlayerID player) {
+      final PlayerId player) {
     // we can place if no enemy units and its water
     if (to.isWater()) {
       if (units.stream().anyMatch(Matches.unitIsLand())) {
@@ -67,7 +65,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected List<Territory> getAllProducers(final Territory to, final PlayerID player,
+  protected List<Territory> getAllProducers(final Territory to, final PlayerId player,
       final Collection<Unit> unitsToPlace) {
     final List<Territory> producers = new ArrayList<>();
     producers.add(to);
@@ -75,7 +73,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerID player,
+  protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerId player,
       final boolean countSwitchedProductionToNeighbors) {
     if (units == null) {
       return -1;
@@ -85,7 +83,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
 
   @Override
   protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to,
-      final PlayerID player, final boolean countSwitchedProductionToNeighbors,
+      final PlayerId player, final boolean countSwitchedProductionToNeighbors,
       final Collection<Territory> notUsableAsOtherProducers,
       final Map<Territory, Integer> currentAvailablePlacementForOtherProducers) {
     if (units == null) {
@@ -96,7 +94,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
 
   @Override
   protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to,
-      final PlayerID player) {
+      final PlayerId player) {
     if (units == null) {
       return -1;
     }
@@ -106,7 +104,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   // Return collection of bid units which can placed in a land territory
   @Override
   protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units,
-      final PlayerID player) {
+      final PlayerId player) {
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
     final Collection<Unit> placeableUnits = new ArrayList<>();
     // we add factories and constructions later

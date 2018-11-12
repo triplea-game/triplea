@@ -16,19 +16,6 @@ import org.triplea.test.common.security.TestSecurityUtils;
 
 final class RsaAuthenticatorTest {
   @Nested
-  final class CanProcessChallengeTest {
-    @Test
-    void shouldReturnTrueWhenChallengeContainsAllRequiredProperties() {
-      assertTrue(RsaAuthenticator.canProcessChallenge(singletonMap(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY, "")));
-    }
-
-    @Test
-    void shouldReturnFalseWhenChallengeDoesNotContainAllRequiredProperties() {
-      assertFalse(RsaAuthenticator.canProcessChallenge(singletonMap("someOtherChallengeKey", "")));
-    }
-  }
-
-  @Nested
   final class CanProcessResponseTest {
     @Test
     void shouldReturnTrueWhenResponseContainsAllRequiredProperties() {

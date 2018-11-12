@@ -12,8 +12,9 @@ import java.util.List;
  */
 public class ProductionFrontier extends DefaultNamed implements Iterable<ProductionRule> {
   private static final long serialVersionUID = -5967251608158552892L;
-  private final List<ProductionRule> m_rules;
-  private List<ProductionRule> m_cachedRules;
+
+  private final List<ProductionRule> rules;
+  private List<ProductionRule> cachedRules;
 
   public ProductionFrontier(final String name, final GameData data) {
     this(name, data, Collections.emptyList());
@@ -24,30 +25,30 @@ public class ProductionFrontier extends DefaultNamed implements Iterable<Product
 
     checkNotNull(rules);
 
-    m_rules = new ArrayList<>(rules);
+    this.rules = new ArrayList<>(rules);
   }
 
   public void addRule(final ProductionRule rule) {
-    if (m_rules.contains(rule)) {
+    if (rules.contains(rule)) {
       throw new IllegalStateException("Rule already added:" + rule);
     }
-    m_rules.add(rule);
-    m_cachedRules = null;
+    rules.add(rule);
+    cachedRules = null;
   }
 
   public void removeRule(final ProductionRule rule) {
-    if (!m_rules.contains(rule)) {
+    if (!rules.contains(rule)) {
       throw new IllegalStateException("Rule not present:" + rule);
     }
-    m_rules.remove(rule);
-    m_cachedRules = null;
+    rules.remove(rule);
+    cachedRules = null;
   }
 
   public List<ProductionRule> getRules() {
-    if (m_cachedRules == null) {
-      m_cachedRules = Collections.unmodifiableList(m_rules);
+    if (cachedRules == null) {
+      cachedRules = Collections.unmodifiableList(rules);
     }
-    return m_cachedRules;
+    return cachedRules;
   }
 
   @Override

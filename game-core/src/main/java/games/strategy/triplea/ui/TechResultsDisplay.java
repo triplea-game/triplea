@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.ui.SwingComponents;
 
 class TechResultsDisplay extends JPanel {

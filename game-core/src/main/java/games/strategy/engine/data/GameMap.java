@@ -28,22 +28,23 @@ import games.strategy.util.IntegerMap;
  */
 public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private static final long serialVersionUID = -4606700588396439283L;
-  private final List<Territory> m_territories = new ArrayList<>();
+
+  private final List<Territory> territories = new ArrayList<>();
   // note that all entries are unmodifiable
-  private final Map<Territory, Set<Territory>> m_connections = new HashMap<>();
+  private final Map<Territory, Set<Territory>> connections = new HashMap<>();
   // for fast lookup based on the string name of the territory
-  private final Map<String, Territory> m_territoryLookup = new HashMap<>();
+  private final Map<String, Territory> territoryLookup = new HashMap<>();
   // nil if the map is not grid-based
-  // otherwise, m_gridDimensions.length is the number of dimensions,
+  // otherwise, gridDimensions.length is the number of dimensions,
   // and each element is the size of a dimension
-  private int[] m_gridDimensions = null;
+  private int[] gridDimensions = null;
 
   GameMap(final GameData data) {
     super(data);
   }
 
   public void setGridDimensions(final int... gridDimensions) {
-    m_gridDimensions = gridDimensions;
+    this.gridDimensions = gridDimensions;
   }
 
   public Territory getTerritoryFromCoordinates(final int... coordinate) {
@@ -51,7 +52,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   private Territory getTerritoryFromCoordinates(final boolean allowNull, final int... coordinate) {
-    if (m_gridDimensions == null) {
+    if (gridDimensions == null) {
       if (allowNull) {
         return null;
       }
@@ -68,26 +69,26 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     }
     int listIndex = coordinate[0];
     int multiplier = 1;
-    for (int i = 1; i < m_gridDimensions.length; i++) {
-      multiplier *= m_gridDimensions[i - 1];
-      // m_gridDimensions[i];
+    for (int i = 1; i < gridDimensions.length; i++) {
+      multiplier *= gridDimensions[i - 1];
+      // gridDimensions[i];
       listIndex += coordinate[i] * multiplier;
     }
-    return m_territories.get(listIndex);
+    return territories.get(listIndex);
   }
 
-  boolean isCoordinateValid(final int... coordinate) {
-    return coordinate.length == m_gridDimensions.length && IntStream.range(0, coordinate.length)
-        .noneMatch(i -> coordinate[i] >= m_gridDimensions[i] || coordinate[i] < 0);
+  private boolean isCoordinateValid(final int... coordinate) {
+    return coordinate.length == gridDimensions.length && IntStream.range(0, coordinate.length)
+        .noneMatch(i -> coordinate[i] >= gridDimensions[i] || coordinate[i] < 0);
   }
 
   protected void addTerritory(final Territory t1) {
-    if (m_territories.contains(t1)) {
+    if (territories.contains(t1)) {
       throw new IllegalArgumentException("Map already contains " + t1.getName());
     }
-    m_territories.add(t1);
-    m_connections.put(t1, Collections.emptySet());
-    m_territoryLookup.put(t1.getName(), t1);
+    territories.add(t1);
+    connections.put(t1, Collections.emptySet());
+    territoryLookup.put(t1.getName(), t1);
   }
 
   /**
@@ -97,7 +98,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (t1.equals(t2)) {
       throw new IllegalArgumentException("Cannot connect a territory to itself: " + t1);
     }
-    if (!m_territories.contains(t1) || !m_territories.contains(t2)) {
+    if (!territories.contains(t1) || !territories.contains(t2)) {
       throw new IllegalArgumentException("Missing territory definition for either " + t1 + " or " + t2);
     }
     setConnection(t1, t2);
@@ -106,10 +107,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   private void setConnection(final Territory from, final Territory to) {
     // preserves the unmodifiable nature of the entries
-    final Set<Territory> current = m_connections.get(from);
+    final Set<Territory> current = connections.get(from);
     final Set<Territory> modified = new HashSet<>(current);
     modified.add(to);
-    m_connections.put(from, Collections.unmodifiableSet(modified));
+    connections.put(from, Collections.unmodifiableSet(modified));
   }
 
   /**
@@ -118,7 +119,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param s name of the searched territory (case sensitive)
    */
   public Territory getTerritory(final String s) {
-    return m_territoryLookup.get(s);
+    return territoryLookup.get(s);
   }
 
   /**
@@ -127,7 +128,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighbors(final Territory territory) {
     // ok since all entries in connections are already unmodifiable
-    final Set<Territory> neighbors = m_connections.get(territory);
+    final Set<Territory> neighbors = connections.get(territory);
     if (neighbors == null) {
       throw new IllegalArgumentException("No neighbors for:" + territory);
     }
@@ -145,7 +146,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (neighborFilter == null) {
       return getNeighbors(territory);
     }
-    return m_connections.getOrDefault(territory, Collections.emptySet())
+    return connections.getOrDefault(territory, Collections.emptySet())
         .parallelStream()
         .filter(neighborFilter)
         .collect(Collectors.toSet());
@@ -226,7 +227,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   Set<Territory> getNeighborsValidatingCanals(final Territory territory, final Predicate<Territory> neighborFilter,
-      final Collection<Unit> units, final PlayerID player) {
+      final Collection<Unit> units, final PlayerId player) {
     return getNeighbors(territory, player == null
         ? neighborFilter
         : neighborFilter.and(t -> MoveValidator.canAnyUnitsPassCanal(territory, t, units, player, getData())));
@@ -264,7 +265,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   @Nullable
   public Route getRouteIgnoreEndValidatingCanals(final Territory t1, final Territory t2,
-      final Predicate<Territory> cond, final Collection<Unit> units, final PlayerID player) {
+      final Predicate<Territory> cond, final Collection<Unit> units, final PlayerId player) {
     checkNotNull(t1);
     checkNotNull(t2);
     return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player).findRoute(t1, t2).orElse(null);
@@ -338,7 +339,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     // find the new frontier
 
     final Set<Territory> newFrontier = frontier.stream()
-        .map(m_connections::get)
+        .map(connections::get)
         .flatMap(Collection::stream)
         .filter(f -> cond == null || cond.test(f))
         .collect(Collectors.toSet());
@@ -398,16 +399,16 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   public List<Territory> getTerritories() {
-    return Collections.unmodifiableList(m_territories);
+    return Collections.unmodifiableList(territories);
   }
 
   @Override
   public Iterator<Territory> iterator() {
-    return m_territories.iterator();
+    return territories.iterator();
   }
 
-  public List<Territory> getTerritoriesOwnedBy(final PlayerID player) {
-    return m_territories.stream()
+  public List<Territory> getTerritoriesOwnedBy(final PlayerId player) {
+    return territories.stream()
         .filter(t -> t.getOwner().equals(player))
         .collect(Collectors.toList());
   }

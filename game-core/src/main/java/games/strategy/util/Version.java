@@ -18,9 +18,9 @@ import javax.annotation.Nullable;
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;
 
-  private final int m_major;
-  private final int m_minor;
-  private final int m_point;
+  private final int major;
+  private final int minor;
+  private final int point;
   private final String exactVersion;
 
   /**
@@ -34,9 +34,9 @@ public final class Version implements Serializable, Comparable<Version> {
    * Constructs a Version object without the micro version, defaults to 0.
    */
   public Version(final int major, final int minor, final int point) {
-    this.m_major = major;
-    this.m_minor = minor;
-    this.m_point = point;
+    this.major = major;
+    this.minor = minor;
+    this.point = point;
     exactVersion = toString();
   }
 
@@ -51,10 +51,10 @@ public final class Version implements Serializable, Comparable<Version> {
         .matcher(version);
 
     if (matcher.find()) {
-      m_major = Integer.parseInt(matcher.group(1));
-      m_minor = Optional.ofNullable(matcher.group(2)).map(Integer::valueOf).orElse(0);
+      major = Integer.parseInt(matcher.group(1));
+      minor = Optional.ofNullable(matcher.group(2)).map(Integer::valueOf).orElse(0);
       final String pointString = matcher.group(3);
-      m_point = "dev".equals(pointString)
+      point = "dev".equals(pointString)
           ? Integer.MAX_VALUE
           : Optional.ofNullable(pointString).map(Integer::valueOf).orElse(0);
       return;
@@ -80,21 +80,21 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns the major version number.
    */
   public int getMajor() {
-    return m_major;
+    return major;
   }
 
   /**
    * Returns the minor version number.
    */
   public int getMinor() {
-    return m_minor;
+    return minor;
   }
 
   /**
    * Returns the point version number.
    */
   public int getPoint() {
-    return m_point;
+    return point;
   }
 
   @Override
@@ -104,7 +104,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(m_major, m_minor, m_point);
+    return Objects.hash(major, minor, point);
   }
 
   @Override
@@ -160,7 +160,7 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns a new version with the major and minor versions from this instance and the specified point version.
    */
   public Version withPoint(final int point) {
-    return new Version(m_major, m_minor, point);
+    return new Version(major, minor, point);
   }
 
   /**
@@ -169,13 +169,13 @@ public final class Version implements Serializable, Comparable<Version> {
   public String toStringFull() {
     return String.join(
         ".",
-        String.valueOf(m_major),
-        String.valueOf(m_minor),
-        (m_point == Integer.MAX_VALUE) ? "dev" : String.valueOf(m_point));
+        String.valueOf(major),
+        String.valueOf(minor),
+        (point == Integer.MAX_VALUE) ? "dev" : String.valueOf(point));
   }
 
   @Override
   public String toString() {
-    return m_point != 0 ? toStringFull() : m_major + "." + m_minor;
+    return point != 0 ? toStringFull() : major + "." + minor;
   }
 }

@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Objects;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 
@@ -13,7 +13,7 @@ import games.strategy.engine.data.UnitType;
  */
 public final class UnitOwner {
   private final UnitType type;
-  private final PlayerID owner;
+  private final PlayerId owner;
 
   public UnitOwner(final Unit unit) {
     checkNotNull(unit);
@@ -47,7 +47,7 @@ public final class UnitOwner {
     return type;
   }
 
-  public PlayerID getOwner() {
+  public PlayerId getOwner() {
     return owner;
   }
 }

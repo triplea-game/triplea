@@ -8,41 +8,42 @@ import games.strategy.engine.data.MutableProperty;
 
 class AttachmentPropertyResetUndo extends Change {
   private static final long serialVersionUID = 5943939650116851332L;
-  private final Attachable m_attachedTo;
-  private final String m_attachmentName;
-  private final Object m_newValue;
-  private final String m_property;
+
+  private final Attachable attachedTo;
+  private final String attachmentName;
+  private final Object newValue;
+  private final String property;
 
   AttachmentPropertyResetUndo(final Attachable attachTo, final String attachmentName, final Object newValue,
       final String property) {
-    m_attachmentName = attachmentName;
-    m_attachedTo = attachTo;
-    m_newValue = newValue;
-    m_property = property;
+    this.attachmentName = attachmentName;
+    attachedTo = attachTo;
+    this.newValue = newValue;
+    this.property = property;
   }
 
   @Override
   public void perform(final GameData data) {
-    final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
+    final IAttachment attachment = attachedTo.getAttachment(attachmentName);
     try {
-      attachment.getPropertyOrThrow(m_property).setValue(m_newValue);
+      attachment.getPropertyOrThrow(property).setValue(newValue);
     } catch (final MutableProperty.InvalidValueException e) {
       throw new IllegalStateException(
           String.format(
               "failed to set value '%s' on property '%s' for attachment '%s' associated with '%s'",
-              m_newValue, m_property, m_attachmentName, m_attachedTo),
+              newValue, property, attachmentName, attachedTo),
           e);
     }
   }
 
   @Override
   public Change invert() {
-    return new AttachmentPropertyReset(m_attachedTo, m_attachmentName, m_newValue, m_property);
+    return new AttachmentPropertyReset(attachedTo, attachmentName, newValue, property);
   }
 
   @Override
   public String toString() {
-    return "AttachmentPropertyClearUndo attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:"
-        + m_newValue;
+    return "AttachmentPropertyClearUndo attached to:" + attachedTo + " name:" + attachmentName + " new value:"
+        + newValue;
   }
 }

@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +13,7 @@ import java.util.Objects;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
@@ -58,12 +60,12 @@ public abstract class TechAdvance extends NamedAttachable {
       createPreDefinedTechnologyMap();
 
   private static Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
-    final HashMap<String, Class<? extends TechAdvance>> preDefinedTechMap =
+    final Map<String, Class<? extends TechAdvance>> preDefinedTechMap =
         new HashMap<>();
     preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_SHIPYARDS, ImprovedShipyardsAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_AA_RADAR, AARadarAdvance.class);
+    preDefinedTechMap.put(TECH_PROPERTY_AA_RADAR, AaRadarAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_LONG_RANGE_AIRCRAFT, LongRangeAircraftAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_HEAVY_BOMBER, HeavyBomberAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT, ImprovedArtillerySupportAdvance.class);
@@ -83,7 +85,7 @@ public abstract class TechAdvance extends NamedAttachable {
 
   public abstract String getProperty();
 
-  public abstract void perform(PlayerID id, IDelegateBridge bridge);
+  public abstract void perform(PlayerId id, IDelegateBridge bridge);
 
   public abstract boolean hasTech(TechAttachment ta);
 
@@ -110,7 +112,7 @@ public abstract class TechAdvance extends NamedAttachable {
     tf.addAdvance(new SuperSubsAdvance(tf.getData()));
     tf.addAdvance(new JetPowerAdvance(tf.getData()));
     tf.addAdvance(new ImprovedShipyardsAdvance(tf.getData()));
-    tf.addAdvance(new AARadarAdvance(tf.getData()));
+    tf.addAdvance(new AaRadarAdvance(tf.getData()));
     tf.addAdvance(new LongRangeAircraftAdvance(tf.getData()));
     tf.addAdvance(new HeavyBomberAdvance(tf.getData()));
     tf.addAdvance(new ImprovedArtillerySupportAdvance(tf.getData()));
@@ -151,7 +153,7 @@ public abstract class TechAdvance extends NamedAttachable {
       frontiers.add(tas);
     }
     // add the frontiers
-    for (final PlayerID player : data.getPlayerList().getPlayers()) {
+    for (final PlayerId player : data.getPlayerList().getPlayers()) {
       for (final TechnologyFrontier frontier : frontiers) {
         player.getTechnologyFrontierList().addTechnologyFrontier(new TechnologyFrontier(frontier));
       }
@@ -173,7 +175,7 @@ public abstract class TechAdvance extends NamedAttachable {
     return ta;
   }
 
-  static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerID player) {
+  static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerId player) {
     for (final TechAdvance t : getTechAdvances(data, player)) {
       if (t.getProperty().equals(propertyString)) {
         return t;
@@ -234,7 +236,7 @@ public abstract class TechAdvance extends NamedAttachable {
    * Returns all tech advances that this player can possibly research. (Or if Player is null, returns all techs
    * available in the game).
    */
-  public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player) {
+  public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerId player) {
     final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
     if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
       return (player != null) ? player.getTechnologyFrontierList().getAdvances() : technologyFrontier.getTechs();
@@ -246,11 +248,10 @@ public abstract class TechAdvance extends NamedAttachable {
   /**
    * Returns all possible tech categories for this player.
    */
-  public static List<TechnologyFrontier> getPlayerTechCategories(final PlayerID player) {
-    if (player != null) {
-      return player.getTechnologyFrontierList().getFrontiers();
-    }
-    throw new IllegalStateException("Player cannot be null");
+  public static List<TechnologyFrontier> getPlayerTechCategories(final PlayerId player) {
+    checkNotNull(player);
+
+    return player.getTechnologyFrontierList().getFrontiers();
   }
 
   @Override

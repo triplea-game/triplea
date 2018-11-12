@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -37,16 +37,14 @@ public class UnitCategory implements Comparable<UnitCategory> {
   private final int movement;
   // movement of the units
   private final int transportCost;
-  // movement of the units
-  // private final Territory m_originatingTerr;
-  private final PlayerID owner;
+  private final PlayerId owner;
   // the units in the category, may be duplicates.
   private final List<Unit> units = new ArrayList<>();
   private int damaged = 0;
   private int bombingDamage = 0;
   private boolean disabled = false;
 
-  public UnitCategory(final UnitType type, final PlayerID owner) {
+  public UnitCategory(final UnitType type, final PlayerId owner) {
     this.type = type;
     dependents = Collections.emptyList();
     movement = -1;
@@ -146,7 +144,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return transportCost;
   }
 
-  public PlayerID getOwner() {
+  public PlayerId getOwner() {
     return owner;
   }
 
@@ -161,7 +159,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   @Override
   public int compareTo(final UnitCategory other) {
     return Comparator.nullsLast(
-        Comparator.comparing(UnitCategory::getOwner, Comparator.comparing(PlayerID::getName))
+        Comparator.comparing(UnitCategory::getOwner, Comparator.comparing(PlayerId::getName))
             .thenComparing(UnitCategory::getType, new UnitTypeComparator())
             .thenComparingInt(UnitCategory::getMovement)
             .thenComparing(UnitCategory::getDependents, (o1, o2) -> {

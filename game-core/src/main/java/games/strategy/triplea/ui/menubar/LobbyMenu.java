@@ -24,8 +24,6 @@ import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 
-import com.google.common.base.Strings;
-
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
@@ -40,7 +38,6 @@ import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
-import games.strategy.util.Md5Crypt;
 
 /**
  * The lobby client menu bar.
@@ -306,15 +303,10 @@ public final class LobbyMenu extends JMenuBar {
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
-    final String error = Strings.emptyToNull(""
-        + Strings.nullToEmpty(manager.updateUser(
-            panel.getUserName(),
-            panel.getEmail(),
-            Md5Crypt.hashPassword(panel.getPassword(), Md5Crypt.newSalt())))
-        + Strings.nullToEmpty(manager.updateUser(
-            panel.getUserName(),
-            panel.getEmail(),
-            RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()))));
+    final String error = manager.updateUser(
+        panel.getUserName(),
+        panel.getEmail(),
+        RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
     if (error != null) {
       JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
       return;

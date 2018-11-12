@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
@@ -49,7 +49,7 @@ public class UnitComparator {
    * Return a Comparator that will order the specified transports in preferred load order.
    */
   public static Comparator<Unit> getLoadableTransportsComparator(final Route route,
-      final PlayerID player) {
+      final PlayerId player) {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
         .thenComparing(getDecreasingCapacityComparator())
@@ -61,7 +61,7 @@ public class UnitComparator {
    * Return a Comparator that will order the specified transports in preferred unload order.
    */
   public static Comparator<Unit> getUnloadableTransportsComparator(final Route route,
-      final PlayerID player, final boolean noTies) {
+      final PlayerId player, final boolean noTies) {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals))
         .thenComparing(getDecreasingCapacityComparator())
@@ -116,14 +116,14 @@ public class UnitComparator {
    * If needed it may also inspect the transport holding the units.
    */
   public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units, final Route route,
-      final PlayerID player) {
+      final PlayerId player) {
     return Comparator.comparing(TripleAUnit::get,
         Comparator.comparing(TripleAUnit::getTransportedBy,
             Comparator.nullsLast(getUnloadableTransportsComparator(route, player, false))))
         .thenComparing(getMovableUnitsComparator(units, route));
   }
 
-  static Comparator<Unit> getDecreasingAttackComparator(final PlayerID player) {
+  static Comparator<Unit> getDecreasingAttackComparator(final PlayerId player) {
     return Comparator.comparing(Unit::getType,
         Comparator.comparing(UnitAttachment::get,
             Comparator.<UnitAttachment>comparingInt(u -> u.getAttack(player)).reversed()));

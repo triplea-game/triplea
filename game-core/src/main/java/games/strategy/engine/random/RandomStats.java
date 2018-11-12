@@ -3,7 +3,7 @@ package games.strategy.engine.random;
 import java.util.HashMap;
 import java.util.Map;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.util.IntegerMap;
 
@@ -17,7 +17,7 @@ import games.strategy.util.IntegerMap;
  */
 public class RandomStats implements IRandomStats {
   private final IRemoteMessenger remoteMessenger;
-  private final Map<PlayerID, IntegerMap<Integer>> randomStats = new HashMap<>();
+  private final Map<PlayerId, IntegerMap<Integer>> randomStats = new HashMap<>();
 
   public RandomStats(final IRemoteMessenger remoteMessenger) {
     this.remoteMessenger = remoteMessenger;
@@ -28,7 +28,7 @@ public class RandomStats implements IRandomStats {
     remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
   }
 
-  public synchronized void addRandom(final int[] random, final PlayerID player, final DiceType diceType) {
+  public synchronized void addRandom(final int[] random, final PlayerId player, final DiceType diceType) {
     IntegerMap<Integer> map = randomStats.get(player);
     if (map == null) {
       map = new IntegerMap<>();
@@ -40,7 +40,7 @@ public class RandomStats implements IRandomStats {
     randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
   }
 
-  public synchronized void addRandom(final int random, final PlayerID player, final DiceType diceType) {
+  public synchronized void addRandom(final int random, final PlayerId player, final DiceType diceType) {
     IntegerMap<Integer> map = randomStats.get(player);
     if (map == null) {
       map = new IntegerMap<>();

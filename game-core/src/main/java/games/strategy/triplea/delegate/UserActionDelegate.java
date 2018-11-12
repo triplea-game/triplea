@@ -3,18 +3,18 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.MapSupport;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.UserActionAttachment;
@@ -26,7 +26,6 @@ import games.strategy.util.IntegerMap;
 /**
  * Contains validation and logic to change game data for UserActionAttachments.
  */
-@MapSupport
 public class UserActionDelegate extends BaseTripleADelegate implements IUserActionDelegate {
   public UserActionDelegate() {}
 
@@ -40,7 +39,6 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   public Serializable saveState() {
     final UserActionExtendedDelegateState state = new UserActionExtendedDelegateState();
     state.superState = super.saveState();
-    // state.m_testedConditions = m_testedConditions;
     // add other variables to state here:
     return state;
   }
@@ -56,8 +54,8 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     return !getValidActions().isEmpty();
   }
 
-  private HashMap<ICondition, Boolean> getTestedConditions() {
-    final HashSet<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
+  private Map<ICondition, Boolean> getTestedConditions() {
+    final Set<ICondition> allConditionsNeeded = AbstractConditionsAttachment.getAllConditionsRecursive(
         new HashSet<>(UserActionAttachment.getUserActionAttachments(player)), null);
     return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
   }
@@ -66,7 +64,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   public Collection<UserActionAttachment> getValidActions() {
     final GameData data = bridge.getData();
     data.acquireReadLock();
-    final HashMap<ICondition, Boolean> testedConditions;
+    final Map<ICondition, Boolean> testedConditions;
     try {
       testedConditions = getTestedConditions();
     } finally {
@@ -169,7 +167,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    * @param uaa the UserActionAttachment that should be accepted
    */
   private boolean actionIsAccepted(final UserActionAttachment uaa) {
-    for (final PlayerID player : uaa.getActionAccept()) {
+    for (final PlayerId player : uaa.getActionAccept()) {
       if (!(getRemotePlayer(player)).acceptAction(this.player,
           UserActionText.getInstance().getAcceptanceQuestion(uaa.getText()), false)) {
         return false;
@@ -199,7 +197,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     }
   }
 
-  private void sendNotificationToPlayers(final Collection<PlayerID> toPlayers, final Collection<PlayerID> dontSendTo,
+  private void sendNotificationToPlayers(final Collection<PlayerId> toPlayers, final Collection<PlayerId> dontSendTo,
       final String text) {
     if (!"NONE".equals(text)) {
       this.getDisplay().reportMessageToPlayers(toPlayers, dontSendTo, text, text);
@@ -211,13 +209,13 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifyOtherPlayers(final UserActionAttachment uaa, final String notification,
       final String targetNotification) {
-    final Collection<PlayerID> dontSendTo = new ArrayList<>();
+    final Collection<PlayerId> dontSendTo = new ArrayList<>();
     dontSendTo.add(player);
 
-    final Collection<PlayerID> targets = uaa.getActionAccept();
+    final Collection<PlayerId> targets = uaa.getActionAccept();
     sendNotificationToPlayers(targets, dontSendTo, targetNotification);
 
-    final Collection<PlayerID> otherPlayers = getData().getPlayerList().getPlayers();
+    final Collection<PlayerId> otherPlayers = getData().getPlayerList().getPlayers();
     otherPlayers.remove(player);
     otherPlayers.removeAll(targets);
     dontSendTo.addAll(targets);

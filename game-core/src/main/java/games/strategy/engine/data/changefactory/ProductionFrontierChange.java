@@ -2,39 +2,40 @@ package games.strategy.engine.data.changefactory;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 
 /**
  * Change a players production frontier.
  */
 class ProductionFrontierChange extends Change {
-  private final String m_startFrontier;
-  private final String m_endFrontier;
-  private final String m_player;
   private static final long serialVersionUID = 3336145814067456701L;
 
-  ProductionFrontierChange(final ProductionFrontier newFrontier, final PlayerID player) {
-    m_startFrontier = player.getProductionFrontier().getName();
-    m_endFrontier = newFrontier.getName();
-    m_player = player.getName();
+  private final String startFrontierName;
+  private final String endFrontierName;
+  private final String playerName;
+
+  ProductionFrontierChange(final ProductionFrontier newFrontier, final PlayerId player) {
+    startFrontierName = player.getProductionFrontier().getName();
+    endFrontierName = newFrontier.getName();
+    playerName = player.getName();
   }
 
-  ProductionFrontierChange(final String startFrontier, final String endFrontier, final String player) {
-    m_startFrontier = startFrontier;
-    m_endFrontier = endFrontier;
-    m_player = player;
+  ProductionFrontierChange(final String startFrontierName, final String endFrontierName, final String playerName) {
+    this.startFrontierName = startFrontierName;
+    this.endFrontierName = endFrontierName;
+    this.playerName = playerName;
   }
 
   @Override
   protected void perform(final GameData data) {
-    final PlayerID player = data.getPlayerList().getPlayerId(m_player);
-    final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(m_endFrontier);
+    final PlayerId player = data.getPlayerList().getPlayerId(playerName);
+    final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(endFrontierName);
     player.setProductionFrontier(frontier);
   }
 
   @Override
   public Change invert() {
-    return new ProductionFrontierChange(m_endFrontier, m_startFrontier, m_player);
+    return new ProductionFrontierChange(endFrontierName, startFrontierName, playerName);
   }
 }

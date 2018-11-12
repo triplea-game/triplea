@@ -1,7 +1,6 @@
 package games.strategy.triplea.attachments;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -14,8 +13,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.MutableProperty;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
@@ -34,8 +32,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   // backwards
   // compatibility.
   private int uses = -1;
-  @InternalDoNotExport
-  // Do Not Export (do not include in IAttachment).
   private boolean usedThisRound = false;
   private String notification = null;
   private List<Tuple<String, String>> when = new ArrayList<>();
@@ -44,7 +40,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     super(name, attachable, gameData);
   }
 
-  public static CompositeChange triggerSetUsedForThisRound(final PlayerID player) {
+  public static CompositeChange triggerSetUsedForThisRound(final PlayerId player) {
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {
       if (ta.getUsedThisRound()) {
@@ -191,7 +187,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     return testChance;
   }
 
-  public static Predicate<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions) {
+  public static Predicate<TriggerAttachment> isSatisfiedMatch(final Map<ICondition, Boolean> testedConditions) {
     return t -> t.isSatisfied(testedConditions);
   }
 

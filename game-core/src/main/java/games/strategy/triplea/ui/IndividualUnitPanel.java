@@ -6,8 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JButton;
@@ -78,7 +78,7 @@ public class IndividualUnitPanel extends JPanel {
    *
    * @param unitsAndTheirMaxMinAndCurrent mapped to their individual max, then min, then current values
    */
-  public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent,
+  public IndividualUnitPanel(final Map<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent,
       final String title, final UiContext uiContext, final int max, final boolean showMinAndMax,
       final boolean showSelectAll, final ScrollableTextFieldListener optionalListener) {
     this.uiContext = uiContext;

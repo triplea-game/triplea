@@ -34,7 +34,7 @@ import com.apple.eawt.Application;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.system.SystemProperties;
@@ -139,16 +139,16 @@ public final class HelpMenu extends JMenu {
     hints.append("<head><style>th, tr{color:black}</style></head>");
     try {
       gameData.acquireReadLock();
-      final Map<PlayerID, Map<UnitType, ResourceCollection>> costs =
+      final Map<PlayerId, Map<UnitType, ResourceCollection>> costs =
           TuvUtils.getResourceCostsForTuv(gameData, true);
-      final Map<PlayerID, List<UnitType>> playerUnitTypes =
+      final Map<PlayerId, List<UnitType>> playerUnitTypes =
           UnitType.getAllPlayerUnitsWithImages(gameData, uiContext, true);
       final String color3 = "FEECE2";
       final String color2 = "BDBDBD";
       final String color1 = "ABABAB";
       int i = 0;
-      for (final Map.Entry<PlayerID, List<UnitType>> entry : playerUnitTypes.entrySet()) {
-        final PlayerID player = entry.getKey();
+      for (final Map.Entry<PlayerId, List<UnitType>> entry : playerUnitTypes.entrySet()) {
+        final PlayerId player = entry.getKey();
         hints.append("<p><table border=\"1\" bgcolor=\"" + color1 + "\">");
         hints.append("<tr><th style=\"font-size:120%;000000\" bgcolor=\"" + color3 + "\" colspan=\"4\">")
             .append(player == null ? "NULL" : player.getName()).append(" Units</th></tr>");
@@ -176,7 +176,7 @@ public final class HelpMenu extends JMenu {
     return hints.toString();
   }
 
-  private static String getUnitImageUrl(final UnitType unitType, final PlayerID player, final UiContext uiContext) {
+  private static String getUnitImageUrl(final UnitType unitType, final PlayerId player, final UiContext uiContext) {
     final UnitImageFactory unitImageFactory = uiContext.getUnitImageFactory();
     if (player == null || unitImageFactory == null) {
       return "no image";

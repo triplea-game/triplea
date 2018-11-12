@@ -18,7 +18,7 @@ import javax.swing.table.TableColumn;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.triplea.Constants;
@@ -89,12 +89,12 @@ class EconomyPanel extends AbstractStatPanel {
     private synchronized void loadData() {
       gameData.acquireReadLock();
       try {
-        final List<PlayerID> players = getPlayers();
-        final Map<String, Set<PlayerID>> allianceMap = getAllianceMap();
+        final List<PlayerId> players = getPlayers();
+        final Map<String, Set<PlayerId>> allianceMap = getAllianceMap();
         collectedData = new String[players.size() + allianceMap.size()][resourceStats.size() + 1];
         int row = 0;
-        final Map<PlayerID, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();
-        for (final PlayerID player : players) {
+        final Map<PlayerId, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();
+        for (final PlayerId player : players) {
           collectedData[row][0] = player.getName();
           final IntegerMap<Resource> resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
           resourceIncomeMap.put(player, resourceIncomes);
@@ -106,7 +106,7 @@ class EconomyPanel extends AbstractStatPanel {
           }
           row++;
         }
-        for (final Entry<String, Set<PlayerID>> alliance : allianceMap.entrySet()) {
+        for (final Entry<String, Set<PlayerId>> alliance : allianceMap.entrySet()) {
           collectedData[row][0] = alliance.getKey();
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);

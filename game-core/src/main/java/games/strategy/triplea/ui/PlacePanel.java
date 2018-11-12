@@ -14,15 +14,15 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.dataObjects.PlaceableUnits;
+import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -43,7 +43,7 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   @Override
-  public void display(final PlayerID id) {
+  public void display(final PlayerId id) {
     super.display(id, " place");
   }
 

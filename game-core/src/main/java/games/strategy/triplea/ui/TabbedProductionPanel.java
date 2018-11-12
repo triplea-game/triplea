@@ -18,7 +18,7 @@ import javax.swing.JTabbedPane;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
@@ -36,7 +36,7 @@ class TabbedProductionPanel extends ProductionPanel {
     super(uiContext);
   }
 
-  static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data,
+  static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
     return new TabbedProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }
@@ -129,13 +129,13 @@ class TabbedProductionPanel extends ProductionPanel {
 
   private List<Tuple<String, List<Rule>>> getDefaultRuleLists() {
     final List<Tuple<String, List<Rule>>> ruleLists = new ArrayList<>();
-    final ArrayList<Rule> allRules = new ArrayList<>();
-    final ArrayList<Rule> landRules = new ArrayList<>();
-    final ArrayList<Rule> airRules = new ArrayList<>();
-    final ArrayList<Rule> seaRules = new ArrayList<>();
-    final ArrayList<Rule> constructRules = new ArrayList<>();
-    final ArrayList<Rule> upgradeConsumesRules = new ArrayList<>();
-    final ArrayList<Rule> resourceRules = new ArrayList<>();
+    final List<Rule> allRules = new ArrayList<>();
+    final List<Rule> landRules = new ArrayList<>();
+    final List<Rule> airRules = new ArrayList<>();
+    final List<Rule> seaRules = new ArrayList<>();
+    final List<Rule> constructRules = new ArrayList<>();
+    final List<Rule> upgradeConsumesRules = new ArrayList<>();
+    final List<Rule> resourceRules = new ArrayList<>();
     for (final Rule rule : rules) {
       allRules.add(rule);
       final NamedAttachable resourceOrUnit = rule.getProductionRule().getResults().keySet().iterator().next();

@@ -4,7 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Nested;
@@ -12,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 final class SelectionComponentUiUtilsTest {
   @Nested
-  final class ToStringOfOptionalFileTest {
+  final class ToStringOfOptionalPathTest {
     @Test
-    void shouldReturnAbsolutePathOfFileWhenPresent() {
-      final File file = new File(".");
+    void shouldReturnAbsolutePathWhenPresent() {
+      final Path path = Paths.get(".");
 
-      assertThat(SelectionComponentUiUtils.toString(Optional.of(file)), is(file.getAbsolutePath()));
+      assertThat(SelectionComponentUiUtils.toString(Optional.of(path)), is(path.toAbsolutePath().toString()));
     }
 
     @Test

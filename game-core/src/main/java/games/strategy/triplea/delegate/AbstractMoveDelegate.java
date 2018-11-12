@@ -10,12 +10,12 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.pbem.PBEMMessagePoster;
-import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
+import games.strategy.engine.pbem.PbemMessagePoster;
+import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 
 /**
@@ -24,7 +24,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
   // A collection of UndoableMoves
   protected List<UndoableMove> movesToUndo = new ArrayList<>();
-  // protected final TransportTracker m_transportTracker = new TransportTracker();
   // if we are in the process of doing a move. this instance will allow us to resume the move
   protected MovePerformer tempMovePerformer;
 
@@ -55,8 +54,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     final AbstractMoveExtendedDelegateState state = new AbstractMoveExtendedDelegateState();
     state.superState = super.saveState();
     // add other variables to state here:
-    state.m_movesToUndo = movesToUndo;
-    state.m_tempMovePerformer = tempMovePerformer;
+    state.movesToUndo = movesToUndo;
+    state.tempMovePerformer = tempMovePerformer;
     return state;
   }
 
@@ -66,10 +65,10 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     super.loadState(s.superState);
     // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo
     // move
-    if (s.m_movesToUndo != null) {
-      movesToUndo = s.m_movesToUndo;
+    if (s.movesToUndo != null) {
+      movesToUndo = s.movesToUndo;
     }
-    tempMovePerformer = s.m_tempMovePerformer;
+    tempMovePerformer = s.tempMovePerformer;
   }
 
   @Override
@@ -107,7 +106,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
     updateUndoableMoveIndexes();
   }
 
-  protected PlayerID getUnitsOwner(final Collection<Unit> units) {
+  protected PlayerId getUnitsOwner(final Collection<Unit> units) {
     // if we are not in edit mode, return player. if we are in edit mode, we use whoever's units these are.
     return (units.isEmpty() || !BaseEditDelegate.getEditMode(getData())) ? player : units.iterator().next().getOwner();
   }
@@ -128,7 +127,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
       final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
 
   public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units,
-      final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
+      final Route route, final PlayerId player, final Collection<Unit> transportsToLoad,
       final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat,
       final List<UndoableMove> undoableMoves, final GameData data) {
     if (moveType == MoveType.SPECIAL) {
@@ -139,7 +138,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player) {
+  public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerId player) {
     return new AirThatCantLandUtil(bridge).getTerritoriesWhereAirCantLand(player);
   }
 
@@ -201,7 +200,7 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public boolean postTurnSummary(final PBEMMessagePoster poster, final String title, final boolean includeSaveGame) {
+  public boolean postTurnSummary(final PbemMessagePoster poster, final String title, final boolean includeSaveGame) {
     return poster.post(bridge.getHistoryWriter(), title, includeSaveGame);
   }
 

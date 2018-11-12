@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -107,7 +107,7 @@ public class UnitsDrawer implements IDrawable {
     if (type == null) {
       throw new IllegalStateException("Type not found:" + unitType);
     }
-    final PlayerID owner = data.getPlayerList().getPlayerId(playerName);
+    final PlayerId owner = data.getPlayerList().getPlayerId(playerName);
     final Optional<Image> img =
         uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 

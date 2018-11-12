@@ -3,11 +3,11 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.gamePlayer.IRemotePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.ISound;
 
 /**
@@ -17,7 +17,7 @@ import games.strategy.sound.ISound;
 public abstract class AbstractDelegate implements IDelegate {
   protected String name;
   protected String displayName;
-  protected PlayerID player;
+  protected PlayerId player;
   protected IDelegateBridge bridge;
 
   @Override

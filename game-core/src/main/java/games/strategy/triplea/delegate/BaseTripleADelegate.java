@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
@@ -60,16 +60,16 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   @Override
   public Serializable saveState() {
     final BaseDelegateState state = new BaseDelegateState();
-    state.m_startBaseStepsFinished = startBaseStepsFinished;
-    state.m_endBaseStepsFinished = endBaseStepsFinished;
+    state.startBaseStepsFinished = startBaseStepsFinished;
+    state.endBaseStepsFinished = endBaseStepsFinished;
     return state;
   }
 
   @Override
   public void loadState(final Serializable state) {
     final BaseDelegateState s = (BaseDelegateState) state;
-    startBaseStepsFinished = s.m_startBaseStepsFinished;
-    endBaseStepsFinished = s.m_endBaseStepsFinished;
+    startBaseStepsFinished = s.startBaseStepsFinished;
+    endBaseStepsFinished = s.endBaseStepsFinished;
   }
 
   private void triggerWhenTriggerAttachments(final String beforeOrAfter) {
@@ -102,11 +102,11 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     return (ITripleAPlayer) bridge.getRemotePlayer();
   }
 
-  protected ITripleAPlayer getRemotePlayer(final PlayerID player) {
+  protected ITripleAPlayer getRemotePlayer(final PlayerId player) {
     return getRemotePlayer(player, bridge);
   }
 
-  protected static ITripleAPlayer getRemotePlayer(final PlayerID player, final IDelegateBridge bridge) {
+  protected static ITripleAPlayer getRemotePlayer(final PlayerId player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAi(player.getName());

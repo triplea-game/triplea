@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.data.properties.AEditableProperty;
+import games.strategy.engine.data.properties.AbstractEditableProperty;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.CollectionProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -40,19 +40,18 @@ import lombok.extern.java.Log;
  * @param <T> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
 @Log
-public class MapPropertyWrapper<T> extends AEditableProperty {
+public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
   private static final long serialVersionUID = 6406798101396215624L;
-  private final IEditableProperty property;
+
+  private final IEditableProperty<T> property;
   private final Method setter;
 
-  // TODO: remove the `getter` field when we can, kept around for serialization compatibility
-  @SuppressWarnings("unused")
-  private final Method getter = null;
-
+  @SuppressWarnings("unchecked")
   private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter) {
     super(name, description);
     this.setter = setter;
 
+    final IEditableProperty<?> property;
 
     if (defaultValue instanceof Boolean) {
       property = new BooleanProperty(name, description, ((Boolean) defaultValue));
@@ -67,15 +66,14 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     } else if (defaultValue instanceof Map) {
       property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
-      property =
-          new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
+      property = new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
     } else if (defaultValue instanceof Double) {
-      property =
-          new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
+      property = new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
     } else {
       throw new IllegalArgumentException(
           "Cannot instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
     }
+    this.property = (IEditableProperty<T>) property;
   }
 
   @Override
@@ -84,12 +82,12 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
   }
 
   @Override
-  public Object getValue() {
+  public T getValue() {
     return property.getValue();
   }
 
   @Override
-  public void setValue(final Object value) throws ClassCastException {
+  public void setValue(final T value) {
     property.setValue(value);
   }
 
@@ -158,7 +156,6 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
     return property.validate(value);
   }
 
-
   private static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
       final boolean justFromSuper) {
     if (!justFromSuper) {
@@ -191,10 +188,6 @@ public class MapPropertyWrapper<T> extends AEditableProperty {
    */
   @VisibleForTesting
   static Field getPropertyField(final String propertyName, final Class<?> type) {
-    try {
-      return getFieldIncludingFromSuperClasses(type, "m_" + propertyName, false);
-    } catch (final IllegalStateException ignored) {
-      return getFieldIncludingFromSuperClasses(type, propertyName, false);
-    }
+    return getFieldIncludingFromSuperClasses(type, propertyName, false);
   }
 }

@@ -13,16 +13,16 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
 class PlayerChooser extends JOptionPane {
   private static final long serialVersionUID = -7272867474891641839L;
-  private JList<PlayerID> list;
+  private JList<PlayerId> list;
   private final PlayerList players;
-  private final PlayerID defaultPlayer;
+  private final PlayerId defaultPlayer;
   private final UiContext uiContext;
   private final boolean allowNeutral;
 
@@ -30,7 +30,7 @@ class PlayerChooser extends JOptionPane {
     this(players, null, uiContext, allowNeutral);
   }
 
-  PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final UiContext uiContext,
+  PlayerChooser(final PlayerList players, final PlayerId defaultPlayer, final UiContext uiContext,
       final boolean allowNeutral) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
@@ -43,11 +43,11 @@ class PlayerChooser extends JOptionPane {
   }
 
   private void createComponents() {
-    final Collection<PlayerID> players = new ArrayList<>(this.players.getPlayers());
+    final Collection<PlayerId> players = new ArrayList<>(this.players.getPlayers());
     if (allowNeutral) {
-      players.add(PlayerID.NULL_PLAYERID);
+      players.add(PlayerId.NULL_PLAYERID);
     }
-    list = new JList<>(players.toArray(new PlayerID[0]));
+    list = new JList<>(players.toArray(new PlayerId[0]));
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setSelectedValue(defaultPlayer, true);
     list.setFocusable(false);
@@ -75,7 +75,7 @@ class PlayerChooser extends JOptionPane {
    *
    * @return the player or null
    */
-  PlayerID getSelected() {
+  PlayerId getSelected() {
     if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION)) {
       return list.getSelectedValue();
     }
@@ -93,11 +93,11 @@ class PlayerChooser extends JOptionPane {
     @Override
     public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
         final boolean isSelected, final boolean cellHasFocus) {
-      super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
-      if (uiContext == null || value == PlayerID.NULL_PLAYERID) {
+      super.getListCellRendererComponent(list, ((PlayerId) value).getName(), index, isSelected, cellHasFocus);
+      if (uiContext == null || value == PlayerId.NULL_PLAYERID) {
         setIcon(new ImageIcon(Util.createImage(32, 32, true)));
       } else {
-        setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
+        setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerId) value)));
       }
       return this;
     }

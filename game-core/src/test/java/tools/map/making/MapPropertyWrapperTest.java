@@ -11,22 +11,13 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.xml.TestAttachment;
 
-public final class MapPropertyWrapperTest {
+final class MapPropertyWrapperTest {
   @Nested
-  public final class GetPropertyFieldTest {
+  final class GetPropertyFieldTest {
     @Test
-    public void shouldReturnFieldWhenFieldWithEmUnderscorePrefixExistsInTargetClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleEmUnderscoreAttachment.class);
-
-      assertThat(field.getName(), is("m_intValue"));
-      assertThat(field.getDeclaringClass(), is(ExampleEmUnderscoreAttachment.class));
-    }
-
-    @Test
-    public void shouldReturnFieldWhenFieldWithoutEmUnderscorePrefixExistsInTargetClass() {
+    void shouldReturnFieldWhenFieldExistsInTargetClass() {
       final Field field = MapPropertyWrapper.getPropertyField("doubleValue", ExampleChildAttachment.class);
 
       assertThat(field.getName(), is("doubleValue"));
@@ -34,15 +25,7 @@ public final class MapPropertyWrapperTest {
     }
 
     @Test
-    public void shouldReturnFieldWhenFieldWithEmUnderscorePrefixExistsInAncestorClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("data", TestAttachment.class);
-
-      assertThat(field.getName(), is("m_data"));
-      assertThat(field.getDeclaringClass(), is(GameDataComponent.class));
-    }
-
-    @Test
-    public void shouldReturnFieldWhenFieldWithoutEmUnderscorePrefixExistsInAncestorClass() {
+    void shouldReturnFieldWhenFieldExistsInAncestorClass() {
       final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleChildAttachment.class);
 
       assertThat(field.getName(), is("intValue"));
@@ -50,19 +33,8 @@ public final class MapPropertyWrapperTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenFieldDoesNotExist() {
+    void shouldThrowExceptionWhenFieldDoesNotExist() {
       assertThrows(IllegalStateException.class, () -> MapPropertyWrapper.getPropertyField("xxx", TestAttachment.class));
-    }
-  }
-
-  static class ExampleEmUnderscoreAttachment extends TestAttachment {
-    private static final long serialVersionUID = 4140595034027616571L;
-
-    @SuppressWarnings("checkstyle:MemberName") // "m_" prefix required for test
-    int m_intValue;
-
-    ExampleEmUnderscoreAttachment(final String name, final Attachable attachable, final GameData gameData) {
-      super(name, attachable, gameData);
     }
   }
 

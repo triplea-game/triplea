@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.util.PredicateBuilder;
@@ -20,7 +20,7 @@ public class UnitsThatCantFightUtil {
     gameData = data;
   }
 
-  Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player) {
+  Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerId player) {
     final Predicate<Unit> enemyAttackUnits = Matches.enemyUnit(player, gameData).and(Matches.unitCanAttack(player));
     final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : gameData.getMap()) {

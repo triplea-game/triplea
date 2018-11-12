@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -24,7 +24,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
 public final class UnitComparatorTest {
-  private static void startCombatMoveFor(final PlayerID playerId, final GameData gameData) {
+  private static void startCombatMoveFor(final PlayerId playerId, final GameData gameData) {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final IDelegateBridge bridge = MockDelegateBridge.newInstance(gameData, playerId);
     advanceToStep(bridge, "CombatMove");
@@ -37,7 +37,7 @@ public final class UnitComparatorTest {
     @Test
     public void shouldSortUnloadableUnitsFirst() throws Exception {
       final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
-      final PlayerID germans = germans(gameData);
+      final PlayerId germans = germans(gameData);
       final Territory germany = territory("Germany", gameData);
       final Territory seaZone5 = territory("5 Sea Zone", gameData);
       final Territory kareliaSsr = territory("Karelia S.S.R.", gameData);

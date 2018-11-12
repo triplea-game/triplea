@@ -1,6 +1,6 @@
 package org.triplea.lobby.server.db;
 
-import static org.triplea.test.common.Assertions.assertNotThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,12 +26,12 @@ public class EmailLimitIntegrationTest {
 
   @Test
   public void testAllowsMaximumLength() {
-    assertNotThrows(() -> createAccountWithEmail(getStringWithLength(60) + "@" + getStringWithLength(193)));
+    assertDoesNotThrow(() -> createAccountWithEmail(getStringWithLength(60) + "@" + getStringWithLength(193)));
   }
 
   @Test
   public void testAllowsMaximumLocalLength() {
-    assertNotThrows(() -> createAccountWithEmail(getStringWithLength(64) + "@" + getStringWithLength(189)));
+    assertDoesNotThrow(() -> createAccountWithEmail(getStringWithLength(64) + "@" + getStringWithLength(189)));
   }
 
   private static String getStringWithLength(final int length) {

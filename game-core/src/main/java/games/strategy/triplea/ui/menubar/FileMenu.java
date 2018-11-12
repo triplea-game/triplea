@@ -11,10 +11,10 @@ import javax.swing.KeyStroke;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacQuitMenuWrapper;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -38,7 +38,7 @@ final class FileMenu extends JMenu {
     setMnemonic(KeyEvent.VK_F);
 
     add(createSaveMenu());
-    if (PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
+    if (PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
       add(addPostPbem());
     }
     addSeparator();
@@ -61,20 +61,20 @@ final class FileMenu extends JMenu {
 
   private JMenuItem addPostPbem() {
     final JMenuItem menuPbem = new JMenuItem(SwingAction.of("Post PBEM/PBF Gamesave", e -> {
-      if (!PBEMMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
+      if (!PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
         return;
       }
       final String title = "Manual Gamesave Post";
       try {
         gameData.acquireReadLock();
         final GameStep step = gameData.getSequence().getStep();
-        final PlayerID currentPlayer = (step == null ? PlayerID.NULL_PLAYERID
-            : (step.getPlayerId() == null ? PlayerID.NULL_PLAYERID : step.getPlayerId()));
+        final PlayerId currentPlayer = (step == null ? PlayerId.NULL_PLAYERID
+            : (step.getPlayerId() == null ? PlayerId.NULL_PLAYERID : step.getPlayerId()));
         final int round = gameData.getSequence().getRound();
         final HistoryLog historyLog = new HistoryLog();
         historyLog.printFullTurn(gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
-        final PBEMMessagePoster poster = new PBEMMessagePoster(gameData, currentPlayer, round, title);
-        PBEMMessagePoster.postTurn(title, historyLog, true, poster, null, frame, null);
+        final PbemMessagePoster poster = new PbemMessagePoster(gameData, currentPlayer, round, title);
+        PbemMessagePoster.postTurn(title, historyLog, true, poster, null, frame, null);
       } finally {
         gameData.releaseReadLock();
       }

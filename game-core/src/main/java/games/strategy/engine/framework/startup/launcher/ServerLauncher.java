@@ -15,9 +15,11 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.data.PlayerID;
+import org.triplea.game.server.HeadlessGameServer;
+
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.headlessGameServer.HeadlessGameServer;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -25,13 +27,12 @@ import games.strategy.engine.framework.startup.mc.IClientChannel;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessengerException;
+import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
@@ -133,7 +134,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (useSecureRandomSource) {
         // server game.
         // try to find an opponent to be the other side of the crypto random source.
-        final PlayerID remotePlayer =
+        final PlayerId remotePlayer =
             serverGame.getPlayerManager().getRemoteOpponent(messenger.getLocalNode(), gameData);
         final CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, serverGame);
         serverGame.setRandomSource(randomSource);
@@ -208,7 +209,7 @@ public class ServerLauncher extends AbstractLauncher {
             // if we do not do this, we can get into an infinite loop of launching a game,
             // then crashing out, then launching, etc.
             serverModel.setAllPlayersToNullNodes();
-            final File f1 = SaveGameFileChooser.getHeadlessAutoSaveFile();
+            final File f1 = AutoSaveFileUtils.getHeadlessAutoSaveFile();
             if (f1.exists()) {
               gameSelectorModel.load(f1);
             } else {
@@ -308,8 +309,8 @@ public class ServerLauncher extends AbstractLauncher {
   private void saveAndEndGame(final INode node) {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = headless
-        ? SaveGameFileChooser.getHeadlessAutoSaveFile()
-        : SaveGameFileChooser.getLostConnectionAutoSaveFile(LocalDateTime.now());
+        ? AutoSaveFileUtils.getHeadlessAutoSaveFile()
+        : AutoSaveFileUtils.getLostConnectionAutoSaveFile(LocalDateTime.now());
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {

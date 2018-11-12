@@ -1,5 +1,7 @@
 package games.strategy.engine.message.unifiedmessenger;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -19,12 +21,9 @@ public abstract class InvocationResults implements Externalizable {
   public InvocationResults() {}
 
   public InvocationResults(final RemoteMethodCallResults results, final GUID methodCallId) {
-    if (results == null) {
-      throw new IllegalArgumentException("Null results");
-    }
-    if (methodCallId == null) {
-      throw new IllegalArgumentException("Null id");
-    }
+    checkNotNull(results);
+    checkNotNull(methodCallId);
+
     this.results = results;
     this.methodCallId = methodCallId;
   }

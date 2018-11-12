@@ -2,7 +2,8 @@ package games.strategy.triplea.settings;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -282,12 +283,12 @@ final class SelectionComponentFactory {
   /**
    * File selection prompt.
    */
-  static SelectionComponent<JComponent> filePath(final ClientSetting<File> clientSetting) {
+  static SelectionComponent<JComponent> filePath(final ClientSetting<Path> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.FILES);
   }
 
   private static SelectionComponent<JComponent> selectFile(
-      final ClientSetting<File> clientSetting,
+      final ClientSetting<Path> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
     return new AlwaysValidInputSelectionComponent() {
       final JTextField field = new JTextField(SelectionComponentUiUtils.toString(clientSetting.getValue()), 20);
@@ -313,7 +314,7 @@ final class SelectionComponentFactory {
       @Override
       public Map<GameSetting<?>, Object> readValues() {
         final String value = field.getText();
-        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : new File(value));
+        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : Paths.get(value));
       }
 
       @Override
@@ -331,7 +332,7 @@ final class SelectionComponentFactory {
   /**
    * Folder selection prompt.
    */
-  static SelectionComponent<JComponent> folderPath(final ClientSetting<File> clientSetting) {
+  static SelectionComponent<JComponent> folderPath(final ClientSetting<Path> clientSetting) {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 

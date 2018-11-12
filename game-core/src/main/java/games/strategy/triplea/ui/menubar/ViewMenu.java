@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -390,7 +389,7 @@ final class ViewMenu extends JMenu {
 
   private void addMapFontAndColorEditorMenu() {
     final Action mapFontOptions = SwingAction.of("Edit Map Font and Color", e -> {
-      final List<IEditableProperty> properties = new ArrayList<>();
+      final List<IEditableProperty<?>> properties = new ArrayList<>();
       final NumberProperty fontsize =
           new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
       final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
@@ -441,13 +440,13 @@ final class ViewMenu extends JMenu {
         frame.getMapPanel().resetMap();
       } else if (result == 0) {
         MapImage.setPropertyMapFont(new Font("Ariel", Font.BOLD, fontsize.getValue()));
-        MapImage.setPropertyTerritoryNameAndPuAndCommentColor((Color) territoryNameColor.getValue());
-        MapImage.setPropertyUnitCountColor((Color) unitCountColor.getValue());
-        MapImage.setPropertyUnitCountOutline((Color) unitCountOutline.getValue());
-        MapImage.setPropertyUnitFactoryDamageColor((Color) factoryDamageColor.getValue());
-        MapImage.setPropertyUnitFactoryDamageOutline((Color) factoryDamageOutline.getValue());
-        MapImage.setPropertyUnitHitDamageColor((Color) hitDamageColor.getValue());
-        MapImage.setPropertyUnitHitDamageOutline((Color) hitDamageOutline.getValue());
+        MapImage.setPropertyTerritoryNameAndPuAndCommentColor(territoryNameColor.getValue());
+        MapImage.setPropertyUnitCountColor(unitCountColor.getValue());
+        MapImage.setPropertyUnitCountOutline(unitCountOutline.getValue());
+        MapImage.setPropertyUnitFactoryDamageColor(factoryDamageColor.getValue());
+        MapImage.setPropertyUnitFactoryDamageOutline(factoryDamageOutline.getValue());
+        MapImage.setPropertyUnitHitDamageColor(hitDamageColor.getValue());
+        MapImage.setPropertyUnitHitDamageOutline(hitDamageOutline.getValue());
         frame.getMapPanel().resetMap();
       }
     });

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
@@ -38,7 +38,7 @@ public class AiUtils {
    * If the player cannot produce the given unit, return Integer.MAX_VALUE
    * </p>
    */
-  static int getCost(final UnitType unitType, final PlayerID player, final GameData data) {
+  static int getCost(final UnitType unitType, final PlayerId player, final GameData data) {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final ProductionRule rule = getProductionRule(unitType, player);
     return (rule == null) ? Integer.MAX_VALUE : rule.getCosts().getInt(pus);
@@ -51,7 +51,7 @@ public class AiUtils {
    * If no such rule can be found, then return null.
    * </p>
    */
-  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player) {
+  private static ProductionRule getProductionRule(final UnitType unitType, final PlayerId player) {
     final ProductionFrontier frontier = player.getProductionFrontier();
     if (frontier == null) {
       return null;
@@ -122,17 +122,16 @@ public class AiUtils {
     return -1;
   }
 
-  static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units, final int planesThatDontNeedToLand) {
+  static List<Unit> interleaveCarriersAndPlanes(final List<Unit> units) {
     if (units.stream().noneMatch(Matches.unitIsCarrier())
         || units.stream().noneMatch(Matches.unitCanLandOnCarrier())) {
       return units;
     }
     // Clone the current list
-    final ArrayList<Unit> result = new ArrayList<>(units);
+    final List<Unit> result = new ArrayList<>(units);
     Unit seekedCarrier = null;
     int indexToPlaceCarrierAt = -1;
     int spaceLeftOnSeekedCarrier = -1;
-    int processedPlaneCount = 0;
     final List<Unit> filledCarriers = new ArrayList<>();
     // Loop through all units, starting from the right, and rearrange units
     for (int i = result.size() - 1; i >= 0; i--) {
@@ -140,13 +139,6 @@ public class AiUtils {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       // If this is a plane
       if (ua.getCarrierCost() > 0) {
-        // If we haven't ignored enough trailing planes
-        if (processedPlaneCount < planesThatDontNeedToLand) {
-          // Increase number of trailing planes ignored
-          processedPlaneCount++;
-          // And skip any processing
-          continue;
-        }
         // If this is the first carrier seek
         if (seekedCarrier == null) {
           final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,

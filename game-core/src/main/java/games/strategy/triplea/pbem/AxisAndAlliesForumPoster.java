@@ -2,7 +2,6 @@ package games.strategy.triplea.pbem;
 
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +24,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+
+import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.AbstractForumPoster;
@@ -77,9 +78,10 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
     httpPost.addHeader("Accept-Language", "en-us");
     httpPost.addHeader("Cache-Control", "no-cache");
 
-    final List<NameValuePair> parameters = new ArrayList<>(2);
-    parameters.add(new BasicNameValuePair("user", getUsername()));
-    parameters.add(new BasicNameValuePair("passwrd", getPassword()));
+    final List<NameValuePair> parameters = ImmutableList.of(
+        new BasicNameValuePair("user", getUsername()),
+        new BasicNameValuePair("passwrd", getPassword())
+    );
     httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
     try (CloseableHttpResponse response = client.execute(httpPost, httpContext)) {
       final int status = response.getStatusLine().getStatusCode();
@@ -120,7 +122,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
       final HttpContext httpContext = login(client);
       // Now we load the post page, and find the hidden fields needed to post
       final HttpGet httpGet =
-          new HttpGet(UrlConstants.AXIS_AND_ALLIES_FORUM + "?action=post;topic=" + m_topicId + ".0");
+          new HttpGet(UrlConstants.AXIS_AND_ALLIES_FORUM + "?action=post;topic=" + topicId + ".0");
       HttpProxy.addProxy(httpGet);
       try (CloseableHttpResponse response = client.execute(httpGet, httpContext)) {
         int status = response.getStatusLine().getStatusCode();
@@ -151,13 +153,13 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           final HttpPost httpPost = new HttpPost(UrlConstants.AXIS_AND_ALLIES_FORUM + "?action=post2;start=0;board=40");
           // Construct the multi part post
           final MultipartEntityBuilder builder = MultipartEntityBuilder.create()
-              .addTextBody("topic", m_topicId)
+              .addTextBody("topic", topicId)
               .addTextBody("subject", subject)
               .addTextBody("icon", "xx")
               .addTextBody("message", message)
               // If the user has chosen to receive notifications, ensure this setting is passed on
               .addTextBody("notify", NOTIFY_PATTERN.matcher(body).matches() ? "1" : "0");
-          if (m_includeSaveGame && saveGameFile != null) {
+          if (includeSaveGame && saveGameFile != null) {
             builder.addBinaryBody("attachment[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM,
                 saveGameFileName);
           }
@@ -170,7 +172,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
           httpPost.setEntity(builder.build());
           // add headers
           httpPost.addHeader("Referer", UrlConstants.AXIS_AND_ALLIES_FORUM + "?action=post;topic="
-              + m_topicId + ".0;num_replies=" + numReplies);
+              + topicId + ".0;num_replies=" + numReplies);
           httpPost.addHeader("Accept", "*/*");
           // the site has spam prevention which means you can't post until 15 seconds after login
           if (!Interruptibles.sleep(15 * 1000)) {
@@ -186,7 +188,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
               // The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the
               // given thread
               // since the site is lenient we can just give a high post_number to go to the last post in the thread
-              turnSummaryRef = UrlConstants.AXIS_AND_ALLIES_FORUM + "?topic=" + m_topicId + ".10000";
+              turnSummaryRef = UrlConstants.AXIS_AND_ALLIES_FORUM + "?topic=" + topicId + ".10000";
             } else {
               // these two patterns find general errors, where the first pattern checks if the error text appears,
               // the second pattern extracts the error message. This could be the "The last posting from your IP was
@@ -223,7 +225,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
             }
           }
         } else {
-          throw new Exception("Unable to load forum post " + m_topicId);
+          throw new Exception("Unable to load forum post " + topicId);
         }
       }
     } catch (final Exception e) {
@@ -257,7 +259,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster {
 
   @Override
   public void viewPosted() {
-    OpenFileUtility.openUrl(UrlConstants.AXIS_AND_ALLIES_FORUM + "?topic=" + m_topicId + ".10000");
+    OpenFileUtility.openUrl(UrlConstants.AXIS_AND_ALLIES_FORUM + "?topic=" + topicId + ".10000");
   }
 
   @Override

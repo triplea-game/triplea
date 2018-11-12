@@ -11,7 +11,8 @@ import com.google.common.annotations.VisibleForTesting;
  */
 public class ProductionRuleList extends GameDataComponent {
   private static final long serialVersionUID = -5313215563006788188L;
-  private final Map<String, ProductionRule> m_productionRules = new HashMap<>();
+
+  private final Map<String, ProductionRule> productionRules = new HashMap<>();
 
   public ProductionRuleList(final GameData data) {
     super(data);
@@ -19,18 +20,18 @@ public class ProductionRuleList extends GameDataComponent {
 
   @VisibleForTesting
   public void addProductionRule(final ProductionRule pf) {
-    m_productionRules.put(pf.getName(), pf);
+    productionRules.put(pf.getName(), pf);
   }
 
   public int size() {
-    return m_productionRules.size();
+    return productionRules.size();
   }
 
   public ProductionRule getProductionRule(final String name) {
-    return m_productionRules.get(name);
+    return productionRules.get(name);
   }
 
   public Collection<ProductionRule> getProductionRules() {
-    return m_productionRules.values();
+    return productionRules.values();
   }
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -22,7 +23,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
@@ -49,19 +50,19 @@ class ProductionRepairPanel extends JPanel {
   private final List<Rule> rules = new ArrayList<>();
   private final JLabel left = new JLabel();
   private JButton done;
-  private PlayerID id;
+  private PlayerId id;
   private boolean bid;
-  private Collection<PlayerID> allowedPlayersToRepair;
+  private Collection<PlayerId> allowedPlayersToRepair;
   private GameData data;
 
-  static HashMap<Unit, IntegerMap<RepairRule>> getProduction(final PlayerID id,
-      final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase, final UiContext uiContext) {
+  static Map<Unit, IntegerMap<RepairRule>> getProduction(final PlayerId id,
+      final Collection<PlayerId> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
+      final Map<Unit, IntegerMap<RepairRule>> initialPurchase, final UiContext uiContext) {
     return new ProductionRepairPanel(uiContext).show(id, allowedPlayersToRepair, parent, data, bid, initialPurchase);
   }
 
-  private HashMap<Unit, IntegerMap<RepairRule>> getProduction() {
-    final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
+  private Map<Unit, IntegerMap<RepairRule>> getProduction() {
+    final Map<Unit, IntegerMap<RepairRule>> prod = new HashMap<>();
     for (final Rule rule : rules) {
       final int quantity = rule.getQuantity();
       if (quantity != 0) {
@@ -77,9 +78,9 @@ class ProductionRepairPanel extends JPanel {
   /**
    * Shows the production panel, and returns a map of selected rules.
    */
-  HashMap<Unit, IntegerMap<RepairRule>> show(final PlayerID id,
-      final Collection<PlayerID> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
+  Map<Unit, IntegerMap<RepairRule>> show(final PlayerId id,
+      final Collection<PlayerId> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
+      final Map<Unit, IntegerMap<RepairRule>> initialPurchase) {
     if (!(parent == owner)) {
       dialog = null;
     }
@@ -110,8 +111,8 @@ class ProductionRepairPanel extends JPanel {
     this.uiContext = uiContext;
   }
 
-  private void initRules(final PlayerID player, final Collection<PlayerID> allowedPlayersToRepair, final GameData data,
-      final HashMap<Unit, IntegerMap<RepairRule>> initialPurchase) {
+  private void initRules(final PlayerId player, final Collection<PlayerId> allowedPlayersToRepair, final GameData data,
+      final Map<Unit, IntegerMap<RepairRule>> initialPurchase) {
     if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
       return;
     }
@@ -225,7 +226,7 @@ class ProductionRepairPanel extends JPanel {
     private final int maxRepairAmount;
     private final int repairResults;
 
-    Rule(final RepairRule rule, final PlayerID id, final Unit repairUnit, final Territory territoryUnitIsIn) {
+    Rule(final RepairRule rule, final PlayerId id, final Unit repairUnit, final Territory territoryUnitIsIn) {
       setLayout(new GridBagLayout());
       this.unit = repairUnit;
       this.rule = rule;
