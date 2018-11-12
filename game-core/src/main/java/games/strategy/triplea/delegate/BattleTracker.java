@@ -81,9 +81,8 @@ public class BattleTracker implements Serializable {
   private BattleRecords battleRecords = null;
   // to keep track of all relationships that have changed this turn
   // (so we can validate things like transports loading in newly created hostile zones)
-  private final Collection<
-      Tuple<Tuple<PlayerId, PlayerId>, Tuple<RelationshipType, RelationshipType>>> relationshipChangesThisTurn =
-          new ArrayList<>();
+  private final Collection<Tuple<Tuple<PlayerId, PlayerId>, Tuple<RelationshipType, RelationshipType>>> relationshipChangesThisTurn =
+      new ArrayList<>();
 
   /**
    * Indicates whether a battle is to be fought in the given territory.
@@ -160,8 +159,7 @@ public class BattleTracker implements Serializable {
   private boolean didThesePlayersJustGoToWarThisTurn(final PlayerId p1, final PlayerId p2) {
     // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war,
     // and newRelation is war
-    for (final Tuple<Tuple<PlayerId, PlayerId>,
-        Tuple<RelationshipType, RelationshipType>> t : relationshipChangesThisTurn) {
+    for (final Tuple<Tuple<PlayerId, PlayerId>, Tuple<RelationshipType, RelationshipType>> t : relationshipChangesThisTurn) {
       final Tuple<PlayerId, PlayerId> players = t.getFirst();
       if (players.getFirst().equals(p1)) {
         if (!players.getSecond().equals(p2)) {
@@ -1151,7 +1149,7 @@ public class BattleTracker implements Serializable {
       final List<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
       final List<Unit> sortedUnitsList = getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty() && DiceRoll.getTotalPower(
-          DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, false, gameData,
+          DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, gameData,
               territory, TerritoryEffectHelper.getEffects(territory), false, null),
           gameData) == 0) {
         battle.fight(bridge);

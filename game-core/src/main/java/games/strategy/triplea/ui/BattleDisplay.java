@@ -735,7 +735,7 @@ public class BattleDisplay extends JPanel {
         gameData.acquireReadLock();
         try {
           unitPowerAndRollsMap = DiceRoll.getUnitPowerAndRollsForNormalBattles(units,
-              new ArrayList<>(enemyBattleModel.getUnits()), !attack, false, gameData, location,
+              new ArrayList<>(enemyBattleModel.getUnits()), !attack, gameData, location,
               territoryEffects, isAmphibious, amphibiousLandAttackers);
         } finally {
           gameData.releaseReadLock();
