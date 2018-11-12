@@ -544,13 +544,6 @@ public class DiceRoll implements Externalizable {
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     final List<Unit> units = new ArrayList<>(unitsList);
-    {
-      final Set<Unit> duplicatesCheckSet = new HashSet<>(unitsList);
-      if (units.size() != duplicatesCheckSet.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + units + "  HashSet:" + duplicatesCheckSet);
-      }
-    }
     final GameData data = bridge.getData();
     final Territory location = battle.getTerritory();
     final boolean isAmphibiousBattle = battle.isAmphibious();
@@ -802,13 +795,7 @@ public class DiceRoll implements Externalizable {
 
   static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerId player,
       final IDelegateBridge bridge, final String annotation) {
-    {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(unitsList);
-      if (unitsList.size() != duplicatesCheckSet1.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + unitsList + "  HashSet:" + duplicatesCheckSet1);
-      }
-    }
+
     final GameData data = bridge.getData();
     final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     final List<Unit> units = new ArrayList<>(unitsList);
@@ -911,13 +898,6 @@ public class DiceRoll implements Externalizable {
       final IDelegateBridge bridge, final IBattle battle, final String annotation,
       final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
     final List<Unit> units = new ArrayList<>(unitsList);
-    {
-      final Set<Unit> duplicatesCheckSet = new HashSet<>(unitsList);
-      if (units.size() != duplicatesCheckSet.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + units + "  HashSet:" + duplicatesCheckSet);
-      }
-    }
     final GameData data = bridge.getData();
     sortByStrength(units, defending);
     final Territory location = battle.getTerritory();

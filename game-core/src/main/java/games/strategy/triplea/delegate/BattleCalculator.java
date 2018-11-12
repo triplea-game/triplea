@@ -159,18 +159,7 @@ public class BattleCalculator {
   private static CasualtyDetails getLowLuckAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAa, final DiceRoll dice, final IDelegateBridge bridge,
       final boolean allowMultipleHitsPerUnit) {
-    {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(planes);
-      if (planes.size() != duplicatesCheckSet1.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + planes + "  HashSet:" + duplicatesCheckSet1);
-      }
-      final Set<Unit> duplicatesCheckSet2 = new HashSet<>(defendingAa);
-      if (defendingAa.size() != duplicatesCheckSet2.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + defendingAa + "  HashSet:" + duplicatesCheckSet2);
-      }
-    }
+
     int hitsLeft = dice.getHits();
     if (hitsLeft <= 0) {
       return new CasualtyDetails();
@@ -179,7 +168,7 @@ public class BattleCalculator {
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final GameData data = bridge.getData();
     final Tuple<Integer, Integer> attackThenDiceSides =
-        DiceRoll.getAAattackAndMaxDiceSides(defendingAa, data, !defending);
+        DiceRoll.getMaxAaAttackAndDiceSides(defendingAa, data, !defending);
     final int highestAttack = attackThenDiceSides.getFirst();
     if (highestAttack < 1) {
       return new CasualtyDetails();
@@ -327,13 +316,7 @@ public class BattleCalculator {
    */
   public static CasualtyDetails randomAaCasualties(final Collection<Unit> planes, final DiceRoll dice,
       final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit) {
-    {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(planes);
-      if (planes.size() != duplicatesCheckSet1.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + planes + "  HashSet:" + duplicatesCheckSet1);
-      }
-    }
+
     final int hitsLeft = dice.getHits();
     if (hitsLeft <= 0) {
       return new CasualtyDetails();
@@ -403,7 +386,7 @@ public class BattleCalculator {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Tuple<Integer, Integer> attackThenDiceSides =
-        DiceRoll.getAAattackAndMaxDiceSides(defendingAa, bridge.getData(), !defending);
+        DiceRoll.getMaxAaAttackAndDiceSides(defendingAa, bridge.getData(), !defending);
     final int highestAttack = attackThenDiceSides.getFirst();
     // int chosenDiceSize = attackThenDiceSides[1];
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
