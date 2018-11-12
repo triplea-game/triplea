@@ -58,15 +58,15 @@ public class DiceRoll implements Externalizable {
   private double expectedHits;
 
   /**
-   * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with
-   * that attack value.
+   * Returns a Tuple, the first is the max attack, the second is the max dice sides for the AA unit with that attack
+   * value.
    */
-  public static Tuple<Integer, Integer> getAAattackAndMaxDiceSides(final Collection<Unit> defendingEnemyAa,
-      final GameData data, final boolean defending) {
+  static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(final Collection<Unit> aaUnits, final GameData data,
+      final boolean defending) {
     int highestAttack = 0;
     final int diceSize = data.getDiceSides();
     int chosenDiceSize = diceSize;
-    for (final Unit u : defendingEnemyAa) {
+    for (final Unit u : aaUnits) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       int uaDiceSides = defending ? ua.getAttackAaMaxDieSides() : ua.getOffensiveAttackAaMaxDieSides();
       if (uaDiceSides < 1) {
@@ -88,17 +88,16 @@ public class DiceRoll implements Externalizable {
     return Tuple.of(highestAttack, chosenDiceSize);
   }
 
-  static int getTotalAAattacks(final Collection<Unit> defendingEnemyAa,
-      final Collection<Unit> validAttackingUnitsForThisRoll) {
-    if (defendingEnemyAa.isEmpty() || validAttackingUnitsForThisRoll.isEmpty()) {
+  static int getTotalAAattacks(final Collection<Unit> aaUnits, final Collection<Unit> validTargets) {
+    if (aaUnits.isEmpty() || validTargets.isEmpty()) {
       return 0;
     }
     int totalAAattacksNormal = 0;
     int totalAAattacksSurplus = 0;
-    for (final Unit aa : defendingEnemyAa) {
+    for (final Unit aa : aaUnits) {
       final UnitAttachment ua = UnitAttachment.get(aa.getType());
       if (ua.getMaxAaAttacks() == -1) {
-        totalAAattacksNormal = validAttackingUnitsForThisRoll.size();
+        totalAAattacksNormal = validTargets.size();
       } else {
         if (ua.getMayOverStackAa()) {
           totalAAattacksSurplus += ua.getMaxAaAttacks();
@@ -107,162 +106,146 @@ public class DiceRoll implements Externalizable {
         }
       }
     }
-    totalAAattacksNormal = Math.min(totalAAattacksNormal, validAttackingUnitsForThisRoll.size());
+    totalAAattacksNormal = Math.min(totalAAattacksNormal, validTargets.size());
     return totalAAattacksNormal + totalAAattacksSurplus;
   }
 
-  static DiceRoll rollAa(final Collection<Unit> validAttackingUnitsForThisRoll,
-      final Collection<Unit> defendingAaForThisRoll, final IDelegateBridge bridge, final Territory location,
-      final boolean defending) {
-    {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(validAttackingUnitsForThisRoll);
-      if (validAttackingUnitsForThisRoll.size() != duplicatesCheckSet1.size()) {
-        throw new IllegalStateException("Duplicate Units Detected: Original List:" + validAttackingUnitsForThisRoll
-            + "  HashSet:" + duplicatesCheckSet1);
-      }
-      final Set<Unit> duplicatesCheckSet2 = new HashSet<>(defendingAaForThisRoll);
-      if (defendingAaForThisRoll.size() != duplicatesCheckSet2.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + defendingAaForThisRoll + "  HashSet:" + duplicatesCheckSet2);
-      }
-    }
-    final List<Unit> defendingAa = CollectionUtils.getMatches(defendingAaForThisRoll,
+  static DiceRoll rollAa(final Collection<Unit> validTargets, final Collection<Unit> aaUnits,
+      final IDelegateBridge bridge, final Territory location, final boolean defending) {
+
+    // Check that there are valid AA and targets to roll for
+    final List<Unit> aaToRoll = CollectionUtils.getMatches(aaUnits,
         (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
-    if (defendingAa.isEmpty()) {
-      return new DiceRoll(Collections.emptyList(), 0, 0);
-    }
-    final GameData data = bridge.getData();
-    final int totalAAattacksTotal = getTotalAAattacks(defendingAa, validAttackingUnitsForThisRoll);
+    final int totalAAattacksTotal = getTotalAAattacks(aaToRoll, validTargets);
     if (totalAAattacksTotal <= 0) {
       return new DiceRoll(Collections.emptyList(), 0, 0);
     }
-    // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the
-    // same typeAA)
-    final Tuple<Integer, Integer> attackThenDiceSidesForAll = getAAattackAndMaxDiceSides(defendingAa, data, defending);
-    // final int highestAttackPower = attackThenDiceSidesForAll.getFirst();
-    final int chosenDiceSizeForAll = attackThenDiceSidesForAll.getSecond();
+
+    // Determine dice sides (doesn't handle the possibility of different dice sides within the same typeAA)
+    final GameData data = bridge.getData();
+    final Tuple<Integer, Integer> attackThenDiceSidesForAll = getMaxAaAttackAndDiceSides(aaToRoll, data, defending);
+    final int diceSides = attackThenDiceSidesForAll.getSecond();
+
+    // Roll AA dice for LL or regular
     int hits = 0;
     final List<Die> sortedDice = new ArrayList<>();
-    final String typeAa = UnitAttachment.get(defendingAa.get(0).getType()).getTypeAa();
-    // LOW LUCK
+    final String typeAa = UnitAttachment.get(aaToRoll.get(0).getType()).getTypeAa();
     final Triple<Integer, Integer, Boolean> triple = getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-        null, null, defending, defendingAa, validAttackingUnitsForThisRoll, data, false);
+        null, null, defending, aaToRoll, validTargets, data, false);
     final int totalPower = triple.getFirst();
+    final String annotation = "Roll " + typeAa + " in " + location.getName();
     if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
-      final String annotation = "Roll " + typeAa + " in " + location.getName();
-      hits += getLowLuckHits(bridge, sortedDice, totalPower, chosenDiceSizeForAll, defendingAa.get(0).getOwner(),
-          annotation);
+      hits += getLowLuckHits(bridge, sortedDice, totalPower, diceSides, aaToRoll.get(0).getOwner(), annotation);
     } else {
-      final String annotation = "Roll " + typeAa + " in " + location.getName();
-      final int[] dice = bridge.getRandom(chosenDiceSizeForAll, totalAAattacksTotal, defendingAa.get(0).getOwner(),
-          DiceType.COMBAT, annotation);
-      hits += getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defending, defendingAa,
-          validAttackingUnitsForThisRoll, data, true).getSecond();
+      final int[] dice =
+          bridge.getRandom(diceSides, totalAAattacksTotal, aaToRoll.get(0).getOwner(), DiceType.COMBAT, annotation);
+      hits += getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defending, aaToRoll,
+          validTargets, data, true).getSecond();
     }
-    final double expectedHits = ((double) totalPower) / chosenDiceSizeForAll;
+
+    // Add dice results to history
+    final double expectedHits = ((double) totalPower) / diceSides;
     final DiceRoll roll = new DiceRoll(sortedDice, hits, expectedHits);
-    final String annotation = defendingAa.get(0).getOwner().getName() + " roll " + typeAa + " dice in " + location
+    final String historyMessage = aaToRoll.get(0).getOwner().getName() + " roll " + typeAa + " dice in " + location
         + " : " + MyFormatter.asDice(roll);
-    bridge.getHistoryWriter().addChildToEvent(annotation, roll);
+    bridge.getHistoryWriter().addChildToEvent(historyMessage, roll);
+
     return roll;
   }
 
   /**
-   * Basically I wanted 1 single method for both Low Luck and Dice, because if we have 2 methods then there is a chance
-   * they will go out of
-   * sync.
+   * Single method for both LL and Dice, because if we have 2 methods then there is a chance they will go out of sync.
+   * <br/>
+   * <br/>
+   * The following is complex, but should do the following:
+   * <ol>
+   * <li>Any aa that are NOT infinite attacks, and NOT overstack, will fire first individually ((because their
+   * power/dicesides might be different [example: radar tech on a german aa gun, in the same territory as an italian
+   * aagun without radar, neither is infinite])</li>
+   * <li>All aa that have "infinite attacks" will have the one with the highest power/dicesides of them all, fire at
+   * whatever aa units have not yet been fired at. HOWEVER, if the non-infinite attackers are less powerful than the
+   * infinite attacker, then the non-infinite will not fire, and the infinite one will do all the attacks for both
+   * groups.</li>
+   * <li>The total number of shots from these first 2 groups cannot exceed the number of air units being shot at</li>
+   * <li>Any aa that can overstack will fire after, individually (aa guns that is both infinite, and overstacks,
+   * ignores the overstack part because that totally doesn't make any sense)</li>
+   * </ol>
    *
-   * @param dice = Rolled Dice numbers from bridge. Can be null if we do not want to return hits or fill the sortedDice
+   * @param dice Rolled Dice numbers from bridge. Can be null if we do not want to return hits or fill the sortedDice
    * @param sortedDice List of dice we are recording. Can be null if we do not want to return hits or fill the
    *        sortedDice
-   * @return an object containing 3 things: first is the total power of the defendingAA who will be rolling, second is
-   *         number of hits,
-   *         third is true/false are all rolls using the same hitAt (example: if all the rolls are at 1, we would return
-   *         true, but if one
-   *         roll is at 1 and another roll is at 2, then we return false)
+   * @return An object containing 3 things: first is the total power of the aaUnits who will be rolling, second is
+   *         number of hits, third is true/false are all rolls using the same hitAt (example: if all the rolls are at 1,
+   *         we would return true, but if one roll is at 1 and another roll is at 2, then we return false)
    */
-  public static Triple<Integer, Integer, Boolean> getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-      final int[] dice, final List<Die> sortedDice, final boolean defending,
-      final Collection<Unit> defendingAaForThisRoll, final Collection<Unit> validAttackingUnitsForThisRoll,
-      final GameData data, final boolean fillInSortedDiceAndRecordHits) {
-    final List<Unit> defendingAa = CollectionUtils.getMatches(defendingAaForThisRoll,
+  static Triple<Integer, Integer, Boolean> getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
+      final int[] dice, final List<Die> sortedDice, final boolean defending, final Collection<Unit> aaUnits,
+      final Collection<Unit> validTargets, final GameData data, final boolean fillInSortedDiceAndRecordHits) {
+
+    // Check that there are valid AA and targets to roll for
+    final List<Unit> aaToRoll = CollectionUtils.getMatches(aaUnits,
         (defending ? Matches.unitAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()
             : Matches.unitOffensiveAttackAaIsGreaterThanZeroAndMaxAaAttacksIsNotZero()));
-    if (defendingAa.size() <= 0) {
+    if (aaToRoll.size() <= 0) {
       return Triple.of(0, 0, false);
     }
-    // we want to make sure the higher powers fire
-    sortAaHighToLow(defendingAa, data, defending);
-    // this is confusing, but what we want to do is the following:
-    // any aa that are NOT infinite attacks, and NOT overstack, will fire first individually ((because their
-    // power/dicesides might be
-    // different [example: radar tech on a german aa gun, in the same territory as an italian aagun without radar,
-    // neither is infinite])
-    // all aa that have "infinite attacks" will have the one with the highest power/dicesides of them all, fire at
-    // whatever aa units have
-    // not yet been fired at
-    // HOWEVER, if the non-infinite attackers are less powerful than the infinite attacker, then the non-infinite will
-    // not fire, and the
-    // infinite one will do all the attacks for both groups.
-    // the total number of shots from these first 2 groups cannot exceed the number of air units being shot at
-    // last, any aa that can overstack will fire after, individually
-    // (an aa guns that is both infinite, and overstacks, ignores the overstack part because that totally doesn't make
-    // any sense)
-    // set up all 3 groups of aa guns
-    final List<Unit> normalNonInfiniteAa = new ArrayList<>(defendingAa);
-    final List<Unit> infiniteAa = CollectionUtils.getMatches(defendingAa, Matches.unitMaxAaAttacksIsInfinite());
-    final List<Unit> overstackAa = CollectionUtils.getMatches(defendingAa, Matches.unitMayOverStackAa());
+
+    // Make sure the higher powers fire
+    sortAaHighToLow(aaToRoll, data, defending);
+
+    // Setup all 3 groups of aa guns
+    final List<Unit> normalNonInfiniteAa = new ArrayList<>(aaToRoll);
+    final List<Unit> infiniteAa = CollectionUtils.getMatches(aaToRoll, Matches.unitMaxAaAttacksIsInfinite());
+    final List<Unit> overstackAa = CollectionUtils.getMatches(aaToRoll, Matches.unitMayOverStackAa());
     overstackAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(infiniteAa);
     normalNonInfiniteAa.removeAll(overstackAa);
-    // determine maximum total attacks
-    final int totalAAattacksTotal = getTotalAAattacks(defendingAa, validAttackingUnitsForThisRoll);
-    // determine individual totals
+
+    // Determine maximum total attacks
+    final int totalAAattacksTotal = getTotalAAattacks(aaToRoll, validTargets);
+
+    // Determine individual totals
     final int normalNonInfiniteAAtotalAAattacks =
-        getTotalAAattacks(normalNonInfiniteAa, validAttackingUnitsForThisRoll);
+        getTotalAAattacks(normalNonInfiniteAa, validTargets);
     final int infiniteAAtotalAAattacks =
-        Math.min((validAttackingUnitsForThisRoll.size() - normalNonInfiniteAAtotalAAattacks),
-            getTotalAAattacks(infiniteAa, validAttackingUnitsForThisRoll));
-    final int overstackAAtotalAAattacks = getTotalAAattacks(overstackAa, validAttackingUnitsForThisRoll);
+        Math.min((validTargets.size() - normalNonInfiniteAAtotalAAattacks),
+            getTotalAAattacks(infiniteAa, validTargets));
+    final int overstackAAtotalAAattacks = getTotalAAattacks(overstackAa, validTargets);
     if (totalAAattacksTotal != (normalNonInfiniteAAtotalAAattacks + infiniteAAtotalAAattacks
         + overstackAAtotalAAattacks)) {
       throw new IllegalStateException("Total attacks should be: " + totalAAattacksTotal + " but instead is: "
           + (normalNonInfiniteAAtotalAAattacks + infiniteAAtotalAAattacks + overstackAAtotalAAattacks));
-      // determine dicesides for everyone (we are not going to consider the possibility of different dicesides within
-      // the same typeAA)
-      // final Tuple<Integer, Integer> attackThenDiceSidesForAll = getAAattackAndMaxDiceSides(defendingAA, data);
-      // final int chosenDiceSizeForAll = attackThenDiceSidesForAll.getSecond();
     }
-    // determine highest attack for infinite group
+
+    // Determine highest attack for infinite group
     final Tuple<Integer, Integer> attackThenDiceSidesForInfinite =
-        getAAattackAndMaxDiceSides(infiniteAa, data, defending);
-    // not zero based
+        getMaxAaAttackAndDiceSides(infiniteAa, data, defending);
+
+    // Not zero based
     final int hitAtForInfinite = attackThenDiceSidesForInfinite.getFirst();
-    // not zero based
-    // final int powerForInfinite = highestAttackForInfinite;
-    // if we are low luck, we only want to know the power and total attacks, while if we are dice we will be filling the
-    // sorted dice
+
+    // If LL, the power and total attacks, else if dice we will be filling the sorted dice
     final boolean recordSortedDice =
         fillInSortedDiceAndRecordHits && dice != null && dice.length > 0 && sortedDice != null;
     int totalPower = 0;
     int hits = 0;
     int i = 0;
     final Set<Integer> rolledAt = new HashSet<>();
-    // non-infinite, non-overstack aa
+
+    // Non-infinite, non-overstack aa
     int runningMaximum = normalNonInfiniteAAtotalAAattacks;
     final Iterator<Unit> normalAAiter = normalNonInfiniteAa.iterator();
     while (i < runningMaximum && normalAAiter.hasNext()) {
       final Unit aaGun = normalAAiter.next();
-      // should be > 0 at this point
       int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAaAttacks();
-      final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
+      final int hitAt = getMaxAaAttackAndDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
       if (hitAt < hitAtForInfinite) {
         continue;
       }
       while (i < runningMaximum && numAttacks > 0) {
         if (recordSortedDice) {
-          // dice are zero based
+          // Dice are zero based
           final boolean hit = dice[i] < hitAt;
           sortedDice.add(new Die(dice[i], hitAt, hit ? DieType.HIT : DieType.MISS));
           if (hit) {
@@ -275,12 +258,13 @@ public class DiceRoll implements Externalizable {
         rolledAt.add(hitAt);
       }
     }
-    // infinite aa
+
+    // Infinite aa
     runningMaximum += infiniteAAtotalAAattacks;
     while (i < runningMaximum) {
-      // we use the highest attack of this group, since each is infinite. (this is the default behavior in revised)
+      // Use the highest attack of this group, since each is infinite. (this is the default behavior in revised)
       if (recordSortedDice) {
-        // dice are zero based
+        // Dice are zero based
         final boolean hit = dice[i] < hitAtForInfinite;
         sortedDice.add(new Die(dice[i], hitAtForInfinite, hit ? DieType.HIT : DieType.MISS));
         if (hit) {
@@ -291,18 +275,18 @@ public class DiceRoll implements Externalizable {
       totalPower += hitAtForInfinite;
       rolledAt.add(hitAtForInfinite);
     }
-    // overstack aa
+
+    // Overstack aa
     runningMaximum += overstackAAtotalAAattacks;
     final Iterator<Unit> overstackAAiter = overstackAa.iterator();
     while (i < runningMaximum && overstackAAiter.hasNext()) {
       final Unit aaGun = overstackAAiter.next();
-      // should be > 0 at this point
       int numAttacks = UnitAttachment.get(aaGun.getType()).getMaxAaAttacks();
-      // zero based, so subtract 1
-      final int hitAt = getAAattackAndMaxDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
+      // Zero based, so subtract 1
+      final int hitAt = getMaxAaAttackAndDiceSides(Collections.singleton(aaGun), data, defending).getFirst();
       while (i < runningMaximum && numAttacks > 0) {
         if (recordSortedDice) {
-          // dice are zero based
+          // Dice are zero based
           final boolean hit = dice[i] < hitAt;
           sortedDice.add(new Die(dice[i], hitAt, hit ? DieType.HIT : DieType.MISS));
           if (hit) {
@@ -315,13 +299,14 @@ public class DiceRoll implements Externalizable {
         rolledAt.add(hitAt);
       }
     }
+
     return Triple.of(totalPower, hits, (rolledAt.size() == 1));
   }
 
   private static void sortAaHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
     final Comparator<Unit> comparator = (u1, u2) -> {
-      final Tuple<Integer, Integer> tuple1 = getAAattackAndMaxDiceSides(Collections.singleton(u1), data, defending);
-      final Tuple<Integer, Integer> tuple2 = getAAattackAndMaxDiceSides(Collections.singleton(u2), data, defending);
+      final Tuple<Integer, Integer> tuple1 = getMaxAaAttackAndDiceSides(Collections.singleton(u1), data, defending);
+      final Tuple<Integer, Integer> tuple2 = getMaxAaAttackAndDiceSides(Collections.singleton(u2), data, defending);
       if (tuple1.getFirst() == 0) {
         if (tuple2.getFirst() == 0) {
           return 0;
