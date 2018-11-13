@@ -45,6 +45,11 @@ public class MyFormatter {
     return unitsToTextNoOwner(units, null);
   }
 
+  /**
+   * Returns a string containing the quantity of each type of unit in {@code units} owned by {@code owner}, but no
+   * reference to the owner will be mentioned in the string. The returned string will have the form:
+   * {@code <q1> <ut1>, <q2> <ut2>, ... and <qN> <utN>}.
+   */
   public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerId owner) {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     for (final Unit unit : units) {
@@ -122,6 +127,30 @@ public class MyFormatter {
     return in + "s";
   }
 
+  /**
+   * Replaces the map XML attachment name at the beginning of the specified string with its corresponding display
+   * name followed by a space. In addition, it makes the following replacements:
+   *
+   * <ul>
+   * <li>An underscore is replaced with a space.</li>
+   * <li>Two consecutive spaces are replaced with a single space.</li>
+   * <li>Trailing whitespace is removed.</li>
+   * </ul>
+   * <p>
+   * For example:
+   * </p>
+   *
+   * <pre>
+   * "canalAttachmentFOO  BAR_BAZ "
+   * </pre>
+   * <p>
+   * will be converted to
+   * </p>
+   *
+   * <pre>
+   * "Canal FOO BAR BAZ"
+   * </pre>
+   */
   public static String attachmentNameToText(final String attachmentGetName) {
     String toText = attachmentGetName;
     if (attachmentGetName.startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
@@ -170,6 +199,10 @@ public class MyFormatter {
         .collect(Collectors.joining(",", "[", "]"));
   }
 
+  /**
+   * Converts the specified dice roll to a string of the form {@code <die1>,<die2>,...,<dieN>}. If the dice roll
+   * is {@code null} or contains no dice, {@code none} will be returned.
+   */
   public static String asDice(final DiceRoll roll) {
     if (roll == null || roll.size() == 0) {
       return "none";
@@ -184,6 +217,10 @@ public class MyFormatter {
     return buf.toString();
   }
 
+  /**
+   * Converts the specified array of dice rolls to a string of the form {@code <die1>,<die2>,...,<dieN>}. If
+   * the array is {@code null} or empty, {@code none} will be returned.
+   */
   public static String asDice(final int[] rolls) {
     if (rolls == null || rolls.length == 0) {
       return "none";
@@ -198,6 +235,10 @@ public class MyFormatter {
     return buf.toString();
   }
 
+  /**
+   * Converts the specified list of dice rolls to a string of the form {@code <die1>,<die2>,...,<dieN>}. If
+   * the list is {@code null} or empty, {@code none} will be returned.
+   */
   public static String asDice(final List<Die> rolls) {
     if (rolls == null || rolls.size() == 0) {
       return "none";
@@ -216,6 +257,31 @@ public class MyFormatter {
     return defaultNamedToTextList(list, ", ", false);
   }
 
+  /**
+   * Computes a histogram of the {@code DefaultNamed} objects in the specified list and converts it to a string for
+   * display.
+   *
+   * <p>
+   * If {@code showQuantity} is {@code true}, the returned string will have the form (without line breaks):
+   * </p>
+   *
+   * <pre>
+   * &lt;q1> &lt;objectName1>&lt;separator>
+   * &lt;q2> &lt;objectName2>&lt;separator>
+   * ...
+   * and &lt;qN> &lt;objectNameN>
+   * </pre>
+   * <p>
+   * If {@code showQuantity} is {@code false}, the returned string will have the form:
+   * </p>
+   *
+   * <pre>
+   * &lt;objectName1>&lt;separator>&lt;objectName2>&lt;separator>... and &lt;objectNameN>
+   * </pre>
+   * <p>
+   * In both cases, the objects will appear in the string in order by name.
+   * </p>
+   */
   public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator,
       final boolean showQuantity) {
     final IntegerMap<DefaultNamed> map = new IntegerMap<>();
@@ -250,6 +316,30 @@ public class MyFormatter {
     return buf.toString();
   }
 
+  /**
+   * Converts the specified {@code DefaultNamed} to {@code Integer} map to a string for display.
+   *
+   * <p>
+   * If {@code valueBeforeKey} is {@code true}, the returned string will have the form (without line breaks):
+   * </p>
+   *
+   * <pre>
+   * &lt;int1>&lt;assignment>&lt;objectName1>&lt;separator>
+   * &lt;int2>&lt;assignment>&lt;objectName2>&lt;separator>
+   * ...
+   * &lt;intN>&lt;assignment>&lt;objectNameN>
+   * </pre>
+   * <p>
+   * If {@code valueBeforeKey} is {@code false}, the returned string will have the form (without line breaks):
+   * </p>
+   *
+   * <pre>
+   * &lt;objectName1>&lt;assignment>&lt;int1>&lt;separator>
+   * &lt;objectName2>&lt;assignment>&lt;int2>&lt;separator>
+   * ...
+   * &lt;objectNameN>&lt;assignment>&lt;intN>
+   * </pre>
+   */
   public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map,
       final String separator, final String assignment, final boolean valueBeforeKey) {
     final StringBuilder buf = new StringBuilder();
@@ -266,6 +356,30 @@ public class MyFormatter {
     return buf.toString().replaceFirst(separator, "");
   }
 
+  /**
+   * Converts the specified {@code Unit} to {@code Integer} map to a string for display.
+   *
+   * <p>
+   * If {@code valueBeforeKey} is {@code true}, the returned string will have the form (without line breaks):
+   * </p>
+   *
+   * <pre>
+   * &lt;int1>&lt;assignment>&lt;unitTypeName1>&lt;separator>
+   * &lt;int2>&lt;assignment>&lt;unitTypeName2>&lt;separator>
+   * ...
+   * &lt;intN>&lt;assignment>&lt;unitTypeNameN>
+   * </pre>
+   * <p>
+   * If {@code valueBeforeKey} is {@code false}, the returned string will have the form (without line breaks):
+   * </p>
+   *
+   * <pre>
+   * &lt;unitTypeName1>&lt;assignment>&lt;int1>&lt;separator>
+   * &lt;unitTypeName2>&lt;assignment>&lt;int2>&lt;separator>
+   * ...
+   * &lt;unitTypeNameN>&lt;assignment>&lt;intN>
+   * </pre>
+   */
   public static String integerUnitMapToString(final IntegerMap<? extends Unit> map, final String separator,
       final String assignment, final boolean valueBeforeKey) {
     final StringBuilder buf = new StringBuilder();
