@@ -147,7 +147,8 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
         throw new IllegalStateException(
             "Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
       }
-      throw new IllegalStateException("Failed to retrieve Token, server did not return correct JSON: " + rawJson);
+      throw new IllegalStateException("Failed to retrieve Token, server did not return correct response: "
+          + response.getStatusLine() + "; JSON: " + rawJson);
     }
   }
 

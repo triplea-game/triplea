@@ -4,10 +4,10 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
 
 /**
- * Posts turn summaries to forums.triplea-game.org.
+ * Posts turn summaries to www.axisandallies.org/forums.
  *
  * <p>
- * URL format is {@code https://forums.triplea-game.org/api/v2/topics/<topicID>}.
+ * URL format is {@code https://www.axisandallies.org/forums/api/v2/topics/<topicID>}.
  * </p>
  */
 public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
