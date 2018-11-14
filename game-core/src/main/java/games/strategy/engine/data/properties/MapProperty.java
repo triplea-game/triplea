@@ -20,7 +20,7 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
   private static final long serialVersionUID = -8021039503574228146L;
 
   private Map<T, U> map;
-  final List<IEditableProperty<U>> properties = new ArrayList<>();
+  private final List<IEditableProperty<?>> properties = new ArrayList<>();
 
   public MapProperty(final String name, final String description, final Map<T, U> map) {
     super(name, description);
@@ -28,29 +28,29 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
     resetProperties(map, properties, name, description);
   }
 
-  @SuppressWarnings("unchecked")
-  private void resetProperties(final Map<T, U> map, final List<IEditableProperty<U>> properties, final String name,
+  private void resetProperties(
+      final Map<T, U> map,
+      final List<IEditableProperty<?>> properties,
+      final String name,
       final String description) {
     properties.clear();
     for (final Entry<T, U> entry : map.entrySet()) {
       final String key = (String) entry.getKey();
       final U value = entry.getValue();
       if (value instanceof Boolean) {
-        properties.add((IEditableProperty<U>) new BooleanProperty(key, description, ((Boolean) value)));
+        properties.add(new BooleanProperty(key, description, ((Boolean) value)));
       } else if (value instanceof Color) {
-        properties.add((IEditableProperty<U>) new ColorProperty(key, description, ((Color) value)));
+        properties.add(new ColorProperty(key, description, ((Color) value)));
       } else if (value instanceof File) {
-        properties.add((IEditableProperty<U>) new FileProperty(key, description, ((File) value)));
+        properties.add(new FileProperty(key, description, ((File) value)));
       } else if (value instanceof String) {
-        properties.add((IEditableProperty<U>) new StringProperty(key, description, ((String) value)));
+        properties.add(new StringProperty(key, description, ((String) value)));
       } else if (value instanceof Collection) {
-        properties.add((IEditableProperty<U>) new CollectionProperty<>(name, description, ((Collection<U>) value)));
+        properties.add(new CollectionProperty<>(name, description, ((Collection<?>) value)));
       } else if (value instanceof Integer) {
-        properties.add((IEditableProperty<U>) new NumberProperty(key, description,
-            Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
+        properties.add(new NumberProperty(key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
       } else if (value instanceof Double) {
-        properties.add((IEditableProperty<U>) new DoubleProperty(key, description,
-            Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
+        properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
       } else {
         throw new IllegalArgumentException(
             "Cannot instantiate MapProperty with: " + value.getClass().getCanonicalName());
@@ -110,8 +110,7 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
             }
           }
         }
-        final List<IEditableProperty<U>> testProps = new ArrayList<>();
-        resetProperties(test, testProps, this.getName(), this.getDescription());
+        resetProperties(test, new ArrayList<>(), this.getName(), this.getDescription());
       } catch (final Exception e) {
         return false;
       }
