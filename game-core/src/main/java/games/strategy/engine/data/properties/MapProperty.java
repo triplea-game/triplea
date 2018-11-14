@@ -6,37 +6,35 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 
 /**
  * Basically creates a map of other properties.
  *
- * @param <T> String or something with a valid toString()
- * @param <U> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
+ * @param <V> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
-public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
+public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
   private static final long serialVersionUID = -8021039503574228146L;
 
-  private Map<T, U> map;
+  private Map<String, V> map;
   private final List<IEditableProperty<?>> properties = new ArrayList<>();
 
-  public MapProperty(final String name, final String description, final Map<T, U> map) {
+  public MapProperty(final String name, final String description, final Map<String, V> map) {
     super(name, description);
     this.map = map;
     resetProperties(map, properties, name, description);
   }
 
   private void resetProperties(
-      final Map<T, U> map,
+      final Map<String, V> map,
       final List<IEditableProperty<?>> properties,
       final String name,
       final String description) {
     properties.clear();
-    for (final Entry<T, U> entry : map.entrySet()) {
-      final String key = (String) entry.getKey();
-      final U value = entry.getValue();
+    for (final Map.Entry<String, V> entry : map.entrySet()) {
+      final String key = entry.getKey();
+      final V value = entry.getValue();
       if (value instanceof Boolean) {
         properties.add(new BooleanProperty(key, description, ((Boolean) value)));
       } else if (value instanceof Color) {
@@ -64,14 +62,14 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
   }
 
   @Override
-  public Map<T, U> getValue() {
+  public Map<String, V> getValue() {
     return map;
   }
 
   @Override
-  public void setValue(final Map<T, U> value) {
+  public void setValue(final Map<String, V> value) {
     map = value;
-    resetProperties(map, properties, this.getName(), this.getDescription());
+    resetProperties(map, properties, getName(), getDescription());
   }
 
   @Override
@@ -89,11 +87,11 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
     if (value instanceof Map) {
       try {
         @SuppressWarnings("unchecked")
-        final Map<T, U> test = (Map<T, U>) value;
+        final Map<String, V> test = (Map<String, V>) value;
         if (map != null && !map.isEmpty() && !test.isEmpty()) {
-          T key = null;
-          U val = null;
-          for (final Entry<T, U> entry : map.entrySet()) {
+          String key = null;
+          V val = null;
+          for (final Map.Entry<String, V> entry : map.entrySet()) {
             if (entry.getValue() != null && entry.getKey() != null) {
               key = entry.getKey();
               val = entry.getValue();
@@ -101,7 +99,7 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
             }
           }
           if (key != null) {
-            for (final Entry<T, U> entry : test.entrySet()) {
+            for (final Map.Entry<String, V> entry : test.entrySet()) {
               if (entry.getKey() != null && entry.getValue() != null
                   && (!entry.getKey().getClass().isAssignableFrom(key.getClass())
                       || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
@@ -110,7 +108,7 @@ public class MapProperty<T, U> extends AbstractEditableProperty<Map<T, U>> {
             }
           }
         }
-        resetProperties(test, new ArrayList<>(), this.getName(), this.getDescription());
+        resetProperties(test, new ArrayList<>(), getName(), getDescription());
       } catch (final Exception e) {
         return false;
       }
