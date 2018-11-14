@@ -363,7 +363,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             validAttackingUnitsForThisRoll.removeAll(casualtiesSoFar);
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              dice = DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, battleSite, true);
+              dice = DiceRoll.rollSbrOrFlyOverAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, battleSite,
+                  true);
               if (currentTypeAa.equals("AA")) {
                 if (dice.getHits() > 0) {
                   bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, defender);

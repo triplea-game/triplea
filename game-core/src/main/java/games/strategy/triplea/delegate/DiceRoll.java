@@ -58,22 +58,34 @@ public class DiceRoll implements Externalizable {
   private int hits;
   private double expectedHits;
 
+
+  static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(final Collection<Unit> aaUnits, final GameData data,
+      final boolean defending) {
+    return getMaxAaAttackAndDiceSides(aaUnits, data, defending, new HashMap<>());
+  }
+
   /**
    * Returns a Tuple, the first is the max attack, the second is the max dice sides for the AA unit with that attack
    * value.
    */
   static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(final Collection<Unit> aaUnits, final GameData data,
-      final boolean defending) {
+      final boolean defending, final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap) {
     int highestAttack = 0;
     final int diceSize = data.getDiceSides();
     int chosenDiceSize = diceSize;
     for (final Unit u : aaUnits) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       int uaDiceSides = defending ? ua.getAttackAaMaxDieSides() : ua.getOffensiveAttackAaMaxDieSides();
+      if (unitPowerAndRollsMap.containsKey(u)) {
+        uaDiceSides = unitPowerAndRollsMap.get(u).getSecond();
+      }
       if (uaDiceSides < 1) {
         uaDiceSides = diceSize;
       }
       int attack = defending ? ua.getAttackAa(u.getOwner()) : ua.getOffensiveAttackAa(u.getOwner());
+      if (unitPowerAndRollsMap.containsKey(u)) {
+        attack = unitPowerAndRollsMap.get(u).getFirst();
+      }
       if (attack > uaDiceSides) {
         attack = uaDiceSides;
       }
@@ -112,6 +124,11 @@ public class DiceRoll implements Externalizable {
     return totalAAattacksNormal + totalAAattacksSurplus;
   }
 
+  static DiceRoll rollSbrOrFlyOverAa(final Collection<Unit> validTargets, final Collection<Unit> aaUnits,
+      final IDelegateBridge bridge, final Territory location, final boolean defending) {
+    return rollAa(validTargets, aaUnits, new ArrayList<>(), new ArrayList<>(), bridge, location, defending);
+  }
+
   static DiceRoll rollAa(final Collection<Unit> validTargets, final Collection<Unit> aaUnits,
       final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final IDelegateBridge bridge, final Territory location, final boolean defending) {
@@ -121,28 +138,27 @@ public class DiceRoll implements Externalizable {
             allFriendlyUnitsAliveOrWaitingToDie, defending, null);
 
     // Check that there are valid AA and targets to roll for
-    final int totalAAattacksTotal = getTotalAAattacks(unitPowerAndRollsMap, validTargets);
-    if (totalAAattacksTotal <= 0) {
+    final int totalAaAttacks = getTotalAAattacks(unitPowerAndRollsMap, validTargets);
+    if (totalAaAttacks <= 0) {
       return new DiceRoll(Collections.emptyList(), 0, 0);
     }
 
     // Determine dice sides (doesn't handle the possibility of different dice sides within the same typeAA)
     final GameData data = bridge.getData();
-    final int diceSides = getMaxAaAttackAndDiceSides(aaUnits, data, defending).getSecond();
+    final int diceSides = getMaxAaAttackAndDiceSides(aaUnits, data, defending, unitPowerAndRollsMap).getSecond();
 
     // Roll AA dice for LL or regular
     int hits = 0;
     final List<Die> sortedDice = new ArrayList<>();
     final String typeAa = UnitAttachment.get(aaUnits.iterator().next().getType()).getTypeAa();
-    final Triple<Integer, Integer, Boolean> triple = getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(
-        null, null, defending, unitPowerAndRollsMap, validTargets, data, false);
-    final int totalPower = triple.getFirst();
+    final int totalPower = getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, defending,
+        unitPowerAndRollsMap, validTargets, data, false).getFirst();
     final PlayerId player = aaUnits.iterator().next().getOwner();
     final String annotation = "Roll " + typeAa + " in " + location.getName();
     if (Properties.getLowLuck(data) || Properties.getLowLuckAaOnly(data)) {
-      hits += getLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
+      hits += getAaLowLuckHits(bridge, sortedDice, totalPower, diceSides, player, annotation);
     } else {
-      final int[] dice = bridge.getRandom(diceSides, totalAAattacksTotal, player, DiceType.COMBAT, annotation);
+      final int[] dice = bridge.getRandom(diceSides, totalAaAttacks, player, DiceType.COMBAT, annotation);
       hits += getTotalAaPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defending,
           unitPowerAndRollsMap, validTargets, data, true).getSecond();
     }
@@ -194,7 +210,7 @@ public class DiceRoll implements Externalizable {
 
     // Make sure the higher powers fire
     final List<Unit> aaToRoll = new ArrayList<>(unitPowerAndRollsMap.keySet());
-    sortAaHighToLow(aaToRoll, data, defending);
+    sortAaHighToLow(aaToRoll, data, defending, unitPowerAndRollsMap);
 
     // Setup all 3 groups of aa guns
     final List<Unit> normalNonInfiniteAa = new ArrayList<>(aaToRoll);
@@ -225,7 +241,8 @@ public class DiceRoll implements Externalizable {
     }
 
     // Determine highest attack for infinite group
-    final int hitAtForInfinite = getMaxAaAttackAndDiceSides(infiniteAa, data, defending).getFirst();
+    final int hitAtForInfinite =
+        getMaxAaAttackAndDiceSides(infiniteAa, data, defending, unitPowerAndRollsMap).getFirst();
 
     // If LL, the power and total attacks, else if dice we will be filling the sorted dice
     final boolean recordSortedDice =
@@ -305,9 +322,16 @@ public class DiceRoll implements Externalizable {
   }
 
   private static void sortAaHighToLow(final List<Unit> units, final GameData data, final boolean defending) {
+    sortAaHighToLow(units, data, defending, new HashMap<>());
+  }
+
+  private static void sortAaHighToLow(final List<Unit> units, final GameData data, final boolean defending,
+      final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap) {
     final Comparator<Unit> comparator = (u1, u2) -> {
-      final Tuple<Integer, Integer> tuple1 = getMaxAaAttackAndDiceSides(Collections.singleton(u1), data, defending);
-      final Tuple<Integer, Integer> tuple2 = getMaxAaAttackAndDiceSides(Collections.singleton(u2), data, defending);
+      final Tuple<Integer, Integer> tuple1 =
+          getMaxAaAttackAndDiceSides(Collections.singleton(u1), data, defending, unitPowerAndRollsMap);
+      final Tuple<Integer, Integer> tuple2 =
+          getMaxAaAttackAndDiceSides(Collections.singleton(u2), data, defending, unitPowerAndRollsMap);
       if (tuple1.getFirst() == 0) {
         if (tuple2.getFirst() == 0) {
           return 0;
@@ -337,8 +361,8 @@ public class DiceRoll implements Externalizable {
    *        battle.
    */
   public static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
-      final Collection<Unit> aaUnits, final List<Unit> allEnemyUnitsAliveOrWaitingToDie,
-      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie, final boolean defending, final GameData data) {
+      final Collection<Unit> aaUnits, final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie, final boolean defending, final GameData data) {
 
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRolls = new HashMap<>();
     if (aaUnits == null || aaUnits.isEmpty()) {
@@ -369,7 +393,10 @@ public class DiceRoll implements Externalizable {
       supportUnitsLeftEnemyRolls.put(usa, new IntegerMap<>(supportUnitsLeftEnemy.get(usa)));
     }
 
-    for (final Unit unit : aaUnits) {
+    // Sort units strongest to weakest to give support to the best units first
+    final List<Unit> sortedAaUnits = new ArrayList<>(aaUnits);
+    sortAaHighToLow(sortedAaUnits, data, defending);
+    for (final Unit unit : sortedAaUnits) {
 
       // Find unit's AA strength
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
@@ -404,7 +431,7 @@ public class DiceRoll implements Externalizable {
     return unitPowerAndRolls;
   }
 
-  private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower,
+  private static int getAaLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower,
       final int chosenDiceSize, final PlayerId playerRolling, final String annotation) {
     int hits = totalPower / chosenDiceSize;
     final int hitsFractional = totalPower % chosenDiceSize;
@@ -659,7 +686,7 @@ public class DiceRoll implements Externalizable {
     return diceRoll;
   }
 
-  public static void getSortedAaSupport(final List<Unit> unitsGivingTheSupport,
+  public static void getSortedAaSupport(final Collection<Unit> unitsGivingTheSupport,
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
       final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft, final GameData data,
       final boolean defence, final boolean allies) {
@@ -670,7 +697,7 @@ public class DiceRoll implements Externalizable {
     sortAaSupportRules(supportsAvailable, defence, allies);
   }
 
-  public static void getSortedSupport(final List<Unit> unitsGivingTheSupport,
+  public static void getSortedSupport(final Collection<Unit> unitsGivingTheSupport,
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
       final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft, final GameData data,
       final boolean defence, final boolean allies) {
@@ -692,7 +719,7 @@ public class DiceRoll implements Externalizable {
    * @param defence are the receiving units defending?
    * @param allies are the receiving units allied to the giving units?
    */
-  private static void getSupport(final List<Unit> unitsGivingTheSupport, final Set<UnitSupportAttachment> rules,
+  private static void getSupport(final Collection<Unit> unitsGivingTheSupport, final Set<UnitSupportAttachment> rules,
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
       final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft, final GameData data,
       final boolean defence, final boolean allies) {
