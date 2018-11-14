@@ -64,7 +64,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     } else if (defaultValue instanceof Collection) {
       property = new CollectionProperty<>(name, description, ((Collection<?>) defaultValue));
     } else if (defaultValue instanceof Map) {
-      property = new MapProperty<>(name, description, ((Map<?, ?>) defaultValue));
+      property = new MapProperty<>(name, description, ((Map<String, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
       property = new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
     } else if (defaultValue instanceof Double) {
