@@ -1,5 +1,7 @@
 package games.strategy.engine.data.properties;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
@@ -22,6 +24,9 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
 
   public MapProperty(final String name, final String description, final Map<String, V> map) {
     super(name, description);
+
+    checkNotNull(map);
+
     this.map = map;
     resetProperties(map, properties, name, description);
   }
@@ -68,6 +73,8 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
 
   @Override
   public void setValue(final Map<String, V> value) {
+    checkNotNull(value);
+
     map = value;
     resetProperties(map, properties, getName(), getDescription());
   }
@@ -88,7 +95,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
       try {
         @SuppressWarnings("unchecked")
         final Map<String, V> test = (Map<String, V>) value;
-        if (map != null && !map.isEmpty() && !test.isEmpty()) {
+        if (!map.isEmpty() && !test.isEmpty()) {
           String key = null;
           V val = null;
           for (final Map.Entry<String, V> entry : map.entrySet()) {
