@@ -34,7 +34,7 @@ final class MapPropertyTest {
     void shouldReturnTrueWhenValueIsMapAndPropertyMapContainsNullKey() {
       final MapProperty<Integer> mapProperty = newMapProperty(Collections.singletonMap(null, 42));
 
-      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, "11", KEY_2, "22")), is(true));
+      assertThat(mapProperty.validate(ImmutableMap.of(KEY_1, 11, KEY_2, 22)), is(true));
     }
 
     @Test
