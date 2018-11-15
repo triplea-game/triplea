@@ -13,11 +13,14 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
+import lombok.extern.java.Log;
+
 /**
  * Basically creates a map of other properties.
  *
  * @param <V> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
+@Log
 public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
   private static final long serialVersionUID = -8021039503574228146L;
 
@@ -55,8 +58,8 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
       } else if (value instanceof Double) {
         properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
       } else {
-        throw new IllegalArgumentException(
-            "Cannot instantiate MapProperty with: " + value.getClass().getCanonicalName());
+        final String valueTypeName = (value != null) ? value.getClass().getCanonicalName() : "<null>";
+        throw new IllegalArgumentException("cannot instantiate MapProperty with value type: " + valueTypeName);
       }
     });
   }
@@ -107,6 +110,7 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
       final Map<String, ?> typedOtherMap = (Map<String, ?>) otherMap;
       resetProperties(typedOtherMap, new ArrayList<>(), getName(), getDescription());
     } catch (final IllegalArgumentException e) {
+      log.warning("Validation failed: " + e.getMessage());
       return false;
     }
 

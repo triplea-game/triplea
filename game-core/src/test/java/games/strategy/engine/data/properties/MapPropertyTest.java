@@ -54,6 +54,11 @@ final class MapPropertyTest {
     }
 
     @Test
+    void shouldReturnFalseWhenValueIsMapAndContainsNullValue() {
+      assertThat(mapProperty.validate(Collections.singletonMap(KEY_1, null)), is(false));
+    }
+
+    @Test
     void shouldReturnFalseWhenValueIsMapAndValuesAreCompatibleButKeysAreNotCompatible() {
       assertThat(mapProperty.validate(ImmutableMap.of(1, 11, 2, 22)), is(false));
     }
