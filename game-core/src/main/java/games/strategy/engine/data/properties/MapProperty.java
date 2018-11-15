@@ -1,19 +1,26 @@
 package games.strategy.engine.data.properties;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static games.strategy.util.Util.not;
+
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.swing.JComponent;
+
+import lombok.extern.java.Log;
 
 /**
  * Basically creates a map of other properties.
  *
  * @param <V> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
+@Log
 public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
   private static final long serialVersionUID = -8021039503574228146L;
 
@@ -22,19 +29,20 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
 
   public MapProperty(final String name, final String description, final Map<String, V> map) {
     super(name, description);
+
+    checkNotNull(map);
+
     this.map = map;
     resetProperties(map, properties, name, description);
   }
 
-  private void resetProperties(
-      final Map<String, V> map,
+  private static void resetProperties(
+      final Map<String, ?> map,
       final List<IEditableProperty<?>> properties,
       final String name,
       final String description) {
     properties.clear();
-    for (final Map.Entry<String, V> entry : map.entrySet()) {
-      final String key = entry.getKey();
-      final V value = entry.getValue();
+    map.forEach((key, value) -> {
       if (value instanceof Boolean) {
         properties.add(new BooleanProperty(key, description, ((Boolean) value)));
       } else if (value instanceof Color) {
@@ -50,10 +58,10 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
       } else if (value instanceof Double) {
         properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
       } else {
-        throw new IllegalArgumentException(
-            "Cannot instantiate MapProperty with: " + value.getClass().getCanonicalName());
+        final String valueTypeName = (value != null) ? value.getClass().getCanonicalName() : "<null>";
+        throw new IllegalArgumentException("cannot instantiate MapProperty with value type: " + valueTypeName);
       }
-    }
+    });
   }
 
   @Override
@@ -68,6 +76,8 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
 
   @Override
   public void setValue(final Map<String, V> value) {
+    checkNotNull(value);
+
     map = value;
     resetProperties(map, properties, getName(), getDescription());
   }
@@ -84,36 +94,39 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
 
   @Override
   public boolean validate(final Object value) {
-    if (value instanceof Map) {
-      try {
-        @SuppressWarnings("unchecked")
-        final Map<String, V> test = (Map<String, V>) value;
-        if (map != null && !map.isEmpty() && !test.isEmpty()) {
-          String key = null;
-          V val = null;
-          for (final Map.Entry<String, V> entry : map.entrySet()) {
-            if (entry.getValue() != null && entry.getKey() != null) {
-              key = entry.getKey();
-              val = entry.getValue();
-              break;
-            }
-          }
-          if (key != null) {
-            for (final Map.Entry<String, V> entry : test.entrySet()) {
-              if (entry.getKey() != null && entry.getValue() != null
-                  && (!entry.getKey().getClass().isAssignableFrom(key.getClass())
-                      || !entry.getValue().getClass().isAssignableFrom(val.getClass()))) {
-                return false;
-              }
-            }
-          }
-        }
-        resetProperties(test, new ArrayList<>(), getName(), getDescription());
-      } catch (final Exception e) {
-        return false;
-      }
-      return true;
+    if (!(value instanceof Map)) {
+      return false;
     }
-    return false;
+
+    final Map<?, ?> otherMap = (Map<?, ?>) value;
+    if (!areAllElementsNullOrInstanceOf(otherMap.keySet(), String.class)
+        || !areAllElementsNullOrInstanceOf(otherMap.values(), getMapValueType())) {
+      return false;
+    }
+
+    // verify setting new values will not trigger an error
+    try {
+      @SuppressWarnings("unchecked")
+      final Map<String, ?> typedOtherMap = (Map<String, ?>) otherMap;
+      resetProperties(typedOtherMap, new ArrayList<>(), getName(), getDescription());
+    } catch (final IllegalArgumentException e) {
+      log.warning("Validation failed: " + e.getMessage());
+      return false;
+    }
+
+    return true;
+  }
+
+  private static boolean areAllElementsNullOrInstanceOf(final Collection<?> collection, final Class<?> type) {
+    return collection.stream()
+        .filter(not(Objects::isNull))
+        .allMatch(type::isInstance);
+  }
+
+  private Class<?> getMapValueType() {
+    return map.values().stream()
+        .<Class<?>>map(Object::getClass)
+        .findAny()
+        .orElse(Object.class);
   }
 }
