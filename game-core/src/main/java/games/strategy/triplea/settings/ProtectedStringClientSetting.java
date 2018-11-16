@@ -1,7 +1,6 @@
 package games.strategy.triplea.settings;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -15,17 +14,14 @@ class ProtectedStringClientSetting extends ClientSetting<String> {
 
   private final boolean sensitive;
 
-  ProtectedStringClientSetting(final String name, final String defaultValue, final boolean sensitive) {
-    super(String.class, name, protect(defaultValue));
+  ProtectedStringClientSetting(final String name, final boolean sensitive) {
+    super(String.class, name);
     this.sensitive = sensitive;
   }
 
-  /**
-   * Static helper method to be used in the constructor
-   * to be applied before passing the string to the super constructor.
-   */
   @Nullable
-  private static String protect(final @Nullable String value) {
+  @Override
+  protected String formatValue(final @Nullable String value) {
     if (value == null) {
       return null;
     }
@@ -34,12 +30,6 @@ class ProtectedStringClientSetting extends ClientSetting<String> {
     } catch (final CredentialManagerException e) {
       throw new IllegalStateException("Error while trying to protect String.", e);
     }
-  }
-
-  @Nullable
-  @Override
-  protected String formatValue(final @Nullable String value) {
-    return protect(value);
   }
 
   @Nullable
@@ -53,12 +43,6 @@ class ProtectedStringClientSetting extends ClientSetting<String> {
     } catch (final CredentialManagerException e) {
       throw new IllegalStateException("Error while trying to unprotect string '" + encodedValue + "'.", e);
     }
-  }
-
-  @Nullable
-  @Override
-  public Optional<String> getDefaultValue() {
-    return super.getDefaultValue().map(this::parseValue);
   }
 
   @Override

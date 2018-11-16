@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import games.strategy.security.CredentialManager;
 
 final class ProtectedStringClientSettingTest {
-  private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", "", false);
+  private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", false);
 
   @Nested
   final class FormatValueTest {
