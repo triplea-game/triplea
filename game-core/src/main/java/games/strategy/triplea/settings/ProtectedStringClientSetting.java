@@ -2,8 +2,6 @@ package games.strategy.triplea.settings;
 
 import java.util.Arrays;
 
-import javax.annotation.Nullable;
-
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 

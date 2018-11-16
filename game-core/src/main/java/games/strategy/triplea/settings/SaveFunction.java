@@ -2,7 +2,6 @@ package games.strategy.triplea.settings;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
