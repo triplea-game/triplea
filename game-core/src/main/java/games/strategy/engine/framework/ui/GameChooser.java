@@ -28,6 +28,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.util.LocalizeHtml;
 
+/**
+ * A modal dialog that prompts the user to select a game (map) from the list of installed games (maps).
+ */
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
 
@@ -90,6 +93,9 @@ public class GameChooser extends JDialog {
     infoPanel.add(notesScroll, BorderLayout.CENTER);
   }
 
+  /**
+   * Displays the Game Chooser dialog and returns the game selected by the user or {@code null} if no game was selected.
+   */
   public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
       throws InterruptedException {
     final GameChooserModel gameChooserModel =
