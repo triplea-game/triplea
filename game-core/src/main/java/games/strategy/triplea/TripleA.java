@@ -36,6 +36,14 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 
+/**
+ * Default implementation of {@link IGameLoader}.
+ *
+ * <p>
+ * TODO: As there are no longer different game loader specializations, this class should be renamed to
+ * {@code DefaultGameLoader} and moved to the {@code g.s.engine.data} package.
+ * </p>
+ */
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
 
