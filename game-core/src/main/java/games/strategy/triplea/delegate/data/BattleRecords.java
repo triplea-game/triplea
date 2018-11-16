@@ -86,6 +86,9 @@ public class BattleRecords implements Serializable {
     return playerRecords;
   }
 
+  /**
+   * Returns the amount of TUV lost by either the attacker or defender for all the specified battles.
+   */
   public static int getLostTuvForBattleRecords(final Collection<BattleRecord> brs, final boolean attackerLostTuv,
       final boolean includeNullPlayer) {
     int lostTuv = 0;
@@ -103,6 +106,9 @@ public class BattleRecords implements Serializable {
     return lostTuv;
   }
 
+  /**
+   * Indicates there was a battle in any of the specified territories matching the specified criteria.
+   */
   public static boolean getWereThereBattlesInTerritoriesMatching(final Collection<BattleRecord> brs,
       final PlayerId attacker, final PlayerId defender, final String battleType,
       final Collection<Territory> anyOfTheseTerritories) {
@@ -127,6 +133,9 @@ public class BattleRecords implements Serializable {
     return false;
   }
 
+  /**
+   * Removes the battle with the specified ID from this list of battles.
+   */
   public void removeBattle(final PlayerId currentPlayer, final GUID battleId) {
     final Map<GUID, BattleRecord> current = records.get(currentPlayer);
     // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
@@ -144,6 +153,9 @@ public class BattleRecords implements Serializable {
     current.remove(battleId);
   }
 
+  /**
+   * Adds the specified battles to this list of battles.
+   */
   public void addRecord(final BattleRecords other) {
     for (final PlayerId p : other.records.keySet()) {
       final Map<GUID, BattleRecord> currentRecord = records.get(p);
@@ -168,6 +180,9 @@ public class BattleRecords implements Serializable {
     }
   }
 
+  /**
+   * Removes the specified battles from this list of battles.
+   */
   public void removeRecord(final BattleRecords other) {
     for (final PlayerId p : other.records.keySet()) {
       final Map<GUID, BattleRecord> currentRecord = records.get(p);

@@ -14,7 +14,9 @@ import games.strategy.triplea.delegate.IBattle.BattleType;
  * in order to use it for conditions and other things later.
  */
 public class BattleRecord implements Serializable {
-
+  /**
+   * A summary description of the possible results of a battle.
+   */
   public enum BattleResultDescription {
     /** conquered without a fight. */
     BLITZED,

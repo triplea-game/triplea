@@ -5,6 +5,9 @@ import java.util.Collection;
 
 import games.strategy.engine.data.Unit;
 
+/**
+ * The result of validating a unit placement action.
+ */
 public class PlaceableUnits implements Serializable {
   private static final long serialVersionUID = 6572719978603199091L;
   private String errorMessage;

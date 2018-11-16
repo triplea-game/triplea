@@ -8,6 +8,10 @@ import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
+/**
+ * The result of validating a unit movement action. For an invalid movement action, provides details on which units are
+ * not permitted to perform the movement.
+ */
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult> {
   private static final long serialVersionUID = 6648363112533514955L;
   private String error = null;
@@ -45,6 +49,9 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     unresolvedUnits.add(unit);
   }
 
+  /**
+   * Removes the specified unit from the list of unresolved units associated with the specified warning.
+   */
   public boolean removeUnresolvedUnit(final String warning, final Unit unit) {
     final int index = unresolvedUnitWarnings.indexOf(warning);
     if (index == -1) {

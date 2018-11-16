@@ -3,6 +3,9 @@ package games.strategy.triplea.delegate.data;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * The result of spending tech tokens.
+ */
 public class TechResults implements Serializable {
   private static final long serialVersionUID = 5574673305892105782L;
   private final int[] rolls;

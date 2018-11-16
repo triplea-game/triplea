@@ -9,6 +9,9 @@ import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
+/**
+ * A collection of units either killed or damaged during a battle.
+ */
 public class CasualtyList implements Serializable {
   private static final long serialVersionUID = 6501752134047891398L;
   private final List<Unit> killed;

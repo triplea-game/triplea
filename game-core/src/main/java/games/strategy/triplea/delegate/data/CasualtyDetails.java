@@ -4,12 +4,15 @@ import java.util.List;
 
 import games.strategy.engine.data.Unit;
 
+/**
+ * A casualty list that also tracks whether or not casualties should be automatically calculated.
+ */
 public class CasualtyDetails extends CasualtyList {
   private static final long serialVersionUID = 2261683015991514918L;
   private final boolean autoCalculated;
 
   /**
-   * Creates new SelectCasualtyMessage.
+   * Creates new CasualtyDetails.
    *
    * @param killed killed units
    * @param damaged damaged units (Can have multiple of the same unit, to show multiple hits to that unit.)
