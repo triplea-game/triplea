@@ -9,6 +9,9 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.util.IntegerMap;
 
+/**
+ * Logic for purchasing and repairing units.
+ */
 public interface IPurchaseDelegate extends IRemote, IDelegate {
   /**
    * Purchases the specified units.
