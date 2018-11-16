@@ -8,7 +8,10 @@ import javax.annotation.Nullable;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 
-public class ProtectedStringClientSetting extends ClientSetting<String> {
+/**
+ * ClientSetting to store encrypted versions of potentially sensitive Strings.
+ */
+class ProtectedStringClientSetting extends ClientSetting<String> {
 
   private final boolean sensitive;
 
