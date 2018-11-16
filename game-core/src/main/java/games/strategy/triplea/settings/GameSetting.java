@@ -75,7 +75,7 @@ public interface GameSetting<T> {
 
 
 
-  default String transformToDisplayValue(final Object object) {
-    return Objects.toString(object);
+  default String getDisplayValue() {
+    return Objects.toString(getValue().orElse(null));
   }
 }

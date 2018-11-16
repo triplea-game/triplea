@@ -119,9 +119,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("EMAIL_SERVER_PORT", 0);
   public static final ClientSetting<Boolean> emailServerSecurity =
       new BooleanClientSetting("EMAIL_SERVER_SECURITY", true);
-  public static final ClientSetting<String> emailUsername =
+  public static final ClientSetting<char[]> emailUsername =
       new ProtectedStringClientSetting("EMAIL_USERNAME", false);
-  public static final ClientSetting<String> emailPassword =
+  public static final ClientSetting<char[]> emailPassword =
       new ProtectedStringClientSetting("EMAIL_PASSWORD", true);
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();

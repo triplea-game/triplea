@@ -427,8 +427,8 @@ final class SelectionComponentFactory {
       final ClientSetting<String> hostSetting,
       final ClientSetting<Integer> portSetting,
       final ClientSetting<Boolean> tlsSetting,
-      final ClientSetting<String> usernameSetting,
-      final ClientSetting<String> passwordSetting) {
+      final ClientSetting<char[]> usernameSetting,
+      final ClientSetting<char[]> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
 
 
@@ -470,9 +470,18 @@ final class SelectionComponentFactory {
 
       final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
 
-      final JTextField usernameField = new JTextField(usernameSetting.getValue().orElse(""), 20);
+      final JTextField usernameField = new JTextField(new String(usernameSetting.getValue().orElse(new char[0])), 20);
 
-      final JPasswordField passwordField = new JPasswordField(passwordSetting.getValue().orElse(""), 20);
+      final JPasswordField passwordField;
+
+      {
+        final char[] password = passwordSetting.getValue().orElse(new char[0]);
+        try {
+          passwordField = new JPasswordField(new String(password), 20);
+        } finally {
+          Arrays.fill(password, '\0');
+        }
+      }
 
       final JPanel panel = JPanelBuilder.builder()
           .verticalBoxLayout()
@@ -515,16 +524,17 @@ final class SelectionComponentFactory {
       @Override
       public Map<GameSetting<?>, Object> readValues() {
         final char[] password = passwordField.getPassword();
-
-        final Map<GameSetting<?>, Object> map = ImmutableMap.<GameSetting<?>, Object>builder()
-            .put(hostSetting, Strings.emptyToNull(serverField.getText()))
-            .put(portSetting, portSpinner.getValue())
-            .put(tlsSetting, tlsCheckBox.isSelected())
-            .put(usernameSetting, Strings.emptyToNull(usernameField.getText()))
-            .put(passwordSetting, password.length == 0 ? null : new String(password))
-            .build();
-        Arrays.fill(password, '\0');
-        return map;
+        try {
+          return ImmutableMap.<GameSetting<?>, Object>builder()
+              .put(hostSetting, Strings.emptyToNull(serverField.getText()))
+              .put(portSetting, portSpinner.getValue())
+              .put(tlsSetting, tlsCheckBox.isSelected())
+              .put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray())
+              .put(passwordSetting, password.length == 0 ? null : password.clone())
+              .build();
+        } finally {
+          Arrays.fill(password, '\0');
+        }
       }
 
       @Override
@@ -532,8 +542,10 @@ final class SelectionComponentFactory {
         serverField.setText(hostSetting.getDefaultValue().orElse(""));
         portSpinner.setValue(portSetting.getDefaultValue().orElse(0));
         tlsCheckBox.setSelected(tlsSetting.getDefaultValue().orElse(true));
-        usernameField.setText(usernameSetting.getDefaultValue().orElse(""));
-        passwordField.setText(passwordSetting.getDefaultValue().orElse(""));
+        usernameField.setText(new String(usernameSetting.getDefaultValue().orElse(new char[0])));
+        final char[] password = passwordSetting.getDefaultValue().orElse(new char[0]);
+        passwordField.setText(new String(password));
+        Arrays.fill(password, '\0');
       }
 
       @Override
@@ -541,8 +553,10 @@ final class SelectionComponentFactory {
         serverField.setText(hostSetting.getValue().orElse(""));
         portSpinner.setValue(portSetting.getValue().orElse(0));
         tlsCheckBox.setSelected(tlsSetting.getValue().orElse(true));
-        usernameField.setText(usernameSetting.getValue().orElse(""));
-        passwordField.setText(passwordSetting.getValue().orElse(""));
+        usernameField.setText(new String(usernameSetting.getValue().orElse(new char[0])));
+        final char[] password = passwordSetting.getValue().orElse(new char[0]);
+        passwordField.setText(new String(password));
+        Arrays.fill(password, '\0');
       }
     };
   }

@@ -16,7 +16,7 @@ final class ProtectedStringClientSettingTest {
     @Test
     void shouldReturnValueUnchanged() throws Exception {
       try (CredentialManager manager = CredentialManager.newInstance()) {
-        assertThat(manager.unprotectToString(clientSetting.formatValue("value")), is("value"));
+        assertThat(manager.unprotectToString(clientSetting.formatValue("value".toCharArray())), is("value"));
       }
     }
   }
@@ -26,7 +26,7 @@ final class ProtectedStringClientSettingTest {
     @Test
     void shouldReturnEncodedValueUnchanged() throws Exception {
       try (CredentialManager manager = CredentialManager.newInstance()) {
-        assertThat(clientSetting.parseValue(manager.protect("encodedValue")), is("encodedValue"));
+        assertThat(clientSetting.parseValue(manager.protect("encodedValue")), is("encodedValue".toCharArray()));
       }
     }
   }

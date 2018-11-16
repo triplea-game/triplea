@@ -1,7 +1,10 @@
 package games.strategy.triplea.settings;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
@@ -34,13 +37,12 @@ final class SaveFunction {
         selectionComponent.readValues()
             .entrySet()
             .stream()
-            .filter(entry -> !entry.getKey().getValue().equals(Optional.ofNullable(entry.getValue())))
+            .filter(entry -> doesNewSettingDiffer(entry.getKey(), entry.getValue()))
             .forEach(entry -> {
               final GameSetting<?> setting = entry.getKey();
-              final Object value = entry.getValue();
-              setting.setObjectValue(value);
+              setting.setObjectValue(entry.getValue());
               successMsg.append(String
-                  .format("%s was updated to: %s\n", setting, setting.transformToDisplayValue(value)));
+                  .format("%s was updated to: %s\n", setting, setting.getDisplayValue()));
             });
       } else {
         selectionComponent.readValues().forEach((key, value) -> failMsg.append(
@@ -67,6 +69,14 @@ final class SaveFunction {
       return new SaveResult(fail, JOptionPane.WARNING_MESSAGE);
     }
     return new SaveResult(success, JOptionPane.INFORMATION_MESSAGE);
+  }
+
+  private static boolean doesNewSettingDiffer(final GameSetting<?> setting, final Object newValue) {
+    final @Nullable Object oldValue = setting.getValue().orElse(null);
+    if (oldValue instanceof char[] && newValue instanceof char[]) {
+      return !Arrays.equals((char[]) oldValue, (char[]) newValue);
+    }
+    return !Objects.equals(oldValue, newValue);
   }
 
   @AllArgsConstructor
