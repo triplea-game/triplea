@@ -120,9 +120,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> emailServerSecurity =
       new BooleanClientSetting("EMAIL_SERVER_SECURITY", true);
   public static final ClientSetting<String> emailUsername =
-      new ProtectedStringClientSetting("EMAIL_USERNAME", "");
+      new ProtectedStringClientSetting("EMAIL_USERNAME", null);
   public static final ClientSetting<String> emailPassword =
-      new ProtectedStringClientSetting("EMAIL_PASSWORD", "");
+      new ProtectedStringClientSetting("EMAIL_PASSWORD", null);
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
@@ -268,7 +268,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public Optional<T> getValue() {
+  public final Optional<T> getValue() {
     final Optional<String> encodedCurrentValue = getEncodedCurrentValue();
     return encodedCurrentValue.isPresent() ? encodedCurrentValue.map(this::parseValueOrElseDefault) : getDefaultValue();
   }

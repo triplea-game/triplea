@@ -2,16 +2,26 @@ package games.strategy.triplea.settings;
 
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 
-class ProtectedStringClientSetting extends StringClientSetting {
+  public class ProtectedStringClientSetting extends ClientSetting<String> {
 
   ProtectedStringClientSetting(final String name, final String defaultValue) {
-    super(name, protect(defaultValue));
+    super(String.class, name, protect(defaultValue));
   }
 
-  private static String protect(final String value) {
+  /**
+   * Static helper method to be used in the constructor
+   * to be applied before passing the string to the super constructor.
+   */
+  @Nullable
+  private static String protect(final @Nullable String value) {
+    if (value == null) {
+      return null;
+    }
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.protect(value);
     } catch (final CredentialManagerException e) {
@@ -19,7 +29,19 @@ class ProtectedStringClientSetting extends StringClientSetting {
     }
   }
 
-  private static String unprotect(final String encodedValue) {
+
+  @Nullable
+  @Override
+  protected String formatValue(final @Nullable String value) {
+    return protect(value);
+  }
+
+  @Nullable
+  @Override
+  protected String parseValue(final @Nullable String encodedValue) {
+    if (encodedValue == null) {
+      return null;
+    }
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.unprotectToString(encodedValue);
     } catch (final CredentialManagerException e) {
@@ -27,18 +49,9 @@ class ProtectedStringClientSetting extends StringClientSetting {
     }
   }
 
-  @Override
-  public void setValue(final String value) {
-    super.setValue(protect(value));
-  }
-
-  @Override
-  public Optional<String> getValue() {
-    return super.getValue().map(ProtectedStringClientSetting::unprotect);
-  }
-
+  @Nullable
   @Override
   public Optional<String> getDefaultValue() {
-    return super.getDefaultValue().map(ProtectedStringClientSetting::unprotect);
+    return super.getDefaultValue().map(this::parseValue);
   }
 }
