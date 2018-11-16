@@ -8,9 +8,9 @@ import javax.annotation.Nullable;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 
-  public class ProtectedStringClientSetting extends ClientSetting<String> {
+public class ProtectedStringClientSetting extends ClientSetting<String> {
 
-    private final boolean sensitive;
+  private final boolean sensitive;
 
   ProtectedStringClientSetting(final String name, final String defaultValue, final boolean sensitive) {
     super(String.class, name, protect(defaultValue));
@@ -32,7 +32,6 @@ import games.strategy.security.CredentialManagerException;
       throw new IllegalStateException("Error while trying to protect String.", e);
     }
   }
-
 
   @Nullable
   @Override
