@@ -7,6 +7,10 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.triplea.player.AbstractHumanPlayer;
 
+/**
+ * A collection of {@link IGamePlayer}s that are local to the current node. For example, in a network game, the human
+ * at a single node may be responsible for managing multiple game players, such as all member nations of the Allies.
+ */
 public class LocalPlayers {
   protected final Set<IGamePlayer> localPlayers;
 

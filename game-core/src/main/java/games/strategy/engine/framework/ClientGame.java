@@ -22,6 +22,9 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
+/**
+ * Implementation of {@link IGame} for a network client node.
+ */
 @Log
 public class ClientGame extends AbstractGame {
   public static RemoteName getRemoteStepAdvancerName(final INode node) {
@@ -161,6 +164,10 @@ public class ClientGame extends AbstractGame {
     }
   }
 
+  /**
+   * Shuts down this client node. May or may not affect the server depending on the role of the player associated with
+   * this node.
+   */
   public void shutDown() {
     if (isGameOver) {
       return;
