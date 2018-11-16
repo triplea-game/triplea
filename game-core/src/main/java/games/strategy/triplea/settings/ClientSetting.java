@@ -226,7 +226,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   }
 
   @Override
-  public void setValue(final @Nullable T value) {
+  public final void setValue(final @Nullable T value) {
     setStringValue(Optional.ofNullable(value)
         .filter(not(this::isDefaultValue))
         .map(this::formatValue)
