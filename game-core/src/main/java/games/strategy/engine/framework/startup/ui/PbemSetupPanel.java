@@ -39,6 +39,7 @@ import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.startup.ui.editors.SelectAndViewEditor;
+import games.strategy.engine.pbem.AxisAndAlliesForumPoster;
 import games.strategy.engine.pbem.GenericEmailSender;
 import games.strategy.engine.pbem.GmailEmailSender;
 import games.strategy.engine.pbem.HotmailEmailSender;
@@ -50,7 +51,6 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.InternalDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
-import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
 import games.strategy.ui.SwingAction;
 import lombok.extern.java.Log;
 
