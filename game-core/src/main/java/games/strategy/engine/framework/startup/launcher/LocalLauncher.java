@@ -20,7 +20,7 @@ import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**
- * Launcher for a local or a client game. A launcher will start the game UI and begin game play.
+ * Implementation of {@link ILauncher} for a headed local or network client game.
  */
 @Log
 public class LocalLauncher extends AbstractLauncher {
