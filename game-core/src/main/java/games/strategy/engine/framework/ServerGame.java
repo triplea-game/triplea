@@ -57,8 +57,7 @@ import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**
- * Represents a running game.
- * Lookups to get a GamePlayer from PlayerId and the current Delegate.
+ * Implementation of {@link IGame} for a network server node.
  */
 @Log
 public class ServerGame extends AbstractGame {
@@ -185,6 +184,9 @@ public class ServerGame extends AbstractGame {
     }
   }
 
+  /**
+   * Adds a new observer (non-participant) node to this server game.
+   */
   public void addObserver(final IObserverWaitingToJoin blockingObserver,
       final IObserverWaitingToJoin nonBlockingObserver, final INode newNode) {
     try {
@@ -297,6 +299,10 @@ public class ServerGame extends AbstractGame {
     }
   }
 
+  /**
+   * Stops the game on this server node, subsequently stopping all client nodes. This server node will then be shut
+   * down.
+   */
   public void stopGame() {
     if (isGameOver) {
       log.log(Level.WARNING, "Game previously stopped, cannot stop again.");

@@ -7,6 +7,9 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.util.IntegerMap;
 
+/**
+ * Logic for spending tech tokens.
+ */
 public interface ITechDelegate extends IRemote, IDelegate {
   /**
    * Rolls for the specified tech.

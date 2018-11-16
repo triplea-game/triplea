@@ -7,9 +7,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 
+/**
+ * Logic for placing units within a territory.
+ */
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePlacement> {
   /**
-   * Places the specified units in the specified territry.
+   * Places the specified units in the specified territory.
    *
    * @param units units to place.
    * @param at territory to place
@@ -21,6 +24,9 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
     return placeUnits(units, at, BidMode.NOT_BID);
   }
 
+  /**
+   * Indicates whether or not bidding is enabled during placement.
+   */
   enum BidMode {
     BID, NOT_BID
   }

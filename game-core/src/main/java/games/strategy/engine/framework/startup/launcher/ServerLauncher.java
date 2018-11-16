@@ -42,6 +42,9 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
+/**
+ * Implementation of {@link ILauncher} for a headed or headless network server game.
+ */
 @Log
 public class ServerLauncher extends AbstractLauncher {
   private final int clientCount;
@@ -271,6 +274,11 @@ public class ServerLauncher extends AbstractLauncher {
     serverGame.addObserver(blockingObserver, nonBlockingObserver, newNode);
   }
 
+  /**
+   * Invoked when the connection to the specified node has been lost. Updates the game state appropriately depending on
+   * the role of the player associated with the specified node. For example, a disconnected participant will cause the
+   * game to be stopped, while a disconnected observer will have no effect.
+   */
   public void connectionLost(final INode node) {
     if (isLaunching) {
       // this is expected, we told the observer

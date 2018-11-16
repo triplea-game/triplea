@@ -15,6 +15,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
+/**
+ * An installed game (map) that is selectable by the user from the Game Chooser dialog.
+ */
 @Log
 public class GameChooserEntry implements Comparable<GameChooserEntry> {
   private final URI url;
@@ -38,6 +41,9 @@ public class GameChooserEntry implements Comparable<GameChooserEntry> {
     }
   }
 
+  /**
+   * Returns a {@link GameData} instance resulting from fully parsing the XML associated with this game.
+   */
   public GameData fullyParseGameData() throws GameParseException {
     // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
     // correct order for things to work, and that is bads.

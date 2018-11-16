@@ -10,6 +10,9 @@ import java.util.Map.Entry;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Unit;
 
+/**
+ * Describes an action that moves one or more units along a specific route.
+ */
 public class MoveDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = 2199608152808948043L;
   private final Route route;

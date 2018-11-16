@@ -202,6 +202,10 @@ public class TripleAUnit extends Unit {
     return Math.max(0, UnitAttachment.get(getType()).getMovement(getOwner()) + bonusMovement - alreadyMoved);
   }
 
+  /**
+   * Returns a tuple whose first element indicates the minimum movement remaining for the specified collection of units,
+   * and whose second element indicates the maximum movement remaining for the specified collection of units.
+   */
   public static Tuple<Integer, Integer> getMinAndMaxMovementLeft(final Collection<Unit> units) {
     int min = 100000;
     int max = 0;
@@ -380,6 +384,13 @@ public class TripleAUnit extends Unit {
         data, accountForDamage, mathMaxZero);
   }
 
+  /**
+   * Returns the unit from the specified collection that has the largest production capacity within the specified
+   * territory.
+   *
+   * @param accountForDamage {@code true} if the production capacity should account for unit damage; otherwise
+   *        {@code false}.
+   */
   public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerId player,
       final GameData data, final boolean accountForDamage) {
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
@@ -405,6 +416,14 @@ public class TripleAUnit extends Unit {
     return highestUnit;
   }
 
+  /**
+   * Returns the production capacity for the specified unit within the specified territory.
+   *
+   * @param accountForDamage {@code true} if the production capacity should account for unit damage; otherwise
+   *        {@code false}.
+   * @param mathMaxZero {@code true} if a negative production capacity should be rounded to zero; {@code false} to allow
+   *        a negative production capacity.
+   */
   public static int getHowMuchCanUnitProduce(final Unit u, final Territory producer, final PlayerId player,
       final GameData data, final boolean accountForDamage, final boolean mathMaxZero) {
     if (u == null) {
