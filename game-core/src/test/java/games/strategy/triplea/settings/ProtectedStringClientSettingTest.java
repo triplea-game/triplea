@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 final class ProtectedStringClientSettingTest {
-  private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", "");
+  private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", "", false);
 
   @Nested
   final class FormatValueTest {
