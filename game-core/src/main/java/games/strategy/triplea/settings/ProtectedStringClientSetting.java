@@ -25,7 +25,7 @@ import games.strategy.security.CredentialManagerException;
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.protect(value);
     } catch (final CredentialManagerException e) {
-      throw new IllegalStateException("CredentialManager needs to be available in order to protect strings.", e);
+      throw new IllegalStateException("Error while trying to protect String.", e);
     }
   }
 
@@ -45,7 +45,7 @@ import games.strategy.security.CredentialManagerException;
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.unprotectToString(encodedValue);
     } catch (final CredentialManagerException e) {
-      throw new IllegalStateException("CredentialManager needs to be available in order to unprotect strings.", e);
+      throw new IllegalStateException("Error while trying to unprotect string '" + encodedValue + "'.", e);
     }
   }
 
