@@ -32,7 +32,6 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
@@ -525,13 +524,13 @@ final class SelectionComponentFactory {
       public Map<GameSetting<?>, Object> readValues() {
         final char[] password = passwordField.getPassword();
         try {
-          return ImmutableMap.<GameSetting<?>, Object>builder()
-              .put(hostSetting, Strings.emptyToNull(serverField.getText()))
-              .put(portSetting, portSpinner.getValue())
-              .put(tlsSetting, tlsCheckBox.isSelected())
-              .put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray())
-              .put(passwordSetting, password.length == 0 ? null : password.clone())
-              .build();
+          final Map<GameSetting<?>, Object> map = new HashMap<>();
+          map.put(hostSetting, Strings.emptyToNull(serverField.getText()));
+          map.put(portSetting, portSpinner.getValue());
+          map.put(tlsSetting, tlsCheckBox.isSelected());
+          map.put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray());
+          map.put(passwordSetting, password.length == 0 ? null : password.clone());
+          return Collections.unmodifiableMap(map);
         } finally {
           Arrays.fill(password, '\0');
         }

@@ -22,12 +22,8 @@ class ProtectedStringClientSetting extends ClientSetting<char[]> {
   /**
    * Protects the given char array and cleans the content afterwards.
    */
-  @Nullable
   @Override
-  protected String formatValue(final @Nullable char[] value) {
-    if (value == null) {
-      return null;
-    }
+  protected String formatValue(final char[] value) {
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.protect(value);
     } catch (final CredentialManagerException e) {
@@ -37,12 +33,8 @@ class ProtectedStringClientSetting extends ClientSetting<char[]> {
     }
   }
 
-  @Nullable
   @Override
-  protected char[] parseValue(final @Nullable String encodedValue) {
-    if (encodedValue == null) {
-      return null;
-    }
+  protected char[] parseValue(final String encodedValue) {
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.unprotect(encodedValue);
     } catch (final CredentialManagerException e) {
