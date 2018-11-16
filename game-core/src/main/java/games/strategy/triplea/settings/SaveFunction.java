@@ -36,8 +36,11 @@ final class SaveFunction {
             .stream()
             .filter(entry -> !entry.getKey().getValue().equals(Optional.ofNullable(entry.getValue())))
             .forEach(entry -> {
-              entry.getKey().setObjectValue(entry.getValue());
-              successMsg.append(String.format("%s was updated to: %s\n", entry.getKey(), entry.getValue()));
+              final GameSetting<?> setting = entry.getKey();
+              final Object value = entry.getValue();
+              setting.setObjectValue(value);
+              successMsg.append(String
+                  .format("%s was updated to: %s\n", setting, setting.transformToDisplayValue(value)));
             });
       } else {
         selectionComponent.readValues().forEach((key, value) -> failMsg.append(

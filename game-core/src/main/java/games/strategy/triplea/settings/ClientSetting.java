@@ -120,9 +120,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> emailServerSecurity =
       new BooleanClientSetting("EMAIL_SERVER_SECURITY", true);
   public static final ClientSetting<String> emailUsername =
-      new ProtectedStringClientSetting("EMAIL_USERNAME", null);
+      new ProtectedStringClientSetting("EMAIL_USERNAME", null, false);
   public static final ClientSetting<String> emailPassword =
-      new ProtectedStringClientSetting("EMAIL_PASSWORD", null);
+      new ProtectedStringClientSetting("EMAIL_PASSWORD", null, true);
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 

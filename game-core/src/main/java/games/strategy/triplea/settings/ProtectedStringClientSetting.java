@@ -1,5 +1,6 @@
 package games.strategy.triplea.settings;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -9,8 +10,11 @@ import games.strategy.security.CredentialManagerException;
 
   public class ProtectedStringClientSetting extends ClientSetting<String> {
 
-  ProtectedStringClientSetting(final String name, final String defaultValue) {
+    private final boolean sensitive;
+
+  ProtectedStringClientSetting(final String name, final String defaultValue, final boolean sensitive) {
     super(String.class, name, protect(defaultValue));
+    this.sensitive = sensitive;
   }
 
   /**
@@ -53,5 +57,16 @@ import games.strategy.security.CredentialManagerException;
   @Override
   public Optional<String> getDefaultValue() {
     return super.getDefaultValue().map(this::parseValue);
+  }
+
+  @Override
+  public String transformToDisplayValue(final Object object) {
+    if (sensitive && object instanceof String) {
+      final String string = (String) object;
+      final char[] array = new char[string.length()];
+      Arrays.fill(array, '*');
+      return new String(array);
+    }
+    return super.transformToDisplayValue(object);
   }
 }
