@@ -27,7 +27,7 @@ public enum SettingType {
 
   TESTING("Testing"),
 
-  PLAY_BY_FORUM_EMAIL("PbF/PbEM Settings");
+  PLAY_BY_FORUM_EMAIL("Play by Forum/Email");
 
   final String tabTitle;
 

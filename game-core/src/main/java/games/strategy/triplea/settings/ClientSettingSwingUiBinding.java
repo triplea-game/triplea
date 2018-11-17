@@ -283,7 +283,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   },
 
   EMAIL_SETTINGS(
-      "Set PbEM Preferences",
+      "Play by Email Preferences",
       SettingType.PLAY_BY_FORUM_EMAIL,
       "Configure the settings of your preferred email server.") {
     @Override
