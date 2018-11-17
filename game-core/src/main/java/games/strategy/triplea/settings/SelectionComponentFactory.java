@@ -445,10 +445,8 @@ final class SelectionComponentFactory {
         @Nonnull
         private final String host;
         @Getter
-        @Nonnull
         private final int port;
         @Getter
-        @Nonnull
         private final boolean isEncrypted;
 
         @Override
