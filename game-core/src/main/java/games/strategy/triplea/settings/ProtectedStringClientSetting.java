@@ -36,7 +36,7 @@ class ProtectedStringClientSetting extends ClientSetting<char[]> {
     try (CredentialManager manager = CredentialManager.newInstance()) {
       return manager.unprotect(encodedValue);
     } catch (final CredentialManagerException e) {
-      throw new IllegalStateException("Error while trying to unprotect string '" + encodedValue + "'.", e);
+      throw new IllegalArgumentException("Error while trying to unprotect string '" + encodedValue + "'.", e);
     }
   }
 
