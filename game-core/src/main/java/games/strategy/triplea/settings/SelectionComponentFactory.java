@@ -463,7 +463,7 @@ final class SelectionComponentFactory {
       final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 
       final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
-          (int) portSetting.getValue().orElse(0), 0, 65535, 1));
+          (int) portSetting.getValue().orElse(465), 0, 65535, 1));
 
       final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
 
@@ -533,7 +533,7 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         serverField.setText(hostSetting.getDefaultValue().orElse(""));
-        portSpinner.setValue(portSetting.getDefaultValue().orElse(0));
+        portSpinner.setValue(portSetting.getDefaultValue().orElse(465));
         tlsCheckBox.setSelected(tlsSetting.getDefaultValue().orElse(true));
         usernameField.setText(new String(usernameSetting.getDefaultValue().orElse(new char[0])));
         passwordField.setText(new String(passwordSetting.getDefaultValue().orElse(new char[0])));
@@ -542,7 +542,7 @@ final class SelectionComponentFactory {
       @Override
       public void reset() {
         serverField.setText(hostSetting.getValue().orElse(""));
-        portSpinner.setValue(portSetting.getValue().orElse(0));
+        portSpinner.setValue(portSetting.getValue().orElse(465));
         tlsCheckBox.setSelected(tlsSetting.getValue().orElse(true));
         usernameField.setText(new String(usernameSetting.getValue().orElse(new char[0])));
         final char[] password = passwordSetting.getValue().orElse(new char[0]);
