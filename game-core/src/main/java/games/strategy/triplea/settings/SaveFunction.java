@@ -71,11 +71,7 @@ final class SaveFunction {
   }
 
   private static boolean doesNewSettingDiffer(final GameSetting<?> setting, final Object newValue) {
-    final @Nullable Object oldValue = setting.getValue().orElse(null);
-    if (oldValue instanceof char[] && newValue instanceof char[]) {
-      return !Arrays.equals((char[]) oldValue, (char[]) newValue);
-    }
-    return !Objects.equals(oldValue, newValue);
+    return !Objects.deepEquals(setting.getValue().orElse(null), newValue);
   }
 
   @AllArgsConstructor
