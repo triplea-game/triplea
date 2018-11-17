@@ -520,18 +520,14 @@ final class SelectionComponentFactory {
 
       @Override
       public Map<GameSetting<?>, Object> readValues() {
+        final Map<GameSetting<?>, Object> map = new HashMap<>();
+        map.put(hostSetting, Strings.emptyToNull(serverField.getText()));
+        map.put(portSetting, portSpinner.getValue());
+        map.put(tlsSetting, tlsCheckBox.isSelected());
+        map.put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray());
         final char[] password = passwordField.getPassword();
-        try {
-          final Map<GameSetting<?>, Object> map = new HashMap<>();
-          map.put(hostSetting, Strings.emptyToNull(serverField.getText()));
-          map.put(portSetting, portSpinner.getValue());
-          map.put(tlsSetting, tlsCheckBox.isSelected());
-          map.put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray());
-          map.put(passwordSetting, password.length == 0 ? null : password.clone());
-          return Collections.unmodifiableMap(map);
-        } finally {
-          Arrays.fill(password, '\0');
-        }
+        map.put(passwordSetting, password.length == 0 ? null : password);
+        return Collections.unmodifiableMap(map);
       }
 
       @Override
@@ -540,9 +536,7 @@ final class SelectionComponentFactory {
         portSpinner.setValue(portSetting.getDefaultValue().orElse(0));
         tlsCheckBox.setSelected(tlsSetting.getDefaultValue().orElse(true));
         usernameField.setText(new String(usernameSetting.getDefaultValue().orElse(new char[0])));
-        final char[] password = passwordSetting.getDefaultValue().orElse(new char[0]);
-        passwordField.setText(new String(password));
-        Arrays.fill(password, '\0');
+        passwordField.setText(new String(passwordSetting.getDefaultValue().orElse(new char[0])));
       }
 
       @Override
@@ -552,8 +546,11 @@ final class SelectionComponentFactory {
         tlsCheckBox.setSelected(tlsSetting.getValue().orElse(true));
         usernameField.setText(new String(usernameSetting.getValue().orElse(new char[0])));
         final char[] password = passwordSetting.getValue().orElse(new char[0]);
-        passwordField.setText(new String(password));
-        Arrays.fill(password, '\0');
+        try {
+          passwordField.setText(new String(password));
+        } finally {
+          Arrays.fill(password, '\0');
+        }
       }
     };
   }
