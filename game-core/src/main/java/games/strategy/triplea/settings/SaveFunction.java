@@ -1,9 +1,7 @@
 package games.strategy.triplea.settings;
 
-import java.util.Arrays;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
