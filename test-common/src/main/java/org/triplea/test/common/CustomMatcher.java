@@ -39,9 +39,9 @@ public class CustomMatcher<T> extends BaseMatcher<T> {
   private final String description;
   @Nonnull
   private final Predicate<T> checkCondition;
-  @SuppressWarnings("FieldMayBeFinal")
   @Builder.Default
-  private Function<T, String> debug = Object::toString;
+  @Nonnull
+  private final Function<T, String> debug = Object::toString;
 
   @SuppressWarnings("unchecked")
   @Override
