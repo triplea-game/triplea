@@ -280,6 +280,21 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.useExperimentalJavaFxUi);
     }
+  },
+
+  EMAIL_SETTINGS(
+      "Play by Email Preferences",
+      SettingType.PLAY_BY_FORUM_EMAIL,
+      "Configure the settings of your preferred email server.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return SelectionComponentFactory.emailSettings(
+          ClientSetting.emailServerHost,
+          ClientSetting.emailServerPort,
+          ClientSetting.emailServerSecurity,
+          ClientSetting.emailUsername,
+          ClientSetting.emailPassword);
+    }
   };
 
   @Getter(onMethod_ = {@Override})

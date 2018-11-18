@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +13,19 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -29,7 +35,10 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.ui.SwingComponents;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import swinglib.JButtonBuilder;
+import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;
 
 /**
@@ -409,6 +418,139 @@ final class SelectionComponentFactory {
       @Override
       public void resetToDefault() {
         textField.setText(clientSetting.getDefaultValue().orElse(""));
+      }
+    };
+  }
+
+  static SelectionComponent<JComponent> emailSettings(
+      final ClientSetting<String> hostSetting,
+      final ClientSetting<Integer> portSetting,
+      final ClientSetting<Boolean> tlsSetting,
+      final ClientSetting<char[]> usernameSetting,
+      final ClientSetting<char[]> passwordSetting) {
+    return new AlwaysValidInputSelectionComponent() {
+
+
+      /**
+       * Data class to store a 3-tuple consisting of
+       * a server host, a server port and whether or not
+       * to use an encrypted connection.
+       */
+      @AllArgsConstructor
+      @Immutable
+      final class EmailProviderSetting {
+        @Nonnull
+        private final String displayName;
+        @Getter
+        @Nonnull
+        private final String host;
+        @Getter
+        private final int port;
+        @Getter
+        private final boolean isEncrypted;
+
+        @Override
+        public String toString() {
+          return displayName;
+        }
+      }
+
+      private final List<EmailProviderSetting> knownProviders = Arrays.asList(
+          new EmailProviderSetting("GMail", "smtp.gmail.com", 587, true),
+          new EmailProviderSetting("Hotmail", "smtp.live.com", 587, true)
+      );
+
+      final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
+
+      final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
+          (int) portSetting.getValue().orElse(465), 0, 65535, 1));
+
+      final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
+
+      final JTextField usernameField = new JTextField(new String(usernameSetting.getValue().orElse(new char[0])), 20);
+
+      final JPasswordField passwordField;
+
+      {
+        final char[] password = passwordSetting.getValue().orElse(new char[0]);
+        try {
+          passwordField = new JPasswordField(new String(password), 20);
+        } finally {
+          Arrays.fill(password, '\0');
+        }
+      }
+
+      final JPanel panel = JPanelBuilder.builder()
+          .verticalBoxLayout()
+          .addLeftJustified(new JLabel("Email Server"))
+          .addLeftJustified(serverField)
+          .addLeftJustified(new JLabel("Port"))
+          .addLeftJustified(JPanelBuilder.builder()
+              .horizontalBoxLayout()
+              .addLeftJustified(portSpinner)
+              .addLeftJustified(tlsCheckBox)
+          .build())
+          .addVerticalStrut(5)
+          .addLeftJustified(JButtonBuilder.builder()
+              .title("Presets...")
+              .actionListener(() -> {
+                final JComboBox<EmailProviderSetting> comboBox =
+                    JComboBoxBuilder.builder(EmailProviderSetting.class)
+                        .items(knownProviders)
+                        .build();
+                if (JOptionPane.showConfirmDialog(this.panel.getParent(), JPanelBuilder.builder().add(comboBox).build(),
+                    "Select a Preset", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                  final EmailProviderSetting config = (EmailProviderSetting) comboBox.getSelectedItem();
+                  serverField.setText(config.getHost());
+                  portSpinner.setValue(config.getPort());
+                  tlsCheckBox.setSelected(config.isEncrypted());
+                }
+              })
+            .build())
+          .addLeftJustified(new JLabel("Username"))
+          .addLeftJustified(usernameField)
+          .addLeftJustified(new JLabel("Password"))
+          .addLeftJustified(passwordField)
+          .build();
+
+      @Override
+      public JComponent getUiComponent() {
+        return panel;
+      }
+
+      @Override
+      public Map<GameSetting<?>, Object> readValues() {
+        final Map<GameSetting<?>, Object> map = new HashMap<>();
+        map.put(hostSetting, Strings.emptyToNull(serverField.getText()));
+        map.put(portSetting, portSpinner.getValue());
+        map.put(tlsSetting, tlsCheckBox.isSelected());
+        map.put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray());
+        final char[] password = passwordField.getPassword();
+        map.put(passwordSetting, password.length == 0 ? null : password);
+        return Collections.unmodifiableMap(map);
+      }
+
+      @Override
+      public void resetToDefault() {
+        serverField.setText(hostSetting.getDefaultValue().orElse(""));
+        portSpinner.setValue(portSetting.getDefaultValue().orElse(465));
+        tlsCheckBox.setSelected(tlsSetting.getDefaultValue().orElse(true));
+        usernameField.setText(new String(usernameSetting.getDefaultValue().orElse(new char[0])));
+        passwordField.setText(new String(passwordSetting.getDefaultValue().orElse(new char[0])));
+      }
+
+      @Override
+      public void reset() {
+        serverField.setText(hostSetting.getValue().orElse(""));
+        portSpinner.setValue(portSetting.getValue().orElse(465));
+        tlsCheckBox.setSelected(tlsSetting.getValue().orElse(true));
+        usernameField.setText(new String(usernameSetting.getValue().orElse(new char[0])));
+        final char[] password = passwordSetting.getValue().orElse(new char[0]);
+        try {
+          passwordField.setText(new String(password));
+        } finally {
+          Arrays.fill(password, '\0');
+        }
       }
     };
   }

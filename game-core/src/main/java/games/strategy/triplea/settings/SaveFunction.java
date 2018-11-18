@@ -1,6 +1,6 @@
 package games.strategy.triplea.settings;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -34,10 +34,12 @@ final class SaveFunction {
         selectionComponent.readValues()
             .entrySet()
             .stream()
-            .filter(entry -> !entry.getKey().getValue().equals(Optional.ofNullable(entry.getValue())))
+            .filter(entry -> doesNewSettingDiffer(entry.getKey(), entry.getValue()))
             .forEach(entry -> {
-              entry.getKey().setObjectValue(entry.getValue());
-              successMsg.append(String.format("%s was updated to: %s\n", entry.getKey(), entry.getValue()));
+              final GameSetting<?> setting = entry.getKey();
+              setting.setObjectValue(entry.getValue());
+              successMsg.append(String
+                  .format("%s was updated to: %s\n", setting, setting.getDisplayValue()));
             });
       } else {
         selectionComponent.readValues().forEach((key, value) -> failMsg.append(
@@ -64,6 +66,10 @@ final class SaveFunction {
       return new SaveResult(fail, JOptionPane.WARNING_MESSAGE);
     }
     return new SaveResult(success, JOptionPane.INFORMATION_MESSAGE);
+  }
+
+  private static boolean doesNewSettingDiffer(final GameSetting<?> setting, final Object newValue) {
+    return !Objects.deepEquals(setting.getValue().orElse(null), newValue);
   }
 
   @AllArgsConstructor

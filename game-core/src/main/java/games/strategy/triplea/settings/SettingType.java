@@ -25,7 +25,9 @@ public enum SettingType {
 
   FOLDER_LOCATIONS("Folders"),
 
-  TESTING("Testing");
+  TESTING("Testing"),
+
+  PLAY_BY_FORUM_EMAIL("Play by Forum/Email");
 
   final String tabTitle;
 
