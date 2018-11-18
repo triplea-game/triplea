@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 import lombok.Builder;
 
@@ -34,7 +34,7 @@ import lombok.Builder;
  *        value, then this would be of type 'HashMap'
  */
 @Builder
-public class CustomMatcher<T> extends BaseMatcher<T> {
+public final class CustomMatcher<T> extends TypeSafeMatcher<T> {
   @Nonnull
   private final String description;
   @Nonnull
@@ -43,16 +43,14 @@ public class CustomMatcher<T> extends BaseMatcher<T> {
   @Nonnull
   private final Function<T, String> debug = Object::toString;
 
-  @SuppressWarnings("unchecked")
   @Override
-  public boolean matches(final Object item) {
-    return checkCondition.test((T) item);
+  protected boolean matchesSafely(final T item) {
+    return checkCondition.test(item);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  public void describeMismatch(final Object item, final Description description) {
-    description.appendText(debug.apply((T) item));
+  protected void describeMismatchSafely(final T item, final Description mismatchDescription) {
+    mismatchDescription.appendText(debug.apply(item));
   }
 
   @Override
