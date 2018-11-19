@@ -5,13 +5,18 @@ import static com.google.common.base.Preconditions.checkState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
+import org.triplea.common.util.Services;
+import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
 
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
@@ -39,6 +44,7 @@ public final class LookAndFeel {
    * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void initialize() {
+    getSubstanceLookAndFeelManager().ifPresent(SubstanceLookAndFeelManager::initialize);
     ClientSetting.lookAndFeel.addListener(gameSetting -> {
       setupLookAndFeel(gameSetting.getValueOrThrow());
       SettingsWindow.updateLookAndFeel();
@@ -50,6 +56,10 @@ public final class LookAndFeel {
           JOptionPane.WARNING_MESSAGE);
     });
     setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
+  }
+
+  private static Optional<SubstanceLookAndFeelManager> getSubstanceLookAndFeelManager() {
+    return Services.tryLoadAny(SubstanceLookAndFeelManager.class);
   }
 
   /**
@@ -69,45 +79,17 @@ public final class LookAndFeel {
   }
 
   private static Collection<String> getSubstanceLookAndFeelClassNames() {
-    return Arrays.asList(
-        "Autumn",
-        "BusinessBlackSteel",
-        "BusinessBlueSteel",
-        "Business",
-        "Cerulean",
-        "CremeCoffee",
-        "Creme",
-        "DustCoffee",
-        "Dust",
-        "Gemini",
-        "GraphiteAqua",
-        "GraphiteChalk",
-        "GraphiteGlass",
-        "GraphiteGold",
-        "Graphite",
-        "Magellan",
-        "Mariner",
-        "MistAqua",
-        "MistSilver",
-        "Moderate",
-        "NebulaBrickWall",
-        "Nebula",
-        "OfficeBlack2007",
-        "OfficeBlue2007",
-        "OfficeSilver2007",
-        "Raven",
-        "Sahara",
-        "Twilight").stream()
-        .map(LookAndFeel::substance)
-        .collect(Collectors.toList());
-  }
-
-  private static String substance(final String baseName) {
-    return "org.pushingpixels.substance.api.skin.Substance" + baseName + "LookAndFeel";
+    return getSubstanceLookAndFeelManager()
+        .map(SubstanceLookAndFeelManager::getInstalledLookAndFeelClassNames)
+        .orElseGet(Collections::emptyList);
   }
 
   public static String getDefaultLookAndFeelClassName() {
-    return SystemProperties.isMac() ? UIManager.getSystemLookAndFeelClassName() : substance("Graphite");
+    return SystemProperties.isMac()
+        ? UIManager.getSystemLookAndFeelClassName()
+        : getSubstanceLookAndFeelManager()
+            .map(SubstanceLookAndFeelManager::getDefaultLookAndFeelClassName)
+            .orElseGet(UIManager::getSystemLookAndFeelClassName);
   }
 
   private static void setupLookAndFeel(final String lookAndFeelName) {

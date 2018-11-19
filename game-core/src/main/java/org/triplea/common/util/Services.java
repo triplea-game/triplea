@@ -3,6 +3,7 @@ package org.triplea.common.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 /**
@@ -19,11 +20,17 @@ public final class Services {
   public static <T> T loadAny(final Class<T> type) {
     checkNotNull(type);
 
-    final Iterator<T> iterator = ServiceLoader.load(type).iterator();
-    if (!iterator.hasNext()) {
-      throw new ServiceNotAvailableException(type);
-    }
+    return tryLoadAny(type).orElseThrow(() -> new ServiceNotAvailableException(type));
+  }
 
-    return iterator.next();
+  /**
+   * Returns any available provider of the service of the specified type or empty if there are no service providers of
+   * the specified type available.
+   */
+  public static <T> Optional<T> tryLoadAny(final Class<T> type) {
+    checkNotNull(type);
+
+    final Iterator<T> iterator = ServiceLoader.load(type).iterator();
+    return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
   }
 }
