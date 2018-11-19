@@ -20,6 +20,9 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.util.Interruptibles;
 
+/**
+ * The hub node in a spoke-hub messaging architecture.
+ */
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
   private static final int NODE_IMPLEMENTATION_TIMEOUT = 200;
   private final UnifiedMessenger localUnified;
