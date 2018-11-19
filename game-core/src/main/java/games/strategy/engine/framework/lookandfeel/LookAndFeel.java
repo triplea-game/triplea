@@ -5,7 +5,9 @@ import static com.google.common.base.Preconditions.checkState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,7 @@ public final class LookAndFeel {
    * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void initialize() {
-    getSubstanceLookAndFeelManager().initialize();
+    getSubstanceLookAndFeelManager().ifPresent(SubstanceLookAndFeelManager::initialize);
     ClientSetting.lookAndFeel.addListener(gameSetting -> {
       setupLookAndFeel(gameSetting.getValueOrThrow());
       SettingsWindow.updateLookAndFeel();
@@ -56,8 +58,8 @@ public final class LookAndFeel {
     setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
   }
 
-  private static SubstanceLookAndFeelManager getSubstanceLookAndFeelManager() {
-    return Services.loadAny(SubstanceLookAndFeelManager.class);
+  private static Optional<SubstanceLookAndFeelManager> getSubstanceLookAndFeelManager() {
+    return Services.tryLoadAny(SubstanceLookAndFeelManager.class);
   }
 
   /**
@@ -66,7 +68,7 @@ public final class LookAndFeel {
   public static List<String> getLookAndFeelAvailableList() {
     final List<String> lookAndFeelClassNames = new ArrayList<>();
     lookAndFeelClassNames.addAll(getInstalledLookAndFeelClassNames());
-    lookAndFeelClassNames.addAll(getSubstanceLookAndFeelManager().getInstalledLookAndFeelClassNames());
+    lookAndFeelClassNames.addAll(getSubstanceLookAndFeelClassNames());
     return lookAndFeelClassNames;
   }
 
@@ -76,10 +78,18 @@ public final class LookAndFeel {
         .collect(Collectors.toList());
   }
 
+  private static Collection<String> getSubstanceLookAndFeelClassNames() {
+    return getSubstanceLookAndFeelManager()
+        .map(SubstanceLookAndFeelManager::getInstalledLookAndFeelClassNames)
+        .orElseGet(Collections::emptyList);
+  }
+
   public static String getDefaultLookAndFeelClassName() {
     return SystemProperties.isMac()
         ? UIManager.getSystemLookAndFeelClassName()
-        : getSubstanceLookAndFeelManager().getDefaultLookAndFeelClassName();
+        : getSubstanceLookAndFeelManager()
+            .map(SubstanceLookAndFeelManager::getDefaultLookAndFeelClassName)
+            .orElseGet(UIManager::getSystemLookAndFeelClassName);
   }
 
   private static void setupLookAndFeel(final String lookAndFeelName) {
