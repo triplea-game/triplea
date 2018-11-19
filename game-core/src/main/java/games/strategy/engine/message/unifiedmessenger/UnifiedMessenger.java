@@ -179,6 +179,9 @@ public class UnifiedMessenger {
     }
   }
 
+  /**
+   * Removes the specified implementor for the end point with the specified name.
+   */
   public void removeImplementor(final String name, final Object implementor) {
     checkNotNull(implementor);
 
@@ -230,7 +233,9 @@ public class UnifiedMessenger {
     }
   }
 
-
+  /**
+   * Invoked when a message is received from a node (either a remote client or the server itself).
+   */
   public void messageReceived(final Serializable msg, final INode from) {
     if (msg instanceof SpokeInvoke) {
       // if this isn't the server, something is wrong

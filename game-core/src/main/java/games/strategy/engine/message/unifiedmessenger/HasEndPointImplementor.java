@@ -2,7 +2,9 @@ package games.strategy.engine.message.unifiedmessenger;
 
 import java.io.Serializable;
 
-// someone now has an implementor for an endpoint
+/**
+ * A message indicating someone now has an implementor for an end point.
+ */
 public class HasEndPointImplementor implements Serializable {
   private static final long serialVersionUID = 7607319129099694815L;
   public final String endPointName;
