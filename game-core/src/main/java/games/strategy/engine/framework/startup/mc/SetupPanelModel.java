@@ -49,6 +49,9 @@ public class SetupPanelModel {
     setGameTypePanel(new PbemSetupPanel(gameSelectorModel));
   }
 
+  /**
+   * Starts the game server and displays the game start screen afterwards, awaiting remote game clients.
+   */
   public void showServer(final Component ui) {
     final ServerModel model = new ServerModel(gameSelectorModel, this);
     if (!model.createServerMessenger(ui)) {

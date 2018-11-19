@@ -68,11 +68,17 @@ import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
+/**
+ * Represents a network-aware game server to which multiple clients may connect.
+ */
 @Log
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener {
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
+  /**
+   * Indicates the server is running in a headed or headless context.
+   */
   public enum InteractionMode {
     HEADLESS, SWING_CLIENT_UI
   }
@@ -607,6 +613,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     return localPlayerMappings;
   }
 
+  /**
+   * Returns the game launcher or empty if all players are not assigned to a node (e.g. if a player drops out before
+   * starting the game).
+   */
   public Optional<ServerLauncher> getLauncher() {
     synchronized (this) {
       disallowRemoveConnections();
