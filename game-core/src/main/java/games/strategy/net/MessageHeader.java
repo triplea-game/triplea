@@ -2,8 +2,10 @@ package games.strategy.net;
 
 import java.io.Serializable;
 
-// written over the network very often, so make externalizable to
-// increase performance
+/**
+ * The envelope for a message consisting of both the header and payload. The header specifies the source and
+ * destination nodes of the message.
+ */
 public class MessageHeader {
   // if null, then a broadcast
   private final INode to;
