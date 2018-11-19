@@ -13,6 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.triplea.common.util.Services;
+import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
+
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
@@ -39,6 +42,7 @@ public final class LookAndFeel {
    * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void initialize() {
+    Services.loadAny(SubstanceLookAndFeelManager.class).initialize();
     ClientSetting.lookAndFeel.addListener(gameSetting -> {
       setupLookAndFeel(gameSetting.getValueOrThrow());
       SettingsWindow.updateLookAndFeel();

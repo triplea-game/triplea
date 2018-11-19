@@ -21,8 +21,7 @@ dependencies {
     }
 
     implementation project(':game-core')
-
-    runtimeOnly 'org.pushing-pixels:radiance-substance:1.0.0'
+    implementation 'org.pushing-pixels:radiance-substance:1.0.2'
 
     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
         testCompileOnly remoteLib(javaFxRuntimeUrl)
