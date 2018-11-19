@@ -200,6 +200,11 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     unmuteMacTimer.schedule(getMacUnmuteTask(mac), checkTime.toEpochMilli() - System.currentTimeMillis());
   }
 
+  /**
+   * Invoked when the node with the specified unique name has successfully logged in. Note that {@code uniquePlayerName}
+   * is the node name and may not be identical to the name of the player associated with the node (see
+   * {@link #getUniqueName(String)}.
+   */
   public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     synchronized (cachedListLock) {
       cachedMacAddresses.put(uniquePlayerName, mac);
@@ -441,6 +446,11 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         .anyMatch(nodeName::equalsIgnoreCase);
   }
 
+  /**
+   * Returns a node name, based on the specified node name, that is unique across all nodes. The node name is made
+   * unique by adding a numbered suffix to the existing node name. For example, for the second node with the name "foo",
+   * this method will return "foo (1)".
+   */
   public String getUniqueName(final String name) {
     String currentName = name;
     if (currentName.length() > 50) {

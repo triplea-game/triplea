@@ -7,6 +7,9 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 
+/**
+ * Allows client nodes to access various information from the server node during network game setup.
+ */
 public interface IServerStartupRemote extends IRemote {
   /**
    * Returns a listing of the players in the game.

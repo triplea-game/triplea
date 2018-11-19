@@ -1,5 +1,8 @@
 package games.strategy.engine.framework.startup.mc;
 
+/**
+ * A listener that receives network game setup events from a remote node.
+ */
 public interface IRemoteModelListener {
   /**
    * The players available have changed.

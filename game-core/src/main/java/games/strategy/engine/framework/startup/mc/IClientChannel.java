@@ -7,6 +7,9 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 
+/**
+ * A channel representing a remote client of a network game. Used by the server to notify clients of various events.
+ */
 public interface IClientChannel extends IChannelSubscribor {
   RemoteName CHANNEL_NAME =
       new RemoteName("games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);

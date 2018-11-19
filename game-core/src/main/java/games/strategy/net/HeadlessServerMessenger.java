@@ -8,6 +8,9 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+/**
+ * Implementation of {@link IServerMessenger} for a headless game server.
+ */
 public class HeadlessServerMessenger implements IServerMessenger {
 
   private final INode node;

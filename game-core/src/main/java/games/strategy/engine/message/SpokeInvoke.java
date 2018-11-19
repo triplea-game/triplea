@@ -9,6 +9,11 @@ import games.strategy.net.GUID;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 
+/**
+ * A request forwarded by the hub node to invoke a remote method on a spoke node. Instances of this class should only be
+ * created by the messaging framework on the hub node. All remote method invocations should originate as an instance of
+ * {@link HubInvoke}.
+ */
 public class SpokeInvoke extends Invoke {
   private static final long serialVersionUID = -2007645463748969L;
   private INode invoker;

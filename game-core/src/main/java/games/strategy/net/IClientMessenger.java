@@ -4,6 +4,9 @@ import java.io.File;
 
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 
+/**
+ * A client messenger. Additional methods for selecting the game on the server.
+ */
 public interface IClientMessenger extends IMessenger {
   void changeServerGameTo(final String gameName);
 

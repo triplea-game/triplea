@@ -30,6 +30,9 @@ import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
+/**
+ * Default implementation of {@link IClientMessenger}.
+ */
 @Log
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode node;
