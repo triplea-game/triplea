@@ -1,10 +1,10 @@
 package org.triplea.game.client.ui.swing.laf;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.pushingpixels.substance.api.SubstanceCortex;
+import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 /**
  * Default implementation of the {@link SubstanceLookAndFeelManager} service.
@@ -12,46 +12,18 @@ import org.pushingpixels.substance.api.SubstanceCortex;
 public final class DefaultSubstanceLookAndFeelManager implements SubstanceLookAndFeelManager {
   @Override
   public String getDefaultLookAndFeelClassName() {
-    return getClassNameForSkin("Graphite");
-  }
-
-  private static String getClassNameForSkin(final String skinName) {
-    return "org.pushingpixels.substance.api.skin.Substance" + skinName + "LookAndFeel";
+    return SubstanceGraphiteLookAndFeel.class.getName();
   }
 
   @Override
   public Collection<String> getInstalledLookAndFeelClassNames() {
-    return Arrays.asList(
-        "Autumn",
-        "BusinessBlackSteel",
-        "BusinessBlueSteel",
-        "Business",
-        "Cerulean",
-        "CremeCoffee",
-        "Creme",
-        "DustCoffee",
-        "Dust",
-        "Gemini",
-        "GraphiteAqua",
-        "GraphiteChalk",
-        "GraphiteGlass",
-        "GraphiteGold",
-        "Graphite",
-        "Magellan",
-        "Mariner",
-        "MistAqua",
-        "MistSilver",
-        "Moderate",
-        "NebulaBrickWall",
-        "Nebula",
-        "OfficeBlack2007",
-        "OfficeBlue2007",
-        "OfficeSilver2007",
-        "Raven",
-        "Sahara",
-        "Twilight").stream()
-        .map(DefaultSubstanceLookAndFeelManager::getClassNameForSkin)
+    return SubstanceCortex.GlobalScope.getAllSkins().values().stream()
+        .map(skinInfo -> getLookAndFeelClassNameForSkinClassName(skinInfo.getClassName()))
         .collect(Collectors.toList());
+  }
+
+  private static String getLookAndFeelClassNameForSkinClassName(final String skinClassName) {
+    return skinClassName.replaceFirst("(?<=\\.)(\\w+)Skin$", "Substance$1LookAndFeel");
   }
 
   @Override
