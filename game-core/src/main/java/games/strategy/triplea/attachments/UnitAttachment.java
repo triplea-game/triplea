@@ -2852,7 +2852,8 @@ public class UnitAttachment extends DefaultAttachment {
         final String text = String.valueOf(support.getBonus())
             + (moreThanOneSupportType ? " " + support.getBonusType() : "")
             + " "
-            + (support.getDice() == null ? ""
+            + (support.getDice() == null
+                ? ""
                 : support.getDice().replace(":", " & ").replace("AAroll", "Targeted Roll")
                     .replace("AAstrength", "Targeted Power").replace("roll", "Roll").replace("strength", "Power"))
             + " to " + support.getNumber()
