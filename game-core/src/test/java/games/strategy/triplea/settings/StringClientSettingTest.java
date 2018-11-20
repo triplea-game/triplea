@@ -10,18 +10,18 @@ final class StringClientSettingTest {
   private final StringClientSetting clientSetting = new StringClientSetting("name");
 
   @Nested
-  final class FormatValueTest {
+  final class EncodeValueTest {
     @Test
     void shouldReturnValueUnchanged() {
-      assertThat(clientSetting.formatValue("value"), is("value"));
+      assertThat(clientSetting.encodeValue("value"), is("value"));
     }
   }
 
   @Nested
-  final class ParseValueTest {
+  final class DecodeValueTest {
     @Test
     void shouldReturnEncodedValueUnchanged() {
-      assertThat(clientSetting.parseValue("encodedValue"), is("encodedValue"));
+      assertThat(clientSetting.decodeValue("encodedValue"), is("encodedValue"));
     }
   }
 }

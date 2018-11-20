@@ -10,12 +10,16 @@ final class IntegerClientSetting extends ClientSetting<Integer> {
   }
 
   @Override
-  protected String formatValue(final Integer value) {
+  protected String encodeValue(final Integer value) {
     return value.toString();
   }
 
   @Override
-  protected Integer parseValue(final String encodedValue) {
-    return Integer.valueOf(encodedValue);
+  protected Integer decodeValue(final String encodedValue) throws ValueEncodingException {
+    try {
+      return Integer.valueOf(encodedValue);
+    } catch (final NumberFormatException e) {
+      throw new ValueEncodingException(e);
+    }
   }
 }

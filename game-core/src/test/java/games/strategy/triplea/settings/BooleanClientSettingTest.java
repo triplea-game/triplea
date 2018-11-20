@@ -10,28 +10,28 @@ final class BooleanClientSettingTest {
   private final BooleanClientSetting clientSetting = new BooleanClientSetting("name", false);
 
   @Nested
-  final class FormatValueTest {
+  final class EncodeValueTest {
     @Test
     void shouldReturnEncodedValue() {
-      assertThat(clientSetting.formatValue(false), is("false"));
-      assertThat(clientSetting.formatValue(true), is("true"));
+      assertThat(clientSetting.encodeValue(false), is("false"));
+      assertThat(clientSetting.encodeValue(true), is("true"));
     }
   }
 
   @Nested
-  final class ParseValueTest {
+  final class DecodeValueTest {
     @Test
     void shouldReturnTrueWhenEncodedValueIsCaseInsensitiveTrue() {
-      assertThat(clientSetting.parseValue("true"), is(true));
-      assertThat(clientSetting.parseValue("TRUE"), is(true));
+      assertThat(clientSetting.decodeValue("true"), is(true));
+      assertThat(clientSetting.decodeValue("TRUE"), is(true));
     }
 
     @Test
     void shouldReturnFalseWhenEncodedValueIsNotCaseInsensitiveTrue() {
-      assertThat(clientSetting.parseValue(""), is(false));
-      assertThat(clientSetting.parseValue("false"), is(false));
-      assertThat(clientSetting.parseValue("FALSE"), is(false));
-      assertThat(clientSetting.parseValue("yes"), is(false));
+      assertThat(clientSetting.decodeValue(""), is(false));
+      assertThat(clientSetting.decodeValue("false"), is(false));
+      assertThat(clientSetting.decodeValue("FALSE"), is(false));
+      assertThat(clientSetting.decodeValue("yes"), is(false));
     }
   }
 }

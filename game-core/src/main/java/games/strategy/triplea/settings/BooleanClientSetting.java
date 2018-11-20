@@ -6,12 +6,12 @@ final class BooleanClientSetting extends ClientSetting<Boolean> {
   }
 
   @Override
-  protected String formatValue(final Boolean value) {
+  protected String encodeValue(final Boolean value) {
     return value.toString();
   }
 
   @Override
-  protected Boolean parseValue(final String encodedValue) {
+  protected Boolean decodeValue(final String encodedValue) {
     return Boolean.valueOf(encodedValue);
   }
 }
