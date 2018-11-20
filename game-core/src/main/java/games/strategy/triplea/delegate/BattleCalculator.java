@@ -379,7 +379,7 @@ public class BattleCalculator {
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
         DiceRoll.getAaUnitPowerAndRollsForNormalBattles(defendingAa, allEnemyUnits, allFriendlyUnits, defending,
             bridge.getData());
-    if (DiceRoll.getTotalAAattacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
+    if (DiceRoll.getTotalAaAttacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
     final Triple<Integer, Integer, Boolean> triple =

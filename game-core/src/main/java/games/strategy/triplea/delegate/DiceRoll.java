@@ -95,7 +95,11 @@ public class DiceRoll implements Externalizable {
     return Tuple.of(highestAttack, chosenDiceSize);
   }
 
-  static int getTotalAAattacks(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
+  /**
+   * Finds total number of AA attacks that a group of units can roll against targets taking into
+   * account infinite roll and overstack AA.
+   */
+  static int getTotalAaAttacks(final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap,
       final Collection<Unit> validTargets) {
     if (unitPowerAndRollsMap.isEmpty() || validTargets.isEmpty()) {
       return 0;
@@ -121,11 +125,26 @@ public class DiceRoll implements Externalizable {
     return totalAAattacksNormal + totalAAattacksSurplus;
   }
 
+  /**
+   * Used only for rolling SBR or fly over AA as they don't currently take into account support.
+   */
   static DiceRoll rollSbrOrFlyOverAa(final Collection<Unit> validTargets, final Collection<Unit> aaUnits,
       final IDelegateBridge bridge, final Territory location, final boolean defending) {
     return rollAa(validTargets, aaUnits, new ArrayList<>(), new ArrayList<>(), bridge, location, defending);
   }
 
+  /**
+   * Used to roll AA for battles, SBR, and fly over.
+   *
+   * @param validTargets - potential AA targets
+   * @param aaUnits - AA units that could potentially be rolling
+   * @param allEnemyUnitsAliveOrWaitingToDie - all enemy units to check for support
+   * @param allFriendlyUnitsAliveOrWaitingToDie - all allied units to check for support
+   * @param bridge - delegate bridge
+   * @param location - battle territory
+   * @param defending - whether AA units are defending or attacking
+   * @return DiceRoll result which includes total hits and dice that were rolled
+   */
   static DiceRoll rollAa(final Collection<Unit> validTargets, final Collection<Unit> aaUnits,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
@@ -137,7 +156,7 @@ public class DiceRoll implements Externalizable {
             allFriendlyUnitsAliveOrWaitingToDie, defending, data);
 
     // Check that there are valid AA and targets to roll for
-    final int totalAaAttacks = getTotalAAattacks(unitPowerAndRollsMap, validTargets);
+    final int totalAaAttacks = getTotalAaAttacks(unitPowerAndRollsMap, validTargets);
     if (totalAaAttacks <= 0) {
       return new DiceRoll(Collections.emptyList(), 0, 0);
     }
@@ -219,19 +238,19 @@ public class DiceRoll implements Externalizable {
     normalNonInfiniteAa.removeAll(overstackAa);
 
     // Determine maximum total attacks
-    final int totalAAattacksTotal = getTotalAAattacks(unitPowerAndRollsMap, validTargets);
+    final int totalAAattacksTotal = getTotalAaAttacks(unitPowerAndRollsMap, validTargets);
 
     // Determine individual totals
     final Map<Unit, Tuple<Integer, Integer>> normalNonInfiniteAaMap = new HashMap<>(unitPowerAndRollsMap);
     normalNonInfiniteAaMap.keySet().retainAll(normalNonInfiniteAa);
-    final int normalNonInfiniteAAtotalAAattacks = getTotalAAattacks(normalNonInfiniteAaMap, validTargets);
+    final int normalNonInfiniteAAtotalAAattacks = getTotalAaAttacks(normalNonInfiniteAaMap, validTargets);
     final Map<Unit, Tuple<Integer, Integer>> infiniteAaMap = new HashMap<>(unitPowerAndRollsMap);
     infiniteAaMap.keySet().retainAll(infiniteAa);
     final int infiniteAAtotalAAattacks = Math.min((validTargets.size() - normalNonInfiniteAAtotalAAattacks),
-        getTotalAAattacks(infiniteAaMap, validTargets));
+        getTotalAaAttacks(infiniteAaMap, validTargets));
     final Map<Unit, Tuple<Integer, Integer>> overstackAaMap = new HashMap<>(unitPowerAndRollsMap);
     overstackAaMap.keySet().retainAll(overstackAa);
-    final int overstackAAtotalAAattacks = getTotalAAattacks(overstackAaMap, validTargets);
+    final int overstackAAtotalAAattacks = getTotalAaAttacks(overstackAaMap, validTargets);
     if (totalAAattacksTotal != (normalNonInfiniteAAtotalAAattacks + infiniteAAtotalAAattacks
         + overstackAAtotalAAattacks)) {
       throw new IllegalStateException("Total attacks should be: " + totalAAattacksTotal + " but instead is: "
@@ -684,7 +703,7 @@ public class DiceRoll implements Externalizable {
     return diceRoll;
   }
 
-  public static void getSortedAaSupport(final Collection<Unit> unitsGivingTheSupport,
+  private static void getSortedAaSupport(final Collection<Unit> unitsGivingTheSupport,
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
       final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft, final GameData data,
       final boolean defence, final boolean allies) {
