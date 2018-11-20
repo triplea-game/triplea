@@ -389,9 +389,7 @@ public class BattleCalculator {
     if (!allSameAttackPower) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }
-    final Tuple<Integer, Integer> attackThenDiceSides =
-        DiceRoll.getMaxAaAttackAndDiceSides(defendingAa, bridge.getData(), !defending);
-    final int highestAttack = attackThenDiceSides.getFirst();
+    final int highestAttack = DiceRoll.getMaxAaAttackAndDiceSides(defendingAa, bridge.getData(), !defending).getFirst();
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
     final int hits = dice.getHits();
     final List<Unit> planesList = new ArrayList<>();

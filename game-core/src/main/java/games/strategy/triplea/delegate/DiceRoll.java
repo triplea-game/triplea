@@ -76,9 +76,6 @@ public class DiceRoll implements Externalizable {
     for (final Unit u : aaUnits) {
       final UnitAttachment ua = UnitAttachment.get(u.getType());
       int uaDiceSides = defending ? ua.getAttackAaMaxDieSides() : ua.getOffensiveAttackAaMaxDieSides();
-      if (unitPowerAndRollsMap.containsKey(u)) {
-        uaDiceSides = unitPowerAndRollsMap.get(u).getSecond();
-      }
       if (uaDiceSides < 1) {
         uaDiceSides = diceSize;
       }
