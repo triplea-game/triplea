@@ -161,20 +161,19 @@ public class BattleCalculator {
 
   private static CasualtyDetails getLowLuckAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAa, final Collection<Unit> allEnemyUnits, final Collection<Unit> allFriendlyUnits,
-      final DiceRoll dice, final IDelegateBridge bridge,
-      final boolean allowMultipleHitsPerUnit) {
+      final DiceRoll dice, final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit) {
 
     int hitsLeft = dice.getHits();
     if (hitsLeft <= 0) {
       return new CasualtyDetails();
     }
 
+    final GameData data = bridge.getData();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
-        DiceRoll.getAaUnitPowerAndRollsForNormalBattles(defendingAa, allEnemyUnits, allFriendlyUnits, defending, null);
+        DiceRoll.getAaUnitPowerAndRollsForNormalBattles(defendingAa, allEnemyUnits, allFriendlyUnits, !defending, data);
 
     // if we can damage units, do it now
     final CasualtyDetails finalCasualtyDetails = new CasualtyDetails();
-    final GameData data = bridge.getData();
     final Tuple<Integer, Integer> attackThenDiceSides =
         DiceRoll.getMaxAaAttackAndDiceSides(defendingAa, data, !defending, unitPowerAndRollsMap);
     final int highestAttack = attackThenDiceSides.getFirst();
@@ -371,14 +370,15 @@ public class BattleCalculator {
    */
   private static CasualtyDetails individuallyFiredAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> defendingAa, final Collection<Unit> allEnemyUnits, final Collection<Unit> allFriendlyUnits,
-      final DiceRoll dice, final IDelegateBridge bridge,
-      final boolean allowMultipleHitsPerUnit) {
+      final DiceRoll dice, final IDelegateBridge bridge, final boolean allowMultipleHitsPerUnit) {
+
     // if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not
     // enough rolls to have a single roll for each aircraft, or too many rolls normal behavior is instant kill, which
     // means planes.size()
     final int planeHitPoints = (allowMultipleHitsPerUnit ? getTotalHitpointsLeft(planes) : planes.size());
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
-        DiceRoll.getAaUnitPowerAndRollsForNormalBattles(defendingAa, allEnemyUnits, allFriendlyUnits, defending, null);
+        DiceRoll.getAaUnitPowerAndRollsForNormalBattles(defendingAa, allEnemyUnits, allFriendlyUnits, defending,
+            bridge.getData());
     if (DiceRoll.getTotalAAattacks(unitPowerAndRollsMap, planes) != planeHitPoints) {
       return randomAaCasualties(planes, dice, bridge, allowMultipleHitsPerUnit);
     }

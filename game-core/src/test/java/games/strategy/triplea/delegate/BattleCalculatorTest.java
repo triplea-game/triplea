@@ -114,7 +114,8 @@ public class BattleCalculatorTest {
     // don't allow rolling, 6 of each is deterministic
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
-        defendingAa, bridge, territory("Germany", data), true);
+        defendingAa, planes, territory("Germany", data).getUnits().getUnits(), bridge, territory("Germany", data),
+        true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
     assertEquals(2, casualties.size());
@@ -140,7 +141,8 @@ public class BattleCalculatorTest {
         .thenAnswer(withValues(1, 1));
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
-        defendingAa, bridge, territory("Germany", data), true);
+        defendingAa, planes, territory("Germany", data).getUnits().getUnits(), bridge, territory("Germany", data),
+        true);
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", data), null, false, null).getKilled();
@@ -167,7 +169,8 @@ public class BattleCalculatorTest {
     final DiceRoll roll = DiceRoll.rollAa(
         CollectionUtils.getMatches(planes,
             Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
-        defendingAa, bridge, territory("Germany", data), true);
+        defendingAa, planes, territory("Germany", data).getUnits().getUnits(), bridge, territory("Germany", data),
+        true);
     final Collection<Unit> casualties =
         BattleCalculator.getAaCasualties(false, planes, planes, defendingAa, defendingAa, roll, bridge, germans(data),
             british(data), null, territory("Germany", data), null, false, null).getKilled();
@@ -193,7 +196,8 @@ public class BattleCalculatorTest {
     whenGetRandom(bridge).thenAnswer(withValues(0));
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
-        defendingAa, bridge, territory("Germany", data), true);
+        defendingAa, planes, territory("Germany", data).getUnits().getUnits(), bridge, territory("Germany", data),
+        true);
     final Collection<Unit> casualties =
         BattleCalculator.getAaCasualties(false, planes, planes, defendingAa, defendingAa, roll, bridge, germans(data),
             british(data), null, territory("Germany", data), null, false, null).getKilled();
@@ -221,7 +225,8 @@ public class BattleCalculatorTest {
         .thenAnswer(withValues(0));
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
-        defendingAa, bridge, territory("Germany", data), true);
+        defendingAa, planes, territory("Germany", data).getUnits().getUnits(), bridge, territory("Germany", data),
+        true);
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
@@ -253,7 +258,8 @@ public class BattleCalculatorTest {
     final DiceRoll roll = DiceRoll
         .rollAa(CollectionUtils.getMatches(planes,
             Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
-            defendingAa, bridge, territory("Germany", data), true);
+            defendingAa, planes, territory("Germany", data).getUnits().getUnits(), bridge, territory("Germany", data),
+            true);
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
@@ -279,7 +285,8 @@ public class BattleCalculatorTest {
     whenGetRandom(bridge).thenAnswer(withValues(0));
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(data))),
-        defendingAa, bridge, territory("Germany", data), true);
+        defendingAa, planes, territory("Germany", data).getUnits().getUnits(), bridge, territory("Germany", data),
+        true);
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,

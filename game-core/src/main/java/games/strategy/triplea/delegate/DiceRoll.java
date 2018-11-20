@@ -130,12 +130,14 @@ public class DiceRoll implements Externalizable {
   }
 
   static DiceRoll rollAa(final Collection<Unit> validTargets, final Collection<Unit> aaUnits,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final List<Unit> allFriendlyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
+      final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
       final IDelegateBridge bridge, final Territory location, final boolean defending) {
 
+    final GameData data = bridge.getData();
     final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap =
         getAaUnitPowerAndRollsForNormalBattles(aaUnits, allEnemyUnitsAliveOrWaitingToDie,
-            allFriendlyUnitsAliveOrWaitingToDie, defending, null);
+            allFriendlyUnitsAliveOrWaitingToDie, defending, data);
 
     // Check that there are valid AA and targets to roll for
     final int totalAaAttacks = getTotalAAattacks(unitPowerAndRollsMap, validTargets);
@@ -144,7 +146,6 @@ public class DiceRoll implements Externalizable {
     }
 
     // Determine dice sides (doesn't handle the possibility of different dice sides within the same typeAA)
-    final GameData data = bridge.getData();
     final int diceSides = getMaxAaAttackAndDiceSides(aaUnits, data, defending, unitPowerAndRollsMap).getSecond();
 
     // Roll AA dice for LL or regular

@@ -226,10 +226,10 @@ public class DiceRollTest {
         .thenAnswer(withValues(1)); // aa misses at 1 (0 based)
     // aa hits
     final DiceRoll hit =
-        DiceRoll.rollAa(bomber(gameData).create(1, british(gameData)), aaGunList, bridge, westRussia, true);
+        DiceRoll.rollAa(bombers, aaGunList, bombers, aaGunList, bridge, westRussia, true);
     assertThat(hit.getHits(), is(1));
     // aa misses
-    final DiceRoll miss = DiceRoll.rollAa(bombers, aaGunList, bridge, westRussia, true);
+    final DiceRoll miss = DiceRoll.rollAa(bombers, aaGunList, bombers, aaGunList, bridge, westRussia, true);
     assertThat(miss.getHits(), is(0));
   }
 
@@ -251,18 +251,18 @@ public class DiceRollTest {
     // aa hits
     final DiceRoll hit = DiceRoll.rollAa(CollectionUtils.getMatches(fighterList,
         Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
-        aaGunList, bridge, westRussia, true);
+        aaGunList, fighterList, aaGunList, bridge, westRussia, true);
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss = DiceRoll.rollAa(CollectionUtils.getMatches(fighterList,
         Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
-        aaGunList, bridge, westRussia, true);
+        aaGunList, fighterList, aaGunList, bridge, westRussia, true);
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 1 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
     final DiceRoll hitNoRoll = DiceRoll.rollAa(CollectionUtils.getMatches(fighterList,
         Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
-        aaGunList, bridge, westRussia, true);
+        aaGunList, fighterList, aaGunList, bridge, westRussia, true);
     assertThat(hitNoRoll.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
   }
@@ -283,7 +283,7 @@ public class DiceRollTest {
     // aa hits at 0 (0 based)
     final DiceRoll hit = DiceRoll.rollAa(CollectionUtils.getMatches(fighterList,
         Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
-        aaGunList, bridge, westRussia, true);
+        aaGunList, fighterList, aaGunList, bridge, westRussia, true);
     assertThat(hit.getHits(), is(1));
     thenGetRandomShouldHaveBeenCalled(bridge, never());
   }
@@ -308,18 +308,18 @@ public class DiceRollTest {
     // aa radar hits
     final DiceRoll hit = DiceRoll.rollAa(CollectionUtils.getMatches(fighterList,
         Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
-        aaGunList, bridge, finnland, true);
+        aaGunList, fighterList, aaGunList, bridge, finnland, true);
     assertThat(hit.getHits(), is(1));
     // aa misses
     final DiceRoll miss = DiceRoll.rollAa(CollectionUtils.getMatches(fighterList,
         Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
-        aaGunList, bridge, finnland, true);
+        aaGunList, fighterList, aaGunList, bridge, finnland, true);
     assertThat(miss.getHits(), is(0));
     // 6 bombers, 2 should hit, and nothing should be rolled
     fighterList = fighterType.create(6, russians);
     final DiceRoll hitNoRoll = DiceRoll.rollAa(CollectionUtils.getMatches(fighterList,
         Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAa(gameData))),
-        aaGunList, bridge, finnland, true);
+        aaGunList, fighterList, aaGunList, bridge, finnland, true);
     assertThat(hitNoRoll.getHits(), is(2));
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
   }

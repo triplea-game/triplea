@@ -168,7 +168,8 @@ public class WW2V3Year41Test {
     // don't allow rolling, 6 of each is deterministic
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
-        defendingAa, bridge, territory("Germany", gameData), true);
+        defendingAa, planes, territory("Germany", gameData).getUnits().getUnits(), bridge,
+        territory("Germany", gameData), true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
         defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(2, casualties.size());
@@ -198,7 +199,8 @@ public class WW2V3Year41Test {
         .thenAnswer(withValues(1));
     final DiceRoll roll = DiceRoll.rollAa(CollectionUtils.getMatches(planes,
         Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
-        defendingAa, bridge, territory("Germany", gameData), true);
+        defendingAa, planes, territory("Germany", gameData).getUnits().getUnits(), bridge,
+        territory("Germany", gameData), true);
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
@@ -231,7 +233,8 @@ public class WW2V3Year41Test {
     final DiceRoll roll = DiceRoll.rollAa(
         CollectionUtils.getMatches(planes,
             Matches.unitIsOfTypes(UnitAttachment.get(defendingAa.iterator().next().getType()).getTargetsAa(gameData))),
-        defendingAa, bridge, territory("Germany", gameData), true);
+        defendingAa, planes, territory("Germany", gameData).getUnits().getUnits(), bridge,
+        territory("Germany", gameData), true);
     assertEquals(2, roll.getHits());
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
