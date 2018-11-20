@@ -304,6 +304,34 @@ public final class GameDataTestUtil {
   }
 
   /**
+   * Returns a germanAntiTankGun UnitType object for the specified GameData object.
+   */
+  public static UnitType germanAntiTankGun(final GameData data) {
+    return unitType("germanAntiTankGun", data);
+  }
+
+  /**
+   * Returns a germanATSupport UnitType object for the specified GameData object.
+   */
+  public static UnitType germanAtSupport(final GameData data) {
+    return unitType("germanATSupport", data);
+  }
+
+  /**
+   * Returns a americanTank UnitType object for the specified GameData object.
+   */
+  public static UnitType americanAtCounter(final GameData data) {
+    return unitType("americanATCounter", data);
+  }
+
+  /**
+   * Returns a americanTank UnitType object for the specified GameData object.
+   */
+  public static UnitType americanTank(final GameData data) {
+    return unitType("americanTank", data);
+  }
+
+  /**
    * Returns a americanCruiser UnitType object for the specified GameData object.
    */
   public static UnitType americanCruiser(final GameData data) {

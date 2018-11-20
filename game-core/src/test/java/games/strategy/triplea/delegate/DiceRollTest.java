@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
+import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.thenGetRandomShouldHaveBeenCalled;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
@@ -322,6 +323,73 @@ public class DiceRollTest {
         aaGunList, fighterList, aaGunList, bridge, finnland, true);
     assertThat(hitNoRoll.getHits(), is(2));
     thenGetRandomShouldHaveBeenCalled(bridge, times(2));
+  }
+
+  @Test
+  public void testAaSupport() throws Exception {
+    gameData = TestMapGameData.TWW.getGameData();
+    GameDataTestUtil.makeGameLowLuck(gameData);
+
+    final PlayerId usa = GameDataTestUtil.usa(gameData);
+    final PlayerId germany = GameDataTestUtil.germany(gameData);
+    final Territory westernFrance = territory("Western France", gameData);
+    final List<Unit> atGuns = GameDataTestUtil.germanAntiTankGun(gameData).create(1, germany);
+    GameDataTestUtil.addTo(westernFrance, atGuns);
+    final List<Unit> targets = GameDataTestUtil.americanTank(gameData).create(1, usa);
+
+    final IDelegateBridge bridge = newDelegateBridge(usa);
+    whenGetRandom(bridge)
+        .thenAnswer(withValues(1)) // at hits at 1 (0 based)
+        .thenAnswer(withValues(2)) // at misses at 2 (0 based)
+        .thenAnswer(withValues(3)) // at hits at 3 with support (0 based)
+        .thenAnswer(withValues(4)) // at misses at 4 with support (0 based)
+        .thenAnswer(withValues(7)) // at hits at 7 with 2 AT + support (0 based)
+        .thenAnswer(withValues(8)) // at misses at 8 with 2 AT + support (0 based)
+        .thenAnswer(withValues(1)) // at hits at 1 with 4 AT + support + counter support (0 based)
+        .thenAnswer(withValues(2)); // at misses at 2 with 4 AT + support + counter support (0 based)
+
+    // 1 AT gun
+    final DiceRoll hit = DiceRoll.rollAa(targets, atGuns, targets, atGuns, bridge, westernFrance, true);
+    assertThat(hit.getHits(), is(1));
+    final DiceRoll miss = DiceRoll.rollAa(targets, atGuns, targets, atGuns, bridge, westernFrance, true);
+    assertThat(miss.getHits(), is(0));
+
+    // 1 AT gun + 1 AT support (AT support is a unit that provides +2 AA strength for 3 units)
+    final List<Unit> supportUnits = GameDataTestUtil.germanAtSupport(gameData).create(1, germany);
+    final DiceRoll hitWithSupport =
+        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+    assertThat(hitWithSupport.getHits(), is(1));
+    final DiceRoll missWithSupport =
+        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+    assertThat(missWithSupport.getHits(), is(0));
+
+    // 2 AT guns + 1 AT support
+    atGuns.addAll(GameDataTestUtil.germanAntiTankGun(gameData).create(1, germany));
+    final DiceRoll hitWith2AtAndSupport =
+        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+    assertThat(hitWith2AtAndSupport.getHits(), is(1));
+    final DiceRoll missWith2AtAndSupport =
+        DiceRoll.rollAa(targets, atGuns, targets, supportUnits, bridge, westernFrance, true);
+    assertThat(missWith2AtAndSupport.getHits(), is(0));
+
+    // 2 AT guns + 1 AT support + 1 enemy AT counter (AT counter is a unit that provides -10 AA strength for 3 units)
+    // Doesn't even roll any dice since strength ends up being 0 for both AT guns
+    final List<Unit> enemySupportUnits = GameDataTestUtil.americanAtCounter(gameData).create(1, usa);
+    final DiceRoll missWith2AtAndSupportAndEnemySupport =
+        DiceRoll.rollAa(targets, atGuns, enemySupportUnits, supportUnits, bridge, westernFrance, true);
+    assertThat(missWith2AtAndSupportAndEnemySupport.getHits(), is(0));
+
+    // 4 AT guns + 1 AT support + 1 enemy AT counter
+    // Enemy AT counter zeroes out 3 AT guns and AT support so just 1 AT gun fires
+    atGuns.addAll(GameDataTestUtil.germanAntiTankGun(gameData).create(2, germany));
+    final DiceRoll hitWith4AtAndSupportAndEnemySupport =
+        DiceRoll.rollAa(targets, atGuns, enemySupportUnits, supportUnits, bridge, westernFrance, true);
+    assertThat(hitWith4AtAndSupportAndEnemySupport.getHits(), is(1));
+    final DiceRoll missWith4AtAndSupportAndEnemySupport =
+        DiceRoll.rollAa(targets, atGuns, enemySupportUnits, supportUnits, bridge, westernFrance, true);
+    assertThat(missWith4AtAndSupportAndEnemySupport.getHits(), is(0));
+
+    thenGetRandomShouldHaveBeenCalled(bridge, times(8));
   }
 
   @Test
