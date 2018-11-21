@@ -10,12 +10,12 @@ final class StringClientSetting extends ClientSetting<String> {
   }
 
   @Override
-  protected String formatValue(final String value) {
+  protected String encodeValue(final String value) {
     return value;
   }
 
   @Override
-  protected String parseValue(final String encodedValue) {
+  protected String decodeValue(final String encodedValue) {
     return encodedValue;
   }
 }

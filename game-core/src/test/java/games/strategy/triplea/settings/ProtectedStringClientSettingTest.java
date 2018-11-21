@@ -1,48 +1,94 @@
 package games.strategy.triplea.settings;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.security.CredentialManager;
+import games.strategy.security.CredentialManagerException;
 
 final class ProtectedStringClientSettingTest {
   private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", false);
 
   @Nested
-  final class DisplayValueTest extends AbstractClientSettingTestCase {
-
+  final class GetDisplayValueTest extends AbstractClientSettingTestCase {
     @Test
-    void testDisplayValue() {
+    void shouldReturnUnmaskedValueWhenNotSensitive() {
       clientSetting.setValue("$eCrEt".toCharArray());
       assertThat(clientSetting.getDisplayValue(), is("$eCrEt"));
-      final ProtectedStringClientSetting sensitive = new ProtectedStringClientSetting("name", true);
-      sensitive.setValue("$eCrEt".toCharArray());
-      assertThat(sensitive.getDisplayValue(), is("******"));
+    }
+
+    @Test
+    void shouldReturnMaskedValueWhenSensitive() {
+      final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", true);
+      clientSetting.setValue("$eCrEt".toCharArray());
+      assertThat(clientSetting.getDisplayValue(), is("******"));
     }
   }
 
   @Nested
-  final class FormatValueTest {
+  final class EncodeValueTest {
     @Test
-    void shouldReturnValueUnchanged() throws Exception {
-      try (CredentialManager manager = CredentialManager.newInstance()) {
-        final char[] sensitiveValue = "value".toCharArray();
-        assertThat(manager.unprotectToString(clientSetting.formatValue(sensitiveValue)), is("value"));
-        assertThat(sensitiveValue, is(new char[] {0, 0, 0, 0, 0}));
+    void shouldReturnProtectedValue() throws Exception {
+      try (CredentialManager credentialManager = CredentialManager.newInstance()) {
+        final char[] value = "value".toCharArray();
+
+        final String encodedValue = ProtectedStringClientSetting.encodeValue(value, credentialManager);
+
+        assertThat(credentialManager.unprotectToString(encodedValue), is("value"));
+        assertThat("value was scrubbed", value, is(new char[] {0, 0, 0, 0, 0}));
       }
+    }
+
+    @Test
+    void shouldThrowExceptionWhenFailToProtectValue() throws Exception {
+      final CredentialManager credentialManager = mock(CredentialManager.class);
+      when(credentialManager.protect(any(char[].class))).thenThrow(CredentialManagerException.class);
+
+      assertThrows(
+          ClientSetting.ValueEncodingException.class,
+          () -> ProtectedStringClientSetting.encodeValue("value".toCharArray(), credentialManager));
     }
   }
 
   @Nested
-  final class ParseValueTest {
+  final class DecodeValueTest {
     @Test
-    void shouldReturnEncodedValueUnchanged() throws Exception {
-      try (CredentialManager manager = CredentialManager.newInstance()) {
-        assertThat(clientSetting.parseValue(manager.protect("encodedValue")), is("encodedValue".toCharArray()));
+    void shouldReturnUnprotectedValue() throws Exception {
+      try (CredentialManager credentialManager = CredentialManager.newInstance()) {
+        final String encodedValue = credentialManager.protect("encodedValue");
+
+        final char[] value = ProtectedStringClientSetting.decodeValue(encodedValue, credentialManager);
+
+        assertThat(value, is("encodedValue".toCharArray()));
       }
+    }
+
+    @Test
+    void shouldThrowExceptionWhenFailToUnprotectValue() throws Exception {
+      final CredentialManager credentialManager = mock(CredentialManager.class);
+      when(credentialManager.unprotect(any())).thenThrow(CredentialManagerException.class);
+
+      assertThrows(
+          ClientSetting.ValueEncodingException.class,
+          () -> ProtectedStringClientSetting.decodeValue("encodedValue", credentialManager));
+    }
+  }
+
+  @Nested
+  final class RoundTripTest extends AbstractClientSettingTestCase {
+    @Test
+    void shouldBeAbleToRoundTripValue() {
+      final String value = "value";
+      clientSetting.setValue(value.toCharArray());
+      assertThat(clientSetting.getValue().map(String::new), isPresentAndIs(value));
     }
   }
 }

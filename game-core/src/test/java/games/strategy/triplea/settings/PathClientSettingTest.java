@@ -12,20 +12,20 @@ final class PathClientSettingTest {
   private final PathClientSetting clientSetting = new PathClientSetting("name", Paths.get("/path", "to", "file"));
 
   @Nested
-  final class FormatValueTest {
+  final class EncodeValueTest {
     @Test
     void shouldReturnEncodedValue() {
-      assertThat(clientSetting.formatValue(Paths.get("/absolute", "path", "to", "file")), is("/absolute/path/to/file"));
-      assertThat(clientSetting.formatValue(Paths.get("relative", "path", "to", "file")), is("relative/path/to/file"));
+      assertThat(clientSetting.encodeValue(Paths.get("/absolute", "path", "to", "file")), is("/absolute/path/to/file"));
+      assertThat(clientSetting.encodeValue(Paths.get("relative", "path", "to", "file")), is("relative/path/to/file"));
     }
   }
 
   @Nested
-  final class ParseValueTest {
+  final class DecodeValueTest {
     @Test
     void shouldReturnPath() {
-      assertThat(clientSetting.parseValue("/absolute/path/to/file"), is(Paths.get("/absolute", "path", "to", "file")));
-      assertThat(clientSetting.parseValue("relative/path/to/file"), is(Paths.get("relative", "path", "to", "file")));
+      assertThat(clientSetting.decodeValue("/absolute/path/to/file"), is(Paths.get("/absolute", "path", "to", "file")));
+      assertThat(clientSetting.decodeValue("relative/path/to/file"), is(Paths.get("relative", "path", "to", "file")));
     }
   }
 }

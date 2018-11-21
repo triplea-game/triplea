@@ -6,12 +6,16 @@ final class EnumClientSetting<E extends Enum<E>> extends ClientSetting<E> {
   }
 
   @Override
-  protected String formatValue(final E value) {
+  protected String encodeValue(final E value) {
     return value.toString();
   }
 
   @Override
-  protected E parseValue(final String encodedValue) {
-    return Enum.valueOf(getType(), encodedValue);
+  protected E decodeValue(final String encodedValue) throws ValueEncodingException {
+    try {
+      return Enum.valueOf(getType(), encodedValue);
+    } catch (final IllegalArgumentException e) {
+      throw new ValueEncodingException(e);
+    }
   }
 }

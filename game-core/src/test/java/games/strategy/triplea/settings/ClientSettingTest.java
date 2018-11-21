@@ -10,12 +10,15 @@ import static org.mockito.Mockito.verify;
 
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import games.strategy.util.function.ThrowingFunction;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class ClientSettingTest {
@@ -33,19 +36,21 @@ final class ClientSettingTest {
   @Nested
   final class GetValueTest extends AbstractClientSettingTestCase {
     @Test
-    void shouldReturnDefaultValueWhenParseValueThrowsException() {
+    void shouldReturnDefaultValueWhenDecodeValueThrowsException() {
       final String defaultValue = "defaultValue";
-      final ClientSetting<String> clientSetting = new FakeClientSetting("name", defaultValue) {
-        @Override
-        protected String parseValue(final String encodedValue) {
-          if (defaultValue.equals(encodedValue)) {
-            return defaultValue;
-          }
+      final String illegalValue = "illegalValue";
+      final ClientSetting<String> clientSetting = new FakeClientSetting(
+          "name",
+          defaultValue,
+          FakeClientSetting.DEFAULT_ENCODE_VALUE,
+          encodedValue -> {
+            if (illegalValue.equals(encodedValue)) {
+              throw new ClientSetting.ValueEncodingException();
+            }
 
-          throw new IllegalArgumentException();
-        }
-      };
-      clientSetting.setValue("otherValue");
+            return FakeClientSetting.DEFAULT_DECODE_VALUE.apply(encodedValue);
+          });
+      clientSetting.setValue(illegalValue);
 
       assertThat(clientSetting.getValue(), isPresentAndIs(defaultValue));
     }
@@ -53,6 +58,29 @@ final class ClientSettingTest {
 
   @Nested
   final class SetValueTest extends AbstractClientSettingTestCase {
+    @Test
+    void shouldNotChangeValueWhenEncodeValueThrowsException() {
+      final String defaultValue = "defaultValue";
+      final String legalValue = "legalValue";
+      final String illegalValue = "illegalValue";
+      final ClientSetting<String> clientSetting = new FakeClientSetting(
+          "name",
+          defaultValue,
+          value -> {
+            if (illegalValue.equals(value)) {
+              throw new ClientSetting.ValueEncodingException();
+            }
+
+            return FakeClientSetting.DEFAULT_ENCODE_VALUE.apply(value);
+          },
+          FakeClientSetting.DEFAULT_DECODE_VALUE);
+      clientSetting.setValue(legalValue);
+
+      clientSetting.setValue(illegalValue);
+
+      assertThat(clientSetting.getValue(), isPresentAndIs(legalValue));
+    }
+
     @Test
     void shouldClearPreferenceWhenValueEqualsDefaultValue() {
       final String name = "name";
@@ -112,23 +140,41 @@ final class ClientSettingTest {
     }
   }
 
-  private static class FakeClientSetting extends ClientSetting<String> {
+  private static final class FakeClientSetting extends ClientSetting<String> {
+    static final ThrowingFunction<String, String, ValueEncodingException> DEFAULT_ENCODE_VALUE = value -> value;
+    static final ThrowingFunction<String, String, ValueEncodingException> DEFAULT_DECODE_VALUE =
+        encodedValue -> encodedValue;
+
+    private final ThrowingFunction<String, String, ValueEncodingException> encodeValue;
+    private final ThrowingFunction<String, String, ValueEncodingException> decodeValue;
+
     FakeClientSetting(final String name) {
-      super(String.class, name);
+      this(name, null);
     }
 
-    FakeClientSetting(final String name, final String defaultValue) {
+    FakeClientSetting(final String name, final @Nullable String defaultValue) {
+      this(name, defaultValue, DEFAULT_ENCODE_VALUE, DEFAULT_DECODE_VALUE);
+    }
+
+    FakeClientSetting(
+        final String name,
+        final @Nullable String defaultValue,
+        final ThrowingFunction<String, String, ValueEncodingException> encodeValue,
+        final ThrowingFunction<String, String, ValueEncodingException> decodeValue) {
       super(String.class, name, defaultValue);
+
+      this.encodeValue = encodeValue;
+      this.decodeValue = decodeValue;
     }
 
     @Override
-    protected String formatValue(final String value) {
-      return value;
+    protected String encodeValue(final String value) throws ValueEncodingException {
+      return encodeValue.apply(value);
     }
 
     @Override
-    protected String parseValue(final String encodedValue) {
-      return encodedValue;
+    protected String decodeValue(final String encodedValue) throws ValueEncodingException {
+      return decodeValue.apply(encodedValue);
     }
   }
 }

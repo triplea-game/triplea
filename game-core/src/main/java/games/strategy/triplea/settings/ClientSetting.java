@@ -227,17 +227,17 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
 
   @Override
   public final void setValue(final @Nullable T value) {
-    setStringValue(Optional.ofNullable(value)
+    setEncodedValue(Optional.ofNullable(value)
         .filter(not(this::isDefaultValue))
-        .map(this::formatValue)
+        .map(this::encodeValueOrElseCurrent)
         .orElse(null));
   }
 
-  private void setStringValue(final @Nullable String value) {
-    if (value == null) {
+  private void setEncodedValue(final @Nullable String encodedValue) {
+    if (encodedValue == null) {
       getPreferences().remove(name);
     } else {
-      getPreferences().put(name, value);
+      getPreferences().put(name, encodedValue);
     }
 
     listeners.forEach(listener -> listener.accept(this));
@@ -247,10 +247,25 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
     return value.equals(defaultValue);
   }
 
+  private @Nullable String encodeValueOrElseCurrent(final T value) {
+    try {
+      return encodeValue(value);
+    } catch (final ValueEncodingException e) {
+      log.log(Level.WARNING, String.format("Failed to encode value: '%s' in client setting '%s'", value, name), e);
+      return getEncodedCurrentValue().orElse(null);
+    }
+  }
+
+  private Optional<String> getEncodedCurrentValue() {
+    return Optional.ofNullable(getPreferences().get(name, null));
+  }
+
   /**
-   * Subclasses must implement to format a typed value as an equivalent encoded string value.
+   * Subclasses must implement to encode a typed value into its equivalent encoded string value.
+   *
+   * @throws ValueEncodingException If an error occurs while encoding the value.
    */
-  protected abstract String formatValue(T value);
+  protected abstract String encodeValue(T value) throws ValueEncodingException;
 
   public final void setValueAndFlush(final @Nullable T value) {
     setValue(value);
@@ -270,28 +285,29 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   @Override
   public final Optional<T> getValue() {
     final Optional<String> encodedCurrentValue = getEncodedCurrentValue();
-    return encodedCurrentValue.isPresent() ? encodedCurrentValue.map(this::parseValueOrElseDefault) : getDefaultValue();
+    return encodedCurrentValue.isPresent()
+        ? encodedCurrentValue.map(this::decodeValueOrElseDefault)
+        : getDefaultValue();
   }
 
-  private Optional<String> getEncodedCurrentValue() {
-    return Optional.ofNullable(getPreferences().get(name, null));
-  }
-
-  private @Nullable T parseValueOrElseDefault(final String encodedValue) {
+  private @Nullable T decodeValueOrElseDefault(final String encodedValue) {
     try {
-      return parseValue(encodedValue);
-    } catch (final IllegalArgumentException e) {
-      log.log(Level.WARNING, "Illegal client setting encoded value: '" + encodedValue + "'", e);
+      return decodeValue(encodedValue);
+    } catch (final ValueEncodingException e) {
+      log.log(
+          Level.WARNING,
+          String.format("Failed to decode encoded value: '%s' in client setting '%s'", encodedValue, name),
+          e);
       return getDefaultValue().orElse(null);
     }
   }
 
   /**
-   * Subclasses must implement to parse an encoded string value into an equivalent typed value.
+   * Subclasses must implement to decode an encoded string value into its equivalent typed value.
    *
-   * @throws IllegalArgumentException If the encoded string value is malformed.
+   * @throws ValueEncodingException If an error occurs while decoding the encoded value.
    */
-  protected abstract T parseValue(String encodedValue);
+  protected abstract T decodeValue(String encodedValue) throws ValueEncodingException;
 
   @Override
   public final void resetValue() {
@@ -318,5 +334,25 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   @Override
   public final String toString() {
     return name;
+  }
+
+  /**
+   * A checked exception that indicates an error occurred while encoding or decoding a value.
+   *
+   * @see ClientSetting#encodeValue(Object)
+   * @see ClientSetting#decodeValue(String)
+   */
+  protected static final class ValueEncodingException extends Exception {
+    private static final long serialVersionUID = 4073145660051491348L;
+
+    public ValueEncodingException() {}
+
+    public ValueEncodingException(final Throwable cause) {
+      super(cause);
+    }
+
+    public ValueEncodingException(final String message, final Throwable cause) {
+      super(message, cause);
+    }
   }
 }

@@ -34,12 +34,12 @@ final class ClientSettingAsGameSettingTest extends AbstractGameSettingTestCase {
     }
 
     @Override
-    protected String formatValue(final Integer value) {
+    protected String encodeValue(final Integer value) {
       return value.toString();
     }
 
     @Override
-    protected Integer parseValue(final String encodedValue) {
+    protected Integer decodeValue(final String encodedValue) {
       return Integer.valueOf(encodedValue);
     }
   }

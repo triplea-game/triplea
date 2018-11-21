@@ -13,12 +13,12 @@ final class PathClientSetting extends ClientSetting<Path> {
   }
 
   @Override
-  protected String formatValue(final Path value) {
+  protected String encodeValue(final Path value) {
     return value.toString();
   }
 
   @Override
-  protected Path parseValue(final String encodedValue) {
+  protected Path decodeValue(final String encodedValue) {
     return Paths.get(encodedValue);
   }
 }
