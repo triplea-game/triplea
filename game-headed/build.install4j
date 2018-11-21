@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="7.0.1" transformSequenceNumber="7">
+<install4j version="7.0.8" transformSequenceNumber="7">
   <directoryPresets config=".triplea-root" />
   <application name="TripleA" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="false" shrinkRuntime="true" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="http://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="1.8" allowBetaVM="true" jdkMode="jdk" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
@@ -13,7 +13,10 @@
     </searchSequence>
     <variables />
     <mergedProjects />
-    <codeSigning macEnabled="false" macPkcs12File="" windowsEnabled="false" windowsKeySource="pkcs12" windowsPvkFile="" windowsSpcFile="" windowsPkcs12File="" />
+    <codeSigning macEnabled="false" macPkcs12File="" windowsEnabled="false" windowsKeySource="pkcs12" windowsPvkFile="" windowsSpcFile="" windowsPkcs12File="" windowsPkcs11Library="" windowsPkcs11Slot="">
+      <windowsKeystoreIdentifier issuer="" serial="" subject="" />
+      <windowsPkcs11Identifier issuer="" serial="" subject="" />
+    </codeSigning>
   </application>
   <files keepModificationTimes="false" missingFilesStrategy="warn" globalExcludeSuffixes="" defaultOverwriteMode="4" defaultUninstallMode="0" launcherOverwriteMode="3" defaultFileMode="644" defaultDirMode="755">
     <filesets />
@@ -177,6 +180,9 @@
             </group>
           </styleOverride>
         </styleOverrides>
+        <customScript mode="1" file="">
+          <content />
+        </customScript>
         <launcherIds />
         <variables />
         <startup>
@@ -963,6 +969,9 @@ return Math.min(is32BitJavaRuntime ? 1024L : 2048L, halfMemoryMiB);</string>
             </group>
           </styleOverride>
         </styleOverrides>
+        <customScript mode="1" file="">
+          <content />
+        </customScript>
         <launcherIds />
         <variables />
         <startup>
