@@ -471,6 +471,10 @@ public class BattleTracker implements Serializable {
     // TODO: else what?
   }
 
+  /**
+   * Changes ownership of the specified territory to the specified player as a result of the territory being taken over
+   * after a battle.
+   */
   public void takeOver(final Territory territory, final PlayerId id, final IDelegateBridge bridge,
       final UndoableMove changeTracker, final Collection<Unit> arrivingUnits) {
     // This could be NULL if unowned water

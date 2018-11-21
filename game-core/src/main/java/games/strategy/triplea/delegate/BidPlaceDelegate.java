@@ -15,6 +15,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
+/**
+ * Logic for unit placement when bid mode is active.
+ */
 public class BidPlaceDelegate extends AbstractPlaceDelegate {
   public BidPlaceDelegate() {}
 

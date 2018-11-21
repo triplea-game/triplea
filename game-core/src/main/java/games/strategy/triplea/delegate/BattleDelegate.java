@@ -927,6 +927,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     }
   }
 
+  /**
+   * Returns the maximum number of units that can scramble from the specified air bases.
+   *
+   * @return {@link Integer#MAX_VALUE} if any air base can scramble an infinite number of units.
+   */
   public static int getMaxScrambleCount(final Collection<Unit> airbases) {
     if (airbases.isEmpty()
         || !airbases.stream().allMatch(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {

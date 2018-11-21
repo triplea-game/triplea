@@ -10,6 +10,13 @@ import games.strategy.engine.history.Step;
 import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.triplea.Constants;
 
+/**
+ * Superclass for all logic that runs in edit mode.
+ *
+ * <p>
+ * TODO: Merge this class with EditDelegate, as it has no other subclasses.
+ * </p>
+ */
 public abstract class BaseEditDelegate extends BasePersistentDelegate {
   private static final String EDITMODE_ON = "Turning on Edit Mode";
   private static final String EDITMODE_OFF = "Turning off Edit Mode";

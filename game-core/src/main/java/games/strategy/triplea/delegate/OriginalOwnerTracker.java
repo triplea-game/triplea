@@ -53,6 +53,9 @@ public class OriginalOwnerTracker implements Serializable {
     return ta.getOriginalOwner();
   }
 
+  /**
+   * Returns the territories originally owned by the specified player.
+   */
   public static Collection<Territory> getOriginallyOwned(final GameData data, final PlayerId player) {
     final Collection<Territory> territories = new ArrayList<>();
     for (final Territory t : data.getMap()) {

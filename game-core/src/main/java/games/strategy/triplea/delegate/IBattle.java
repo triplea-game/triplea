@@ -19,10 +19,16 @@ import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription
  * Represents a battle.
  */
 public interface IBattle extends Serializable {
+  /**
+   * Identifies the winner of a battle.
+   */
   enum WhoWon {
     NOTFINISHED, DRAW, ATTACKER, DEFENDER
   }
 
+  /**
+   * The type of a battle.
+   */
   enum BattleType {
     NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
 

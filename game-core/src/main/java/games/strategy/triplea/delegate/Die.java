@@ -9,6 +9,9 @@ import java.util.Objects;
 public class Die implements Serializable {
   private static final long serialVersionUID = 8766753280669636980L;
 
+  /**
+   * The type of the die roll.
+   */
   public enum DieType {
     MISS, HIT, IGNORED
   }

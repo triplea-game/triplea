@@ -42,6 +42,9 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 
+/**
+ * A strategic bombing raid (SBR) battle.
+ */
 public class StrategicBombingRaidBattle extends AbstractBattle implements BattleStepStrings {
   private static final long serialVersionUID = 8490171037606078890L;
   private static final String RAID = "Strategic bombing raid";

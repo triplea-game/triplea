@@ -19,6 +19,9 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Interruptibles;
 
+/**
+ * Maintains the state of a group of units firing during a {@link MustFightBattle}.
+ */
 public class Fire implements IExecutable {
 
   private static final long serialVersionUID = -3687054738070722403L;

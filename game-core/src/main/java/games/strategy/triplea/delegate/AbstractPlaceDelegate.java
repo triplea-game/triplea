@@ -721,6 +721,10 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return null;
   }
 
+  /**
+   * Returns {@code null} if the specified units can be placed in the specified territory; otherwise returns an error
+   * message explaining why the units cannot be placed in the territory.
+   */
   public String canUnitsBePlaced(final Territory to, final Collection<Unit> units, final PlayerId player) {
     final Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
     if (allowedUnits == null || !allowedUnits.containsAll(units)) {

@@ -5,6 +5,10 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
+/**
+ * A proxy for another {@link TechAdvance}. Delegates all operations to the proxied instance. If no instance to proxy is
+ * specified, an instance of this class will provide a suitable Null Object implementation.
+ */
 public class GenericTechAdvance extends TechAdvance {
   private static final long serialVersionUID = -5985281030083508185L;
 

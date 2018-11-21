@@ -14,6 +14,9 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
+/**
+ * Logic for purchasing units when bid mode is active.
+ */
 public class BidPurchaseDelegate extends PurchaseDelegate {
   private int bid;
   private int spent;

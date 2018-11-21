@@ -61,6 +61,9 @@ public class MoveValidator {
       "Transport cannot both load AND unload after being in combat";
   public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
 
+  /**
+   * Validates the specified move.
+   */
   public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
       final PlayerId player, final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents,
       final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data) {
@@ -868,6 +871,10 @@ public class MoveValidator {
     return false;
   }
 
+  /**
+   * Returns {@code true} if moving the specified units along the specified route requires them to be loaded/unloaded
+   * on/off a transport.
+   */
   // TODO KEV revise these to include paratroop load/unload
   public static boolean isLoad(final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents,
       final Route route, final GameData data, final PlayerId player) {
