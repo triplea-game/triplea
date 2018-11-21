@@ -8,6 +8,9 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.util.CollectionUtils;
 
+/**
+ * The results of an in-progress or complete battle.
+ */
 public class BattleResults extends GameDataComponent {
   private static final long serialVersionUID = 1381361441940258702L;
 

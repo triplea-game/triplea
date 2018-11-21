@@ -363,6 +363,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     return getProduction(territories, getData());
   }
 
+  /**
+   * Returns the total production value of the specified territories.
+   */
   public static int getProduction(final Collection<Territory> territories, final GameData data) {
     int value = 0;
     for (final Territory current : territories) {

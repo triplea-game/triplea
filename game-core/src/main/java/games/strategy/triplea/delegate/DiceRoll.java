@@ -704,6 +704,12 @@ public class DiceRoll implements Externalizable {
     return givenSupport;
   }
 
+  /**
+   * Sorts the specified collection of units in ascending order of their attack or defense strength.
+   *
+   * @param defending {@code true} if the units should be sorted by their defense strength; otherwise the units will be
+   *        sorted by their attack strength.
+   */
   public static void sortByStrength(final List<Unit> units, final boolean defending) {
     final Comparator<Unit> comp = (u1, u2) -> {
       final int v1;

@@ -20,6 +20,9 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;
 
+/**
+ * Superclass for all technology advances.
+ */
 public abstract class TechAdvance extends NamedAttachable {
   private static final long serialVersionUID = -1076712297024403156L;
   private static final Class<?>[] preDefinedTechConstructorParameter = new Class<?>[] {GameData.class};
@@ -160,6 +163,15 @@ public abstract class TechAdvance extends NamedAttachable {
     }
   }
 
+  /**
+   * Creates and returns an instance of the well-known technology advance with the specified class name.
+   *
+   * @param s The fully-qualified name of the technology advance class.
+   * @param data
+   *
+   * @throws IllegalArgumentException If {@code s} is not a well-known technology advance.
+   * @throws IllegalStateException If an error occurs while creating the new technology advance instance.
+   */
   public static TechAdvance findDefinedAdvanceAndCreateAdvance(final String s, final GameData data) {
     final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(s);
     if (clazz == null) {

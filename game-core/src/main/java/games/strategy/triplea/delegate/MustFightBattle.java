@@ -63,12 +63,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
   }
 
-  // this class exists for testing
+  /**
+   * An action representing attacking subs firing during a battle.
+   *
+   * <p>
+   * NOTE: This type exists solely for tests to interrogate the execution stack looking for an action of this type.
+   * </p>
+   */
   public abstract static class AttackSubs implements IExecutable {
     private static final long serialVersionUID = 4872551667582174716L;
   }
 
-  // this class exists for testing
+  /**
+   * An action representing defending subs firing during a battle.
+   *
+   * <p>
+   * NOTE: This type exists solely for tests to interrogate the execution stack looking for an action of this type.
+   * </p>
+   */
   public abstract static class DefendSubs implements IExecutable {
     private static final long serialVersionUID = 3768066729336520095L;
   }

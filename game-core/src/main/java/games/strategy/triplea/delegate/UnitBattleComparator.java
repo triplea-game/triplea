@@ -12,7 +12,11 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
-// TODO: make the Comparator be serializable. To get there all cass members need to be serializable or removed.
+// TODO: make the Comparator be serializable. To get there all class members need to be serializable or removed.
+
+/**
+ * A comparator that sorts units in order from most likely to least likely to be chosen as a battle loss.
+ */
 public class UnitBattleComparator implements Comparator<Unit> {
   private final boolean defending;
   private final IntegerMap<UnitType> costs;
