@@ -8,7 +8,10 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
+import java.util.Collection;
+
 import javax.swing.JComponent;
+import javax.swing.UIManager;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import lombok.AllArgsConstructor;
@@ -108,11 +111,16 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "WARNING: restart all running TripleA instances after changing this setting to avoid system instability.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
+      final Collection<UIManager.LookAndFeelInfo> lookAndFeels = LookAndFeel.getAvailableLookAndFeels();
       return selectionBox(
           ClientSetting.lookAndFeel,
-          LookAndFeel.getLookAndFeelAvailableList(),
-          ClientSetting.lookAndFeel.getValueOrThrow(),
-          s -> s.replaceFirst(".*\\.", "").replaceFirst("LookAndFeel$", ""));
+          UIManager.LookAndFeelInfo.class,
+          lookAndFeels,
+          lookAndFeelClassName -> lookAndFeels.stream()
+              .filter(lookAndFeel -> lookAndFeel.getClassName().equals(lookAndFeelClassName))
+              .findAny(),
+          UIManager.LookAndFeelInfo::getClassName,
+          UIManager.LookAndFeelInfo::getName);
     }
   },
 

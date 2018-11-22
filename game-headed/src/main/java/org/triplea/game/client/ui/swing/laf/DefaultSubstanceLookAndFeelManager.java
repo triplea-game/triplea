@@ -3,7 +3,10 @@ package org.triplea.game.client.ui.swing.laf;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import javax.swing.UIManager;
+
 import org.pushingpixels.substance.api.SubstanceCortex;
+import org.pushingpixels.substance.api.skin.SkinInfo;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
 /**
@@ -16,14 +19,16 @@ public final class DefaultSubstanceLookAndFeelManager implements SubstanceLookAn
   }
 
   @Override
-  public Collection<String> getInstalledLookAndFeelClassNames() {
+  public Collection<UIManager.LookAndFeelInfo> getInstalledLookAndFeels() {
     return SubstanceCortex.GlobalScope.getAllSkins().values().stream()
-        .map(skinInfo -> getLookAndFeelClassNameForSkinClassName(skinInfo.getClassName()))
+        .map(DefaultSubstanceLookAndFeelManager::newLookAndFeelInfoForSkin)
         .collect(Collectors.toList());
   }
 
-  private static String getLookAndFeelClassNameForSkinClassName(final String skinClassName) {
-    return skinClassName.replaceFirst("(?<=\\.)(\\w+)Skin$", "Substance$1LookAndFeel");
+  private static UIManager.LookAndFeelInfo newLookAndFeelInfoForSkin(final SkinInfo skinInfo) {
+    return new UIManager.LookAndFeelInfo(
+        "Substance " + skinInfo.getDisplayName(),
+        skinInfo.getClassName().replaceFirst("(?<=\\.)(\\w+)Skin$", "Substance$1LookAndFeel"));
   }
 
   @Override

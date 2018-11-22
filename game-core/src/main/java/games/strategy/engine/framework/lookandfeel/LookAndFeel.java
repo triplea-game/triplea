@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -62,25 +60,20 @@ public final class LookAndFeel {
     return Services.tryLoadAny(SubstanceLookAndFeelManager.class);
   }
 
-  /**
-   * Returns a collection of the available Look-And-Feels.
-   */
-  public static List<String> getLookAndFeelAvailableList() {
-    final List<String> lookAndFeelClassNames = new ArrayList<>();
-    lookAndFeelClassNames.addAll(getInstalledLookAndFeelClassNames());
-    lookAndFeelClassNames.addAll(getSubstanceLookAndFeelClassNames());
-    return lookAndFeelClassNames;
+  public static Collection<UIManager.LookAndFeelInfo> getAvailableLookAndFeels() {
+    final Collection<UIManager.LookAndFeelInfo> lookAndFeels = new ArrayList<>();
+    lookAndFeels.addAll(getSystemLookAndFeels());
+    lookAndFeels.addAll(getSubstanceLookAndFeels());
+    return lookAndFeels;
   }
 
-  private static Collection<String> getInstalledLookAndFeelClassNames() {
-    return Arrays.stream(UIManager.getInstalledLookAndFeels())
-        .map(UIManager.LookAndFeelInfo::getClassName)
-        .collect(Collectors.toList());
+  private static Collection<UIManager.LookAndFeelInfo> getSystemLookAndFeels() {
+    return Arrays.asList(UIManager.getInstalledLookAndFeels());
   }
 
-  private static Collection<String> getSubstanceLookAndFeelClassNames() {
+  private static Collection<UIManager.LookAndFeelInfo> getSubstanceLookAndFeels() {
     return getSubstanceLookAndFeelManager()
-        .map(SubstanceLookAndFeelManager::getInstalledLookAndFeelClassNames)
+        .map(SubstanceLookAndFeelManager::getInstalledLookAndFeels)
         .orElseGet(Collections::emptyList);
   }
 
