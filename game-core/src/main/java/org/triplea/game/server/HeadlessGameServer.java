@@ -657,7 +657,7 @@ public class HeadlessGameServer {
         + "   Support password is a remote access password that will allow lobby admins to remotely take the "
         + "following actions: ban player, stop game, shutdown server."
         + " (Please email this password to one of the lobby moderators, or private message an admin on the "
-        + "TripleaWarClub.org website forum.)\n");
+        + "forums.triplea-game.org forum.)\n");
   }
 
   private static void handleHeadlessGameServerArgs() {
