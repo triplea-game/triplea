@@ -132,11 +132,13 @@ public class TechAbilityAttachment extends DefaultAttachment {
   @VisibleForTesting
   static int sumNumbers(
       final ToIntFunction<TechAbilityAttachment> mapper,
+      final String attachmentType,
       final PlayerId player,
       final GameData data) {
     return TechTracker.getCurrentTechAdvances(player, data).stream()
         .map(TechAbilityAttachment::get)
         .filter(Objects::nonNull)
+        .filter(i -> i.getAttachedTo().toString().equals(attachmentType))
         .mapToInt(mapper)
         .filter(i -> i > 0)
         .sum();
@@ -364,7 +366,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceSides(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getWarBondDiceSides, player, data);
+    return sumNumbers(TechAbilityAttachment::getWarBondDiceSides, TechAdvance.TECH_NAME_WAR_BONDS, player, data);
   }
 
   private void resetWarBondDiceSides() {
@@ -384,7 +386,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getWarBondDiceNumber(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getWarBondDiceNumber, player, data);
+    return sumNumbers(TechAbilityAttachment::getWarBondDiceNumber, TechAdvance.TECH_NAME_WAR_BONDS, player, data);
   }
 
   private void resetWarBondDiceNumber() {
@@ -436,7 +438,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getRocketDistance(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getRocketDistance, player, data);
+    return sumNumbers(TechAbilityAttachment::getRocketDistance, TechAdvance.TECH_NAME_ROCKETS, player, data);
   }
 
   private void resetRocketDistance() {
@@ -444,7 +446,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void setRocketNumberPerTerritory(final String value) throws GameParseException {
-    rocketNumberPerTerritory = getIntInRange("rocketNumberPerTerritory", value, 200, false);
+    rocketNumberPerTerritory = getIntInRange("rocketNumberPerTerritory", value, 200, true);
   }
 
   private void setRocketNumberPerTerritory(final Integer value) {
@@ -456,11 +458,11 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   public static int getRocketNumberPerTerritory(final PlayerId player, final GameData data) {
-    return sumNumbers(TechAbilityAttachment::getRocketNumberPerTerritory, player, data);
+    return sumNumbers(TechAbilityAttachment::getRocketNumberPerTerritory, TechAdvance.TECH_NAME_ROCKETS, player, data);
   }
 
   private void resetRocketNumberPerTerritory() {
-    rocketNumberPerTerritory = 0;
+    rocketNumberPerTerritory = 1;
   }
 
   private void setUnitAbilitiesGained(final String value) throws GameParseException {

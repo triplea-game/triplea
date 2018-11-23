@@ -135,7 +135,7 @@ public class RocketsFireHelper implements Serializable {
       final int maxAttacks = TechAbilityAttachment.getRocketNumberPerTerritory(player, data);
       for (final Territory t : previouslyAttackedTerritories.keySet()) {
         // negative Rocket Number per Territory == unlimited
-        if (maxAttacks < 0 || maxAttacks <= previouslyAttackedTerritories.get(t).intValue()) {
+        if (maxAttacks >= 0 && maxAttacks <= previouslyAttackedTerritories.get(t).intValue()) {
           targets.remove(t);
         }
       }
