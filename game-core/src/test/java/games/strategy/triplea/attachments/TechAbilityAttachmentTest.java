@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.UnitType;
@@ -34,7 +35,8 @@ import games.strategy.util.IntegerMap;
 public class TechAbilityAttachmentTest {
 
   private final GameData data = mock(GameData.class);
-  private final TechAbilityAttachment attachment = spy(new TechAbilityAttachment("", null, data));
+  private final TechAbilityAttachment attachment = spy(new TechAbilityAttachment("",
+      new NamedAttachable("test", data), data));
   private final UnitTypeList list = mock(UnitTypeList.class);
   private final UnitType dummyUnitType = mock(UnitType.class);
   private final String name = "Test Name";
@@ -177,7 +179,7 @@ public class TechAbilityAttachmentTest {
     final int result = TechAbilityAttachment.sumNumbers(a -> {
       assertEquals(attachment, a);
       return counter.getAndUpdate(i -> i * -10);
-    }, mock(PlayerId.class), data);
+    }, "NamedAttachable{name=test}", mock(PlayerId.class), data);
     assertEquals(101, result);
   }
 }
