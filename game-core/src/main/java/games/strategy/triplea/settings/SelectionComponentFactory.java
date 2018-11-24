@@ -5,13 +5,14 @@ import java.awt.event.ActionListener;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -345,52 +346,74 @@ final class SelectionComponentFactory {
     return selectFile(clientSetting, SwingComponents.FolderSelectionMode.DIRECTORIES);
   }
 
-  static <T> SelectionComponent<JComponent> selectionBox(
-      final ClientSetting<String> clientSetting,
-      final List<T> availableOptions,
-      final T selectedOption,
-      final Function<T, ?> renderFunction) {
+  static <T, E> SelectionComponent<JComponent> selectionBox(
+      final ClientSetting<T> clientSetting,
+      final Class<E> comboBoxItemType,
+      final Collection<E> comboBoxItems,
+      final Function<T, Optional<E>> convertSettingValueToComboBoxItem,
+      final Function<E, T> convertComboBoxItemToSettingValue,
+      final Function<E, ?> convertComboBoxItemToDisplayValue) {
     return new AlwaysValidInputSelectionComponent() {
-      final JComboBox<T> comboBox = getCombobox();
+      private final JComboBox<E> comboBox = newComboBox();
 
-      private JComboBox<T> getCombobox() {
-        final JComboBox<T> comboBox = new JComboBox<>();
-        availableOptions.forEach(comboBox::addItem);
-        comboBox.setSelectedItem(selectedOption);
+      private JComboBox<E> newComboBox() {
+        final JComboBox<E> comboBox = new JComboBox<>();
+        comboBoxItems.forEach(comboBox::addItem);
+        setComboBoxSelectedItem(comboBox, clientSetting::getValue);
         comboBox.setRenderer(new DefaultListCellRenderer() {
           private static final long serialVersionUID = -3094995494539073655L;
 
           @Override
-          @SuppressWarnings("unchecked")
           public Component getListCellRendererComponent(
-              final JList<?> list, final Object value, final int index, final boolean isSelected,
+              final JList<?> list,
+              final @Nullable Object value,
+              final int index,
+              final boolean isSelected,
               final boolean cellHasFocus) {
-            return super.getListCellRendererComponent(list, renderFunction.apply((T) value), index, isSelected,
+            return super.getListCellRendererComponent(
+                list,
+                Optional.ofNullable(value)
+                    .map(comboBoxItemType::cast)
+                    .map(convertComboBoxItemToDisplayValue)
+                    .orElse(null),
+                index,
+                isSelected,
                 cellHasFocus);
           }
         });
         return comboBox;
       }
 
+      private void setComboBoxSelectedItem(
+          final JComboBox<E> comboBox,
+          final Supplier<Optional<T>> settingValueSupplier) {
+        comboBox.setSelectedItem(settingValueSupplier.get()
+            .flatMap(convertSettingValueToComboBoxItem)
+            .orElse(null));
+      }
+
       @Override
       public JComponent getUiComponent() {
-        comboBox.setSelectedItem(clientSetting.getValue().orElse(null));
         return comboBox;
       }
 
       @Override
       public Map<GameSetting<?>, Object> readValues() {
-        return Collections.singletonMap(clientSetting, Objects.toString(comboBox.getSelectedItem(), null));
+        final @Nullable T value = Optional.ofNullable(comboBox.getSelectedItem())
+            .map(comboBoxItemType::cast)
+            .map(convertComboBoxItemToSettingValue)
+            .orElse(null);
+        return Collections.singletonMap(clientSetting, value);
       }
 
       @Override
       public void resetToDefault() {
-        comboBox.setSelectedItem(clientSetting.getDefaultValue().orElse(null));
+        setComboBoxSelectedItem(comboBox, clientSetting::getDefaultValue);
       }
 
       @Override
       public void reset() {
-        comboBox.setSelectedItem(clientSetting.getValue().orElse(null));
+        setComboBoxSelectedItem(comboBox, clientSetting::getValue);
       }
     };
   }

@@ -2,6 +2,8 @@ package org.triplea.game.client.ui.swing.laf;
 
 import java.util.Collection;
 
+import javax.swing.UIManager;
+
 /**
  * A service for managing the Substance look and feel library.
  */
@@ -12,9 +14,9 @@ public interface SubstanceLookAndFeelManager {
   String getDefaultLookAndFeelClassName();
 
   /**
-   * Returns a collection of class names for all installed Substance look and feels.
+   * Returns a collection of all installed Substance look and feels.
    */
-  Collection<String> getInstalledLookAndFeelClassNames();
+  Collection<UIManager.LookAndFeelInfo> getInstalledLookAndFeels();
 
   /**
    * Initializes the Substance look and feel library. Should be called before any Substance look and feel is created.
