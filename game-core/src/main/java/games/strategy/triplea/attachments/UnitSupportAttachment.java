@@ -29,6 +29,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private boolean defence = false;
   private boolean roll = false;
   private boolean strength = false;
+  private boolean aaRoll = false;
+  private boolean aaStrength = false;
   private int bonus = 0;
   private int number = 0;
   private boolean allied = false;
@@ -37,7 +39,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private List<PlayerId> players = new ArrayList<>();
   private boolean impArtTech = false;
   // strings
-  // roll or strength
+  // roll or strength or AAroll or AAstrength
   private String dice;
   // offence or defence
   private String side;
@@ -151,25 +153,27 @@ public class UnitSupportAttachment extends DefaultAttachment {
   }
 
   private void setDice(final String dice) throws GameParseException {
+    resetDice();
     if (dice == null) {
-      resetDice();
       return;
     }
-    roll = false;
-    strength = false;
+    this.dice = dice;
     for (final String element : splitOnColon(dice)) {
       if (element.equalsIgnoreCase("roll")) {
         roll = true;
       } else if (element.equalsIgnoreCase("strength")) {
         strength = true;
+      } else if (element.equalsIgnoreCase("AAroll")) {
+        aaRoll = true;
+      } else if (element.equalsIgnoreCase("AAstrength")) {
+        aaStrength = true;
       } else {
-        throw new GameParseException(dice + " dice must be roll or strength" + thisErrorMsg());
+        throw new GameParseException(dice + " dice must be roll, strength, AAroll, or AAstrength: " + thisErrorMsg());
       }
     }
-    this.dice = dice;
   }
 
-  private String getDice() {
+  String getDice() {
     return dice;
   }
 
@@ -177,6 +181,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
     dice = null;
     roll = false;
     strength = false;
+    aaRoll = false;
+    aaStrength = false;
   }
 
   private void setBonus(final String bonus) {
@@ -272,6 +278,14 @@ public class UnitSupportAttachment extends DefaultAttachment {
 
   public boolean getStrength() {
     return strength;
+  }
+
+  public boolean getAaRoll() {
+    return aaRoll;
+  }
+
+  public boolean getAaStrength() {
+    return aaStrength;
   }
 
   public boolean getDefence() {
@@ -379,6 +393,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
         .put("defence", MutableProperty.ofReadOnly(this::getDefence))
         .put("roll", MutableProperty.ofReadOnly(this::getRoll))
         .put("strength", MutableProperty.ofReadOnly(this::getStrength))
+        .put("aaRoll", MutableProperty.ofReadOnly(this::getAaRoll))
+        .put("aaStrength", MutableProperty.ofReadOnly(this::getAaStrength))
         .put("bonus",
             MutableProperty.of(
                 this::setBonus,

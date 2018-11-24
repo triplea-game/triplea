@@ -1921,6 +1921,7 @@
     <unit name="germanAdvancedSubmarine"/>
     <unit name="germanAntiAirGun"/>
     <unit name="germanAntiTankGun"/>
+    <unit name="germanATSupport"/>
     <unit name="germanDestroyer"/>
     <unit name="germanHeavyDestroyer"/>
     <unit name="germanCruiser"/>
@@ -1993,6 +1994,7 @@
     <unit name="americanAdvancedSubmarine"/>
     <unit name="americanAntiAirGun"/>
     <unit name="americanAntiTankGun"/>
+    <unit name="americanATCounter"/>
     <unit name="americanDestroyer"/>
     <unit name="americanHeavyDestroyer"/>
     <unit name="americanCruiser"/>
@@ -7773,6 +7775,20 @@
       <option name="canBeGivenByTerritoryTo" value="Germany"/>
       <option name="damageableAA" value="true"/>
       <option name="canInvadeOnlyFrom" value="none"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="germanATSupport" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="2"/>
+      <option name="isInfantry" value="true"/>
+    </attachment>
+    <attachment name="unitAttachment" attachTo="americanATCounter" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+      <option name="movement" value="1"/>
+      <option name="attack" value="1"/>
+      <option name="defense" value="3"/>
+      <option name="transportCost" value="2"/>
+      <option name="isInfantry" value="true"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="germanTank" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="2"/>
@@ -16688,6 +16704,28 @@
       <option name="bonusType" value="ArtilleryBonus"/>
       <option name="impArtTech" value="false"/>
       <option name="players" value="Germany"/>
+    </attachment>
+    <attachment name="supportAttachmentATSupportgerman" attachTo="germanATSupport" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="germanAntiTankGun"/>
+      <option name="faction" value="allied"/>
+      <option name="side" value="defence"/>
+      <option name="dice" value="AAstrength"/>
+      <option name="bonus" value="2"/>
+      <option name="number" value="3"/>
+      <option name="bonusType" value="ATBonus"/>
+      <option name="impArtTech" value="false"/>
+      <option name="players" value="Germany"/>
+    </attachment>
+    <attachment name="supportAttachmentATCounterAmerican" attachTo="americanATCounter" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
+      <option name="unitType" value="germanAntiTankGun"/>
+      <option name="faction" value="enemy"/>
+      <option name="side" value="offence"/>
+      <option name="dice" value="AAstrength"/>
+      <option name="bonus" value="-10"/>
+      <option name="number" value="3"/>
+      <option name="bonusType" value="ATBonus"/>
+      <option name="impArtTech" value="false"/>
+      <option name="players" value="Usa"/>
     </attachment>
     <attachment name="supportAttachmentTacBombgerman" attachTo="germanTacticalBomber" javaClass="games.strategy.triplea.attachments.UnitSupportAttachment" type="unitType">
       <option name="unitType" value="germanTank:germanHeavyTank"/>

@@ -144,13 +144,13 @@ public class ProSortMoveOptionsUtils {
           Collections.reverse(sortedUnitsList);
           final int powerWithout =
               DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                  false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                  false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
           sortedUnitsList.add(o1.getKey());
           sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));
           Collections.reverse(sortedUnitsList);
           final int powerWith = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
-              defendingUnits, false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+              defendingUnits, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
           final int power = powerWith - powerWithout;
           if (power < minPower1) {
             minPower1 = power;
@@ -172,13 +172,13 @@ public class ProSortMoveOptionsUtils {
           Collections.reverse(sortedUnitsList);
           final int powerWithout =
               DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defendingUnits,
-                  false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+                  false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
           sortedUnitsList.add(o2.getKey());
           sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));
           Collections.reverse(sortedUnitsList);
           final int powerWith = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList,
-              defendingUnits, false, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
+              defendingUnits, false, data, t, TerritoryEffectHelper.getEffects(t), false, null), data);
           final int power = powerWith - powerWithout;
           if (power < minPower2) {
             minPower2 = power;

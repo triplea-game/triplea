@@ -2067,31 +2067,47 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if ((defending && !canFireDefendingAa()) || (!defending && !canFireOffensiveAa())) {
         return;
       }
-      for (final String currentTypeAa : (defending ? defendingAaTypes : offensiveAaTypes)) {
-        final Collection<Unit> currentAaUnits = CollectionUtils
-            .getMatches((defending ? defendingAa : offensiveAa), Matches.unitIsAaOfTypeAa(currentTypeAa));
-        final List<Collection<Unit>> firingGroups = createFiringUnitGroups(currentAaUnits);
-        for (final Collection<Unit> currentPossibleAa : firingGroups) {
-          final Set<UnitType> targetUnitTypesForThisTypeAa =
-              UnitAttachment.get(currentPossibleAa.iterator().next().getType()).getTargetsAa(gameData);
-          final Set<UnitType> airborneTypesTargettedToo =
-              defending ? TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData).get(currentTypeAa)
+
+      // Find all friendly and enemy units that could potentially provide support
+      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>();
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
+      if (defending) {
+        allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
+        allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+        allEnemyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
+        allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
+      } else {
+        allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
+        allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
+        allEnemyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
+        allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+      }
+
+      // Loop through each type of AA and break into firing groups based on suicideOnHit
+      for (final String aaType : (defending ? defendingAaTypes : offensiveAaTypes)) {
+        final Collection<Unit> aaTypeUnits = CollectionUtils.getMatches((defending ? defendingAa : offensiveAa),
+            Matches.unitIsAaOfTypeAa(aaType));
+        final List<Collection<Unit>> firingGroups = createFiringUnitGroups(aaTypeUnits);
+        for (final Collection<Unit> firingGroup : firingGroups) {
+          final Set<UnitType> validTargetTypes =
+              UnitAttachment.get(firingGroup.iterator().next().getType()).getTargetsAa(gameData);
+          final Set<UnitType> airborneTypesTargeted =
+              defending ? TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData).get(aaType)
                   : new HashSet<>();
-          final Collection<Unit> validAttackingUnitsForThisRoll = CollectionUtils.getMatches(
-              (defending ? attackingUnits : defendingUnits), Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
-                  .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+          final Collection<Unit> validTargets = CollectionUtils
+              .getMatches((defending ? attackingUnits : defendingUnits), Matches.unitIsOfTypes(validTargetTypes)
+                  .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargeted))));
           final IExecutable rollDice = new IExecutable() {
             private static final long serialVersionUID = 6435935558879109347L;
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              validAttackingUnitsForThisRoll.removeAll(casualtiesSoFar);
-              if (!validAttackingUnitsForThisRoll.isEmpty()) {
-                dice =
-                    DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, battleSite,
-                        defending);
+              validTargets.removeAll(casualtiesSoFar);
+              if (!validTargets.isEmpty()) {
+                dice = DiceRoll.rollAa(validTargets, firingGroup, allEnemyUnitsAliveOrWaitingToDie,
+                    allFriendlyUnitsAliveOrWaitingToDie, bridge, battleSite, defending);
                 if (!headless) {
-                  if (currentTypeAa.equals("AA")) {
+                  if (aaType.equals("AA")) {
                     if (dice.getHits() > 0) {
                       bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
                           (defending ? defender : attacker));
@@ -2102,11 +2118,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                   } else {
                     if (dice.getHits() > 0) {
                       bridge.getSoundChannelBroadcaster().playSoundForAll(
-                          SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
+                          SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
                           (defending ? defender : attacker));
                     } else {
                       bridge.getSoundChannelBroadcaster().playSoundForAll(
-                          SoundPath.CLIP_BATTLE_X_PREFIX + currentTypeAa.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
+                          SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
                           (defending ? defender : attacker));
                     }
                   }
@@ -2119,9 +2135,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              if (!validAttackingUnitsForThisRoll.isEmpty()) {
-                final CasualtyDetails details =
-                    selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, currentTypeAa);
+              if (!validTargets.isEmpty()) {
+                final CasualtyDetails details = selectCasualties(validTargets, firingGroup, bridge, aaType);
                 markDamaged(details.getDamaged(), bridge);
                 casualties = details;
                 casualtiesSoFar.addAll(details.getKilled());
@@ -2133,10 +2148,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
             @Override
             public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              if (!validAttackingUnitsForThisRoll.isEmpty()) {
-                notifyCasualtiesAa(bridge, currentTypeAa);
+              if (!validTargets.isEmpty()) {
+                notifyCasualtiesAa(bridge, aaType);
                 removeCasualties(casualties.getKilled(), ReturnFire.ALL, !defending, bridge);
-                removeSuicideOnHitCasualties(currentPossibleAa, dice.getHits(), defending, bridge);
+                removeSuicideOnHitCasualties(firingGroup, dice.getHits(), defending, bridge);
               }
             }
           };

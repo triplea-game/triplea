@@ -1155,7 +1155,7 @@ public class BattleTracker implements Serializable {
       final List<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
       final List<Unit> sortedUnitsList = getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty() && DiceRoll.getTotalPower(
-          DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, false, gameData,
+          DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, gameData,
               territory, TerritoryEffectHelper.getEffects(territory), false, null),
           gameData) == 0) {
         battle.fight(bridge);

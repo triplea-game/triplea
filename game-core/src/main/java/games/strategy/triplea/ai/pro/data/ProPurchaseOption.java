@@ -229,7 +229,7 @@ public class ProPurchaseOption {
     units.addAll(unitType.create(1, player, true));
     final Set<List<UnitSupportAttachment>> supportsAvailable = new HashSet<>();
     final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<>();
-    DiceRoll.getSupport(units, supportsAvailable, supportLeft, new HashMap<>(), data, defense, true);
+    DiceRoll.getSortedSupport(units, supportsAvailable, supportLeft, new HashMap<>(), data, defense, true);
     double totalSupportFactor = 0;
     for (final UnitSupportAttachment usa : unitSupportAttachments) {
       for (final List<UnitSupportAttachment> bonusType : supportsAvailable) {

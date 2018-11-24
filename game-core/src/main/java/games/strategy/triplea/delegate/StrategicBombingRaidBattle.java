@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -364,7 +366,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             validAttackingUnitsForThisRoll.removeAll(casualtiesSoFar);
             if (!validAttackingUnitsForThisRoll.isEmpty()) {
-              dice = DiceRoll.rollAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, battleSite, true);
+              dice = DiceRoll.rollSbrOrFlyOverAa(validAttackingUnitsForThisRoll, currentPossibleAa, bridge, battleSite,
+                  true);
               if (currentTypeAa.equals("AA")) {
                 if (dice.getHits() > 0) {
                   bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, defender);
@@ -551,13 +554,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
 
     private void rollDice(final IDelegateBridge bridge) {
-      final Set<Unit> duplicatesCheckSet1 = new HashSet<>(attackingUnits);
-      if (attackingUnits.size() != duplicatesCheckSet1.size()) {
-        throw new IllegalStateException(
-            "Duplicate Units Detected: Original List:" + attackingUnits + "  HashSet:" + duplicatesCheckSet1);
-      }
 
-      final int rollCount = BattleCalculator.getRolls(attackingUnits, attacker, false, true, territoryEffects);
+      final int rollCount = getSbrRolls(attackingUnits, attacker);
       if (rollCount == 0) {
         dice = null;
         return;
@@ -586,7 +584,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             int i = 0;
             final int diceSides = gameData.getDiceSides();
             for (final Unit u : attackingUnits) {
-              final int rolls = BattleCalculator.getRolls(u, attacker, false, true, territoryEffects);
+              final int rolls = getSbrRolls(u, attacker);
               if (rolls < 1) {
                 continue;
               }
@@ -619,7 +617,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           int i = 0;
           final int diceSides = gameData.getDiceSides();
           for (final Unit u : attackingUnits) {
-            final int rolls = BattleCalculator.getRolls(u, attacker, false, true, territoryEffects);
+            final int rolls = getSbrRolls(u, attacker);
             if (rolls < 1) {
               continue;
             }
@@ -691,8 +689,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       // limit to maxDamage
       for (final Unit attacker : attackingUnits) {
         final UnitAttachment ua = UnitAttachment.get(attacker.getType());
-        final int rolls = BattleCalculator.getRolls(attacker, StrategicBombingRaidBattle.this.attacker, false, true,
-            territoryEffects);
+        final int rolls = getSbrRolls(attacker, StrategicBombingRaidBattle.this.attacker);
         int costThisUnit = 0;
         if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
           // LHTR means we select the best Dice roll for the unit
@@ -810,6 +807,19 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       }
       bombingRaidTotal = cost;
     }
+  }
+
+  private static int getSbrRolls(final Collection<Unit> units, final PlayerId id) {
+    int count = 0;
+    for (final Unit unit : units) {
+      count += getSbrRolls(unit, id);
+    }
+    return count;
+  }
+
+  @VisibleForTesting
+  static int getSbrRolls(final Unit unit, final PlayerId id) {
+    return UnitAttachment.get(unit.getType()).getAttackRolls(id);
   }
 
   @Override
