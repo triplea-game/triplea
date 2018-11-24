@@ -55,6 +55,9 @@ import games.strategy.util.ObjectUtils;
 import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
+/**
+ * An attachment for instances of {@link PlayerId} that defines actions to be triggered upon various events.
+ */
 @Log
 public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
@@ -1341,6 +1344,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   // default location for
   // when 'when' is not used.
   // Should be void.
+
+  /**
+   * Triggers all notifications associated with {@code satisfiedTriggers}.
+   */
   public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
@@ -1390,6 +1397,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all player property changes associated with {@code satisfiedTriggers}. Only player property changes
+   * associated with the following attachments will be triggered: {@link PlayerAttachment}, {@link RulesAttachment},
+   * {@link TriggerAttachment}, {@link TechAttachment}, {@link PoliticalActionAttachment}, and
+   * {@link UserActionAttachment}.
+   */
   public static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1536,6 +1549,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all relationship type property changes associated with {@code satisfiedTriggers}. Only relationship type
+   * property changes associated with the following attachments will be triggered: {@link RelationshipTypeAttachment}.
+   */
   public static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1590,6 +1607,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all territory property changes associated with {@code satisfiedTriggers}. Only territory property changes
+   * associated with the following attachments will be triggered: {@link TerritoryAttachment} and
+   * {@link CanalAttachment}.
+   */
   public static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1669,6 +1691,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all territory effect property changes associated with {@code satisfiedTriggers}. Only territory effect
+   * property changes associated with the following attachments will be triggered: {@link TerritoryEffectAttachment}.
+   */
   public static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1723,6 +1749,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all unit property changes associated with {@code satisfiedTriggers}. Only unit property changes associated
+   * with the following attachments will be triggered: {@link UnitAttachment} and {@link UnitSupportAttachment}.
+   */
   public static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1792,6 +1822,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all relationship changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1846,6 +1879,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all available technology advance changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1887,6 +1923,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all technology advance changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
@@ -1918,6 +1957,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all production changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1947,6 +1989,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all production frontier edit changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -1996,6 +2041,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all unit support changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
@@ -2051,6 +2099,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all territory ownership changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerChangeOwnership(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
       final boolean testUses, final boolean testChance, final boolean testWhen) {
@@ -2104,6 +2155,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all purchase changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
@@ -2140,6 +2194,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all unit removal changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
@@ -2168,6 +2225,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all unit placement changes associated with {@code satisfiedTriggers}.
+   */
   public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
@@ -2261,6 +2321,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return resources;
   }
 
+  /**
+   * Triggers all trigger activations associated with {@code satisfiedTriggers}.
+   */
   public static void triggerActivateTriggerOther(final Map<ICondition, Boolean> testedConditionsSoFar,
       final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge, final String beforeOrAfter,
       final String stepName, final boolean useUses, final boolean testUses, final boolean testChance,
@@ -2323,6 +2386,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+  /**
+   * Triggers all victory notifications associated with {@code satisfiedTriggers}.
+   */
   public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {

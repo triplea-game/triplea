@@ -24,6 +24,10 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
+/**
+ * An attachment for instances of {@link PlayerId} that defines properties unrelated to rules (see the class
+ * description of {@link AbstractPlayerRulesAttachment}).
+ */
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
 
@@ -196,6 +200,10 @@ public class PlayerAttachment extends DefaultAttachment {
     attackingLimit = new HashSet<>();
   }
 
+  /**
+   * Returns {@code true} if the specified units can move into the specified territory without violating the specified
+   * stacking limit (movement, attack, or placement).
+   */
   public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType,
       final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerId owner, final GameData data) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);

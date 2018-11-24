@@ -14,6 +14,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 
+/**
+ * An attachment for instances of {@link PlayerId} that defines properties related to technology advances.
+ */
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
 

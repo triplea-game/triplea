@@ -21,6 +21,9 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 
+/**
+ * An attachment for instances of {@link UnitType} that defines properties for unit types that support other units.
+ */
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
 

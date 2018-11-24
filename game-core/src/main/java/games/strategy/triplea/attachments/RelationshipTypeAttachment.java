@@ -12,6 +12,9 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
 
+/**
+ * An attachment for instances of {@link RelationshipType}.
+ */
 public class RelationshipTypeAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -4367286684249791984L;
 

@@ -663,6 +663,10 @@ public class TechAbilityAttachment extends DefaultAttachment {
     return airborneTargettedByAa;
   }
 
+  /**
+   * Returns a map of the air unit types that can be targeted by each type of AA fire. The key is the type of AA fire.
+   * The value is the collection of air unit types that can be targeted by the key.
+   */
   public static Map<String, Set<UnitType>> getAirborneTargettedByAa(final PlayerId player,
       final GameData data) {
     final Map<String, Set<UnitType>> airborneTargettedByAa = new HashMap<>();

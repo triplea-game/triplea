@@ -33,6 +33,9 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * An attachment for instances of {@link Territory}.
+ */
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
@@ -616,6 +619,10 @@ public class TerritoryAttachment extends DefaultAttachment {
     blockadeZone = false;
   }
 
+  /**
+   * Returns the collection of territories that make up the convoy route containing the specified territory or
+   * {@code null} if the specified territory is not part of a convoy route.
+   */
   public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null || !ta.getConvoyRoute()) {
@@ -634,6 +641,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     return territories;
   }
 
+  /**
+   * Returns a string suitable for display describing the territory to which this attachment is attached.
+   */
   public String toStringForInfo(final boolean useHtml, final boolean includeAttachedToName) {
     final StringBuilder sb = new StringBuilder();
     final String br = (useHtml ? "<br>" : ", ");

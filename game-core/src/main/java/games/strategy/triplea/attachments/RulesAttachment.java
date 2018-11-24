@@ -41,6 +41,10 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
+/**
+ * An attachment for instances of {@link PlayerId} that defines various conditions for enabling certain rules (see the
+ * class description of {@link AbstractPlayerRulesAttachment}).
+ */
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
 
