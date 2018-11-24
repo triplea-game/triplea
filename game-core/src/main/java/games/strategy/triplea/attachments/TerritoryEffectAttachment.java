@@ -18,6 +18,9 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
+/**
+ * An attachment for instances of {@link TerritoryEffect}.
+ */
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
 

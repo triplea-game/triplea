@@ -22,6 +22,13 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
+/**
+ * Superclass for all attachments that trigger an action based on an event.
+ *
+ * <p>
+ * TODO: Merge with {@link TriggerAttachment}, as that is the only subclass.
+ * </p>
+ */
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 5866039180681962697L;
 
@@ -40,6 +47,10 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
     super(name, attachable, gameData);
   }
 
+  /**
+   * Returns a new change that marks all trigger attachments for the specified player has having been used this round.
+   * If any trigger attachment has already been marked as used, it will not be modified.
+   */
   public static CompositeChange triggerSetUsedForThisRound(final PlayerId player) {
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, null)) {

@@ -19,6 +19,10 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
+/**
+ * An attachment for instances of {@link Territory} that defines a canal through which certain land units may pass from
+ * one bordering territory to another.
+ */
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
 

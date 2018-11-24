@@ -97,6 +97,10 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     activateTrigger = new ArrayList<>();
   }
 
+  /**
+   * Fires all trigger attachments associated with the specified user action attachment that satisfy the specified
+   * conditions.
+   */
   public static void fireTriggers(final UserActionAttachment actionAttachment,
       final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
     final GameData data = bridge.getData();

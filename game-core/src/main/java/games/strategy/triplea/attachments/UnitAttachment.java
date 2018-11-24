@@ -1005,6 +1005,10 @@ public class UnitAttachment extends DefaultAttachment {
     return map;
   }
 
+  /**
+   * Returns the subset of {@code units} that will receive the ability {@code filterForAbility} when they are with,
+   * or on the same route as, another unit.
+   */
   public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units,
       final String filterForAbility, final GameData data) {
     if (units.stream().noneMatch(Matches.unitCanReceiveAbilityWhenWith())) {
@@ -2383,6 +2387,12 @@ public class UnitAttachment extends DefaultAttachment {
     tuv = -1;
   }
 
+  /**
+   * Returns the maximum number of units of the specified type that can be placed in the specified territory according
+   * to the specified stacking limit (movement, attack, or placement).
+   *
+   * @return {@link Integer#MAX_VALUE} if there is no stacking limit for the specified conditions.
+   */
   public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final String limitType, final UnitType ut,
       final Territory t, final PlayerId owner, final GameData data) {
     final UnitAttachment ua = UnitAttachment.get(ut);

@@ -300,6 +300,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
     return chanceDecrementOnSuccess;
   }
 
+  /**
+   * Adjusts the chance to hit for this condition.
+   *
+   * @param success {@code true} to decrement the chance to hit for successful conditions; {@code false} to increment
+   *        the chance to hit for failed conditions.
+   */
   public void changeChanceDecrementOrIncrementOnSuccessOrFailure(final IDelegateBridge delegateBridge,
       final boolean success,
       final boolean historyChild) {
