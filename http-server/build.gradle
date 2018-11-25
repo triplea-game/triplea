@@ -4,7 +4,7 @@ plugins {
 }
 
 description = 'TripleA Http Server'
-mainClassName = 'org.triplea.server.http.spark.SparkServerMain'
+mainClassName = 'org.triplea.server.http.spark.SparkServer'
 
 dependencies {
     implementation project(':http-client')
