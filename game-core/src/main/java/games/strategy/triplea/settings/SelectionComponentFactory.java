@@ -1,6 +1,7 @@
 package games.strategy.triplea.settings;
 
 import static org.triplea.common.util.Arrays.withSensitiveArray;
+import static org.triplea.common.util.Arrays.withSensitiveArrayAndReturn;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -8,10 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -131,25 +129,21 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
-        final Map<GameSetting<?>, Object> values = new HashMap<>();
-
+      public void save(final SaveContext context) {
         if (noneButton.isSelected()) {
-          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
+          context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
         } else if (systemButton.isSelected()) {
-          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+          context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
           HttpProxy.updateSystemProxy();
         } else {
-          values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+          context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
         }
 
         final String host = hostText.getText().trim();
-        values.put(proxyHostClientSetting, host.isEmpty() ? null : host);
+        context.setValue(proxyHostClientSetting, host.isEmpty() ? null : host);
 
         final String encodedPort = portText.getText().trim();
-        values.put(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
-
-        return values;
+        context.setValue(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
       }
 
       @Override
@@ -228,8 +222,8 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
-        return Collections.singletonMap(clientSetting, getComponentValue());
+      public void save(final SaveContext context) {
+        context.setValue(clientSetting, getComponentValue());
       }
 
       private @Nullable Integer getComponentValue() {
@@ -272,8 +266,8 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
-        return Collections.singletonMap(clientSetting, yesButton.isSelected());
+      public void save(final SaveContext context) {
+        context.setValue(clientSetting, yesButton.isSelected());
       }
 
       @Override
@@ -324,9 +318,9 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
+      public void save(final SaveContext context) {
         final String value = field.getText();
-        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : Paths.get(value));
+        context.setValue(clientSetting, value.isEmpty() ? null : Paths.get(value));
       }
 
       @Override
@@ -400,12 +394,12 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
+      public void save(final SaveContext context) {
         final @Nullable T value = Optional.ofNullable(comboBox.getSelectedItem())
             .map(comboBoxItemType::cast)
             .map(convertComboBoxItemToSettingValue)
             .orElse(null);
-        return Collections.singletonMap(clientSetting, value);
+        context.setValue(clientSetting, value);
       }
 
       @Override
@@ -430,9 +424,9 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
+      public void save(final SaveContext context) {
         final String value = textField.getText();
-        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : value);
+        context.setValue(clientSetting, value.isEmpty() ? null : value);
       }
 
       @Override
@@ -531,7 +525,7 @@ final class SelectionComponentFactory {
        * Returns an unscrubbable string containing sensitive data. Use only when absolutely required.
        */
       private String credentialToString(final Supplier<Optional<char[]>> credentialSupplier) {
-        return withSensitiveArray(() -> credentialSupplier.get().orElseGet(() -> new char[0]), String::new);
+        return withSensitiveArrayAndReturn(() -> credentialSupplier.get().orElseGet(() -> new char[0]), String::new);
       }
 
       @Override
@@ -540,20 +534,15 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
-        final Map<GameSetting<?>, Object> map = new HashMap<>();
-        map.put(hostSetting, Strings.emptyToNull(serverField.getText()));
-        map.put(portSetting, portSpinner.getValue());
-        map.put(tlsSetting, tlsCheckBox.isSelected());
-        map.put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray());
-        map.put(
-            passwordSetting,
-            withSensitiveArray(
-                passwordField::getPassword,
-                // FIXME: lost ownership of sensitive array; it will never get scrubbed
-                // need to redesign how SaveFunction reads values from SelectionComponents
-                password -> (password.length != 0) ? password.clone() : null));
-        return Collections.unmodifiableMap(map);
+      public void save(final SaveContext context) {
+        context.setValue(hostSetting, Strings.emptyToNull(serverField.getText()));
+        context.setValue(portSetting, (Integer) portSpinner.getValue());
+        context.setValue(tlsSetting, tlsCheckBox.isSelected());
+        final String username = usernameField.getText();
+        context.setValue(usernameSetting, username.isEmpty() ? null : username.toCharArray());
+        withSensitiveArray(
+            passwordField::getPassword,
+            password -> context.setValue(passwordSetting, (password.length == 0) ? null : password));
       }
 
       @Override

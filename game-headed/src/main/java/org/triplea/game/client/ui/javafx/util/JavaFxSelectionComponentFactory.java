@@ -2,9 +2,6 @@ package org.triplea.game.client.ui.javafx.util;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -14,7 +11,6 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SelectionComponentUiUtils;
 import javafx.beans.binding.Bindings;
@@ -89,10 +85,10 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
+      public void save(final SaveContext context) {
         final Integer spinnerValue = spinner.getValue();
         final @Nullable Integer value = (allowUnset && spinnerValue.equals(unsetValue())) ? null : spinnerValue;
-        return Collections.singletonMap(clientSetting, value);
+        context.setValue(clientSetting, value);
       }
 
       @Override
@@ -133,8 +129,8 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
-        return Collections.singletonMap(clientSetting, checkBox.selectedProperty().get());
+      public void save(final SaveContext context) {
+        context.setValue(clientSetting, checkBox.selectedProperty().get());
       }
 
       @Override
@@ -175,9 +171,9 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public Map<GameSetting<?>, Object> readValues() {
+      public void save(final SaveContext context) {
         final String value = textField.getText();
-        return Collections.singletonMap(clientSetting, value.isEmpty() ? null : value);
+        context.setValue(clientSetting, value.isEmpty() ? null : value);
       }
 
       @Override
@@ -249,8 +245,8 @@ final class JavaFxSelectionComponentFactory {
     }
 
     @Override
-    public Map<GameSetting<?>, Object> readValues() {
-      return Collections.singletonMap(clientSetting, selectedPath);
+    public void save(final SaveContext context) {
+      context.setValue(clientSetting, selectedPath);
     }
 
     @Override
@@ -331,25 +327,21 @@ final class JavaFxSelectionComponentFactory {
     }
 
     @Override
-    public Map<GameSetting<?>, Object> readValues() {
-      final Map<GameSetting<?>, Object> values = new HashMap<>();
-
+    public void save(final SaveContext context) {
       if (noneButton.isSelected()) {
-        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
+        context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
       } else if (systemButton.isSelected()) {
-        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+        context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
         HttpProxy.updateSystemProxy();
       } else {
-        values.put(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+        context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
       }
 
       final String host = hostText.getText().trim();
-      values.put(proxyHostClientSetting, host.isEmpty() ? null : host);
+      context.setValue(proxyHostClientSetting, host.isEmpty() ? null : host);
 
       final String encodedPort = portText.getText().trim();
-      values.put(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
-
-      return values;
+      context.setValue(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
     }
 
     @Override

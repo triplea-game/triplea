@@ -1,6 +1,6 @@
 package games.strategy.triplea.settings;
 
-import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * A SelectionComponent represents a UI component that a user can use to update the value of a ClientSetting.
@@ -19,11 +19,9 @@ public interface SelectionComponent<T> {
   String validValueDescription();
 
   /**
-   * Reads values stored in the UI components, returns a map of preference keys and the value represented in
-   * the corresponding UI component. A {@code null} value in the map indicates the value should be reset to its default
-   * value.
+   * Saves values stored in the UI components to the underlying game settings.
    */
-  Map<GameSetting<?>, /* @Nullable */ Object> readValues();
+  void save(SaveContext context);
 
   void resetToDefault();
 
@@ -31,4 +29,18 @@ public interface SelectionComponent<T> {
    * Reset any settings that are bound, and reset the UI.
    */
   void reset();
+
+  /**
+   * The execution context for the {@link SelectionComponent#save(SaveContext)} method.
+   */
+  interface SaveContext {
+    /**
+     * Sets the value for the specified game setting. Selection components must call this method to change a setting
+     * value and must not call {@link GameSetting#setValue(Object)} directly.
+     *
+     * @param gameSetting The game setting whose value is to be set.
+     * @param value The new setting value or {@code null} to clear the setting value.
+     */
+    <T> void setValue(GameSetting<T> gameSetting, @Nullable T value);
+  }
 }
