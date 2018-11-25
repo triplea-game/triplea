@@ -38,8 +38,7 @@ final class SaveFunction {
             .forEach(entry -> {
               final GameSetting<?> setting = entry.getKey();
               setting.setObjectValue(entry.getValue());
-              successMsg.append(String
-                  .format("%s was updated to: %s\n", setting, setting.getDisplayValue()));
+              successMsg.append(String.format("%s was updated to: %s\n", setting, setting.getDisplayValue()));
             });
       } else {
         selectionComponent.readValues().forEach((key, value) -> failMsg.append(

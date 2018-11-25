@@ -25,9 +25,6 @@ final class ProtectedStringClientSetting extends ClientSetting<char[]> {
     return withCredentialManager(value, ProtectedStringClientSetting::encodeValue);
   }
 
-  /**
-   * Protects the given char array and cleans the content afterwards.
-   */
   @VisibleForTesting
   static String encodeValue(final char[] value, final CredentialManager credentialManager)
       throws ValueEncodingException {
@@ -35,8 +32,6 @@ final class ProtectedStringClientSetting extends ClientSetting<char[]> {
       return credentialManager.protect(value);
     } catch (final CredentialManagerException e) {
       throw new ValueEncodingException("Error while trying to protect string", e);
-    } finally {
-      Arrays.fill(value, '\0');
     }
   }
 

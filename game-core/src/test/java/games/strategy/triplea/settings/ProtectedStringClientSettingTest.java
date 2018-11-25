@@ -43,7 +43,6 @@ final class ProtectedStringClientSettingTest {
         final String encodedValue = ProtectedStringClientSetting.encodeValue(value, credentialManager);
 
         assertThat(credentialManager.unprotectToString(encodedValue), is("value"));
-        assertThat("value was scrubbed", value, is(new char[] {0, 0, 0, 0, 0}));
       }
     }
 

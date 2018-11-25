@@ -1,5 +1,7 @@
 package games.strategy.triplea.settings;
 
+import static org.triplea.common.util.Arrays.withSensitiveArray;
+
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.nio.file.Path;
@@ -452,8 +454,6 @@ final class SelectionComponentFactory {
       final ClientSetting<char[]> usernameSetting,
       final ClientSetting<char[]> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
-
-
       /**
        * Data class to store a 3-tuple consisting of
        * a server host, a server port and whether or not
@@ -480,30 +480,21 @@ final class SelectionComponentFactory {
 
       private final List<EmailProviderSetting> knownProviders = Arrays.asList(
           new EmailProviderSetting("GMail", "smtp.gmail.com", 587, true),
-          new EmailProviderSetting("Hotmail", "smtp.live.com", 587, true)
-      );
+          new EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
 
-      final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
+      private final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 
-      final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
+      private final JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
           (int) portSetting.getValue().orElse(465), 0, 65535, 1));
 
-      final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
+      private final JCheckBox tlsCheckBox = new JCheckBox("SSL/TLS", tlsSetting.getValue().orElse(true));
 
-      final JTextField usernameField = new JTextField(new String(usernameSetting.getValue().orElse(new char[0])), 20);
+      private final JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
 
-      final JPasswordField passwordField;
+      private final JPasswordField passwordField =
+          new JPasswordField(credentialToString(passwordSetting::getValue), 20);
 
-      {
-        final char[] password = passwordSetting.getValue().orElse(new char[0]);
-        try {
-          passwordField = new JPasswordField(new String(password), 20);
-        } finally {
-          Arrays.fill(password, '\0');
-        }
-      }
-
-      final JPanel panel = JPanelBuilder.builder()
+      private final JPanel panel = JPanelBuilder.builder()
           .verticalBoxLayout()
           .addLeftJustified(new JLabel("Email Server"))
           .addLeftJustified(serverField)
@@ -512,7 +503,7 @@ final class SelectionComponentFactory {
               .horizontalBoxLayout()
               .addLeftJustified(portSpinner)
               .addLeftJustified(tlsCheckBox)
-          .build())
+              .build())
           .addVerticalStrut(5)
           .addLeftJustified(JButtonBuilder.builder()
               .title("Presets...")
@@ -529,12 +520,19 @@ final class SelectionComponentFactory {
                   tlsCheckBox.setSelected(config.isEncrypted());
                 }
               })
-            .build())
+              .build())
           .addLeftJustified(new JLabel("Username"))
           .addLeftJustified(usernameField)
           .addLeftJustified(new JLabel("Password"))
           .addLeftJustified(passwordField)
           .build();
+
+      /**
+       * Returns an unscrubbable string containing sensitive data. Use only when absolutely required.
+       */
+      private String credentialToString(final Supplier<Optional<char[]>> credentialSupplier) {
+        return withSensitiveArray(() -> credentialSupplier.get().orElseGet(() -> new char[0]), String::new);
+      }
 
       @Override
       public JComponent getUiComponent() {
@@ -548,8 +546,13 @@ final class SelectionComponentFactory {
         map.put(portSetting, portSpinner.getValue());
         map.put(tlsSetting, tlsCheckBox.isSelected());
         map.put(usernameSetting, usernameField.getText().isEmpty() ? null : usernameField.getText().toCharArray());
-        final char[] password = passwordField.getPassword();
-        map.put(passwordSetting, password.length == 0 ? null : password);
+        map.put(
+            passwordSetting,
+            withSensitiveArray(
+                passwordField::getPassword,
+                // FIXME: lost ownership of sensitive array; it will never get scrubbed
+                // need to redesign how SaveFunction reads values from SelectionComponents
+                password -> (password.length != 0) ? password.clone() : null));
         return Collections.unmodifiableMap(map);
       }
 
@@ -558,8 +561,8 @@ final class SelectionComponentFactory {
         serverField.setText(hostSetting.getDefaultValue().orElse(""));
         portSpinner.setValue(portSetting.getDefaultValue().orElse(465));
         tlsCheckBox.setSelected(tlsSetting.getDefaultValue().orElse(true));
-        usernameField.setText(new String(usernameSetting.getDefaultValue().orElse(new char[0])));
-        passwordField.setText(new String(passwordSetting.getDefaultValue().orElse(new char[0])));
+        usernameField.setText(credentialToString(usernameSetting::getDefaultValue));
+        passwordField.setText(credentialToString(passwordSetting::getDefaultValue));
       }
 
       @Override
@@ -567,13 +570,8 @@ final class SelectionComponentFactory {
         serverField.setText(hostSetting.getValue().orElse(""));
         portSpinner.setValue(portSetting.getValue().orElse(465));
         tlsCheckBox.setSelected(tlsSetting.getValue().orElse(true));
-        usernameField.setText(new String(usernameSetting.getValue().orElse(new char[0])));
-        final char[] password = passwordSetting.getValue().orElse(new char[0]);
-        try {
-          passwordField.setText(new String(password));
-        } finally {
-          Arrays.fill(password, '\0');
-        }
+        usernameField.setText(credentialToString(usernameSetting::getValue));
+        passwordField.setText(credentialToString(passwordSetting::getValue));
       }
     };
   }
