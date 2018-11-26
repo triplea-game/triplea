@@ -6,6 +6,9 @@ import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
+/**
+ * Tracks available resources during an AI purchase analysis.
+ */
 public class ProResourceTracker {
 
   private final IntegerMap<Resource> resources;

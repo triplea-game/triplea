@@ -18,6 +18,9 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CollectionUtils;
 
+/**
+ * The result of an AI territory analysis.
+ */
 public class ProTerritory {
 
   private final Territory territory;

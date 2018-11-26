@@ -15,6 +15,9 @@ import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.delegate.Matches;
 
+/**
+ * The result of an AI movement analysis for another player's possible moves.
+ */
 public class ProOtherMoveOptions {
 
   private final Map<Territory, ProTerritory> maxMoveMap;

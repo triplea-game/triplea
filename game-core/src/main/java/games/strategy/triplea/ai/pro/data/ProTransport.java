@@ -9,6 +9,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import lombok.Getter;
 
+/**
+ * The result of an AI amphibious movement analysis.
+ */
 @Getter
 public class ProTransport {
 
