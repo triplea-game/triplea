@@ -23,7 +23,10 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
  * Pro AI attack options utilities.
  */
 public class ProSortMoveOptionsUtils {
-
+  /**
+   * Returns a copy of {@code unitAttackOptions} sorted by number of move options, then by cost of unit, then by unit
+   * type name.
+   */
   public static Map<Unit, Set<Territory>> sortUnitMoveOptions(final Map<Unit, Set<Territory>> unitAttackOptions) {
 
     final List<Map.Entry<Unit, Set<Territory>>> list = new ArrayList<>(unitAttackOptions.entrySet());
@@ -46,6 +49,11 @@ public class ProSortMoveOptionsUtils {
     return sortedUnitAttackOptions;
   }
 
+  /**
+   * Returns a copy of {@code unitAttackOptions} sorted by number of move options, then by cost of unit, then by unit
+   * type name. The number of move options are calculated based on pending battles which require additional units for
+   * the attacker to be successful.
+   */
   public static Map<Unit, Set<Territory>> sortUnitNeededOptions(final PlayerId player,
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap,
       final ProOddsCalculator calc) {
@@ -95,6 +103,11 @@ public class ProSortMoveOptionsUtils {
     return sortedUnitAttackOptions;
   }
 
+  /**
+   * Returns a copy of {@code unitAttackOptions} sorted by number of move options, then by attack efficiency, then by
+   * air unit average movement distance, then by unit type name. The number of move options are calculated based on
+   * pending battles which require additional units for the attacker to be successful.
+   */
   public static Map<Unit, Set<Territory>> sortUnitNeededOptionsThenAttack(final PlayerId player,
       final Map<Unit, Set<Territory>> unitAttackOptions, final Map<Territory, ProTerritory> attackMap,
       final Map<Unit, Territory> unitTerritoryMap, final ProOddsCalculator calc) {

@@ -26,6 +26,9 @@ public class ProTerritoryValueUtils {
   private static final int MIN_FACTORY_CHECK_DISTANCE = 9;
   private static final int MAX_FACTORY_CHECK_DISTANCE = 30;
 
+  /**
+   * Returns the relative value of attacking the specified territory compared to other territories.
+   */
   public static double findTerritoryAttackValue(final PlayerId player, final Territory t) {
     final GameData data = ProData.getData();
     final int isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t) ? 1 : 0;
@@ -49,6 +52,9 @@ public class ProTerritoryValueUtils {
         new HashSet<>(ProData.getData().getMap().getTerritories()));
   }
 
+  /**
+   * Returns the value of each territory in {@code territoriesToCheck}.
+   */
   public static Map<Territory, Double> findTerritoryValues(final PlayerId player,
       final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack,
       final Set<Territory> territoriesToCheck) {
@@ -78,6 +84,9 @@ public class ProTerritoryValueUtils {
     return territoryValueMap;
   }
 
+  /**
+   * Returns the value of each sea territory in {@link ProData#getData()}.
+   */
   public static Map<Territory, Double> findSeaTerritoryValues(final PlayerId player,
       final List<Territory> territoriesThatCantBeHeld) {
 

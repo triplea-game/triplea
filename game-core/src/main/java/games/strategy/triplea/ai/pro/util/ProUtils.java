@@ -41,6 +41,9 @@ public class ProUtils {
     return unitTerritoryMap;
   }
 
+  /**
+   * Returns a list of all players in turn order excluding {@code player}.
+   */
   public static List<PlayerId> getOtherPlayersInTurnOrder(final PlayerId player) {
     final GameData data = ProData.getData();
     final List<PlayerId> players = new ArrayList<>();
@@ -158,6 +161,11 @@ public class ProUtils {
     return capitals;
   }
 
+  /**
+   * Returns the distance to the closest enemy land territory to {@code t}.
+   *
+   * @return -1 if there is no enemy land territory within a distance of 10 of {@code t}.
+   */
   public static int getClosestEnemyLandTerritoryDistance(final GameData data, final PlayerId player,
       final Territory t) {
     final Set<Territory> landTerritories =
@@ -175,6 +183,11 @@ public class ProUtils {
     return (minDistance < 10) ? minDistance : -1;
   }
 
+  /**
+   * Returns the distance to the closest enemy or neutral land territory to {@code t}.
+   *
+   * @return -1 if there is no enemy or neutral land territory within a distance of 10 of {@code t}.
+   */
   public static int getClosestEnemyOrNeutralLandTerritoryDistance(final GameData data, final PlayerId player,
       final Territory t, final Map<Territory, Double> territoryValueMap) {
     final Set<Territory> landTerritories =
@@ -198,6 +211,13 @@ public class ProUtils {
     return (minDistance < 10) ? minDistance : -1;
   }
 
+  /**
+   * Returns the distance to the closest enemy land territory to {@code t} assuming movement only through water
+   * territories.
+   *
+   * @return -1 if there is no enemy land territory within a distance of 10 of {@code t} when moving only through water
+   *         territories.
+   */
   public static int getClosestEnemyLandTerritoryDistanceOverWater(final GameData data, final PlayerId player,
       final Territory t) {
     final Set<Territory> neighborTerritories = data.getMap().getNeighbors(t, 9);

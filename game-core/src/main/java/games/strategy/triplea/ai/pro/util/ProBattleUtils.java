@@ -34,6 +34,10 @@ public class ProBattleUtils {
   public static final int SHORT_RANGE = 2;
   public static final int MEDIUM_RANGE = 3;
 
+  /**
+   * Return {@code true} if the specified battle would result in an overwhelming win for the attacker. An overwhelming
+   * win is defined as the ability to defeat the enemy without any losses or within a single round of combat.
+   */
   public static boolean checkForOverwhelmingWin(final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits) {
     final GameData data = ProData.getData();
@@ -61,6 +65,12 @@ public class ProBattleUtils {
     return ((attackPower / data.getDiceSides()) >= totalDefenderHitPoints);
   }
 
+  /**
+   * Returns an estimate of the strength difference between the specified attacking and defending units.
+   *
+   * @return A value in the range [0,100]. 0 indicates absolute defender strength; 100 indicates absolute attacker
+   *         strength; 50 indicates equal attacker and defender strength.
+   */
   public static double estimateStrengthDifference(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits) {
 
@@ -77,6 +87,11 @@ public class ProBattleUtils {
     return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
   }
 
+  /**
+   * Estimates the strength of {@code myUnits} relative to {@code enemyUnits}.
+   *
+   * @return The larger the result, the stronger {@code myUnits} are relative to {@code enemyUnits}.
+   */
   public static double estimateStrength(final Territory t, final List<Unit> myUnits, final List<Unit> enemyUnits,
       final boolean attacking) {
     final GameData data = ProData.getData();
@@ -111,6 +126,9 @@ public class ProBattleUtils {
     return territoryHasLocalLandSuperiority(t, distance, player, new HashMap<>());
   }
 
+  /**
+   * Returns {@code true} if {@code player} has land superiority within {@code distance} neighbors of {@code t}.
+   */
   public static boolean territoryHasLocalLandSuperiority(final Territory t, final int distance, final PlayerId player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 
@@ -157,6 +175,10 @@ public class ProBattleUtils {
     return true;
   }
 
+  /**
+   * Returns {@code true} if {@code player} has land superiority within {@code distance} neighbors of {@code t} after
+   * the specified moves are performed.
+   */
   public static boolean territoryHasLocalLandSuperiorityAfterMoves(final Territory t, final int distance,
       final PlayerId player, final Map<Territory, ProTerritory> moveMap) {
     final GameData data = ProData.getData();
@@ -188,6 +210,9 @@ public class ProBattleUtils {
     return strengthDifference <= 50;
   }
 
+  /**
+   * Returns {@code true} if {@code player} has naval superiority within at least 3 neighbors of {@code t}.
+   */
   public static boolean territoryHasLocalNavalSuperiority(final Territory t, final PlayerId player,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories, final List<Unit> unitsToPlace) {
     final GameData data = ProData.getData();

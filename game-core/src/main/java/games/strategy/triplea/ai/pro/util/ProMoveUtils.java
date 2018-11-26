@@ -28,7 +28,14 @@ import games.strategy.util.Tuple;
  * Pro AI move utilities.
  */
 public class ProMoveUtils {
-
+  /**
+   * Calculates normal movement routes (e.g. land, air, sea attack routes, not including amphibious, bombardment, or
+   * strategic bombing raid attack routes).
+   *
+   * @param moveUnits Receives the unit groups to move.
+   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
+   * @param attackMap Specifies the territories to be attacked.
+   */
   public static void calculateMoveRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
 
@@ -109,6 +116,15 @@ public class ProMoveUtils {
     }
   }
 
+  /**
+   * Calculates amphibious movement routes.
+   *
+   * @param moveUnits Receives the unit groups to move.
+   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
+   * @param transportsToLoad Receives the transport groups for each unit group in {@code moveUnits}.
+   * @param attackMap Specifies the territories to be attacked. Will be updated to reflect any transports unloading in a
+   *        specific territory.
+   */
   public static void calculateAmphibRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final List<Collection<Unit>> transportsToLoad,
       final Map<Territory, ProTerritory> attackMap, final boolean isCombatMove) {
@@ -233,6 +249,13 @@ public class ProMoveUtils {
     }
   }
 
+  /**
+   * Calculates bombardment movement routes.
+   *
+   * @param moveUnits Receives the unit groups to move.
+   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
+   * @param attackMap Specifies the territories to be attacked.
+   */
   public static void calculateBombardMoveRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
 
@@ -269,6 +292,13 @@ public class ProMoveUtils {
     }
   }
 
+  /**
+   * Calculates strategic bombing raid movement routes.
+   *
+   * @param moveUnits Receives the unit groups to move.
+   * @param moveRoutes Receives the routes for each unit group in {@code moveUnits}.
+   * @param attackMap Specifies the territories to be attacked.
+   */
   public static void calculateBombingRoutes(final PlayerId player, final List<Collection<Unit>> moveUnits,
       final List<Route> moveRoutes, final Map<Territory, ProTerritory> attackMap) {
 
@@ -307,6 +337,9 @@ public class ProMoveUtils {
     doMove(moveUnits, moveRoutes, null, moveDel);
   }
 
+  /**
+   * Moves the specified groups of units along the specified routes, possibly using the specified transports.
+   */
   public static void doMove(final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes,
       final List<Collection<Unit>> transportsToLoad, final IMoveDelegate moveDel) {
 
