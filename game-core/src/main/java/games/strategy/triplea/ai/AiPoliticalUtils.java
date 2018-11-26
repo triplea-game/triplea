@@ -35,6 +35,10 @@ public class AiPoliticalUtils {
     return acceptableActions;
   }
 
+  /**
+   * Returns the non-war political actions considered acceptable for the specified player under the specified
+   * conditions.
+   */
   public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerId id,
       final Map<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
