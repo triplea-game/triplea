@@ -19,6 +19,10 @@ import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
+/**
+ * Dummy implementation of {@link IDelegateBridge} used during a battle simulation to capture all changes generated
+ * during the simulation.
+ */
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
   private final ITripleADisplay display = new HeadlessDisplay();

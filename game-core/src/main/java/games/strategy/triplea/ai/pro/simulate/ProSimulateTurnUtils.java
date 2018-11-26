@@ -40,7 +40,10 @@ import games.strategy.util.CollectionUtils;
  * Pro AI simulate turn utilities.
  */
 public class ProSimulateTurnUtils {
-
+  /**
+   * Simulates all pending battles in {@code data}. The simulation results are written as changes to
+   * {@code delegateBridge}.
+   */
   public static void simulateBattles(final GameData data, final PlayerId player, final IDelegateBridge delegateBridge,
       final ProOddsCalculator calc) {
 
@@ -92,6 +95,11 @@ public class ProSimulateTurnUtils {
     }
   }
 
+  /**
+   * Simulates the transfer of units between two territories for each entry in {@code moveMap}.
+   *
+   * @return A collection of the results for each simulated transfer.
+   */
   public static Map<Territory, ProTerritory> transferMoveMap(final Map<Territory, ProTerritory> moveMap,
       final GameData toData, final PlayerId player) {
 
