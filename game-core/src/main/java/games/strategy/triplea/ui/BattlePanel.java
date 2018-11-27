@@ -204,6 +204,9 @@ public class BattlePanel extends ActionPanel {
     });
   }
 
+  /**
+   * Shows the Battle Window for the specified battle.
+   */
   public void showBattle(final GUID battleId, final Territory location,
       final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
       final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
@@ -333,6 +336,11 @@ public class BattlePanel extends ActionPanel {
     battleDisplay.waitForConfirmation(message);
   }
 
+  /**
+   * Prompts the user to select casualties from the specified collection of units.
+   *
+   * @return The selected casualties.
+   */
   public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
       final int count, final String message, final DiceRoll dice, final PlayerId hit,
       final CasualtyList defaultCasualties, final GUID battleId, final boolean allowMultipleHitsPerUnit) {
