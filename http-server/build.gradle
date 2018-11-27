@@ -8,8 +8,8 @@ mainClassName = 'org.triplea.server.http.spark.SparkServer'
 
 dependencies {
     implementation project(':http-client')
-    implementation 'com.sparkjava:spark-core:2.3'
-    implementation 'com.google.code.gson:gson:2.7'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.sparkjava:spark-core:2.8.0'
 
     testImplementation project(':test-common')
     testImplementation 'uk.co.datumedge:hamcrest-json:0.2'
