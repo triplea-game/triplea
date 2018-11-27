@@ -709,8 +709,7 @@ public class DiceRoll implements Externalizable {
       final boolean defence, final boolean allies) {
     final Set<UnitSupportAttachment> rules = UnitSupportAttachment.get(data).parallelStream()
         .filter(usa -> (usa.getAaRoll() || usa.getAaStrength())).collect(Collectors.toSet());
-    getSupport(unitsGivingTheSupport, rules, supportsAvailable, supportLeft, supportUnitsLeft,
-        data, defence, allies);
+    getSupport(unitsGivingTheSupport, rules, supportsAvailable, supportLeft, supportUnitsLeft, defence, allies);
     sortAaSupportRules(supportsAvailable, defence, allies);
   }
 
@@ -720,8 +719,7 @@ public class DiceRoll implements Externalizable {
       final boolean defence, final boolean allies) {
     final Set<UnitSupportAttachment> rules = UnitSupportAttachment.get(data).parallelStream()
         .filter(usa -> (usa.getRoll() || usa.getStrength())).collect(Collectors.toSet());
-    getSupport(unitsGivingTheSupport, rules, supportsAvailable, supportLeft, supportUnitsLeft,
-        data, defence, allies);
+    getSupport(unitsGivingTheSupport, rules, supportsAvailable, supportLeft, supportUnitsLeft, defence, allies);
     sortSupportRules(supportsAvailable, defence, allies);
   }
 
@@ -738,7 +736,7 @@ public class DiceRoll implements Externalizable {
    */
   private static void getSupport(final Collection<Unit> unitsGivingTheSupport, final Set<UnitSupportAttachment> rules,
       final Set<List<UnitSupportAttachment>> supportsAvailable, final IntegerMap<UnitSupportAttachment> supportLeft,
-      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft, final GameData data,
+      final Map<UnitSupportAttachment, IntegerMap<Unit>> supportUnitsLeft,
       final boolean defence, final boolean allies) {
     if (unitsGivingTheSupport == null || unitsGivingTheSupport.isEmpty()) {
       return;
