@@ -5,6 +5,6 @@ dependencies {
     implementation 'com.netflix.feign:feign-gson:8.18.0'
 
     testImplementation project(':test-common')
-    testImplementation 'com.github.tomakehurst:wiremock:2.18.0'
+    testImplementation 'com.github.tomakehurst:wiremock:2.19.0'
     testImplementation 'ru.lanwen.wiremock:wiremock-junit5:1.2.0'
 }

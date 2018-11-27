@@ -12,7 +12,7 @@ mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 ext {
     javaFxRuntimeUrl = 'https://github.com/triplea-game/assets/raw/master/javafx/jfxrt-1.8.0_181.jar'
     releasesDir = file("$buildDir/releases")
-    testFxVersion = '4.0.14-alpha'
+    testFxVersion = '4.0.15-alpha'
 }
 
 dependencies {
