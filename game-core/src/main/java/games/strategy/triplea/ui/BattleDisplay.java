@@ -730,7 +730,7 @@ public class BattleDisplay extends JPanel {
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap;
       final boolean isAirPreBattleOrPreRaid = battleType.isAirPreBattleOrPreRaid();
       if (isAirPreBattleOrPreRaid) {
-        unitPowerAndRollsMap = null;
+        unitPowerAndRollsMap = Collections.emptyMap();
       } else {
         gameData.acquireReadLock();
         try {
