@@ -2816,14 +2816,14 @@ public class UnitAttachment extends DefaultAttachment {
     }
 
     // TODO: Rework damaged description
-    if ((getCanBeDamaged())
+    if (getCanBeDamaged()
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       final StringBuilder sb = new StringBuilder();
       sb.append("Can be Damaged by Raids, ");
       if (getMaxOperationalDamage() > -1) {
         sb.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
       }
-      if ((getCanProduceUnits()) && getCanProduceXUnits() < 0) {
+      if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
         sb.append("Total Damage up to ").append(getMaxDamage() > -1 ? getMaxDamage() : 2)
             .append("x Territory Value, ");
       } else if (getMaxDamage() > -1) {

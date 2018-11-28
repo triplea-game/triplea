@@ -86,7 +86,7 @@ public class PoliticsPanel extends ActionPanel {
               : (choiceScroll.getPreferredSize().width
                   + (choiceScroll.getPreferredSize().height > availHeightChoice ? 20 : 0))),
           (choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice
-              : (choiceScroll.getPreferredSize().height)
+              : choiceScroll.getPreferredSize().height
                   + (choiceScroll.getPreferredSize().width > availWidth ? 20 : 0))));
 
       final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);

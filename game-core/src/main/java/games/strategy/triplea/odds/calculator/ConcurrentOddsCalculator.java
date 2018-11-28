@@ -116,13 +116,13 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     final Runtime runtime = Runtime.getRuntime();
     final long usedMemoryAfterCopy = runtime.totalMemory() - runtime.freeMemory();
     // we cannot predict how the gc works
-    final long memoryLeftBeforeMax = runtime.maxMemory() - (Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy));
+    final long memoryLeftBeforeMax = runtime.maxMemory() - Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy);
     // make sure it is a decent size
     final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy));
     // regardless of how stupid the gc is
     // we leave some memory left over just in case
     final int numberOfTimesWeCanCopyMax =
-        Math.max(1, (int) (Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy))));
+        Math.max(1, (int) Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)));
 
     if (timeToCopyInMillis > 3000) {
       // use half the number of threads available if we took

@@ -120,7 +120,7 @@ public class TerritoryNameDrawable implements IDrawable {
         draw(bounds, graphics, place.get().x, place.get().y, img, prod, drawFromTopLeft);
       } else {
         // otherwise, draw under the territory name
-        draw(bounds, graphics, x + ((fm.stringWidth(territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1),
+        draw(bounds, graphics, x + (fm.stringWidth(territoryName) >> 1) - (fm.stringWidth(prod) >> 1),
             y + fm.getLeading() + fm.getAscent(), img, prod, drawFromTopLeft);
       }
     }

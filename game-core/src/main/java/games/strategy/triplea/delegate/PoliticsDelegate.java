@@ -170,7 +170,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
     if (!Properties.getAlliancesCanChainTogether(data)
         || !intoAlliedChainOrIntoOrOutOfWar.test(paa)) {
       for (final PlayerId player : paa.getActionAccept()) {
-        if (!(getRemotePlayer(player)).acceptAction(this.player,
+        if (!getRemotePlayer(player).acceptAction(this.player,
             PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()), true)) {
           return false;
         }
@@ -197,12 +197,12 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
               + " will ask " + MyFormatter.defaultNamedToTextList(paa.getActionAccept())
               + ", the following question: \r\n " + actionText;
         }
-        if (!(getRemotePlayer(player)).acceptAction(this.player, actionText, true)) {
+        if (!getRemotePlayer(player).acceptAction(this.player, actionText, true)) {
           return false;
         }
       }
       for (final PlayerId player : paa.getActionAccept()) {
-        if (!(getRemotePlayer(player)).acceptAction(this.player,
+        if (!getRemotePlayer(player).acceptAction(this.player,
             PoliticsText.getInstance().getAcceptanceQuestion(paa.getText()), true)) {
           return false;
         }

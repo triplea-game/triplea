@@ -65,7 +65,7 @@ class UnitInformation {
             + (!currentAttachment.getIsAir() ? "-" : "true") + ","
             + (!currentAttachment.getIsStrategicBomber() ? "-" : "true") + ","
             + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","
-            + (!currentAttachment.getIsSea() ? "-" : "true") + "," + (currentAttachment.getHitPoints()) + ","
+            + (!currentAttachment.getIsSea() ? "-" : "true") + "," + currentAttachment.getHitPoints() + ","
             + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
             + (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + ","
             + (!currentAttachment.getIsSub() ? "-" : "true") + ","

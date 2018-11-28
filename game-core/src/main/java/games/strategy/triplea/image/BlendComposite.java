@@ -87,12 +87,12 @@ class BlendComposite implements Composite {
           int pixel = srcPixels[x];
           srcPixel[0] = (pixel >> 16) & 0xFF;
           srcPixel[1] = (pixel >> 8) & 0xFF;
-          srcPixel[2] = (pixel) & 0xFF;
+          srcPixel[2] = pixel & 0xFF;
           srcPixel[3] = (pixel >> 24) & 0xFF;
           pixel = dstPixels[x];
           dstPixel[0] = (pixel >> 16) & 0xFF;
           dstPixel[1] = (pixel >> 8) & 0xFF;
-          dstPixel[2] = (pixel) & 0xFF;
+          dstPixel[2] = pixel & 0xFF;
           dstPixel[3] = (pixel >> 24) & 0xFF;
           final int[] result = blender.blend(srcPixel, dstPixel);
           // mixes the result with the opacity

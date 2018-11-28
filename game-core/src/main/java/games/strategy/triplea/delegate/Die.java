@@ -51,7 +51,7 @@ public class Die implements Serializable {
     if (value > 255 || rolledAt > 255) {
       throw new IllegalStateException("too big to serialize");
     }
-    return (rolledAt << 8) + (value << 16) + (type.ordinal());
+    return (rolledAt << 8) + (value << 16) + type.ordinal();
   }
 
   // read from an int

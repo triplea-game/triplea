@@ -94,8 +94,8 @@ public final class TileImageBreaker {
     }
 
     textOptionPane.show();
-    for (int x = 0; (x) * TileManager.TILE_SIZE < map.getWidth(null); x++) {
-      for (int y = 0; (y) * TileManager.TILE_SIZE < map.getHeight(null); y++) {
+    for (int x = 0; x * TileManager.TILE_SIZE < map.getWidth(null); x++) {
+      for (int y = 0; y * TileManager.TILE_SIZE < map.getHeight(null); y++) {
         final Rectangle bounds = new Rectangle(x * TileManager.TILE_SIZE, y * TileManager.TILE_SIZE,
             TileManager.TILE_SIZE, TileManager.TILE_SIZE);
         final GraphicsConfiguration localGraphicSystem =

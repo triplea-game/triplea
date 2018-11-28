@@ -564,7 +564,7 @@ public class ServerGame extends AbstractGame {
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
     // the first delegate to
     // start before making changes.
-    if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || (firstRun)) {
+    if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || firstRun) {
       firstRun = false;
       return;
     }

@@ -33,7 +33,7 @@ public class DoesNothingAi extends AbstractAi {
       final GameData data, final PlayerId player) {
     // spend whatever we have
     if (!player.getResources().isEmpty()) {
-      (new WeakAi(this.getName())).purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
+      new WeakAi(this.getName()).purchase(purchaseForBid, pusToSpend, purchaseDelegate, data, player);
     }
     pause();
   }
@@ -54,7 +54,7 @@ public class DoesNothingAi extends AbstractAi {
       final PlayerId player) {
     // place whatever we have
     if (!player.getUnits().isEmpty()) {
-      (new WeakAi(this.getName())).place(placeForBid, placeDelegate, data, player);
+      new WeakAi(this.getName()).place(placeForBid, placeDelegate, data, player);
     }
     pause();
   }

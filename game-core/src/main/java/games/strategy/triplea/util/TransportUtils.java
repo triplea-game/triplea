@@ -214,7 +214,7 @@ public class TransportUtils {
 
   private static Optional<Unit> loadUnitIntoFirstAvailableTransport(final Unit unit, final List<Unit> canTransport,
       final Map<Unit, Unit> mapping, final IntegerMap<Unit> addedLoad) {
-    final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+    final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
     for (final Unit transport : canTransport) {
       final int capacity = TransportTracker.getAvailableCapacity(transport) - addedLoad.getInt(transport);
       if (capacity >= cost) {
@@ -231,7 +231,7 @@ public class TransportUtils {
     int capacity = TransportTracker.getAvailableCapacity(transport);
     for (final Iterator<Unit> it = canBeTransported.iterator(); it.hasNext();) {
       final Unit unit = it.next();
-      final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+      final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
       if (capacity >= cost) {
         capacity -= cost;
         mapping.put(unit, transport);

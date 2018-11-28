@@ -20,6 +20,6 @@ public class EndPointTest {
         new Class<?>[] {Object.class, Object.class}, Comparator.class);
     final List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, endPoint.takeANumber(), null);
     assertEquals(1, results.size());
-    assertEquals(2, (results.iterator().next()).getRVal());
+    assertEquals(2, results.iterator().next().getRVal());
   }
 }

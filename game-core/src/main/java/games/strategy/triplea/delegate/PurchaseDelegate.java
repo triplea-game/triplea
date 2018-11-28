@@ -148,7 +148,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   public String purchase(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = getCosts(productionRules);
     final IntegerMap<NamedAttachable> results = getResults(productionRules);
-    if (!(canAfford(costs, player))) {
+    if (!canAfford(costs, player)) {
       return NOT_ENOUGH_RESOURCES;
     }
     // check to see if player has too many of any building with a building limit
@@ -231,7 +231,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   @Override
   public String purchaseRepair(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
     final IntegerMap<Resource> costs = getRepairCosts(repairRules, player);
-    if (!(canAfford(costs, player))) {
+    if (!canAfford(costs, player)) {
       return NOT_ENOUGH_RESOURCES;
     }
     if (!Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {

@@ -931,7 +931,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     // covers RelationshipTypeAttachment
-    if (!(s[1].equals("RelationshipTypeAttachment"))) {
+    if (!s[1].equals("RelationshipTypeAttachment")) {
       throw new GameParseException(
           "relationshipTypeAttachmentName value must be RelationshipTypeAttachment" + thisErrorMsg());
     }
@@ -1023,7 +1023,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               + thisErrorMsg());
     }
     // covers TerritoryEffectAttachment
-    if (!(s[1].equals("TerritoryEffectAttachment"))) {
+    if (!s[1].equals("TerritoryEffectAttachment")) {
       throw new GameParseException(
           "territoryEffectAttachmentName value must be TerritoryEffectAttachment" + thisErrorMsg());
     }

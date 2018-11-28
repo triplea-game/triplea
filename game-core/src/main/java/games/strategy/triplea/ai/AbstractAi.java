@@ -572,8 +572,8 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
         final double random = Math.random();
         int maxWarActionsPerTurn = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
         if ((maxWarActionsPerTurn > 0)
-            && (CollectionUtils.countMatches(data.getRelationshipTracker().getRelationships(id),
-                Matches.relationshipIsAtWar())) / numPlayers < 0.4) {
+            && CollectionUtils.countMatches(data.getRelationshipTracker().getRelationships(id),
+                Matches.relationshipIsAtWar()) / numPlayers < 0.4) {
           if (Math.random() < .9) {
             maxWarActionsPerTurn = 0;
           } else {

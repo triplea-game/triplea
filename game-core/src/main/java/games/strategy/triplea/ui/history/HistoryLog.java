@@ -136,7 +136,7 @@ public class HistoryLog extends JFrame {
 
   private static PlayerId getPlayerId(final HistoryNode printNode) {
     DefaultMutableTreeNode curNode = printNode;
-    final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
+    final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
     PlayerId curPlayer = null;
     if (parentPath != null) {
       final Object[] pathToNode = parentPath.getPath();
@@ -175,7 +175,7 @@ public class HistoryLog extends JFrame {
     final PrintWriter logWriter = printWriter;
     final String moreIndent = "    ";
     // print out the parent nodes
-    final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
+    final TreePath parentPath = new TreePath(printNode.getPath()).getParentPath();
     PlayerId currentPlayer = null;
     if (parentPath != null) {
       final Object[] pathToNode = parentPath.getPath();
