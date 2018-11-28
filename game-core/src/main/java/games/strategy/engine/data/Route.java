@@ -113,10 +113,9 @@ public class Route implements Serializable, Iterable<Territory> {
     }
 
     final Route other = (Route) o;
-    if (!(other.numberOfSteps() == this.numberOfSteps())) {
-      return false;
-    }
-    return other.getStart().equals(this.getStart()) && other.getAllTerritories().equals(this.getAllTerritories());
+    return (numberOfSteps() == other.numberOfSteps())
+        && getStart().equals(other.getStart())
+        && getAllTerritories().equals(other.getAllTerritories());
   }
 
   @Override
