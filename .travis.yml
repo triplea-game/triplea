@@ -23,8 +23,6 @@ before_script:
 script:
 - ./gradlew --parallel check jacocoTestReport
 after_success:
-## if checkstyle violation counts are lower, submit a automatic PR to update the current violation count.
-- ./.travis/update_checkstyle_thresholds
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
 - INSTALL4J_HOME=~/install4j
