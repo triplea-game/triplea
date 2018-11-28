@@ -53,7 +53,7 @@ subprojects {
         jbcryptVersion = '0.4'
         junitJupiterVersion = '5.3.2'
         mockitoVersion = '2.23.4'
-        postgresqlVersion = '42.2.2'
+        postgresqlVersion = '42.2.5'
         sonatypeGoodiesPrefsVersion = '2.2.5'
     }
 
@@ -64,7 +64,7 @@ subprojects {
     dependencies {
         errorprone 'com.google.errorprone:error_prone_core:2.3.1'
 
-        implementation 'com.google.guava:guava:24.1-jre'
+        implementation 'com.google.guava:guava:27.0.1-jre'
 
         testImplementation 'com.github.npathai:hamcrest-optional:2.0.0'
         testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.0.3'

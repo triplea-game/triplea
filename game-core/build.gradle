@@ -3,14 +3,14 @@ import org.apache.tools.ant.filters.ReplaceTokens
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 ext {
-    apacheHttpComponentsVersion = '4.5.5'
+    apacheHttpComponentsVersion = '4.5.6'
 }
 
 dependencies {
     implementation project(':http-client')
     implementation 'com.github.openjson:openjson:1.0.10'
     implementation 'com.googlecode.soundlibs:jlayer:1.0.1.4'
-    implementation 'com.sun.mail:javax.mail:1.6.1'
+    implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'com.yuvimasory:orange-extensions:1.3.0'
     implementation 'commons-cli:commons-cli:1.4'
     implementation 'commons-codec:commons-codec:1.11'
@@ -19,7 +19,7 @@ dependencies {
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
-    implementation 'org.yaml:snakeyaml:1.19'
+    implementation 'org.yaml:snakeyaml:1.23'
 
     testImplementation project(':test-common')
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
