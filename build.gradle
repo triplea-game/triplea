@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.20.0'
-    id 'net.ltgt.errorprone' version '0.0.15' apply false
     id 'io.franzbecker.gradle-lombok' version '1.14' apply false
+    id 'net.ltgt.errorprone' version '0.0.16' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -62,7 +62,7 @@ subprojects {
     }
 
     dependencies {
-        errorprone 'com.google.errorprone:error_prone_core:2.3.1'
+        errorprone 'com.google.errorprone:error_prone_core:2.3.2'
 
         implementation 'com.google.guava:guava:27.0.1-jre'
 
@@ -149,8 +149,8 @@ subprojects {
     }
 
     lombok {
-        version = '1.18.2'
-        sha256 = 'f13db210efa2092a58bb7befce58ffa502e5fefc5e1099f45007074008756bc0'
+        version = '1.18.4'
+        sha256 = '39f3922deb679b1852af519eb227157ef2dd0a21eec3542c8ce1b45f2df39742'
     }
 
     test {
