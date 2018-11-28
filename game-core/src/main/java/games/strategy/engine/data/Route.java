@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
+
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -43,7 +45,7 @@ public class Route implements Serializable, Iterable<Territory> {
   private static final List<Territory> EMPTY_TERRITORY_LIST = Collections.emptyList();
 
   private final List<Territory> steps = new ArrayList<>();
-  private Territory start;
+  private @Nullable Territory start;
 
   public Route() {}
 
@@ -114,7 +116,7 @@ public class Route implements Serializable, Iterable<Territory> {
 
     final Route other = (Route) o;
     return (numberOfSteps() == other.numberOfSteps())
-        && getStart().equals(other.getStart())
+        && Objects.equals(getStart(), other.getStart())
         && getAllTerritories().equals(other.getAllTerritories());
   }
 

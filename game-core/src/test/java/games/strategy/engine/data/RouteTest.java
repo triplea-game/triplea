@@ -27,6 +27,14 @@ final class RouteTest {
     }
 
     @Test
+    void shouldReturnTrueWhenReferenceAndOtherAreEmpty() {
+      final Route reference = new Route();
+      final Route other = new Route();
+
+      assertThat(reference.equals(other), is(true));
+    }
+
+    @Test
     void shouldReturnFalseWhenOtherIsNull() {
       assertThat(reference.equals(null), is(false));
     }
