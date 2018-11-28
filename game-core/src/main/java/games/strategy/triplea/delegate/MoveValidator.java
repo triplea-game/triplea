@@ -742,7 +742,7 @@ public class MoveValidator {
             unitOk = true;
           } else {
             for (final Unit transport : landTransportsWithCapacity.keySet()) {
-              final int cost = UnitAttachment.get((unit).getType()).getTransportCost();
+              final int cost = UnitAttachment.get(unit.getType()).getTransportCost();
               if (cost <= landTransportsWithCapacity.getInt(transport)) {
                 landTransportsWithCapacity.add(transport, -cost);
                 unitOk = true;

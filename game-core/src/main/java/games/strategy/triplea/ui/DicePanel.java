@@ -50,7 +50,7 @@ public class DicePanel extends JPanel {
         if (dice.isEmpty()) {
           continue;
         }
-        add(new JLabel("Rolled at " + (i) + ":"));
+        add(new JLabel("Rolled at " + i + ":"));
         add(create(diceRoll.getRolls(i)));
       }
       add(Box.createVerticalGlue());

@@ -190,7 +190,7 @@ public class BattleCalculator {
     for (final Unit plane : planes) {
       final int hpLeft =
           allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
-              : (Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
+              : Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits());
       for (int hp = 0; hp < hpLeft; ++hp) {
         // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
         // we roll multiple times for any unit with multiple hitpoints
@@ -330,7 +330,7 @@ public class BattleCalculator {
     for (final Unit plane : planes) {
       final int hpLeft =
           allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
-              : (Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
+              : Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits());
       for (int hp = 0; hp < hpLeft; ++hp) {
         // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
         // we roll multiple times for any unit with multiple hitpoints
@@ -396,7 +396,7 @@ public class BattleCalculator {
     for (final Unit plane : planes) {
       final int hpLeft =
           allowMultipleHitsPerUnit ? (UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits())
-              : (Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits()));
+              : Math.min(1, UnitAttachment.get(plane.getType()).getHitPoints() - plane.getHits());
       for (int hp = 0; hp < hpLeft; ++hp) {
         // if allowMultipleHitsPerUnit, then because the number of rolls exactly equals the hitpoints of all units,
         // we roll multiple times for any unit with multiple hitpoints
@@ -934,19 +934,19 @@ public class BattleCalculator {
       final Collection<TerritoryEffect> territoryEffects) {
     final boolean lhtrBombers = Properties.getLhtrHeavyBombers(data);
     final UnitAttachment ua = UnitAttachment.get(current.getType());
-    final int rolls = (defending) ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
+    final int rolls = defending ? ua.getDefenseRolls(current.getOwner()) : ua.getAttackRolls(current.getOwner());
     int strengthWithoutSupport = 0;
     // Find the strength the unit has without support
     // lhtr heavy bombers take best of n dice for both attack and defense
     if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
-      strengthWithoutSupport = (defending) ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
+      strengthWithoutSupport = defending ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
       strengthWithoutSupport +=
           TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
       // just add one like LL if we are LHTR bombers
       strengthWithoutSupport = Math.min(Math.max(strengthWithoutSupport + 1, 0), data.getDiceSides());
     } else {
       for (int i = 0; i < rolls; i++) {
-        final int tempStrength = (defending) ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
+        final int tempStrength = defending ? ua.getDefense(current.getOwner()) : ua.getAttack(current.getOwner());
         strengthWithoutSupport +=
             TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
         strengthWithoutSupport += Math.min(Math.max(tempStrength, 0), data.getDiceSides());

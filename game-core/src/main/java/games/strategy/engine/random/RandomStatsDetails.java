@@ -56,7 +56,7 @@ public class RandomStatsDetails implements Serializable {
         localTotal += stats.getInt(i);
       }
       total = localTotal;
-      average = (sumTotal) / ((double) stats.totalValues());
+      average = sumTotal / ((double) stats.totalValues());
       // calculate median
       if (localTotal % 2 != 0) {
         median = calcMedian((localTotal / 2) + 1, diceSides, stats);

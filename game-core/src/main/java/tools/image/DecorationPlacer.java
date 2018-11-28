@@ -633,8 +633,8 @@ public final class DecorationPlacer {
       }
       final int width = staticImageForPlacing.getWidth(null);
       final int height = staticImageForPlacing.getHeight(null);
-      final int addY = (imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
-          : (imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
+      final int addY = (imagePointType == ImagePointType.comments ? -ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
+          : (imagePointType == ImagePointType.pu_place ? ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS : 0));
       if (fillInAllTerritories) {
         for (final Entry<String, Point> entry : centers.entrySet()) {
           List<Point> points = currentPoints.get(entry.getKey());
@@ -660,8 +660,8 @@ public final class DecorationPlacer {
     }
 
     private void fillCurrentImagePointsBasedOnImageFolder(final boolean pointsAreExactlyTerritoryNames) {
-      final int addY = (imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
-          : (imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
+      final int addY = (imagePointType == ImagePointType.comments ? -ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS
+          : (imagePointType == ImagePointType.pu_place ? ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS : 0));
       final List<String> allTerritories = new ArrayList<>(centers.keySet());
       for (final File file : FileUtils.listFiles(currentImageFolderLocation)) {
         if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif")) {

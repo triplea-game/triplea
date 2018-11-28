@@ -104,7 +104,7 @@ public class CryptoRandomSource implements IRandomSource {
     final VaultId localId = vault.lock(intsToBytes(localRandom));
     // ask the remote to generate numbers
     final IRemoteRandom remote =
-        (IRemoteRandom) (game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(remotePlayer)));
+        (IRemoteRandom) game.getRemoteMessenger().getRemote(ServerGame.getRemoteRandomName(remotePlayer));
     final int[] remoteNumbers = remote.generate(max, count, annotation, localId);
 
     // unlock ours, tell the client he can verify

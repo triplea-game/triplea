@@ -136,7 +136,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[0]));
       otherPlayers.add(getData().getPlayerList().getPlayerId(s[1]));
     }
-    otherPlayers.remove((getAttachedTo()));
+    otherPlayers.remove(getAttachedTo());
     return otherPlayers;
   }
 

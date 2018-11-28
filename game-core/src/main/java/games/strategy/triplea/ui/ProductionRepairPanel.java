@@ -280,7 +280,7 @@ class ProductionRepairPanel extends JPanel {
     }
 
     void setMax(final int max) {
-      text.setMax((int) (Math.ceil(((double) Math.min(max, maxRepairAmount) / (double) repairResults))));
+      text.setMax((int) Math.ceil(((double) Math.min(max, maxRepairAmount) / (double) repairResults)));
     }
 
     Unit getUnit() {

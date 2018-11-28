@@ -311,7 +311,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       if (previousSelection.equalsIgnoreCase("Client")) {
         previousSelection = playerTypes[0];
       }
-      if (!(previousSelection.equals("no_one")) && Arrays.asList(playerTypes).contains(previousSelection)) {
+      if (!previousSelection.equals("no_one") && Arrays.asList(playerTypes).contains(previousSelection)) {
         type.setSelectedItem(previousSelection);
         model.setLocalPlayerType(nameLabel.getText(), PlayerType.fromLabel((String) type.getSelectedItem()));
       } else if (playerName.startsWith("Neutral") || playerName.startsWith("AI")) {

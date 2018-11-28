@@ -147,8 +147,8 @@ public final class TileImageReconstructor {
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     final BufferedImage mapImage = localGraphicSystem.createCompatibleImage(sizeX, sizeY, Transparency.TRANSLUCENT);
     final Graphics graphics = mapImage.getGraphics();
-    for (int x = 0; (x) * TileManager.TILE_SIZE < sizeX; x++) {
-      for (int y = 0; (y) * TileManager.TILE_SIZE < sizeY; y++) {
+    for (int x = 0; x * TileManager.TILE_SIZE < sizeX; x++) {
+      for (int y = 0; y * TileManager.TILE_SIZE < sizeY; y++) {
         final String tileName = x + "_" + y + ".png";
         final File tileFile = new File(baseTileLocation, tileName);
         if (!tileFile.exists()) {

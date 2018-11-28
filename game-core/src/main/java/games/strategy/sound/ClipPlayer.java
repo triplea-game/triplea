@@ -454,7 +454,7 @@ public class ClipPlayer {
     } else {
       // we must be using unzipped sounds
       if (!thisSoundFile.isDirectory()) {
-        if (!(isSoundFileNamed(thisSoundFile))) {
+        if (!isSoundFileNamed(thisSoundFile)) {
           return availableSounds;
         }
         availableSounds.add(thisSoundUrl);
@@ -487,7 +487,7 @@ public class ClipPlayer {
 
   private static boolean isZippedMp3(final ZipEntry zipElement, final String resourceAndPathUrl) {
     return zipElement != null && zipElement.getName() != null && zipElement.getName().contains(resourceAndPathUrl)
-        && (zipElement.getName().endsWith(MP3_SUFFIX));
+        && zipElement.getName().endsWith(MP3_SUFFIX);
   }
 
   private static boolean isSoundFileNamed(final File soundFile) {

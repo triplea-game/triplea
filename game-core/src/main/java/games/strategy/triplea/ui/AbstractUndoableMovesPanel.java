@@ -104,7 +104,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
       @Override
       public void paint(final Graphics g) {
         if (previousVisibleIndex != null) {
-          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((moves.size()) - previousVisibleIndex),
+          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * (moves.size() - previousVisibleIndex),
               1, scrollIncrementFinal));
           previousVisibleIndex = null;
         }

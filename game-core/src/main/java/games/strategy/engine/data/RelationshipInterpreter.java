@@ -24,12 +24,12 @@ public class RelationshipInterpreter extends GameDataComponent {
    * @param p2 second referring player
    */
   public boolean isAllied(final PlayerId p1, final PlayerId p2) {
-    return Matches.relationshipTypeIsAllied().test((getRelationshipType(p1, p2)));
+    return Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, p2));
   }
 
   public boolean isAlliedWithAnyOfThesePlayers(final PlayerId p1, final Collection<PlayerId> p2s) {
     return p2s.stream()
-        .anyMatch(p2 -> Matches.relationshipTypeIsAllied().test((getRelationshipType(p1, p2))));
+        .anyMatch(p2 -> Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, p2)));
   }
 
   public Set<PlayerId> getAllies(final PlayerId p1, final boolean includeSelf) {
@@ -52,12 +52,12 @@ public class RelationshipInterpreter extends GameDataComponent {
    * @return whether p1 is at war with p2
    */
   public boolean isAtWar(final PlayerId p1, final PlayerId p2) {
-    return Matches.relationshipTypeIsAtWar().test((getRelationshipType(p1, p2)));
+    return Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, p2));
   }
 
   public boolean isAtWarWithAnyOfThesePlayers(final PlayerId p1, final Collection<PlayerId> p2s) {
     return p2s.stream()
-        .anyMatch(p2 -> Matches.relationshipTypeIsAtWar().test((getRelationshipType(p1, p2))));
+        .anyMatch(p2 -> Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, p2)));
   }
 
   public Set<PlayerId> getEnemies(final PlayerId p1) {

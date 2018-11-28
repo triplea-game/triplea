@@ -557,7 +557,7 @@ public final class TripleAFrame extends JFrame {
   private void addTab(final String title, final Component component, final char hotkey) {
     tabsPanel.addTab(title, null, component, "Hotkey: CTRL+" + hotkey);
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, hotkey,
-        () -> tabsPanel.setSelectedIndex((Arrays.asList(tabsPanel.getComponents())).indexOf(component)));
+        () -> tabsPanel.setSelectedIndex(Arrays.asList(tabsPanel.getComponents()).indexOf(component)));
   }
 
   public LocalPlayers getLocalPlayers() {

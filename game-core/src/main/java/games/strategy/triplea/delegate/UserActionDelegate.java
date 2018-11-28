@@ -168,7 +168,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private boolean actionIsAccepted(final UserActionAttachment uaa) {
     for (final PlayerId player : uaa.getActionAccept()) {
-      if (!(getRemotePlayer(player)).acceptAction(this.player,
+      if (!getRemotePlayer(player).acceptAction(this.player,
           UserActionText.getInstance().getAcceptanceQuestion(uaa.getText()), false)) {
         return false;
       }

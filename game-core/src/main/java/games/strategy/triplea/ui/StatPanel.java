@@ -301,7 +301,7 @@ class StatPanel extends AbstractStatPanel {
       }
       final List<TechAdvance> techAdvances = TechAdvance.getTechAdvances(gameData, null);
       for (final TechAdvance tech : techAdvances) {
-        rowMap.put((tech).getName(), row);
+        rowMap.put(tech.getName(), row);
         data[row][0] = tech.getName();
         row++;
       }

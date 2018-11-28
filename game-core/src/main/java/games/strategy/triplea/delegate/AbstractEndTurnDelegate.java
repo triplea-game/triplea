@@ -170,7 +170,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       int relationshipUpkeepTotalCost = 0;
       if (relationshipUpkeepCostPercentage != 0) {
         final float gainedPus = Math.max(0, currentPUs - leftOverPUs);
-        relationshipUpkeepTotalCost += Math.round(gainedPus * (relationshipUpkeepCostPercentage) / 100f);
+        relationshipUpkeepTotalCost += Math.round(gainedPus * relationshipUpkeepCostPercentage / 100f);
       }
       if (relationshipUpkeepCostFlat != 0) {
         relationshipUpkeepTotalCost += relationshipUpkeepCostFlat;

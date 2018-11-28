@@ -820,7 +820,7 @@ public class MovePanel extends AbstractMovePanel {
         final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
         unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
 
-        final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
+        final int iterCount = me.isAltDown() ? deselectNumber : 1;
 
         int addCount = 0;
         for (final Unit unit : unitsToMove) {
@@ -983,7 +983,7 @@ public class MovePanel extends AbstractMovePanel {
           }
         } else if (!unitsWithoutDependents.isEmpty()) {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-          final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
+          final int iterCount = me.isAltDown() ? deselectNumber : 1;
           // remove the last iterCount elements
           for (int i = 0; i < iterCount; i++) {
             unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
@@ -1019,7 +1019,7 @@ public class MovePanel extends AbstractMovePanel {
           // check for alt key - remove 1/10 of total units (useful for splitting large armies)
           // changed to just remove 10 units
           // (int) Math.max(1, Math.floor(units.size() / deselectNumber))
-          final int iterCount = (me.isAltDown()) ? deselectNumber : 1;
+          final int iterCount = me.isAltDown() ? deselectNumber : 1;
           int remCount = 0;
           for (final Unit unit : units) {
             if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
