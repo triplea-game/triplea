@@ -107,7 +107,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public final boolean equals(final Object o) {
     if (o == this) {
       return true;
     } else if (!(o instanceof Route)) {
@@ -121,7 +121,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Objects.hash(start, getSteps());
   }
 
