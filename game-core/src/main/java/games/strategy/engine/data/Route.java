@@ -106,9 +106,12 @@ public class Route implements Serializable, Iterable<Territory> {
 
   @Override
   public boolean equals(final Object o) {
-    if (o == null) {
+    if (o == this) {
+      return true;
+    } else if (!(o instanceof Route)) {
       return false;
     }
+
     final Route other = (Route) o;
     if (!(other.numberOfSteps() == this.numberOfSteps())) {
       return false;
