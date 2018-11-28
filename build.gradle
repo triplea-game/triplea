@@ -86,6 +86,7 @@ subprojects {
             '-Xep:ClassCanBeStatic:ERROR',
             '-Xep:DefaultCharset:ERROR',
             '-Xep:EqualsIncompatibleType:ERROR',
+            '-Xep:EqualsUnsafeCast:ERROR',
             '-Xep:FutureReturnValueIgnored:ERROR',
             '-Xep:ImmutableEnumChecker:ERROR',
             '-Xep:InconsistentCapitalization:ERROR',

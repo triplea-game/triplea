@@ -28,7 +28,7 @@ import games.strategy.triplea.image.ResourceImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.IntegerMap;
 
-public class RouteTest {
+final class MapRouteDrawerTest {
   private final Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
   private final MapData dummyMapData = mock(MapData.class);
   private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer(mock(MapPanel.class), dummyMapData));
