@@ -102,6 +102,11 @@ public class ProPurchaseUtils {
         && units.stream().anyMatch(Matches.unitIsCarrier());
   }
 
+  /**
+   * Removes any invalid purchase options from {@code purchaseOptions}.
+   *
+   * @return TODO: Change return type to void; return value is never used.
+   */
   public static List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerId player, final GameData data,
       final List<ProPurchaseOption> purchaseOptions, final ProResourceTracker resourceTracker,
       final int remainingUnitProduction, final List<Unit> unitsToPlace,
@@ -145,6 +150,11 @@ public class ProPurchaseUtils {
     return purchaseOptions;
   }
 
+  /**
+   * Randomly selects one of the specified purchase options of the specified type.
+   *
+   * @return The selected purchase option or empty if no purchase option of the specified type is available.
+   */
   public static Optional<ProPurchaseOption> randomizePurchaseOption(
       final Map<ProPurchaseOption, Double> purchaseEfficiencies, final String type) {
 
@@ -174,6 +184,10 @@ public class ProPurchaseUtils {
     return Optional.of(purchasePercentages.keySet().iterator().next());
   }
 
+  /**
+   * Returns the list of units to purchase that will maximize defense in the specified territory based on the specified
+   * purchase options.
+   */
   public static List<Unit> findMaxPurchaseDefenders(final PlayerId player, final Territory t,
       final List<ProPurchaseOption> landPurchaseOptions) {
 
@@ -249,6 +263,9 @@ public class ProPurchaseUtils {
     purchaseTerritories.values().forEach(ppt -> ppt.setUnitProduction(ppt.getUnitProduction() + 1));
   }
 
+  /**
+   * Returns all possible territories within which {@code player} can place purchased units.
+   */
   public static Map<Territory, ProPurchaseTerritory> findPurchaseTerritories(final PlayerId player) {
 
     ProLogger.info("Find all purchase territories");
@@ -361,6 +378,9 @@ public class ProPurchaseUtils {
     return null;
   }
 
+  /**
+   * Returns the list of units to place in the specified territory based on the specified purchases.
+   */
   public static List<Unit> getPlaceUnits(final Territory t,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
 

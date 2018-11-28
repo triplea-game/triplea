@@ -39,6 +39,11 @@ public class ProOddsCalculator {
     isCanceled = true;
   }
 
+  /**
+   * Simulates the specified battle. Prior to the simulation, an estimate is made of the attacker's chance to win the
+   * battle. If the estimate indicates the attacker has almost no chance to win, the simulation is not performed, and
+   * an appropriate result indicating the defender's success is returned.
+   */
   public ProBattleResult estimateAttackBattleResults(final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
 
@@ -55,6 +60,11 @@ public class ProOddsCalculator {
     return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits);
   }
 
+  /**
+   * Simulates the specified battle. Prior to the simulation, an estimate is made of the defender's chance to win the
+   * battle. If the estimate indicates the defender has almost no chance to win, the simulation is not performed, and
+   * an appropriate result indicating the attacker's success is returned.
+   */
   public ProBattleResult estimateDefendBattleResults(final Territory t,
       final List<Unit> attackingUnits, final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
 
@@ -109,6 +119,9 @@ public class ProOddsCalculator {
     return callBattleCalculator(t, attackingUnits, defendingUnits, bombardingUnits, false);
   }
 
+  /**
+   * Simulates the specified battle.
+   */
   public ProBattleResult callBattleCalculator(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits, final Set<Unit> bombardingUnits, final boolean retreatWhenOnlyAirLeft) {
     final GameData data = ProData.getData();

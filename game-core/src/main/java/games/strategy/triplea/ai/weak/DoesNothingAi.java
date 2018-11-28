@@ -14,6 +14,9 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 
+/**
+ * An AI implementation that takes no action except to purchase and place units according to very simple rules.
+ */
 public class DoesNothingAi extends AbstractAi {
 
   public DoesNothingAi(final String name) {

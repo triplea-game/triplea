@@ -24,6 +24,9 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import lombok.Getter;
 
+/**
+ * The result of an AI purchase analysis for a single production rule and unit type.
+ */
 public class ProPurchaseOption {
 
   @Getter
@@ -177,6 +180,9 @@ public class ProPurchaseOption {
     return calculateEfficiency(0.75, 1.25, supportAttackFactor, supportDefenseFactor, distanceFactor, data);
   }
 
+  /**
+   * Returns the sea defense efficiency for the specified units if this purchase option is selected.
+   */
   public double getSeaDefenseEfficiency(final GameData data, final List<Unit> ownedLocalUnits,
       final List<Unit> unitsToPlace, final boolean needDestroyer, final int unusedCarrierCapacity,
       final int unusedLocalCarrierCapacity) {

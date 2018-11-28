@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * The result of an AI battle analysis.
+ */
 @Getter
 @ToString
 @AllArgsConstructor

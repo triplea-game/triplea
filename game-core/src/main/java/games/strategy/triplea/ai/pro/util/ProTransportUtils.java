@@ -43,6 +43,9 @@ public class ProTransportUtils {
     return maxMovement;
   }
 
+  /**
+   * Returns the units to transport via {@code transport} whose land movement value does not exceed {@code value}.
+   */
   public static List<Unit> getUnitsToTransportThatCantMoveToHigherValue(final PlayerId player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
       final Map<Territory, ProTerritory> moveMap, final Map<Unit, Set<Territory>> unitMoveMap, final double value) {
@@ -80,6 +83,9 @@ public class ProTransportUtils {
         ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, transport, true));
   }
 
+  /**
+   * Returns the units to transport via {@code transport} that satisfy the specified predicate.
+   */
   // TODO: this needs fixed to consider whether a valid route exists to load all units
   public static List<Unit> getUnitsToTransportFromTerritories(final PlayerId player, final Unit transport,
       final Set<Territory> territoriesToLoadFrom, final List<Unit> unitsToIgnore,
@@ -244,6 +250,9 @@ public class ProTransportUtils {
     };
   }
 
+  /**
+   * Returns the air units in {@code units} that can't land on any carrier unit in {@code units}.
+   */
   public static List<Unit> getAirThatCantLandOnCarrier(final PlayerId player, final Territory t,
       final List<Unit> units) {
     final GameData data = ProData.getData();
@@ -265,6 +274,10 @@ public class ProTransportUtils {
     return airThatCantLand;
   }
 
+  /**
+   * Returns {@code true} if the carrier units in {@code existingUnits} have enough capacity to receive the air units in
+   * {@code existingUnits} in addition to {@code newUnit}.
+   */
   public static boolean validateCarrierCapacity(final PlayerId player, final Territory t,
       final List<Unit> existingUnits, final Unit newUnit) {
     final GameData data = ProData.getData();
@@ -283,6 +296,10 @@ public class ProTransportUtils {
     return capacity >= 0;
   }
 
+  /**
+   * Returns the unused capacity of all carrier units within 2 neighbors of {@code t} including any carrier units in
+   * {@code unitsToPlace}.
+   */
   public static int getUnusedLocalCarrierCapacity(final PlayerId player, final Territory t,
       final List<Unit> unitsToPlace) {
     final GameData data = ProData.getData();
@@ -314,6 +331,9 @@ public class ProTransportUtils {
     return capacity;
   }
 
+  /**
+   * Returns the unused capacity of all carrier units in {@code t} including any carrier units in {@code unitsToPlace}.
+   */
   public static int getUnusedCarrierCapacity(final PlayerId player, final Territory t, final List<Unit> unitsToPlace) {
     final List<Unit> units = new ArrayList<>(unitsToPlace);
     units.addAll(t.getUnits().getUnits());
@@ -329,6 +349,12 @@ public class ProTransportUtils {
     return capacity;
   }
 
+  /**
+   * Returns {@code units} sorted in such an order as to minimize losses during a battle involving carrier and air
+   * units. Carrier units are prioritized for loss if there is sufficient remaining carrier capacity or nearby land
+   * territories that can accommodate the remaining air units. Otherwise, air units are prioritized in order to ensure
+   * carrier capacity for the remaining air units.
+   */
   public static List<Unit> interleaveUnitsCarriersAndPlanes(final List<Unit> units,
       final int planesThatDontNeedToLand) {
     if (units.stream().noneMatch(Matches.unitIsCarrier())

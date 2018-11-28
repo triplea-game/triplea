@@ -13,6 +13,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * The result of an AI purchase analysis for a single territory.
+ */
 @ToString
 public class ProPurchaseTerritory {
 
