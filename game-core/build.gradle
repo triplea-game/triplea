@@ -25,14 +25,6 @@ dependencies {
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
-checkstyleMain {
-    maxWarnings = checkstyleMainMaxWarnings.toInteger()
-}
-
-checkstyleTest {
-    maxWarnings = checkstyleTestMaxWarnings.toInteger()
-}
-
 processResources {
     filesMatching('**/product.properties') {
         filter ReplaceTokens, tokens: [buildId: getBuildId()]
