@@ -1,9 +1,10 @@
 package games.strategy.util;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
+
+import lombok.EqualsAndHashCode;
 
 /**
  * A heterogeneous container of three values.
@@ -12,7 +13,8 @@ import com.google.common.base.MoreObjects;
  * @param <S> The type of the second value.
  * @param <T> The type of the third value.
  */
-public class Triple<F, S, T> implements Serializable {
+@EqualsAndHashCode
+public final class Triple<F, S, T> implements Serializable {
   private static final long serialVersionUID = -8188046743232005918L;
   private final Tuple<F, S> tuple;
   private final T third;
@@ -64,25 +66,5 @@ public class Triple<F, S, T> implements Serializable {
         .add("second", getSecond())
         .add("third", getThird())
         .toString();
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(tuple, third);
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if (this == obj) {
-      return true;
-    }
-
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-
-    final Triple<?, ?, ?> other = (Triple<?, ?, ?>) obj;
-    return Objects.equals(tuple, other.tuple)
-        && Objects.equals(getThird(), other.getThird());
   }
 }
