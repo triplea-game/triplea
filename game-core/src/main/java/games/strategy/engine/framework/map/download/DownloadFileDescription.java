@@ -12,7 +12,7 @@ import games.strategy.util.Version;
  * This class represents the essential data for downloading a TripleA map. Where to get it, where to install it,
  * version, etc..
  */
-public class DownloadFileDescription {
+public final class DownloadFileDescription {
   private final String url;
   private final String description;
   private final String mapName;
@@ -21,11 +21,9 @@ public class DownloadFileDescription {
   private final MapCategory mapCategory;
   private final String img;
 
-
   enum DownloadType {
     MAP, MAP_SKIN, MAP_TOOL
   }
-
 
   enum MapCategory {
     BEST("High Quality"),
@@ -38,7 +36,6 @@ public class DownloadFileDescription {
 
     final String outputLabel;
 
-
     MapCategory(final String label) {
       outputLabel = label;
     }
@@ -47,7 +44,6 @@ public class DownloadFileDescription {
     public String toString() {
       return outputLabel;
     }
-
   }
 
   DownloadFileDescription(final String url, final String description, final String mapName,
@@ -125,7 +121,6 @@ public class DownloadFileDescription {
     text += getDescription();
     return text;
   }
-
 
   @Override
   public boolean equals(final Object rhs) {

@@ -5,20 +5,21 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
+import games.strategy.util.Version;
 
-@ExtendWith(MockitoExtension.class)
 public class FileDownloadTest {
-  @Mock
-  private DownloadFileDescription mockDownload;
-
   @Test
   public void testBasicStartCancel() {
-    final DownloadFile testObj = new DownloadFile(mockDownload, mock(DownloadListener.class));
+    final DownloadFileDescription downloadFileDescription = new DownloadFileDescription(
+        "url",
+        "description",
+        "mapName",
+        new Version(0, 0),
+        DownloadFileDescription.DownloadType.MAP,
+        DownloadFileDescription.MapCategory.BEST);
+    final DownloadFile testObj = new DownloadFile(downloadFileDescription, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
 
     testObj.startAsyncDownload();
