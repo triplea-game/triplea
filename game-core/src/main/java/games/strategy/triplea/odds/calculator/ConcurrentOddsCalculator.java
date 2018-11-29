@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import com.google.common.util.concurrent.Runnables;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -64,8 +65,12 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
   }
 
   ConcurrentOddsCalculator(final String threadNamePrefix, final Runnable dataLoadedAction) {
-    executor = Executors.newFixedThreadPool(MAX_THREADS,
-        new DaemonThreadFactory(threadNamePrefix + " ConcurrentOddsCalculator Worker"));
+    executor = Executors.newFixedThreadPool(
+        MAX_THREADS,
+        new ThreadFactoryBuilder()
+            .setDaemon(true)
+            .setNameFormat(threadNamePrefix + " ConcurrentOddsCalculator Worker-%d")
+            .build());
     this.dataLoadedAction = dataLoadedAction;
   }
 
