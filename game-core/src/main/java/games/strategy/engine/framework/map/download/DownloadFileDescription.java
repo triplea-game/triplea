@@ -1,18 +1,20 @@
 package games.strategy.engine.framework.map.download;
 
 import java.io.File;
-import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.util.Version;
+import lombok.EqualsAndHashCode;
 
 /**
  * This class represents the essential data for downloading a TripleA map. Where to get it, where to install it,
  * version, etc..
  */
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class DownloadFileDescription {
+  @EqualsAndHashCode.Include
   private final String url;
   private final String description;
   private final String mapName;
@@ -120,19 +122,5 @@ public final class DownloadFileDescription {
     }
     text += getDescription();
     return text;
-  }
-
-  @Override
-  public boolean equals(final Object rhs) {
-    if (rhs == null || getClass() != rhs.getClass()) {
-      return false;
-    }
-    final DownloadFileDescription other = (DownloadFileDescription) rhs;
-    return Objects.equals(this.url, other.url);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(url);
   }
 }
