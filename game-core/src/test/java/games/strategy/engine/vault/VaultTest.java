@@ -46,7 +46,6 @@ public class VaultTest {
     final UnifiedMessenger clientUnifiedMessenger = new UnifiedMessenger(clientMessenger);
     serverVault = new Vault(new ChannelMessenger(serverUnifiedMessenger));
     clientVault = new Vault(new ChannelMessenger(clientUnifiedMessenger));
-    Thread.yield();
   }
 
   @AfterEach
