@@ -5,14 +5,15 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.Version;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
-
   @Test
   public void testIsMap() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
@@ -32,7 +33,6 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
         DownloadFileDescription.DownloadType.MAP_TOOL, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapTool(), is(true));
-
   }
 
   @Test
@@ -52,7 +52,6 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
     assertThat(testObj.getMapCategory(), is(DownloadFileDescription.MapCategory.BEST));
   }
 
-
   @Test
   public void testGetMapFileName() {
     final String expectedFileName = "world_war_ii_revised.zip";
@@ -68,7 +67,6 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
     inputUrl = "abc.zip";
     testObj = testObjFromUrl(inputUrl);
     assertThat("Unable to parse a url, no last '/' character, return empty.", testObj.getMapZipFileName(), is(""));
-
   }
 
   private static DownloadFileDescription testObjFromUrl(final String inputUrl) {
@@ -95,5 +93,15 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
         DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
     assertThat(testObj.getInstallLocation().getAbsolutePath(), is(expected.getAbsolutePath()));
+  }
+
+  @Nested
+  final class EqualsAndHashCodeTest {
+    @Test
+    final void shouldBeEquatableAndHashable() {
+      EqualsVerifier.forClass(DownloadFileDescription.class)
+          .withOnlyTheseFields("url")
+          .verify();
+    }
   }
 }
