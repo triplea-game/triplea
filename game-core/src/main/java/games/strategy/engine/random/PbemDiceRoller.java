@@ -178,6 +178,7 @@ public class PbemDiceRoller implements IRandomSource {
 
     // should only be called if we are not visible
     // should be called from the event thread
+    // wont return until the roll is done.
     void roll() throws IllegalStateException {
       rollInternal();
       setVisible(true);
