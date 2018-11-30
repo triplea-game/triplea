@@ -99,6 +99,7 @@ subprojects {
             '-Xep:ReferenceEquality:ERROR',
             '-Xep:StringSplitter:ERROR',
             '-Xep:UnnecessaryParentheses:ERROR',
+            '-Xep:UnsafeReflectiveConstructionCast:ERROR',
             '-Xep:UnsynchronizedOverridesSynchronized:ERROR',
             '-Xep:WaitNotInLoop:ERROR',
             '-Xlint:all,-processing',
