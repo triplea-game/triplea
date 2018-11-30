@@ -6,9 +6,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Iterables;
 
 /**
  * A collection of useful methods for working with instances of {@link Collection}.
@@ -98,6 +99,9 @@ public final class CollectionUtils {
    * Note that (a,a,b) (a,b,b) are equal.
    */
   public static <T> boolean equals(final Collection<T> c1, final Collection<T> c2) {
-    return Objects.equals(c1, c2) || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
+    checkNotNull(c1);
+    checkNotNull(c2);
+
+    return Iterables.elementsEqual(c1, c2) || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
   }
 }
