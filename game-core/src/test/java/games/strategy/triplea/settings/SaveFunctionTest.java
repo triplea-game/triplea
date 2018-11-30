@@ -1,114 +1,114 @@
 package games.strategy.triplea.settings;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Runnables;
 
 @ExtendWith(MockitoExtension.class)
-public class SaveFunctionTest {
-
+final class SaveFunctionTest {
   @Mock
   private SelectionComponent<JComponent> mockSelectionComponent;
-
   @Mock
   private SelectionComponent<JComponent> mockSelectionComponent2;
-
   @Mock
   private GameSetting<String> mockSetting;
 
   @Test
-  public void messageOnValidIsInformation() {
+  void messageOnValidIsInformation() {
     givenValidationResults(true, true);
+
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
         Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
-    MatcherAssert.assertThat("There will always be a message back to the user",
-        result.message.isEmpty(), is(false));
-    MatcherAssert.assertThat("All valid, message type should informational",
-        result.dialogType, is(JOptionPane.INFORMATION_MESSAGE));
+    assertThat("There will always be a message back to the user", result.message, is(not(emptyString())));
+    assertThat("All valid, message type should informational", result.dialogType, is(JOptionPane.INFORMATION_MESSAGE));
   }
 
   private void givenValidationResults(final boolean first, final boolean second) {
-    Mockito.when(mockSelectionComponent.isValid()).thenReturn(first);
-    Mockito.when(mockSelectionComponent.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
+    when(mockSelectionComponent.isValid()).thenReturn(first);
+    whenSelectionComponentSave(mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
     if (first) {
-      Mockito.when(mockSetting.getValue()).thenReturn(Optional.empty());
+      when(mockSetting.getValue()).thenReturn(Optional.empty());
     }
-    Mockito.when(mockSelectionComponent2.isValid()).thenReturn(second);
-    Mockito.when(mockSelectionComponent2.readValues()).thenReturn(ImmutableMap.of(mockSetting, "abc"));
+
+    when(mockSelectionComponent2.isValid()).thenReturn(second);
+    whenSelectionComponentSave(mockSelectionComponent2, context -> context.setValue(mockSetting, "abc"));
+  }
+
+  private static void whenSelectionComponentSave(
+      final SelectionComponent<?> selectionComponent,
+      final Consumer<SelectionComponent.SaveContext> action) {
+    doAnswer(invocation -> {
+      final SelectionComponent.SaveContext context = (SelectionComponent.SaveContext) invocation.getArgument(0);
+      action.accept(context);
+      return null;
+    }).when(selectionComponent).save(any(SelectionComponent.SaveContext.class));
   }
 
   @Test
-  public void messageOnNotValidResultIsWarning() {
+  void messageOnNotValidResultIsWarning() {
     givenValidationResults(false, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
         Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
-    MatcherAssert.assertThat(result.message.isEmpty(), is(false));
-    MatcherAssert.assertThat(result.dialogType, is(JOptionPane.WARNING_MESSAGE));
+    assertThat(result.message, is(not(emptyString())));
+    assertThat(result.dialogType, is(JOptionPane.WARNING_MESSAGE));
   }
 
   @Test
-  public void messageOnMixedResultIsWarning() {
+  void messageOnMixedResultIsWarning() {
     givenValidationResults(true, false);
 
     final SaveFunction.SaveResult result = SaveFunction.saveSettings(
         Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
 
-    MatcherAssert.assertThat(result.message.isEmpty(), is(false));
-    MatcherAssert.assertThat("At least one value was not updated, should be warning message type",
+    assertThat(result.message, is(not(emptyString())));
+    assertThat("At least one value was not updated, should be warning message type",
         result.dialogType, is(JOptionPane.WARNING_MESSAGE));
   }
 
   @Test
-  public void valueSavedWhenValid() {
-    final AtomicInteger callCount = new AtomicInteger(0);
+  void valueSavedWhenValid(@Mock final Runnable flushSettingsAction) {
+    when(mockSelectionComponent.isValid()).thenReturn(true);
+    whenSelectionComponentSave(mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
+    when(mockSetting.getValue()).thenReturn(Optional.empty());
+    when(mockSelectionComponent2.isValid()).thenReturn(false);
 
-    Mockito.when(mockSelectionComponent.isValid()).thenReturn(true);
-    Mockito.when(mockSelectionComponent.readValues()).thenReturn(ImmutableMap.of(mockSetting, TestData.fakeValue));
-    Mockito.when(mockSetting.getValue()).thenReturn(Optional.empty());
+    SaveFunction.saveSettings(Arrays.asList(mockSelectionComponent, mockSelectionComponent2), flushSettingsAction);
 
-    Mockito.when(mockSelectionComponent2.isValid()).thenReturn(false);
-
-    SaveFunction.saveSettings(
-        Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
-        callCount::incrementAndGet);
-
-    MatcherAssert.assertThat("Make sure we flushed! A call count of '1' means our runnable was called,"
-        + "which should only happen when settings were successfully saved.",
-        callCount.get(), is(1));
-
-    Mockito.verify(mockSetting).setObjectValue(TestData.fakeValue);
+    verify(flushSettingsAction).run();
+    verify(mockSetting).setValue(TestData.fakeValue);
   }
 
   @Test
-  public void noSettingsSavedIfAllInvalid() {
-    final AtomicInteger callCount = new AtomicInteger(0);
+  void noSettingsSavedIfAllInvalid(@Mock final Runnable flushSettingsAction) {
+    when(mockSelectionComponent.isValid()).thenReturn(false);
 
-    Mockito.when(mockSelectionComponent.isValid()).thenReturn(false);
+    SaveFunction.saveSettings(Collections.singletonList(mockSelectionComponent), flushSettingsAction);
 
-    SaveFunction.saveSettings(Collections.singletonList(mockSelectionComponent), callCount::incrementAndGet);
-
-    MatcherAssert.assertThat("The one setting value was not valid, nothing should be saved, our "
-        + "increment value runnable should not have been called, callCount should still be at zero.",
-        callCount.get(), is(0));
+    verify(flushSettingsAction, never()).run();
   }
 
   private interface TestData {
