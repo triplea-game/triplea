@@ -98,6 +98,7 @@ subprojects {
             '-Xep:ParameterName:OFF', // workaround for https://github.com/google/error-prone/issues/780
             '-Xep:ReferenceEquality:ERROR',
             '-Xep:StringSplitter:ERROR',
+            '-Xep:ThreadPriorityCheck:ERROR',
             '-Xep:UnnecessaryParentheses:ERROR',
             '-Xep:UnsynchronizedOverridesSynchronized:ERROR',
             '-Xep:WaitNotInLoop:ERROR',

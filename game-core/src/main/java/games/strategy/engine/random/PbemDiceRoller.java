@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import javax.swing.JButton;
@@ -177,7 +178,6 @@ public class PbemDiceRoller implements IRandomSource {
 
     // should only be called if we are not visible
     // should be called from the event thread
-    // wont return until the roll is done.
     void roll() throws IllegalStateException {
       rollInternal();
       setVisible(true);
@@ -212,9 +212,9 @@ public class PbemDiceRoller implements IRandomSource {
       if (SwingUtilities.isEventDispatchThread()) {
         throw new IllegalStateException("Wrong thread");
       }
-      while (!isVisible()) {
-        Thread.yield();
-      }
+
+      waitForWindowToBecomeVisible();
+
       appendText(subjectMessage + "\n");
       appendText("Contacting  " + diceServer.getDisplayName() + "\n");
       String text = null;
@@ -256,6 +256,14 @@ public class PbemDiceRoller implements IRandomSource {
         ex.printStackTrace(new PrintWriter(writer));
         appendText(writer.toString());
         notifyError();
+      }
+    }
+
+    private void waitForWindowToBecomeVisible() {
+      final BooleanSupplier isVisible =
+          () -> Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(this::isVisible)).result.orElse(false);
+      while (!isVisible.getAsBoolean()) {
+        Interruptibles.sleep(10L);
       }
     }
   }
