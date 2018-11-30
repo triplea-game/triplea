@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
-import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
 import games.strategy.ui.SwingAction;
@@ -144,7 +143,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    */
   private static Optional<GameChooserEntry> createGameChooserEntry(final URI uri) {
     try {
-      return Optional.of(createEntry(uri));
+      return Optional.of(GameChooserEntry.newInstance(uri));
     } catch (final EngineVersionException e) {
       log.log(Level.SEVERE, "Engine version problem:" + uri, e);
     } catch (final Exception e) {
@@ -161,11 +160,6 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
         .mapToObj(this::get)
         .filter(e -> e.getGameData().getGameName().equals(name))
         .findAny();
-  }
-
-  private static GameChooserEntry createEntry(final URI uri)
-      throws IOException, GameParseException, EngineVersionException {
-    return new GameChooserEntry(uri);
   }
 
   private static Set<GameChooserEntry> populateFromDirectory(final File mapDir) {

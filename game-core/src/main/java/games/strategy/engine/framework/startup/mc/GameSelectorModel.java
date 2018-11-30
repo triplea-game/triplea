@@ -221,7 +221,7 @@ public class GameSelectorModel extends Observable {
       // game model list
       try {
         final URI defaultUri = new URI(userPreferredDefaultGameUri);
-        selectedGame = new GameChooserEntry(defaultUri);
+        selectedGame = GameChooserEntry.newInstance(defaultUri);
       } catch (final Exception e) {
         resetToFactoryDefault();
         selectedGame = selectByName();
