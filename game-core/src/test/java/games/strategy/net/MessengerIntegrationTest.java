@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -158,12 +159,16 @@ public class MessengerIntegrationTest {
 
   @Test
   public void testMultipleMessages() throws Exception {
-    final Thread t1 = new Thread(new MultipleMessageSender(serverMessenger));
-    final Thread t2 = new Thread(new MultipleMessageSender(client1Messenger));
-    final Thread t3 = new Thread(new MultipleMessageSender(client2Messenger));
+    final CountDownLatch testReadyLatch = new CountDownLatch(1);
+    final CountDownLatch workersReadyLatch = new CountDownLatch(3);
+    final Thread t1 = new Thread(new MultipleMessageSender(serverMessenger, testReadyLatch, workersReadyLatch));
+    final Thread t2 = new Thread(new MultipleMessageSender(client1Messenger, testReadyLatch, workersReadyLatch));
+    final Thread t3 = new Thread(new MultipleMessageSender(client2Messenger, testReadyLatch, workersReadyLatch));
     t1.start();
     t2.start();
     t3.start();
+    workersReadyLatch.await();
+    testReadyLatch.countDown();
     t1.join();
     t2.join();
     t3.join();
@@ -328,16 +333,24 @@ public class MessengerIntegrationTest {
     }
   }
 
-  private static class MultipleMessageSender implements Runnable {
-    IMessenger messenger;
+  private static final class MultipleMessageSender implements Runnable {
+    private final IMessenger messenger;
+    private final CountDownLatch testReadyLatch;
+    private final CountDownLatch workersReadyLatch;
 
-    public MultipleMessageSender(final IMessenger messenger) {
+    MultipleMessageSender(
+        final IMessenger messenger,
+        final CountDownLatch testReadyLatch,
+        final CountDownLatch workersReadyLatch) {
       this.messenger = messenger;
+      this.testReadyLatch = testReadyLatch;
+      this.workersReadyLatch = workersReadyLatch;
     }
 
     @Override
     public void run() {
-      Thread.yield();
+      workersReadyLatch.countDown();
+      Interruptibles.await(testReadyLatch);
       for (int i = 0; i < 100; i++) {
         messenger.broadcast(i);
       }
