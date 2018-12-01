@@ -1,5 +1,6 @@
 package games.strategy.engine.message.unifiedmessenger;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -146,11 +147,7 @@ public class RemoteMessengerTest {
       // since the registration must go over a socket
       // and through a couple threads, wait for the
       // client to get it
-      int waitCount = 0;
-      while (!unifiedMessengerHub.hasImplementors(test.getName()) && waitCount < 20) {
-        waitCount++;
-        Interruptibles.sleep(50);
-      }
+      await().until(() -> unifiedMessengerHub.hasImplementors(test.getName()));
       // call it on the client
       final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
       assertEquals(2, incrementedValue);
@@ -211,23 +208,11 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
       clientRemoteMessenger.registerRemote(new TestRemote(), test);
-      waitForNodesToImplement(serverUnifiedMessenger, test.getName());
-      assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
+      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       client.shutDown();
-      Interruptibles.sleep(200);
-      assertTrue(!serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
+      await().until(() -> !serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
     } finally {
       shutdownServerAndClient(server, client);
-    }
-  }
-
-  private static void waitForNodesToImplement(final UnifiedMessenger unifiedMessenger, final String endPointName) {
-    final long timeoutInMilliseconds = 200L;
-    final long endTime = timeoutInMilliseconds + System.currentTimeMillis();
-    while (System.currentTimeMillis() < endTime && !unifiedMessenger.getHub().hasImplementors(endPointName)) {
-      if (!Interruptibles.sleep(50)) {
-        return;
-      }
     }
   }
 
@@ -254,8 +239,7 @@ public class RemoteMessengerTest {
         Interruptibles.await(testCompleteSignal);
       };
       clientRemoteMessenger.registerRemote(foo, test);
-      waitForNodesToImplement(serverUnifiedMessenger, test.getName());
-      assertTrue(serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
+      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
       final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
         final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
         remoteFoo.foo();
