@@ -109,8 +109,10 @@ public class UnitCategory implements Comparable<UnitCategory> {
   }
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
-    return other.type.equals(this.type) && other.movement == this.movement
-        && other.owner.equals(this.owner) && CollectionUtils.equals(this.dependents, other.dependents);
+    return other.type.equals(this.type)
+        && other.movement == this.movement
+        && other.owner.equals(this.owner)
+        && CollectionUtils.haveEqualSizeAndEquivalentElements(this.dependents, other.dependents);
   }
 
   @Override
@@ -163,7 +165,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
             .thenComparing(UnitCategory::getType, new UnitTypeComparator())
             .thenComparingInt(UnitCategory::getMovement)
             .thenComparing(UnitCategory::getDependents, (o1, o2) -> {
-              if (CollectionUtils.equals(o1, o2)) {
+              if (CollectionUtils.haveEqualSizeAndEquivalentElements(o1, o2)) {
                 return 0;
               }
               return o1.toString().compareTo(o2.toString());

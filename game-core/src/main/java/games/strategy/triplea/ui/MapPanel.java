@@ -457,7 +457,7 @@ public class MapPanel extends ImageScrollerLargeView {
         && (newUnits == null
             || currentUnits == null
             || !newUnits.getFirst().equals(currentUnits.getFirst())
-            || !CollectionUtils.equals(newUnits.getSecond(), currentUnits.getSecond()));
+            || !CollectionUtils.haveEqualSizeAndEquivalentElements(newUnits.getSecond(), currentUnits.getSecond()));
   }
 
   public void updateCountries(final Collection<Territory> countries) {
