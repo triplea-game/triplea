@@ -98,7 +98,7 @@ public final class CollectionUtils {
    * and c1 and c2 are the same size.
    * Note that (a,a,b) (a,b,b) are equal.
    */
-  public static <T> boolean equals(final Collection<T> c1, final Collection<T> c2) {
+  public static <T> boolean haveEqualSizeAndEquivalentElements(final Collection<T> c1, final Collection<T> c2) {
     checkNotNull(c1);
     checkNotNull(c2);
 

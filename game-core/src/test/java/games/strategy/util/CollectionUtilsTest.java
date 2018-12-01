@@ -3,6 +3,7 @@ package games.strategy.util;
 import static games.strategy.util.CollectionUtils.countMatches;
 import static games.strategy.util.CollectionUtils.getMatches;
 import static games.strategy.util.CollectionUtils.getNMatches;
+import static games.strategy.util.CollectionUtils.haveEqualSizeAndEquivalentElements;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,26 +72,26 @@ final class CollectionUtilsTest {
   }
 
   @Nested
-  final class EqualsTest {
+  final class HaveEqualSizeAndEquivalentElementsTest {
     @Test
     void shouldReturnTrueWhenCollectionsAreEqual() {
-      assertThat(CollectionUtils.equals(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3)), is(true));
+      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3)), is(true));
     }
 
     @Test
-    void shouldReturnTrueWhenCollectionsAreNotEqualButAreEquivalent() {
-      assertThat(CollectionUtils.equals(Arrays.asList(1, 2, 1), Arrays.asList(2, 1, 2)), is(true));
+    void shouldReturnTrueWhenCollectionsAreNotEqualButHaveSameSizeAndEquivalentElements() {
+      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 1), Arrays.asList(2, 1, 2)), is(true));
     }
 
     @Test
-    void shouldReturnFalseWhenCollectionsHaveDifferentSizes() {
-      assertThat(CollectionUtils.equals(Arrays.asList(1, 2), Arrays.asList(1, 2, 2)), is(false));
+    void shouldReturnFalseWhenCollectionsHaveEquivalentElementsButDifferentSize() {
+      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2), Arrays.asList(1, 2, 2)), is(false));
     }
 
     @Test
-    void shouldReturnFalseWhenCollectionsHaveSameSizeButAreNotEquivalent() {
-      assertThat(CollectionUtils.equals(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 2)), is(false));
-      assertThat(CollectionUtils.equals(Arrays.asList(1, 2, 2), Arrays.asList(1, 2, 3)), is(false));
+    void shouldReturnFalseWhenCollectionsHaveSameSizeButElementsAreNotEquivalent() {
+      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 2)), is(false));
+      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 2), Arrays.asList(1, 2, 3)), is(false));
     }
   }
 }
