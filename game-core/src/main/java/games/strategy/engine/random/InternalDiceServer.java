@@ -1,11 +1,12 @@
 package games.strategy.engine.random;
 
-import java.util.Objects;
+import javax.annotation.Nullable;
 
 import com.google.common.base.Splitter;
 
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * This is not actually a dice server, it just uses the normal TripleA PlainRandomSource for dice roll
@@ -13,7 +14,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
  * the dice.
  * Because DiceServers must be serializable read resolve must be implemented
  */
-public class InternalDiceServer implements IRemoteDiceServer {
+public final class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
   private static final char DICE_SEPARATOR = ',';
 
@@ -82,7 +83,8 @@ public class InternalDiceServer implements IRemoteDiceServer {
    *
    * @return a new InternalDiceServer
    */
-  public Object readResolve() {
+  @SuppressWarnings("static-method")
+  private Object readResolve() {
     return new InternalDiceServer();
   }
 
@@ -105,12 +107,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public boolean equals(final Object other) {
-    return other != null && getClass().equals(other.getClass());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass());
+  public boolean isSameType(final @Nullable IBean other) {
+    return other instanceof InternalDiceServer;
   }
 }

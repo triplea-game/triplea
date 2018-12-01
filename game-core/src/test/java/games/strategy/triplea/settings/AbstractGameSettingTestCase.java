@@ -136,30 +136,23 @@ public abstract class AbstractGameSettingTestCase {
   }
 
   @Nested
-  final class SetObjectValueTest {
+  final class SetValueTest {
     @Test
     void shouldResetValueWhenValueIsNull() {
       final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);
 
-      gameSetting.setObjectValue(NO_VALUE);
+      gameSetting.setValue(NO_VALUE);
 
       assertThat(gameSetting.getValue(), isPresentAndIs(DEFAULT_VALUE));
     }
 
     @Test
-    void shouldSetValueWhenValueIsNonNullAndHasCorrectType() {
+    void shouldSetValueWhenValueIsNonNull() {
       final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);
 
-      gameSetting.setObjectValue(OTHER_VALUE);
+      gameSetting.setValue(OTHER_VALUE);
 
       assertThat(gameSetting.getValue(), isPresentAndIs(OTHER_VALUE));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenValueIsNonNullAndHasWrongType() {
-      final GameSetting<Integer> gameSetting = newGameSetting(VALUE, DEFAULT_VALUE);
-
-      assertThrows(ClassCastException.class, () -> gameSetting.setObjectValue("2112"));
     }
   }
 }

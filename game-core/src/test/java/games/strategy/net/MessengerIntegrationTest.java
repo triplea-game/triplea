@@ -159,16 +159,13 @@ public class MessengerIntegrationTest {
 
   @Test
   public void testMultipleMessages() throws Exception {
-    final CountDownLatch testReadyLatch = new CountDownLatch(1);
     final CountDownLatch workersReadyLatch = new CountDownLatch(3);
-    final Thread t1 = new Thread(new MultipleMessageSender(serverMessenger, testReadyLatch, workersReadyLatch));
-    final Thread t2 = new Thread(new MultipleMessageSender(client1Messenger, testReadyLatch, workersReadyLatch));
-    final Thread t3 = new Thread(new MultipleMessageSender(client2Messenger, testReadyLatch, workersReadyLatch));
+    final Thread t1 = new Thread(new MultipleMessageSender(serverMessenger, workersReadyLatch));
+    final Thread t2 = new Thread(new MultipleMessageSender(client1Messenger, workersReadyLatch));
+    final Thread t3 = new Thread(new MultipleMessageSender(client2Messenger, workersReadyLatch));
     t1.start();
     t2.start();
     t3.start();
-    workersReadyLatch.await();
-    testReadyLatch.countDown();
     t1.join();
     t2.join();
     t3.join();
@@ -335,22 +332,17 @@ public class MessengerIntegrationTest {
 
   private static final class MultipleMessageSender implements Runnable {
     private final IMessenger messenger;
-    private final CountDownLatch testReadyLatch;
     private final CountDownLatch workersReadyLatch;
 
-    MultipleMessageSender(
-        final IMessenger messenger,
-        final CountDownLatch testReadyLatch,
-        final CountDownLatch workersReadyLatch) {
+    MultipleMessageSender(final IMessenger messenger, final CountDownLatch workersReadyLatch) {
       this.messenger = messenger;
-      this.testReadyLatch = testReadyLatch;
       this.workersReadyLatch = workersReadyLatch;
     }
 
     @Override
     public void run() {
       workersReadyLatch.countDown();
-      Interruptibles.await(testReadyLatch);
+      Interruptibles.await(workersReadyLatch);
       for (int i = 0; i < 100; i++) {
         messenger.broadcast(i);
       }

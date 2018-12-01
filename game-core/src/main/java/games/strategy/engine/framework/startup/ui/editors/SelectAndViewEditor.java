@@ -8,9 +8,9 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -174,13 +174,13 @@ public class SelectAndViewEditor extends EditorPanel {
    *
    * @param bean the bean
    */
-  public void setSelectedBean(final IBean bean) {
+  public void setSelectedBean(final @Nullable IBean bean) {
     final MutableComboBoxModel<IBean> model = (MutableComboBoxModel<IBean>) selector.getModel();
     final DefaultComboBoxModel<IBean> newModel = new DefaultComboBoxModel<>();
     boolean found = false;
     for (int i = 0; i < model.getSize(); i++) {
-      final IBean candidate = model.getElementAt(i);
-      if (Objects.equals(candidate, bean)) {
+      final @Nullable IBean candidate = model.getElementAt(i);
+      if (((candidate == null) && (bean == null)) || ((candidate != null) && candidate.isSameType(bean))) {
         found = true;
         newModel.addElement(bean);
       } else {

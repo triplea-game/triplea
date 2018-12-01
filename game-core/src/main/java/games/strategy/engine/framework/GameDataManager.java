@@ -134,7 +134,7 @@ public final class GameDataManager {
       final String className = (String) input.readObject();
       final IDelegate instance;
       try {
-        instance = (IDelegate) Class.forName(className).getDeclaredConstructor().newInstance();
+        instance = Class.forName(className).asSubclass(IDelegate.class).getDeclaredConstructor().newInstance();
         instance.initialize(name, displayName);
         data.getDelegateList().addDelegate(instance);
       } catch (final Exception e) {

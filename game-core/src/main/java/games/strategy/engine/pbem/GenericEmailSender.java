@@ -7,13 +7,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.annotation.Nullable;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -30,6 +30,7 @@ import com.google.common.base.Splitter;
 
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import games.strategy.triplea.help.HelpSupport;
@@ -392,12 +393,7 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public final boolean isSameType(final @Nullable IBean other) {
     return other != null && getClass().equals(other.getClass());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass());
   }
 }

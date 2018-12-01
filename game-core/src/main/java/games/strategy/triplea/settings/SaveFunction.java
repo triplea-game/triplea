@@ -29,22 +29,23 @@ final class SaveFunction {
 
     // save all the values, save stuff that is valid and that was updated
     selectionComponents.forEach(selectionComponent -> {
-      if (selectionComponent.isValid()) {
-        // read and save all settings
-        selectionComponent.readValues()
-            .entrySet()
-            .stream()
-            .filter(entry -> doesNewSettingDiffer(entry.getKey(), entry.getValue()))
-            .forEach(entry -> {
-              final GameSetting<?> setting = entry.getKey();
-              setting.setObjectValue(entry.getValue());
-              successMsg.append(String
-                  .format("%s was updated to: %s\n", setting, setting.getDisplayValue()));
-            });
-      } else {
-        selectionComponent.readValues().forEach((key, value) -> failMsg.append(
-            String.format("Could not set %s to %s, %s\n", key, value, selectionComponent.validValueDescription())));
-      }
+      final SelectionComponent.SaveContext context = new SelectionComponent.SaveContext() {
+        private final boolean selectionComponentValid = selectionComponent.isValid();
+
+        @Override
+        public <T> void setValue(final GameSetting<T> gameSetting, final T value) {
+          if (selectionComponentValid) {
+            if (doesNewSettingDiffer(gameSetting, value)) {
+              gameSetting.setValue(value);
+              successMsg.append(String.format("%s was updated to: %s\n", gameSetting, gameSetting.getDisplayValue()));
+            }
+          } else {
+            failMsg.append(String.format("Could not set %s to %s, %s\n",
+                gameSetting, value, selectionComponent.validValueDescription()));
+          }
+        }
+      };
+      selectionComponent.save(context);
     });
 
     final String success = successMsg.toString();

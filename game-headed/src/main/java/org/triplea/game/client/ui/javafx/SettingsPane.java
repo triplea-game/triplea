@@ -2,16 +2,18 @@ package org.triplea.game.client.ui.javafx;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import org.triplea.game.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
+import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;
 import javafx.fxml.FXML;
@@ -117,11 +119,13 @@ class SettingsPane extends StackPane {
 
   @FXML
   private void save() {
-    selectionComponentsBySetting.values().stream()
-        .map(SelectionComponent::readValues)
-        .map(Map::entrySet)
-        .flatMap(Collection::stream)
-        .forEach(entry -> entry.getKey().setObjectValue(entry.getValue()));
+    final SelectionComponent.SaveContext context = new SelectionComponent.SaveContext() {
+      @Override
+      public <T> void setValue(final GameSetting<T> gameSetting, final @Nullable T value) {
+        gameSetting.setValue(value);
+      }
+    };
+    selectionComponentsBySetting.values().forEach(selectionComponent -> selectionComponent.save(context));
     // TODO visual feedback
   }
 
