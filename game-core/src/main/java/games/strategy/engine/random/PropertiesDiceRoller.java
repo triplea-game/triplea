@@ -1,7 +1,5 @@
 package games.strategy.engine.random;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -91,20 +89,19 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
     return rollers;
   }
 
-  private final @Nonnull Properties props;
+  private final Properties props;
   private String toAddress;
   private String ccAddress;
   private String gameId;
 
-  private PropertiesDiceRoller(final Properties props) {
-    checkNotNull(props);
-
+  @VisibleForTesting
+  PropertiesDiceRoller(final Properties props) {
     this.props = props;
   }
 
   @Override
   public String getDisplayName() {
-    return props.getProperty(PropertyKeys.NAME);
+    return props.getProperty(PropertyKeys.DISPLAY_NAME);
   }
 
   @Override
@@ -256,18 +253,13 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public boolean equals(final Object other) {
-    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), ((IBean) other).getDisplayName());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getDisplayName());
+  public boolean isSameType(final @Nullable IBean other) {
+    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), other.getDisplayName());
   }
 
   @VisibleForTesting
   interface PropertyKeys {
-    String NAME = "name";
+    String DISPLAY_NAME = "name";
   }
 
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {
