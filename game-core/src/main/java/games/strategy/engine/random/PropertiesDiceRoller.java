@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -35,6 +37,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
@@ -51,7 +54,7 @@ import lombok.extern.java.Log;
  * A pbem dice roller that reads its configuration from a properties file.
  */
 @Log
-public class PropertiesDiceRoller implements IRemoteDiceServer {
+public final class PropertiesDiceRoller implements IRemoteDiceServer {
   private static final long serialVersionUID = 6481409417543119539L;
 
   /**
@@ -91,13 +94,14 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   private String ccAddress;
   private String gameId;
 
-  public PropertiesDiceRoller(final Properties props) {
+  @VisibleForTesting
+  PropertiesDiceRoller(final Properties props) {
     this.props = props;
   }
 
   @Override
   public String getDisplayName() {
-    return props.getProperty("name");
+    return props.getProperty(PropertyKeys.DISPLAY_NAME);
   }
 
   @Override
@@ -249,13 +253,13 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public boolean equals(final Object other) {
-    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), ((IBean) other).getDisplayName());
+  public boolean isSameType(final @Nullable IBean other) {
+    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), other.getDisplayName());
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getDisplayName());
+  @VisibleForTesting
+  interface PropertyKeys {
+    String DISPLAY_NAME = "name";
   }
 
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {

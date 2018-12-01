@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Objects;
 import java.util.logging.Level;
+
+import javax.annotation.Nullable;
 
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import lombok.extern.java.Log;
@@ -186,12 +188,7 @@ public abstract class AbstractForumPoster implements IForumPoster {
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public final boolean isSameType(final @Nullable IBean other) {
     return other != null && getClass().equals(other.getClass());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass());
   }
 }
