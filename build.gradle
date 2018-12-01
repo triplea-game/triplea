@@ -85,6 +85,7 @@ subprojects {
             '-Xep:CatchAndPrintStackTrace:ERROR',
             '-Xep:ClassCanBeStatic:ERROR',
             '-Xep:DefaultCharset:ERROR',
+            '-Xep:EqualsGetClass:ERROR',
             '-Xep:EqualsIncompatibleType:ERROR',
             '-Xep:EqualsUnsafeCast:ERROR',
             '-Xep:FutureReturnValueIgnored:ERROR',
