@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import games.strategy.engine.message.unifiedmessenger.HasEndPointImplementor;
 import games.strategy.engine.message.unifiedmessenger.NoLongerHasEndPointImplementor;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -18,13 +16,11 @@ import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.util.Interruptibles;
 
 /**
  * The hub node in a spoke-hub messaging architecture.
  */
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
-  private static final int NODE_IMPLEMENTATION_TIMEOUT = 200;
   private final UnifiedMessenger localUnified;
   // the messenger we are based on
   private final IMessenger messenger;
@@ -136,22 +132,6 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         new SpokeInvoke(hubInvoke.methodCallId, hubInvoke.needReturnValues, hubInvoke.call, from);
     for (final INode node : remote) {
       send(invoke, node);
-    }
-  }
-
-  /**
-   * Wait for the messenger to know about the given endpoint.
-   *
-   * @deprecated testing code smell, should not be dependent upon wall clock timing, try to remove this method.
-   */
-  @VisibleForTesting
-  @Deprecated
-  public void waitForNodesToImplement(final String endPointName) {
-    final long endTime = NODE_IMPLEMENTATION_TIMEOUT + System.currentTimeMillis();
-    while (System.currentTimeMillis() < endTime && !hasImplementors(endPointName)) {
-      if (!Interruptibles.sleep(50)) {
-        return;
-      }
     }
   }
 
