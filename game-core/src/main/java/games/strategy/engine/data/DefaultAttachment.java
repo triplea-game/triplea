@@ -134,20 +134,21 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Objects.hash(attachedTo, name);
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public final boolean equals(final Object obj) {
     if (this == obj) {
       return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
+    } else if (!(obj instanceof DefaultAttachment)) {
       return false;
     }
+
     final DefaultAttachment other = (DefaultAttachment) obj;
-    return Objects.equals(Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
+    return getClass().equals(other.getClass())
+        && Objects.equals(Objects.toString(attachedTo, null), Objects.toString(other.attachedTo, null))
         && (Objects.equals(name, other.name) || this.toString().equals(other.toString()));
   }
 }
