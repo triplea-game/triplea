@@ -1,5 +1,7 @@
 package games.strategy.engine.random;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import javax.annotation.Nonnull;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -35,6 +39,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
@@ -51,7 +56,7 @@ import lombok.extern.java.Log;
  * A pbem dice roller that reads its configuration from a properties file.
  */
 @Log
-public class PropertiesDiceRoller implements IRemoteDiceServer {
+public final class PropertiesDiceRoller implements IRemoteDiceServer {
   private static final long serialVersionUID = 6481409417543119539L;
 
   /**
@@ -86,18 +91,20 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
     return rollers;
   }
 
-  private final Properties props;
+  private final @Nonnull Properties props;
   private String toAddress;
   private String ccAddress;
   private String gameId;
 
-  public PropertiesDiceRoller(final Properties props) {
+  private PropertiesDiceRoller(final Properties props) {
+    checkNotNull(props);
+
     this.props = props;
   }
 
   @Override
   public String getDisplayName() {
-    return props.getProperty("name");
+    return props.getProperty(PropertyKeys.NAME);
   }
 
   @Override
@@ -256,6 +263,11 @@ public class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public int hashCode() {
     return Objects.hashCode(getDisplayName());
+  }
+
+  @VisibleForTesting
+  interface PropertyKeys {
+    String NAME = "name";
   }
 
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {

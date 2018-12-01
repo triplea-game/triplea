@@ -392,12 +392,13 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   @Override
-  public boolean equals(final Object other) {
+  @SuppressWarnings("EqualsGetClass") // all concrete subclasses are equal to each other regardless of state
+  public final boolean equals(final Object other) {
     return other != null && getClass().equals(other.getClass());
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Objects.hashCode(getClass());
   }
 }

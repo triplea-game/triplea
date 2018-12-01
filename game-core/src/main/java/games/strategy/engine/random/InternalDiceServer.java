@@ -13,7 +13,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
  * the dice.
  * Because DiceServers must be serializable read resolve must be implemented
  */
-public class InternalDiceServer implements IRemoteDiceServer {
+public final class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
   private static final char DICE_SEPARATOR = ',';
 
@@ -82,7 +82,8 @@ public class InternalDiceServer implements IRemoteDiceServer {
    *
    * @return a new InternalDiceServer
    */
-  public Object readResolve() {
+  @SuppressWarnings("static-method")
+  private Object readResolve() {
     return new InternalDiceServer();
   }
 
@@ -106,7 +107,7 @@ public class InternalDiceServer implements IRemoteDiceServer {
 
   @Override
   public boolean equals(final Object other) {
-    return other != null && getClass().equals(other.getClass());
+    return other instanceof InternalDiceServer;
   }
 
   @Override

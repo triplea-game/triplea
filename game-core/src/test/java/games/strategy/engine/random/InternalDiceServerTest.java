@@ -10,8 +10,18 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+
 final class InternalDiceServerTest {
   private final InternalDiceServer internalDiceServer = new InternalDiceServer();
+
+  @Nested
+  final class EqualsAndHashCodeTest {
+    @Test
+    void shouldBeEquatableAndHashable() {
+      EqualsVerifier.forClass(InternalDiceServer.class).verify();
+    }
+  }
 
   @Nested
   final class GetDiceTest {
