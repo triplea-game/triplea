@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -61,10 +60,4 @@ public interface GameSetting<T> {
    * Unregisters {@code listener} to no longer receive a notification whenever the setting value has changed.
    */
   void removeListener(Consumer<GameSetting<T>> listener);
-
-
-
-  default String getDisplayValue() {
-    return Objects.toString(getValue().orElse(null));
-  }
 }

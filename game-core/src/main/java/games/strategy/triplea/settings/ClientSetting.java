@@ -113,16 +113,12 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
   public static final ClientSetting<String> loggingVerbosity =
       new StringClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
-  public static final ClientSetting<String> emailServerHost =
-      new StringClientSetting("EMAIL_SERVER_HOST");
-  public static final ClientSetting<Integer> emailServerPort =
-      new IntegerClientSetting("EMAIL_SERVER_PORT");
+  public static final ClientSetting<String> emailServerHost = new StringClientSetting("EMAIL_SERVER_HOST");
+  public static final ClientSetting<Integer> emailServerPort = new IntegerClientSetting("EMAIL_SERVER_PORT");
   public static final ClientSetting<Boolean> emailServerSecurity =
       new BooleanClientSetting("EMAIL_SERVER_SECURITY", true);
-  public static final ClientSetting<char[]> emailUsername =
-      new ProtectedStringClientSetting("EMAIL_USERNAME", false);
-  public static final ClientSetting<char[]> emailPassword =
-      new ProtectedStringClientSetting("EMAIL_PASSWORD", true);
+  public static final ClientSetting<char[]> emailUsername = new ProtectedStringClientSetting("EMAIL_USERNAME");
+  public static final ClientSetting<char[]> emailPassword = new ProtectedStringClientSetting("EMAIL_PASSWORD");
 
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 

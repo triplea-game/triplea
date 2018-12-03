@@ -15,23 +15,7 @@ import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 
 final class ProtectedStringClientSettingTest {
-  private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", false);
-
-  @Nested
-  final class GetDisplayValueTest extends AbstractClientSettingTestCase {
-    @Test
-    void shouldReturnUnmaskedValueWhenNotSensitive() {
-      clientSetting.setValue("$eCrEt".toCharArray());
-      assertThat(clientSetting.getDisplayValue(), is("$eCrEt"));
-    }
-
-    @Test
-    void shouldReturnMaskedValueWhenSensitive() {
-      final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name", true);
-      clientSetting.setValue("$eCrEt".toCharArray());
-      assertThat(clientSetting.getDisplayValue(), is("******"));
-    }
-  }
+  private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name");
 
   @Nested
   final class EncodeValueTest {

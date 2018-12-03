@@ -35,12 +35,41 @@ public interface SelectionComponent<T> {
    */
   interface SaveContext {
     /**
-     * Sets the value for the specified game setting. Selection components must call this method to change a setting
-     * value and must not call {@link GameSetting#setValue(Object)} directly.
+     * Sets the insensitive value for the specified game setting. Selection components must call this method to change a
+     * setting value and must not call {@link GameSetting#setValue(Object)} directly.
      *
      * @param gameSetting The game setting whose value is to be set.
      * @param value The new setting value or {@code null} to clear the setting value.
      */
-    <T> void setValue(GameSetting<T> gameSetting, @Nullable T value);
+    default <T> void setValue(GameSetting<T> gameSetting, @Nullable T value) {
+      setValue(gameSetting, value, ValueSensitivity.INSENSITIVE);
+    }
+
+    /**
+     * Sets the value with the specified sensitivity for the specified game setting. Selection components must call this
+     * method to change a setting value and must not call {@link GameSetting#setValue(Object)} directly.
+     *
+     * @param gameSetting The game setting whose value is to be set.
+     * @param value The new setting value or {@code null} to clear the setting value.
+     * @param valueSensitivity The sensitivity of the new setting value to disclosure. Use
+     *        {@link ValueSensitivity#INSENSITIVE} if the value can be displayed to the user in the UI; otherwise use
+     *        {@link ValueSensitivity#SENSITIVE} if the value should be masked before it is displayed to the user.
+     */
+    <T> void setValue(GameSetting<T> gameSetting, @Nullable T value, ValueSensitivity valueSensitivity);
+
+    /**
+     * The sensitivity of a value to disclosure in the UI.
+     */
+    enum ValueSensitivity {
+      /**
+       * The value is not sensitive and may be displayed in the UI.
+       */
+      INSENSITIVE,
+
+      /**
+       * The value is sensitive and will be masked when displayed in the UI.
+       */
+      SENSITIVE;
+    }
   }
 }
