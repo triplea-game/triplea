@@ -2,8 +2,6 @@ package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -30,16 +28,9 @@ import games.strategy.util.CollectionUtils;
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
 
-  private final Set<Territory> attackingFrom;
-  private final Collection<Territory> amphibiousAttackFrom;
-  private final Map<Territory, Collection<Unit>> attackingFromMap;
-
   public NonFightingBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
       final GameData data) {
     super(battleSite, attacker, battleTracker, data);
-    attackingFromMap = new HashMap<>();
-    attackingFrom = new HashSet<>();
-    amphibiousAttackFrom = new ArrayList<>();
   }
 
   @Override
@@ -159,20 +150,5 @@ public class NonFightingBattle extends DependentBattle {
     for (final Map.Entry<Unit, Collection<Unit>> entry : dependencies.entrySet()) {
       dependentUnits.computeIfAbsent(entry.getKey(), k -> new LinkedHashSet<>()).addAll(entry.getValue());
     }
-  }
-
-  @Override
-  public Collection<Territory> getAttackingFrom() {
-    return attackingFrom;
-  }
-
-  @Override
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return attackingFromMap;
-  }
-
-  @Override
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return amphibiousAttackFrom;
   }
 }

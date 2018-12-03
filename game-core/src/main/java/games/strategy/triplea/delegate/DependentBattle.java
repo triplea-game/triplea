@@ -1,7 +1,11 @@
 package games.strategy.triplea.delegate;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -14,24 +18,36 @@ import games.strategy.engine.data.Unit;
  */
 public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
+  protected Map<Territory, Collection<Unit>> attackingFromMap;
+  protected Set<Territory> attackingFrom;
+  private Collection<Territory> amphibiousAttackFrom;
 
   DependentBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
       final GameData data) {
     super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
+    attackingFromMap = new HashMap<>();
+    attackingFrom = new HashSet<>();
+    amphibiousAttackFrom = new ArrayList<>();
   }
 
   /**
    * Return attacking from Collection.
    */
-  public abstract Collection<Territory> getAttackingFrom();
+  public Collection<Territory> getAttackingFrom() {
+    return attackingFrom;
+  }
 
   /**
    * Return attacking from Map.
    */
-  public abstract Map<Territory, Collection<Unit>> getAttackingFromMap();
+  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
+    return attackingFromMap;
+  }
 
   /**
    * Returns territories where there are amphibious attacks.
    */
-  public abstract Collection<Territory> getAmphibiousAttackTerritories();
+  public Collection<Territory> getAmphibiousAttackTerritories() {
+    return amphibiousAttackFrom;
+  }
 }
