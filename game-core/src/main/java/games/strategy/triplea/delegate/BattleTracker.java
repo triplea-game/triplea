@@ -1155,7 +1155,7 @@ public class BattleTracker implements Serializable {
       final List<Unit> defenders = new ArrayList<>(battle.getDefendingUnits());
       final List<Unit> sortedUnitsList = getSortedDefendingUnits(bridge, gameData, territory, defenders);
       if (getDependentOn(battle).isEmpty() && DiceRoll.getTotalPower(
-          DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, false, gameData,
+          DiceRoll.getUnitPowerAndRollsForNormalBattles(sortedUnitsList, defenders, true, gameData,
               territory, TerritoryEffectHelper.getEffects(territory), false, null),
           gameData) == 0) {
         battle.fight(bridge);
@@ -1171,8 +1171,8 @@ public class BattleTracker implements Serializable {
   private static List<Unit> getSortedDefendingUnits(final IDelegateBridge bridge, final GameData gameData,
       final Territory territory, final List<Unit> defenders) {
     final List<Unit> sortedUnitsList = new ArrayList<>(CollectionUtils.getMatches(defenders,
-        Matches.unitCanBeInBattle(true, !territory.isWater(), 1, false, true, true)));
-    sortedUnitsList.sort(new UnitBattleComparator(false, TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
+        Matches.unitCanBeInBattle(false, !territory.isWater(), 1, false, true, true)));
+    sortedUnitsList.sort(new UnitBattleComparator(true, TuvUtils.getCostsForTuv(bridge.getPlayerId(), gameData),
         TerritoryEffectHelper.getEffects(territory), gameData, false, false));
     Collections.reverse(sortedUnitsList);
     return sortedUnitsList;
