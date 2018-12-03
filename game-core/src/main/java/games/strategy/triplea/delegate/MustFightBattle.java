@@ -88,10 +88,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private static final long serialVersionUID = 5879502298361231540L;
 
   // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
-  private Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
   private final Collection<Unit> attackingWaitingToDie = new ArrayList<>();
-  private Set<Territory> attackingFrom = new HashSet<>();
-  private final Collection<Territory> amphibiousAttackFrom = new ArrayList<>();
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> killed = new ArrayList<>();
@@ -2705,21 +2702,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
       battleTracker.removeBattle(this, gameData);
     }
-  }
-
-  @Override
-  public Collection<Territory> getAttackingFrom() {
-    return attackingFrom;
-  }
-
-  @Override
-  public Map<Territory, Collection<Unit>> getAttackingFromMap() {
-    return attackingFromMap;
-  }
-
-  @Override
-  public Collection<Territory> getAmphibiousAttackTerritories() {
-    return amphibiousAttackFrom;
   }
 
 }
